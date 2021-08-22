@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "essentialclient.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "carpet.CustomPayloadC2SPacketAccessor",
+    "carpet.ServerPlayNetworkHandlerMixin",
+    "core.ClientPlayNetworkHandlerMixin",
+    "core.MinecraftServer_noopMixin"
+  ],
+  "client": [
+    "carpet.ClientPlayNetworkHandlerMixin",
+    "core.GameMenuScreenMixin",
+    "core.MinecraftClientMixin",
+    "removeWarnReceivedPassengers.ClientPlayNetworkHandlerMixin",
+    "stackableShulkers.HopperBlockEntityMixin",
+    "stackableShulkers.ItemEntityMixin",
+    "stackableShulkers.ItemStackMixin",
+    "stackableShulkers.ScreenHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

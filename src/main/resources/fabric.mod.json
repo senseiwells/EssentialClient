@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "essential-client",
+  "version": "0.0.1",
+
+  "name": "Essential Client",
+  "description": "A client mod that provides utilities and client support for carpet rules",
+  "authors": [
+    "DeadlyMC",
+    "Gnembon",
+    "Sensei"
+  ],
+  "contact": {
+    "homepage": "https://web.me/"
+  },
+
+  "license": "LGPL-3.0",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ]
+  },
+  "mixins": [
+    "essentialclient.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.10.0",
+    "carpet": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+  }
+}
