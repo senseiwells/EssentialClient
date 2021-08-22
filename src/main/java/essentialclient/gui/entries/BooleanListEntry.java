@@ -1,11 +1,11 @@
 package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientruleformat.BooleanClientRule;
-import essentialclient.gui.clientruleformat.BooleanClientRuleHelper;
-import essentialclient.gui.rulesscreen.ClientRulesScreen;
+import essentialclient.gui.clientruleformat.ClientRule;
+import essentialclient.gui.clientruleformat.ClientRuleHelper;
+import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
-import essentialclient.gui.rulesscreen.ServerRulesScreen;
+import essentialclient.gui.rulescreen.ServerRulesScreen;
 import com.google.common.collect.ImmutableList;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
@@ -25,7 +25,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltipEntry {
     private final ParsedRule<?> settings;
-    private final BooleanClientRule clientSettings;
+    private final ClientRule clientSettings;
     private final String rule;
     private final ServerRulesScreen gui;
     private final ClientRulesScreen clientGui;
@@ -54,7 +54,7 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         });
     }
 
-    public BooleanListEntry(final BooleanClientRule settings, MinecraftClient client, ClientRulesScreen gui) {
+    public BooleanListEntry(final ClientRule settings, MinecraftClient client, ClientRulesScreen gui) {
         this.settings = null;
         this.clientSettings = settings;
         this.client = client;
@@ -65,7 +65,7 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(String.valueOf(settings.value)), (buttonWidget) -> {
             settings.invertBoolean();
             buttonWidget.setMessage(new LiteralText(String.valueOf(settings.value)));
-            BooleanClientRuleHelper.writeSaveFile(BooleanClientRule.clientBooleanRulesMap);
+            ClientRuleHelper.writeSaveFile(ClientRule.clientRulesMap);
             if (settings.isCommand && client.getNetworkHandler() != null) {
                 client.inGameHud.getChatHud().addMessage(new LiteralText("§cRelog for client command changes to take full effect"));
                 /* The game still suggests the command but it registers it as invalid, idk how to fix :P
@@ -76,8 +76,8 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             settings.value = settings.defaultValue;
-            BooleanClientRuleHelper.writeSaveFile(BooleanClientRule.clientBooleanRulesMap);
-            this.editButton.setMessage(new LiteralText(settings.defaultAsString));
+            ClientRuleHelper.writeSaveFile(ClientRule.clientRulesMap);
+            this.editButton.setMessage(new LiteralText(settings.defaultValue));
         });
     }
 
@@ -93,7 +93,7 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         if (this.settings != null)
             this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString);
         else
-            this.resetButton.active = this.clientSettings.value != this.clientSettings.defaultValue;
+            this.resetButton.active = !this.clientSettings.value.equals(this.clientSettings.defaultValue);
         
         this.editButton.x = x + 180;
         this.editButton.y = y;

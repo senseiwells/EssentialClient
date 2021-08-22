@@ -1,8 +1,7 @@
 package essentialclient.mixins.stackableShulkers;
 
 import carpet.helpers.InventoryHelper;
-import essentialclient.gui.clientruleformat.BooleanClientRule;
-import essentialclient.gui.clientruleformat.BooleanClientRuleHelper;
+import essentialclient.gui.clientruleformat.ClientRuleHelper;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.BlockItem;
@@ -19,7 +18,7 @@ public class ItemEntityMixin {
     @Inject(method="<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("RETURN"))
     private void removeEmptyShulkerBoxTags(World worldIn, double x, double y, double z, ItemStack stack, CallbackInfo ci)
     {
-        if (BooleanClientRuleHelper.getBoolean("stackableShulkersInPlayerInventories")
+        if (ClientRuleHelper.getBoolean("stackableShulkersInPlayerInventories")
                 && stack.getItem() instanceof BlockItem
                 && ((BlockItem)stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
         {

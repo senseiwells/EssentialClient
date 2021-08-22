@@ -2,14 +2,13 @@ package essentialclient.gui;
 
 import carpet.CarpetServer;
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientruleformat.BooleanClientRule;
-import essentialclient.gui.clientruleformat.NumberClientRule;
+import essentialclient.gui.clientruleformat.ClientRule;
 import essentialclient.gui.entries.BooleanListEntry;
 import essentialclient.gui.entries.NumberListEntry;
 import essentialclient.gui.entries.StringListEntry;
-import essentialclient.gui.rulesscreen.ClientRulesScreen;
-import essentialclient.gui.rulesscreen.GameRulesScreen;
-import essentialclient.gui.rulesscreen.ServerRulesScreen;
+import essentialclient.gui.rulescreen.ClientRulesScreen;
+import essentialclient.gui.rulescreen.GameRulesScreen;
+import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.render.ITooltipEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -54,25 +53,25 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
     public ConfigListWidget(ClientRulesScreen gui, MinecraftClient client) {
         super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
-        Collection<BooleanClientRule> booleanRules = BooleanClientRule.getRules();
-        booleanRules.forEach(clientRules -> {
+        Collection<ClientRule> clientRuleCollection = ClientRule.getRules();
+        clientRuleCollection.forEach(clientRules -> {
             int i = client.textRenderer.getWidth(clientRules.name) - 55;
             if (i > length) {
                 length = i;
             }
-            BooleanListEntry booleanList = new BooleanListEntry(clientRules, client, gui);
-            this.addEntry(booleanList);
-            this.entries.add(booleanList);
-        });
-        Collection<NumberClientRule> numberRules = NumberClientRule.getRules();
-        numberRules.forEach(clientRules -> {
-            int i = client.textRenderer.getWidth(clientRules.name) - 55;
-            if (i > length) {
-                length = i;
+            if (clientRules.type.equalsIgnoreCase("boolean")) {
+                BooleanListEntry booleanList = new BooleanListEntry(clientRules, client, gui);
+                this.addEntry(booleanList);
+                this.entries.add(booleanList);
             }
-            NumberListEntry numberList = new NumberListEntry(clientRules, client, gui);
-            this.addEntry(numberList);
-            this.entries.add(numberList);
+            else if (clientRules.type.equalsIgnoreCase("number")) {
+                NumberListEntry numberList = new NumberListEntry(clientRules, client, gui);
+                this.addEntry(numberList);
+                this.entries.add(numberList);
+            }
+            else {
+                //StringListEntry
+            }
         });
     }
 

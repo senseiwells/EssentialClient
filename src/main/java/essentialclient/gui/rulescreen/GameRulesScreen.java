@@ -1,4 +1,4 @@
-package essentialclient.gui.rulesscreen;
+package essentialclient.gui.rulescreen;
 
 import essentialclient.gui.ConfigListWidget;
 import net.minecraft.client.gui.screen.Screen;

@@ -2,7 +2,7 @@ package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
 import essentialclient.gui.ConfigListWidget;
-import essentialclient.gui.rulesscreen.ServerRulesScreen;
+import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
 import essentialclient.utils.render.RenderHelper;

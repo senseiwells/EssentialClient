@@ -1,7 +1,7 @@
 package essentialclient.mixins.stackableShulkers;
 
 import carpet.helpers.InventoryHelper;
-import essentialclient.gui.clientruleformat.BooleanClientRuleHelper;
+import essentialclient.gui.clientruleformat.ClientRuleHelper;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -21,15 +21,13 @@ public abstract class ItemStackMixin {
 
     @Inject(method = "getMaxCount", at=@At(value = "HEAD"), cancellable = true)
     public void getMaxCount(CallbackInfoReturnable<Integer> cir) {
-        if (BooleanClientRuleHelper.getBoolean("stackableShulkersInPlayerInventories") && this.getItem() instanceof BlockItem && ((BlockItem) this.getItem()).getBlock() instanceof ShulkerBoxBlock) {
-            System.out.println("RuleEnabled");
+        if (ClientRuleHelper.getBoolean("stackableShulkersInPlayerInventories") && this.getItem() instanceof BlockItem && ((BlockItem) this.getItem()).getBlock() instanceof ShulkerBoxBlock) {
             ItemStack stack = (ItemStack) (Object) this;
             if (!InventoryHelper.shulkerBoxHasItems(stack)) {
                     stack.removeSubTag("BlockEntityTag");
-                    System.out.println("Return64");
                     cir.setReturnValue(64);
             }
-            else if (BooleanClientRuleHelper.getBoolean("stackableShulkersWithItems"))
+            else if (ClientRuleHelper.getBoolean("stackableShulkersWithItems"))
                     cir.setReturnValue(64);
         }
     }

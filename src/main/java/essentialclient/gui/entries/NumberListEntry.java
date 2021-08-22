@@ -1,11 +1,11 @@
 package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientruleformat.NumberClientRule;
-import essentialclient.gui.clientruleformat.NumberClientRuleHelper;
-import essentialclient.gui.rulesscreen.ClientRulesScreen;
+import essentialclient.gui.clientruleformat.ClientRule;
+import essentialclient.gui.clientruleformat.ClientRuleHelper;
+import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
-import essentialclient.gui.rulesscreen.ServerRulesScreen;
+import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
 import essentialclient.utils.render.RenderHelper;
@@ -27,7 +27,7 @@ import java.util.List;
 
 public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipEntry {
     private final ParsedRule<?> settings;
-    private final NumberClientRule clientSettings;
+    private final ClientRule clientSettings;
     private final String rule;
     private final ButtonWidget infoButton;
     private final TextFieldWidget numberField;
@@ -56,7 +56,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         gui.getNumberFieldList().add(this.numberField);
     }
 
-    public NumberListEntry(final NumberClientRule settings, MinecraftClient client, ClientRulesScreen gui) {
+    public NumberListEntry(final ClientRule settings, MinecraftClient client, ClientRulesScreen gui) {
         this.settings = null;
         this.clientSettings = settings;
         this.client = client;
@@ -70,8 +70,8 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.numberField = numField;
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             settings.value = settings.defaultValue;
-            numField.setText(settings.defaultAsString);
-            NumberClientRuleHelper.writeSaveFile(NumberClientRule.clientNumberRulesMap);
+            numField.setText(settings.defaultValue);
+            ClientRuleHelper.writeSaveFile(ClientRule.clientRulesMap);
         });
         gui.getNumberFieldList().add(this.numberField);
     }
@@ -107,7 +107,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         if (this.settings != null)
             this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString) || this.invalid;
         else
-            this.resetButton.active = this.clientSettings.value != this.clientSettings.defaultValue;
+            this.resetButton.active = !this.clientSettings.value.equals(this.clientSettings.defaultValue) || this.invalid;
         
         this.numberField.x = x + 182;
         this.numberField.y = y + 3;
@@ -171,8 +171,8 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.clientGui.setEmpty(widget.getText().isEmpty());
         boolean isNumber;
         try {
-            this.clientSettings.value = Integer.parseInt(newValue);
-            NumberClientRuleHelper.writeSaveFile(NumberClientRule.clientNumberRulesMap);
+            this.clientSettings.value = String.valueOf(Integer.parseInt(newValue));
+            ClientRuleHelper.writeSaveFile(ClientRule.clientRulesMap);
             isNumber = true;
         }
         catch (NumberFormatException e) {

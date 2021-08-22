@@ -13,19 +13,16 @@ public class CarpetSettingsClientNetworkHandler
     public static PacketByteBuf data;
     private static MinecraftServer server;
     
-    public static void setAllData(PacketByteBuf buf)
-    {
+    public static void setAllData(PacketByteBuf buf) {
         CarpetSettingsClientNetworkHandler.data = buf;
         split();
     }
     
-    public static void attachServer(MinecraftServer server)
-    {
+    public static void attachServer(MinecraftServer server) {
         CarpetSettingsClientNetworkHandler.server = server;
     }
     
-    private static void split()
-    {
+    private static void split() {
         NbtCompound compound = data.readNbt();
         if (compound == null) return;
         String carpetServerVersion = compound.getString("CarpetVersion");
@@ -42,8 +39,7 @@ public class CarpetSettingsClientNetworkHandler
         Reference.isCarpetServer = true;
     }
     
-    public static void updateRule(PacketByteBuf data)
-    {
+    public static void updateRule(PacketByteBuf data) {
         String rule = data.readString();
         String newValue = data.readString();
         CarpetServer.settingsManager.getRule(rule).set(server.getCommandSource(), newValue);

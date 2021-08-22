@@ -1,8 +1,8 @@
 package essentialclient.gui;
 
-import essentialclient.gui.rulesscreen.ClientRulesScreen;
-import essentialclient.gui.rulesscreen.GameRulesScreen;
-import essentialclient.gui.rulesscreen.ServerRulesScreen;
+import essentialclient.gui.rulescreen.ClientRulesScreen;
+import essentialclient.gui.rulescreen.GameRulesScreen;
+import essentialclient.gui.rulescreen.ServerRulesScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;

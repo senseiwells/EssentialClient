@@ -1,10 +1,7 @@
 package essentialclient.mixins.core;
 
 import essentialclient.commands.CommandRegister;
-import essentialclient.gui.clientruleformat.BooleanClientRule;
-import essentialclient.gui.clientruleformat.BooleanClientRuleHelper;
-import essentialclient.gui.clientruleformat.NumberClientRule;
-import essentialclient.gui.clientruleformat.NumberClientRuleHelper;
+import essentialclient.gui.clientruleformat.*;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -26,9 +23,6 @@ public class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onGameJoin", at = @At("HEAD"))
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         PlayerClientCommandHelper.playerClientHelperMap = PlayerClientCommandHelper.readSaveFile();
-        BooleanClientRule.clientBooleanRulesMap = BooleanClientRuleHelper.readSaveFile();
-        BooleanClientRuleHelper.checkBooleanRules();
-        NumberClientRule.clientNumberRulesMap = NumberClientRuleHelper.readSaveFile();
-        NumberClientRuleHelper.checkNumberRules();
+        ClientRuleHelper.readSaveFile();
     }
 }

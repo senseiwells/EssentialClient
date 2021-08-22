@@ -1,6 +1,6 @@
 package essentialclient.mixins.removeWarnReceivedPassengers;
 
-import essentialclient.gui.clientruleformat.BooleanClientRuleHelper;
+import essentialclient.gui.clientruleformat.ClientRuleHelper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class ClientPlayNetworkHandlerMixin {
     @Redirect(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;)V"))
     private void onWarn(Logger logger, String message) {
-        if (BooleanClientRuleHelper.getBoolean("removeWarnReceivedPassengers"))
+        if (ClientRuleHelper.getBoolean("removeWarnReceivedPassengers"))
             return;
         logger.warn(message);
     }
