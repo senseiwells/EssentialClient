@@ -1,6 +1,6 @@
 package essentialclient.mixins.stackableShulkers;
 
-import essentialclient.gui.clientruleformat.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRuleHelper;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.item.BlockItem;

@@ -2,7 +2,7 @@ package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import essentialclient.gui.clientruleformat.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.utils.command.CommandHelper;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.network.ClientPlayerEntity;

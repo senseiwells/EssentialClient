@@ -1,4 +1,4 @@
-package essentialclient.gui.clientruleformat;
+package essentialclient.gui.clientrule;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,16 +27,17 @@ public class ClientRuleHelper {
     ).apply(it, (name, value) -> {
         ClientRule data = ClientRule.clientRulesMap.remove(name);
         data.value = value;
+        ClientRule.clientRulesMap.put(name, data);
         return data;
     }));
 
     public static final Codec<Map<String, ClientRule>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC.codec());
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    public static void writeSaveFile(Map<String, ClientRule> booleanRule) {
+    public static void writeSaveFile() {
         Path file = getFile();
         try(BufferedWriter writer = Files.newBufferedWriter(file)) {
-            MAP_CODEC.encodeStart(JsonOps.INSTANCE, booleanRule)
+            MAP_CODEC.encodeStart(JsonOps.INSTANCE, ClientRule.clientRulesMap)
                     .resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write rule data: {}", e))
                     .ifPresent(obj -> GSON.toJson(obj, writer));
         }
@@ -53,7 +54,7 @@ public class ClientRuleHelper {
         if (!Files.isRegularFile(file))
             return;
         try (BufferedReader reader = Files.newBufferedReader(file)) {
-            ClientRule.clientRulesMap = new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
+            new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
                     .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read rule data: {}", e))
                     .getFirst());
         }
@@ -84,6 +85,7 @@ public class ClientRuleHelper {
         addDefaultNumberRule ("announceAFK"                           , "This announces when you become afk after a set amount of time (ticks)");
 
         //String Rules
+        addDefaultStringRule ("announceAFKMessage"                    , "This is the message you announce after you are afk"                                           , "I am now AFK");
     }
 
     private static Path getFile() {

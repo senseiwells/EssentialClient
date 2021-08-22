@@ -2,7 +2,7 @@ package essentialclient.gui;
 
 import carpet.CarpetServer;
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientruleformat.ClientRule;
+import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.entries.BooleanListEntry;
 import essentialclient.gui.entries.NumberListEntry;
 import essentialclient.gui.entries.StringListEntry;
@@ -69,8 +69,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
                 this.addEntry(numberList);
                 this.entries.add(numberList);
             }
-            else {
-                //StringListEntry
+            else if (clientRules.type.equalsIgnoreCase("string")) {
+                StringListEntry stringList = new StringListEntry(clientRules, client, gui);
+                this.addEntry(stringList);
+                this.entries.add(stringList);
             }
         });
     }

@@ -1,8 +1,8 @@
 package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientruleformat.ClientRule;
-import essentialclient.gui.clientruleformat.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRule;
+import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
@@ -65,13 +65,13 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.rule = settings.name;
         this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         TextFieldWidget numField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type an integer value"));
-        numField.setText(String.valueOf(settings.value));
+        numField.setText(settings.value);
         numField.setChangedListener(s -> this.checkForInvalid(s, numField));
         this.numberField = numField;
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             settings.value = settings.defaultValue;
             numField.setText(settings.defaultValue);
-            ClientRuleHelper.writeSaveFile(ClientRule.clientRulesMap);
+            ClientRuleHelper.writeSaveFile();
         });
         gui.getNumberFieldList().add(this.numberField);
     }
@@ -172,7 +172,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         boolean isNumber;
         try {
             this.clientSettings.value = String.valueOf(Integer.parseInt(newValue));
-            ClientRuleHelper.writeSaveFile(ClientRule.clientRulesMap);
+            ClientRuleHelper.writeSaveFile();
             isNumber = true;
         }
         catch (NumberFormatException e) {

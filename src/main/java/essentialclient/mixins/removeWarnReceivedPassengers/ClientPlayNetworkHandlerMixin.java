@@ -1,6 +1,6 @@
 package essentialclient.mixins.removeWarnReceivedPassengers;
 
-import essentialclient.gui.clientruleformat.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRuleHelper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;

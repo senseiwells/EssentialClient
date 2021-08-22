@@ -2,6 +2,9 @@ package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
 import essentialclient.gui.ConfigListWidget;
+import essentialclient.gui.clientrule.ClientRule;
+import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
@@ -25,18 +28,22 @@ import java.util.List;
 public class StringListEntry extends ConfigListWidget.Entry implements ITooltipEntry
 {
     private final ParsedRule<?> settings;
+    private final ClientRule clientSettings;
     private final String rule;
     private final ButtonWidget infoButton;
     private final TextFieldWidget textField;
     private final ButtonWidget resetButton;
     private final MinecraftClient client;
     private final ServerRulesScreen gui;
+    private final ClientRulesScreen clientGui;
     private boolean invalid;
     
     public StringListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
         this.settings = settings;
+        this.clientSettings = null;
         this.client = client;
         this.gui = gui;
+        this.clientGui = null;
         this.rule = settings.name;
         this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
@@ -46,6 +53,26 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             CarpetSettingsServerNetworkHandler.ruleChange(settings.name, settings.defaultAsString, client);
             stringField.setText(settings.defaultAsString);
+        });
+        gui.getStringFieldList().add(this.textField);
+    }
+
+    public StringListEntry(final ClientRule settings, MinecraftClient client, ClientRulesScreen gui) {
+        this.settings = null;
+        this.clientSettings = settings;
+        this.client = client;
+        this.gui = null;
+        this.clientGui = gui;
+        this.rule = settings.name;
+        this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
+        TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
+        stringField.setText(settings.value);
+        stringField.setChangedListener(s -> this.checkForInvalid(stringField));
+        this.textField = stringField;
+        this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
+            settings.value = settings.defaultValue;
+            stringField.setText(settings.defaultValue);
+            ClientRuleHelper.writeSaveFile();
         });
         gui.getStringFieldList().add(this.textField);
     }
@@ -76,7 +103,10 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
-        this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString);
+        if (this.settings != null)
+            this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString);
+        else
+            this.resetButton.active = !this.clientSettings.value.equals(this.clientSettings.defaultValue);
         
         this.textField.x = x + 182;
         this.textField.y = y + 3;
@@ -102,24 +132,38 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
         if (this.infoButton.isHovered() && !this.infoButton.active) {
-            String description = this.settings.description;
+            String description;
+            if (this.settings != null)
+                description = this.settings.description;
+            else
+                description = this.clientSettings.description;
             RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
         }
     }
     
     private void setInvalid(boolean invalid) {
         this.invalid = invalid;
-        this.gui.setInvalid(invalid);
+        if (this.gui != null)
+            this.gui.setInvalid(invalid);
+        else
+            this.clientGui.setInvalid(invalid);
     }
     
     private void checkForInvalid(TextFieldWidget widget) {
         boolean empty = widget.getText().isEmpty();
         if (empty) {
-            this.gui.setEmpty(true);
+            if (this.gui != null)
+                this.gui.setEmpty(true);
+            else
+                this.clientGui.setEmpty(true);
             this.setInvalid(true);
         }
         else {
             this.setInvalid(false);
+            if (this.settings != null)
+                return;
+            this.clientSettings.value = widget.getText();
+            ClientRuleHelper.writeSaveFile();
         }
     }
 }

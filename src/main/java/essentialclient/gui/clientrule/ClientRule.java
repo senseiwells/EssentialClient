@@ -1,4 +1,4 @@
-package essentialclient.gui.clientruleformat;
+package essentialclient.gui.clientrule;
 
 import java.util.*;
 

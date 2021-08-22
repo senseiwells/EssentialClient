@@ -1,7 +1,7 @@
 package essentialclient.mixins.core;
 
 import essentialclient.commands.CommandRegister;
-import essentialclient.gui.clientruleformat.*;
+import essentialclient.gui.clientrule.*;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
