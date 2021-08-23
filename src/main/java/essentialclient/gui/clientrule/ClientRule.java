@@ -22,10 +22,6 @@ public class ClientRule {
         this.isCommand = isCommand;
     }
 
-    public ClientRule() {
-        this("", "", "", "", "", false);
-    }
-
     public static List<ClientRule> getRules() {
         TreeMap<String, ClientRule> sortedMap = new TreeMap<>(clientRulesMap);
         ArrayList<ClientRule> sortedList = new ArrayList<>();

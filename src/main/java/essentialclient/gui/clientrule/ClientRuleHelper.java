@@ -11,8 +11,6 @@ import essentialclient.utils.file.FileHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.JsonHelper;
 
@@ -21,10 +19,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ClientRuleHelper {
 
@@ -37,7 +33,7 @@ public class ClientRuleHelper {
             data.value = value;
             ClientRule.clientRulesMap.put(name, data);
         }
-        return new ClientRule();
+        return new ClientRule("", "", "", "", "", false);
     }));
 
     public static final Codec<Map<String, ClientRule>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC.codec());
@@ -56,7 +52,7 @@ public class ClientRuleHelper {
         }
     }
 
-    public static void readSaveFile(){
+    public static void readSaveFile() {
         Path file = getFile();
         ClientRule.clientRulesMap = new HashMap<>();
         ClientRules.checkRules();
@@ -89,7 +85,6 @@ public class ClientRuleHelper {
     public static void executeOnChange(MinecraftClient client, ClientRule settings) {
         ClientPlayerEntity playerEntity = client.player;
         if (playerEntity != null) {
-            playerEntity.unlockRecipes(client.world.getRecipeManager().values());
             //Everything to do with ClientPlayerEntity in here
         }
         if (settings.isCommand /*&& client.getNetworkHandler() != null*/) {

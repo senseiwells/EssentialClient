@@ -3,6 +3,7 @@ package essentialclient.mixins.core;
 import essentialclient.commands.CommandRegister;
 import essentialclient.gui.clientrule.*;
 import essentialclient.utils.command.PlayerClientCommandHelper;
+import essentialclient.utils.command.PlayerListCommandHelper;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
@@ -22,7 +23,8 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At("HEAD"))
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        PlayerClientCommandHelper.playerClientHelperMap = PlayerClientCommandHelper.readSaveFile();
+        PlayerClientCommandHelper.readSaveFile();
+        PlayerListCommandHelper.readSaveFile();
         ClientRuleHelper.readSaveFile();
     }
 }
