@@ -1,6 +1,7 @@
 package essentialclient.mixins.disableRecipeNotifications;
 
-import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRule;
+import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.client.toast.RecipeToast;
 import net.minecraft.client.toast.Toast;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +14,7 @@ public abstract class RecipeToastMixin {
 
     @Inject(at = @At("HEAD"), method = "draw", cancellable = true)
     private void hideToast(CallbackInfoReturnable<Toast.Visibility> cir) {
-        if (ClientRuleHelper.getBoolean("disableRecipeNotifications")) {
+        if (ClientRule.getBoolean(ClientRules.disableRecipeNotifications)) {
             cir.setReturnValue(Toast.Visibility.HIDE);
         }
     }

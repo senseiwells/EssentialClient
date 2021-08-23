@@ -7,7 +7,7 @@
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
-    "unlockAllRecipesOnJoin.PlayerManagerMixin"
+    "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [
     "carpet.ClientPlayNetworkHandlerMixin",

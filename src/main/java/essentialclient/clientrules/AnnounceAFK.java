@@ -1,6 +1,8 @@
 package essentialclient.clientrules;
 
+import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
@@ -15,8 +17,8 @@ public class AnnounceAFK {
         Vec3d location = playerEntity.getPos();
         if (prevLocation == location) {
             ticks ++;
-            if (ticks == ClientRuleHelper.getNumber("announceAFK")) {
-                playerEntity.sendChatMessage("I am now AFK");
+            if (ticks == ClientRule.getNumber(ClientRules.announceAFK)) {
+                playerEntity.sendChatMessage(ClientRule.getString(ClientRules.announceAFKMessage));
             }
         }
         else {

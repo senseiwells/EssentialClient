@@ -3,7 +3,8 @@ package essentialclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRule;
+import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
@@ -25,7 +26,7 @@ public class TravelCommand {
     private static String ping;
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("travel").requires((p) -> ClientRuleHelper.getBoolean("commandTravel"))
+        dispatcher.register(literal("travel").requires((p) -> ClientRule.getBoolean(ClientRules.commandTravel))
                 .then(literal("start")
                         .then(argument("x", DoubleArgumentType.doubleArg())
                                 .suggests( ((context, builder) -> CommandHelper.suggestLocation(context, builder, "x")))

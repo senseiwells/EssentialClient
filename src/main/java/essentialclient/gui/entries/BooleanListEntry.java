@@ -66,13 +66,7 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
             settings.invertBoolean();
             buttonWidget.setMessage(new LiteralText(settings.value));
             ClientRuleHelper.writeSaveFile();
-            if (settings.isCommand && client.getNetworkHandler() != null) {
-                client.inGameHud.getChatHud().addMessage(new LiteralText("§cRelog for client command changes to take full effect"));
-                /* The game still suggests the command but it registers it as invalid, idk how to fix :P
-                 * MinecraftClient.getInstance().getNetworkHandler().onCommandTree(new CommandTreeS2CPacket((RootCommandNode<CommandSource>) (Object) ClientCommandManager.DISPATCHER.getRoot()));
-                 * MinecraftClient.getInstance().getNetworkHandler().onCommandSuggestions(new CommandSuggestionsS2CPacket());
-                 */
-            }
+            ClientRuleHelper.executeOnChange(client, settings);
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             settings.value = settings.defaultValue;

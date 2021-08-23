@@ -22,6 +22,10 @@ public class ClientRule {
         this.isCommand = isCommand;
     }
 
+    public ClientRule() {
+        this("", "", "", "", "", false);
+    }
+
     public static List<ClientRule> getRules() {
         TreeMap<String, ClientRule> sortedMap = new TreeMap<>(clientRulesMap);
         ArrayList<ClientRule> sortedList = new ArrayList<>();
@@ -34,6 +38,25 @@ public class ClientRule {
     public void invertBoolean() {
         if (this.type.equalsIgnoreCase("boolean"))
             this.value = String.valueOf(!Boolean.parseBoolean(this.value));
+    }
+
+    public static boolean getBoolean(String rule) {
+        ClientRule data =  ClientRule.clientRulesMap.get(rule);
+        if (data != null)
+            return Boolean.parseBoolean(data.value);
+        return false;
+    }
+
+    public static int getNumber(String rule) {
+        ClientRule data =  ClientRule.clientRulesMap.get(rule);
+        if (data != null && data.type.equalsIgnoreCase("number"))
+            return Integer.parseInt(data.value);
+        return - 1;
+    }
+
+    public static String getString(String rule) {
+        ClientRule data =  ClientRule.clientRulesMap.get(rule);
+        return data == null ? null : data.value;
     }
 
 }

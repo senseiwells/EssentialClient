@@ -73,6 +73,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
             settings.value = settings.defaultValue;
             stringField.setText(settings.defaultValue);
             ClientRuleHelper.writeSaveFile();
+            ClientRuleHelper.executeOnChange(client, settings);
         });
         gui.getStringFieldList().add(this.textField);
     }

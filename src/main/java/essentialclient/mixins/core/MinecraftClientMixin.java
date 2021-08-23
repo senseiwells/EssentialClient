@@ -4,7 +4,7 @@ import essentialclient.EssentialClient;
 import essentialclient.clientrules.AnnounceAFK;
 import essentialclient.commands.TravelCommand;
 import essentialclient.gui.clientrule.ClientRule;
-import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +29,7 @@ public class MinecraftClientMixin {
     public void onTick(CallbackInfo ci) {
         if (TravelCommand.enabled)
             TravelCommand.tickTravel();
-        if (ClientRule.clientRulesMap.get("announceAFK") != null && ClientRuleHelper.getNumber("announceAFK") > 0)
+        if (ClientRule.clientRulesMap.get(ClientRules.announceAFK) != null && ClientRule.getNumber(ClientRules.announceAFK) > 0)
             AnnounceAFK.tickAFK(player);
     }
 }

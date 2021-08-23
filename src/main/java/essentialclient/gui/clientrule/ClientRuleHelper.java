@@ -9,6 +9,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import essentialclient.EssentialClient;
 import essentialclient.utils.file.FileHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.JsonHelper;
 
 import java.io.BufferedReader;
@@ -16,8 +21,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ClientRuleHelper {
 
@@ -26,9 +33,11 @@ public class ClientRuleHelper {
             Codec.STRING.fieldOf("value").forGetter(b -> b.value)
     ).apply(it, (name, value) -> {
         ClientRule data = ClientRule.clientRulesMap.remove(name);
-        data.value = value;
-        ClientRule.clientRulesMap.put(name, data);
-        return data;
+        if (data != null) {
+            data.value = value;
+            ClientRule.clientRulesMap.put(name, data);
+        }
+        return new ClientRule();
     }));
 
     public static final Codec<Map<String, ClientRule>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC.codec());
@@ -50,7 +59,7 @@ public class ClientRuleHelper {
     public static void readSaveFile(){
         Path file = getFile();
         ClientRule.clientRulesMap = new HashMap<>();
-        checkRules();
+        ClientRules.checkRules();
         if (!Files.isRegularFile(file))
             return;
         try (BufferedReader reader = Files.newBufferedReader(file)) {
@@ -72,62 +81,24 @@ public class ClientRuleHelper {
         }
     }
 
-    private static void checkRules() {
-        //Boolean Rules
-        addDefaultBooleanRule("commandPlayerClient"                   , "This command allows you to save /player... commands and execute them"                        , true);
-        addDefaultBooleanRule("commandRegion"                         , "This command allows you to determine the region you are in or the region at set coords"      , true);
-        addDefaultBooleanRule("commandTravel"                         , "This command allows you to travel to a set location"                                         , true);
-        addDefaultBooleanRule("removeWarnReceivedPassengers"          , "This removes the 'Received passengers for unkown entity' warning on the client"              , false);
-        addDefaultBooleanRule("stackableShulkersInPlayerInventories"  , "This allows for shulkers to stack only in your inventory"                                    , false);
-        addDefaultBooleanRule("stackableShulkersWithItems"            , "This allows for shulkers with items to stack only in your inventory"                         , false);
-        addDefaultBooleanRule("unlockAllRecipesOnJoin"                , "Unlocks every recipe when you join a new world"                                              , false);
-        addDefaultBooleanRule("disableRecipeNotifications"            , "Disables the recipe toast from showing"                                                      , false);
-        addDefaultBooleanRule("disableTutorialNotifications"          , "Disables the tutorial toast from showing"                                                    ,false);
-
-        //Number Rules
-        addDefaultNumberRule ("announceAFK"                           , "This announces when you become afk after a set amount of time (ticks)");
-
-        //String Rules
-        addDefaultStringRule ("announceAFKMessage"                    , "This is the message you announce after you are afk"                                           , "I am now AFK");
-    }
-
     private static Path getFile() {
         FileHelper.checkIfEssentialClientDirExists();
         return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient").resolve("EssentialClientRules.json");
     }
 
-    private static void addDefaultBooleanRule(String name, String description, boolean isCommand) {
-        addRule(name, "boolean", description, "false", "false", isCommand);
-    }
+    public static void executeOnChange(MinecraftClient client, ClientRule settings) {
+        ClientPlayerEntity playerEntity = client.player;
+        if (playerEntity != null) {
+            playerEntity.unlockRecipes(client.world.getRecipeManager().values());
+            //Everything to do with ClientPlayerEntity in here
+        }
+        if (settings.isCommand /*&& client.getNetworkHandler() != null*/) {
+            client.inGameHud.getChatHud().addMessage(new LiteralText("§cRelog for client command changes to take full effect"));
+            /* The game still suggests the command but it registers it as invalid, idk how to fix :P
+             * MinecraftClient.getInstance().getNetworkHandler().onCommandTree(new CommandTreeS2CPacket((RootCommandNode<CommandSource>) (Object) ClientCommandManager.DISPATCHER.getRoot()));
+             * MinecraftClient.getInstance().getNetworkHandler().onCommandSuggestions(new CommandSuggestionsS2CPacket());
+             */
+        }
 
-    private static void addDefaultNumberRule(String name, String description) {
-        addRule(name, "number", description, "0", "0", false);
-    }
-
-    private static void addDefaultStringRule(String name, String description, String defaultValue) {
-        addRule(name, "string", description, defaultValue, defaultValue, false);
-    }
-
-    private static void addRule(String name, String type, String description, String defaultValue, String value, boolean isCommand) {
-        ClientRule.clientRulesMap.putIfAbsent(name, new ClientRule(name, type, description, defaultValue, value, isCommand));
-    }
-
-    public static boolean getBoolean(String rule) {
-        ClientRule data =  ClientRule.clientRulesMap.get(rule);
-        if (data != null)
-            return Boolean.parseBoolean(data.value);
-        return false;
-    }
-
-    public static int getNumber(String rule) {
-        ClientRule data =  ClientRule.clientRulesMap.get(rule);
-        if (data != null && data.type.equalsIgnoreCase("number"))
-            return Integer.parseInt(data.value);
-        return - 1;
-    }
-
-    public static String getString(String rule) {
-        ClientRule data =  ClientRule.clientRulesMap.get(rule);
-        return data == null ? null : data.value;
     }
 }

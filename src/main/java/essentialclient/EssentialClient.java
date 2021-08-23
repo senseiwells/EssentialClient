@@ -31,7 +31,6 @@ public class EssentialClient implements CarpetExtension {
 
     @Override
     public void onGameStarted() {
-        System.out.println("Game started");
         // let's /carpet handle our few simple settings
         CarpetServer.settingsManager.addRuleObserver((source, parsedRule, s) -> {
             try {

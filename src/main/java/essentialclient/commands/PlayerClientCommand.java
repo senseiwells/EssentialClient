@@ -3,7 +3,8 @@ package essentialclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRule;
+import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
@@ -14,7 +15,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 
 public class PlayerClientCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("playerclient").requires((p) -> ClientRuleHelper.getBoolean("commandPlayerClient"))
+        dispatcher.register(literal("playerclient").requires((p) -> ClientRule.getBoolean(ClientRules.commandPlayerClient))
                 .then(literal("spawn")
                         .then(argument("playername", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
