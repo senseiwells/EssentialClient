@@ -6,7 +6,8 @@
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
-    "core.MinecraftServer_noopMixin"
+    "core.MinecraftServer_noopMixin",
+    "unlockAllRecipesOnJoin.PlayerManagerMixin"
   ],
   "client": [
     "carpet.ClientPlayNetworkHandlerMixin",
@@ -16,7 +17,9 @@
     "stackableShulkers.HopperBlockEntityMixin",
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",
-    "stackableShulkers.ScreenHandlerMixin"
+    "stackableShulkers.ScreenHandlerMixin",
+    "disableRecipeNotifications.RecipeToastMixin",
+    "disableTutorialNotifications.TutorialToastMixin"
   ],
   "injectors": {
     "defaultRequire": 1

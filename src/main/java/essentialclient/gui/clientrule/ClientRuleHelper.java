@@ -80,6 +80,9 @@ public class ClientRuleHelper {
         addDefaultBooleanRule("removeWarnReceivedPassengers"          , "This removes the 'Received passengers for unkown entity' warning on the client"              , false);
         addDefaultBooleanRule("stackableShulkersInPlayerInventories"  , "This allows for shulkers to stack only in your inventory"                                    , false);
         addDefaultBooleanRule("stackableShulkersWithItems"            , "This allows for shulkers with items to stack only in your inventory"                         , false);
+        addDefaultBooleanRule("unlockAllRecipesOnJoin"                , "Unlocks every recipe when you join a new world"                                              , false);
+        addDefaultBooleanRule("disableRecipeNotifications"            , "Disables the recipe toast from showing"                                                      , false);
+        addDefaultBooleanRule("disableTutorialNotifications"          , "Disables the tutorial toast from showing"                                                    ,false);
 
         //Number Rules
         addDefaultNumberRule ("announceAFK"                           , "This announces when you become afk after a set amount of time (ticks)");
