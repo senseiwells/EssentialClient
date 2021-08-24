@@ -10,6 +10,8 @@ public enum ClientRules {
     DISABLETUTORIALNOTIFICATIONS            ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
     DISABLENARRATOR                         ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
     ESSENTIALCLIENTMAINMENU                 ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main meny screen"                                          , false),
+    DISPLAYCHATMESSAGESONLY                 ("displayChatMessagesOnly"                  , "This will only display chat messages in your chat"                                                       , false),
+    DISPLAYJOINLEAVEMESSAGES                ("displayJoinLeaveMessages"                 , "This will also display join/leave messages (requires displayChatMessagesOnly)"                           , false),
     REMOVEWARNRECEIVEDPASSENGERS            ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unkown entity' warning on the client"                          , false),
     STACKABLESHULKERSINPLAYERINVENTORIES    ("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
     STACKABLESHULKERSWITHITEMS              ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
