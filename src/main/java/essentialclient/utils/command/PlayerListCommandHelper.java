@@ -109,8 +109,7 @@ public class PlayerListCommandHelper {
             context.getSource().sendFeedback(new LiteralText("§cThere is no saved player with that name"));
             return 0;
         }
-        String[] playerArray = playerList.split(", ");
-        if (Arrays.asList(playerArray).contains(playerName)) {
+        if (playerList.contains(playerName)) {
             context.getSource().sendFeedback(new LiteralText("§cThat player is already saved in the list"));
             return 0;
         }

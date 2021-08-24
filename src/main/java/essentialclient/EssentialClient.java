@@ -2,20 +2,31 @@ package essentialclient;
 
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
+import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.carpet.Reference;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import essentialclient.utils.command.PlayerClientCommandHelper;
+import essentialclient.utils.command.PlayerListCommandHelper;
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EssentialClient implements CarpetExtension {
+public class EssentialClient implements CarpetExtension, ModInitializer {
 
     public static final Logger LOGGER = LogManager.getLogger("EssentialClient");
+
+    @Override
+    public void onInitialize() {
+        PlayerClientCommandHelper.readSaveFile();
+        PlayerListCommandHelper.readSaveFile();
+        ClientRuleHelper.readSaveFile();
+    }
 
     public static void noop() {
     }

@@ -1,8 +1,8 @@
 package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
@@ -25,7 +25,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltipEntry {
     private final ParsedRule<?> settings;
-    private final ClientRule clientSettings;
+    private final ClientRules clientSettings;
     private final String rule;
     private final ServerRulesScreen gui;
     private final ClientRulesScreen clientGui;
@@ -54,7 +54,7 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         });
     }
 
-    public BooleanListEntry(final ClientRule settings, MinecraftClient client, ClientRulesScreen gui) {
+    public BooleanListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
         this.settings = null;
         this.clientSettings = settings;
         this.client = client;
@@ -62,14 +62,14 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         this.clientGui = gui;
         this.rule = settings.name;
         this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
-        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.value), (buttonWidget) -> {
+        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString()), (buttonWidget) -> {
             settings.invertBoolean();
-            buttonWidget.setMessage(new LiteralText(settings.value));
+            buttonWidget.setMessage(new LiteralText(settings.getString()));
             ClientRuleHelper.writeSaveFile();
             ClientRuleHelper.executeOnChange(client, settings);
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            settings.value = settings.defaultValue;
+            settings.setValue(settings.defaultValue);
             ClientRuleHelper.writeSaveFile();
             this.editButton.setMessage(new LiteralText(settings.defaultValue));
         });
@@ -87,7 +87,7 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         if (this.settings != null)
             this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString);
         else
-            this.resetButton.active = !this.clientSettings.value.equals(this.clientSettings.defaultValue);
+            this.resetButton.active = !this.clientSettings.getString().equals(this.clientSettings.defaultValue);
         
         this.editButton.x = x + 180;
         this.editButton.y = y;

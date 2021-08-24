@@ -1,6 +1,5 @@
 package essentialclient.mixins.unlockAllRecipes;
 
-import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 public abstract class PlayerManagerMixin {
     @Inject(at = @At("RETURN"), method = "onPlayerConnect")
     private void unlockRecipes(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-        if (ClientRule.getBoolean(ClientRules.unlockAllRecipesOnJoin)) {
+        if (ClientRules.UNLOCKALLRECIPESONJOIN.getBoolean()) {
             player.unlockRecipes(new ArrayList<>(player.server.getRecipeManager().values()));
         }
     }

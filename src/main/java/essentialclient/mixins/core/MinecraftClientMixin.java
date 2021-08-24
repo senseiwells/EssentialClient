@@ -3,7 +3,6 @@ package essentialclient.mixins.core;
 import essentialclient.EssentialClient;
 import essentialclient.clientrules.AnnounceAFK;
 import essentialclient.commands.TravelCommand;
-import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -29,7 +28,7 @@ public class MinecraftClientMixin {
     public void onTick(CallbackInfo ci) {
         if (TravelCommand.enabled)
             TravelCommand.tickTravel();
-        if (ClientRule.clientRulesMap.get(ClientRules.announceAFK) != null && ClientRule.getNumber(ClientRules.announceAFK) > 0)
+        if (ClientRules.ANNOUNCEAFK.getInt() > 0)
             AnnounceAFK.tickAFK(player);
     }
 }

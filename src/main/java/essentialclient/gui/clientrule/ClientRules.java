@@ -1,52 +1,83 @@
 package essentialclient.gui.clientrule;
 
-public class ClientRules {
+public enum ClientRules {
+    //Boolean Rules
+    COMMANDPLAYERCLIENT                     ("commandPlayerClient"                      , "This command allows you to save /player... commands and execute them"                                    , true),
+    COMMANDPLAYERLIST                       ("commandPlayerList"                        , "This command allows you to execute /player... commands in one command (requires commandPlayerClient)"    , true),
+    COMMANDREGION                           ("commandRegion"                            , "This command allows you to determine the region you are in or the region at set coords"                  , true),
+    COMMANDTRAVEL                           ("commandTravel"                            , "This command allows you to travel to a set location"                                                     , true),
+    DISABLERECIPENOTIFICATIONS              ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
+    DISABLETUTORIALNOTIFICATIONS            ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
+    DISABLENARRATOR                         ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
+    ESSENTIALCLIENTMAINMENU                 ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main meny screen"                                          , false),
+    REMOVEWARNRECEIVEDPASSENGERS            ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unkown entity' warning on the client"                          , false),
+    STACKABLESHULKERSINPLAYERINVENTORIES    ("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
+    STACKABLESHULKERSWITHITEMS              ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
+    UNLOCKALLRECIPESONJOIN                  ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a singleplayer world"                                                  , false),
 
-    public static String announceAFK = "announceAFK";
-    public static String announceAFKMessage = "announceAFKMessage";
-    public static String commandPlayerClient = "commandPlayerClient";
-    public static String commandPlayerList = "commandPlayerList";
-    public static String commandRegion = "commandRegion";
-    public static String commandTravel = "commandTravel";
-    public static String disableRecipeNotifications = "disableRecipeNotifications";
-    public static String disableTutorialNotifications = "disableTutorialNotifications";
-    public static String removeWarnReceivedPassengers = "removeWarnReceivedPassengers";
-    public static String stackableShulkersInPlayerInventories = "stackableShulkersInPlayerInventories";
-    public static String stackableShulkersWithItems = "stackableShulkersWithItems";
-    public static String unlockAllRecipesOnJoin = "unlockAllRecipesOnJoin";
+    //Number Rules
+    ANNOUNCEAFK                             ("announceAFK"                              , "int"         , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
+    OVERRIDECREATIVEWALKSPEED               ("overrideCreativeWalkSpeed"                , "double"      , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
 
-    protected static void checkRules() {
-        //Boolean Rules
-        addDefaultBooleanRule(commandPlayerClient                       , "This command allows you to save /player... commands and execute them"                                        , true);
-        addDefaultBooleanRule(commandPlayerList                         , "This command allows you to execute /player... commands in one command (requires commandPlayerClient)"        , true);
-        addDefaultBooleanRule(commandRegion                             , "This command allows you to determine the region you are in or the region at set coords"                      , true);
-        addDefaultBooleanRule(commandTravel                             , "This command allows you to travel to a set location"                                                         , true);
-        addDefaultBooleanRule(disableRecipeNotifications                , "Disables the recipe toast from showing"                                                                      , false);
-        addDefaultBooleanRule(disableTutorialNotifications              , "Disables the tutorial toast from showing"                                                                    , false);
-        addDefaultBooleanRule(removeWarnReceivedPassengers              , "This removes the 'Received passengers for unkown entity' warning on the client"                              , false);
-        addDefaultBooleanRule(stackableShulkersInPlayerInventories      , "This allows for shulkers to stack only in your inventory"                                                    , false);
-        addDefaultBooleanRule(stackableShulkersWithItems                , "This allows for shulkers with items to stack only in your inventory"                                         , false);
-        addDefaultBooleanRule(unlockAllRecipesOnJoin                    , "Unlocks every recipe when joining a singleplayer world"                                                      , false);
+    //String Rules
+    ANNOUNCEAFKMESSAGE                      ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK");
 
-        //Number Rules
-        addDefaultNumberRule (announceAFK                               , "This announces when you become afk after a set amount of time (ticks)");
+    public final String name;
+    public final String type;
+    public final String description;
+    public final String defaultValue;
+    public final boolean isCommand;
 
-        //String Rules
-        addDefaultStringRule (announceAFKMessage                        , "This is the message you announce after you are afk"                                                          , "I am now AFK");
-    }
-    private static void addDefaultBooleanRule(String name, String description, boolean isCommand) {
-        addRule(name, "boolean", description, "false", "false", isCommand);
+    //used for booleans
+    ClientRules(String name, String description, boolean isCommand) {
+        this(name, "boolean", description, "false", isCommand);
     }
 
-    private static void addDefaultNumberRule(String name, String description) {
-        addRule(name, "number", description, "0", "0", false);
+    //used for strings
+    ClientRules(String name, String description, String defaultValue) {
+        this(name, "string", description, defaultValue, false);
     }
 
-    private static void addDefaultStringRule(String name, String description, String defaultValue) {
-        addRule(name, "string", description, defaultValue, defaultValue, false);
+    //used for wanting custom values
+    ClientRules(String name, String type, String description, String defaultValue, boolean isCommand) {
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.defaultValue = defaultValue;
+        this.isCommand = isCommand;
+    }
+    public void invertBoolean() {
+        String value = ClientRuleHelper.clientRulesMap.get(this.name);
+        if (this.type.equalsIgnoreCase("boolean") && value != null)
+            ClientRuleHelper.clientRulesMap.put(this.name, String.valueOf(!Boolean.parseBoolean(value)));
     }
 
-    private static void addRule(String name, String type, String description, String defaultValue, String value, boolean isCommand) {
-        ClientRule.clientRulesMap.putIfAbsent(name, new ClientRule(name, type, description, defaultValue, value, isCommand));
+    public boolean getBoolean() {
+        return Boolean.parseBoolean(ClientRuleHelper.clientRulesMap.get(this.name));
+    }
+
+    public int getInt() {
+        String data =  ClientRuleHelper.clientRulesMap.get(this.name);
+        if (data != null)
+            return Integer.parseInt(data);
+        return -1;
+    }
+
+    public double getDouble() {
+        String data = ClientRuleHelper.clientRulesMap.get(this.name);
+        if (data != null)
+            return Double.parseDouble(data);
+        return -1;
+    }
+
+    public String getString() {
+        return ClientRuleHelper.clientRulesMap.get(this.name);
+    }
+
+    public void setValue(String newValue) {
+        String data = ClientRuleHelper.clientRulesMap.remove(this.name);
+        if (data == null)
+            return;
+        ClientRuleHelper.clientRulesMap.put(this.name, newValue);
     }
 }

@@ -1,6 +1,5 @@
 package essentialclient.mixins.disableTutorialNotifications;
 
-import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.TutorialToast;
@@ -14,7 +13,7 @@ public abstract class TutorialToastMixin {
 
     @Inject(at = @At("HEAD"), method = "draw", cancellable = true)
     private void hideToast(CallbackInfoReturnable<Toast.Visibility> cir) {
-        if (ClientRule.getBoolean(ClientRules.disableRecipeNotifications)) {
+        if (ClientRules.DISABLETUTORIALNOTIFICATIONS.getBoolean()) {
             cir.setReturnValue(Toast.Visibility.HIDE);
         }
     }

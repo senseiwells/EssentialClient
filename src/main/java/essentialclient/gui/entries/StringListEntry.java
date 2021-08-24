@@ -2,8 +2,8 @@ package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
 import essentialclient.gui.ConfigListWidget;
-import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
@@ -28,7 +28,7 @@ import java.util.List;
 public class StringListEntry extends ConfigListWidget.Entry implements ITooltipEntry
 {
     private final ParsedRule<?> settings;
-    private final ClientRule clientSettings;
+    private final ClientRules clientSettings;
     private final String rule;
     private final ButtonWidget infoButton;
     private final TextFieldWidget textField;
@@ -57,7 +57,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         gui.getStringFieldList().add(this.textField);
     }
 
-    public StringListEntry(final ClientRule settings, MinecraftClient client, ClientRulesScreen gui) {
+    public StringListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
         this.settings = null;
         this.clientSettings = settings;
         this.client = client;
@@ -66,11 +66,11 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.rule = settings.name;
         this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
-        stringField.setText(settings.value);
+        stringField.setText(settings.getString());
         stringField.setChangedListener(s -> this.checkForInvalid(stringField));
         this.textField = stringField;
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            settings.value = settings.defaultValue;
+            settings.setValue(settings.defaultValue);
             stringField.setText(settings.defaultValue);
             ClientRuleHelper.writeSaveFile();
             ClientRuleHelper.executeOnChange(client, settings);
@@ -107,7 +107,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         if (this.settings != null)
             this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString);
         else
-            this.resetButton.active = !this.clientSettings.value.equals(this.clientSettings.defaultValue);
+            this.resetButton.active = !this.clientSettings.getString().equals(this.clientSettings.defaultValue);
         
         this.textField.x = x + 182;
         this.textField.y = y + 3;
@@ -163,7 +163,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
             this.setInvalid(false);
             if (this.settings != null)
                 return;
-            this.clientSettings.value = widget.getText();
+            this.clientSettings.setValue(widget.getText());
             ClientRuleHelper.writeSaveFile();
         }
     }

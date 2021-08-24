@@ -1,6 +1,5 @@
 package essentialclient.mixins.stackableShulkers;
 
-import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.HopperBlockEntity;
@@ -15,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class HopperBlockEntityMixin {
     @Inject(method = "canMergeItems", at = @At("HEAD"), cancellable = true)
     private static void canMergeItems(ItemStack first, ItemStack second, CallbackInfoReturnable<Boolean> cir) {
-        if (ClientRule.getBoolean(ClientRules.stackableShulkersInPlayerInventories) && first.getItem() instanceof BlockItem && ((BlockItem) first.getItem()).getBlock() instanceof ShulkerBoxBlock)
+        if (ClientRules.STACKABLESHULKERSINPLAYERINVENTORIES.getBoolean() && first.getItem() instanceof BlockItem && ((BlockItem) first.getItem()).getBlock() instanceof ShulkerBoxBlock)
             cir.setReturnValue(false);
     }
 }

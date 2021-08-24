@@ -2,7 +2,8 @@ package essentialclient.gui;
 
 import carpet.CarpetServer;
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientrule.ClientRule;
+import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.entries.BooleanListEntry;
 import essentialclient.gui.entries.NumberListEntry;
 import essentialclient.gui.entries.StringListEntry;
@@ -53,24 +54,24 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
     public ConfigListWidget(ClientRulesScreen gui, MinecraftClient client) {
         super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
-        Collection<ClientRule> clientRuleCollection = ClientRule.getRules();
-        clientRuleCollection.forEach(clientRules -> {
-            int i = client.textRenderer.getWidth(clientRules.name) - 55;
+        Collection<ClientRules> clientRules = ClientRuleHelper.getRules();
+        clientRules.forEach(rule -> {
+            int i = client.textRenderer.getWidth(rule.name) - 55;
             if (i > length) {
                 length = i;
             }
-            if (clientRules.type.equalsIgnoreCase("boolean")) {
-                BooleanListEntry booleanList = new BooleanListEntry(clientRules, client, gui);
+            if (rule.type.equalsIgnoreCase("boolean")) {
+                BooleanListEntry booleanList = new BooleanListEntry(rule, client, gui);
                 this.addEntry(booleanList);
                 this.entries.add(booleanList);
             }
-            else if (clientRules.type.equalsIgnoreCase("number")) {
-                NumberListEntry numberList = new NumberListEntry(clientRules, client, gui);
+            else if (rule.type.equalsIgnoreCase("int") || rule.type.equalsIgnoreCase("double")) {
+                NumberListEntry numberList = new NumberListEntry(rule, client, gui);
                 this.addEntry(numberList);
                 this.entries.add(numberList);
             }
-            else if (clientRules.type.equalsIgnoreCase("string")) {
-                StringListEntry stringList = new StringListEntry(clientRules, client, gui);
+            else if (rule.type.equalsIgnoreCase("string")) {
+                StringListEntry stringList = new StringListEntry(rule, client, gui);
                 this.addEntry(stringList);
                 this.entries.add(stringList);
             }

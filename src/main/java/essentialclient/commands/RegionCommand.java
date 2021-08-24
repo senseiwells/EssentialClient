@@ -2,7 +2,6 @@ package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import essentialclient.gui.clientrule.ClientRule;
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
@@ -14,7 +13,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 
 public class RegionCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("region").requires((p) -> ClientRule.getBoolean(ClientRules.commandRegion))
+        dispatcher.register(literal("region").requires((p) -> ClientRules.COMMANDREGION.getBoolean())
                 .then(literal("get")
                         .then(argument("x", DoubleArgumentType.doubleArg())
                                 .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "x"))

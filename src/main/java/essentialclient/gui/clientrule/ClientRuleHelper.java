@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import essentialclient.EssentialClient;
 import essentialclient.utils.file.FileHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,30 +17,20 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ClientRuleHelper {
 
-    public static final MapCodec<ClientRule> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
-            Codec.STRING.fieldOf("name").forGetter(s -> s.name),
-            Codec.STRING.fieldOf("value").forGetter(b -> b.value)
-    ).apply(it, (name, value) -> {
-        ClientRule data = ClientRule.clientRulesMap.remove(name);
-        if (data != null) {
-            data.value = value;
-            ClientRule.clientRulesMap.put(name, data);
-        }
-        return new ClientRule("", "", "", "", "", false);
-    }));
+    protected static Map<String, String> clientRulesMap = new HashMap<>();
 
-    public static final Codec<Map<String, ClientRule>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC.codec());
+    public static final Codec<String> CODEC = Codec.STRING;
+    public static final Codec<Map<String, String>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static void writeSaveFile() {
         Path file = getFile();
         try(BufferedWriter writer = Files.newBufferedWriter(file)) {
-            MAP_CODEC.encodeStart(JsonOps.INSTANCE, ClientRule.clientRulesMap)
+            MAP_CODEC.encodeStart(JsonOps.INSTANCE, clientRulesMap)
                     .resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write rule data: {}", e))
                     .ifPresent(obj -> GSON.toJson(obj, writer));
         }
@@ -54,27 +42,28 @@ public class ClientRuleHelper {
 
     public static void readSaveFile() {
         Path file = getFile();
-        ClientRule.clientRulesMap = new HashMap<>();
-        ClientRules.checkRules();
-        if (!Files.isRegularFile(file))
+        clientRulesMap = new HashMap<>();
+        if (!Files.isRegularFile(file)) {
+            checkRules();
             return;
+        }
         try (BufferedReader reader = Files.newBufferedReader(file)) {
-            new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
+            clientRulesMap = new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
                     .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read rule data: {}", e))
                     .getFirst());
         }
         //many exceptions
         catch (Exception e) {
-            e.printStackTrace();
             try {
                 Files.deleteIfExists(file);
-                EssentialClient.LOGGER.warn("Removed the config file");
+                EssentialClient.LOGGER.warn("Removed the outdated/corrupt config file");
             }
             catch (IOException ioException) {
-                EssentialClient.LOGGER.warn("Something went very wrong, please delete your config file manually");
+                EssentialClient.LOGGER.error("Something went very wrong, please delete your config file manually");
             }
-            EssentialClient.LOGGER.warn("Created new rule data");
+            EssentialClient.LOGGER.info("Created default rule data");
         }
+        checkRules();
     }
 
     private static Path getFile() {
@@ -82,7 +71,7 @@ public class ClientRuleHelper {
         return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient").resolve("EssentialClientRules.json");
     }
 
-    public static void executeOnChange(MinecraftClient client, ClientRule settings) {
+    public static void executeOnChange(MinecraftClient client, ClientRules settings) {
         ClientPlayerEntity playerEntity = client.player;
         if (playerEntity != null) {
             //Everything to do with ClientPlayerEntity in here
@@ -95,5 +84,17 @@ public class ClientRuleHelper {
              */
         }
 
+    }
+    protected static void checkRules() {
+        for (ClientRules rule : ClientRules.values()) {
+            clientRulesMap.putIfAbsent(rule.name, rule.defaultValue);
+        }
+    }
+
+    public static Collection<ClientRules> getRules() {
+        SortedMap<String, ClientRules> sortedMap = new TreeMap<>();
+        for (ClientRules rule : ClientRules.values())
+            sortedMap.put(rule.name, rule);
+        return sortedMap.values();
     }
 }

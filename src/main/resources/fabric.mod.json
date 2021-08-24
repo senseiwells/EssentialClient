@@ -21,6 +21,7 @@
   "environment": "client",
   "entrypoints": {
     "main": [
+      "essentialclient.EssentialClient"
     ]
   },
   "mixins": [

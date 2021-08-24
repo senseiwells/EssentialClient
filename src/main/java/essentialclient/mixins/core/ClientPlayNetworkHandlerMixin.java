@@ -23,8 +23,6 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At("HEAD"))
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        PlayerClientCommandHelper.readSaveFile();
-        PlayerListCommandHelper.readSaveFile();
-        ClientRuleHelper.readSaveFile();
+        //
     }
 }

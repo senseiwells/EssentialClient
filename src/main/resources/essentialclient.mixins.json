@@ -13,13 +13,16 @@
     "carpet.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
+    "core.TitleScreenMixin",
+    "disableNarrator.KeyboardMixin",
+    "disableRecipeNotifications.RecipeToastMixin",
+    "disableTutorialNotifications.TutorialToastMixin",
+    "playerWalkSpeed.LivingEntityMixin",
     "removeWarnReceivedPassengers.ClientPlayNetworkHandlerMixin",
     "stackableShulkers.HopperBlockEntityMixin",
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",
-    "stackableShulkers.ScreenHandlerMixin",
-    "disableRecipeNotifications.RecipeToastMixin",
-    "disableTutorialNotifications.TutorialToastMixin"
+    "stackableShulkers.ScreenHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

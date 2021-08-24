@@ -3,10 +3,11 @@ package essentialclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import essentialclient.gui.clientrule.ClientRule;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.LiteralText;
@@ -16,8 +17,14 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 
 public class PlayerClientCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("playerclient").requires((p) -> ClientRule.getBoolean(ClientRules.commandPlayerClient))
-                .then(literal("spawn")
+        LiteralCommandNode<FabricClientCommandSource> playerclientNode = ClientCommandManager
+                .literal("playerclient").requires((p) -> ClientRules.COMMANDPLAYERCLIENT.getBoolean())
+                .build();
+        LiteralCommandNode<FabricClientCommandSource> pcNode = ClientCommandManager
+                .literal("pc").requires((p) -> ClientRules.COMMANDPLAYERCLIENT.getBoolean())
+                .build();
+        LiteralCommandNode<FabricClientCommandSource> spawnNode = ClientCommandManager
+                .literal("spawn")
                         .then(argument("playername", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
                                 .executes(context -> PlayerClientCommandHelper.spawnPlayer(context, false))
@@ -34,8 +41,9 @@ public class PlayerClientCommand {
                                         )
                                 )
                         )
-                )
-                .then(literal("add")
+                .build();
+        LiteralCommandNode<FabricClientCommandSource> addNode = ClientCommandManager
+                .literal("add")
                         .then(argument("playername", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
                                 .then(literal("spawn")
@@ -81,8 +89,9 @@ public class PlayerClientCommand {
                                         )
                                 )
                         )
-                )
-                .then(literal("remove")
+                .build();
+        LiteralCommandNode<FabricClientCommandSource> removeNode = ClientCommandManager
+                .literal("remove")
                         .then(argument("playername", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
                                 .executes(context -> {
@@ -95,7 +104,19 @@ public class PlayerClientCommand {
                                     return 0;
                                 })
                         )
-                )
-        );
+                .build();
+
+        //Stitching commands
+        dispatcher.getRoot().addChild(playerclientNode);
+        playerclientNode.addChild(spawnNode);
+        playerclientNode.addChild(addNode);
+        playerclientNode.addChild(removeNode);
+        dispatcher.getRoot().addChild(pcNode);
+        pcNode.addChild(spawnNode);
+        pcNode.addChild(addNode);
+        pcNode.addChild(removeNode);
+
+        //Can't do this because of: https://github.com/Mojang/brigadier/issues/46
+        //dispatcher.register(literal("pc").redirect(dispatcher.getRoot().getChild("playerclient").getRedirect()));
     }
 }
