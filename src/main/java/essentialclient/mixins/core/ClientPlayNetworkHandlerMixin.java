@@ -42,17 +42,18 @@ public class ClientPlayNetworkHandlerMixin {
     }
 
     @Redirect(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"))
-    private void checkMessages(InGameHud inGameHud, MessageType type, Text message, UUID sender, GameMessageS2CPacket packet) {
-        if (packet.isNonChat() && ClientRules.DISPLAYCHATMESSAGESONLY.getBoolean()) {
-            if (!ClientRules.DISPLAYJOINLEAVEMESSAGES.getBoolean() || !(packet.getMessage() instanceof TranslatableText)) {
+    private void checkMessages(InGameHud inGameHud, MessageType type, Text message, UUID sender) {
+        if (type == MessageType.SYSTEM && ClientRules.DISABLEOPMESSAGES.getBoolean()) {
+            if (message instanceof TranslatableText && !ClientRules.DISABLEJOINLEAVEMESSAGES.getBoolean()) {
+                switch (((TranslatableText) message).getKey()) {
+                    case "multiplayer.player.joined": case "multiplayer.player.left": case "multiplayer.player.joined.renamed":
+                        break;
+                    default:
+                        return;
+                }
+            }
+            else
                 return;
-            }
-            switch (((TranslatableText) packet.getMessage()).getKey()) {
-                case "multiplayer.player.joined": case "multiplayer.player.left": case "multiplayer.player.joined.renamed":
-                    break;
-                default:
-                    return;
-            }
         }
         inGameHud.addChatMessage(type, message, sender);
     }

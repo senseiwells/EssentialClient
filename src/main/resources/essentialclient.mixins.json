@@ -7,6 +7,7 @@
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
+    "switchToTotem.ClientPlayerEntityMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [
@@ -17,7 +18,7 @@
     "disableNarrator.KeyboardMixin",
     "disableRecipeNotifications.RecipeToastMixin",
     "disableTutorialNotifications.TutorialToastMixin",
-    "playerWalkSpeed.LivingEntityMixin",
+    "overrideCreativeWalkSpeed.LivingEntityMixin",
     "removeWarnReceivedPassengers.ClientPlayNetworkHandlerMixin",
     "stackableShulkers.HopperBlockEntityMixin",
     "stackableShulkers.ItemEntityMixin",

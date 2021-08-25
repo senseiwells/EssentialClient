@@ -83,7 +83,8 @@ public class ClientRuleHelper {
              * MinecraftClient.getInstance().getNetworkHandler().onCommandSuggestions(new CommandSuggestionsS2CPacket());
              */
         }
-
+        if (settings == ClientRules.HIGHLIGHTLAVASOURCES)
+            client.worldRenderer.reload();
     }
     protected static void checkRules() {
         for (ClientRules rule : ClientRules.values()) {

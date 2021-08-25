@@ -1,4 +1,4 @@
-package essentialclient.mixins.playerWalkSpeed;
+package essentialclient.mixins.overrideCreativeWalkSpeed;
 
 import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.entity.LivingEntity;

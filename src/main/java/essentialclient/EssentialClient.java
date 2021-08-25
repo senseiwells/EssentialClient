@@ -2,6 +2,7 @@ package essentialclient;
 
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
+import essentialclient.clientrulecode.HighlightLavaSources;
 import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
@@ -26,6 +27,7 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
         PlayerClientCommandHelper.readSaveFile();
         PlayerListCommandHelper.readSaveFile();
         ClientRuleHelper.readSaveFile();
+        HighlightLavaSources.init();
     }
 
     public static void noop() {

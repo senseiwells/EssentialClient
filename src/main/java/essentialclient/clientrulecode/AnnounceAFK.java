@@ -1,4 +1,4 @@
-package essentialclient.clientrules;
+package essentialclient.clientrulecode;
 
 import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.client.network.ClientPlayerEntity;

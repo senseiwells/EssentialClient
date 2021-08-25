@@ -9,9 +9,10 @@ public enum ClientRules {
     DISABLERECIPENOTIFICATIONS              ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
     DISABLETUTORIALNOTIFICATIONS            ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
     DISABLENARRATOR                         ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
+    DISABLEOPMESSAGES                       ("disableOpMessages"                        , "This will prevent system messages from displaying"                                                       , false),
+    DISABLEJOINLEAVEMESSAGES                ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
     ESSENTIALCLIENTMAINMENU                 ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main meny screen"                                          , false),
-    DISPLAYCHATMESSAGESONLY                 ("displayChatMessagesOnly"                  , "This will only display chat messages in your chat"                                                       , false),
-    DISPLAYJOINLEAVEMESSAGES                ("displayJoinLeaveMessages"                 , "This will also display join/leave messages (requires displayChatMessagesOnly)"                           , false),
+    HIGHLIGHTLAVASOURCES                    ("highlightLavaSources"                     , "Highlights lava sources, credit to plusls for the original code for this"                                , false),
     REMOVEWARNRECEIVEDPASSENGERS            ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unkown entity' warning on the client"                          , false),
     STACKABLESHULKERSINPLAYERINVENTORIES    ("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
     STACKABLESHULKERSWITHITEMS              ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
@@ -20,6 +21,7 @@ public enum ClientRules {
     //Number Rules
     ANNOUNCEAFK                             ("announceAFK"                              , "int"         , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
     OVERRIDECREATIVEWALKSPEED               ("overrideCreativeWalkSpeed"                , "double"      , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
+    SWITCHTOTOTEM                           ("switchToTotem"                            , "int"         , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
 
     //String Rules
     ANNOUNCEAFKMESSAGE                      ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK");
