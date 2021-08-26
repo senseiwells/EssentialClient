@@ -7,7 +7,6 @@
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
-    "switchToTotem.ClientPlayerEntityMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [
@@ -23,7 +22,8 @@
     "stackableShulkers.HopperBlockEntityMixin",
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",
-    "stackableShulkers.ScreenHandlerMixin"
+    "stackableShulkers.ScreenHandlerMixin",
+    "switchToTotem.ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

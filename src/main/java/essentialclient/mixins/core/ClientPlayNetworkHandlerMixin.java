@@ -12,6 +12,9 @@ import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
@@ -23,7 +26,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.HashSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
@@ -31,9 +36,11 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private MinecraftClient client;
 
-    @Inject(method = "onCommandTree", at = @At("TAIL"))
+    @Inject(method = "onCommandTree", at = @At("HEAD"))
     public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
+        ClientRuleHelper.serverPacket = packet;
         CommandRegister.registerCommands(ClientCommandManager.DISPATCHER);
+        //packet.getCommandTree().getChildren().forEach(commandSourceCommandNode -> System.out.println(commandSourceCommandNode.toString()));
     }
 
     @Inject(method = "onGameJoin", at = @At("HEAD"))

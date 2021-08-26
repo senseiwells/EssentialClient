@@ -9,6 +9,7 @@ import essentialclient.utils.file.FileHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.JsonHelper;
 
@@ -20,6 +21,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class ClientRuleHelper {
+
+    public static CommandTreeS2CPacket serverPacket;
 
     protected static Map<String, String> clientRulesMap = new HashMap<>();
 
@@ -74,14 +77,14 @@ public class ClientRuleHelper {
     public static void executeOnChange(MinecraftClient client, ClientRules settings) {
         ClientPlayerEntity playerEntity = client.player;
         if (playerEntity != null) {
-            //Everything to do with ClientPlayerEntity in here
-        }
-        if (settings.isCommand /*&& client.getNetworkHandler() != null*/) {
-            client.inGameHud.getChatHud().addMessage(new LiteralText("§cRelog for client command changes to take full effect"));
-            /* The game still suggests the command but it registers it as invalid, idk how to fix :P
-             * MinecraftClient.getInstance().getNetworkHandler().onCommandTree(new CommandTreeS2CPacket((RootCommandNode<CommandSource>) (Object) ClientCommandManager.DISPATCHER.getRoot()));
-             * MinecraftClient.getInstance().getNetworkHandler().onCommandSuggestions(new CommandSuggestionsS2CPacket());
-             */
+            if (settings.isCommand) {
+                playerEntity.sendMessage(new LiteralText("§cRelog for client command changes to take full effect"), false);
+                playerEntity.networkHandler.onCommandTree(serverPacket);
+                /* The game still suggests the command but it registers it as invalid, idk how to fix :P
+                 * MinecraftClient.getInstance().getNetworkHandler().onCommandTree(new CommandTreeS2CPacket((RootCommandNode<CommandSource>) (Object) ClientCommandManager.DISPATCHER.getRoot()));
+                 * MinecraftClient.getInstance().getNetworkHandler().onCommandSuggestions(new CommandSuggestionsS2CPacket());
+                 */
+            }
         }
         if (settings == ClientRules.HIGHLIGHTLAVASOURCES)
             client.worldRenderer.reload();
