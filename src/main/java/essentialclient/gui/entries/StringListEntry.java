@@ -89,7 +89,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         if (keyCode == GLFW.GLFW_KEY_ENTER) {
             this.textField.setText(this.textField.getText());
             this.textField.changeFocus(false);
-            if (!this.invalid && settings.name != null)
+            if (!this.invalid && settings != null)
                 CarpetSettingsServerNetworkHandler.ruleChange(settings.name, this.textField.getText(), client);
         }
         return super.keyPressed(keyCode, scanCode, modifiers) || this.textField.keyPressed(keyCode, scanCode, modifiers);
