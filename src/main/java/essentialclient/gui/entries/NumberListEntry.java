@@ -90,7 +90,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         if (keyCode == GLFW.GLFW_KEY_ENTER) {
             this.numberField.setText(this.numberField.getText());
             this.numberField.changeFocus(false);
-            if (!this.invalid)
+            if (!this.invalid && settings.name != null)
                 CarpetSettingsServerNetworkHandler.ruleChange(settings.name, this.numberField.getText(), client);
         }
         return super.keyPressed(keyCode, scanCode, modifiers) || this.numberField.keyPressed(keyCode, scanCode, modifiers);
