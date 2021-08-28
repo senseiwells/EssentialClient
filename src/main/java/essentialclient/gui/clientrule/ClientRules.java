@@ -20,6 +20,7 @@ public enum ClientRules {
 
     //Number Rules
     ANNOUNCEAFK                             ("announceAFK"                              , "int"         , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
+    AUTOWALK                                ("autoWalk"                                 , "int"         , "This will auto walk after you have held your key for set amount of ticks"    , "0"           , false),
     OVERRIDECREATIVEWALKSPEED               ("overrideCreativeWalkSpeed"                , "double"      , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
     SWITCHTOTOTEM                           ("switchToTotem"                            , "int"         , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
 

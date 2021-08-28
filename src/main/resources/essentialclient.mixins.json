@@ -3,6 +3,7 @@
   "package": "essentialclient.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "autoWalk.KeyboardInputMixin",
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",

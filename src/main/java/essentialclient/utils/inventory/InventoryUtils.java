@@ -1,4 +1,4 @@
-package essentialclient.utils.Inventory;
+package essentialclient.utils.inventory;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
