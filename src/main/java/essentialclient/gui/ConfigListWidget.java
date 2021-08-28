@@ -60,17 +60,17 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
             if (i > length) {
                 length = i;
             }
-            if (rule.type.equalsIgnoreCase("boolean")) {
+            if (rule.type == ClientRules.Type.BOOLEAN) {
                 BooleanListEntry booleanList = new BooleanListEntry(rule, client, gui);
                 this.addEntry(booleanList);
                 this.entries.add(booleanList);
             }
-            else if (rule.type.equalsIgnoreCase("int") || rule.type.equalsIgnoreCase("double")) {
+            else if (rule.type == ClientRules.Type.INTEGER || rule.type == ClientRules.Type.DOUBLE) {
                 NumberListEntry numberList = new NumberListEntry(rule, client, gui);
                 this.addEntry(numberList);
                 this.entries.add(numberList);
             }
-            else if (rule.type.equalsIgnoreCase("string")) {
+            else if (rule.type == ClientRules.Type.STRING) {
                 StringListEntry stringList = new StringListEntry(rule, client, gui);
                 this.addEntry(stringList);
                 this.entries.add(stringList);

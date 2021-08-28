@@ -172,7 +172,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.clientGui.setEmpty(widget.getText().isEmpty());
         boolean isNumber;
         try {
-            if (clientSettings.type.equalsIgnoreCase("int"))
+            if (clientSettings.type == ClientRules.Type.INTEGER)
                 this.clientSettings.setValue(String.valueOf(Integer.parseInt(newValue)));
             else
                 this.clientSettings.setValue(String.valueOf(Double.parseDouble(newValue)));

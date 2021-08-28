@@ -19,32 +19,32 @@ public enum ClientRules {
     UNLOCKALLRECIPESONJOIN                  ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a singleplayer world"                                                  , false),
 
     //Number Rules
-    ANNOUNCEAFK                             ("announceAFK"                              , "int"         , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
-    AUTOWALK                                ("autoWalk"                                 , "int"         , "This will auto walk after you have held your key for set amount of ticks"    , "0"           , false),
-    OVERRIDECREATIVEWALKSPEED               ("overrideCreativeWalkSpeed"                , "double"      , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
-    SWITCHTOTOTEM                           ("switchToTotem"                            , "int"         , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
+    ANNOUNCEAFK                             ("announceAFK"                              , Type.INTEGER          , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
+    AUTOWALK                                ("autoWalk"                                 , Type.INTEGER          , "This will auto walk after you have held your key for set amount of ticks"    , "0"           , false),
+    OVERRIDECREATIVEWALKSPEED               ("overrideCreativeWalkSpeed"                , Type.DOUBLE           , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
+    SWITCHTOTOTEM                           ("switchToTotem"                            , Type.INTEGER          , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
 
     //String Rules
     ANNOUNCEAFKMESSAGE                      ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK");
 
     public final String name;
-    public final String type;
+    public final Type type;
     public final String description;
     public final String defaultValue;
     public final boolean isCommand;
 
     //used for booleans
     ClientRules(String name, String description, boolean isCommand) {
-        this(name, "boolean", description, "false", isCommand);
+        this(name, Type.BOOLEAN, description, "false", isCommand);
     }
 
     //used for strings
     ClientRules(String name, String description, String defaultValue) {
-        this(name, "string", description, defaultValue, false);
+        this(name, Type.STRING, description, defaultValue, false);
     }
 
     //used for wanting custom values
-    ClientRules(String name, String type, String description, String defaultValue, boolean isCommand) {
+    ClientRules(String name, Type type, String description, String defaultValue, boolean isCommand) {
         this.name = name;
         this.type = type;
         this.description = description;
@@ -53,7 +53,7 @@ public enum ClientRules {
     }
     public void invertBoolean() {
         String value = ClientRuleHelper.clientRulesMap.get(this.name);
-        if (this.type.equalsIgnoreCase("boolean") && value != null)
+        if (this.type == Type.BOOLEAN && value != null)
             ClientRuleHelper.clientRulesMap.put(this.name, String.valueOf(!Boolean.parseBoolean(value)));
     }
 
@@ -84,5 +84,30 @@ public enum ClientRules {
         if (data == null)
             return;
         ClientRuleHelper.clientRulesMap.put(this.name, newValue);
+    }
+
+    public enum Type {
+        BOOLEAN ("Boolean", Boolean.class),
+        INTEGER ("Integer", Integer.class),
+        DOUBLE ("Double", Double.class),
+        STRING ("String", String.class);
+
+        private final String name;
+        private final Class<?> classType;
+
+        Type(String string, Class<?> classType) {
+            this.name = string;
+            this.classType = classType;
+        }
+
+        public Class<?> getTypeClass() {
+            return this.classType;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+
     }
 }
