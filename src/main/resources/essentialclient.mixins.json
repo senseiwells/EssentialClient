@@ -8,6 +8,7 @@
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
+    "displayTimePlayed.GameMenuScreenMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [

@@ -11,6 +11,7 @@ public enum ClientRules {
     DISABLENARRATOR                         ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
     DISABLEOPMESSAGES                       ("disableOpMessages"                        , "This will prevent system messages from displaying"                                                       , false),
     DISABLEJOINLEAVEMESSAGES                ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
+    DISPLAYTIMEPLAYED                       ("displayTimePlayed"                        , "This will display how long you have had your current client open for in the corner of the pause menu."                         , false),
     ESSENTIALCLIENTMAINMENU                 ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main meny screen"                                          , false),
     HIGHLIGHTLAVASOURCES                    ("highlightLavaSources"                     , "Highlights lava sources, credit to plusls for the original code for this"                                , false),
     REMOVEWARNRECEIVEDPASSENGERS            ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unkown entity' warning on the client"                          , false),
