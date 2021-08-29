@@ -1,6 +1,7 @@
 package essentialclient.mixins.autoWalk;
 
 import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.utils.EssentialUtils;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.KeyBinding;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,22 +12,25 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class KeyboardInputMixin {
 
     private int ticks = 0;
-    private int cooldown = 0;
+    private boolean letgo;
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
     private boolean onIsForwardPressed(KeyBinding keyBinding) {
         if (keyBinding.isPressed()) {
-            if (cooldown > 100)
+            if (letgo)
                 ticks = 0;
             ticks++;
             return true;
         }
         else if (ClientRules.AUTOWALK.getInt() != 0 && ticks >= ClientRules.AUTOWALK.getInt()) {
-            cooldown = cooldown > 100 ? cooldown : cooldown + 1;
+            if (!letgo) {
+                EssentialUtils.sendMessageToActionBar("§aYou are now autowalking");
+                letgo = true;
+            }
             return true;
         }
         ticks = 0;
-        cooldown = 0;
+        letgo = false;
         return false;
     }
 
@@ -34,7 +38,7 @@ public class KeyboardInputMixin {
     private boolean onIsBackPressed(KeyBinding keyBinding) {
         if (keyBinding.isPressed()) {
             ticks = 0;
-            cooldown = 0;
+            letgo = false;
             return true;
         }
         return false;

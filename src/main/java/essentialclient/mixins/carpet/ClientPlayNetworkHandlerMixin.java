@@ -25,11 +25,12 @@ public abstract class ClientPlayNetworkHandlerMixin
         }
     }
     
-    @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onCustomPayload", at = @At("TAIL"), cancellable = true)
     private void onOnCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
         Identifier channel = packet.getChannel();
         PacketByteBuf buf = packet.getData();
         ClientMessageHandler.receivedPacket(channel, buf);
-        ci.cancel();
+        //removed to fix incompatability with syncmatica
+        //ci.cancel();
     }
 }

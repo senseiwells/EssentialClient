@@ -1,5 +1,7 @@
 package essentialclient.gui.clientrule;
 
+import javax.naming.NamingEnumeration;
+
 public enum ClientRules {
     //Boolean Rules
     COMMANDPLAYERCLIENT                     ("commandPlayerClient"                      , "This command allows you to save /player... commands and execute them"                                    , true),
@@ -13,6 +15,7 @@ public enum ClientRules {
     DISABLEJOINLEAVEMESSAGES                ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
     DISPLAYTIMEPLAYED                       ("displayTimePlayed"                        , "This will display how long you have had your current client open for in the corner of the pause menu."                         , false),
     ESSENTIALCLIENTMAINMENU                 ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main menu screen"                                          , false),
+    MISSINGTOOLS                            ("missingTools"                             , "Adds client functionality to missingTools from Carpet for the client"                                    , false),
     HIGHLIGHTLAVASOURCES                    ("highlightLavaSources"                     , "Highlights lava sources, credit to plusls for the original code for this"                                , false),
     REMOVEWARNRECEIVEDPASSENGERS            ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unknown entity' warning on the client"                          , false),
     STACKABLESHULKERSINPLAYERINVENTORIES    ("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),

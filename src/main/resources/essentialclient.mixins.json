@@ -3,15 +3,14 @@
   "package": "essentialclient.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "autoWalk.KeyboardInputMixin",
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
-    "displayTimePlayed.GameMenuScreenMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [
+    "autoWalk.KeyboardInputMixin",
     "carpet.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
@@ -19,8 +18,11 @@
     "disableNarrator.KeyboardMixin",
     "disableRecipeNotifications.RecipeToastMixin",
     "disableTutorialNotifications.TutorialToastMixin",
+    "displayTimePlayed.GameMenuScreenMixin",
+    "missingTools.PickaxeItemMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
     "removeWarnReceivedPassengers.ClientPlayNetworkHandlerMixin",
+    "sodium.FluidRendererMixin",
     "stackableShulkers.HopperBlockEntityMixin",
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",

@@ -22,6 +22,11 @@ import java.util.function.Function;
 //Original code by plusls slightly modified by Sensei
 public class HighlightLavaSources implements SimpleSynchronousResourceReloadListener {
 
+    public static Sprite lavaSourceFlowSprite;
+    public static Sprite lavaSourceStillSprite;
+    public static Sprite defaultLavaSourceFlowSprite;
+    public static Sprite defaultLavaSourceStillSprite;
+
     private static final Identifier flowingSpriteId = new Identifier("essentialclient", "block/lava_flow");
     private static final Identifier stillSpriteId = new Identifier("essentialclient", "block/lava_still");
 
@@ -36,13 +41,17 @@ public class HighlightLavaSources implements SimpleSynchronousResourceReloadList
     @Override
     public void reload(ResourceManager manager) {
         final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        lavaSourceFlowSprite = atlas.apply(flowingSpriteId);
+        lavaSourceStillSprite = atlas.apply(stillSpriteId);
+        defaultLavaSourceStillSprite = MinecraftClient.getInstance().getBakedModelManager().getBlockModels().getModel(Blocks.LAVA.getDefaultState()).getSprite();
+        defaultLavaSourceFlowSprite = ModelLoader.LAVA_FLOW.getSprite();
         FluidRenderHandler lavaSourceRenderHandler = (view, pos, state) -> {
             if (view != null && pos != null && ClientRules.HIGHLIGHTLAVASOURCES.getBoolean()) {
                 BlockState blockState = view.getBlockState(pos);
                 if (blockState.contains(FluidBlock.LEVEL) && blockState.get(FluidBlock.LEVEL) == 0)
-                    return new Sprite[]{atlas.apply(stillSpriteId), atlas.apply(flowingSpriteId)};
+                    return new Sprite[]{lavaSourceStillSprite, lavaSourceFlowSprite};
             }
-            return new Sprite[]{MinecraftClient.getInstance().getBakedModelManager().getBlockModels().getModel(Blocks.LAVA.getDefaultState()).getSprite(), ModelLoader.LAVA_FLOW.getSprite()};
+            return new Sprite[]{defaultLavaSourceStillSprite, defaultLavaSourceFlowSprite};
         };
         FluidRenderHandlerRegistry.INSTANCE.register(Fluids.LAVA, lavaSourceRenderHandler);
         FluidRenderHandlerRegistry.INSTANCE.register(Fluids.FLOWING_LAVA, lavaSourceRenderHandler);

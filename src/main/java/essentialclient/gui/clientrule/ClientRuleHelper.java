@@ -76,6 +76,9 @@ public class ClientRuleHelper {
 
     public static void executeOnChange(MinecraftClient client, ClientRules settings) {
         ClientPlayerEntity playerEntity = client.player;
+        if (settings == ClientRules.HIGHLIGHTLAVASOURCES) {
+            client.worldRenderer.reload();
+        }
         if (playerEntity != null) {
             if (settings.isCommand) {
                 playerEntity.sendMessage(new LiteralText("§cRelog for client command changes to take full effect"), false);
@@ -86,8 +89,6 @@ public class ClientRuleHelper {
                  */
             }
         }
-        if (settings == ClientRules.HIGHLIGHTLAVASOURCES)
-            client.worldRenderer.reload();
     }
     protected static void checkRules() {
         for (ClientRules rule : ClientRules.values()) {
