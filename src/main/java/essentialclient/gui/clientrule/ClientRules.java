@@ -1,7 +1,5 @@
 package essentialclient.gui.clientrule;
 
-import javax.naming.NamingEnumeration;
-
 public enum ClientRules {
     //Boolean Rules
     COMMANDPLAYERCLIENT                     ("commandPlayerClient"                      , "This command allows you to save /player... commands and execute them"                                    , true),

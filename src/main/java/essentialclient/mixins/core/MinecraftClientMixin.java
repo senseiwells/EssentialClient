@@ -1,7 +1,7 @@
 package essentialclient.mixins.core;
 
 import essentialclient.EssentialClient;
-import essentialclient.clientrulecode.AnnounceAFK;
+import essentialclient.feature.AnnounceAFK;
 import essentialclient.commands.TravelCommand;
 import essentialclient.gui.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;

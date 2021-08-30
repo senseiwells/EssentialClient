@@ -2,8 +2,10 @@ package essentialclient;
 
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
-import essentialclient.clientrulecode.HighlightLavaSources;
+import essentialclient.feature.HighlightLavaSources;
 import essentialclient.gui.clientrule.ClientRuleHelper;
+import essentialclient.gui.keybinds.ClientKeybinds;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.carpet.Reference;
@@ -28,10 +30,14 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
     @Override
     public void onInitialize() {
+        EssentialUtils.checkIfEssentialClientDirExists();
         PlayerClientCommandHelper.readSaveFile();
         PlayerListCommandHelper.readSaveFile();
         ClientRuleHelper.readSaveFile();
+
         HighlightLavaSources.init();
+
+        ClientKeybinds.loadKeybinds();
     }
 
     public static void noop() {
@@ -68,7 +74,6 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
     @Override
     public void onTick(MinecraftServer server) {
-        // no need to add this.
     }
 
     @Override

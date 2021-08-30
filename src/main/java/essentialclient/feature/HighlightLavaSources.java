@@ -1,4 +1,4 @@
-package essentialclient.clientrulecode;
+package essentialclient.feature;
 import essentialclient.gui.clientrule.ClientRules;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;

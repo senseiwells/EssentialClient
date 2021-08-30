@@ -10,8 +10,7 @@ import net.minecraft.text.LiteralText;
 
 import java.util.ArrayList;
 
-public class ClientRulesScreen extends Screen
-{
+public class ClientRulesScreen extends Screen {
     private final Screen parent;
     private ConfigListWidget list;
     private boolean invalid;

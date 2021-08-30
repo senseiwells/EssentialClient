@@ -9,7 +9,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
-import essentialclient.utils.file.FileHelper;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandSource;
@@ -65,7 +64,6 @@ public class PlayerListCommandHelper {
     }
 
     private static Path getFile() {
-        FileHelper.checkIfEssentialClientDirExists();
         return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient").resolve("EssentialClientPlayerList.json");
     }
 

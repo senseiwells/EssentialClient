@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
-import essentialclient.utils.file.FileHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -70,7 +69,6 @@ public class ClientRuleHelper {
     }
 
     private static Path getFile() {
-        FileHelper.checkIfEssentialClientDirExists();
         return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient").resolve("EssentialClientRules.json");
     }
 
