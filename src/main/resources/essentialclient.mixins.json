@@ -7,6 +7,7 @@
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
+    "mouseScrollRules.MouseMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [
