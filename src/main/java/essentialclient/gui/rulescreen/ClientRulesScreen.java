@@ -7,12 +7,14 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 
 public class ClientRulesScreen extends Screen {
     private final Screen parent;
     private ConfigListWidget list;
+    protected TextFieldWidget searchBox;
     private boolean invalid;
     private boolean isEmpty;
     private final ArrayList<TextFieldWidget> stringFieldList = new ArrayList<>();
@@ -27,8 +29,16 @@ public class ClientRulesScreen extends Screen {
     protected void init() {
         if (this.client == null)
             return;
-        this.list = new ConfigListWidget(this, this.client);
+        this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, this.searchBox, new LiteralText("Search Client Rules"));
+        this.searchBox.setChangedListener(s -> {
+            this.children.remove(this.list);
+            this.list.clear();
+            this.list = new ConfigListWidget(this, this.client, s);
+            this.children.add(this.list);
+        });
+        this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
         this.children.add(this.list);
+        this.addButton(this.searchBox);
         this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.openScreen(this.parent)));
     }
 
@@ -36,12 +46,14 @@ public class ClientRulesScreen extends Screen {
     public void tick() {
         this.stringFieldList.forEach(TextFieldWidget::tick);
         this.numberFieldList.forEach(TextFieldWidget::tick);
+        //this.searchBox.tick();
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
         this.list.render(matrices, mouseX, mouseY, delta);
+        this.searchBox.render(matrices, mouseX, mouseY, delta);
         this.drawTooltip(mouseX, mouseY, delta);
         drawCenteredText(matrices, this.textRenderer,"Essential Client Settings", this.width / 2, 8, 0xFFFFFF);
         if (this.invalid) {

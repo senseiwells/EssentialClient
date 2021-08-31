@@ -17,9 +17,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.widget.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> {
@@ -52,28 +51,28 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
         });
     }
 
-    public ConfigListWidget(ClientRulesScreen gui, MinecraftClient client) {
+    public ConfigListWidget(ClientRulesScreen gui, MinecraftClient client, String filter) {
         super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
         Collection<ClientRules> clientRules = ClientRuleHelper.getRules();
         clientRules.forEach(rule -> {
-            int i = client.textRenderer.getWidth(rule.name) - 55;
-            if (i > length) {
-                length = i;
-            }
-            if (rule.type == ClientRules.Type.BOOLEAN) {
-                BooleanListEntry booleanList = new BooleanListEntry(rule, client, gui);
-                this.addEntry(booleanList);
-                this.entries.add(booleanList);
-            }
-            else if (rule.type == ClientRules.Type.INTEGER || rule.type == ClientRules.Type.DOUBLE) {
-                NumberListEntry numberList = new NumberListEntry(rule, client, gui);
-                this.addEntry(numberList);
-                this.entries.add(numberList);
-            }
-            else if (rule.type == ClientRules.Type.STRING) {
-                StringListEntry stringList = new StringListEntry(rule, client, gui);
-                this.addEntry(stringList);
-                this.entries.add(stringList);
+            if (filter == null || rule.name.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
+                int i = client.textRenderer.getWidth(rule.name) - 55;
+                if (i > length) {
+                    length = i;
+                }
+                if (rule.type == ClientRules.Type.BOOLEAN) {
+                    BooleanListEntry booleanList = new BooleanListEntry(rule, client, gui);
+                    this.addEntry(booleanList);
+                    this.entries.add(booleanList);
+                } else if (rule.type == ClientRules.Type.INTEGER || rule.type == ClientRules.Type.DOUBLE) {
+                    NumberListEntry numberList = new NumberListEntry(rule, client, gui);
+                    this.addEntry(numberList);
+                    this.entries.add(numberList);
+                } else if (rule.type == ClientRules.Type.STRING) {
+                    StringListEntry stringList = new StringListEntry(rule, client, gui);
+                    this.addEntry(stringList);
+                    this.entries.add(stringList);
+                }
             }
         });
     }
@@ -84,6 +83,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
         //todo
     }
 
+    public void clear() {
+        this.clearEntries();
+        this.entries.clear();
+    }
 
     @Override
     protected int getScrollbarPositionX() {
