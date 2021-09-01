@@ -9,5 +9,6 @@ public class CommandRegister {
         PlayerListCommand.register(dispatcher);
         RegionCommand.register(dispatcher);
         TravelCommand.register(dispatcher);
+        MusicCommand.register(dispatcher);
     }
 }

@@ -5,6 +5,7 @@ import carpet.settings.ParsedRule;
 import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.entries.BooleanListEntry;
+import essentialclient.gui.entries.CycleListEntry;
 import essentialclient.gui.entries.NumberListEntry;
 import essentialclient.gui.entries.StringListEntry;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
@@ -60,18 +61,27 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
                 if (i > length) {
                     length = i;
                 }
-                if (rule.type == ClientRules.Type.BOOLEAN) {
-                    BooleanListEntry booleanList = new BooleanListEntry(rule, client, gui);
-                    this.addEntry(booleanList);
-                    this.entries.add(booleanList);
-                } else if (rule.type == ClientRules.Type.INTEGER || rule.type == ClientRules.Type.DOUBLE) {
-                    NumberListEntry numberList = new NumberListEntry(rule, client, gui);
-                    this.addEntry(numberList);
-                    this.entries.add(numberList);
-                } else if (rule.type == ClientRules.Type.STRING) {
-                    StringListEntry stringList = new StringListEntry(rule, client, gui);
-                    this.addEntry(stringList);
-                    this.entries.add(stringList);
+                switch (rule.type) {
+                    case BOOLEAN:
+                        BooleanListEntry booleanList = new BooleanListEntry(rule, client, gui);
+                        this.addEntry(booleanList);
+                        this.entries.add(booleanList);
+                        break;
+                    case INTEGER: case DOUBLE:
+                        NumberListEntry numberList = new NumberListEntry(rule, client, gui);
+                        this.addEntry(numberList);
+                        this.entries.add(numberList);
+                        break;
+                    case STRING:
+                        StringListEntry stringList = new StringListEntry(rule, client, gui);
+                        this.addEntry(stringList);
+                        this.entries.add(stringList);
+                        break;
+                    case CYCLE:
+                        CycleListEntry cycleList = new CycleListEntry(rule, client, gui);
+                        this.addEntry(cycleList);
+                        this.entries.add(cycleList);
+                        break;
                 }
             }
         });

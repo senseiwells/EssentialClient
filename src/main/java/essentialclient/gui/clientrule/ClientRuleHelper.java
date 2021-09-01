@@ -8,7 +8,10 @@ import essentialclient.EssentialClient;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.sound.MusicType;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
+import net.minecraft.sound.MusicSound;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.JsonHelper;
 
@@ -22,6 +25,7 @@ import java.util.*;
 public class ClientRuleHelper {
 
     public static CommandTreeS2CPacket serverPacket;
+    private static Random random;
 
     protected static Map<String, String> clientRulesMap = new HashMap<>();
 
@@ -74,9 +78,6 @@ public class ClientRuleHelper {
 
     public static void executeOnChange(MinecraftClient client, ClientRules settings) {
         ClientPlayerEntity playerEntity = client.player;
-        if (settings == ClientRules.HIGHLIGHTLAVASOURCES) {
-            client.worldRenderer.reload();
-        }
         if (playerEntity != null) {
             if (settings.isCommand) {
                 playerEntity.sendMessage(new LiteralText("§cRelog for client command changes to take full effect"), false);
@@ -86,6 +87,14 @@ public class ClientRuleHelper {
                  * MinecraftClient.getInstance().getNetworkHandler().onCommandSuggestions(new CommandSuggestionsS2CPacket());
                  */
             }
+        }
+        switch (settings) {
+            case HIGHLIGHTLAVASOURCES:
+                client.worldRenderer.reload();
+                break;
+            case MUSICTYPES:
+                client.getMusicTracker().stop();
+                break;
         }
     }
     protected static void checkRules() {
@@ -100,4 +109,5 @@ public class ClientRuleHelper {
             sortedMap.put(rule.name, rule);
         return sortedMap.values();
     }
+
 }

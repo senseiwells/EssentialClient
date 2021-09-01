@@ -1,7 +1,12 @@
 package essentialclient.gui.clientrule;
 
+import net.minecraft.client.sound.MusicType;
+
+import java.util.Arrays;
+
 public enum ClientRules {
     //Boolean Rules
+    COMMANDMUSIC                            ("commandMusic"                             , "This command allows you to manipulate the current music"                                                 , true),
     COMMANDPLAYERCLIENT                     ("commandPlayerClient"                      , "This command allows you to save /player... commands and execute them"                                    , true),
     COMMANDPLAYERLIST                       ("commandPlayerList"                        , "This command allows you to execute /player... commands in one command (requires commandPlayerClient)"    , true),
     COMMANDREGION                           ("commandRegion"                            , "This command allows you to determine the region you are in or the region at set coords"                  , true),
@@ -26,16 +31,21 @@ public enum ClientRules {
     ANNOUNCEAFK                             ("announceAFK"                              , Type.INTEGER          , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
     AUTOWALK                                ("autoWalk"                                 , Type.INTEGER          , "This will auto walk after you have held your key for set amount of ticks"    , "0"           , false),
     INCREASESPECTATORSCROLLSENSITIVITY      ("increaseSpectatorScrollSensitivity"       , Type.INTEGER          , "Increases the sensitivity at which you can scroll to go faster in spectator" , "0"           , false),
+    MUSICINTERVAL                           ("musicInterval"                            , Type.INTEGER          , "The amount of ticks between each soundtrack that is played, 0 = random"      , "0"           , false),
     OVERRIDECREATIVEWALKSPEED               ("overrideCreativeWalkSpeed"                , Type.DOUBLE           , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
     SWITCHTOTOTEM                           ("switchToTotem"                            , Type.INTEGER          , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
 
     //String Rules
-    ANNOUNCEAFKMESSAGE                      ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK");
+    ANNOUNCEAFKMESSAGE                      ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK"),
+
+    //Cycling Rules
+    MUSICTYPES                              ("musicTypes"                               , Type.CYCLE            , "This allows you to select what music types play"                             , "Default"     , new String[]{"Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"}       , false);
 
     public final String name;
     public final Type type;
     public final String description;
     public final String defaultValue;
+    public final String[] cycleValues;
     public final boolean isCommand;
 
     //used for booleans
@@ -48,18 +58,35 @@ public enum ClientRules {
         this(name, Type.STRING, description, defaultValue, false);
     }
 
-    //used for wanting custom values
     ClientRules(String name, Type type, String description, String defaultValue, boolean isCommand) {
+        this(name, type, description, defaultValue, null, isCommand);
+    }
+
+    //used for wanting custom values
+    ClientRules(String name, Type type, String description, String defaultValue, String[] cycleValues, boolean isCommand) {
         this.name = name;
         this.type = type;
         this.description = description;
         this.defaultValue = defaultValue;
+        this.cycleValues = cycleValues;
         this.isCommand = isCommand;
     }
     public void invertBoolean() {
         String value = ClientRuleHelper.clientRulesMap.get(this.name);
         if (this.type == Type.BOOLEAN && value != null)
             ClientRuleHelper.clientRulesMap.put(this.name, String.valueOf(!Boolean.parseBoolean(value)));
+    }
+
+    public void cycleValues() {
+        String value = ClientRuleHelper.clientRulesMap.get(this.name);
+        if (this.type == Type.CYCLE && value != null) {
+            int index = Arrays.asList(this.cycleValues).indexOf(value);
+            if (index == this.cycleValues.length - 1)
+                index = 0;
+            else
+                index++;
+            ClientRuleHelper.clientRulesMap.put(this.name, this.cycleValues[index]);
+        }
     }
 
     public boolean getBoolean() {
@@ -95,7 +122,8 @@ public enum ClientRules {
         BOOLEAN ("Boolean", Boolean.class),
         INTEGER ("Integer", Integer.class),
         DOUBLE ("Double", Double.class),
-        STRING ("String", String.class);
+        STRING ("String", String.class),
+        CYCLE  ("Cycle", String.class);
 
         private final String name;
         private final Class<?> classType;

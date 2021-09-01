@@ -11,14 +11,14 @@ import java.nio.file.Path;
 
 public class EssentialUtils {
 
-    public static ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
-
     public static void sendMessageToActionBar(String message) {
+        ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
         if (playerEntity == null)
             return;
         playerEntity.sendMessage(new LiteralText(message), true);
     }
     public static void sendMessage(String message) {
+        ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
         if (playerEntity == null)
             return;
         playerEntity.sendMessage(new LiteralText(message), false);
