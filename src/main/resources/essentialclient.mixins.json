@@ -8,6 +8,8 @@
     "carpet.ServerPlayNetworkHandlerMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
+    "disableBobViewWhenHurt.GameRendererMixin",
+    "disableNightVisionFlash.GameRendererMixin",
     "keyboardRebinds.KeyboardMixin",
     "mouseScrollRules.MouseMixin",
     "unlockAllRecipes.PlayerManagerMixin"
