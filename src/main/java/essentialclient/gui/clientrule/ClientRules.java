@@ -6,42 +6,42 @@ import java.util.Arrays;
 
 public enum ClientRules {
     //Boolean Rules
-    COMMANDMUSIC                            ("commandMusic"                             , "This command allows you to manipulate the current music"                                                 , true),
-    COMMANDPLAYERCLIENT                     ("commandPlayerClient"                      , "This command allows you to save /player... commands and execute them"                                    , true),
-    COMMANDPLAYERLIST                       ("commandPlayerList"                        , "This command allows you to execute /player... commands in one command (requires commandPlayerClient)"    , true),
-    COMMANDREGION                           ("commandRegion"                            , "This command allows you to determine the region you are in or the region at set coords"                  , true),
-    COMMANDTRAVEL                           ("commandTravel"                            , "This command allows you to travel to a set location"                                                     , true),
-    DISABLERECIPENOTIFICATIONS              ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
-    DISABLETUTORIALNOTIFICATIONS            ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
-    DISABLEBOBVIEWWHENHURT                  ("disableBobViewWhenHurt"                   , "Disables the camera bobbing when you get hurt"                                                           , false),
-    DISABLENARRATOR                         ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
-    DISABLENIGHTVISONFLASH                  ("disableNightVisionFlash"                  , "Disables the flash that occurs when night vision is about to run out"                                    , false ),
-    DISABLEOPMESSAGES                       ("disableOpMessages"                        , "This will prevent system messages from displaying"                                                       , false),
-    DISABLEHOTBARSCROLLING                  ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
-    DISABLEJOINLEAVEMESSAGES                ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
-    DISPLAYTIMEPLAYED                       ("displayTimePlayed"                        , "This will display how long you have had your current client open for in the corner of the pause menu."   , false),
-    ESSENTIALCLIENTMAINMENU                 ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main menu screen"                                          , false),
-    MISSINGTOOLS                            ("missingTools"                             , "Adds client functionality to missingTools from Carpet for the client"                                    , false),
-    INCREASESPECTATORSCROLLSPEED            ("increaseSpectatorScrollSpeed"             , "Increases the limit at which you can scroll to go faster in spectator"                                   , false),
-    HIGHLIGHTLAVASOURCES                    ("highlightLavaSources"                     , "Highlights lava sources, credit to plusls for the original code for this"                                , false),
-    REMOVEWARNRECEIVEDPASSENGERS            ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unknown entity' warning on the client"                         , false),
-    STACKABLESHULKERSINPLAYERINVENTORIES    ("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
-    STACKABLESHULKERSWITHITEMS              ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
-    UNLOCKALLRECIPESONJOIN                  ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a singleplayer world"                                                  , false),
+    COMMAND_MUSIC                           ("commandMusic"                             , "This command allows you to manipulate the current music"                                                 , true),
+    COMMAND_PLAYERCLIENT                    ("commandPlayerClient"                      , "This command allows you to save /player... commands and execute them"                                    , true),
+    COMMAND_PLAYERLIST                      ("commandPlayerList"                        , "This command allows you to execute /player... commands in one command (requires commandPlayerClient)"    , true),
+    COMMAND_REGION                          ("commandRegion"                            , "This command allows you to determine the region you are in or the region at set coords"                  , true),
+    COMMAND_TRAVEL                          ("commandTravel"                            , "This command allows you to travel to a set location"                                                     , true),
+    DISABLE_RECIPE_NOTIFICATIONS            ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
+    DISABLE_TUTORIAL_NOTIFICATIONS          ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
+    DISABLE_BOB_VIEW_WHEN_HURT              ("disableBobViewWhenHurt"                   , "Disables the camera bobbing when you get hurt"                                                           , false),
+    DISABLE_NARRATOR                        ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
+    DISABLE_NIGHT_VISION_FLASH              ("disableNightVisionFlash"                  , "Disables the flash that occurs when night vision is about to run out"                                    , false ),
+    DISABLE_OP_MESSAGES                     ("disableOpMessages"                        , "This will prevent system messages from displaying"                                                       , false),
+    DISABLE_HOTBAR_SCROLLING                ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
+    DISABLE_JOIN_LEAVE_MESSAGES             ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
+    DISPLAY_TIME_PLAYED                     ("displayTimePlayed"                        , "This will display how long you have had your current client open for in the corner of the pause menu."   , false),
+    ESSENTIAL_CLIENT_MAIN_MENU              ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main menu screen"                                          , false),
+    MISSING_TOOLS                           ("missingTools"                             , "Adds client functionality to missingTools from Carpet for the client"                                    , false),
+    INCREASE_SPECTATOR_SCROLL_SPEED         ("increaseSpectatorScrollSpeed"             , "Increases the limit at which you can scroll to go faster in spectator"                                   , false),
+    HIGHLIGHT_LAVA_SOURCES                  ("highlightLavaSources"                     , "Highlights lava sources, credit to plusls for the original code for this"                                , false),
+    REMOVE_WARN_RECEIVED_PASSENGERS         ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unknown entity' warning on the client"                         , false),
+    STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
+    STACKABLE_SHULKERS_WITH_ITEMS           ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
+    UNLOCK_ALL_RECIPES_ON_JOIN              ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a singleplayer world"                                                  , false),
 
     //Number Rules
-    ANNOUNCEAFK                             ("announceAFK"                              , Type.INTEGER          , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
-    AUTOWALK                                ("autoWalk"                                 , Type.INTEGER          , "This will auto walk after you have held your key for set amount of ticks"    , "0"           , false),
-    INCREASESPECTATORSCROLLSENSITIVITY      ("increaseSpectatorScrollSensitivity"       , Type.INTEGER          , "Increases the sensitivity at which you can scroll to go faster in spectator" , "0"           , false),
-    MUSICINTERVAL                           ("musicInterval"                            , Type.INTEGER          , "The amount of ticks between each soundtrack that is played, 0 = random"      , "0"           , false),
-    OVERRIDECREATIVEWALKSPEED               ("overrideCreativeWalkSpeed"                , Type.DOUBLE           , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
-    SWITCHTOTOTEM                           ("switchToTotem"                            , Type.INTEGER          , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
+    ANNOUNCE_AFK                            ("announceAFK"                              , Type.INTEGER          , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
+    AUTO_WALK                               ("autoWalk"                                 , Type.INTEGER          , "This will auto walk after you have held your key for set amount of ticks"    , "0"           , false),
+    INCREASE_SPECTATOR_SCROLL_SENSITIVITY   ("increaseSpectatorScrollSensitivity"       , Type.INTEGER          , "Increases the sensitivity at which you can scroll to go faster in spectator" , "0"           , false),
+    MUSIC_INTERVAL                          ("musicInterval"                            , Type.INTEGER          , "The amount of ticks between each soundtrack that is played, 0 = random"      , "0"           , false),
+    OVERRIDE_CREATIVE_WALK_SPEED            ("overrideCreativeWalkSpeed"                , Type.DOUBLE           , "This allows you to override the vanilla walk speed in creative mode"         , "0.0"         , false),
+    SWITCH_TO_TOTEM                         ("switchToTotem"                            , Type.INTEGER          , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
 
     //String Rules
-    ANNOUNCEAFKMESSAGE                      ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK"),
+    ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK"),
 
     //Cycling Rules
-    MUSICTYPES                              ("musicTypes"                               , Type.CYCLE            , "This allows you to select what music types play"                             , "Default"     , new String[]{"Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"}       , false);
+    MUSIC_TYPES                             ("musicTypes"                               , Type.CYCLE            , "This allows you to select what music types play"                             , "Default"     , new String[]{"Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"}       , false);
 
     public final String name;
     public final Type type;

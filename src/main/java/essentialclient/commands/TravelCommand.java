@@ -25,7 +25,7 @@ public class TravelCommand {
     private static String ping;
 
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("travel").requires((p) -> ClientRules.COMMANDTRAVEL.getBoolean())
+        dispatcher.register(literal("travel").requires((p) -> ClientRules.COMMAND_TRAVEL.getBoolean())
                 .then(literal("start")
                         .then(argument("x", DoubleArgumentType.doubleArg())
                                 .suggests( ((context, builder) -> CommandHelper.suggestLocation(context, builder, "x")))

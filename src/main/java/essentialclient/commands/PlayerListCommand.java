@@ -15,10 +15,10 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.arg
 public class PlayerListCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         LiteralCommandNode<FabricClientCommandSource> playerlistNode = ClientCommandManager
-                .literal("playerlist").requires((p) -> ClientRules.COMMANDPLAYERCLIENT.getBoolean() && ClientRules.COMMANDPLAYERLIST.getBoolean())
+                .literal("playerlist").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
                 .build();
         LiteralCommandNode<FabricClientCommandSource> plNode = ClientCommandManager
-                .literal("pl").requires((p) -> ClientRules.COMMANDPLAYERCLIENT.getBoolean() && ClientRules.COMMANDPLAYERLIST.getBoolean())
+                .literal("pl").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
                 .build();
         LiteralCommandNode<FabricClientCommandSource> createlistNode = ClientCommandManager
                 .literal("createlist")

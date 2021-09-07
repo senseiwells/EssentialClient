@@ -20,14 +20,14 @@ public abstract class TitleScreenMixin extends Screen {
 
     @ModifyConstant(method = "init", constant = @Constant(intValue = 72))
     private int pushLimit(int original) {
-        if (ClientRules.ESSENTIALCLIENTMAINMENU.getBoolean())
+        if (ClientRules.ESSENTIAL_CLIENT_MAIN_MENU.getBoolean())
             return 86;
         return original;
     }
 
     @Inject(method = "initWidgetsNormal", at = @At("TAIL"))
     private void onInit(CallbackInfo ci) {
-        if (this.client == null || !ClientRules.ESSENTIALCLIENTMAINMENU.getBoolean())
+        if (this.client == null || !ClientRules.ESSENTIAL_CLIENT_MAIN_MENU.getBoolean())
             return;
         ButtonWidget buttonWidget = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 120, 200, 20, new LiteralText("Essential Client Menu"), (b) -> this.client.openScreen(new ConfigScreen(this))));
         buttonWidget.active = true;

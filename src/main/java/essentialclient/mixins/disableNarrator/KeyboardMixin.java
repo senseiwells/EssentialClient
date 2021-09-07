@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class KeyboardMixin {
     @ModifyVariable(method = "onKey", at = @At("STORE"),ordinal = 0)
     private boolean modifiedBoolean(boolean old) {
-        if (ClientRules.DISABLENARRATOR.getBoolean())
+        if (ClientRules.DISABLE_NARRATOR.getBoolean())
             return false;
         return old;
     }

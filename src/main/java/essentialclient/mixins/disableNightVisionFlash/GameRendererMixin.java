@@ -13,10 +13,9 @@ import java.util.Objects;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
-
     @Inject(method = "getNightVisionStrength", at = @At("RETURN"), cancellable = true)
     private static void removeFlash(LivingEntity livingEntity, float f, CallbackInfoReturnable<Float> cir) {
         float i = Objects.requireNonNull(livingEntity.getStatusEffect(StatusEffects.NIGHT_VISION)).getDuration();
-        if (ClientRules.DISABLENIGHTVISONFLASH.getBoolean()) { cir.setReturnValue(i > 0 ? 1 : i); }
+        if (ClientRules.DISABLE_NIGHT_VISION_FLASH.getBoolean()) { cir.setReturnValue(i > 0 ? 1 : i); }
     }
 }

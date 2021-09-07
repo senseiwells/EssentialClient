@@ -13,7 +13,7 @@ public abstract class RecipeToastMixin {
 
     @Inject(at = @At("HEAD"), method = "draw", cancellable = true)
     private void hideToast(CallbackInfoReturnable<Toast.Visibility> cir) {
-        if (ClientRules.DISABLERECIPENOTIFICATIONS.getBoolean()) {
+        if (ClientRules.DISABLE_RECIPE_NOTIFICATIONS.getBoolean()) {
             cir.setReturnValue(Toast.Visibility.HIDE);
         }
     }

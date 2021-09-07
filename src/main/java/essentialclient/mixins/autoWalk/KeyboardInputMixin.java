@@ -22,7 +22,7 @@ public class KeyboardInputMixin {
             ticks++;
             return true;
         }
-        else if (ClientRules.AUTOWALK.getInt() != 0 && ticks >= ClientRules.AUTOWALK.getInt()) {
+        else if (ClientRules.AUTO_WALK.getInt() != 0 && ticks >= ClientRules.AUTO_WALK.getInt()) {
             if (!letgo) {
                 EssentialUtils.sendMessageToActionBar("§aYou are now autowalking");
                 letgo = true;

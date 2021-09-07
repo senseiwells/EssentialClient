@@ -18,7 +18,7 @@ public class ItemEntityMixin {
     @Inject(method="<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("RETURN"))
     private void removeEmptyShulkerBoxTags(World worldIn, double x, double y, double z, ItemStack stack, CallbackInfo ci)
     {
-        if (ClientRules.STACKABLESHULKERSINPLAYERINVENTORIES.getBoolean()
+        if (ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES.getBoolean()
                 && stack.getItem() instanceof BlockItem
                 && ((BlockItem)stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
         {

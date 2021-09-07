@@ -7,7 +7,6 @@ import net.minecraft.client.sound.MusicTracker;
 import net.minecraft.client.sound.MusicType;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.sound.MusicSound;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,7 +40,7 @@ public class MusicTrackerMixin {
      */
     @Overwrite
     public void tick() {
-        String type = ClientRules.MUSICTYPES.getString();
+        String type = ClientRules.MUSIC_TYPES.getString();
         MusicSound musicSound;
         switch (type) {
             case "Overworld":
@@ -79,10 +78,10 @@ public class MusicTrackerMixin {
 
             if (!this.client.getSoundManager().isPlaying(this.current)) {
                 this.current = null;
-                this.timeUntilNextSong = Math.min(this.timeUntilNextSong, MathHelper.nextInt(this.random, musicSound.getMinDelay(), ClientRules.MUSICINTERVAL.getInt()));
+                this.timeUntilNextSong = Math.min(this.timeUntilNextSong, MathHelper.nextInt(this.random, musicSound.getMinDelay(), ClientRules.MUSIC_INTERVAL.getInt()));
             }
         }
-        this.timeUntilNextSong = Math.min(this.timeUntilNextSong, ClientRules.MUSICINTERVAL.getInt());
+        this.timeUntilNextSong = Math.min(this.timeUntilNextSong, ClientRules.MUSIC_INTERVAL.getInt());
         if (this.current == null && this.timeUntilNextSong-- <= 1) {
             this.play(musicSound);
         }

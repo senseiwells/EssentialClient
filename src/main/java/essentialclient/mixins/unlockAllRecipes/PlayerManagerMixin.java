@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public abstract class PlayerManagerMixin {
     @Inject(at = @At("RETURN"), method = "onPlayerConnect")
     private void unlockRecipes(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-        if (ClientRules.UNLOCKALLRECIPESONJOIN.getBoolean()) {
+        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getBoolean()) {
             player.unlockRecipes(new ArrayList<>(player.server.getRecipeManager().values()));
         }
     }

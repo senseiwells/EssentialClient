@@ -27,7 +27,7 @@ public class FluidRendererMixin {
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "render", at = @At("HEAD"))
     public void modifyLavaSprites(BlockRenderView world, FluidState fluidState, BlockPos pos, @Coerce Object buffers, CallbackInfoReturnable<Boolean> info) {
-        if (ClientRules.HIGHLIGHTLAVASOURCES.getBoolean() && fluidState.isIn(FluidTags.LAVA) &&
+        if (ClientRules.HIGHLIGHT_LAVA_SOURCES.getBoolean() && fluidState.isIn(FluidTags.LAVA) &&
                 world.getBlockState(pos).get(FluidBlock.LEVEL) == 0) {
             lavaSprites[0] = HighlightLavaSources.lavaSourceStillSprite;
             lavaSprites[1] = HighlightLavaSources.lavaSourceFlowSprite;

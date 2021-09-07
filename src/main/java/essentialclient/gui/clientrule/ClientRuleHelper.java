@@ -8,10 +8,7 @@ import essentialclient.EssentialClient;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.sound.MusicType;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
-import net.minecraft.sound.MusicSound;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.JsonHelper;
 
@@ -25,7 +22,6 @@ import java.util.*;
 public class ClientRuleHelper {
 
     public static CommandTreeS2CPacket serverPacket;
-    private static Random random;
 
     protected static Map<String, String> clientRulesMap = new HashMap<>();
 
@@ -89,10 +85,10 @@ public class ClientRuleHelper {
             }
         }
         switch (settings) {
-            case HIGHLIGHTLAVASOURCES:
+            case HIGHLIGHT_LAVA_SOURCES:
                 client.worldRenderer.reload();
                 break;
-            case MUSICTYPES:
+            case MUSIC_TYPES:
                 client.getMusicTracker().stop();
                 break;
         }
@@ -103,7 +99,7 @@ public class ClientRuleHelper {
         }
     }
 
-    public static Collection<ClientRules> getRules() {
+    public static Collection<ClientRules> getRulesAlphabetically() {
         SortedMap<String, ClientRules> sortedMap = new TreeMap<>();
         for (ClientRules rule : ClientRules.values())
             sortedMap.put(rule.name, rule);

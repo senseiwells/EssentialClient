@@ -15,8 +15,8 @@ public class AnnounceAFK {
         Vec3d location = playerEntity.getPos();
         if (prevLocation == location) {
             ticks ++;
-            if (ticks == ClientRules.ANNOUNCEAFK.getInt()) {
-                playerEntity.sendChatMessage(ClientRules.ANNOUNCEAFKMESSAGE.getString());
+            if (ticks == ClientRules.ANNOUNCE_AFK.getInt()) {
+                playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getString());
             }
         }
         else {

@@ -18,10 +18,10 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 public class PlayerClientCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
         LiteralCommandNode<FabricClientCommandSource> playerclientNode = ClientCommandManager
-                .literal("playerclient").requires((p) -> ClientRules.COMMANDPLAYERCLIENT.getBoolean())
+                .literal("playerclient").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
                 .build();
         LiteralCommandNode<FabricClientCommandSource> pcNode = ClientCommandManager
-                .literal("pc").requires((p) -> ClientRules.COMMANDPLAYERCLIENT.getBoolean())
+                .literal("pc").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
                 .build();
         LiteralCommandNode<FabricClientCommandSource> spawnNode = ClientCommandManager
                 .literal("spawn")

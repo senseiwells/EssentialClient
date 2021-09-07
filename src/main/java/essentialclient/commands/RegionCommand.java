@@ -13,7 +13,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 
 public class RegionCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("region").requires((p) -> ClientRules.COMMANDREGION.getBoolean())
+        dispatcher.register(literal("region").requires((p) -> ClientRules.COMMAND_REGION.getBoolean())
                 .then(literal("get")
                         .then(argument("x", DoubleArgumentType.doubleArg())
                                 .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "x"))

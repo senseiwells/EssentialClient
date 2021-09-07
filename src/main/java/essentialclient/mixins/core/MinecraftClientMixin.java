@@ -28,7 +28,7 @@ public class MinecraftClientMixin {
     public void onTick(CallbackInfo ci) {
         if (TravelCommand.enabled)
             TravelCommand.tickTravel();
-        if (ClientRules.ANNOUNCEAFK.getInt() > 0)
+        if (ClientRules.ANNOUNCE_AFK.getInt() > 0)
             AnnounceAFK.tickAFK(player);
     }
 }

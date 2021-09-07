@@ -12,7 +12,7 @@ public class PickaxeItemMixin {
     //Client implementation of missingTools
     @ModifyVariable(method = "getMiningSpeedMultiplier", at = @At(value = "STORE", ordinal = 0))
     private Material modifyMaterial(Material originalMaterial) {
-        if (originalMaterial == Material.GLASS && ClientRules.MISSINGTOOLS.getBoolean())
+        if (originalMaterial == Material.GLASS && ClientRules.MISSING_TOOLS.getBoolean())
             return Material.STONE;
         return originalMaterial;
     }

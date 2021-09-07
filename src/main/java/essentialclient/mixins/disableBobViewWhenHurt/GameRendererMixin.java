@@ -10,11 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
-
-    @Inject(method = "bobViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "bobViewWhenHurt", at = @At("HEAD"), cancellable = true)
     private void bobViewWhenHurt(MatrixStack matrices, float f, CallbackInfo ci) {
-        if (ClientRules.DISABLEBOBVIEWWHENHURT.getBoolean()) { ci.cancel(); }
+        if (ClientRules.DISABLE_BOB_VIEW_WHEN_HURT.getBoolean()) { ci.cancel(); }
     }
-
-
 }

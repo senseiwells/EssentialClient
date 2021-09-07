@@ -17,7 +17,7 @@ public class LivingEntityMixin {
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "getMovementSpeed(F)F", at = @At("HEAD"), cancellable = true)
     private void overrideMovementSpeed(float slipperiness, CallbackInfoReturnable<Float> cir) {
-        float speed = (float) ClientRules.OVERRIDECREATIVEWALKSPEED.getDouble();
+        float speed = (float) ClientRules.OVERRIDE_CREATIVE_WALK_SPEED.getDouble();
         if (speed > 0 && (Object) this instanceof PlayerEntity && ((PlayerEntity) (Object) this).isCreative()) {
             cir.setReturnValue(movementSpeed * speed);
         }
