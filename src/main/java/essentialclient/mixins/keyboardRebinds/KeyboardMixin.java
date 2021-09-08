@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class KeyboardMixin {
     @ModifyConstant(method = "onKey", constant = @Constant(intValue = 292))
     private int onKey292(int original) {
-        return ClientKeybinds.DEBUGMENU.getKeyCode();
+        return ClientKeybinds.DEBUG_MENU.getKeyCode();
     }
 }
