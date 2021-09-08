@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
+import essentialclient.gui.rulescreen.ClientRulesScreen;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -72,7 +73,7 @@ public class ClientRuleHelper {
         return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient").resolve("EssentialClientRules.json");
     }
 
-    public static void executeOnChange(MinecraftClient client, ClientRules settings) {
+    public static void executeOnChange(MinecraftClient client, ClientRules settings, ClientRulesScreen gui) {
         ClientPlayerEntity playerEntity = client.player;
         if (playerEntity != null) {
             if (settings.isCommand) {
@@ -91,6 +92,8 @@ public class ClientRuleHelper {
             case MUSIC_TYPES:
                 client.getMusicTracker().stop();
                 break;
+            case DISPLAY_RULE_TYPE:
+                gui.refreshRules(gui.getSearchBoxText());
         }
     }
     protected static void checkRules() {
@@ -106,4 +109,15 @@ public class ClientRuleHelper {
         return sortedMap.values();
     }
 
+    public static Collection<ClientRules> getRulesInType() {
+        SortedMap<String, ClientRules> sortedMap = new TreeMap<>();
+        for (ClientRules.Type type : ClientRules.Type.values()) {
+            for (ClientRules rule : ClientRules.values()) {
+                if (rule.type == type) {
+                    sortedMap.put(type.toString() + rule.name, rule);
+                }
+            }
+        }
+        return sortedMap.values();
+    }
 }

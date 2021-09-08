@@ -53,7 +53,14 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
     public ConfigListWidget(ClientRulesScreen gui, MinecraftClient client, String filter) {
         super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
-        Collection<ClientRules> clientRules = ClientRuleHelper.getRulesAlphabetically();
+        Collection<ClientRules> clientRules;
+        switch (ClientRules.DISPLAY_RULE_TYPE.getString()) {
+            case "Rule Type":
+                clientRules = ClientRuleHelper.getRulesInType();
+                break;
+            case "Alphabetical": default:
+                clientRules = ClientRuleHelper.getRulesAlphabetically();
+        }
         clientRules.forEach(rule -> {
             if (filter == null || rule.name.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
                 int i = client.textRenderer.getWidth(rule.name) - 55;

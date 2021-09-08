@@ -18,7 +18,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 
 public class MusicCommand {
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("music").requires((p) -> ClientRules.COMMANDMUSIC.getBoolean())
+        dispatcher.register(literal("music").requires((p) -> ClientRules.COMMAND_MUSIC.getBoolean())
                 .then(literal("skip")
                         .executes(context -> {
                             MinecraftClient client = context.getSource().getClient();

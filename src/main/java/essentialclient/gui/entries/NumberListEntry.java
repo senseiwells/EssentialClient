@@ -72,7 +72,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
             settings.setValue(settings.defaultValue);
             numField.setText(settings.defaultValue);
             ClientRuleHelper.writeSaveFile();
-            ClientRuleHelper.executeOnChange(client, settings);
+            ClientRuleHelper.executeOnChange(client, settings, gui);
         });
         gui.getNumberFieldList().add(this.numberField);
     }

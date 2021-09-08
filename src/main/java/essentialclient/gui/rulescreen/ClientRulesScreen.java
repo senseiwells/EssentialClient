@@ -30,12 +30,7 @@ public class ClientRulesScreen extends Screen {
         if (this.client == null)
             return;
         this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, this.searchBox, new LiteralText("Search Client Rules"));
-        this.searchBox.setChangedListener(s -> {
-            this.children.remove(this.list);
-            this.list.clear();
-            this.list = new ConfigListWidget(this, this.client, s);
-            this.children.add(this.list);
-        });
+        this.searchBox.setChangedListener(this::refreshRules);
         this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
         this.children.add(this.list);
         this.addButton(this.searchBox);
@@ -63,6 +58,17 @@ public class ClientRulesScreen extends Screen {
             this.textRenderer.draw(matrices,  text, 18, 12, 16733525);
         }
         super.render(matrices, mouseX, mouseY, delta);
+    }
+
+    public void refreshRules(String filter) {
+        this.children.remove(this.list);
+        this.list.clear();
+        this.list = new ConfigListWidget(this, this.client, filter);
+        this.children.add(this.list);
+    }
+
+    public String getSearchBoxText() {
+        return this.searchBox.getText();
     }
 
     public void drawTooltip(int mouseX, int mouseY, float delta)

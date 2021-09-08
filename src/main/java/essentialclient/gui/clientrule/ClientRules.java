@@ -1,5 +1,6 @@
 package essentialclient.gui.clientrule;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MusicType;
 
 import java.util.Arrays;
@@ -41,6 +42,7 @@ public enum ClientRules {
     ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK"),
 
     //Cycling Rules
+    DISPLAY_RULE_TYPE                       ("displayRuleType", Type.CYCLE, "This allows you to choose the order you want rules to be displayed", "Alphabetical", new String[]{"Alphabetical", "Rule Type"}, false),
     MUSIC_TYPES                             ("musicTypes"                               , Type.CYCLE            , "This allows you to select what music types play"                             , "Default"     , new String[]{"Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"}       , false);
 
     public final String name;

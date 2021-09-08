@@ -66,7 +66,7 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
             settings.invertBoolean();
             buttonWidget.setMessage(new LiteralText(settings.getString()));
             ClientRuleHelper.writeSaveFile();
-            ClientRuleHelper.executeOnChange(client, settings);
+            ClientRuleHelper.executeOnChange(client, settings, gui);
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             settings.setValue(settings.defaultValue);
