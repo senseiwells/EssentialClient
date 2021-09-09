@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.item.ItemStack;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class ClientMacro {
                     player.inventory.selectedSlot = slot;
                     break;
                 case "SAY":
-                    player.sendChatMessage(actions[1]);
+                    player.sendChatMessage(fullAction.replace("SAY ", ""));
                     break;
                 case "SLEEP":
                     sleep(player, Integer.parseInt(actions[1]));
@@ -111,14 +112,35 @@ public class ClientMacro {
                     player.yaw = Float.parseFloat(actions[1]);
                     player.pitch = Float.parseFloat(actions[2]);
                     break;
+                case "DROP":
+                    drop(player, actions[1]);
+                    break;
             }
         }
         catch (Exception e) {
             EssentialUtils.sendMessage("§cYou have an invalid macro file!");
             EssentialUtils.sendMessage("§cPlease check that you have the macro configured properly");
+            EssentialUtils.sendMessage("§cThe line: " + fullAction + " most likely caused the issue");
             stopMacro(client);
             enabled = false;
         }
+    }
+
+    private static void drop(ClientPlayerEntity playerEntity, String action) {
+        if (playerEntity.inventory.getStack(playerEntity.inventory.selectedSlot) == ItemStack.EMPTY)
+            return;
+        boolean dropEntireStack;
+        switch (action) {
+            case "ALL":
+                dropEntireStack = true;
+                break;
+            case "ONE":
+                dropEntireStack = false;
+                break;
+            default:
+                return;
+        }
+        playerEntity.dropSelectedItem(dropEntireStack);
     }
 
     private static void sleep(ClientPlayerEntity playerEntity, int ticks) {
@@ -146,6 +168,8 @@ public class ClientMacro {
 
     private static void stopMacro(MinecraftClient client) {
         isPaused = false;
+        loop = false;
+        reader = null;
         client.options.keyForward.setPressed(false);
         client.options.keyAttack.setPressed(false);
         client.options.keyUse.setPressed(false);
