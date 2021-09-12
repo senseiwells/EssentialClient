@@ -8,6 +8,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.ScreenshotUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,6 +79,7 @@ public class ClientMacro {
         if (actions[0].equals("}")) {
             ClientMacroConditions.inIf = false;
             ClientMacroConditions.isIfTrue = false;
+            return;
         }
         else if (ClientMacroConditions.inIf && !ClientMacroConditions.isIfTrue)
             return;
@@ -105,7 +107,7 @@ public class ClientMacro {
                     loop = Boolean.parseBoolean(actions[1]);
                     break;
                 case "inventory":
-                    client.openScreen(new InventoryScreen(player));
+                    ClientMacroHelper.screenHandler(client, player, actions[1]);
                     break;
                 case "walk":
                     ClientMacroHelper.holdStop(actions[1], client.options.keyForward);
@@ -130,23 +132,33 @@ public class ClientMacro {
                 case "drop_all":
                     InventoryUtils.dropAllItemType(player, actions[1]);
                     break;
+                case "continue":
+                    reader = null;
+                    ClientMacroConditions.inIf = false;
+                    ClientMacroConditions.canElse = false;
+                    break;
+                case "screenshot":
+                    ScreenshotUtils.saveScreenshot(client.runDirectory, client.getWindow().getWidth(), client.getWindow().getHeight(), client.getFramebuffer(), text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text)));
+                    break;
+                case "logout":
+                    ClientMacroHelper.tryLogout(client);
+                    break;
                 case "stop":
                     enabled = false;
                     ClientMacroHelper.stopMacro(client);
                     return;
                 case "if":
-                    if (ClientMacroConditions.inIf) {
-                        EssentialUtils.sendMessage("§cYou cannot have nested ifs!");
-                        return;
-                    }
-                    ClientMacroConditions.conditional(client, actions, fullAction);
+                    ClientMacroConditions.conditional(client, actions, fullAction, 1);
+                    break;
+                case "else":
+                    ClientMacroConditions.elseConditional(client, actions, fullAction);
                     break;
             }
         }
         catch (Exception e) {
             EssentialUtils.sendMessage("§cYou have an invalid macro file!");
             EssentialUtils.sendMessage("§cPlease check that you have the macro configured properly");
-            EssentialUtils.sendMessage("§cThe line: " + fullAction + " most likely caused the issue");
+            EssentialUtils.sendMessage("§cThe line: \"" + fullAction + "\" most likely caused the issue");
             ClientMacroHelper.stopMacro(client);
             enabled = false;
         }

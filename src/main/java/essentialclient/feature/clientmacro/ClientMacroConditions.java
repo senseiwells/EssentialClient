@@ -4,6 +4,7 @@ import essentialclient.utils.EssentialUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -18,13 +19,19 @@ public class ClientMacroConditions {
     private static String[] currentActions;
     public static boolean inIf = false;
     public static boolean isIfTrue = false;
+    public static boolean canElse = false;
 
-    public static void conditional(MinecraftClient client, String[] actions, String fullAction) {
+    public static void conditional(MinecraftClient client, String[] actions, String fullAction, int actionLvl) {
+        if (inIf) {
+            EssentialUtils.sendMessage("§cYou cannot have nested ifs!");
+            return;
+        }
+        isIfTrue = false;
         inIf = true;
         ClientPlayerEntity player = client.player;
         assert player != null;
         currentActions = actions;
-        actionLevel = 1;
+        actionLevel = actionLvl;
         try {
             if (actions[actionLevel].equals("not")) {
                 actionLevel++;
@@ -44,19 +51,47 @@ public class ClientMacroConditions {
         }
     }
 
+    public static void elseConditional(MinecraftClient client, String[] actions, String fullAction) {
+        if (inIf || !canElse) {
+            inIf = true;
+            return;
+        }
+        switch (actions[1]) {
+            case "if":
+                conditional(client, actions, fullAction, 2);
+                break;
+            case "{": default:
+                inIf = true;
+                isIfTrue = true;
+        }
+    }
+
     private static void checkConditions(MinecraftClient client, ClientPlayerEntity playerEntity) {
         operatorLevel = actionLevel + 1;
+        boolean bool;
         switch (currentActions[actionLevel]) {
             case "looking_at_block":
-                isIfTrue = checkEqualOperator() && (inverted != checkLookingAtBlock(playerEntity));
+                bool = checkEqualOperator() && (inverted != checkLookingAtBlock(playerEntity));
+                break;
+            case "held_item":
+                bool = checkEqualOperator() && (inverted != checkHeldItem(playerEntity));
                 break;
             case "health":
-                isIfTrue = compareNumber((int) playerEntity.getHealth(), Integer.parseInt(currentActions[operatorLevel + 1]));
+                bool = compareNumber((int) playerEntity.getHealth(), Integer.parseInt(currentActions[operatorLevel + 1]));
                 break;
             case "inventory_is_full":
-                isIfTrue = inverted == (playerEntity.inventory.getEmptySlot() != -1);
+                bool = inverted == (playerEntity.inventory.getEmptySlot() != -1);
                 break;
+            default:
+                return;
         }
+        isIfTrue = bool;
+        canElse = !bool;
+    }
+
+    private static boolean checkHeldItem(ClientPlayerEntity playerEntity) {
+        Item item = Registry.ITEM.get(new Identifier(currentActions[operatorLevel + 1]));
+        return playerEntity.inventory.getMainHandStack().getItem() == item;
     }
 
     private static boolean checkLookingAtBlock(ClientPlayerEntity playerEntity) {

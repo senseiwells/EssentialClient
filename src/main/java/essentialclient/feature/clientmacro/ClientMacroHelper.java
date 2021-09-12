@@ -1,7 +1,9 @@
 package essentialclient.feature.clientmacro;
 
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemStack;
@@ -31,6 +33,17 @@ public class ClientMacroHelper {
                 break;
             case "stop":
                 key.setPressed(false);
+                break;
+        }
+    }
+
+    public static void screenHandler(MinecraftClient client, ClientPlayerEntity playerEntity, String action) {
+        switch (action) {
+            case "open":
+                client.openScreen(new InventoryScreen(playerEntity));
+                break;
+            case "close":
+                playerEntity.closeHandledScreen();
                 break;
         }
     }
@@ -96,14 +109,24 @@ public class ClientMacroHelper {
         }
     }
 
+    public static void tryLogout(MinecraftClient client) {
+        if (client.isInSingleplayer()) {
+            EssentialUtils.sendMessage("§cYou cannot logout in singleplayer!");
+            return;
+        }
+        ClientMacro.enabled = false;
+        ClientMacroHelper.stopMacro(client);
+        client.disconnect();
+    }
+
     public static void stopMacro(MinecraftClient client) {
         ClientMacro.isPaused = false;
         ClientMacro.loop = false;
         ClientMacro.reader = null;
         ClientMacro.left = null;
         ClientMacro.right = null;
-        ClientMacroConditions.isIfTrue = false;
         ClientMacroConditions.inIf = false;
+        ClientMacroConditions.canElse = false;
         client.options.keyForward.setPressed(false);
         client.options.keyAttack.setPressed(false);
         client.options.keyUse.setPressed(false);
