@@ -5,7 +5,7 @@ This mod is currently ONLY for 1.16.5 and requires [Fabric API](https://www.curs
 
 Feel free to contribute by adding as many features as you want!
 
-## Index of rules
+## Index of Client Rules
 
 * [announceAFK]()
 * [announceAFKMessage]()
@@ -39,7 +39,8 @@ Feel free to contribute by adding as many features as you want!
 * [switchToTotem]()
 * [unlockAllRecipesOnJoin]()
 
-#Index of other features:
+#Index of Other Features:
+
 * [carpetClient]()
 * [clientMacros]()
 * [rebindF3]()
@@ -234,15 +235,37 @@ This allows for shulkers to stack only in your inventory
   * This only works if the server has [EssentialAddons](https://github.com/Super-Santa/EssentialAddons) installed with `stackableShulkersInPlayerInventories` enabled
 
 ##stackableShulkersWithItems
+This allows for shulkers with items to stack only in your inventory
+* Type: `Boolean`
+* Default Value: `false`
+* Extra Info:
+  * This requires [stackableShulkersInPlayerInventories](#stackableshulkersinplayerinventories)
 
 ##switchToTotem
+This will switch to a totem (if you have one), under a set amount of health
+* Type: `Integer`
+* Default Value: `0`
+* Extra Info:
+  * Health is out of 20
 
 ##unlockAllRecipesOnJoin
+Unlocks every recipe when joining a singleplayer world
+* Type: `Boolean`
+* Default Value: `false`
+* Extra Info:
+  * This currently only works in singleplayer
 
 #Other Features
 
 ##carpetClient
+This is the code that was left over from the carpet client 1.15.2 version, this allows you to use a GUI to modify carpet rules instead of having to use commands, this only works in singleplayer.
+
+You can find more about it on the original github: [here](https://github.com/gnembon/carpet-client)
 
 ##clientMacros
+This is a mini scripting language that allows you to make simple macros directly in minecraft without any external programs.
+
+Documentation and how to use can be found: [here]()
 
 ##rebindF3
+This allows you to rebind the F3 key, the option for this is in controls under "EssentialClient"
