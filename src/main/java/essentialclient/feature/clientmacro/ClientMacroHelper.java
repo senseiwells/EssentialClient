@@ -9,6 +9,10 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemStack;
 
 public class ClientMacroHelper {
+
+    private static MouseClick right;
+    private static MouseClick left;
+
     public static void drop(ClientPlayerEntity playerEntity, String action) {
         if (playerEntity.inventory.getStack(playerEntity.inventory.selectedSlot) == ItemStack.EMPTY)
             return;
@@ -63,14 +67,14 @@ public class ClientMacroHelper {
                 MouseClick newMouse = new MouseClick(getMouseTicks(actions), mouseType);
                 switch (mouseType) {
                     case RIGHT:
-                        if (ClientMacro.right != null && ClientMacro.right.holdValue == newMouse.holdValue)
+                        if (right != null && right.holdValue == newMouse.holdValue)
                             return;
-                        ClientMacro.right = newMouse;
+                        right = newMouse;
                         return;
                     case LEFT:
-                        if (ClientMacro.left != null && ClientMacro.left.holdValue == newMouse.holdValue)
+                        if (left != null && left.holdValue == newMouse.holdValue)
                             return;
-                        ClientMacro.left = newMouse;
+                        left = newMouse;
                 }
                 break;
             case "hold":
@@ -87,11 +91,11 @@ public class ClientMacroHelper {
                 switch (mouseType) {
                     case RIGHT:
                         client.options.keyUse.setPressed(false);
-                        ClientMacro.right = null;
+                        right = null;
                         break;
                     case LEFT:
                         client.options.keyAttack.setPressed(false);
-                        ClientMacro.left = null;
+                        left = null;
                         break;
                 }
                 break;
@@ -104,7 +108,8 @@ public class ClientMacroHelper {
         if (!ClientMacro.isPaused) {
             ClientMacro.sleepTime = ticks + playerEntity.world.getTime();
             ClientMacro.isPaused = true;
-        } else if (ClientMacro.sleepTime < playerEntity.world.getTime()) {
+        }
+        else if (ClientMacro.sleepTime < playerEntity.world.getTime() + 2) {
             ClientMacro.isPaused = false;
         }
     }
@@ -123,10 +128,10 @@ public class ClientMacroHelper {
         ClientMacro.isPaused = false;
         ClientMacro.loop = false;
         ClientMacro.reader = null;
-        ClientMacro.left = null;
-        ClientMacro.right = null;
-        ClientMacroConditions.inIf = false;
-        ClientMacroConditions.canElse = false;
+        left = null;
+        right = null;
+        ClientMacroCondition.removeAllIf();
+        ClientMacroCondition.lastIf = null;
         client.options.keyForward.setPressed(false);
         client.options.keyAttack.setPressed(false);
         client.options.keyUse.setPressed(false);
@@ -147,7 +152,7 @@ public class ClientMacroHelper {
             this.mouseType = mouseType;
         }
 
-        protected void tick() {
+        private void tick() {
             this.ticks++;
             if (this.ticks < this.holdValue) {
                 return;
@@ -156,7 +161,7 @@ public class ClientMacroHelper {
             clickMouse(this.mouseType);
         }
 
-        public static void clickMouse(MouseType type) {
+        private static void clickMouse(MouseType type) {
             switch (type) {
                 case LEFT:
                     ((MinecraftClientInvoker) MinecraftClient.getInstance()).leftClickMouseAccessor();
@@ -165,6 +170,13 @@ public class ClientMacroHelper {
                     ((MinecraftClientInvoker)MinecraftClient.getInstance()).rightClickMouseAccessor();
                     break;
             }
+        }
+
+        public static void checkMouse() {
+            if (right != null)
+                right.tick();
+            if (left != null)
+                left.tick();
         }
     }
 }

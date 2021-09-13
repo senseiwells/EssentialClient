@@ -15,12 +15,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 
+//Good luck reading this - Sensei
 public class ClientMacro {
 
     protected static boolean enabled = false;
     protected static boolean isPaused = false;
-    protected static ClientMacroHelper.MouseClick right;
-    protected static ClientMacroHelper.MouseClick left;
     protected static long sleepTime;
     protected static String currentLine;
     protected static BufferedReader reader;
@@ -44,10 +43,7 @@ public class ClientMacro {
         Path macroFile = getFile();
         if (client.player == null || !Files.exists(macroFile))
             return;
-        if (right != null)
-            right.tick();
-        if (left != null)
-            left.tick();
+        ClientMacroHelper.MouseClick.checkMouse();
         if (isPaused) {
             action(currentLine, client);
             return;
@@ -76,11 +72,15 @@ public class ClientMacro {
         assert player != null;
         String[] actions = fullAction.toLowerCase(Locale.ROOT).trim().split(" ");
         if (actions[0].equals("}")) {
-            ClientMacroConditions.inIf = false;
-            ClientMacroConditions.isIfTrue = false;
+            ClientMacroCondition.removeCurrentIf();
             return;
         }
-        else if (ClientMacroConditions.inIf && !ClientMacroConditions.isIfTrue)
+        if (ClientMacroCondition.getCurrentIf() != null && !ClientMacroCondition.getCurrentIf().isTrue && !ClientMacroCondition.getCurrentIf().isElse) {
+            if (fullAction.contains("{"))
+                ClientMacroCondition.ifs.add(ClientMacroCondition.getCurrentIf());
+            return;
+        }
+        if (ClientMacroCondition.lastIf != null && (ClientMacroCondition.lastIf.isTrue || ClientMacroCondition.lastIf.isElse))
             return;
         try {
             switch (actions[0]) {
@@ -133,8 +133,6 @@ public class ClientMacro {
                     break;
                 case "continue":
                     reader = null;
-                    ClientMacroConditions.inIf = false;
-                    ClientMacroConditions.canElse = false;
                     break;
                 case "screenshot":
                     ScreenshotUtils.saveScreenshot(client.runDirectory, client.getWindow().getWidth(), client.getWindow().getHeight(), client.getFramebuffer(), text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text)));
@@ -147,17 +145,17 @@ public class ClientMacro {
                     ClientMacroHelper.stopMacro(client);
                     return;
                 case "if":
-                    ClientMacroConditions.conditional(client, actions, fullAction, 1);
+                    new ClientMacroCondition(client, client.player, actions, 1, false).readAction();
                     break;
                 case "else":
-                    ClientMacroConditions.elseConditional(client, actions, fullAction);
+                    ClientMacroCondition.tryElse(client, actions);
                     break;
             }
         }
         catch (Exception e) {
             EssentialUtils.sendMessage("§cYou have an invalid macro file!");
             EssentialUtils.sendMessage("§cPlease check that you have the macro configured properly");
-            EssentialUtils.sendMessage("§cThe line: \"" + fullAction + "\" most likely caused the issue");
+            EssentialUtils.sendMessage("§cThe line: \"" + fullAction.trim() + "\" most likely caused the issue");
             ClientMacroHelper.stopMacro(client);
             enabled = false;
         }

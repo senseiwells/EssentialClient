@@ -7,43 +7,43 @@ Feel free to contribute by adding as many features as you want!
 
 ## Index of Client Rules
 
-* [announceAFK]()
-* [announceAFKMessage]()
-* [autoWalk]()
-* [commandMusic]()
-* [commandPlayerClient]()
-* [commandPlayerList]()
-* [commandRegion]()
-* [commandTravel]()
-* [disableBobViewWhenHurt]()
-* [disableHotbarScrolling]()
-* [disableJoinLeaveMessages]()
-* [disableNarrator]()
-* [disableNightVisionFlash]()
-* [disableOpMessages]()
-* [disableRecipeNotifications]()
-* [disableTutorialNotifications]()
-* [displayRuleType]()
-* [displayTimePlayed]()
-* [essentialClientMainMenu]()
-* [highlightLavaSources]()
-* [increaseSpectatorScrollSensitivity]()
-* [increaseSpectatorScrollSpeed]()
-* [missingTools]()
-* [musicInterval]()
-* [musicTypes]()
-* [overrideCreativeWalkSpeed]()
-* [removeWarnReceivedPassengers]()
-* [stackableShulkerInPlayerInventories]()
-* [stackableShulkersWithItems]()
-* [switchToTotem]()
-* [unlockAllRecipesOnJoin]()
+* [announceAFK](#announceafk)
+* [announceAFKMessage](#announceafkmessage)
+* [autoWalk](#autowalk)
+* [commandMusic](#commandmusic)
+* [commandPlayerClient](#commandplayerclient)
+* [commandPlayerList](#commandplayerlist)
+* [commandRegion](#commandregion)
+* [commandTravel](#commandtravel)
+* [disableBobViewWhenHurt](#disablebobviewwhenhurt)
+* [disableHotbarScrolling](#disablehotbarscrolling)
+* [disableJoinLeaveMessages](#disablejoinleavemessages)
+* [disableNarrator](#disablenarrator)
+* [disableNightVisionFlash](#disablenightvisionflash)
+* [disableOpMessages](#disableopmessages)
+* [disableRecipeNotifications](#disablerecipenotifications)
+* [disableTutorialNotifications](#disabletutorialnotifications)
+* [displayRuleType](#displayruletype)
+* [displayTimePlayed](#displaytimeplayed)
+* [essentialClientMainMenu](#essentialclientmainmenu)
+* [highlightLavaSources](#highlightlavasource)
+* [increaseSpectatorScrollSensitivity](#increasespectatorscrollsensitivity)
+* [increaseSpectatorScrollSpeed](#increasespectatorscrollspeed)
+* [missingTools](#missingtools)
+* [musicInterval](#musicinterval)
+* [musicTypes](#musictypes)
+* [overrideCreativeWalkSpeed](#overridecreativewalkspeed)
+* [removeWarnReceivedPassengers](#removewarnreceivedpassengers)
+* [stackableShulkerInPlayerInventories](#stackableshulkersinplayerinventories)
+* [stackableShulkersWithItems](#stackableshulkerswithitems)
+* [switchToTotem](#switchtototem)
+* [unlockAllRecipesOnJoin](#unlockallrecipesonjoin)
 
 #Index of Other Features:
 
-* [carpetClient]()
-* [clientMacros]()
-* [rebindF3]()
+* [carpetClient](#carpetclient)
+* [clientMacros](#clientmacros)
+* [rebindF3](#rebindf3)
 
 # Client Rules:
 
@@ -84,7 +84,7 @@ This command allows you to save /player... commands and execute them
 * Default Value: `false`
 * Extra Info:
   * Requires `commandPlayer` (from carpet) on server/singeplayer to be `true`
-  * Documentation on how to use [here]()
+  * Documentation on how to use: [here]()
 
 ##commandPlayerList
 This command allows you to execute /player... commands in one command
@@ -92,7 +92,7 @@ This command allows you to execute /player... commands in one command
 * Default Value: `false`
 * Extra Info:
   * Requires [commandPlayerClient](#commandplayerclient)
-  * Documentation on how to use [here]()
+  * Documentation on how to use: [here]()
 
 ##commandRegion
 This command allows you to determine the region you are in or the region at set coords
