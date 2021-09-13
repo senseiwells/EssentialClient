@@ -1,8 +1,5 @@
 package essentialclient.gui.clientrule;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.MusicType;
-
 import java.util.Arrays;
 
 public enum ClientRules {
@@ -12,19 +9,19 @@ public enum ClientRules {
     COMMAND_PLAYERLIST                      ("commandPlayerList"                        , "This command allows you to execute /player... commands in one command (requires commandPlayerClient)"    , true),
     COMMAND_REGION                          ("commandRegion"                            , "This command allows you to determine the region you are in or the region at set coords"                  , true),
     COMMAND_TRAVEL                          ("commandTravel"                            , "This command allows you to travel to a set location"                                                     , true),
-    DISABLE_RECIPE_NOTIFICATIONS            ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
-    DISABLE_TUTORIAL_NOTIFICATIONS          ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
     DISABLE_BOB_VIEW_WHEN_HURT              ("disableBobViewWhenHurt"                   , "Disables the camera bobbing when you get hurt"                                                           , false),
+    DISABLE_HOTBAR_SCROLLING                ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
+    DISABLE_JOIN_LEAVE_MESSAGES             ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
     DISABLE_NARRATOR                        ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
     DISABLE_NIGHT_VISION_FLASH              ("disableNightVisionFlash"                  , "Disables the flash that occurs when night vision is about to run out"                                    , false ),
     DISABLE_OP_MESSAGES                     ("disableOpMessages"                        , "This will prevent system messages from displaying"                                                       , false),
-    DISABLE_HOTBAR_SCROLLING                ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
-    DISABLE_JOIN_LEAVE_MESSAGES             ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
-    DISPLAY_TIME_PLAYED                     ("displayTimePlayed"                        , "This will display how long you have had your current client open for in the corner of the pause menu."   , false),
+    DISABLE_RECIPE_NOTIFICATIONS            ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
+    DISABLE_TUTORIAL_NOTIFICATIONS          ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
+    DISPLAY_TIME_PLAYED                     ("displayTimePlayed"                        , "This will display how long you have had your current client open for in the corner of the pause menu"    , false),
     ESSENTIAL_CLIENT_MAIN_MENU              ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main menu screen"                                          , false),
-    MISSING_TOOLS                           ("missingTools"                             , "Adds client functionality to missingTools from Carpet for the client"                                    , false),
-    INCREASE_SPECTATOR_SCROLL_SPEED         ("increaseSpectatorScrollSpeed"             , "Increases the limit at which you can scroll to go faster in spectator"                                   , false),
     HIGHLIGHT_LAVA_SOURCES                  ("highlightLavaSources"                     , "Highlights lava sources, credit to plusls for the original code for this"                                , false),
+    INCREASE_SPECTATOR_SCROLL_SPEED         ("increaseSpectatorScrollSpeed"             , "Increases the limit at which you can scroll to go faster in spectator"                                   , false),
+    MISSING_TOOLS                           ("missingTools"                             , "Adds client functionality to missingTools from Carpet for the client"                                    , false),
     REMOVE_WARN_RECEIVED_PASSENGERS         ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unknown entity' warning on the client"                         , false),
     STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
     STACKABLE_SHULKERS_WITH_ITEMS           ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
@@ -42,7 +39,7 @@ public enum ClientRules {
     ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK"),
 
     //Cycling Rules
-    DISPLAY_RULE_TYPE                       ("displayRuleType", Type.CYCLE, "This allows you to choose the order you want rules to be displayed", "Alphabetical", new String[]{"Alphabetical", "Rule Type"}, false),
+    DISPLAY_RULE_TYPE                       ("displayRuleType"                          , Type.CYCLE            , "This allows you to choose the order you want rules to be displayed"          , "Alphabetical", new String[]{"Alphabetical", "Rule Type"}                                                                             , false),
     MUSIC_TYPES                             ("musicTypes"                               , Type.CYCLE            , "This allows you to select what music types play"                             , "Default"     , new String[]{"Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"}       , false);
 
     public final String name;
