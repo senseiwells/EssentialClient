@@ -39,7 +39,7 @@ Feel free to contribute by adding as many features as you want!
 * [switchToTotem](#switchtototem)
 * [unlockAllRecipesOnJoin](#unlockallrecipesonjoin)
 
-#Index of Other Features:
+# Index of Other Features:
 
 * [carpetClient](#carpetclient)
 * [clientMacros](#clientmacros)
@@ -49,7 +49,7 @@ Feel free to contribute by adding as many features as you want!
 
 For commands any value inside [ ] are variables and should be replaced with real values when using the command
 
-##announceAFK
+## announceAFK
 This announces when you become afk after a set amount of time (ticks), 
 * Type: `Integer`
 * Default Value: `0`
@@ -57,28 +57,28 @@ This announces when you become afk after a set amount of time (ticks),
   * This is judges by weather your player position is constant
   * Prints the message determined by [announceAFKMessage](#announceafkmessage)
 
-##announceAFKMessage
+## announceAFKMessage
 This is the message you announce after you are afk"
 * Type: `String`
 * Default Value: `I am now AFK`
 * Extra Info:
     * Requires [announceAFK](#announceafk)
 
-##autoWalk
+## autoWalk
 This will auto walk after you have held your key for set amount of ticks
 * Type: `Integer`
 * Default Value: `0`
 * Extra Info:
   * Once auto walking press backwards or forward again to cancel
 
-##commandMusic
+## commandMusic
 This command allows you to manipulate the current music
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * Usage: `/music skip`, `/music play [musictype]`, `music volume [percent]`
 
-##commandPlayerClient
+## commandPlayerClient
 This command allows you to save /player... commands and execute them
 * Type `Boolean`
 * Default Value: `false`
@@ -86,7 +86,7 @@ This command allows you to save /player... commands and execute them
   * Requires `commandPlayer` (from carpet) on server/singeplayer to be `true`
   * Documentation on how to use: [here]()
 
-##commandPlayerList
+## commandPlayerList
 This command allows you to execute /player... commands in one command
 * Type: `Boolean`
 * Default Value: `false`
@@ -94,178 +94,178 @@ This command allows you to execute /player... commands in one command
   * Requires [commandPlayerClient](#commandplayerclient)
   * Documentation on how to use: [here]()
 
-##commandRegion
+## commandRegion
 This command allows you to determine the region you are in or the region at set coords
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * Usage: `/region get`, `/region get [x] [y]`
 
-##commandTravel
+## commandTravel
 This command allows you to travel to a set location
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * Usage: `/travel start [x] [y]`, `/travel stop`
 
-##disableBobViewWhenHurt
+## disableBobViewWhenHurt
 Disables the camera bobbing when you get hurt
 * Type: `Boolean`
 * Default Value: `false`
 
-##disableHotbarScrolling
+## disableHotbarScrolling
 This will prevent you from scrolling in your hotbar
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * Learn to use hotkeys :)
 
-##disableJoinLeaveMessages
+## disableJoinLeaveMessages
 This will prevent join/leave messages from displaying
 * Type: `Boolean`
 * Default Value: `false`
 
-##disableNarrator
+## disableNarrator
 Disables cycling narrator when pressing CTRL + B
 * Type: `Boolean`
 * Default Value: `false`
 
-##disableNightVisionFlash
+## disableNightVisionFlash
 Disables the flash that occurs when night vision is about to run out
 * Type: `Boolean`
 * Default Value: `false`
 
-##disableOpMessages
+## disableOpMessages
 This will prevent system messages from displaying
 * Type: `Boolean`
 * Default Value: `false`
 
-##disableRecipeNotifications
+## disableRecipeNotifications
 Disables the recipe toast from showing
 * Type: `Boolean`
 * Default Value: `false`
 
-##disableTutorialNotifications
+## disableTutorialNotifications
 Disables the tutorial toast from showing
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * Useful for when switching versions when using vanilla launcher
 
-##displayRuleType
+## displayRuleType
 This allows you to choose the order you want rules to be displayed
 * Type: `Cycle`
 * Default Value: `Alphabetical`
 * Extra Info: 
   * Current options: `Alphabetical` and `RuleType`
 
-##displayTimePlayed
+## displayTimePlayed
 This will display how long you have had your current client open for in the corner of the pause menu
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
     * Now you can see how much time you've ~~wasted~~ been productive
 
-##essentialClientMainMenu
+## essentialClientMainMenu
 This renders the Essential Client Menu on the main menu screen
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * This doesn't default to `true` because it might conflict with replay mod
 
-##highlightLavaSource
+## highlightLavaSource
 Highlights lava sources, credit to [plusls](https://github.com/plusls) for the original code for this in [their mod](https://github.com/plusls/oh-my-minecraft-client)
 * Type: `Boolean`
 * Default Value: `false`
 
-##increaseSpectatorScrollSensitivity
+## increaseSpectatorScrollSensitivity
 Increases the sensitivity at which you can scroll to go faster in spectator
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * Couples nicely with [increaseSpectatorScrollSpeed](#increasespectatorscrollspeed)
 
-##increaseSpectatorScrollSpeed
+## increaseSpectatorScrollSpeed
 Increases the limit at which you can scroll to go faster in spectator
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * You can now go faster than ever before!
 
-##missingTools
+## missingTools
 Adds client functionality to missingTools from Carpet for the client
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * This is implemented to fix any desync issues with servers, doesn't work if server doesn't have this rule enabled
 
-##musicInterval
+## musicInterval
 The amount of ticks between each soundtrack that is played
 * Type: `Integer`
 * Default Value: `0`
 * Extra Info:
   * 0 = (Vanilla Behaviour) random
 
-##musicTypes
+## musicTypes
 This allows you to select what music types play
 * Type: `Cycle`
 * Default Value: `Default`
 * Extra Info:
   * Current Options: `Default`, `Overworld`, `Nether`, `Overworld + Nether`, `End`, `Creative`, `Menu`, `Credits`, and `Any`
 
-##overrideCreativeWalkSpeed
+## overrideCreativeWalkSpeed
 This allows you to override the vanilla walk speed in creative mode
 * Type: `Double`
 * Default Value: `0.0`
 * Extra Info:
   * Limited to creative mode, stop thinking of cheating
 
-##removeWarnReceivedPassengers
+## removeWarnReceivedPassengers
 "This removes the 'Received passengers for unknown entity' warning on the client
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * This warning just clogs up logs when arround Minecarts
 
-##stackableShulkersInPlayerInventories
+## stackableShulkersInPlayerInventories
 This allows for shulkers to stack only in your inventory
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * This only works if the server has [EssentialAddons](https://github.com/Super-Santa/EssentialAddons) installed with `stackableShulkersInPlayerInventories` enabled
 
-##stackableShulkersWithItems
+## stackableShulkersWithItems
 This allows for shulkers with items to stack only in your inventory
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * This requires [stackableShulkersInPlayerInventories](#stackableshulkersinplayerinventories)
 
-##switchToTotem
+## switchToTotem
 This will switch to a totem (if you have one), under a set amount of health
 * Type: `Integer`
 * Default Value: `0`
 * Extra Info:
   * Health is out of 20
 
-##unlockAllRecipesOnJoin
+## unlockAllRecipesOnJoin
 Unlocks every recipe when joining a singleplayer world
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * This currently only works in singleplayer
 
-#Other Features
+# Other Features
 
-##carpetClient
+## carpetClient
 This is the code that was left over from the carpet client 1.15.2 version, this allows you to use a GUI to modify carpet rules instead of having to use commands, this only works in singleplayer.
 
 You can find more about it on the original github: [here](https://github.com/gnembon/carpet-client)
 
-##clientMacros
+## clientMacros
 This is a mini scripting language that allows you to make simple macros directly in minecraft without any external programs.
 
 Documentation and how to use can be found: [here]()
 
-##rebindF3
+## rebindF3
 This allows you to rebind the F3 key, the option for this is in controls under "EssentialClient"

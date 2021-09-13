@@ -80,8 +80,6 @@ public class ClientMacro {
                 ClientMacroCondition.ifs.add(ClientMacroCondition.getCurrentIf());
             return;
         }
-        if (ClientMacroCondition.lastIf != null && (ClientMacroCondition.lastIf.isTrue || ClientMacroCondition.lastIf.isElse))
-            return;
         try {
             switch (actions[0]) {
                 case "attack":

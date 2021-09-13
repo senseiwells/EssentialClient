@@ -66,7 +66,7 @@ public class ClientMacroCondition {
     public static void tryElse(MinecraftClient client, String[] actions) {
         assert client.player != null;
         if (lastIf == null || lastIf.isElse || lastIf.isTrue) {
-            ifs.add(null);
+            ifs.add(new ClientMacroCondition(client, client.player, actions , 0, false));
             return;
         }
         switch (actions[1]) {
