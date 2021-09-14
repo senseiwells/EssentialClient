@@ -6,7 +6,7 @@
 * [Available functions](#available-functions)
 * [How to use conditions](#how-to-use-conditions)
 * [Available conditions](#available-conditions)
-* [Example scripts]()
+* [Example scripts](#example-scripts)
 
 ## What is clientMacros?
 ClientMacros is a feature of [EssentialClient](https://github.com/senseiwells/EssentialClient) that allows you to script your own macros directly into minecraft.
@@ -154,10 +154,10 @@ else {
 }
 ```
 
-You are also able to nest `if`s inside of another (you may encounter bugs in long nests/chains, if so report them), an example here:
+You are also able to nest `if`s inside another (you may encounter bugs in long nests/chains, if so report them), an example here:
 ```
 if [condition] == [wanted_value] {
-    [if [condition2] == [wanted_value2] {
+    if [condition2] == [wanted_value2 {
         if [condition3] == [wanted_value3] {
             [function3]
         }
