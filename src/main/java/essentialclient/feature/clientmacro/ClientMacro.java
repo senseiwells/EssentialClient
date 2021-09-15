@@ -6,13 +6,8 @@ import essentialclient.utils.inventory.InventoryUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.ScreenshotUtils;
-import net.minecraft.screen.*;
-import net.minecraft.util.registry.Registry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
