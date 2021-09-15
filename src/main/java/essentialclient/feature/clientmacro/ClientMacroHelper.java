@@ -16,29 +16,11 @@ public class ClientMacroHelper {
     public static void drop(ClientPlayerEntity playerEntity, String action) {
         if (playerEntity.inventory.getStack(playerEntity.inventory.selectedSlot) == ItemStack.EMPTY)
             return;
-        boolean dropEntireStack;
-        switch (action) {
-            case "all":
-                dropEntireStack = true;
-                break;
-            case "one":
-                dropEntireStack = false;
-                break;
-            default:
-                return;
-        }
-        playerEntity.dropSelectedItem(dropEntireStack);
+        playerEntity.dropSelectedItem(action.equals("all"));
     }
 
     public static void holdStop(String action, KeyBinding key) {
-        switch (action) {
-            case "hold":
-                key.setPressed(true);
-                break;
-            case "stop":
-                key.setPressed(false);
-                break;
-        }
+        key.setPressed(action.equals("hold"));
     }
 
     public static void screenHandler(MinecraftClient client, ClientPlayerEntity playerEntity, String action) {
@@ -62,42 +44,30 @@ public class ClientMacroHelper {
     }
 
     public static void mouseClickAction(MinecraftClient client, String[] actions, MouseType mouseType) {
+        KeyBinding key = mouseType == MouseType.RIGHT ? client.options.keyUse : client.options.keyAttack;
         switch (actions[1]) {
             case "interval":
                 MouseClick newMouse = new MouseClick(getMouseTicks(actions), mouseType);
-                switch (mouseType) {
-                    case RIGHT:
-                        if (right != null && right.holdValue == newMouse.holdValue)
-                            return;
-                        right = newMouse;
+                if (mouseType == MouseType.RIGHT) {
+                    if (right != null && right.holdValue == newMouse.holdValue)
                         return;
-                    case LEFT:
-                        if (left != null && left.holdValue == newMouse.holdValue)
-                            return;
-                        left = newMouse;
+                    right = newMouse;
+                }
+                else {
+                    if (left != null && left.holdValue == newMouse.holdValue)
+                        return;
+                    left = newMouse;
                 }
                 break;
             case "hold":
-                switch (mouseType) {
-                    case RIGHT:
-                        client.options.keyUse.setPressed(true);
-                        break;
-                    case LEFT:
-                        client.options.keyAttack.setPressed(true);
-                        break;
-                }
+                key.setPressed(true);
                 break;
             case "stop":
-                switch (mouseType) {
-                    case RIGHT:
-                        client.options.keyUse.setPressed(false);
-                        right = null;
-                        break;
-                    case LEFT:
-                        client.options.keyAttack.setPressed(false);
-                        left = null;
-                        break;
-                }
+                if (mouseType == MouseType.RIGHT)
+                    right = null;
+                else
+                    left = null;
+                key.setPressed(false);
                 break;
             case "once":
                 MouseClick.clickMouse(mouseType);
@@ -162,14 +132,10 @@ public class ClientMacroHelper {
         }
 
         private static void clickMouse(MouseType type) {
-            switch (type) {
-                case LEFT:
-                    ((MinecraftClientInvoker) MinecraftClient.getInstance()).leftClickMouseAccessor();
-                    break;
-                case RIGHT:
-                    ((MinecraftClientInvoker)MinecraftClient.getInstance()).rightClickMouseAccessor();
-                    break;
-            }
+            if (type == MouseType.RIGHT)
+                ((MinecraftClientInvoker) MinecraftClient.getInstance()).leftClickMouseAccessor();
+            else
+                ((MinecraftClientInvoker)MinecraftClient.getInstance()).rightClickMouseAccessor();
         }
 
         public static void checkMouse() {

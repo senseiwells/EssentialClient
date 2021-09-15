@@ -149,4 +149,17 @@ public class ClientMacroCondition {
     private boolean checkEqualOperator() {
         return this.currentActions[this.operatorLevel].equals("==");
     }
+
+    protected static boolean checkForConditionals(String fullAction, String[] actions) {
+        if (actions[0].equals("}")) {
+            ClientMacroCondition.removeCurrentIf();
+            return true;
+        }
+        if (ClientMacroCondition.getCurrentIf() != null && !ClientMacroCondition.getCurrentIf().isTrue && !ClientMacroCondition.getCurrentIf().isElse) {
+            if (fullAction.contains("{"))
+                ClientMacroCondition.ifs.add(ClientMacroCondition.getCurrentIf());
+            return true;
+        }
+        return false;
+    }
 }

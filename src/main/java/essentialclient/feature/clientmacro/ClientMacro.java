@@ -50,16 +50,15 @@ public class ClientMacro {
         }
         try {
             reader = reader == null ? Files.newBufferedReader(macroFile) : reader;
-            while (!isPaused && reader != null && (currentLine = reader.readLine()) != null) {
+            while (!isPaused && reader != null && (currentLine = reader.readLine()) != null)
                 action(currentLine, client);
-            }
-            if (currentLine == null) {
-                isPaused = false;
-                reader = null;
-                if (!loop) {
-                    enabled = false;
-                    EssentialUtils.sendMessageToActionBar("§6Macro finished!");
-                }
+            if (currentLine  != null)
+               return;
+            isPaused = false;
+            reader = null;
+            if (!loop) {
+                enabled = false;
+                EssentialUtils.sendMessageToActionBar("§6Macro finished!");
             }
         }
         catch (IOException e) {
@@ -71,15 +70,8 @@ public class ClientMacro {
         ClientPlayerEntity player = client.player;
         assert player != null;
         String[] actions = fullAction.toLowerCase(Locale.ROOT).trim().split(" ");
-        if (actions[0].equals("}")) {
-            ClientMacroCondition.removeCurrentIf();
+        if (ClientMacroCondition.checkForConditionals(fullAction, actions))
             return;
-        }
-        if (ClientMacroCondition.getCurrentIf() != null && !ClientMacroCondition.getCurrentIf().isTrue && !ClientMacroCondition.getCurrentIf().isElse) {
-            if (fullAction.contains("{"))
-                ClientMacroCondition.ifs.add(ClientMacroCondition.getCurrentIf());
-            return;
-        }
         try {
             switch (actions[0]) {
                 case "attack":
