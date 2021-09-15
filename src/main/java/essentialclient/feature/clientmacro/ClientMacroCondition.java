@@ -1,11 +1,16 @@
 package essentialclient.feature.clientmacro;
 
+import essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.screen.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -46,16 +51,26 @@ public class ClientMacroCondition {
         boolean bool;
         switch (this.currentActions[this.actionLevel]) {
             case "looking_at_block":
-                bool = this.checkEqualOperator() && this.checkLookingAtBlock(this.playerEntity);
+                bool = this.checkEqualOperator() && this.checkLookingAtBlock();
+                break;
+            case "looking_at_entity":
+                bool = this.checkEqualOperator() && this.checkLookingAtEntity();
                 break;
             case "held_item":
-                bool = this.checkEqualOperator() && this.checkHeldItem(this.playerEntity);
+                bool = this.checkEqualOperator() && this.checkHeldItem();
                 break;
             case "health":
                 bool = this.compareNumber((int) this.playerEntity.getHealth(), Integer.parseInt(this.currentActions[this.operatorLevel + 1]));
                 break;
+            case "is_trade_disabled":
+                int index = this.currentActions.length > 2 ? Integer.parseInt(this.currentActions[operatorLevel]) : 0;
+                bool = InventoryUtils.checkTradeDisabled(this.client, index);
+                break;
             case "inventory_is_full":
                 bool = this.playerEntity.inventory.getEmptySlot() != -1;
+                break;
+            case "in_inventory_gui":
+                bool = this.checkInventoryScreen();
                 break;
             default:
                 return;
@@ -107,19 +122,33 @@ public class ClientMacroCondition {
         ifs.clear();
     }
 
-    private boolean checkHeldItem(ClientPlayerEntity playerEntity) {
+    private boolean checkHeldItem() {
         Item item = Registry.ITEM.get(new Identifier(this.currentActions[this.operatorLevel + 1]));
-        return playerEntity.inventory.getMainHandStack().getItem() == item;
+        return this.playerEntity.inventory.getMainHandStack().getItem() == item;
     }
 
-    private boolean checkLookingAtBlock(ClientPlayerEntity playerEntity) {
+    private boolean checkLookingAtBlock() {
         Block block = Registry.BLOCK.get(new Identifier(this.currentActions[this.operatorLevel + 1]));
-        HitResult result = playerEntity.raycast(20D, 0.0F, true);
+        HitResult result = this.playerEntity.raycast(20D, 0.0F, true);
         if (result.getType() == HitResult.Type.BLOCK) {
-            BlockPos blockPos = ((BlockHitResult)result).getBlockPos();
-            return block == playerEntity.world.getBlockState(blockPos).getBlock();
+            BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
+            return block == this.playerEntity.world.getBlockState(blockPos).getBlock();
         }
         return false;
+    }
+
+    private boolean checkLookingAtEntity() {
+        EntityType<?> wantedEntityType = Registry.ENTITY_TYPE.get(new Identifier(this.currentActions[this.operatorLevel + 1]));
+        return this.client.targetedEntity != null && this.client.targetedEntity.getType() == wantedEntityType;
+    }
+
+    private boolean checkInventoryScreen() {
+        ScreenHandler screenHandler = this.playerEntity.currentScreenHandler;
+        return  screenHandler instanceof GenericContainerScreenHandler ||
+                screenHandler instanceof MerchantScreenHandler ||
+                screenHandler instanceof HopperScreenHandler ||
+                screenHandler instanceof FurnaceScreenHandler ||
+                client.currentScreen instanceof InventoryScreen;
     }
 
     private boolean compareNumber(int x, int y) {

@@ -2,11 +2,15 @@ package essentialclient.feature.clientmacro;
 
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
+import essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+
+import java.lang.reflect.Array;
 
 public class ClientMacroHelper {
 
@@ -94,6 +98,12 @@ public class ClientMacroHelper {
         client.disconnect();
     }
 
+    public static void trade(MinecraftClient client, String[] actions) {
+        int index = Integer.parseInt(actions[1]);
+        boolean shouldDrop = actions.length > 2 && actions[2].equals("drop");
+        InventoryUtils.tradeAllItems(client, index, shouldDrop);
+    }
+
     public static void stopMacro(MinecraftClient client) {
         ClientMacro.isPaused = false;
         ClientMacro.loop = false;
@@ -133,9 +143,9 @@ public class ClientMacroHelper {
 
         private static void clickMouse(MouseType type) {
             if (type == MouseType.RIGHT)
-                ((MinecraftClientInvoker) MinecraftClient.getInstance()).leftClickMouseAccessor();
-            else
                 ((MinecraftClientInvoker)MinecraftClient.getInstance()).rightClickMouseAccessor();
+            else
+                ((MinecraftClientInvoker) MinecraftClient.getInstance()).leftClickMouseAccessor();
         }
 
         public static void checkMouse() {

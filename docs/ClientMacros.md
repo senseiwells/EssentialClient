@@ -85,6 +85,11 @@ Anything that has a [ ] should be replaced with an appropriate value
 - Allows you to drop all of a certain item
 - Usages: `drop_all minecraft:[item_name]`
 
+### `trade`
+- Allows you to trade with a villager by using the index of the trade (first trade index == 0)
+- [drop] allows you to drop all of the traded items after trading (options are "drop", or leave blank)
+- Usages: `trade [index] [drop]`
+
 ### `screenshot`
 - Allows you to take a screenshot
 - Usages: `screenshot`
@@ -179,6 +184,10 @@ Anything that has a [ ] should be replaced with an appropriate value
 - This allows you to check the block that the player is looking at
 - Usage: `if looking_at_block == minecraft:[block_name]`
 
+### `looking_at_entity`
+- This allows you to check the entity that the player is looking at
+- Usage: `if looking_at_entity == minecraft:[entity_name]`
+
 ### `held_item`
 - This is similar to `looking_at_block` however checks the item that the player is holding
 - Usage: `if held_item == minecraft:[item_name]`
@@ -187,9 +196,17 @@ Anything that has a [ ] should be replaced with an appropriate value
 - This allows you to check the players health
 - Usage: `if health == [integer]`, `if health < [integer]`
 
+### `is_trade_disabled`
+- This allows you to check whether a trade is disabled or not using the index of a trade
+- Usage: `if is_trade_disabled [index]`
+
 ### `inventory_is_full`
 - This allows you to check if a player's inventory is full of items
 - Usage: `if inventory_is_full`
+
+### `in_inventory_gui`
+- This allows you to check whether the player has an inventory gui open
+- Usage: `if in_inventory_gui`
 
 ## Example scripts
 
