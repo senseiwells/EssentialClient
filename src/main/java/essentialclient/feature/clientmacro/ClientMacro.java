@@ -1,13 +1,15 @@
 package essentialclient.feature.clientmacro;
 
+import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.inventory.InventoryUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.ScreenshotUtils;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -66,7 +68,7 @@ public class ClientMacro {
         }
     }
 
-    private static void action(String fullAction, MinecraftClient client) {
+    protected static void action(String fullAction, MinecraftClient client) {
         ClientPlayerEntity player = client.player;
         assert player != null;
         String[] actions = fullAction.toLowerCase(Locale.ROOT).trim().split(" ");
@@ -74,6 +76,8 @@ public class ClientMacro {
             return;
         try {
             switch (actions[0]) {
+                case "//":
+                    return;
                 case "attack":
                     ClientMacroHelper.mouseClickAction(client, actions, ClientMacroHelper.MouseType.LEFT);
                     break;
@@ -122,7 +126,10 @@ public class ClientMacro {
                     InventoryUtils.dropAllItemType(player, actions[1]);
                     break;
                 case "trade":
-                    ClientMacroHelper.trade(client,  actions);
+                    ClientMacroHelper.trade(client, actions);
+                    break;
+                case "trade_for":
+                    ClientMacroHelper.trade(client, actions, Registry.ITEM.get(new Identifier(actions[1])));
                     break;
                 case "continue":
                     reader = null;
@@ -154,7 +161,11 @@ public class ClientMacro {
         }
     }
 
-    private static Path getFile() {
-        return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient").resolve("macro.txt");
+    public static Path getFile() {
+        return getDir().resolve(ClientRules.CLIENT_MACRO_FILENAME.getString() + ".txt");
+    }
+
+    public static Path getDir() {
+        return EssentialUtils.getEssentialConfigFile().resolve("Macros");
     }
 }

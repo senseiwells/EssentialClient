@@ -19,8 +19,9 @@ some basic conditionals allowing for more complex macros.
 The intended use is to be able to script a boring repetitive task into a macro and have the game do it for you, without having to write a whole mod for it.
 
 ## How to use clientMacros
-You must have [EssentialClient](https://github.com/senseiwells/EssentialClient) installed, then after you have booted the game go to your .minecraft/config/EssentialClient folder.
-If there is not a text file called "macro" then create one, then open the text file and this is where you can write your script.
+You must have [EssentialClient](https://github.com/senseiwells/EssentialClient) installed, then after you have booted the game you can navigate to the essential
+client menu where you can open your macro file (bottom right). You can also change your macro file name using `clientMacroFilename`, clientMacros are stored in
+`.minecraft/config/EssentialClient/Macros`
 
 In game, you can navigate to controls and find the Client Macro keybind which is under "EssentialClient", bind this to a key and once you press this key
 in game the script you have written will execute (if valid). 
@@ -32,6 +33,10 @@ Anything that has a [ ] should be replaced with an appropriate value
 ### `loop` 
 - This function should always be used at the start of the macro to determine whether the macro should loop
 - Usages: `loop true`, `loop false`
+
+### `//`
+- This allows you to write comments in your scripts, just to let people know why you are using a function ect.
+- Usages: `//write whatever you feel like here :)`
 
 ### `attack` 
 - This function makes the player attack (or break)
@@ -87,8 +92,13 @@ Anything that has a [ ] should be replaced with an appropriate value
 
 ### `trade`
 - Allows you to trade with a villager by using the index of the trade (first trade index == 0)
-- [drop] allows you to drop all of the traded items after trading (options are "drop", or leave blank)
+- [drop] allows you to drop all the traded items after trading (options are "drop", or leave blank)
 - Usages: `trade [index] [drop]`
+
+### `trade_for`
+- This allows you to try and trade for an item instead of an index like above
+- [drop] allows you to drop all the traded items after trading (options are "drop", or leave blank)
+- Usages: `trade minecraft:[item] [drop]`
 
 ### `screenshot`
 - Allows you to take a screenshot
@@ -116,7 +126,7 @@ Using conditions in clientMacros is very simple, you are able to use `if`, `else
 Conditions are used to check whether something is true or false, and a list of things that you are able to check
 are [here](#available-conditions).
 
-The structure of conditions is very important, when using an if it must be structured like this:
+The structure of conditions is very important, when using an if it must be structured 1 of 2 ways, [2nd way here](#other-way-to-structure-ifs), like this:
 ```
 if [condition] == [wanted_value] {
     [function]
@@ -176,6 +186,30 @@ if [condition] == [wanted_value] {
 }
 ```
 
+##### Other way to structure `if`s
+However, you can also structure `if`s slightly differently, but this only allows for one function to be used, and you are unable to nest `else`s.
+```
+if [condition] == [wanted_value] -> [function]
+```
+This method looks cleaner and takes up less space.
+
+You are also able to chain if statements like this, basically an easy way to write an AND statement:
+```
+if [condition] == [wanted_value] -> if [condition2] == [wanted_value2] -> [function]
+```
+However, you **cannot** do something like this:
+```
+if [condition] == [wanted_value] -> if [condition2] == [wanted_value2] {
+    [function]
+}
+```
+This way of structuring `if`s also works for `else if`s and `else`s, an example here:
+```
+if looking_at_block == minecraft:grass_block -> say grass
+else if looking_at_block == minecraft:water -> say water
+else -> say bonk
+```
+
 ## Available Conditions
 
 Anything that has a [ ] should be replaced with an appropriate value 
@@ -197,8 +231,12 @@ Anything that has a [ ] should be replaced with an appropriate value
 - Usage: `if health == [integer]`, `if health < [integer]`
 
 ### `is_trade_disabled`
-- This allows you to check whether a trade is disabled or not using the index of a trade
-- Usage: `if is_trade_disabled [index]`
+- This allows you to check whether a trade is disabled or not using the index of a trade, or using an item
+- Usage: `if is_trade_disabled [index]`, `if is_trade_disabled minecraft:[item]`
+
+### `villager_has_trade_for`
+- This allows you to check whether a villager has a certain trade
+- Usage: `if villager_has_trade_for minecraft:[item]`
 
 ### `inventory_is_full`
 - This allows you to check if a player's inventory is full of items

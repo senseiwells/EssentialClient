@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ClientMacroHelper {
@@ -101,6 +102,14 @@ public class ClientMacroHelper {
         InventoryUtils.tradeAllItems(client, index, shouldDrop);
     }
 
+    public static void trade(MinecraftClient client, String[] actions, Item item) {
+        boolean shouldDrop = actions.length > 2 && actions[2].equals("drop");
+        int index = InventoryUtils.getIndexOfItem(client, item);
+        if (index == -1)
+            return;
+        InventoryUtils.tradeAllItems(client, index, shouldDrop);
+    }
+
     public static void stopMacro(MinecraftClient client) {
         ClientMacro.isPaused = false;
         ClientMacro.loop = false;
@@ -112,6 +121,16 @@ public class ClientMacroHelper {
         client.options.keyForward.setPressed(false);
         client.options.keyAttack.setPressed(false);
         client.options.keyUse.setPressed(false);
+    }
+
+    public static String concatStringArray(String[] array, int fromIndex) {
+        if (fromIndex < 0 || fromIndex > array.length)
+            return null;
+        StringBuilder builder = new StringBuilder();
+        for (int i = fromIndex; i <= array.length - 1; i++) {
+            builder.append(array[i]).append(" ");
+        }
+        return builder.toString();
     }
 
     enum MouseType {

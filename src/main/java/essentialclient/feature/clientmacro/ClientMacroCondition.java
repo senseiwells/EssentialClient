@@ -13,8 +13,10 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,8 +64,15 @@ public class ClientMacroCondition {
                 bool = this.compareNumber((int) this.playerEntity.getHealth(), Integer.parseInt(this.currentActions[this.operatorLevel + 1]));
                 break;
             case "is_trade_disabled":
-                int index = this.currentActions.length > 2 ? Integer.parseInt(this.currentActions[operatorLevel]) : 0;
-                bool = InventoryUtils.checkTradeDisabled(this.client, index);
+                try {
+                    bool = InventoryUtils.checkTradeDisabled(this.client, this.currentActions.length > 2 ? Integer.parseInt(this.currentActions[operatorLevel]) : 0);
+                }
+                catch (NumberFormatException nfe) {
+                    bool = InventoryUtils.checkTradeDisabled(client, Registry.ITEM.get(new Identifier(this.currentActions[operatorLevel])));
+                }
+                break;
+            case "villager_has_trade_for":
+                bool = InventoryUtils.checkHasTrade(this.client, Registry.ITEM.get(new Identifier(this.currentActions[operatorLevel])));
                 break;
             case "inventory_is_full":
                 bool = this.playerEntity.inventory.getEmptySlot() != -1;
@@ -75,17 +84,29 @@ public class ClientMacroCondition {
                 return;
         }
         this.isTrue = this.inverted != bool;
+        if (Arrays.asList(this.currentActions).contains("->")) {
+            removeCurrentIf();
+            String fullActions = ClientMacroHelper.concatStringArray(this.currentActions, ArrayUtils.indexOf(this.currentActions, "->") + 1);
+            if (fullActions != null && this.isTrue)
+                ClientMacro.action(fullActions, client);
+        }
     }
 
     public static void tryElse(MinecraftClient client, String[] actions) {
         assert client.player != null;
         if (lastIf == null || lastIf.isElse || lastIf.isTrue) {
-            ifs.add(new ClientMacroCondition(client, client.player, actions , 0, false));
+            if (!Arrays.asList(actions).contains("->"))
+                ifs.add(new ClientMacroCondition(client, client.player, actions , 0, false));
             return;
         }
         switch (actions[1]) {
             case "if":
                 new ClientMacroCondition(client, client.player, actions , 2, false).readAction();
+                break;
+            case "->":
+                String fullActions = ClientMacroHelper.concatStringArray(actions, 2);
+                if (fullActions != null)
+                    ClientMacro.action(fullActions, client);
                 break;
             case "{":
                 new ClientMacroCondition(client, client.player, actions , 0, true).addToList();

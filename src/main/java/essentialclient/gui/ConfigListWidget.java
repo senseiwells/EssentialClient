@@ -9,7 +9,6 @@ import essentialclient.gui.entries.CycleListEntry;
 import essentialclient.gui.entries.NumberListEntry;
 import essentialclient.gui.entries.StringListEntry;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
-import essentialclient.gui.rulescreen.GameRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.render.ITooltipEntry;
 import net.fabricmc.api.EnvType;
@@ -91,12 +90,6 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
                 }
             }
         });
-    }
-
-    public ConfigListWidget(GameRulesScreen gui, MinecraftClient client) {
-        super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
-        //GameRules serverRules = CarpetServer.minecraft_server.getGameRules();
-        //todo
     }
 
     public void clear() {

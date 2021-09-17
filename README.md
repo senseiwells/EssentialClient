@@ -1,7 +1,10 @@
 # EssentialClient
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
-This mod is currently ONLY for 1.16.5 and requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.26+.
+This mod is currently **ONLY** for 1.16.5 and requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.26+.
+
+To access the Essential Client menu you must join a world, then it will be accessible to you when you press
+`ESC`, you can enable menu access from the title screen by enabling [essentialClientMainMenu](#essentialclientmainmenu).
 
 Feel free to contribute by adding as many features as you want!
 
@@ -10,6 +13,7 @@ Feel free to contribute by adding as many features as you want!
 * [announceAFK](#announceafk)
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
+* [clientMacroFileName](#clientmacrofilename)
 * [commandMusic](#commandmusic)
 * [commandPlayerClient](#commandplayerclient)
 * [commandPlayerList](#commandplayerlist)
@@ -43,6 +47,7 @@ Feel free to contribute by adding as many features as you want!
 
 * [carpetClient](#carpetclient)
 * [clientMacros](#clientmacros)
+* [gameruleScreen](#gamerulescreen)
 * [rebindF3](#rebindf3)
 
 # Client Rules:
@@ -70,6 +75,11 @@ This will auto walk after you have held your key for set amount of ticks
 * Default Value: `0`
 * Extra Info:
   * Once auto walking press backwards or forward again to cancel
+
+## clientMacroFilename
+This allows you to choose the file you want to use for your macro
+* Type: `String`
+* Default Value: `macro`
 
 ## commandMusic
 This command allows you to manipulate the current music
@@ -266,6 +276,9 @@ You can find more about it on the original github: [here](https://github.com/gne
 This is a mini scripting language that allows you to make simple macros directly in minecraft without any external programs.
 
 Documentation and how to use can be found: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/ClientMacros.md)
+
+## gameruleScreen
+This is a GUI that allows you to modify gamerules in singleplayer, it is accessible from the Essential Client menu
 
 ## rebindF3
 This allows you to rebind the F3 key, the option for this is in controls under "EssentialClient"

@@ -36,7 +36,8 @@ public enum ClientRules {
     SWITCH_TO_TOTEM                         ("switchToTotem"                            , Type.INTEGER          , "This will switch to a totem (if you have one), under a set amount of health" , "0"           , false),
 
     //String Rules
-    ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk", "I am now AFK"),
+    ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk"              , "I am now AFK"),
+    CLIENT_MACRO_FILENAME                   ("clientMacroFilename"                      , "This allows you to choose a specific macro text file name"       , "macro"),
 
     //Cycling Rules
     DISPLAY_RULE_TYPE                       ("displayRuleType"                          , Type.CYCLE            , "This allows you to choose the order you want rules to be displayed"          , "Alphabetical", new String[]{"Alphabetical", "Rule Type"}                                                                             , false),

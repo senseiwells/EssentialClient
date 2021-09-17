@@ -14,6 +14,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.village.TradeOffer;
 
 import java.util.function.Predicate;
 
@@ -108,6 +109,41 @@ public class InventoryUtils {
             return false;
         MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
         return merchantScreen.getScreenHandler().getRecipes().get(index).isDisabled();
+    }
+
+    public static boolean checkTradeDisabled(MinecraftClient client, Item item) {
+        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+            return false;
+        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
+        for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
+            if (offer.getSellItem().getItem() == item)
+                return offer.isDisabled();
+        }
+        return false;
+    }
+
+    public static boolean checkHasTrade(MinecraftClient client, Item item) {
+        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+            return false;
+        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
+        for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
+            if (offer.getSellItem().getItem() == item)
+                return true;
+        }
+        return false;
+    }
+
+    public static int getIndexOfItem(MinecraftClient client, Item item) {
+        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+            return -1;
+        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
+        int i = 0;
+        for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
+            if (offer.getSellItem().getItem() == item)
+                return i;
+            i++;
+        }
+        return -1;
     }
 
     public static void shiftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int index) {

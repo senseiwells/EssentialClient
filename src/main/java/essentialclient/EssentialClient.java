@@ -34,6 +34,7 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
         PlayerClientCommandHelper.readSaveFile();
         PlayerListCommandHelper.readSaveFile();
         ClientRuleHelper.readSaveFile();
+        EssentialUtils.checkifMacroFileExists();
 
         HighlightLavaSources.init();
 
