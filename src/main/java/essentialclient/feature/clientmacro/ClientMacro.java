@@ -5,8 +5,10 @@ import essentialclient.gui.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.inventory.InventoryUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -113,7 +115,7 @@ public class ClientMacro {
                     player.setSprinting(Boolean.parseBoolean(actions[1]));
                     break;
                 case "sneak":
-                    player.setSneaking(Boolean.parseBoolean(actions[1]));
+                    client.options.keySneak.setPressed(actions[1].equals("true"));
                     break;
                 case "look":
                     player.yaw = Float.parseFloat(actions[1]);

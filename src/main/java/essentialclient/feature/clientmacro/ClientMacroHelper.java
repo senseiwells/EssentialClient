@@ -118,6 +118,7 @@ public class ClientMacroHelper {
         right = null;
         ClientMacroCondition.removeAllIf();
         ClientMacroCondition.lastIf = null;
+        client.options.keySneak.setPressed(false);
         client.options.keyForward.setPressed(false);
         client.options.keyAttack.setPressed(false);
         client.options.keyUse.setPressed(false);
