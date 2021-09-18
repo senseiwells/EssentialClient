@@ -113,7 +113,7 @@ public class ClientMacro {
                     player.setSprinting(Boolean.parseBoolean(actions[1]));
                     break;
                 case "sneak":
-                    player.setSneaking(Boolean.parseBoolean(actions[1]));
+                    client.options.keySneak.setPressed(actions[1].equals("true"));
                     break;
                 case "look":
                     player.setYaw(Float.parseFloat(actions[1]));
