@@ -7,7 +7,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 
@@ -35,6 +34,7 @@ public class ClientRulesScreen extends Screen {
         this.children.add(this.list);
         this.addButton(this.searchBox);
         this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.openScreen(this.parent)));
+        this.setInitialFocus(this.searchBox);
     }
 
     @Override

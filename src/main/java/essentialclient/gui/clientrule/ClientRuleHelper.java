@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
+import essentialclient.utils.EssentialUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -94,6 +95,10 @@ public class ClientRuleHelper {
                 break;
             case DISPLAY_RULE_TYPE:
                 gui.refreshRules(gui.getSearchBoxText());
+                break;
+            case CLIENT_MACRO_FILENAME:
+                EssentialUtils.checkifMacroFileExists();
+                break;
         }
     }
     protected static void checkRules() {

@@ -4,7 +4,6 @@ import essentialclient.EssentialClient;
 import essentialclient.feature.AnnounceAFK;
 import essentialclient.commands.TravelCommand;
 import essentialclient.gui.clientrule.ClientRules;
-import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;

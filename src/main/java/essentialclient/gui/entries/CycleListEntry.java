@@ -1,13 +1,10 @@
 package essentialclient.gui.entries;
 
-import carpet.settings.ParsedRule;
 import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
-import essentialclient.gui.rulescreen.ServerRulesScreen;
 import com.google.common.collect.ImmutableList;
-import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
 import essentialclient.utils.render.RenderHelper;
 import net.fabricmc.api.EnvType;
