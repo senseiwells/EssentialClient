@@ -60,10 +60,10 @@ public class MusicTrackerMixin {
 
             if (!this.client.getSoundManager().isPlaying(this.current)) {
                 this.current = null;
-                this.timeUntilNextSong = Math.min(this.timeUntilNextSong, MathHelper.nextInt(this.random, musicSound.getMinDelay(), ClientRules.MUSIC_INTERVAL.getInt()));
+                this.timeUntilNextSong = Math.min(this.timeUntilNextSong, MathHelper.nextInt(this.random, musicSound.getMinDelay(), ClientRules.MUSIC_INTERVAL.getInt() == 0 ? musicSound.getMaxDelay() : ClientRules.MUSIC_INTERVAL.getInt()));
             }
         }
-        this.timeUntilNextSong = Math.min(this.timeUntilNextSong, ClientRules.MUSIC_INTERVAL.getInt());
+        this.timeUntilNextSong = Math.min(this.timeUntilNextSong, ClientRules.MUSIC_INTERVAL.getInt() == 0 ? musicSound.getMaxDelay() : ClientRules.MUSIC_INTERVAL.getInt());
         if (this.current == null && this.timeUntilNextSong-- <= 1) {
             this.play(musicSound);
         }
