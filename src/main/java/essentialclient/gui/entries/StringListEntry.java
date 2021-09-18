@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -112,9 +113,9 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.textField.x = x + 182;
         this.textField.y = y + 3;
         if (this.textField.getText().isEmpty()) {
-            DiffuseLighting.enable();
+            DiffuseLighting.enableGuiDepthLighting();
             client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.textField.x + this.textField.getWidth() - 18, this.textField.y- 1);
-            DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
         }
         
         this.infoButton.x = x + 156;
@@ -166,5 +167,10 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
             this.clientSettings.setValue(widget.getText());
             ClientRuleHelper.writeSaveFile();
         }
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.infoButton ,this.textField, this.resetButton);
     }
 }

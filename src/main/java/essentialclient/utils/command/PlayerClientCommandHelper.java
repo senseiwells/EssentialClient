@@ -125,8 +125,8 @@ public class PlayerClientCommandHelper {
             x = context.getSource().getPlayer().getX();
             y = context.getSource().getPlayer().getY();
             z = context.getSource().getPlayer().getZ();
-            yaw = context.getSource().getPlayer().yaw;
-            pitch = context.getSource().getPlayer().pitch;
+            yaw = context.getSource().getPlayer().getYaw();
+            pitch = context.getSource().getPlayer().getPitch();
         }
         switch (dimension) {
             case "minecraft:overworld": case "minecraft:the_nether": case "minecraft:the_end":

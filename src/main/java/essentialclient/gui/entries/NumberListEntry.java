@@ -10,6 +10,7 @@ import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
 import essentialclient.utils.render.RenderHelper;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -114,9 +115,9 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.numberField.y = y + 3;
         this.numberField.setEditableColor(this.invalid ? 16733525 : 16777215);
         if (invalid) {
-            DiffuseLighting.enable();
+            DiffuseLighting.enableGuiDepthLighting();
             client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.numberField.x + this.numberField.getWidth() - 18, this.numberField.y- 1);
-            DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
         }
         
         this.infoButton.x = x + 156;
@@ -183,5 +184,10 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
             isNumber = false;
         }
         this.setInvalid(!isNumber);
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.infoButton , this.numberField, this.resetButton);
     }
 }

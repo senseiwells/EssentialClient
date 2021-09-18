@@ -15,6 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
@@ -85,5 +86,10 @@ public class CycleListEntry extends ConfigListWidget.Entry implements ITooltipEn
             description = this.clientSettings.description;
             RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
         }
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.infoButton ,this.editButton, this.resetButton);
     }
 }

@@ -16,7 +16,7 @@ public class ClientMacroHelper {
     private static MouseClick left;
 
     public static void drop(ClientPlayerEntity playerEntity, String action) {
-        if (playerEntity.inventory.getStack(playerEntity.inventory.selectedSlot) == ItemStack.EMPTY)
+        if (playerEntity.getInventory().getStack(playerEntity.getInventory().selectedSlot) == ItemStack.EMPTY)
             return;
         playerEntity.dropSelectedItem(action.equals("all"));
     }
@@ -27,12 +27,8 @@ public class ClientMacroHelper {
 
     public static void screenHandler(MinecraftClient client, ClientPlayerEntity playerEntity, String action) {
         switch (action) {
-            case "open":
-                client.openScreen(new InventoryScreen(playerEntity));
-                break;
-            case "close":
-                playerEntity.closeHandledScreen();
-                break;
+            case "open" -> client.setScreen(new InventoryScreen(playerEntity));
+            case "close" -> playerEntity.closeHandledScreen();
         }
     }
 
@@ -48,31 +44,27 @@ public class ClientMacroHelper {
     public static void mouseClickAction(MinecraftClient client, String[] actions, MouseType mouseType) {
         KeyBinding key = mouseType == MouseType.RIGHT ? client.options.keyUse : client.options.keyAttack;
         switch (actions[1]) {
-            case "interval":
+            case "interval" -> {
                 MouseClick newMouse = new MouseClick(getMouseTicks(actions), mouseType);
                 if (mouseType == MouseType.RIGHT) {
                     if (right != null && right.holdValue == newMouse.holdValue)
                         return;
                     right = newMouse;
-                }
-                else {
+                } else {
                     if (left != null && left.holdValue == newMouse.holdValue)
                         return;
                     left = newMouse;
                 }
-                break;
-            case "hold":
-                key.setPressed(true);
-                break;
-            case "stop":
+            }
+            case "hold" -> key.setPressed(true);
+            case "stop" -> {
                 if (mouseType == MouseType.RIGHT)
                     right = null;
                 else
                     left = null;
                 key.setPressed(false);
-                break;
-            case "once":
-                MouseClick.clickMouse(mouseType);
+            }
+            case "once" -> MouseClick.clickMouse(mouseType);
         }
     }
 

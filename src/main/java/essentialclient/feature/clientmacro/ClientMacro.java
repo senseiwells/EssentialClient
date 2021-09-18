@@ -7,7 +7,7 @@ import essentialclient.utils.inventory.InventoryUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.ScreenshotUtils;
+import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -88,7 +88,7 @@ public class ClientMacro {
                     int slot = Integer.parseInt(actions[1]);
                     if (slot < 0 || slot > 8)
                         return;
-                    player.inventory.selectedSlot = slot;
+                    player.getInventory().selectedSlot = slot;
                     break;
                 case "say":
                     player.sendChatMessage(fullAction.replace("say ", ""));
@@ -116,8 +116,8 @@ public class ClientMacro {
                     player.setSneaking(Boolean.parseBoolean(actions[1]));
                     break;
                 case "look":
-                    player.yaw = Float.parseFloat(actions[1]);
-                    player.pitch = Float.parseFloat(actions[2]);
+                    player.setYaw(Float.parseFloat(actions[1]));
+                    player.setPitch(Float.parseFloat(actions[2]));
                     break;
                 case "drop":
                     ClientMacroHelper.drop(player, actions[1]);
@@ -135,7 +135,7 @@ public class ClientMacro {
                     reader = null;
                     break;
                 case "screenshot":
-                    ScreenshotUtils.saveScreenshot(client.runDirectory, client.getWindow().getWidth(), client.getWindow().getHeight(), client.getFramebuffer(), text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text)));
+                    ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text)));
                     break;
                 case "logout":
                     ClientMacroHelper.tryLogout(client);

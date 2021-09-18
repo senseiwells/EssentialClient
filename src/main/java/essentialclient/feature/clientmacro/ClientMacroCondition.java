@@ -75,7 +75,7 @@ public class ClientMacroCondition {
                 bool = InventoryUtils.checkHasTrade(this.client, Registry.ITEM.get(new Identifier(this.currentActions[operatorLevel])));
                 break;
             case "inventory_is_full":
-                bool = this.playerEntity.inventory.getEmptySlot() != -1;
+                bool = this.playerEntity.getInventory().getEmptySlot() != -1;
                 break;
             case "in_inventory_gui":
                 bool = this.checkInventoryScreen();
@@ -100,17 +100,13 @@ public class ClientMacroCondition {
             return;
         }
         switch (actions[1]) {
-            case "if":
-                new ClientMacroCondition(client, client.player, actions , 2, false).readAction();
-                break;
-            case "->":
+            case "if" -> new ClientMacroCondition(client, client.player, actions, 2, false).readAction();
+            case "->" -> {
                 String fullActions = ClientMacroHelper.concatStringArray(actions, 2);
                 if (fullActions != null)
                     ClientMacro.action(fullActions, client);
-                break;
-            case "{":
-                new ClientMacroCondition(client, client.player, actions , 0, true).addToList();
-                break;
+            }
+            case "{" -> new ClientMacroCondition(client, client.player, actions, 0, true).addToList();
         }
     }
 
@@ -144,7 +140,7 @@ public class ClientMacroCondition {
 
     private boolean checkHeldItem() {
         Item item = Registry.ITEM.get(new Identifier(this.currentActions[this.operatorLevel + 1]));
-        return this.playerEntity.inventory.getMainHandStack().getItem() == item;
+        return this.playerEntity.getInventory().getMainHandStack().getItem() == item;
     }
 
     private boolean checkLookingAtBlock() {

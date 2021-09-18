@@ -41,11 +41,11 @@ public class InventoryUtils {
             if (client.interactionManager == null)
                 return;
             if (slotType == EquipmentSlot.MAINHAND) {
-                int currentHotbarSlot = playerEntity.inventory.selectedSlot;
+                int currentHotbarSlot = playerEntity.getInventory().selectedSlot;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
             }
             else if (slotType == EquipmentSlot.OFFHAND) {
-                int tempSlot = (playerEntity.inventory.selectedSlot + 1) % 9;
+                int tempSlot = (playerEntity.getInventory().selectedSlot + 1) % 9;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, 45, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
@@ -69,9 +69,8 @@ public class InventoryUtils {
     }
 
     public static void tradeAllItems(MinecraftClient client, int index, boolean dropItems) {
-        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
             return;
-        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
         Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
         while (true) {
             selectTrade(client, merchantScreen, index);
@@ -105,16 +104,14 @@ public class InventoryUtils {
     }
 
     public static boolean checkTradeDisabled(MinecraftClient client, int index) {
-        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
             return false;
-        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
         return merchantScreen.getScreenHandler().getRecipes().get(index).isDisabled();
     }
 
     public static boolean checkTradeDisabled(MinecraftClient client, Item item) {
-        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
             return false;
-        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
             if (offer.getSellItem().getItem() == item)
                 return offer.isDisabled();
@@ -123,9 +120,8 @@ public class InventoryUtils {
     }
 
     public static boolean checkHasTrade(MinecraftClient client, Item item) {
-        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
             return false;
-        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
             if (offer.getSellItem().getItem() == item)
                 return true;
@@ -134,9 +130,8 @@ public class InventoryUtils {
     }
 
     public static int getIndexOfItem(MinecraftClient client, Item item) {
-        if (!(client.currentScreen instanceof MerchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
             return -1;
-        MerchantScreen merchantScreen = (MerchantScreen) client.currentScreen;
         int i = 0;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
             if (offer.getSellItem().getItem() == item)
