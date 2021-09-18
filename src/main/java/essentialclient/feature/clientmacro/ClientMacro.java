@@ -162,7 +162,7 @@ public class ClientMacro {
     }
 
     public static Path getFile() {
-        return getDir().resolve(ClientRules.CLIENT_MACRO_FILENAME.getString() + ".txt");
+        return getDir().resolve(ClientRules.CLIENT_MACRO_FILENAME.getString() + ".macro");
     }
 
     public static Path getDir() {

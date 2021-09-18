@@ -20,7 +20,8 @@ The intended use is to be able to script a boring repetitive task into a macro a
 
 ## How to use clientMacros
 You must have [EssentialClient](https://github.com/senseiwells/EssentialClient) installed, then after you have booted the game you can navigate to the essential
-client menu where you can open your macro file (bottom right). You can also change your macro file name using `clientMacroFilename`, clientMacros are stored in
+client menu where you can open your macro file (bottom right), this will open a prompt asking you what program to open the file with, open it with NotePad, or your preferred text editor.
+You can also change your macro file name using `clientMacroFilename`, clientMacros are stored in
 `.minecraft/config/EssentialClient/Macros`
 
 In game, you can navigate to controls and find the Client Macro keybind which is under "EssentialClient", bind this to a key and once you press this key
