@@ -31,9 +31,9 @@ public class ConfigScreen extends Screen
     protected void init() {
         if (this.client == null)
             return;
-        this.addDrawable(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.setScreen(new ClientRulesScreen(this))));
-        ButtonWidget serverRuleButton = this.addDrawable(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), (button) -> this.client.setScreen(new ServerRulesScreen(this))));
-        ButtonWidget gameRuleButton = this.addDrawable(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Gamerule Options"), (button -> {
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.setScreen(new ClientRulesScreen(this))));
+        ButtonWidget serverRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), (button) -> this.client.setScreen(new ServerRulesScreen(this))));
+        ButtonWidget gameRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Gamerule Options"), (button -> {
             if (this.client.getServer() == null)
                 return;
             this.client.setScreen(new EditGameRulesScreen(this.client.getServer().getGameRules(), (rules) -> {
@@ -45,12 +45,12 @@ public class ConfigScreen extends Screen
             serverRuleButton.active = false;
             gameRuleButton.active = false;
         }
-        this.addDrawable(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.setScreen(this.parent)));
-        this.addDrawable(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Macro File"), (button) -> {
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.setScreen(this.parent)));
+        this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Macro File"), (button) -> {
             EssentialUtils.checkifMacroFileExists();
             Util.getOperatingSystem().open(ClientMacro.getFile().toFile());
         }));
-        this.addDrawable(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
+        this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
     }
     
     @Override

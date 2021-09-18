@@ -31,8 +31,8 @@ public class ServerRulesScreen extends Screen
             return;
         this.list = new ConfigListWidget(this, this.client);
         this.addSelectableChild(this.list);
-        this.addDrawable(new ButtonWidget(this.width / 2 - 155, this.height - 29, 150, 20, new LiteralText("Refresh"), (buttonWidget) -> CarpetSettingsServerNetworkHandler.requestUpdate(this.client)));
-        this.addDrawable(new ButtonWidget(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 29, 150, 20, new LiteralText("Refresh"), (buttonWidget) -> CarpetSettingsServerNetworkHandler.requestUpdate(this.client)));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
     }
     
     @Override

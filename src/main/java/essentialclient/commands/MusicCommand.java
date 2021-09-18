@@ -57,27 +57,16 @@ public class MusicCommand {
                                         return 0;
                                     MusicSound musicSound;
                                     switch (arg) {
-                                        case "overworld":
-                                            musicSound = MusicType.GAME;
-                                            break;
-                                        case "nether":
-                                            musicSound = MusicSounds.getRandomNetherMusic();
-                                            break;
-                                        case "end":
-                                            musicSound = MusicType.END;
-                                            break;
-                                        case "creative":
-                                            musicSound = MusicType.CREATIVE;
-                                            break;
-                                        case "menu":
-                                            musicSound = MusicType.MENU;
-                                            break;
-                                        case "credits":
-                                            musicSound = MusicType.CREDITS;
-                                            break;
-                                        default:
+                                        case "overworld" -> musicSound = MusicType.GAME;
+                                        case "nether" -> musicSound = MusicSounds.getRandomNetherMusic();
+                                        case "end" -> musicSound = MusicType.END;
+                                        case "creative" -> musicSound = MusicType.CREATIVE;
+                                        case "menu" -> musicSound = MusicType.MENU;
+                                        case "credits" -> musicSound = MusicType.CREDITS;
+                                        default -> {
                                             EssentialUtils.sendMessage("§cThat is not a valid music type");
                                             return 0;
+                                        }
                                     }
                                     client.getMusicTracker().stop();
                                     client.getMusicTracker().play(musicSound);

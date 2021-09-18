@@ -32,8 +32,9 @@ public class ClientRulesScreen extends Screen {
         this.searchBox.setChangedListener(this::refreshRules);
         this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
         this.addSelectableChild(this.list);
-        this.addDrawable(this.searchBox);
-        this.addDrawable(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
+        this.addDrawableChild(this.searchBox);
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
+        this.setInitialFocus(this.searchBox);
     }
 
     @Override

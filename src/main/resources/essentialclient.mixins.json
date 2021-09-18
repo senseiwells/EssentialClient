@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "essentialclient.mixins",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "mixins": [
     "betterMusic.MusicTrackerMixin",
     "carpet.CustomPayloadC2SPacketAccessor",

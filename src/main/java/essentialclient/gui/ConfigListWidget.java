@@ -52,14 +52,11 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
     public ConfigListWidget(ClientRulesScreen gui, MinecraftClient client, String filter) {
         super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
-        Collection<ClientRules> clientRules;
-        switch (ClientRules.DISPLAY_RULE_TYPE.getString()) {
-            case "Rule Type":
-                clientRules = ClientRuleHelper.getRulesInType();
-                break;
-            case "Alphabetical": default:
-                clientRules = ClientRuleHelper.getRulesAlphabetically();
-        }
+        Collection<ClientRules> clientRules = switch (ClientRules.DISPLAY_RULE_TYPE.getString()) {
+            case "Rule Type" -> ClientRuleHelper.getRulesInType();
+            case "Alphabetical" -> ClientRuleHelper.getRulesAlphabetically();
+            default -> ClientRuleHelper.getRulesAlphabetically();
+        };
         clientRules.forEach(rule -> {
             if (filter == null || rule.name.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
                 int i = client.textRenderer.getWidth(rule.name) - 55;
@@ -67,26 +64,26 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
                     length = i;
                 }
                 switch (rule.type) {
-                    case BOOLEAN:
+                    case BOOLEAN -> {
                         BooleanListEntry booleanList = new BooleanListEntry(rule, client, gui);
                         this.addEntry(booleanList);
                         this.entries.add(booleanList);
-                        break;
-                    case INTEGER: case DOUBLE:
+                    }
+                    case INTEGER, DOUBLE -> {
                         NumberListEntry numberList = new NumberListEntry(rule, client, gui);
                         this.addEntry(numberList);
                         this.entries.add(numberList);
-                        break;
-                    case STRING:
+                    }
+                    case STRING -> {
                         StringListEntry stringList = new StringListEntry(rule, client, gui);
                         this.addEntry(stringList);
                         this.entries.add(stringList);
-                        break;
-                    case CYCLE:
+                    }
+                    case CYCLE -> {
                         CycleListEntry cycleList = new CycleListEntry(rule, client, gui);
                         this.addEntry(cycleList);
                         this.entries.add(cycleList);
-                        break;
+                    }
                 }
             }
         });

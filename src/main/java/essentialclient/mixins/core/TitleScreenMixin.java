@@ -29,7 +29,7 @@ public abstract class TitleScreenMixin extends Screen {
     private void onInit(CallbackInfo ci) {
         if (this.client == null || !ClientRules.ESSENTIAL_CLIENT_MAIN_MENU.getBoolean())
             return;
-        ButtonWidget buttonWidget = this.addDrawable(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 120, 200, 20, new LiteralText("Essential Client Menu"), (b) -> this.client.setScreen(new ConfigScreen(this))));
+        ButtonWidget buttonWidget = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 120, 200, 20, new LiteralText("Essential Client Menu"), (b) -> this.client.setScreen(new ConfigScreen(this))));
         buttonWidget.active = true;
     }
 }

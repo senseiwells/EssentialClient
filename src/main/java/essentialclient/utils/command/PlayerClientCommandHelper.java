@@ -27,16 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class PlayerClientCommandHelper {
-
-    private final String name;
-    private final Double x;
-    private final Double y;
-    private final Double z;
-    private final Double yaw;
-    private final Double pitch;
-    private final String dimension;
-    private final String gamemode;
+public record PlayerClientCommandHelper(String name, Double x, Double y,
+                                        Double z, Double yaw, Double pitch,
+                                        String dimension, String gamemode) {
 
     public static Map<String, PlayerClientCommandHelper> playerClientHelperMap = new HashMap<>();
 
@@ -54,25 +47,13 @@ public class PlayerClientCommandHelper {
     public static final Codec<Map<String, PlayerClientCommandHelper>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC.codec());
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    public PlayerClientCommandHelper(String name, Double x, Double y, Double z, Double yaw, Double pitch, String dimension, String gamemode) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.dimension = dimension;
-        this.gamemode = gamemode;
-    }
-
     public static void writeSaveFile() {
         Path file = getFile();
-        try(BufferedWriter writer = Files.newBufferedWriter(file)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(file)) {
             MAP_CODEC.encodeStart(JsonOps.INSTANCE, PlayerClientCommandHelper.playerClientHelperMap)
                     .resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write /playerclient data: {}", e))
                     .ifPresent(obj -> GSON.toJson(obj, writer));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             EssentialClient.LOGGER.error("Failed to save /playerclient data");
         }
@@ -89,8 +70,7 @@ public class PlayerClientCommandHelper {
                     .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read /playerclient data: {}", e))
                     .getFirst());
             return;
-        }
-        catch (JsonParseException | IOException e) {
+        } catch (JsonParseException | IOException e) {
             e.printStackTrace();
         }
         PlayerClientCommandHelper.playerClientHelperMap = new HashMap<>();
@@ -119,8 +99,7 @@ public class PlayerClientCommandHelper {
             z = context.getArgument("z", Double.class);
             yaw = context.getArgument("yaw", Double.class);
             pitch = context.getArgument("pitch", Double.class);
-        }
-        else {
+        } else {
             dimension = context.getSource().getPlayer().world.getRegistryKey().getValue().toString();
             x = context.getSource().getPlayer().getX();
             y = context.getSource().getPlayer().getY();
@@ -129,7 +108,9 @@ public class PlayerClientCommandHelper {
             pitch = context.getSource().getPlayer().getPitch();
         }
         switch (dimension) {
-            case "minecraft:overworld": case "minecraft:the_nether": case "minecraft:the_end":
+            case "minecraft:overworld":
+            case "minecraft:the_nether":
+            case "minecraft:the_end":
                 break;
             default:
                 context.getSource().sendFeedback(new LiteralText("§cThat is not a valid dimension"));
@@ -138,14 +119,15 @@ public class PlayerClientCommandHelper {
         if (isGamemode) {
             gamemode = context.getArgument("gamemode", String.class);
             switch (gamemode) {
-                case "spectator": case "survival": case "any":
+                case "spectator":
+                case "survival":
+                case "any":
                     break;
                 default:
                     context.getSource().sendFeedback(new LiteralText("§cThat is not a valid gamemode"));
                     return 0;
             }
-        }
-        else {
+        } else {
             gamemode = "any";
         }
         String name = context.getArgument("playername", String.class);
