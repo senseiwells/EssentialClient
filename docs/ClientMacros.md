@@ -198,6 +198,15 @@ You are also able to chain if statements like this, basically an easy way to wri
 ```
 if [condition] == [wanted_value] -> if [condition2] == [wanted_value2] -> [function]
 ```
+A note about this however, is if you chain `if`s and have an else statement it will catch all `else`s from any of the if statements:
+```
+if [condition] == [wanted_value] -> if [condition2] == [wanted_value2] -> [function]
+else -> [function2]
+```
+^^ In this example if either `[condition]` doesn't equal `[wanted_value]` OR `[condition2]` doesn't equal `[wanted_value2]` it will execute the else statement.
+(~~This was definitely intended, and definitely not an oversight that turned into a feature~~)
+
+
 However, you **cannot** do something like this:
 ```
 if [condition] == [wanted_value] -> if [condition2] == [wanted_value2] {
