@@ -14,10 +14,8 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class CarpetSettingsServerNetworkHandler
-{
-    public static void sendGUIInfo(ServerPlayerEntity playerEntity)
-    {
+public class CarpetSettingsServerNetworkHandler {
+    public static void sendGUIInfo(ServerPlayerEntity playerEntity) {
         NbtCompound data = new NbtCompound();
 
         
@@ -25,8 +23,7 @@ public class CarpetSettingsServerNetworkHandler
         data.putFloat("Tickrate", TickSpeed.tickrate);
         
         NbtList rulesList = new NbtList();
-        for (ParsedRule<?> rule : CarpetServer.settingsManager.getRules())
-        {
+        for (ParsedRule<?> rule : CarpetServer.settingsManager.getRules()) {
             NbtCompound ruleNBT = new NbtCompound();
             
             ruleNBT.putString("rule" ,rule.name);
@@ -41,35 +38,30 @@ public class CarpetSettingsServerNetworkHandler
         playerEntity.networkHandler.sendPacket(new CustomPayloadS2CPacket(Reference.CARPET_CHANNEL_NAME, packetBuf));
     }
     
-    public static void sendRule(ServerPlayerEntity player, PacketByteBuf data)
-    {
+    public static void sendRule(ServerPlayerEntity player, PacketByteBuf data) {
         String rule = data.readString();
         String newValue = data.readString();
-        if (player.hasPermissionLevel(2))
-        {
+        if (player.hasPermissionLevel(2)) {
             CarpetServer.settingsManager.getRule(rule).set(player.getCommandSource(), newValue);
             Messenger.m(player.getCommandSource(), "w " + rule + ": " + newValue + ", ", "c [change permanently?]",
                     "^w Click to keep the settings in carpet.conf to save across restarts",
                     "?/carpet setDefault " + rule + " " + newValue);
         }
-        else
-        {
+        else {
             Messenger.m(player, "r You do not have permissions to change the rules.");
         }
     }
     
-    public static void updateCarpetClientRules(String rule, String newValue, ServerPlayerEntity player)
-    {
+    public static void updateCarpetClientRules(String rule, String newValue, ServerPlayerEntity player) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-        
+
         data.writeVarInt(Reference.CHANGE_RULE);
         data.writeString(rule);
         data.writeString(newValue);
         player.networkHandler.sendPacket(new CustomPayloadS2CPacket(Reference.CARPET_CHANNEL_NAME, data));
     }
     
-    public static void ruleChange(String rule, String newValue, MinecraftClient client)
-    {
+    public static void ruleChange(String rule, String newValue, MinecraftClient client) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeVarInt(Reference.RULE_REQUEST);
         data.writeString(rule);
@@ -77,8 +69,7 @@ public class CarpetSettingsServerNetworkHandler
         ClientMessageHandler.sendPacket(data, client);
     }
     
-    public static void requestUpdate(MinecraftClient client)
-    {
+    public static void requestUpdate(MinecraftClient client) {
         PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
         data.writeVarInt(Reference.ALL_GUI_INFO);
         ClientMessageHandler.sendPacket(data, client);

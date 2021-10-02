@@ -28,8 +28,7 @@ public class CarpetSettingsClientNetworkHandler
         String carpetServerVersion = compound.getString("CarpetVersion");
     
         NbtList rulesList = compound.getList("rules", 10);
-        for (NbtElement tag : rulesList)
-        {
+        for (NbtElement tag : rulesList) {
             NbtCompound ruleNBT = (NbtCompound) tag;
             String rule = ruleNBT.getString("rule");
             String value = ruleNBT.getString("value");

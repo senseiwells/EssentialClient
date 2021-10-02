@@ -87,18 +87,10 @@ public class ClientRuleHelper {
             }
         }
         switch (settings) {
-            case HIGHLIGHT_LAVA_SOURCES:
-                client.worldRenderer.reload();
-                break;
-            case MUSIC_TYPES:
-                client.getMusicTracker().stop();
-                break;
-            case DISPLAY_RULE_TYPE:
-                gui.refreshRules(gui.getSearchBoxText());
-                break;
-            case CLIENT_MACRO_FILENAME:
-                EssentialUtils.checkifMacroFileExists();
-                break;
+            case HIGHLIGHT_LAVA_SOURCES -> client.worldRenderer.reload();
+            case MUSIC_TYPES -> client.getMusicTracker().stop();
+            case DISPLAY_RULE_TYPE -> gui.refreshRules(gui.getSearchBoxText());
+            case CLIENT_MACRO_FILENAME -> EssentialUtils.checkifMacroFileExists();
         }
     }
     protected static void checkRules() {

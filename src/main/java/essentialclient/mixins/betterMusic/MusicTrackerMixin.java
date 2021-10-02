@@ -41,35 +41,17 @@ public class MusicTrackerMixin {
     @Overwrite
     public void tick() {
         String type = ClientRules.MUSIC_TYPES.getString();
-        MusicSound musicSound;
-        switch (type) {
-            case "Overworld":
-                musicSound = MusicType.GAME;
-                break;
-            case "Nether":
-                musicSound = MusicSounds.getRandomNetherMusic();
-                break;
-            case "Overwrld + Nethr":
-                musicSound = MusicSounds.getRandomOverworldAndNetherMusic();
-                break;
-            case "End":
-                musicSound = MusicType.END;
-                break;
-            case "Creative":
-                musicSound = MusicType.CREATIVE;
-                break;
-            case "Menu":
-                musicSound = MusicType.MENU;
-                break;
-            case "Credits":
-                musicSound = MusicType.CREDITS;
-                break;
-            case "Any":
-                musicSound = MusicSounds.getRandomAllMusic();
-                break;
-            default:
-                musicSound = this.client.getMusicType();
-        }
+        MusicSound musicSound = switch (type) {
+            case "Overworld" -> MusicType.GAME;
+            case "Nether" -> MusicSounds.getRandomNetherMusic();
+            case "Overwrld + Nethr" -> MusicSounds.getRandomOverworldAndNetherMusic();
+            case "End" -> MusicType.END;
+            case "Creative" -> MusicType.CREATIVE;
+            case "Menu" -> MusicType.MENU;
+            case "Credits" -> MusicType.CREDITS;
+            case "Any" -> MusicSounds.getRandomAllMusic();
+            default -> this.client.getMusicType();
+        };
         if (this.current != null) {
             if (!musicSound.getSound().getId().equals(this.current.getId()) && musicSound.shouldReplaceCurrentMusic()) {
                 this.client.getSoundManager().stop(this.current);

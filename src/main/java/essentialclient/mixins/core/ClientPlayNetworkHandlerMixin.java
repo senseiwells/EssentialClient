@@ -3,7 +3,6 @@ package essentialclient.mixins.core;
 import essentialclient.commands.CommandRegister;
 import essentialclient.gui.clientrule.*;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.MessageType;
@@ -12,7 +11,6 @@ import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -22,9 +20,6 @@ import java.util.UUID;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
-
-    @Shadow
-    private MinecraftClient client;
 
     @Inject(method = "onCommandTree", at = @At("HEAD"))
     public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {

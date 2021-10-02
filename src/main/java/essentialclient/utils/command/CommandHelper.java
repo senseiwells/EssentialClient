@@ -15,21 +15,15 @@ public class CommandHelper {
     public static DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     public static CompletableFuture<Suggestions> suggestLocation(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder, String type) {
-        switch (type) {
-            case "x":
-                return CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getX()))}, builder);
-            case "y":
-                return CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getY()))}, builder);
-            case "z":
-                return CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getZ()))}, builder);
-            case "yaw":
-                return CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().yaw))}, builder);
-            case "pitch":
-                return CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().pitch))}, builder);
-            case "dimension":
-                return CommandSource.suggestMatching(new String[]{"minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"}, builder);
-        }
-        return null;
+        return switch (type) {
+            case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getX()))}, builder);
+            case "y" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getY()))}, builder);
+            case "z" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getZ()))}, builder);
+            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().yaw))}, builder);
+            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().pitch))}, builder);
+            case "dimension" -> CommandSource.suggestMatching(new String[]{"minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"}, builder);
+            default -> null;
+        };
     }
 
     public static LiteralArgumentBuilder<FabricClientCommandSource> setLiteral(LiteralArgumentBuilder<FabricClientCommandSource> builder, String literal) {

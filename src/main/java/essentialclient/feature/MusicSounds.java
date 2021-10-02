@@ -1,6 +1,5 @@
 package essentialclient.feature;
 
-import com.mojang.datafixers.kinds.IdF;
 import net.minecraft.client.sound.MusicType;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvents;
