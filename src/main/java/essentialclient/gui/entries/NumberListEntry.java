@@ -10,6 +10,7 @@ import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
 import essentialclient.utils.render.RenderHelper;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -36,7 +37,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
     private final ServerRulesScreen gui;
     private final ClientRulesScreen clientGui;
     private boolean invalid;
-    
+
     public NumberListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
         this.settings = settings;
         this.clientSettings = null;
@@ -77,13 +78,13 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         gui.getNumberFieldList().add(this.numberField);
     }
 
-    
+
     @Override
     public boolean charTyped(char chr, int keyCode)
     {
         return this.numberField.charTyped(chr, keyCode);
     }
-    
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         // ENTER KEY -> 257
@@ -95,7 +96,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         }
         return super.keyPressed(keyCode, scanCode, modifiers) || this.numberField.keyPressed(keyCode, scanCode, modifiers);
     }
-    
+
     @Override
     public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
         TextRenderer font = client.textRenderer;
@@ -109,29 +110,29 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
             this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString) || this.invalid;
         else
             this.resetButton.active = !this.clientSettings.getString().equals(this.clientSettings.defaultValue) || this.invalid;
-        
+
         this.numberField.x = x + 182;
         this.numberField.y = y + 3;
         this.numberField.setEditableColor(this.invalid ? 16733525 : 16777215);
         if (invalid) {
-            DiffuseLighting.enable();
+            DiffuseLighting.enableGuiDepthLighting();
             client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.numberField.x + this.numberField.getWidth() - 18, this.numberField.y- 1);
-            DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
         }
-        
+
         this.infoButton.x = x + 156;
         this.infoButton.y = y;
-        
+
         this.infoButton.render(new MatrixStack(), mouseX, mouseY, delta);
         this.numberField.render(new MatrixStack(), mouseX, mouseY, delta);
         this.resetButton.render(new MatrixStack(), mouseX, mouseY, delta);
     }
-    
+
     @Override
     public List<? extends Element> children() {
         return ImmutableList.of(this.infoButton , this.numberField, this.resetButton);
     }
-    
+
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
         if (this.infoButton.isHovered() && !this.infoButton.active) {
@@ -143,7 +144,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
             RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
         }
     }
-    
+
     private void setInvalid(boolean invalid) {
         this.invalid = invalid;
         if (this.gui != null)
@@ -151,7 +152,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         else
             this.clientGui.setInvalid(invalid);
     }
-    
+
     private void checkForInvalid(String newValue, TextFieldWidget widget, ParsedRule<?> settings) {
         this.gui.setEmpty(widget.getText().isEmpty());
         boolean isNumber;
@@ -183,5 +184,10 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
             isNumber = false;
         }
         this.setInvalid(!isNumber);
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.infoButton , this.numberField, this.resetButton);
     }
 }

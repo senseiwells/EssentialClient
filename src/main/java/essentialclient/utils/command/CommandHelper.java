@@ -19,8 +19,8 @@ public class CommandHelper {
             case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getX()))}, builder);
             case "y" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getY()))}, builder);
             case "z" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getZ()))}, builder);
-            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().yaw))}, builder);
-            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().pitch))}, builder);
+            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getYaw()))}, builder);
+            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getPitch()))}, builder);
             case "dimension" -> CommandSource.suggestMatching(new String[]{"minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"}, builder);
             default -> null;
         };

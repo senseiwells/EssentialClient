@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -37,7 +38,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
     private final ServerRulesScreen gui;
     private final ClientRulesScreen clientGui;
     private boolean invalid;
-    
+
     public StringListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
         this.settings = settings;
         this.clientSettings = null;
@@ -77,12 +78,12 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         });
         gui.getStringFieldList().add(this.textField);
     }
-    
+
     @Override
     public boolean charTyped(char chr, int keyCode) {
         return this.textField.charTyped(chr, keyCode);
     }
-    
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         // ENTER KEY -> 257
@@ -94,42 +95,42 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         }
         return super.keyPressed(keyCode, scanCode, modifiers) || this.textField.keyPressed(keyCode, scanCode, modifiers);
     }
-    
+
     @Override
     public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
         TextRenderer font = client.textRenderer;
         float fontX = (float)(x + 90 - ConfigListWidget.length);
         float fontY = (float)(y + height / 2 - 9 / 2);
         font.draw(new MatrixStack(), this.rule, fontX, fontY, 16777215);
-        
+
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
         if (this.settings != null)
             this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString);
         else
             this.resetButton.active = !this.clientSettings.getString().equals(this.clientSettings.defaultValue);
-        
+
         this.textField.x = x + 182;
         this.textField.y = y + 3;
         if (this.textField.getText().isEmpty()) {
-            DiffuseLighting.enable();
+            DiffuseLighting.enableGuiDepthLighting();
             client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.textField.x + this.textField.getWidth() - 18, this.textField.y- 1);
-            DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
         }
-        
+
         this.infoButton.x = x + 156;
         this.infoButton.y = y;
-        
+
         this.infoButton.render(new MatrixStack(), mouseX, mouseY, delta);
         this.textField.render(new MatrixStack(), mouseX, mouseY, delta);
         this.resetButton.render(new MatrixStack(), mouseX, mouseY, delta);
     }
-    
+
     @Override
     public List<? extends Element> children() {
         return ImmutableList.of(this.infoButton ,this.textField, this.resetButton);
     }
-    
+
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
         if (this.infoButton.isHovered() && !this.infoButton.active) {
@@ -141,7 +142,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
             RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
         }
     }
-    
+
     private void setInvalid(boolean invalid) {
         this.invalid = invalid;
         if (this.gui != null)
@@ -149,7 +150,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         else
             this.clientGui.setInvalid(invalid);
     }
-    
+
     private void checkForInvalid(TextFieldWidget widget) {
         boolean empty = widget.getText().isEmpty();
         if (empty) {
@@ -166,5 +167,10 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
             this.clientSettings.setValue(widget.getText());
             ClientRuleHelper.writeSaveFile();
         }
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.infoButton ,this.textField, this.resetButton);
     }
 }

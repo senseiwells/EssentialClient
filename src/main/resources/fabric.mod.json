@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "essential-client",
-  "version": "0.0.6",
+  "version": "1.0.0",
 
   "name": "Essential Client",
   "description": "A client mod that provides utilities and client support for carpet rules",
@@ -31,7 +31,7 @@
   "depends": {
     "fabricloader": ">=0.10.0",
     "carpet": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.17.x"
   },
   "suggests": {
   }

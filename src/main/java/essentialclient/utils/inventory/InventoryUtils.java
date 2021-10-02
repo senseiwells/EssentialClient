@@ -41,11 +41,11 @@ public class InventoryUtils {
             if (client.interactionManager == null)
                 return;
             if (slotType == EquipmentSlot.MAINHAND) {
-                int currentHotbarSlot = playerEntity.inventory.selectedSlot;
+                int currentHotbarSlot = playerEntity.getInventory().selectedSlot;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
             }
             else if (slotType == EquipmentSlot.OFFHAND) {
-                int tempSlot = (playerEntity.inventory.selectedSlot + 1) % 9;
+                int tempSlot = (playerEntity.getInventory().selectedSlot + 1) % 9;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, 45, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);

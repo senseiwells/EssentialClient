@@ -8,7 +8,7 @@ import me.senseiwells.arucas.values.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.ScreenshotUtils;
+import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.item.Item;
 import net.minecraft.screen.*;
 import net.minecraft.text.LiteralText;
@@ -56,15 +56,15 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
             case DROP_ALL -> this.dropAll();
             case TRADE_INDEX -> this.tradeIndex();
             case TRADE_FOR -> this.tradeFor();
-            case SCREENSHOT -> ScreenshotUtils.saveScreenshot(client.runDirectory, client.getWindow().getWidth(), client.getWindow().getHeight(), client.getFramebuffer(), text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text)));
+            case SCREENSHOT -> ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text)));
             case LOOK -> this.look();
             case IS_IN_INVENTORY_GUI -> returnValue = new BooleanValue(this.checkInventoryScreen());
-            case IS_INVENTORY_FULL -> returnValue = new BooleanValue(client.player.inventory.getEmptySlot() != -1);
+            case IS_INVENTORY_FULL -> returnValue = new BooleanValue(client.player.getInventory().getEmptySlot() != -1);
             case GET_HEALTH -> returnValue = new NumberValue(client.player.getHealth());
             case IS_TRADE_DISABLED -> returnValue = new BooleanValue(this.isTradeDisabled());
             case DOES_VILLAGER_HAVE_TRADE -> returnValue = new BooleanValue(this.doesVillagerHaveTradeFor());
-            case GET_CURRENT_SLOT -> returnValue = new NumberValue(client.player.inventory.selectedSlot + 1);
-            case GET_HELD_ITEM -> returnValue = new StringValue(Registry.ITEM.getId(client.player.inventory.getMainHandStack().getItem()).getNamespace());
+            case GET_CURRENT_SLOT -> returnValue = new NumberValue(client.player.getInventory().selectedSlot + 1);
+            case GET_HELD_ITEM -> returnValue = new StringValue(Registry.ITEM.getId(client.player.getInventory().getMainHandStack().getItem()).getNamespace());
             case GET_LOOKING_AT_BLOCK -> returnValue = new StringValue(this.getLookingAtBlock());
             case GET_LOOKING_AT_ENTITY -> returnValue = new StringValue(this.getLookingAtEntity());
             case JUMP -> {
@@ -119,7 +119,7 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
         if (!(value instanceof NumberValue numberValue) || numberValue.value < 1 || numberValue.value > 9)
             throw this.throwInvalidParameterError("Must pass an integer between 1-9 into setSelectSlot()");
         assert client.player != null;
-        client.player.inventory.selectedSlot = numberValue.value.intValue() - 1;
+        client.player.getInventory().selectedSlot = numberValue.value.intValue() - 1;
     }
 
     private void manageInventory() throws Error {
@@ -128,7 +128,7 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
             throw this.throwInvalidParameterError("Must pass 'close' or 'open' into inventory()");
         assert client.player != null;
         switch (stringValue.value) {
-            case "open" -> client.openScreen(new InventoryScreen(client.player));
+            case "open" -> client.setScreen(new InventoryScreen(client.player));
             case "close" -> client.player.closeHandledScreen();
             default -> throw this.throwInvalidParameterError("Must pass 'close' or 'open' into inventory()");
         }
@@ -179,8 +179,8 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
         if (!(value instanceof NumberValue numberValue) || !(value2 instanceof NumberValue numberValue2))
             throw this.throwInvalidParameterError("Both parameters must be numbers for look()");
         assert client.player != null;
-        client.player.yaw = numberValue.value;
-        client.player.pitch = numberValue2.value;
+        client.player.setYaw(numberValue.value);
+        client.player.setPitch(numberValue2.value);
     }
 
     private boolean isTradeDisabled() throws Error {

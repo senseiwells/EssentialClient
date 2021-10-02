@@ -31,9 +31,9 @@ public class ClientRulesScreen extends Screen {
         this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, this.searchBox, new LiteralText("Search Client Rules"));
         this.searchBox.setChangedListener(this::refreshRules);
         this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
-        this.children.add(this.list);
-        this.addButton(this.searchBox);
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.openScreen(this.parent)));
+        this.addSelectableChild(this.list);
+        this.addDrawableChild(this.searchBox);
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
         this.setInitialFocus(this.searchBox);
     }
 
@@ -61,10 +61,10 @@ public class ClientRulesScreen extends Screen {
     }
 
     public void refreshRules(String filter) {
-        this.children.remove(this.list);
+        this.children().remove(this.list);
         this.list.clear();
         this.list = new ConfigListWidget(this, this.client, filter);
-        this.children.add(this.list);
+        this.addSelectableChild(this.list);
     }
 
     public String getSearchBoxText() {

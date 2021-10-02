@@ -15,6 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
@@ -81,30 +82,30 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         float fontX = (float)(x + 90 - ConfigListWidget.length);
         float fontY = (float)(y + height / 2 - 9 / 2);
         font.draw(matrices, this.rule, fontX, fontY, 16777215);
-        
+
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
         if (this.settings != null)
             this.resetButton.active = !this.settings.getAsString().equals(this.settings.defaultAsString);
         else
             this.resetButton.active = !this.clientSettings.getString().equals(this.clientSettings.defaultValue);
-        
+
         this.editButton.x = x + 180;
         this.editButton.y = y;
-        
+
         this.infoButton.x = x + 156;
         this.infoButton.y = y;
-        
+
         this.infoButton.render(matrices, mouseX, mouseY, delta);
         this.editButton.render(matrices, mouseX, mouseY, delta);
         this.resetButton.render(matrices, mouseX, mouseY, delta);
     }
-    
+
     @Override
     public List<? extends Element> children() {
         return ImmutableList.of(this.infoButton ,this.editButton, this.resetButton);
     }
-    
+
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
         if (this.infoButton.isHovered() && !this.infoButton.active) {
@@ -115,5 +116,10 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
                 description = this.clientSettings.description;
             RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
         }
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.infoButton ,this.editButton, this.resetButton);
     }
 }

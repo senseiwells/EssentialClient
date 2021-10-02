@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.7-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -50,6 +50,7 @@ processResources {
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
 
+	// Minecraft 1.17 (21w19a) upwards uses Java 16.
 	it.options.release = 16
 }
 
@@ -59,7 +60,6 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 }
-
 
 jar {
 	from "LICENSE"

@@ -19,28 +19,28 @@ public class ServerRulesScreen extends Screen
     private boolean isEmpty;
     private final ArrayList<TextFieldWidget> stringFieldList = new ArrayList<>();
     private final ArrayList<TextFieldWidget> numberFieldList = new ArrayList<>();
-    
+
     public ServerRulesScreen(Screen parent) {
         super(new LiteralText("Carpet Server Options"));
         this.parent = parent;
     }
-    
+
     @Override
     protected void init() {
         if (this.client == null)
             return;
         this.list = new ConfigListWidget(this, this.client);
-        this.children.add(this.list);
-        this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 29, 150, 20, new LiteralText("Refresh"), (buttonWidget) -> CarpetSettingsServerNetworkHandler.requestUpdate(this.client)));
-        this.addButton(new ButtonWidget(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.openScreen(this.parent)));
+        this.addSelectableChild(this.list);
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 29, 150, 20, new LiteralText("Refresh"), (buttonWidget) -> CarpetSettingsServerNetworkHandler.requestUpdate(this.client)));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
     }
-    
+
     @Override
     public void tick() {
         this.stringFieldList.forEach(TextFieldWidget::tick);
         this.numberFieldList.forEach(TextFieldWidget::tick);
     }
-    
+
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
@@ -55,27 +55,27 @@ public class ServerRulesScreen extends Screen
         }
         super.render(matrices, mouseX, mouseY, delta);
     }
-    
+
     public void drawTooltip(int mouseX, int mouseY, float delta)
     {
         this.list.drawTooltip(mouseX, mouseY, delta);
     }
-    
+
     public void setInvalid(boolean invalid)
     {
         this.invalid = invalid;
     }
-    
+
     public void setEmpty(boolean isEmpty)
     {
         this.isEmpty = isEmpty;
     }
-    
+
     public ArrayList<TextFieldWidget> getStringFieldList()
     {
         return stringFieldList;
     }
-    
+
     public ArrayList<TextFieldWidget> getNumberFieldList()
     {
         return numberFieldList;
