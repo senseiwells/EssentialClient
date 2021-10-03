@@ -1,6 +1,6 @@
 package essentialclient.gui.keybinds;
 
-import essentialclient.feature.clientmacro.ClientMacro;
+import essentialclient.feature.clientscript.ClientScript;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 
 public enum ClientKeybinds {
     DEBUG_MENU (new KeyBinding("Toggle Debug Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F3, "Essential Client")),
-    CLIENT_MACRO (new KeyBinding("Client Macro", GLFW.GLFW_KEY_UNKNOWN, "Essential Client"));
+    CLIENT_SCRIPT(new KeyBinding("Client Macro", GLFW.GLFW_KEY_UNKNOWN, "Essential Client"));
 
     private final KeyBinding key;
 
@@ -27,6 +27,6 @@ public enum ClientKeybinds {
     public static void loadKeybinds() {
         for (ClientKeybinds clientKeybinds : ClientKeybinds.values())
             KeyBindingHelper.registerKeyBinding(clientKeybinds.key);
-        ClientMacro.registerKeyPress();
+        ClientScript.registerKeyPress();
     }
 }

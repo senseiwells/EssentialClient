@@ -37,7 +37,7 @@ public enum ClientRules {
 
     //String Rules
     ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk"              , "I am now AFK"),
-    CLIENT_MACRO_FILENAME                   ("clientMacroFilename"                      , "This allows you to choose a specific macro text file name"       , "macro"),
+    CLIENT_SCRIPT_FILENAME                  ("clientScriptFilename"                     , "This allows you to choose a specific script file name"           , "clientscript"),
 
     //Cycling Rules
     DISPLAY_RULE_TYPE                       ("displayRuleType"                          , Type.CYCLE            , "This allows you to choose the order you want rules to be displayed"          , "Alphabetical", new String[]{"Alphabetical", "Rule Type"}                                                                             , false),

@@ -1,4 +1,4 @@
-package essentialclient.feature.clientmacro;
+package essentialclient.feature.clientscript;
 
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.keybinds.ClientKeybinds;
@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class ClientMacro {
+public class ClientScript {
 
-    protected static boolean enabled = false;
+    public static boolean enabled = false;
     private static Thread thread;
 
     public static void registerKeyPress() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            KeyBinding clientKeybind = ClientKeybinds.CLIENT_MACRO.getKeyBinding();
+            KeyBinding clientKeybind = ClientKeybinds.CLIENT_SCRIPT.getKeyBinding();
             if (clientKeybind.isPressed() && !clientKeybind.wasPressed()) {
                 clientKeybind.setPressed(false);
                 enabled = !enabled;
@@ -39,7 +39,7 @@ public class ClientMacro {
             try {
                 Path macroFile = getFile();
                 String file = Files.readString(macroFile);
-                Run.run(ClientRules.CLIENT_MACRO_FILENAME.getString(), file);
+                Run.run(ClientRules.CLIENT_SCRIPT_FILENAME.getString(), file);
                 enabled = false;
                 EssentialUtils.sendMessageToActionBar("§6Macro has finished executing");
             }
@@ -67,10 +67,10 @@ public class ClientMacro {
     }
 
     public static Path getFile() {
-        return getDir().resolve(ClientRules.CLIENT_MACRO_FILENAME.getString() + ".arucas");
+        return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getString() + ".arucas");
     }
 
     public static Path getDir() {
-        return EssentialUtils.getEssentialConfigFile().resolve("Macros");
+        return EssentialUtils.getEssentialConfigFile().resolve("Scripts");
     }
 }

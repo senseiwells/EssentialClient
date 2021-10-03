@@ -1,4 +1,4 @@
-package essentialclient.feature.clientmacro;
+package essentialclient.feature.clientscript;
 
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;

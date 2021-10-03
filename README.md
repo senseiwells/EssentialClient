@@ -1,11 +1,11 @@
 # EssentialClient
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
-This mod is currently supporting 1.16.5 and 1.17.1 
+This mod is currently supporting 1.16.5 and 1.17.1
 
 1.16.5 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.26+.
 
-1.17.1 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.40.1+ andd [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.44+.
+1.17.1 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.40.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.44+.
 
 To access the Essential Client menu you must join a world, then it will be accessible to you when you press
 `ESC`, you can enable menu access from the title screen by enabling [essentialClientMainMenu](#essentialclientmainmenu).
@@ -17,7 +17,7 @@ Feel free to contribute by adding as many features as you want!
 * [announceAFK](#announceafk)
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
-* [clientMacroFileName](#clientmacrofilename)
+* [clientScriptFileName](#clientscriptfilename)
 * [commandMusic](#commandmusic)
 * [commandPlayerClient](#commandplayerclient)
 * [commandPlayerList](#commandplayerlist)
@@ -50,7 +50,7 @@ Feel free to contribute by adding as many features as you want!
 # Index of Other Features:
 
 * [carpetClient](#carpetclient)
-* [clientMacros](#clientmacros)
+* [clientScripts](#clientscripts)
 * [gameruleScreen](#gamerulescreen)
 * [rebindF3](#rebindf3)
 
@@ -59,10 +59,10 @@ Feel free to contribute by adding as many features as you want!
 For commands any value inside [ ] are variables and should be replaced with real values when using the command
 
 ## announceAFK
-This announces when you become afk after a set amount of time (ticks), 
+This announces when you become afk after a set amount of time (ticks),
 * Type: `Integer`
 * Default Value: `0`
-* Extra Info: 
+* Extra Info:
   * This is judges by weather your player position is constant
   * Prints the message determined by [announceAFKMessage](#announceafkmessage)
 
@@ -71,7 +71,7 @@ This is the message you announce after you are afk"
 * Type: `String`
 * Default Value: `I am now AFK`
 * Extra Info:
-    * Requires [announceAFK](#announceafk)
+  * Requires [announceAFK](#announceafk)
 
 ## autoWalk
 This will auto walk after you have held your key for set amount of ticks
@@ -80,10 +80,10 @@ This will auto walk after you have held your key for set amount of ticks
 * Extra Info:
   * Once auto walking press backwards or forward again to cancel
 
-## clientMacroFilename
-This allows you to choose the file you want to use for your macro
+## clientScriptFilename
+This allows you to choose the file you want to use for your script
 * Type: `String`
-* Default Value: `macro`
+* Default Value: `clientscript`
 
 ## commandMusic
 This command allows you to manipulate the current music
@@ -170,7 +170,7 @@ Disables the tutorial toast from showing
 This allows you to choose the order you want rules to be displayed
 * Type: `Cycle`
 * Default Value: `Alphabetical`
-* Extra Info: 
+* Extra Info:
   * Current options: `Alphabetical` and `RuleType`
 
 ## displayTimePlayed
@@ -178,7 +178,7 @@ This will display how long you have had your current client open for in the corn
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
-    * Now you can see how much time you've ~~wasted~~ been productive
+  * Now you can see how much time you've ~~wasted~~ been productive
 
 ## essentialClientMainMenu
 This renders the Essential Client Menu on the main menu screen
@@ -276,10 +276,10 @@ This is the code that was left over from the carpet client 1.15.2 version, this 
 
 You can find more about it on the original github: [here](https://github.com/gnembon/carpet-client)
 
-## clientMacros
-This is a mini scripting language that allows you to make simple macros directly in minecraft without any external programs.
+## clientScripts
+This is a mini scripting language that allows you to make simple scripts directly in minecraft without any external programs.
 
-Documentation and how to use can be found: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/ClientMacros.md)
+Documentation and how to use can be found: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/ClientScripts.md)
 
 ## gameruleScreen
 This is a GUI that allows you to modify gamerules in singleplayer, it is accessible from the Essential Client menu
