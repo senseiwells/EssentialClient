@@ -1,6 +1,6 @@
 package essentialclient.gui;
 
-import essentialclient.feature.clientmacro.ClientMacro;
+import essentialclient.feature.clientscript.ClientScript;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.EssentialUtils;
@@ -46,9 +46,9 @@ public class ConfigScreen extends Screen
             gameRuleButton.active = false;
         }
         this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.openScreen(this.parent)));
-        this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Macro File"), (button) -> {
-            EssentialUtils.checkifMacroFileExists();
-            Util.getOperatingSystem().open(ClientMacro.getFile().toFile());
+        this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Script File"), (button) -> {
+            EssentialUtils.checkifScriptFileExists();
+            Util.getOperatingSystem().open(ClientScript.getFile().toFile());
         }));
         this.addButton(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
     }

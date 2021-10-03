@@ -1,6 +1,6 @@
 package essentialclient.utils;
 
-import essentialclient.feature.clientmacro.ClientMacro;
+import essentialclient.feature.clientscript.ClientScript;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -37,9 +37,9 @@ public class EssentialUtils {
         }
     }
 
-    public static void checkifMacroFileExists() {
-        Path macroDir = ClientMacro.getDir();
-        Path macroFile = ClientMacro.getFile();
+    public static void checkifScriptFileExists() {
+        Path macroDir = ClientScript.getDir();
+        Path macroFile = ClientScript.getFile();
         if (!Files.exists(macroDir)) {
             try {
                 Files.createDirectory(macroDir);

@@ -90,7 +90,7 @@ public class ClientRuleHelper {
             case HIGHLIGHT_LAVA_SOURCES -> client.worldRenderer.reload();
             case MUSIC_TYPES -> client.getMusicTracker().stop();
             case DISPLAY_RULE_TYPE -> gui.refreshRules(gui.getSearchBoxText());
-            case CLIENT_MACRO_FILENAME -> EssentialUtils.checkifMacroFileExists();
+            case CLIENT_SCRIPT_FILENAME -> EssentialUtils.checkifScriptFileExists();
         }
     }
     protected static void checkRules() {

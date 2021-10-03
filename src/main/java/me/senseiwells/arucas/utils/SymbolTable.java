@@ -1,6 +1,6 @@
 package me.senseiwells.arucas.utils;
 
-import essentialclient.feature.clientmacro.MinecraftFunctionValue;
+import essentialclient.feature.clientscript.MinecraftFunctionValue;
 import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.BuiltInFunctionValue;
 import me.senseiwells.arucas.values.NullValue;

@@ -1,14 +1,12 @@
 package me.senseiwells.arucas.values;
 
-import essentialclient.feature.clientmacro.MinecraftFunctionValue;
+import essentialclient.feature.clientscript.MinecraftFunctionValue;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.throwables.Error;
 import me.senseiwells.arucas.throwables.ErrorRuntime;
 import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.utils.SymbolTable;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BaseFunctionValue extends Value<String> {
@@ -66,4 +64,9 @@ public abstract class BaseFunctionValue extends Value<String> {
 
     @Override
     public abstract Value<?> copy();
+
+    @Override
+    public String toString() {
+        return "<function " + this.value + ">";
+    }
 }

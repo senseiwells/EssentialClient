@@ -1,5 +1,7 @@
 package me.senseiwells.arucas.nodes;
 
+import essentialclient.feature.clientscript.ClientScript;
+import me.senseiwells.arucas.throwables.ThrowStop;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.throwables.Error;
 import me.senseiwells.arucas.throwables.ThrowValue;
@@ -22,6 +24,10 @@ public class WhileNode extends Node {
     @Override
     public Value<?> visit(Interpreter interpreter, Context context) throws Error, ThrowValue {
         while (true) {
+            // Added for SC
+            if (!ClientScript.enabled)
+                throw new ThrowStop();
+            // - Sensei
             Value<?> conditionValue = interpreter.visit(this.condition, context);
             if (!(conditionValue instanceof BooleanValue booleanValue))
                 throw new Error(Error.ErrorType.ILLEGAL_OPERATION_ERROR, "Condition must result in either 'true' or 'false'", this.startPos, this.endPos);
