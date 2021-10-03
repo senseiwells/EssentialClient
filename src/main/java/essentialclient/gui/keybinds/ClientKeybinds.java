@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 
 public enum ClientKeybinds {
     DEBUG_MENU (new KeyBinding("Toggle Debug Menu", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F3, "Essential Client")),
-    CLIENT_SCRIPT(new KeyBinding("Client Macro", GLFW.GLFW_KEY_UNKNOWN, "Essential Client"));
+    CLIENT_SCRIPT(new KeyBinding("Client Script", GLFW.GLFW_KEY_UNKNOWN, "Essential Client"));
 
     private final KeyBinding key;
 
