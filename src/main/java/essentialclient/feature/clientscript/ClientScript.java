@@ -52,8 +52,10 @@ public class ClientScript {
                 enabled = false;
                 EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
             }
-            resetKeys(MinecraftClient.getInstance());
-            Thread.currentThread().interrupt();
+            finally {
+                resetKeys(MinecraftClient.getInstance());
+                Thread.currentThread().interrupt();
+            }
         });
         thread.start();
         return thread;

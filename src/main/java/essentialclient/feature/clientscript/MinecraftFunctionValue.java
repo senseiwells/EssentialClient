@@ -4,6 +4,7 @@ import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.arucas.throwables.Error;
 import me.senseiwells.arucas.throwables.ErrorRuntime;
+import me.senseiwells.arucas.throwables.ThrowStop;
 import me.senseiwells.arucas.values.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -73,6 +74,7 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
             case GET_DIMENSION -> returnValue = new StringValue(client.player.world.getRegistryKey().getValue().getPath());
             case IS_BLOCK_ENTITY -> returnValue = this.isBlockEntity();
             case GET_SCRIPTS_PATH -> returnValue = new StringValue(ClientScript.getDir().toString());
+            case HOLD -> this.hold();
             case JUMP -> {
                 if (client.player.isOnGround())
                     client.player.jump();
@@ -253,6 +255,15 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
         return value;
     }
 
+    private void hold() throws ThrowStop {
+        try {
+            Thread.sleep(Long.MAX_VALUE);
+        }
+        catch (InterruptedException e) {
+            throw new ThrowStop();
+        }
+    }
+
     @Override
     public Value<?> copy() {
         return new MinecraftFunctionValue(this.value).setPos(this.startPos, this.endPos).setContext(this.context);
@@ -277,6 +288,7 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
         SCREENSHOT("screenshot"),
         LOOK("look", new String[]{"yaw", "pitch"}),
         JUMP("jump"),
+        HOLD("hold"),
 
         //Return value
         GET_CURRENT_SLOT("getCurrentSlot"),

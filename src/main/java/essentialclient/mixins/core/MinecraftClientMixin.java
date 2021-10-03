@@ -47,6 +47,5 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
     @Override
     public void leftClickMouseAccessor() {
         this.doAttack();
-
     }
 }
