@@ -5,6 +5,7 @@ import essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.arucas.throwables.Error;
 import me.senseiwells.arucas.throwables.ErrorRuntime;
 import me.senseiwells.arucas.values.*;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.option.KeyBinding;
@@ -25,6 +26,7 @@ import java.util.List;
 public class MinecraftFunctionValue extends BaseFunctionValue {
 
     private static final MinecraftClient client = MinecraftClient.getInstance();
+    private static final String mustBeItem = "String must be item type, for example \"grass_block\" or \"diamond\"";
 
     private MinecraftFunction function;
 
@@ -58,15 +60,20 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
             case TRADE_FOR -> this.tradeFor();
             case SCREENSHOT -> ScreenshotRecorder.saveScreenshot(client.runDirectory, client.getFramebuffer(), text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text)));
             case LOOK -> this.look();
-            case IS_IN_INVENTORY_GUI -> returnValue = new BooleanValue(this.checkInventoryScreen());
+            case IS_IN_INVENTORY_GUI -> returnValue = this.checkInventoryScreen();
             case IS_INVENTORY_FULL -> returnValue = new BooleanValue(client.player.getInventory().getEmptySlot() != -1);
             case GET_HEALTH -> returnValue = new NumberValue(client.player.getHealth());
-            case IS_TRADE_DISABLED -> returnValue = new BooleanValue(this.isTradeDisabled());
-            case DOES_VILLAGER_HAVE_TRADE -> returnValue = new BooleanValue(this.doesVillagerHaveTradeFor());
+            case IS_TRADE_DISABLED -> returnValue = this.isTradeDisabled();
+            case DOES_VILLAGER_HAVE_TRADE -> returnValue = this.doesVillagerHaveTradeFor();
             case GET_CURRENT_SLOT -> returnValue = new NumberValue(client.player.getInventory().selectedSlot + 1);
             case GET_HELD_ITEM -> returnValue = new StringValue(Registry.ITEM.getId(client.player.getInventory().getMainHandStack().getItem()).getNamespace());
-            case GET_LOOKING_AT_BLOCK -> returnValue = new StringValue(this.getLookingAtBlock());
-            case GET_LOOKING_AT_ENTITY -> returnValue = new StringValue(this.getLookingAtEntity());
+            case GET_LOOKING_AT_BLOCK -> returnValue = this.getLookingAtBlock();
+            case GET_LOOKING_AT_ENTITY -> returnValue = this.getLookingAtEntity();
+            case GET_POS -> returnValue = this.getPos();
+            case GET_BLOCK_AT -> returnValue = this.getBlockAt();
+            case GET_DIMENSION -> returnValue = new StringValue(client.player.world.getRegistryKey().getValue().getPath());
+            case IS_BLOCK_ENTITY -> returnValue = this.isBlockEntity();
+            case GET_SCRIPTS_PATH -> returnValue = new StringValue(ClientScript.getDir().toString());
             case JUMP -> {
                 if (client.player.isOnGround())
                     client.player.jump();
@@ -76,96 +83,78 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
     }
 
     private void rightMouseAction() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof StringValue stringValue))
-            throw this.throwInvalidParameterError("Must pass \"hold\", \"stop\" or \"once\" into rightMouse()");
+        final String error = "Must pass \"hold\", 'stop\" or \"once\" into rightMouse()";
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, error);
         switch (stringValue.value.toLowerCase()) {
             case "hold" -> client.options.keyUse.setPressed(true);
             case "stop" -> client.options.keyUse.setPressed(false);
             case "once" -> ((MinecraftClientInvoker) client).rightClickMouseAccessor();
-            default -> throw this.throwInvalidParameterError("Must pass \"hold\", \"stop\" or \"once\" into rightMouse()");
+            default -> throw this.throwInvalidParameterError(error);
         }
     }
 
     private void leftMouseAction() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof StringValue stringValue))
-            throw this.throwInvalidParameterError("Must pass \"hold\", 'stop\" or \"once\" into leftMouse()");
+        final String error = "Must pass \"hold\", 'stop\" or \"once\" into leftMouse()";
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, error);
         switch (stringValue.value.toLowerCase()) {
             case "hold" -> client.options.keyAttack.setPressed(true);
             case "stop" -> client.options.keyAttack.setPressed(false);
             case "once" -> ((MinecraftClientInvoker) client).leftClickMouseAccessor();
-            default -> throw this.throwInvalidParameterError("Must pass \"hold\", \"stop\" or \"once\" into leftMouse()");
+            default -> throw this.throwInvalidParameterError(error);
         }
     }
 
     private void setKey(KeyBinding keyBinding) throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof BooleanValue booleanValue))
-            throw this.throwInvalidParameterError("Must pass true or false into set...()");
+        BooleanValue booleanValue = (BooleanValue) this.getValueForType(BooleanValue.class, 0, null);
         keyBinding.setPressed(booleanValue.value);
     }
 
     private void setSprint() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof BooleanValue booleanValue))
-            throw this.throwInvalidParameterError("Must pass true or false into setSprinting()");
+        BooleanValue booleanValue = (BooleanValue) this.getValueForType(BooleanValue.class, 0, null);
         assert client.player != null;
         client.player.setSprinting(booleanValue.value);
     }
 
     private void selectSlot() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof NumberValue numberValue) || numberValue.value < 1 || numberValue.value > 9)
-            throw this.throwInvalidParameterError("Must pass an integer between 1-9 into setSelectSlot()");
+        final String error = "Number must be between 1-9";
+        NumberValue numberValue = (NumberValue) this.getValueForType(NumberValue.class, 0, error);
+        if (numberValue.value < 1 || numberValue.value > 9)
+            throw this.throwInvalidParameterError(error);
         assert client.player != null;
         client.player.getInventory().selectedSlot = numberValue.value.intValue() - 1;
     }
 
     private void manageInventory() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof StringValue stringValue))
-            throw this.throwInvalidParameterError("Must pass 'close' or 'open' into inventory()");
+        final String error = "String must be \"open\" or \"close\"";
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, error);
         assert client.player != null;
         switch (stringValue.value) {
             case "open" -> client.setScreen(new InventoryScreen(client.player));
             case "close" -> client.player.closeHandledScreen();
-            default -> throw this.throwInvalidParameterError("Must pass 'close' or 'open' into inventory()");
+            default -> throw this.throwInvalidParameterError(error);
         }
     }
 
     private void dropHand() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof BooleanValue booleanValue))
-            throw this.throwInvalidParameterError("Must pass true or false into dropItemInHand()");
+        BooleanValue booleanValue = (BooleanValue) this.getValueForType(BooleanValue.class, 0, null);
         assert client.player != null;
         client.player.dropSelectedItem(booleanValue.value);
     }
 
     private void dropAll() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof StringValue stringValue))
-            throw this.throwInvalidParameterError("Must pass item type (e.g. 'grass_block') into inventory()");
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, mustBeItem);
         InventoryUtils.dropAllItemType(client.player, stringValue.value);
     }
 
     private void tradeIndex() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof NumberValue numberValue))
-            throw this.throwInvalidParameterError("Must pass an integer into parameter 1 for tradeIndex()");
-        Value<?> value2 = this.getValueFromTable(this.function.getArgument(1));
-        if (!(value2 instanceof BooleanValue booleanValue))
-            throw this.throwInvalidParameterError("Must pass true or false into parameter 2 for tradeIndex()");
+        NumberValue numberValue = (NumberValue) this.getValueForType(NumberValue.class, 0, null);
+        BooleanValue booleanValue = (BooleanValue) this.getValueForType(BooleanValue.class, 1, null);
         InventoryUtils.tradeAllItems(client, numberValue.value.intValue(), booleanValue.value);
     }
 
     private void tradeFor() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof StringValue stringValue))
-            throw this.throwInvalidParameterError("Must pass an item type (e.g. 'grass_block') into parameter 1 for tradeFor()");
-        Value<?> value2 = this.getValueFromTable(this.function.getArgument(1));
-        if (!(value2 instanceof BooleanValue booleanValue))
-            throw this.throwInvalidParameterError("Must pass true or false into parameter 2 for tradeFor()");
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, mustBeItem);
+        BooleanValue booleanValue = (BooleanValue) this.getValueForType(BooleanValue.class, 1, null);
         Item item = Registry.ITEM.get(new Identifier(stringValue.value));
         int index = InventoryUtils.getIndexOfItem(client, item);
         if (index == -1)
@@ -174,55 +163,95 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
     }
 
     private void look() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        Value<?> value2 = this.getValueFromTable(this.function.getArgument(1));
-        if (!(value instanceof NumberValue numberValue) || !(value2 instanceof NumberValue numberValue2))
-            throw this.throwInvalidParameterError("Both parameters must be numbers for look()");
+        NumberValue numberValue = (NumberValue) this.getValueForType(NumberValue.class, 0, null);
+        NumberValue numberValue2 = (NumberValue) this.getValueForType(NumberValue.class, 1, null);
         assert client.player != null;
         client.player.setYaw(numberValue.value);
-        client.player.setPitch(numberValue2.value);
+        client.player.setYaw(numberValue2.value);
     }
 
-    private boolean isTradeDisabled() throws Error {
+    private BooleanValue isTradeDisabled() throws Error {
+        final String error = "Parameter for isTradeDisabled() should either be an item type (e.g. \"grass_block\") or an index";
         Value<?> value = this.getValueFromTable(this.function.getArgument(0));
         if (value instanceof NumberValue numberValue)
-            return InventoryUtils.checkTradeDisabled(client, numberValue.value.intValue());
+            return new BooleanValue(InventoryUtils.checkTradeDisabled(client, numberValue.value.intValue()));
         if (value instanceof StringValue stringValue)
-            return InventoryUtils.checkTradeDisabled(client, Registry.ITEM.get(new Identifier(stringValue.value)));
-        throw this.throwInvalidParameterError("Parameter for isTradeDisabled() should either be an item type (e.g. 'grass_block') or an index");
+            return new BooleanValue(InventoryUtils.checkTradeDisabled(client, Registry.ITEM.get(new Identifier(stringValue.value))));
+        throw this.throwInvalidParameterError(error);
     }
 
-    private boolean doesVillagerHaveTradeFor() throws Error {
-        Value<?> value = this.getValueFromTable(this.function.getArgument(0));
-        if (!(value instanceof StringValue stringValue))
-            throw this.throwInvalidParameterError("Must pass an item type (e.g. 'grass_block') into parameter 1 for doesVillagerHaveTradeFor()");
-        return InventoryUtils.checkHasTrade(client, Registry.ITEM.get(new Identifier(stringValue.value)));
+    private BooleanValue doesVillagerHaveTradeFor() throws Error {
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, mustBeItem);
+        return new BooleanValue(InventoryUtils.checkHasTrade(client, Registry.ITEM.get(new Identifier(stringValue.value))));
     }
 
-    private String getLookingAtBlock() {
+    private StringValue getLookingAtBlock() {
         assert client.player != null;
         HitResult result = client.player.raycast(20D, 0.0F, true);
         if (result.getType() == HitResult.Type.BLOCK) {
             BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-            return Registry.BLOCK.getId(client.player.world.getBlockState(blockPos).getBlock()).getPath();
+            return new StringValue(Registry.BLOCK.getId(client.player.world.getBlockState(blockPos).getBlock()).getPath());
         }
-        return "air";
+        return new StringValue("air");
     }
 
-    private String getLookingAtEntity() {
+    private BooleanValue isBlockEntity() throws Error {
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, mustBeItem);
+        return new BooleanValue(Registry.BLOCK.get(new Identifier(stringValue.value)) instanceof BlockEntityProvider);
+    }
+
+    private StringValue getLookingAtEntity() {
         if (client.targetedEntity != null)
-            return Registry.ENTITY_TYPE.getId(client.targetedEntity.getType()).getPath();
-        return "air";
+            return new StringValue(Registry.ENTITY_TYPE.getId(client.targetedEntity.getType()).getPath());
+        return new StringValue("none");
     }
 
-    private boolean checkInventoryScreen() {
+    private NumberValue getPos() throws Error {
+        final String error = "String must be \"x\", \"y\", \"z\", \"yaw\", or \"pitch\"";
+        StringValue stringValue = (StringValue) this.getValueForType(StringValue.class, 0, error);
+        float floatValue;
+        assert client.player != null;
+        switch (stringValue.value) {
+            case "x" -> floatValue = (float) client.player.getX();
+            case "y" -> floatValue = (float) client.player.getY();
+            case "z" -> floatValue = (float) client.player.getZ();
+            case "pitch" -> floatValue = client.player.getPitch();
+            case "yaw" -> {
+                floatValue = client.player.getYaw() % 360;
+                floatValue = floatValue < -180 ? 360 + floatValue : floatValue;
+            }
+            default -> throw this.throwInvalidParameterError(error);
+        }
+        return new NumberValue(floatValue);
+    }
+
+    private StringValue getBlockAt() throws Error {
+        final String error = "Position must be in range of player";
+        NumberValue num1 = (NumberValue) this.getValueForType(NumberValue.class, 0, error);
+        NumberValue num2 = (NumberValue) this.getValueForType(NumberValue.class, 1, error);
+        NumberValue num3 = (NumberValue) this.getValueForType(NumberValue.class, 2, error);
+        BlockPos blockPos = new BlockPos(Math.floor(num1.value), num2.value, Math.floor(num3.value));
+        assert client.player != null;
+        return new StringValue(Registry.BLOCK.getId(client.player.world.getBlockState(blockPos).getBlock()).getPath());
+    }
+
+    private BooleanValue checkInventoryScreen() {
         assert client.player != null;
         ScreenHandler screenHandler = client.player.currentScreenHandler;
-        return  screenHandler instanceof GenericContainerScreenHandler ||
-                screenHandler instanceof MerchantScreenHandler ||
-                screenHandler instanceof HopperScreenHandler ||
-                screenHandler instanceof FurnaceScreenHandler ||
-                client.currentScreen instanceof InventoryScreen;
+        return  new BooleanValue(
+                screenHandler instanceof GenericContainerScreenHandler ||
+                        screenHandler instanceof MerchantScreenHandler ||
+                        screenHandler instanceof HopperScreenHandler ||
+                        screenHandler instanceof FurnaceScreenHandler ||
+                        client.currentScreen instanceof InventoryScreen
+        );
+    }
+
+    public Value<?> getValueForType(Class<?> clazz, int index, String additionalInfo) throws Error {
+        Value<?> value = this.getValueFromTable(this.function.getArgument(index));
+        if (!(clazz.isInstance(value)))
+            throw this.throwInvalidParameterError("Must pass " + clazz.getSimpleName() + " into parameter " + (index + 1) + " for " + this.function.name + "()" + (additionalInfo == null ? "" : "\n" + additionalInfo));
+        return value;
     }
 
     @Override
@@ -256,12 +285,17 @@ public class MinecraftFunctionValue extends BaseFunctionValue {
         GET_LOOKING_AT_BLOCK("getLookingAtBlock"),
         GET_LOOKING_AT_ENTITY("getLookingAtEntity"),
         GET_HEALTH("getHealth"),
+        GET_POS("getPos", "axis"),
+        GET_DIMENSION("getDimension"),
+        GET_BLOCK_AT("getBlockAt", new String[]{"x", "y", "z"}),
+        GET_SCRIPTS_PATH("getScriptsPath"),
 
         //Return boolean
         IS_TRADE_DISABLED("isTradeDisabled", "arg"),
         DOES_VILLAGER_HAVE_TRADE("doesVillagerHaveTrade", "itemType"),
         IS_INVENTORY_FULL("isInventoryFull"),
-        IS_IN_INVENTORY_GUI("isInInventoryGui");
+        IS_IN_INVENTORY_GUI("isInInventoryGui"),
+        IS_BLOCK_ENTITY("isBlockEntity", "block");
 
         public String name;
         List<String> argumentNames;
