@@ -16,6 +16,7 @@ public class Run {
     public static SymbolTable symbolTable = new SymbolTable();
     public static boolean debug = false;
 
+    // Changed for SC
     public static void run(String fileName, String line) throws Error {
         if (line.trim().equals("")) {
             Position position = new Position(0, 0, 0, fileName, line);
@@ -34,4 +35,5 @@ public class Run {
             throw new Error(Error.ErrorType.ILLEGAL_OPERATION_ERROR, "Cannot use keywords 'break' or 'continue' outside loop, and cannot use 'return' outside function", nodeResult.startPos, nodeResult.endPos);
         }
     }
+    // - Sensei
 }

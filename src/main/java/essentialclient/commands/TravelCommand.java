@@ -55,6 +55,7 @@ public class TravelCommand {
                         .then(argument("discordId", StringArgumentType.string())
                                 .suggests( ((context, builder) -> CommandSource.suggestMatching(new String[]{"546239692048302091"}, builder)))
                                 .executes(context -> {
+                                    getPlayer();
                                     ping = context.getArgument("discordId", String.class);
                                     player.sendMessage(new LiteralText("§6You will now ping <@" + ping + ">, after you have reached your destination"), false);
                                     return 0;

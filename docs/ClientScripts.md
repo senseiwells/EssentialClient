@@ -424,7 +424,7 @@ Top Tip - Don't run a `while(true)` loop without at least 10ms delay :)
 
 #### Notepad++
 
-Notepad++ syntax highlighting xml file can be found [here](https://cdn.discordapp.com/attachments/559400132710236160/894352681529925652/arucas.xml)
+Notepad++ syntax highlighting xml file can be found [here](https://cdn.discordapp.com/attachments/559400132710236160/894352681529925652/me.senseiwells.arucas.xml)
 
 ## Example Code
 
@@ -463,11 +463,11 @@ Here's an example:
 // Here we must define our functions, remember that schedule() cannot take functions with arguments
 
 fun runScript1() {
-    run(getScriptsPath() + "/script1.arucas");
+    run(getScriptsPath() + "/script1.me.senseiwells.arucas");
 }
 
 fun runScript2() {
-    run(getScriptsPath() + "/script2.arucas");
+    run(getScriptsPath() + "/script2.me.senseiwells.arucas");
 }
 
 // Here we can schedule both scripts to run

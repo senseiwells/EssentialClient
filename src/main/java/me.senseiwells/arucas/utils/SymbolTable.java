@@ -1,8 +1,7 @@
 package me.senseiwells.arucas.utils;
 
-import essentialclient.feature.clientscript.MinecraftFunctionValue;
 import me.senseiwells.arucas.values.BooleanValue;
-import me.senseiwells.arucas.values.BuiltInFunctionValue;
+import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.Value;
 
@@ -27,14 +26,13 @@ public class SymbolTable {
     }
 
     public SymbolTable setDefaultSymbols(Context context) {
+        if (!this.symbolMap.isEmpty())
+            return this;
         this.set("true", new BooleanValue(true).setContext(context));
         this.set("false", new BooleanValue(false).setContext(context));
         this.set("null", new NullValue().setContext(context));
-        for (BuiltInFunctionValue.BuiltInFunction function : BuiltInFunctionValue.BuiltInFunction.values()) {
-            this.set(function.name, new BuiltInFunctionValue(function.name).setContext(context));
-        }
-        for (MinecraftFunctionValue.MinecraftFunction function : MinecraftFunctionValue.MinecraftFunction.values()) {
-            this.set(function.name, new MinecraftFunctionValue(function.name).setContext(context));
+        for (BuiltInFunction function : BuiltInFunction.initialiseBuiltInFunctions()) {
+            this.set(function.value, function.setContext(context));
         }
         return this;
     }

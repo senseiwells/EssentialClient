@@ -4,7 +4,7 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.throwables.Error;
 import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.utils.Interpreter;
-import me.senseiwells.arucas.values.BaseFunctionValue;
+import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.Value;
 
 import java.util.LinkedList;
@@ -24,13 +24,13 @@ public class CallNode extends Node {
     @Override
     public Value<?> visit(Interpreter interpreter, Context context) throws Error, ThrowValue {
         Value<?> callValue = interpreter.visit(this.callNode, context);
-        if (!(callValue instanceof BaseFunctionValue))
+        if (!(callValue instanceof FunctionValue))
             return null;
         List<Value<?>> argumentValues = new LinkedList<>();
         callValue = callValue.copy().setPos(this.startPos, this.endPos);
         for (Node node : this.argumentNodes)
             argumentValues.add(interpreter.visit(node, context));
-        Value<?> functionValue = ((BaseFunctionValue) callValue).execute(argumentValues);
+        Value<?> functionValue = ((FunctionValue) callValue).execute(argumentValues);
         return functionValue != null ? functionValue.setPos(this.startPos, this.endPos).setContext(context) : null;
     }
 }

@@ -7,8 +7,7 @@ import me.senseiwells.arucas.utils.Interpreter;
 import me.senseiwells.arucas.utils.SymbolTable;
 import me.senseiwells.arucas.tokens.Token;
 import me.senseiwells.arucas.tokens.ValueToken;
-import me.senseiwells.arucas.values.BaseFunctionValue;
-import me.senseiwells.arucas.values.BuiltInFunctionValue;
+import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.Value;
 
 public class VariableAssignNode extends Node {
@@ -30,7 +29,7 @@ public class VariableAssignNode extends Node {
     @Override
     public Value<?> visit(Interpreter interpreter, Context context) throws Error, ThrowValue {
         String name = (String) ((ValueToken) this.token).tokenValue.value;
-        if (SymbolTable.Literal.stringToLiteral(name) != null || BaseFunctionValue.stringToFunction(name) != null || context.symbolTable.isConstant(name))
+        if (SymbolTable.Literal.stringToLiteral(name) != null || BuiltInFunction.isFunction(name) || context.symbolTable.isConstant(name))
             throw new Error(Error.ErrorType.ILLEGAL_OPERATION_ERROR, "Cannot assign " + name + " value as it is a constant", this.startPos, this.endPos);
         Value<?> value = interpreter.visit(this.node, context);
         if (this.isConstant)

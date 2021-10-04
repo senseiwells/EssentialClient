@@ -69,7 +69,7 @@ public class ClientScript {
     }
 
     public static Path getFile() {
-        return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getString() + ".arucas");
+        return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getString() + ".me.senseiwells.arucas");
     }
 
     public static Path getDir() {
