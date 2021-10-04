@@ -24,28 +24,28 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
     public static int length;
     private final List<ConfigListWidget.Entry> entries = new ArrayList<>();
     
-    public ConfigListWidget(ServerRulesScreen gui, MinecraftClient client) {
+    public ConfigListWidget(ServerRulesScreen gui, MinecraftClient client, String filter) {
         super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
         Collection<ParsedRule<?>> rules = CarpetServer.settingsManager.getRules();
         rules.forEach(r -> {
-            int i = client.textRenderer.getWidth(r.name) - 50;
-            if (i > length) {
-                length = i;
-            }
-            if (r.type == boolean.class) {
-                BooleanListEntry booleanList = new BooleanListEntry(r, client, gui);
-                this.addEntry(booleanList);
-                this.entries.add(booleanList);
-            }
-            else if (r.type == int.class || r.type == double.class) {
-                NumberListEntry numberList = new NumberListEntry(r, client, gui);
-                this.addEntry(numberList);
-                this.entries.add(numberList);
-            }
-            else {
-                StringListEntry stringList = new StringListEntry(r, client, gui);
-                this.addEntry(stringList);
-                this.entries.add(stringList);
+            if (filter == null || r.name.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
+                int i = client.textRenderer.getWidth(r.name) - 50;
+                if (i > length) {
+                    length = i;
+                }
+                if (r.type == boolean.class) {
+                    BooleanListEntry booleanList = new BooleanListEntry(r, client, gui);
+                    this.addEntry(booleanList);
+                    this.entries.add(booleanList);
+                } else if (r.type == int.class || r.type == double.class) {
+                    NumberListEntry numberList = new NumberListEntry(r, client, gui);
+                    this.addEntry(numberList);
+                    this.entries.add(numberList);
+                } else {
+                    StringListEntry stringList = new StringListEntry(r, client, gui);
+                    this.addEntry(stringList);
+                    this.entries.add(stringList);
+                }
             }
         });
     }

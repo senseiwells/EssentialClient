@@ -1,17 +1,17 @@
-package me.senseiwells.arucas.values;
+package me.senseiwells.arucas.values.functions;
 
-import essentialclient.feature.clientscript.MinecraftFunctionValue;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.throwables.Error;
 import me.senseiwells.arucas.throwables.ErrorRuntime;
 import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.utils.SymbolTable;
+import me.senseiwells.arucas.values.Value;
 
 import java.util.List;
 
-public abstract class BaseFunctionValue extends Value<String> {
+public abstract class FunctionValue extends Value<String> {
 
-    public BaseFunctionValue(String name) {
+    public FunctionValue(String name) {
         super(name);
     }
 
@@ -36,15 +36,6 @@ public abstract class BaseFunctionValue extends Value<String> {
             argumentValue.setContext(context);
             context.symbolTable.set(argumentName, argumentValue);
         }
-    }
-
-    public static Enum<?> stringToFunction(String word) {
-        Enum<?> function;
-        function = BuiltInFunctionValue.BuiltInFunction.stringToFunction(word);
-        if (function != null)
-            return function;
-        function = MinecraftFunctionValue.MinecraftFunction.stringToFunction(word);
-        return function;
     }
 
     public void checkAndPopulateArguments(List<Value<?>> arguments, List<String> argumentNames, Context context) throws ErrorRuntime {

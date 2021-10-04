@@ -15,6 +15,7 @@ public class ServerRulesScreen extends Screen
 {
     private final Screen parent;
     private ConfigListWidget list;
+    private TextFieldWidget searchBox;
     private boolean invalid;
     private boolean isEmpty;
     private final ArrayList<TextFieldWidget> stringFieldList = new ArrayList<>();
@@ -29,10 +30,14 @@ public class ServerRulesScreen extends Screen
     protected void init() {
         if (this.client == null)
             return;
-        this.list = new ConfigListWidget(this, this.client);
+        this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, this.searchBox, new LiteralText("Search Server Rules"));
+        this.searchBox.setChangedListener(this::refreshRules);
+        this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
         this.children.add(this.list);
+        this.addButton(this.searchBox);
         this.addButton(new ButtonWidget(this.width / 2 - 155, this.height - 29, 150, 20, new LiteralText("Refresh"), (buttonWidget) -> CarpetSettingsServerNetworkHandler.requestUpdate(this.client)));
         this.addButton(new ButtonWidget(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.openScreen(this.parent)));
+        this.setInitialFocus(this.searchBox);
     }
     
     @Override
@@ -54,6 +59,13 @@ public class ServerRulesScreen extends Screen
             this.textRenderer.draw(matrices,  text, 18, 12, 16733525);
         }
         super.render(matrices, mouseX, mouseY, delta);
+    }
+
+    public void refreshRules(String filter) {
+        this.children.remove(this.list);
+        this.list.clear();
+        this.list = new ConfigListWidget(this, this.client, filter);
+        this.children.add(this.list);
     }
     
     public void drawTooltip(int mouseX, int mouseY, float delta)

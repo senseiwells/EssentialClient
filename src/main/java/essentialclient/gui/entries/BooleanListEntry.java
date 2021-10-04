@@ -43,14 +43,14 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         this.clientGui = null;
         this.rule = settings.name;
         this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
-        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getAsString()), (buttonWidget) -> {
-            String invertedBoolean = String.valueOf(!Boolean.parseBoolean(buttonWidget.getMessage().getString()));
+        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getAsString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
+            String invertedBoolean = buttonWidget.getMessage().getString().equals("§2true") ? "false" : "true";
             CarpetSettingsServerNetworkHandler.ruleChange(settings.name, invertedBoolean, client);
-            buttonWidget.setMessage(new LiteralText(invertedBoolean));
+            buttonWidget.setMessage(new LiteralText(invertedBoolean.equals("true") ? "§2true" : "§4false"));
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             CarpetSettingsServerNetworkHandler.ruleChange(settings.name, settings.defaultAsString, client);
-            this.editButton.setMessage(new LiteralText(settings.defaultAsString));
+            this.editButton.setMessage(new LiteralText(settings.defaultAsString.equals("true") ? "§2true" : "§4false"));
         });
     }
 
@@ -62,9 +62,9 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         this.clientGui = gui;
         this.rule = settings.name;
         this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
-        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString()), (buttonWidget) -> {
+        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
             settings.invertBoolean();
-            buttonWidget.setMessage(new LiteralText(settings.getString()));
+            buttonWidget.setMessage(new LiteralText(settings.getString().equals("true") ? "§2true" : "§4false"));
             ClientRuleHelper.writeSaveFile();
             ClientRuleHelper.executeOnChange(client, settings, gui);
         });

@@ -88,6 +88,5 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
     @Override
     public void onPlayerLoggedOut(ServerPlayerEntity player) {
-
     }
 }
