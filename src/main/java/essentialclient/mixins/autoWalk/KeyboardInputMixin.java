@@ -17,7 +17,7 @@ public class KeyboardInputMixin {
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
     private boolean onIsForwardPressed(KeyBinding keyBinding) {
         if (keyBinding.isPressed()){
-            shouldAutoHold = ticks++ > ClientRules.AUTO_WALK.getInt();
+            shouldAutoHold = ClientRules.AUTO_WALK.getInt() > 0 && ticks++ > ClientRules.AUTO_WALK.getInt();
             if (shouldAutoHold)
                 EssentialUtils.sendMessageToActionBar("§aYou are now autowalking");
             return true;
