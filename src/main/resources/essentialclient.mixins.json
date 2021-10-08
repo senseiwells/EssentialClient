@@ -27,7 +27,6 @@
     "missingTools.PickaxeItemMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
     "removeWarnReceivedPassengers.ClientPlayNetworkHandlerMixin",
-    "sodium.FluidRendererMixin",
     "stackableShulkers.HopperBlockEntityMixin",
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",
