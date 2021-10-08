@@ -5,6 +5,7 @@ import essentialclient.gui.ConfigListWidget;
 import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
+import essentialclient.utils.render.RuleWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
@@ -30,7 +31,7 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
     private final ParsedRule<?> settings;
     private final ClientRules clientSettings;
     private final String rule;
-    private final ButtonWidget infoButton;
+    private RuleWidget ruleWidget;
     private final TextFieldWidget textField;
     private final ButtonWidget resetButton;
     private final MinecraftClient client;
@@ -45,7 +46,6 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.gui = gui;
         this.clientGui = null;
         this.rule = settings.name;
-        this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
         stringField.setText(settings.getAsString());
         stringField.setChangedListener(s -> this.checkForInvalid(stringField));
@@ -64,7 +64,6 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.gui = null;
         this.clientGui = gui;
         this.rule = settings.name;
-        this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
         stringField.setText(settings.getString());
         stringField.setChangedListener(s -> this.checkForInvalid(stringField));
@@ -100,7 +99,9 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
         TextRenderer font = client.textRenderer;
         float fontX = (float)(x + 90 - ConfigListWidget.length);
         float fontY = (float)(y + height / 2 - 9 / 2);
-        font.draw(new MatrixStack(), this.rule, fontX, fontY, 16777215);
+
+        this.ruleWidget = new RuleWidget(this.rule, x - 50, y + 2, 200, 15);
+        this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
         
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
@@ -116,29 +117,25 @@ public class StringListEntry extends ConfigListWidget.Entry implements ITooltipE
             client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.textField.x + this.textField.getWidth() - 18, this.textField.y- 1);
             DiffuseLighting.disable();
         }
-        
-        this.infoButton.x = x + 156;
-        this.infoButton.y = y;
-        
-        this.infoButton.render(new MatrixStack(), mouseX, mouseY, delta);
+
         this.textField.render(new MatrixStack(), mouseX, mouseY, delta);
         this.resetButton.render(new MatrixStack(), mouseX, mouseY, delta);
     }
     
     @Override
     public List<? extends Element> children() {
-        return ImmutableList.of(this.infoButton ,this.textField, this.resetButton);
+        return ImmutableList.of(this.textField, this.resetButton);
     }
     
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
-        if (this.infoButton.isHovered() && !this.infoButton.active) {
+        if (this.ruleWidget != null && this.ruleWidget.isHovered(mouseX, mouseY)) {
             String description;
             if (this.settings != null)
                 description = this.settings.description;
             else
                 description = this.clientSettings.description;
-            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
+            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseX, mouseY);
         }
     }
     

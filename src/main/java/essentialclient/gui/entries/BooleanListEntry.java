@@ -5,6 +5,7 @@ import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
+import essentialclient.utils.render.RuleWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import com.google.common.collect.ImmutableList;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
@@ -29,10 +30,10 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
     private final String rule;
     private final ServerRulesScreen gui;
     private final ClientRulesScreen clientGui;
-    private final ButtonWidget infoButton;
     private final ButtonWidget editButton;
     private final ButtonWidget resetButton;
     private final MinecraftClient client;
+    private RuleWidget ruleWidget;
 
 
     public BooleanListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
@@ -42,7 +43,6 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         this.gui = gui;
         this.clientGui = null;
         this.rule = settings.name;
-        this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getAsString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
             String invertedBoolean = buttonWidget.getMessage().getString().equals("§2true") ? "false" : "true";
             CarpetSettingsServerNetworkHandler.ruleChange(settings.name, invertedBoolean, client);
@@ -61,7 +61,6 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         this.gui = null;
         this.clientGui = gui;
         this.rule = settings.name;
-        this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
             settings.invertBoolean();
             buttonWidget.setMessage(new LiteralText(settings.getString().equals("true") ? "§2true" : "§4false"));
@@ -80,7 +79,9 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         TextRenderer font = client.textRenderer;
         float fontX = (float)(x + 90 - ConfigListWidget.length);
         float fontY = (float)(y + height / 2 - 9 / 2);
-        font.draw(matrices, this.rule, fontX, fontY, 16777215);
+
+        this.ruleWidget = new RuleWidget(this.rule, x - 50, y + 2, 200, 15);
+        this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
         
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
@@ -91,29 +92,26 @@ public class BooleanListEntry extends ConfigListWidget.Entry implements ITooltip
         
         this.editButton.x = x + 180;
         this.editButton.y = y;
-        
-        this.infoButton.x = x + 156;
-        this.infoButton.y = y;
-        
-        this.infoButton.render(matrices, mouseX, mouseY, delta);
+
         this.editButton.render(matrices, mouseX, mouseY, delta);
         this.resetButton.render(matrices, mouseX, mouseY, delta);
     }
     
     @Override
     public List<? extends Element> children() {
-        return ImmutableList.of(this.infoButton ,this.editButton, this.resetButton);
+        return ImmutableList.of(this.editButton, this.resetButton);
     }
     
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
-        if (this.infoButton.isHovered() && !this.infoButton.active) {
+        if (this.ruleWidget != null && this.ruleWidget.isHovered(mouseX, mouseY)) {
             String description;
             if (this.settings != null)
                 description = this.settings.description;
             else
                 description = this.clientSettings.description;
-            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
+
+            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseX, mouseY);
         }
     }
 }

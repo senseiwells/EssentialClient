@@ -5,6 +5,7 @@ import essentialclient.gui.clientrule.ClientRuleHelper;
 import essentialclient.gui.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
+import essentialclient.utils.render.RuleWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.render.ITooltipEntry;
@@ -29,7 +30,7 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
     private final ParsedRule<?> settings;
     private final ClientRules clientSettings;
     private final String rule;
-    private final ButtonWidget infoButton;
+    private RuleWidget ruleWidget;
     private final TextFieldWidget numberField;
     private final ButtonWidget resetButton;
     private final MinecraftClient client;
@@ -44,7 +45,6 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.gui = gui;
         this.clientGui = null;
         this.rule = settings.name;
-        this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         TextFieldWidget numField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type an number value"));
         numField.setText(settings.getAsString());
         numField.setChangedListener(s -> this.checkForInvalid(s, numField, settings));
@@ -63,7 +63,6 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         this.gui = null;
         this.clientGui = gui;
         this.rule = settings.name;
-        this.infoButton = new ButtonWidget(0, 0, 14, 20, new LiteralText("i"), (button -> button.active = false));
         TextFieldWidget numField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a number value"));
         numField.setText(settings.getString());
         numField.setChangedListener(s -> this.checkForInvalid(s, numField, settings));
@@ -101,7 +100,9 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
         TextRenderer font = client.textRenderer;
         float fontX = (float)(x + 90 - ConfigListWidget.length);
         float fontY = (float)(y + height / 2 - 9 / 2);
-        font.draw(new MatrixStack(), this.rule, fontX, fontY, 16777215);
+
+        this.ruleWidget = new RuleWidget(this.rule, x - 50, y + 2, 200, 15);
+        this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
 
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
@@ -118,29 +119,25 @@ public class NumberListEntry extends ConfigListWidget.Entry implements ITooltipE
             client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.numberField.x + this.numberField.getWidth() - 18, this.numberField.y- 1);
             DiffuseLighting.disable();
         }
-        
-        this.infoButton.x = x + 156;
-        this.infoButton.y = y;
-        
-        this.infoButton.render(new MatrixStack(), mouseX, mouseY, delta);
+
         this.numberField.render(new MatrixStack(), mouseX, mouseY, delta);
         this.resetButton.render(new MatrixStack(), mouseX, mouseY, delta);
     }
     
     @Override
     public List<? extends Element> children() {
-        return ImmutableList.of(this.infoButton , this.numberField, this.resetButton);
+        return ImmutableList.of(this.numberField, this.resetButton);
     }
     
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
-        if (this.infoButton.isHovered() && !this.infoButton.active) {
+        if (this.ruleWidget != null && this.ruleWidget.isHovered(mouseX, mouseY)) {
             String description;
             if (this.settings != null)
                 description = this.settings.description;
             else
                 description = this.clientSettings.description;
-            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseY + 5, listWidth, slotWidth, listHeight, 48);
+            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseX, mouseY);
         }
     }
     
