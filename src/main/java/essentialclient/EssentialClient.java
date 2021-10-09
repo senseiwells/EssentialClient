@@ -3,8 +3,8 @@ package essentialclient;
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import essentialclient.feature.HighlightLavaSources;
-import essentialclient.gui.clientrule.ClientRuleHelper;
-import essentialclient.gui.keybinds.ClientKeybinds;
+import essentialclient.feature.clientrule.ClientRuleHelper;
+import essentialclient.feature.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
@@ -88,6 +88,5 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
     @Override
     public void onPlayerLoggedOut(ServerPlayerEntity player) {
-
     }
 }

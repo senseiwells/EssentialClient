@@ -14,7 +14,10 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.*;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
@@ -44,7 +47,7 @@ public class MinecraftFunction extends BuiltInFunction {
 
     public static void initialiseMinecraftFunctions() {
         new MinecraftFunction("use", "type", function -> {
-            final String error = "Must pass \"hold\", 'stop\" or \"once\" into rightMouse()";
+            final String error = "Must pass \"hold\", \"stop\" or \"once\" into rightMouse()";
             StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, error);
             switch (stringValue.value.toLowerCase()) {
                 case "hold" -> client.options.keyUse.setPressed(true);
@@ -85,7 +88,8 @@ public class MinecraftFunction extends BuiltInFunction {
 
         new MinecraftFunction("message", "text", function -> {
             assert client.player != null;
-            client.player.sendMessage(new LiteralText(function.getValueFromTable(function.argumentNames.get(0)).value.toString()), false);
+            Value<?> value = function.getValueFromTable(function.argumentNames.get(0));
+            client.player.sendMessage(new LiteralText(value.value == null ? "null" : value.toString()), false);
             return new NullValue();
         });
 
@@ -124,14 +128,14 @@ public class MinecraftFunction extends BuiltInFunction {
             return new NullValue();
         });
 
-        new MinecraftFunction("tradeIndex", "index", function -> {
+        new MinecraftFunction("tradeIndex", List.of("index", "boolean"), function -> {
             NumberValue numberValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
             BooleanValue booleanValue = (BooleanValue) function.getValueForType(BooleanValue.class, 1, null);
             InventoryUtils.tradeAllItems(client, numberValue.value.intValue(), booleanValue.value);
             return new NullValue();
         });
 
-        new MinecraftFunction("tradeFor", "itemType", function -> {
+        new MinecraftFunction("tradeFor", List.of("itemType", "boolean"), function -> {
             StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, mustBeItem);
             BooleanValue booleanValue = (BooleanValue) function.getValueForType(BooleanValue.class, 1, null);
             Item item = Registry.ITEM.get(new Identifier(stringValue.value));
@@ -264,17 +268,48 @@ public class MinecraftFunction extends BuiltInFunction {
             assert client.player != null;
             ScreenHandler screenHandler = client.player.currentScreenHandler;
             return new BooleanValue(
-                    screenHandler instanceof GenericContainerScreenHandler ||
-                            screenHandler instanceof MerchantScreenHandler ||
-                            screenHandler instanceof HopperScreenHandler ||
-                            screenHandler instanceof FurnaceScreenHandler ||
-                            client.currentScreen instanceof InventoryScreen
+                screenHandler instanceof GenericContainerScreenHandler ||
+                screenHandler instanceof MerchantScreenHandler ||
+                screenHandler instanceof HopperScreenHandler ||
+                screenHandler instanceof FurnaceScreenHandler ||
+                client.currentScreen instanceof InventoryScreen
             );
         });
 
         new MinecraftFunction("isBlockEntity", "block", function -> {
             StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, mustBeItem);
             return new BooleanValue(Registry.BLOCK.get(new Identifier(stringValue.value)) instanceof BlockEntityProvider);
+        });
+
+        new MinecraftFunction("getSlotFor", "itemType", function -> {
+            StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, mustBeItem);
+            assert client.player != null;
+            ItemStack itemStack = new ItemStack(Registry.ITEM.get(new Identifier(stringValue.value)));
+            ScreenHandler screenHandler = client.player.currentScreenHandler;
+            for (Slot slot : screenHandler.slots) {
+                if (slot.getStack().getItem() == itemStack.getItem())
+                    return new NumberValue(slot.id + 1);
+            }
+            return new NullValue();
+        });
+
+        new MinecraftFunction("swapSlots", List.of("slot1", "slot2"), function -> {
+            NumberValue numberValue1 = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
+            NumberValue numberValue2 = (NumberValue) function.getValueForType(NumberValue.class, 1, null);
+            assert client.player != null;
+            ScreenHandler screenHandler = client.player.currentScreenHandler;
+            assert client.interactionManager != null;
+            int tempSlot = (client.player.getInventory().selectedSlot + 1) % 9;
+            client.interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue() - 1, tempSlot, SlotActionType.SWAP, client.player);
+            client.interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue() -1, tempSlot, SlotActionType.SWAP, client.player);
+            client.interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue() -1, tempSlot, SlotActionType.SWAP, client.player);
+            return new NullValue();
+        });
+
+        new MinecraftFunction("getTotalSlots", function -> {
+            assert client.player != null;
+            ScreenHandler screenHandler = client.player.currentScreenHandler;
+            return new NumberValue(screenHandler.slots.size());
         });
 
         // Add any other functions here!

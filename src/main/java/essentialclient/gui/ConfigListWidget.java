@@ -2,8 +2,8 @@ package essentialclient.gui;
 
 import carpet.CarpetServer;
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientrule.ClientRuleHelper;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRuleHelper;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.gui.entries.BooleanListEntry;
 import essentialclient.gui.entries.CycleListEntry;
 import essentialclient.gui.entries.NumberListEntry;
@@ -23,7 +23,7 @@ import java.util.*;
 public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> {
     public static int length;
     private final List<ConfigListWidget.Entry> entries = new ArrayList<>();
-
+    
     public ConfigListWidget(ServerRulesScreen gui, MinecraftClient client, String filter) {
         super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
         Collection<ParsedRule<?>> rules = CarpetServer.settingsManager.getRules();

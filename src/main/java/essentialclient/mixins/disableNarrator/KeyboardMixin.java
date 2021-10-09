@@ -1,6 +1,6 @@
 package essentialclient.mixins.disableNarrator;
 
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.client.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

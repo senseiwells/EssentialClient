@@ -1,6 +1,6 @@
 package essentialclient.mixins.mouseScrollRules;
 
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.client.Mouse;
 import net.minecraft.entity.player.PlayerInventory;
 import org.spongepowered.asm.mixin.Mixin;

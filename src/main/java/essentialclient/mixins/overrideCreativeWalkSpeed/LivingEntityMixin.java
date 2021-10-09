@@ -1,6 +1,6 @@
 package essentialclient.mixins.overrideCreativeWalkSpeed;
 
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;

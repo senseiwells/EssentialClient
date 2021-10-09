@@ -9,10 +9,11 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.render.ChatColour;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.JsonHelper;
 
 import java.io.BufferedReader;
@@ -73,42 +74,42 @@ public class PlayerListCommandHelper {
         return CommandSource.suggestMatching(playerListHelperMap.keySet(), builder);
     }
 
-    public static int createList(CommandContext<FabricClientCommandSource> context) {
+    public static int createList(CommandContext<ServerCommandSource> context) {
         String listName = context.getArgument("listname", String.class);
         String data = playerListHelperMap.putIfAbsent(listName, "");
         if (data != null)
-            context.getSource().sendFeedback(new LiteralText("§cThere is already a list with that name"));
+            EssentialUtils.sendMessage(ChatColour.RED + "There is already a list with that name");
         else
-            context.getSource().sendFeedback(new LiteralText("§6A new list has been created"));
+            EssentialUtils.sendMessage(ChatColour.GREEN + "New list has been created");
         PlayerListCommandHelper.writeSaveFile();
         return 0;
     }
 
-    public static int deleteList(CommandContext<FabricClientCommandSource> context) {
+    public static int deleteList(CommandContext<ServerCommandSource> context) {
         String listName = context.getArgument("listname", String.class);
         String data = playerListHelperMap.remove(listName);
         if (data == null)
-            context.getSource().sendFeedback(new LiteralText("§cThere is no list with that name"));
+            EssentialUtils.sendMessage(ChatColour.RED + "There is no list with that name");
         else
-            context.getSource().sendFeedback(new LiteralText("§6List has been deleted"));
+            EssentialUtils.sendMessage(ChatColour.GOLD + "List has been deleted");
         PlayerListCommandHelper.writeSaveFile();
         return 0;
     }
 
-    public static int addToList(CommandContext<FabricClientCommandSource> context) {
+    public static int addToList(CommandContext<ServerCommandSource> context) {
         String listName = context.getArgument("listname", String.class);
         String playerList = playerListHelperMap.get(listName);
         if (playerList == null) {
-            context.getSource().sendFeedback(new LiteralText("§cThere are no saved list with that name"));
+            EssentialUtils.sendMessage(ChatColour.RED + "There are no saved list with that name");
             return 0;
         }
         String playerName = context.getArgument("playername", String.class);
         if (PlayerClientCommandHelper.isPlayerNull(playerName)) {
-            context.getSource().sendFeedback(new LiteralText("§cThere is no saved player with that name"));
+            EssentialUtils.sendMessage(ChatColour.RED + "There is no saved player with that name");
             return 0;
         }
         if (playerList.contains(playerName)) {
-            context.getSource().sendFeedback(new LiteralText("§cThat player is already saved in the list"));
+            EssentialUtils.sendMessage(ChatColour.RED + "That player is already saved in the list");
             return 0;
         }
         if (playerList.equals(""))
@@ -116,21 +117,20 @@ public class PlayerListCommandHelper {
         else
             playerList = String.join(", ", playerList, playerName);
         playerListHelperMap.put(listName, playerList);
-        context.getSource().sendFeedback(new LiteralText("§6Player has been added to the list"));
+        EssentialUtils.sendMessage(ChatColour.GOLD + "Player has been added to the list");
         PlayerListCommandHelper.writeSaveFile();
         return 0;
     }
 
-    public static int spawnFromList(CommandContext<FabricClientCommandSource> context) {
-        FabricClientCommandSource source = context.getSource();
+    public static int spawnFromList(CommandContext<ServerCommandSource> context) {
         String listName = context.getArgument("listname", String.class);
         String playerList = playerListHelperMap.get(listName);
         if (playerList == null) {
-            source.sendFeedback(new LiteralText("§cThere is no saved list with that name"));
+            EssentialUtils.sendMessage(ChatColour.RED + "There is no saved list with that name");
             return 0;
         }
         if (playerList.equals("")) {
-            source.sendFeedback(new LiteralText("§cThat list is empty!"));
+            EssentialUtils.sendMessage(ChatColour.RED + "That list is empty!");
             return 0;
         }
         String[] playerArray = playerList.split(", ");
@@ -140,12 +140,12 @@ public class PlayerListCommandHelper {
                 errors++;
                 continue;
             }
-            PlayerClientCommandHelper.spawnPlayer(source.getPlayer(), player);
+            PlayerClientCommandHelper.spawnPlayer(CommandHelper.getPlayer(), player);
         }
         if (errors > 0)
-            source.sendFeedback(new LiteralText("§c" + errors + " players were invalid and couldn't be spawned"));
+            EssentialUtils.sendMessage(ChatColour.RED + errors + " players were invalid and couldn't be spawned");
         else
-            source.sendFeedback(new LiteralText("§6All player were spawned successfully"));
+            EssentialUtils.sendMessageToActionBar(ChatColour.GOLD + "All player were spawned successfully");
         return 0;
     }
 }

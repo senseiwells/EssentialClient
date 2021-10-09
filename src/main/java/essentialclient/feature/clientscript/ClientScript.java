@@ -1,7 +1,7 @@
 package essentialclient.feature.clientscript;
 
-import essentialclient.gui.clientrule.ClientRules;
-import essentialclient.gui.keybinds.ClientKeybinds;
+import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.feature.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.Error;
@@ -69,7 +69,7 @@ public class ClientScript {
     }
 
     public static Path getFile() {
-        return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getString() + ".me.senseiwells.arucas");
+        return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getString() + ".arucas");
     }
 
     public static Path getDir() {

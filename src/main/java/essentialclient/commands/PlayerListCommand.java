@@ -3,46 +3,54 @@ package essentialclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import essentialclient.utils.command.PlayerListCommandHelper;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.ServerCommandSource;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
 
 public class PlayerListCommand {
-    public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        LiteralCommandNode<FabricClientCommandSource> playerlistNode = ClientCommandManager
-                .literal("playerlist").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+
+        if (!ClientRules.COMMAND_PLAYERLIST.getBoolean())
+            return;
+
+        CommandHelper.clientCommands.add("pl");
+        CommandHelper.clientCommands.add("playerlist");
+
+        LiteralCommandNode<ServerCommandSource> playerlistNode =
+                literal("playerlist")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> plNode = ClientCommandManager
-                .literal("pl").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
+        LiteralCommandNode<ServerCommandSource> plNode =
+                literal("pl").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> createlistNode = ClientCommandManager
-                .literal("createlist")
+        LiteralCommandNode<ServerCommandSource> createlistNode =
+                literal("createlist")
                         .then(argument("listname", StringArgumentType.word())
                                 .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"mobswitches", "allplayers"}, builder))
                                 .executes(PlayerListCommandHelper::createList)
                         )
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> deletelistNode = ClientCommandManager
-                .literal("deletelist")
+        LiteralCommandNode<ServerCommandSource> deletelistNode =
+                literal("deletelist")
                         .then(argument("listname", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerListCommandHelper.suggestPlayerList(builder))
                                 .executes(PlayerListCommandHelper::deleteList)
                         )
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> spawnlistNode = ClientCommandManager
-                .literal("spawnlist")
+        LiteralCommandNode<ServerCommandSource> spawnlistNode =
+                literal("spawnlist")
                         .then(argument("listname", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerListCommandHelper.suggestPlayerList(builder))
                                 .executes(PlayerListCommandHelper::spawnFromList)
                         )
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> addplayerNode = ClientCommandManager
-                .literal("addplayer")
+        LiteralCommandNode<ServerCommandSource> addplayerNode =
+                literal("addplayer")
                         .then(argument("listname", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerListCommandHelper.suggestPlayerList(builder))
                                 .then(argument("playername", StringArgumentType.word())

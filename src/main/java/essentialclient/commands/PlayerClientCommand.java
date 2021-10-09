@@ -4,26 +4,37 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import essentialclient.utils.render.ChatColour;
 import net.minecraft.command.CommandSource;
-import net.minecraft.text.LiteralText;
+import net.minecraft.command.argument.Vec3ArgumentType;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
+
+
 
 public class PlayerClientCommand {
-    public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        LiteralCommandNode<FabricClientCommandSource> playerclientNode = ClientCommandManager
-                .literal("playerclient").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+
+        if (!ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+            return;
+
+        CommandHelper.clientCommands.add("playerclient");
+        CommandHelper.clientCommands.add("pc");
+
+        LiteralCommandNode<ServerCommandSource> playerclientNode = CommandManager
+                .literal("playerclient")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> pcNode = ClientCommandManager
-                .literal("pc").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+        LiteralCommandNode<ServerCommandSource> pcNode = CommandManager
+                .literal("pc")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> spawnNode = ClientCommandManager
+        LiteralCommandNode<ServerCommandSource> spawnNode = CommandManager
                 .literal("spawn")
                         .then(argument("playername", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
@@ -42,35 +53,26 @@ public class PlayerClientCommand {
                                 )
                         )
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> addNode = ClientCommandManager
+        LiteralCommandNode<ServerCommandSource> addNode = CommandManager
                 .literal("add")
                         .then(argument("playername", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
                                 .then(literal("spawn")
                                         .then(literal("at")
-                                                .then(argument("x", DoubleArgumentType.doubleArg())
-                                                        .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "x"))
-                                                        .then(argument("y", DoubleArgumentType.doubleArg())
-                                                                .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "y"))
-                                                                .then(argument("z", DoubleArgumentType.doubleArg())
-                                                                        .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "z"))
-                                                                        .then(literal("facing")
-                                                                                .then(argument("yaw", DoubleArgumentType.doubleArg())
-                                                                                        .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "yaw"))
-                                                                                        .then(argument("pitch", DoubleArgumentType.doubleArg())
-                                                                                                .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "pitch"))
-                                                                                                .then(literal("in")
-                                                                                                        .then(argument("dimension", StringArgumentType.greedyString())
-                                                                                                                .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "dimension"))
-                                                                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, false))
-                                                                                                                .then(literal("in")
-                                                                                                                        .then(argument("gamemode", StringArgumentType.word())
-                                                                                                                                .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"spectator", "survival", "any"}, builder))
-                                                                                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, true))
-                                                                                                                        )
-                                                                                                                )
-                                                                                                        )
-                                                                                                )
+                                                .then(argument("pos", Vec3ArgumentType.vec3())
+                                                        .then(literal("facing")
+                                                                // Can't use RotationArgumentType - Needs Server
+                                                                .then(argument("yaw", DoubleArgumentType.doubleArg())
+                                                                        .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "yaw"))
+                                                                        .then(argument("pitch", DoubleArgumentType.doubleArg())
+                                                                                .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "pitch"))
+                                                                                // Can't use DimensionArgumentType - Needs Server
+                                                                                .then(argument("dimension", StringArgumentType.greedyString())
+                                                                                        .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "dimension"))
+                                                                                        .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, false))
+                                                                                        .then(argument("gamemode", StringArgumentType.word())
+                                                                                                .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"spectator", "survival", "any"}, builder))
+                                                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, true))
                                                                                         )
                                                                                 )
                                                                         )
@@ -90,16 +92,16 @@ public class PlayerClientCommand {
                                 )
                         )
                 .build();
-        LiteralCommandNode<FabricClientCommandSource> removeNode = ClientCommandManager
-                .literal("remove")
+        LiteralCommandNode<ServerCommandSource> removeNode =
+                literal("remove")
                         .then(argument("playername", StringArgumentType.word())
                                 .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
                                 .executes(context -> {
                                     PlayerClientCommandHelper data = PlayerClientCommandHelper.playerClientHelperMap.remove(context.getArgument("playername", String.class));
                                     if (data == null)
-                                        context.getSource().sendFeedback(new LiteralText("§cThat player is not in your config"));
+                                        EssentialUtils.sendMessage(ChatColour.RED + "That player is not in your config");
                                     else
-                                        context.getSource().sendFeedback(new LiteralText("§6That player has been removed from your config"));
+                                        EssentialUtils.sendMessage(ChatColour.GOLD + "That player has been removed from your config");
                                     PlayerClientCommandHelper.writeSaveFile();
                                     return 0;
                                 })

@@ -30,7 +30,7 @@ public abstract class ClientPlayNetworkHandlerMixin
         Identifier channel = packet.getChannel();
         PacketByteBuf buf = packet.getData();
         ClientMessageHandler.receivedPacket(channel, buf);
-        //removed to fix incompatability with syncmatica
+        //removed to fix incompatibility with syncmatica
         //ci.cancel();
     }
 }

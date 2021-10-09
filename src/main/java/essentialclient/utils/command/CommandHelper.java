@@ -1,32 +1,82 @@
 package essentialclient.utils.command;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.render.ChatColour;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandHelper {
+
+    // I know this is bad way of doing it but don't want to refactor ClientRules, most likely will not add more commands, if do then will refactor
+    public static Set<String> clientCommands = new HashSet<>();
+
     public static DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-    public static CompletableFuture<Suggestions> suggestLocation(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder, String type) {
+    public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {
         return switch (type) {
-            case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getX()))}, builder);
-            case "y" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getY()))}, builder);
-            case "z" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getZ()))}, builder);
-            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getYaw()))}, builder);
-            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(context.getSource().getPlayer().getPitch()))}, builder);
+            case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getX()))}, builder);
+            case "y" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getY()))}, builder);
+            case "z" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getZ()))}, builder);
+            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getYaw()))}, builder);
+            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getPitch()))}, builder);
             case "dimension" -> CommandSource.suggestMatching(new String[]{"minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"}, builder);
             default -> null;
         };
     }
 
-    public static LiteralArgumentBuilder<FabricClientCommandSource> setLiteral(LiteralArgumentBuilder<FabricClientCommandSource> builder, String literal) {
-        return ClientCommandManager.literal(literal).requires(builder.getRequirement()).forward(builder.getRedirect(), builder.getRedirectModifier(), builder.isFork()).executes(builder.getCommand());
+    public static boolean isClientCommand(String command) {
+        return clientCommands.contains(command);
+    }
+
+    public static void clearCommands() {
+        clientCommands.clear();
+    }
+
+    public static ClientPlayerEntity getPlayer() {
+        return MinecraftClient.getInstance().player;
+    }
+
+    public static void executeCommand(StringReader reader, String command) {
+        ClientPlayerEntity player = getPlayer();
+        try {
+            player.networkHandler.getCommandDispatcher().execute(reader, new FakeCommandSource(player));
+        } catch (CommandException e) {
+            EssentialUtils.sendMessage(ChatColour.RED + e.getTextMessage());
+        } catch (CommandSyntaxException e) {
+            EssentialUtils.sendMessage(ChatColour.RED + e.getMessage());
+            if (e.getInput() != null && e.getCursor() >= 0) {
+                int cursor = Math.min(e.getCursor(), e.getInput().length());
+                MutableText text = new LiteralText("").formatted(Formatting.GRAY)
+                        .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
+                if (cursor > 10)
+                    text.append("...");
+
+                text.append(e.getInput().substring(Math.max(0, cursor - 10), cursor));
+                if (cursor < e.getInput().length()) {
+                    text.append(new LiteralText(e.getInput().substring(cursor)).formatted(Formatting.RED, Formatting.UNDERLINE));
+                }
+
+                text.append(new TranslatableText("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
+                getPlayer().sendMessage(text, false);
+            }
+        } catch (Exception e) {
+            LiteralText error = new LiteralText(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
+            getPlayer().sendMessage(new TranslatableText("command.failed")
+                    .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
+            e.printStackTrace();
+        }
     }
 }

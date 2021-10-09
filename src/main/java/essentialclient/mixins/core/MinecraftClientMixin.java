@@ -3,7 +3,7 @@ package essentialclient.mixins.core;
 import essentialclient.EssentialClient;
 import essentialclient.feature.AnnounceAFK;
 import essentialclient.commands.TravelCommand;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -47,6 +47,5 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
     @Override
     public void leftClickMouseAccessor() {
         this.doAttack();
-
     }
 }
