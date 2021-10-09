@@ -1,5 +1,6 @@
 package essentialclient.feature.clientscript;
 
+import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.arucas.throwables.Error;
@@ -9,7 +10,9 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionDefinition;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.item.Item;
@@ -18,6 +21,7 @@ import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -207,23 +211,16 @@ public class MinecraftFunction extends BuiltInFunction {
             return new NumberValue(client.player.getHealth());
         });
 
-        new MinecraftFunction("getPos", "axis", function -> {
-            final String error = "String must be \"x\", \"y\", \"z\", \"yaw\", or \"pitch\"";
-            StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, error);
-            float floatValue;
+        new MinecraftFunction("getPos", function -> {
+            List<Value<?>> list = new LinkedList<>();
             assert client.player != null;
-            switch (stringValue.value) {
-                case "x" -> floatValue = (float) client.player.getX();
-                case "y" -> floatValue = (float) client.player.getY();
-                case "z" -> floatValue = (float) client.player.getZ();
-                case "pitch" -> floatValue = client.player.pitch;
-                case "yaw" -> {
-                    floatValue = client.player.yaw % 360;
-                    floatValue = floatValue < -180 ? 360 + floatValue : floatValue;
-                }
-                default -> throw function.throwInvalidParameterError(error);
-            }
-            return new NumberValue(floatValue);
+            list.add(new NumberValue((float) client.player.getX()));
+            list.add(new NumberValue((float) client.player.getY()));
+            list.add(new NumberValue((float) client.player.getZ()));
+            list.add(new NumberValue(client.player.pitch));
+            float yaw = client.player.yaw % 360;
+            list.add(new NumberValue(yaw < -180 ? 360 + yaw : yaw));
+            return new ListValue(list);
         });
 
         new MinecraftFunction("getDimension", function -> {
@@ -299,9 +296,12 @@ public class MinecraftFunction extends BuiltInFunction {
             ScreenHandler screenHandler = client.player.currentScreenHandler;
             assert client.interactionManager != null;
             int tempSlot = (client.player.inventory.selectedSlot + 1) % 9;
+            int size = screenHandler.slots.size();
+            if (numberValue1.value > size || numberValue1.value < 1 || numberValue2.value > size || numberValue2.value < 1)
+                throw new ErrorRuntime("That slot is out of bounds!", function.startPos, function.endPos, function.context);
             client.interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue() - 1, tempSlot, SlotActionType.SWAP, client.player);
-            client.interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue() -1, tempSlot, SlotActionType.SWAP, client.player);
-            client.interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue() -1, tempSlot, SlotActionType.SWAP, client.player);
+            client.interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue() - 1, tempSlot, SlotActionType.SWAP, client.player);
+            client.interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue() - 1, tempSlot, SlotActionType.SWAP, client.player);
             return new NullValue();
         });
 
@@ -309,6 +309,40 @@ public class MinecraftFunction extends BuiltInFunction {
             assert client.player != null;
             ScreenHandler screenHandler = client.player.currentScreenHandler;
             return new NumberValue(screenHandler.slots.size());
+        });
+
+        new MinecraftFunction("getItemForSlot", "slotnum", function -> {
+            NumberValue numberValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
+            assert client.player != null;
+            ScreenHandler screenHandler = client.player.currentScreenHandler;
+            int index = numberValue.value.intValue() - 1;
+            if (index > screenHandler.slots.size() || index < 0)
+                return new NullValue();
+            return new StringValue(Registry.ITEM.getId(screenHandler.slots.get(index).getStack().getItem()).getPath());
+        });
+
+        new MinecraftFunction("getLatestChatMessage", function -> {
+            List<ChatHudLine<Text>> chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages();
+            if (chat.size() == 0)
+                return new NullValue();
+            List<Value<?>> list = new LinkedList<>();
+            list.add(new NumberValue(chat.get(0).getCreationTick()));
+            list.add(new StringValue(chat.get(0).getText().getString()));
+            return new ListValue(list);
+        });
+
+        new MinecraftFunction("getOnlinePlayers", function -> {
+            List<Value<?>> players = new LinkedList<>();
+            ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+            if (networkHandler == null || networkHandler.getPlayerList() == null)
+                throw new ErrorRuntime("You are not connected to a server", function.startPos, function.endPos, function.context);
+            networkHandler.getPlayerList().forEach(p -> players.add(new StringValue(p.getProfile().getName())));
+            return new ListValue(players);
+        });
+
+        new MinecraftFunction("getGamemode", function -> {
+            assert client.interactionManager != null;
+            return new StringValue(client.interactionManager.getCurrentGameMode().getName());
         });
 
         // Add any other functions here!

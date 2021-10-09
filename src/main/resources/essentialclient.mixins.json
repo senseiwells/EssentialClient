@@ -23,6 +23,7 @@
     "disableRecipeNotifications.RecipeToastMixin",
     "disableTutorialNotifications.TutorialToastMixin",
     "displayTimePlayed.GameMenuScreenMixin",
+    "functions.ChatHudMixin",
     "keyboardRebinds.KeyboardMixin",
     "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",
