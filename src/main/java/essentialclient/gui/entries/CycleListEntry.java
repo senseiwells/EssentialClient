@@ -21,20 +21,10 @@ import net.minecraft.text.LiteralText;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class CycleListEntry extends ConfigListWidget.Entry implements ITooltipEntry {
-    private final ClientRules clientSettings;
-    private final String rule;
-    private RuleWidget ruleWidget;
-    private final ClientRulesScreen clientGui;
-    private final ButtonWidget editButton;
-    private final ButtonWidget resetButton;
-    private final MinecraftClient client;
+public class CycleListEntry extends BaseListEntry {
 
     public CycleListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
-        this.clientSettings = settings;
-        this.client = client;
-        this.clientGui = gui;
-        this.rule = settings.name;
+        super(settings, client, gui);
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString()), (buttonWidget) -> {
             settings.cycleValues();
             buttonWidget.setMessage(new LiteralText(settings.getString()));
@@ -46,39 +36,5 @@ public class CycleListEntry extends ConfigListWidget.Entry implements ITooltipEn
             ClientRuleHelper.writeSaveFile();
             this.editButton.setMessage(new LiteralText(settings.defaultValue));
         });
-    }
-
-    @Override
-    public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
-        TextRenderer font = client.textRenderer;
-        float fontX = (float)(x + 90 - ConfigListWidget.length);
-        float fontY = (float)(y + height / 2 - 9 / 2);
-
-        this.ruleWidget = new RuleWidget(this.rule, x - 50, y + 2, 200, 15);
-        this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
-
-        this.resetButton.x = x + 290;
-        this.resetButton.y = y;
-        this.resetButton.active = !this.clientSettings.getString().equals(this.clientSettings.defaultValue);
-
-        this.editButton.x = x + 180;
-        this.editButton.y = y;
-
-        this.editButton.render(matrices, mouseX, mouseY, delta);
-        this.resetButton.render(matrices, mouseX, mouseY, delta);
-    }
-
-    @Override
-    public List<? extends Element> children() {
-        return ImmutableList.of(this.editButton, this.resetButton);
-    }
-
-    @Override
-    public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
-        if (this.ruleWidget != null && this.ruleWidget.isHovered(mouseX, mouseY)) {
-            String description;
-            description = this.clientSettings.description;
-            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseX, mouseY);
-        }
     }
 }
