@@ -128,6 +128,37 @@ public class BuiltInFunction extends FunctionValue {
             return new NumberValue((float) Math.floor(numValue.value));
         });
 
+        new BuiltInFunction("len", "value", function -> {
+            Value<?> value = function.getValueFromTable(function.argumentNames.get(0));
+            if (value instanceof ListValue) {
+                ListValue listValue = (ListValue) function.getValueForType(ListValue.class, 0, null);
+                return new NumberValue(listValue.value.size());
+            }
+            if (value instanceof StringValue) {
+                StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, null);
+                return new NumberValue(stringValue.value.length());
+            }
+            if (value instanceof NumberValue) {
+                NumberValue numberValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
+                return new NumberValue(numberValue.value.intValue() == numberValue.value ? String.valueOf(numberValue.value.intValue()).length() : String.valueOf(numberValue.value).length() - 1);
+            }
+            throw new ErrorRuntime("Cannot pass " + value.toString() + "into len()", function.startPos, function.endPos, function.context);
+        });
+
+        new BuiltInFunction("stringToList", "string", function -> {
+            StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, null);
+            List<Value<?>> stringList = new LinkedList<>();
+            for (char c : stringValue.value.toCharArray()) {
+                stringList.add(new StringValue(String.valueOf(c)));
+            }
+            return new ListValue(stringList);
+        });
+
+        new BuiltInFunction("stringOf", "value", function -> {
+            Value<?> value = function.getValueFromTable(function.argumentNames.get(0));
+            return new StringValue(value.toString());
+        });
+
         new BuiltInFunction("getTime", (function) -> new StringValue(DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalTime.now())));
 
         new BuiltInFunction("isString", "value", function -> function.isType(StringValue.class));

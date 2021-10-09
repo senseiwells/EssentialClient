@@ -34,11 +34,6 @@ public class ListFunction extends BuiltInFunction {
             list1.value.addAll(list2.value);
             return list1;
         });
-
-        new ListFunction("len", (function) -> {
-            ListValue listValue = (ListValue) function.getValueForType(ListValue.class, 0, null);
-            return new NumberValue(listValue.value.size());
-        });
     }
 
     private static Value<?> modifyListIndex(BuiltInFunction function, boolean delete) throws Error {
