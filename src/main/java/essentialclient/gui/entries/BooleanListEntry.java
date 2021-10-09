@@ -1,8 +1,8 @@
 package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientrule.ClientRuleHelper;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRuleHelper;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;

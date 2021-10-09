@@ -5,6 +5,7 @@
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
+    "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
     "unlockAllRecipes.PlayerManagerMixin"

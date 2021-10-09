@@ -1,4 +1,4 @@
-package essentialclient.gui.keybinds;
+package essentialclient.feature.keybinds;
 
 import essentialclient.feature.clientscript.ClientScript;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;

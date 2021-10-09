@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.serialization.Codec;
@@ -11,12 +12,16 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import essentialclient.EssentialClient;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.render.ChatColour;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.argument.Vec3ArgumentType;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.math.Vec3d;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -82,7 +87,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
         playerEntity.sendChatMessage(String.format("/player %s spawn at %f %f %f facing %f %f in %s", data.name, data.x + x, data.y + y, data.z + z, data.yaw, data.pitch, data.dimension));
     }
 
-    public static int createNewPlayerClient(CommandContext<FabricClientCommandSource> context, boolean isHere, boolean isGamemode) {
+    public static int createNewPlayerClient(CommandContext<ServerCommandSource> context, boolean isHere, boolean isGamemode) throws CommandSyntaxException {
         double x;
         double y;
         double z;
@@ -92,18 +97,20 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
         String gamemode;
         if (!isHere) {
             dimension = context.getArgument("dimension", String.class);
-            x = context.getArgument("x", Double.class);
-            y = context.getArgument("y", Double.class);
-            z = context.getArgument("z", Double.class);
+            Vec3d pos = Vec3ArgumentType.getVec3(context, "pos");
+            x = pos.x;
+            y = pos.y;
+            z = pos.z;
             yaw = context.getArgument("yaw", Double.class);
             pitch = context.getArgument("pitch", Double.class);
         } else {
-            dimension = context.getSource().getPlayer().world.getRegistryKey().getValue().toString();
-            x = context.getSource().getPlayer().getX();
-            y = context.getSource().getPlayer().getY();
-            z = context.getSource().getPlayer().getZ();
-            yaw = context.getSource().getPlayer().yaw;
-            pitch = context.getSource().getPlayer().pitch;
+            ClientPlayerEntity clientPlayerEntity = CommandHelper.getPlayer();
+            dimension = clientPlayerEntity.world.getRegistryKey().getValue().toString();
+            x = clientPlayerEntity.getX();
+            y = clientPlayerEntity.getY();
+            z = clientPlayerEntity.getZ();
+            yaw = clientPlayerEntity.yaw;
+            pitch = clientPlayerEntity.pitch;
         }
         switch (dimension) {
             case "minecraft:overworld":
@@ -111,7 +118,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             case "minecraft:the_end":
                 break;
             default:
-                context.getSource().sendFeedback(new LiteralText("§cThat is not a valid dimension"));
+                EssentialUtils.sendMessage(ChatColour.RED + "That is not a valid dimension");
                 return 0;
         }
         if (isGamemode) {
@@ -122,7 +129,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
                 case "any":
                     break;
                 default:
-                    context.getSource().sendFeedback(new LiteralText("§cThat is not a valid gamemode"));
+                    EssentialUtils.sendMessage(ChatColour.RED + "That is not a valid gamemode");
                     return 0;
             }
         } else {
@@ -131,28 +138,28 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
         String name = context.getArgument("playername", String.class);
         PlayerClientCommandHelper.playerClientHelperMap.put(name, new PlayerClientCommandHelper(name, x, y, z, yaw, pitch, dimension, gamemode));
         PlayerClientCommandHelper.writeSaveFile();
-        context.getSource().sendFeedback(new LiteralText("§6Player has been added to config"));
+        EssentialUtils.sendMessage(ChatColour.GOLD + "Player has been added to config");
         return 0;
     }
 
 
-    public static int spawnPlayer(CommandContext<FabricClientCommandSource> context, boolean hasOffset) {
+    public static int spawnPlayer(CommandContext<ServerCommandSource> context, boolean hasOffset) {
         if (playerClientHelperMap.isEmpty()) {
-            context.getSource().sendFeedback(new LiteralText("§cYou have no players in your config"));
+            EssentialUtils.sendMessage(ChatColour.RED + "You have no players in your config");
             return 0;
         }
         PlayerClientCommandHelper data = playerClientHelperMap.get(context.getArgument("playername", String.class));
         if (data == null) {
-            context.getSource().sendFeedback(new LiteralText("§cThat player doesn't exist in your config"));
+            EssentialUtils.sendMessage(ChatColour.RED + "That player doesn't exist in your config");
             return 0;
         }
-        ClientPlayerEntity playerEntity = context.getSource().getPlayer();
+        ClientPlayerEntity playerEntity = CommandHelper.getPlayer();
         if (data.gamemode.equalsIgnoreCase("spectator") && !playerEntity.isSpectator()) {
-            context.getSource().sendFeedback(new LiteralText("§cYou should be in spectator"));
+            EssentialUtils.sendMessage(ChatColour.RED + "You should be in spectator");
             return 0;
         }
         if (data.gamemode.equalsIgnoreCase("survival") && playerEntity.isSpectator()) {
-            context.getSource().sendFeedback(new LiteralText("§cYou should not be in spectator"));
+            EssentialUtils.sendMessage(ChatColour.RED + "You should not be in spectator");
             return 0;
         }
         if (hasOffset)

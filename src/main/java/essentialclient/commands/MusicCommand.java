@@ -4,24 +4,31 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import essentialclient.feature.MusicSounds;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MusicType;
 import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundCategory;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
 
 public class MusicCommand {
-    public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("music").requires((p) -> ClientRules.COMMAND_MUSIC.getBoolean())
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+
+        if (!ClientRules.COMMAND_MUSIC.getBoolean())
+            return;
+
+        CommandHelper.clientCommands.add("music");
+
+        dispatcher.register(literal("music")//.requires((p) -> ClientRules.COMMAND_MUSIC.getBoolean())
                 .then(literal("skip")
                         .executes(context -> {
-                            MinecraftClient client = context.getSource().getClient();
+                            MinecraftClient client = MinecraftClient.getInstance();
                             if (client == null)
                                 return 0;
                             client.getMusicTracker().stop();
@@ -32,7 +39,7 @@ public class MusicCommand {
                 .then(literal("volume")
                         .then(argument("percent", IntegerArgumentType.integer(0, 100))
                                 .executes(context -> {
-                                    MinecraftClient client = context.getSource().getClient();
+                                    MinecraftClient client = MinecraftClient.getInstance();
                                     int percent = context.getArgument("percent", Integer.class);
                                     if (client == null)
                                         return 0;
@@ -52,7 +59,7 @@ public class MusicCommand {
                                 .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"overworld", "nether", "end", "creative", "menu", "credits"}, builder))
                                 .executes(context -> {
                                     String arg = context.getArgument("musictype", String.class);
-                                    MinecraftClient client = context.getSource().getClient();
+                                    MinecraftClient client = MinecraftClient.getInstance();
                                     if (client == null)
                                         return 0;
                                     MusicSound musicSound;

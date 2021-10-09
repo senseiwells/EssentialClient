@@ -1,24 +1,14 @@
 package essentialclient.gui.entries;
 
-import essentialclient.gui.clientrule.ClientRuleHelper;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRuleHelper;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
-import essentialclient.gui.ConfigListWidget;
-import com.google.common.collect.ImmutableList;
-import essentialclient.utils.render.RuleWidget;
-import essentialclient.utils.render.ITooltipEntry;
-import essentialclient.utils.render.RenderHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
-
-import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class CycleListEntry extends BaseListEntry {

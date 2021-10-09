@@ -2,8 +2,8 @@ package essentialclient.gui;
 
 import carpet.CarpetServer;
 import carpet.settings.ParsedRule;
-import essentialclient.gui.clientrule.ClientRuleHelper;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRuleHelper;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.gui.entries.BooleanListEntry;
 import essentialclient.gui.entries.CycleListEntry;
 import essentialclient.gui.entries.NumberListEntry;

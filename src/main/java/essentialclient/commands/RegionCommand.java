@@ -1,34 +1,38 @@
 package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import essentialclient.utils.render.ChatColour;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.LiteralText;
+import net.minecraft.command.argument.Vec2ArgumentType;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.math.Vec2f;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
 
 public class RegionCommand {
-    public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        dispatcher.register(literal("region").requires((p) -> ClientRules.COMMAND_REGION.getBoolean())
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+
+        if (!ClientRules.COMMAND_REGION.getBoolean())
+            return;
+
+        CommandHelper.clientCommands.add("region");
+
+        dispatcher.register(literal("region")//.requires((p) -> ClientRules.COMMAND_REGION.getBoolean())
                 .then(literal("get")
-                        .then(argument("x", DoubleArgumentType.doubleArg())
-                                .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "x"))
-                                .then(argument("z", DoubleArgumentType.doubleArg())
-                                        .suggests((context, builder) -> CommandHelper.suggestLocation(context, builder, "z"))
-                                        .executes(context -> {
-                                            ClientPlayerEntity playerEntity = context.getSource().getPlayer();
-                                            playerEntity.sendMessage(new LiteralText("§6Those coordinates are in region: §a" + (int) Math.floor(context.getArgument("x", Double.class)/512) + "." + (int) Math.floor(context.getArgument("z", Double.class)/512)), false);
-                                            return 0;
-                                        })
-                                )
+                        .then(argument("pos", Vec2ArgumentType.vec2())
+                                .executes(context -> {
+                                    Vec2f v = Vec2ArgumentType.getVec2(context, "pos");
+                                    EssentialUtils.sendMessage(ChatColour.GOLD + "Those coordinates are in region: " + ChatColour.GREEN + (int) Math.floor(v.x/512) + "." + (int) Math.floor(v.y/512));
+                                    return 0;
+                                })
                         )
                         .executes(context -> {
-                            ClientPlayerEntity playerEntity = context.getSource().getPlayer();
-                            playerEntity.sendMessage(new LiteralText("§6You are in region: §a" + (int) Math.floor(playerEntity.getX()/512) + "." + (int) Math.floor(playerEntity.getZ()/512)), false);
+                            ClientPlayerEntity playerEntity = CommandHelper.getPlayer();
+                            EssentialUtils.sendMessage(ChatColour.GOLD + "You are in region: " + ChatColour.GREEN + (int) Math.floor(playerEntity.getX()/512) + "." + (int) Math.floor(playerEntity.getZ()/512));
                             return 0;
                         })
                 )

@@ -1,4 +1,4 @@
-package essentialclient.gui.clientrule;
+package essentialclient.feature.clientrule;
 
 import java.util.Arrays;
 

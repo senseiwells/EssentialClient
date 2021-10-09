@@ -2,18 +2,14 @@ package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
 import essentialclient.gui.ConfigListWidget;
-import essentialclient.gui.clientrule.ClientRuleHelper;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRuleHelper;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.utils.render.RuleWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
-import essentialclient.utils.render.ITooltipEntry;
-import essentialclient.utils.render.RenderHelper;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -23,8 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
-
-import java.util.List;
 
 public class StringListEntry extends BaseListEntry {
     private final TextFieldWidget textField;
