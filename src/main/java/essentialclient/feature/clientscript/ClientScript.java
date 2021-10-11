@@ -4,7 +4,7 @@ import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.feature.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.core.Run;
-import me.senseiwells.arucas.throwables.Error;
+import me.senseiwells.arucas.throwables.CodeError;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -43,11 +43,11 @@ public class ClientScript {
                 enabled = false;
                 EssentialUtils.sendMessageToActionBar("§6Macro has finished executing");
             }
-            catch (IOException | Error e) {
+            catch (IOException | CodeError e) {
                 if (!enabled)
                     return;
                 EssentialUtils.sendMessage("§cAn error occurred while trying to read the macro");
-                if (e instanceof Error)
+                if (e instanceof CodeError)
                     EssentialUtils.sendMessage("§c--------------------------------------------\n" + e);
                 enabled = false;
                 EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");

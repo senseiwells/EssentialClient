@@ -8,6 +8,8 @@
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
+    "functions.ClientPlayerEntityMixin",
+    "functions.MinecraftClientMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [
