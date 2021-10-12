@@ -13,7 +13,7 @@ import java.util.List;
 public class Run {
 
     // Changed for SC
-    public static SymbolTable symbolTable;
+    public static SymbolTable symbolTable = new SymbolTable();
     public static boolean debug = false;
 
     public static void run(String fileName, String line) throws CodeError {
@@ -22,12 +22,12 @@ public class Run {
             throw new CodeError(CodeError.ErrorType.ILLEGAL_SYNTAX_ERROR, "Empty file - nothing to run", position, position);
         }
         Context context = new Context(fileName, null, null);
-        context.symbolTable = new SymbolTable().setDefaultSymbols(context);
+        context.symbolTable = symbolTable.setDefaultSymbols(context);
 
         List<Token> values = new Lexer(line, fileName).createTokens();
 
         Node nodeResult = new Parser(values, context).parse();
-        symbolTable = nodeResult.context.symbolTable;
+        //symbolTable = nodeResult.context.symbolTable;
 
         try {
             nodeResult.visit();

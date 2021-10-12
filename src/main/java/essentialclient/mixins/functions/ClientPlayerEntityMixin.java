@@ -13,9 +13,4 @@ public class ClientPlayerEntityMixin {
     public void onChatMessage(String message, CallbackInfo ci) {
         MinecraftEventFunction.ON_CHAT_MESSAGE.tryRunFunction();
     }
-
-    @Inject(method = "applyDamage", at = @At("HEAD"))
-    private void onDamage(CallbackInfo info) {
-        MinecraftEventFunction.ON_DAMAGE.tryRunFunction();
-    }
 }

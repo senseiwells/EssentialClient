@@ -11,11 +11,13 @@ public enum MinecraftEventFunction {
 
     ON_CLIENT_TICK("_onClientTick_"),
     ON_CHAT_MESSAGE("_onChatMessage_"),
-    ON_RECEIVE_MESSAGE("_onReceiveMessage_"),
     ON_HEALTH_UPDATE("_onHealthUpdate_"),
     ON_ITEM_CHANGE("_onItemChange_"),
     ON_TOTEM("_onTotem_"),
-    ON_DAMAGE("_onDamage_")
+    ON_ATTACK("_onAttack_"),
+    ON_USE("_onUse_"),
+    ON_BLOCK_BROKEN("_onBlockBroken_"),
+    ON_PICK_BLOCK("_onPickBlock_"),
     ;
 
     String functionName;
