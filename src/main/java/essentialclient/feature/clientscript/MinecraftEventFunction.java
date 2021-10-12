@@ -29,10 +29,10 @@ public enum MinecraftEventFunction {
     public void tryRunFunction() {
         if (!ClientScript.enabled)
             return;
+        Value<?> value = Run.symbolTable.get(this.functionName);
+        if (!(value instanceof FunctionValue functionValue))
+            return;
         new Thread(() -> {
-            Value<?> value = Run.symbolTable.get(this.functionName);
-            if (!(value instanceof FunctionValue functionValue))
-                return;
             try {
                 functionValue.execute(null);
             }
