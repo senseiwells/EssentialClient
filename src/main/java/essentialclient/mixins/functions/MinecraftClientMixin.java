@@ -7,6 +7,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
+
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
     @Inject(method = "tick", at = @At("HEAD"))
@@ -27,10 +29,5 @@ public class MinecraftClientMixin {
     @Inject(method = "doItemPick", at = @At("HEAD"))
     private void onPickBlock(CallbackInfo ci) {
         MinecraftEventFunction.ON_PICK_BLOCK.tryRunFunction();
-    }
-
-    @Inject(method = "handleBlockBreaking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;swingHand(Lnet/minecraft/util/Hand;)V"))
-    private void onBlockBroken(boolean bl, CallbackInfo ci) {
-        MinecraftEventFunction.ON_BLOCK_BROKEN.tryRunFunction();
     }
 }

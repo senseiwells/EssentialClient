@@ -9,6 +9,7 @@
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
     "functions.ClientPlayerEntityMixin",
+    "functions.ClientPlayerInteractionManagerMixin",
     "functions.ClientPlayNetworkHandlerMixin",
     "functions.MinecraftClientMixin",
     "unlockAllRecipes.PlayerManagerMixin"

@@ -7,17 +7,22 @@ import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 
+import java.util.List;
+
 public enum MinecraftEventFunction {
 
     ON_CLIENT_TICK("_onClientTick_"),
-    ON_CHAT_MESSAGE("_onChatMessage_"),
+
     ON_HEALTH_UPDATE("_onHealthUpdate_"),
-    ON_ITEM_CHANGE("_onItemChange_"),
     ON_TOTEM("_onTotem_"),
     ON_ATTACK("_onAttack_"),
     ON_USE("_onUse_"),
-    ON_BLOCK_BROKEN("_onBlockBroken_"),
     ON_PICK_BLOCK("_onPickBlock_"),
+
+    ON_CHAT_MESSAGE("_onChatMessage_"),         // fun _onChatMessage(message) { code }
+    ON_GAMEMODE_CHANGE("_onGamemodeChange_"),   // fun _onGamemodeChange(gamemode) { code }
+    ON_CLICK_SLOT("_onClickSlot_"),             // fun _onClickSlot_(slot) { code }
+    ON_BLOCK_BROKEN("_onBlockBroken_"),         // fun _onBlockBroken(x, y, z) { code }
     ;
 
     String functionName;
@@ -26,7 +31,7 @@ public enum MinecraftEventFunction {
         this.functionName = functionName;
     }
 
-    public void tryRunFunction() {
+    public void tryRunFunction(List<Value<?>> arugments) {
         if (!ClientScript.enabled)
             return;
         Value<?> value = Run.symbolTable.get(this.functionName);
@@ -34,7 +39,7 @@ public enum MinecraftEventFunction {
             return;
         new Thread(() -> {
             try {
-                functionValue.execute(null);
+                functionValue.execute(arugments);
             }
             catch (ThrowValue | CodeError e) {
                 EssentialUtils.sendMessage(e.getMessage());
@@ -43,6 +48,10 @@ public enum MinecraftEventFunction {
                 Thread.currentThread().interrupt();
             }
         }).start();
+    }
+
+    public void tryRunFunction() {
+        this.tryRunFunction(null);
     }
 
 }

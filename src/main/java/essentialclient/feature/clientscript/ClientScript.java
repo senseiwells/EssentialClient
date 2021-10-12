@@ -5,9 +5,11 @@ import essentialclient.feature.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.utils.SymbolTable;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import org.lwjgl.system.CallbackI;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -53,6 +55,7 @@ public class ClientScript {
                 EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
             }
             finally {
+                Run.symbolTable = new SymbolTable();
                 resetKeys(MinecraftClient.getInstance());
                 Thread.currentThread().interrupt();
             }
