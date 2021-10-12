@@ -140,6 +140,12 @@ public class BuiltInFunction extends FunctionValue {
                 NumberValue numValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
                 return new NumberValue(Math.floor(numValue.value));
             }),
+
+            new BuiltInFunction("modulus", List.of("number1", "number2"), function -> {
+                NumberValue numberValue1 = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
+                NumberValue numberValue2 = (NumberValue) function.getValueForType(NumberValue.class, 1, null);
+                return new NumberValue(numberValue1.value % numberValue2.value);
+            }),
     
             new BuiltInFunction("len", "value", function -> {
                 Value<?> value = function.getValueFromTable(function.argumentNames.get(0));

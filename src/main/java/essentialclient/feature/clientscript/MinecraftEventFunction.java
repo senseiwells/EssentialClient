@@ -10,7 +10,13 @@ import me.senseiwells.arucas.values.functions.FunctionValue;
 public enum MinecraftEventFunction {
 
     ON_CLIENT_TICK("_onClientTick_"),
-    ON_CHAT_MESSAGE("_onChatMessage_");
+    ON_CHAT_MESSAGE("_onChatMessage_"),
+    ON_RECEIVE_MESSAGE("_onReceiveMessage_"),
+    ON_HEALTH_UPDATE("_onHealthUpdate_"),
+    ON_ITEM_CHANGE("_onItemChange_"),
+    ON_TOTEM("_onTotem_"),
+    ON_DAMAGE("_onDamage_")
+    ;
 
     String functionName;
 
