@@ -1,7 +1,7 @@
 package essentialclient.mixins.displayTimePlayed;
 
 import essentialclient.EssentialClient;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;

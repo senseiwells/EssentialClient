@@ -1,7 +1,7 @@
 package essentialclient.mixins.sodium;
 
 import essentialclient.feature.HighlightLavaSources;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
@@ -25,7 +25,7 @@ public class FluidRendererMixin {
     private Sprite[] lavaSprites;
 
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = "render", at = @At("HEAD"))
+    @Inject(method = "render", at = @At("HEAD"), require = 0)
     public void modifyLavaSprites(BlockRenderView world, FluidState fluidState, BlockPos pos, @Coerce Object buffers, CallbackInfoReturnable<Boolean> info) {
         if (ClientRules.HIGHLIGHT_LAVA_SOURCES.getBoolean() && fluidState.isIn(FluidTags.LAVA) &&
                 world.getBlockState(pos).get(FluidBlock.LEVEL) == 0) {
@@ -35,7 +35,7 @@ public class FluidRendererMixin {
     }
 
     @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = "render", at = @At("RETURN"))
+    @Inject(method = "render", at = @At("RETURN"), require = 0)
     public void restoreLavaSprites(BlockRenderView world, FluidState fluidState, BlockPos pos, @Coerce Object buffers, CallbackInfoReturnable<Boolean> info) {
         lavaSprites[0] = HighlightLavaSources.defaultLavaSourceStillSprite;
         lavaSprites[1] = HighlightLavaSources.defaultLavaSourceFlowSprite;

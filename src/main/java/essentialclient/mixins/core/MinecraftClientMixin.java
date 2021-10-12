@@ -3,10 +3,13 @@ package essentialclient.mixins.core;
 import essentialclient.EssentialClient;
 import essentialclient.feature.AnnounceAFK;
 import essentialclient.commands.TravelCommand;
-import essentialclient.gui.clientrule.ClientRules;
+import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.feature.clientscript.ClientScript;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,6 +40,17 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
             TravelCommand.tickTravel();
         if (ClientRules.ANNOUNCE_AFK.getInt() > 0)
             AnnounceAFK.tickAFK(player);
+    }
+
+    @Inject(method = "joinWorld", at = @At("TAIL"))
+    private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
+        ClientScript.enabled = ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean();
+        ClientScript.run();
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
+    private void onLeaveWorld(Screen screen, CallbackInfo ci) {
+        ClientScript.enabled = false;
     }
 
     @Override

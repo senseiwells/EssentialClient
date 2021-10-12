@@ -11,8 +11,7 @@ import net.minecraft.text.LiteralText;
 
 import java.util.ArrayList;
 
-public class ServerRulesScreen extends Screen
-{
+public class ServerRulesScreen extends Screen {
     private final Screen parent;
     private ConfigListWidget list;
     private TextFieldWidget searchBox;
@@ -68,8 +67,7 @@ public class ServerRulesScreen extends Screen
         this.children.add(this.list);
     }
     
-    public void drawTooltip(int mouseX, int mouseY, float delta)
-    {
+    public void drawTooltip(int mouseX, int mouseY, float delta) {
         this.list.drawTooltip(mouseX, mouseY, delta);
     }
     
