@@ -19,9 +19,12 @@ public enum MinecraftEventFunction {
     ON_USE("_onUse_"),
     ON_PICK_BLOCK("_onPickBlock_"),
 
+    ON_PICKUP("_onPickUp_"),
+    ON_DROP_ITEM("_onDropItem_"),
+    ON_EAT("_onEat_"),
     ON_INTERACT_ITEM("_onInteractItem_"),       // fun _onInteractItem_(itemType) { code }
-    ON_INTERACT_BLOCK("_onInteractBlock_"),
-    ON_INTERACT_ENTITY("_onInteractEntity_"),
+    ON_INTERACT_BLOCK("_onInteractBlock_"),     // fun _onInteractBlock_(blockType) { code }
+    ON_INTERACT_ENTITY("_onInteractEntity_"),   // fun _onInteractEntity_(entityType) {code }
     ON_CHAT_MESSAGE("_onChatMessage_"),         // fun _onChatMessage(message) { code }
     ON_GAMEMODE_CHANGE("_onGamemodeChange_"),   // fun _onGamemodeChange(gamemode) { code }
     ON_CLICK_SLOT("_onClickSlot_"),             // fun _onClickSlot_(slot) { code }
@@ -34,23 +37,20 @@ public enum MinecraftEventFunction {
         this.functionName = functionName;
     }
 
-    public void tryRunFunction(List<Value<?>> arugments) {
+    public void tryRunFunction(List<Value<?>> arguments) {
         if (!ClientScript.enabled)
-            return;
-        Value<?> value = Run.symbolTable.get(this.functionName);
-        if (!(value instanceof FunctionValue functionValue))
             return;
         new Thread(() -> {
             try {
-                functionValue.execute(arugments);
+                Value<?> value = Run.symbolTable.get(this.functionName);
+                if (!(value instanceof FunctionValue functionValue))
+                    return;
+                functionValue.execute(arguments);
             }
             catch (ThrowValue | CodeError e) {
                 EssentialUtils.sendMessage(e.getMessage());
             }
-            finally {
-                Thread.currentThread().interrupt();
-            }
-        }).start();
+        }, "Minecraft Event Thread").start();
     }
 
     public void tryRunFunction() {

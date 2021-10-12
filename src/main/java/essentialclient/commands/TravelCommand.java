@@ -59,7 +59,6 @@ public class TravelCommand {
                 )
                 .then(literal("ping")
                         .then(argument("discordId", StringArgumentType.string())
-                                .suggests( ((context, builder) -> CommandSource.suggestMatching(new String[]{"546239692048302091"}, builder)))
                                 .executes(context -> {
                                     player = CommandHelper.getPlayer();
                                     ping = context.getArgument("discordId", String.class);

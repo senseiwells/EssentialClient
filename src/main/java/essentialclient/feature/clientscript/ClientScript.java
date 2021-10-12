@@ -9,7 +9,6 @@ import me.senseiwells.arucas.utils.SymbolTable;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import org.lwjgl.system.CallbackI;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,9 +25,9 @@ public class ClientScript {
             if (clientKeybind.isPressed() && !clientKeybind.wasPressed()) {
                 clientKeybind.setPressed(false);
                 enabled = !enabled;
-                EssentialUtils.sendMessageToActionBar("§6Macro is now " + (enabled ? "§aON" : "§cOFF"));
+                EssentialUtils.sendMessageToActionBar("§6Script is now " + (enabled ? "§aON" : "§cOFF"));
                 if (enabled)
-                    thread = executeMacro();
+                    thread = executeScript();
                 else if (thread != null) {
                     thread.interrupt();
                 }
@@ -36,7 +35,12 @@ public class ClientScript {
         });
     }
 
-    private static Thread executeMacro() {
+    public static void run() {
+        if (enabled)
+            thread = executeScript();
+    }
+
+    private static Thread executeScript() {
         Thread thread = new Thread(() -> {
             try {
                 Path macroFile = getFile();
@@ -59,7 +63,7 @@ public class ClientScript {
                 resetKeys(MinecraftClient.getInstance());
                 Thread.currentThread().interrupt();
             }
-        });
+        }, "Client Script Thread");
         thread.start();
         return thread;
     }

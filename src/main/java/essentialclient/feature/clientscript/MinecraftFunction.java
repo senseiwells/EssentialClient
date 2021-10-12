@@ -27,9 +27,11 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import org.lwjgl.system.CallbackI;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class MinecraftFunction extends BuiltInFunction {
@@ -46,7 +48,7 @@ public class MinecraftFunction extends BuiltInFunction {
     }
 
     public MinecraftFunction(String name, FunctionDefinition function) {
-        this(name, new LinkedList<>(), function);
+        this(name, new ArrayList<>(), function);
     }
 
     public static void initialiseMinecraftFunctions() {
@@ -95,6 +97,13 @@ public class MinecraftFunction extends BuiltInFunction {
             assert client.player != null;
             Value<?> value = function.getValueFromTable(function.argumentNames.get(0));
             client.player.sendMessage(new LiteralText(value.value == null ? "null" : value.toString()), false);
+            return new NullValue();
+        }),
+
+        new MinecraftFunction("messageActionBar", "text", function -> {
+            assert client.player != null;
+            Value<?> value = function.getValueFromTable(function.argumentNames.get(0));
+            client.player.sendMessage(new LiteralText(value.value == null ? "null" : value.toString()), true);
             return new NullValue();
         }),
 
@@ -192,6 +201,13 @@ public class MinecraftFunction extends BuiltInFunction {
             return new StringValue(Registry.ITEM.getId(client.player.inventory.getMainHandStack().getItem()).getNamespace());
         }),
 
+        new MinecraftFunction("getStatusEffects", function -> {
+            assert client.player != null;
+            List<Value<?>> potionList = new ArrayList<>();
+            client.player.getStatusEffects().forEach(s -> potionList.add(new StringValue(Objects.requireNonNull(Registry.STATUS_EFFECT.getId(s.getEffectType())).getPath())));
+            return new ListValue(potionList);
+        }),
+
         new MinecraftFunction("getLookingAtBlock", function -> {
             assert client.player != null;
             HitResult result = client.player.raycast(20D, 0.0F, true);
@@ -214,7 +230,7 @@ public class MinecraftFunction extends BuiltInFunction {
         }),
 
         new MinecraftFunction("getPos", function -> {
-            List<Value<?>> list = new LinkedList<>();
+            List<Value<?>> list = new ArrayList<>();
             assert client.player != null;
             list.add(new NumberValue((float) client.player.getX()));
             list.add(new NumberValue((float) client.player.getY()));
@@ -327,14 +343,14 @@ public class MinecraftFunction extends BuiltInFunction {
             List<ChatHudLine<Text>> chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages();
             if (chat.size() == 0)
                 return new NullValue();
-            List<Value<?>> list = new LinkedList<>();
+            List<Value<?>> list = new ArrayList<>();
             list.add(new NumberValue(chat.get(0).getCreationTick()));
             list.add(new StringValue(chat.get(0).getText().getString()));
             return new ListValue(list);
         }),
 
         new MinecraftFunction("getOnlinePlayers", function -> {
-            List<Value<?>> players = new LinkedList<>();
+            List<Value<?>> players = new ArrayList<>();
             ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
             if (networkHandler == null || networkHandler.getPlayerList() == null)
                 throw new ErrorRuntime("You are not connected to a server", function.startPos, function.endPos, function.context);

@@ -12,6 +12,7 @@
     "functions.ClientPlayerInteractionManagerMixin",
     "functions.ClientPlayNetworkHandlerMixin",
     "functions.MinecraftClientMixin",
+    "functions.PlayerEntityMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [

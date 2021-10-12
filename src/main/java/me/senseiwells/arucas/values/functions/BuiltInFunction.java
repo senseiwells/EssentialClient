@@ -115,8 +115,7 @@ public class BuiltInFunction extends FunctionValue {
                         if (!(e instanceof ThrowStop))
                             System.out.println("WARN: An error was caught in schedule() call, check that you are passing in a valid function");
                     }
-                    Thread.currentThread().interrupt();
-                });
+                }, "Schedule Thread");
                 thread.start();
                 return new NullValue();
             }),
