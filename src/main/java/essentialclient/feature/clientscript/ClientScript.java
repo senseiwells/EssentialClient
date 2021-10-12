@@ -1,10 +1,11 @@
 package essentialclient.feature.clientscript;
 
-import essentialclient.gui.clientrule.ClientRules;
-import essentialclient.gui.keybinds.ClientKeybinds;
+import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.feature.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.core.Run;
-import me.senseiwells.arucas.throwables.Error;
+import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.utils.SymbolTable;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -24,9 +25,9 @@ public class ClientScript {
             if (clientKeybind.isPressed() && !clientKeybind.wasPressed()) {
                 clientKeybind.setPressed(false);
                 enabled = !enabled;
-                EssentialUtils.sendMessageToActionBar("§6Macro is now " + (enabled ? "§aON" : "§cOFF"));
+                EssentialUtils.sendMessageToActionBar("§6Script is now " + (enabled ? "§aON" : "§cOFF"));
                 if (enabled)
-                    thread = executeMacro();
+                    thread = executeScript();
                 else if (thread != null) {
                     thread.interrupt();
                 }
@@ -34,7 +35,12 @@ public class ClientScript {
         });
     }
 
-    private static Thread executeMacro() {
+    public static void run() {
+        if (enabled)
+            thread = executeScript();
+    }
+
+    private static Thread executeScript() {
         Thread thread = new Thread(() -> {
             try {
                 Path macroFile = getFile();
@@ -43,20 +49,21 @@ public class ClientScript {
                 enabled = false;
                 EssentialUtils.sendMessageToActionBar("§6Macro has finished executing");
             }
-            catch (IOException | Error e) {
+            catch (IOException | CodeError e) {
                 if (!enabled)
                     return;
                 EssentialUtils.sendMessage("§cAn error occurred while trying to read the macro");
-                if (e instanceof Error)
+                if (e instanceof CodeError)
                     EssentialUtils.sendMessage("§c--------------------------------------------\n" + e);
                 enabled = false;
                 EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
             }
             finally {
+                Run.symbolTable = new SymbolTable();
                 resetKeys(MinecraftClient.getInstance());
                 Thread.currentThread().interrupt();
             }
-        });
+        }, "Client Script Thread");
         thread.start();
         return thread;
     }

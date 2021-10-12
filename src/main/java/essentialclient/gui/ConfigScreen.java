@@ -12,8 +12,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
 
-public class ConfigScreen extends Screen
-{
+public class ConfigScreen extends Screen {
     private final Screen parent;
     private static String carpetServerVersion;
     
