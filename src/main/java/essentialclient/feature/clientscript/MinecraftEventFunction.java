@@ -19,10 +19,13 @@ public enum MinecraftEventFunction {
     ON_USE("_onUse_"),
     ON_PICK_BLOCK("_onPickBlock_"),
 
+    ON_INTERACT_ITEM("_onInteractItem_"),       // fun _onInteractItem_(itemType) { code }
+    ON_INTERACT_BLOCK("_onInteractBlock_"),
+    ON_INTERACT_ENTITY("_onInteractEntity_"),
     ON_CHAT_MESSAGE("_onChatMessage_"),         // fun _onChatMessage(message) { code }
     ON_GAMEMODE_CHANGE("_onGamemodeChange_"),   // fun _onGamemodeChange(gamemode) { code }
     ON_CLICK_SLOT("_onClickSlot_"),             // fun _onClickSlot_(slot) { code }
-    ON_BLOCK_BROKEN("_onBlockBroken_"),         // fun _onBlockBroken(x, y, z) { code }
+    ON_BLOCK_BROKEN("_onBlockBroken_"),         // fun _onBlockBroken(block, x, y, z) { code }
     ;
 
     String functionName;
