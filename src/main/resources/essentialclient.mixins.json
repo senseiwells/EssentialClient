@@ -8,11 +8,6 @@
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.MinecraftServer_noopMixin",
-    "functions.ClientPlayerEntityMixin",
-    "functions.ClientPlayerInteractionManagerMixin",
-    "functions.ClientPlayNetworkHandlerMixin",
-    "functions.MinecraftClientMixin",
-    "functions.PlayerEntityMixin",
     "unlockAllRecipes.PlayerManagerMixin"
   ],
   "client": [
@@ -29,6 +24,11 @@
     "disableTutorialNotifications.TutorialToastMixin",
     "displayTimePlayed.GameMenuScreenMixin",
     "functions.ChatHudMixin",
+    "functions.ClientPlayerEntityMixin",
+    "functions.ClientPlayerInteractionManagerMixin",
+    "functions.ClientPlayNetworkHandlerMixin",
+    "functions.MinecraftClientMixin",
+    "functions.PlayerEntityMixin",
     "keyboardRebinds.KeyboardMixin",
     "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",

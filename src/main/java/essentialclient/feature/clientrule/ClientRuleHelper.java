@@ -2,7 +2,6 @@ package essentialclient.feature.clientrule;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.brigadier.tree.RootCommandNode;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
@@ -25,7 +24,6 @@ import java.util.*;
 public class ClientRuleHelper {
 
     public static CommandTreeS2CPacket serverPacket;
-    public static RootCommandNode<?> rootCommandNode;
 
     protected static Map<String, String> clientRulesMap = new HashMap<>();
 

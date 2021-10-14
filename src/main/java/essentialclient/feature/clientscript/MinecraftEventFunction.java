@@ -18,7 +18,9 @@ public enum MinecraftEventFunction {
     ON_ATTACK("_onAttack_"),
     ON_USE("_onUse_"),
     ON_PICK_BLOCK("_onPickBlock_"),
+    ON_CLOSE_SCREEN("_onCloseScreen_"),
 
+    ON_OPEN_SCREEN("_onOpenScreen_"),
     ON_PICKUP("_onPickUp_"),
     ON_DROP_ITEM("_onDropItem_"),
     ON_EAT("_onEat_"),
