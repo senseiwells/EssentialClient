@@ -20,6 +20,7 @@ public enum MinecraftEventFunction {
     ON_PICK_BLOCK("_onPickBlock_"),
     ON_CLOSE_SCREEN("_onCloseScreen_"),
 
+    ON_COMMAND("_onCommand_"),
     ON_OPEN_SCREEN("_onOpenScreen_"),
     ON_PICKUP("_onPickUp_"),
     ON_DROP_ITEM("_onDropItem_"),
@@ -58,5 +59,4 @@ public enum MinecraftEventFunction {
     public void tryRunFunction() {
         this.tryRunFunction(null);
     }
-
 }

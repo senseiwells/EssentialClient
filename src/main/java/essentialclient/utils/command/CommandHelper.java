@@ -14,7 +14,9 @@ import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,6 +24,8 @@ public class CommandHelper {
 
     // I know this is bad way of doing it but don't want to refactor ClientRules, most likely will not add more commands, if do then will refactor
     public static Set<String> clientCommands = new HashSet<>();
+
+    public static Set<String> functionCommand = new HashSet<>();
 
     public static DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
@@ -78,5 +82,15 @@ public class CommandHelper {
                     .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
             e.printStackTrace();
         }
+    }
+
+    public boolean tryRunFunctionCommand(String message) {
+        message = message.replace("/", "");
+        List<String> arguments = Arrays.stream(message.split(" ")).toList();
+        String command = arguments.remove(0);
+        if (functionCommand.contains(command)) {
+            return true;
+        }
+        return false;
     }
 }

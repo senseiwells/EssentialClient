@@ -3,6 +3,7 @@ package essentialclient.feature.clientscript;
 import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.feature.keybinds.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.SymbolTable;
@@ -59,6 +60,7 @@ public class ClientScript {
                 EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
             }
             finally {
+                CommandHelper.functionCommand.clear();
                 Run.symbolTable = new SymbolTable();
                 resetKeys(MinecraftClient.getInstance());
                 Thread.currentThread().interrupt();
