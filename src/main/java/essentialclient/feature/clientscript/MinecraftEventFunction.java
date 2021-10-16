@@ -51,7 +51,13 @@ public enum MinecraftEventFunction {
                 functionValue.execute(arguments);
             }
             catch (ThrowValue | CodeError e) {
-                EssentialUtils.sendMessage(e.getMessage());
+                if (!ClientScript.enabled)
+                    return;
+                EssentialUtils.sendMessage("§cAn error occurred while trying to read the macro");
+                if (e instanceof CodeError)
+                    EssentialUtils.sendMessage("§c--------------------------------------------\n" + e);
+                ClientScript.enabled = false;
+                EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
             }
         }, "Minecraft Event Thread").start();
     }

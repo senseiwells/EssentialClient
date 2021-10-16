@@ -16,7 +16,7 @@ macros, and without having to create a whole mod for simple tasks.
 You must have [EssentialClient](https://github.com/senseiwells/EssentialClient) installed, then after you have booted the
 game, you can navigate to the Essential Client Menu (to get to this menu you must join a world and press `ESC`). Once
 you have opened this menu there will be an option to open your Script file (in the bottom right), this will open a prompt
-asking you what program to open the file with, open it with any text editor (Visual Studio Code has syntax [highlighting support]()). You can also
+asking you what program to open the file with, open it with any text editor (Visual Studio Code has syntax [highlighting support](https://cdn.discordapp.com/attachments/894353843738017802/897616637832884264/arucas.zip)). You can also
 change the current Script file that you open, and run by changing the `clientScriptFilename` in the Client Rules Menu.
 ClientScripts are stored in `.minecraft/config/EssentialClient/Scripts`.
 
@@ -675,7 +675,7 @@ Top Tip - Don't run a `while(true)` loop without at least 10ms delay :)
 
 #### VSCode
 
-VSCode syntax highlighting file can be found [here]()
+VSCode syntax highlighting file can be found [here](https://cdn.discordapp.com/attachments/894353843738017802/897616637832884264/arucas.zip)
 
 ## Example Code
 
