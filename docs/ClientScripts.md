@@ -16,7 +16,7 @@ macros, and without having to create a whole mod for simple tasks.
 You must have [EssentialClient](https://github.com/senseiwells/EssentialClient) installed, then after you have booted the
 game, you can navigate to the Essential Client Menu (to get to this menu you must join a world and press `ESC`). Once
 you have opened this menu there will be an option to open your Script file (in the bottom right), this will open a prompt
-asking you what program to open the file with, open it with any text editor (NotePad++ has [syntax support](#notepad)). You can also
+asking you what program to open the file with, open it with any text editor (Visual Studio Code has syntax [highlighting support]()). You can also
 change the current Script file that you open, and run by changing the `clientScriptFilename` in the Client Rules Menu.
 ClientScripts are stored in `.minecraft/config/EssentialClient/Scripts`.
 
@@ -30,7 +30,7 @@ convenient.
 
 There are 6 variable types that this language supports:
 
-`Float` - This stores floating point numbers, can store integers too
+`Double` - This stores floating point numbers, can store integers too
 
 `String` - This stores any text
 
@@ -56,6 +56,8 @@ There are 6 variable types that this language supports:
 
 `//` - Used to comment
 
+`/* */` - Used for block comments
+
 ## Logical Operators:
 
 `and` or `&&` - This is the logical AND
@@ -68,22 +70,17 @@ There are 6 variable types that this language supports:
 
 ### `var`
 
-- This is used for initialising any variables
+- This is used for initialising any variables, this is not required for initialising variables, think of it as a notation
 - Examples:
     - `var number = 0;`
     - `var string = "foo";`
 
-### `const`
-
-- This is used for stating any constant values
-- Examples:
-    - `const pi = 3.141592`
-    - `const euler = 2.718281`
-
 ### `fun`
 
-- This is used for defining functions
-- Example: `fun foo(bar) { print(bar); }`
+- This is used for defining functions, or for defining lambdas
+- Example: 
+  - `fun foo(bar) { print(bar); }`
+  - `fun () { print("this is a lambda"); }`
 
 ### `return`
 
@@ -93,24 +90,13 @@ There are 6 variable types that this language supports:
 ### `if`
 
 - This is used to evaluate a conditional statement
-- Examples:
-    - `if (true) -> print("foo");`
-    - `if(true) { print("bar"); }`
+- Examples: `if(true) { print("bar"); }`
 
 ### `else`
 
 - This is used to further evaluate a conditional statement following an `if`, can also be used in conjuction with `if`
   for an `else if` statement
-- Examples:
-    - `if (false) -> print("foo") else if (true) -> print("bar") else -> print("baz");`
-    - `if (false) { print("foo"); } else if (false) { print("bar"); } else { print("baz); }`
-
-### `then` or `->`
-
-- This is used for using `if`'s and `else`'s on one line, this is also how the ternary operator is expressed
-- Examples:
-    - `if (true) -> print("foo");`
-    - `var string = if(true) -> "it works!" else -> "this should not return";`
+- Examples: `if (false) { print("foo"); } else if (false) { print("bar"); } else { print("baz); }`
 
 ### `while`
 
@@ -127,12 +113,12 @@ There are 6 variable types that this language supports:
 - This is used to break out of a loop
 - Example: `break;`
 
-### `start` or `{`
+### `{`
 
-- This is used after a `fun` identifier, `if` conditional or `else` to create a block that can contain multiple lines
+- This is used to create a scope block that can contain multiple lines
 - Example: `fun example() { print("foo"); print("bar"); print("baz"); }`
 
-### `end` or `}`
+### `}`
 
 - This is used after the ending of your code block to close it off
 - Example: `fun example() { print("foo"); print("bar"); print("baz"); }`
@@ -152,12 +138,11 @@ Anything inside brackets are parameters and these values are used in the functio
 
 - This is used to stop a program
 - Example: `stop();`
-
 ### `debug(boolean)`
 
 - This is used to enable debug mode, which just prints all returns to console
 - Example: `debug(true);`
-
+- 
 ### `print(string)`
 
 - This is used to print a string value to console
@@ -178,61 +163,103 @@ Anything inside brackets are parameters and these values are used in the functio
 
 - This gets a pseudo random integer between 0 and the bound
 - Example: `random(10);`
+- Returns NumberValue: `5`
 
 ### `round(number)`
 
 - This rounds a number to the nearest integer
 - Example: `round(99.9);`
+- Returns NumberValue: `100`
 
 ### `roundUp(number)`
 
 - This rounds a number up to the next integer
 - Example: `roundUp(0.1);`
+- Returns NumberValue: `1`
 
 ### `roundDown(number)`
 
 - This rounds a number down to the next integer
 - Example: `roundDown(0.9);`
+- Returns NumberValue: `0`
+
+### `modulus(num1, num2)`
+
+- This returns the remainder of num1/num2
+- Example: `modulus(9, 2);`
+- Returns NumberValue: `1`
+
+### `len(value)`
+
+- Returns the length of a value passed in, works with strings and lists
+- Example: `len("What is the length of this string?");`
+- Returns NumberValue `34`
+
+### `stringToList(string)`
+
+- Returns a list of characters from the string
+- Example: `stringToList("stringToList");`
+- Returns ListValue: `["s", "t", "r", "i", "n", "g", " ", "T", "o", " ", "L", "i", "s", "t"]`
+
+### `stringOf(value)`
+
+- Returns string of whatever value input
+- Example: `stringOf(9008);`
+- Returns StringValue: `"9008"`
+
+### `numberOf(string)`
+
+- Returns number of a string
+- Example: `numberOf("8892");`
+- Returns NumberValue: `8892`
 
 ### `getTime()`
 
 - This gets the current time as a string
 - Example: `getTime();`
+- Returns NumberValue: `00:18`
 
 ### `isNumber(value)`
 
 - This returns a boolean based on whether value is a number
 - Example: `isNumber("this is not a number");`
+- Returns BooleanValue: `false`
 
 ### `isString(value)`
 
 - This returns a boolean based on whether value is a string
-- Example: `isNumber("this is a string");`
+- Example: `isString("this is a string");`
+- Returns BooleanValue: `true`
 
 ### `isBoolean(value)`
 
 - This returns a boolean based on whether value is a boolean
 - Example: `isBoolean(80);`
+- Returns BooleanValue: `false`
 
 ### `isFunction(value)`
 
 - This returns a boolean based on whether value is a function
 - Example: `isFunction(false);`
+- Returns BooleanValue: `false`
 
 ### `isList(value)`
 
 - This returns a boolean based on whether value is a list
 - Example: `isList(null);`
+- Returns BooleanValue: `false`
 
 ### `getIndex(list, index)`
 
 - This is a list variable specific function, it returns the value at index of a list, index starts at 0
 - Example: `var stringList = ["foo", "bar", "baz"]; getIndex(stringList, 0);`
+- Returns Value: `"foo"`
 
 ### `removeIndex(list, index)`
 
 - This is a list variable specific function, it removes a value from a list at index
 - Example: `var stringList = ["foo", "bar", "baz"]; removeIndex(stringList, 0);`
+- Returns Value: `"foo"`
 
 ### `append(list, value)`
 
@@ -243,11 +270,7 @@ Anything inside brackets are parameters and these values are used in the functio
 
 - This is a list variable specific function, it allows you to concatenate two lists
 - Example: `var list1 = ["foo"]; var list2 = ["bar", "baz"]; concat(list1, list2);`
-
-### `len(list)`
-
-- This is a list variable specific function, it allows you to get the length of a list
-- Example: `var list = ["foo", "bar"]; len(list);`
+- Returns ListValue: `["foo", "bar", "baz"]`
 
 ## Minecraft Functions
 
@@ -268,12 +291,22 @@ These are functions that hook into Minecraft
 - This allows you to send a message to your player, only they will see this
 - Example: `message("Hello!");`
 
+### `messageActionBar(string)`
+
+- This allows you to set the current message displaying on the action bar
+- Example: `messageActionBar("Hello!");`
+
 ### `say(string);`
 
 - This allows you to make your player send a message in chat, this includes commands
 - Examples:
     - `say("Hi :)");`
     - `say("/gamemode creative");`
+
+### `addCommand(commandName, arguments)`
+
+- This allows you to add your own custom commands
+- Example: `addCommand("cs", 0)`
 
 ### `setSelectedSlot(slotNumber)`
 
@@ -320,6 +353,11 @@ These are functions that hook into Minecraft
 - This allows you to trade with a villager for a certain item, passing true into second parameter will drop all the traded items
 - Example: `tradeFor("quartz_block", true);`
 
+### `swapSlots(slot1, slot2)`
+
+- This allows you to swap 2 slots with one another
+- Example: `swapSlots(13, 46)`
+
 ### `screenshot()`
 
 - This takes a screenshot
@@ -335,6 +373,11 @@ These are functions that hook into Minecraft
 - This will make the player jump if they are on the ground
 - Example: `jump()`
 
+### `clearChat()`
+
+- This will clear the chat history
+- Example: `clearChat();`
+
 ### `hold()`
 
 - This stops the macro from ending after it has executed all of its code, meaning it needs to be stopped manually
@@ -347,46 +390,61 @@ These are functions that hook into Minecraft
 
 - This returns the current slot the player has selected as a number
 - Example: `getCurrentSlot();`
+- Returns NumberValue: `5`
 
 ### `getHeldItem()`
 
 - This returns the current item the player is holding as a string, if player was holding a grass block it would return "grass_block"
 - Example: `getHeldItem();`
+- Returns StringValue: `"grass_block"`
+
+### `getStatusEffects()`
+
+- This returns the current status effects the player currently has
+- Example: `getStatusEffects()`
+- Returns ListValue: `["resistance", "fire_resistance", "regeneration"]`
 
 ### `getLookingAtBlock()`
 
 - This returns the block that the player is looking at as a string, if looking at nothing will return "air"
 - Example: `getLookingAtBlock();`
+- Returns StringValue: `"diamond_block"`
 
 ### `getLookingAtEntity()`
 
 - This returns the entity the player is looking at as a string, if looking at no entity will return "none"
 - Example: `getLookingAtEntity();`
+- Returns StringValue: `"villager"`
 
 ### `getHealth()`
 
 - This returns the player's current health
 - Example: `getHealth();`
+- Returns NumberValue: `18`
 
-### `getPos(axis)`
+### `getPos()`
 
-- This returns the position (or rotation) of a player on desired axis as a number, pass "x", "y", "z", "yaw", or "pitch" as a parameter
-- Example: `getPos("x");`
+- This returns the position as a list containing `x`, `y`, `z`, `yaw`, `pitch`
+- Example: `getPos();`
+- Returns ListValue: `[100, 40, 200, 90, 0]`
 
 ### `getDimension()`
 
 - This returns the current dimension that the player is in as a string
 - Example: `getDimension();`
+- Returns StringValue: `"overworld"`
 
 ### `getBlockAt(x, y, z)`
 
 - This returns the block at the position given in the parameters as a string, if it is out of render then it will return "void_air"
 - Example: `getBlockAt(getPos("x"), getPos("y") - 1, getPos("z"));`
+- Returns StringValue: `"dirt"`
 
 ### `getScriptsPath()`
 
-- This returns the path that your scripts are stored as a string, e.g. `C:/.minecraft/config/EssentialClient/Scripts`
+- This returns the path that your scripts are stored as a string
 - Example: `getScriptsPath();`
+- Returns StringValue: `"C:/.minecraft/config/EssentialClient/Scripts"`
 
 ### `isTradeDisabled(itemType)` and `isTradeDisabled(index)`
 
@@ -394,27 +452,220 @@ These are functions that hook into Minecraft
 - Examples:
     - `isTradeDisabled("experience_bottle");`
     - `isTradeDisabled(3);`
+- Returns BooleanValue: `false`
+
+### `getEnchantmentsForTrade(itemType)` and `getEnchatmentsForTrade(index)`
+
+- This returns the enchantments that a trade item has
+- Examples:
+  - `getEnchantmentsForTrade("diamond_pickaxe");`
+  - `getEnchantmentsForTrade(5);`
+- Returns ListValue: `[["efficiency", 5]. ["unbreaking", 3], ["mending", 1]]`
 
 ### `doesVillagerHaveTrade(itemType)`
 
 - This returns whether a villager has a trade for an item type as a boolean
 - Example: `doesVillagerHaveTrade("green_terracotta");`
+- Returns BooleanValue: `true`
 
 ### `isInventoryFull()`
 
 - This returns whether the players inventory is full as a boolean
-- Example: `isInventoryFull()`
+- Example: `isInventoryFull();`
+- Returns BooleanValue: `true`
 
 ### `isInInventoryGui()`
 
 - This returns whether the player is inside an inventory Gui as a boolean
-- Example: `isInInventoryGui()`
+- Example: `isInInventoryGui();`
+- Returns BooleanValue: `false`
 
 ### `isBlockEntity(blockType)`
 
 - This returns whether a block is a block entity
 - Example: `isBlockEntity("hopper");`
+- Returns BooleanValue: `true`
 
+### `getSlotFor(itemType)`
+
+- This returns an integer for the item slot that wanted item type is in
+- Example: `getSlotFor("diamond_pickaxe");`
+- Returns NumberValue: `38`
+
+### `getTotalSlots()`
+
+- This returns the current number of slots that the player can access (this changes depending on container)
+- Example: `getTotalSlots();`
+- Returns NumberValue: `46`
+
+### `getItemForSlot(slotNum)`
+
+- This returns the item in a current slot
+- Example: `getItemForSlot(46);`
+- Returns StringValue: `shield`
+
+### `getEnchantmentsForSlot(slotNum)`
+
+- This returns the enchantments for an item in dedicated slot
+- Example: `getEnchantmentsForSlot(38);`
+- Returns ListValue: `[["efficiency", 4], ["mending", 1], ["unbeaking", 3]]`
+
+### `getDurabilityForSlot(slotNum)`
+
+- This returns the amount of durability the item in a dedicated slot has
+- Example: `getDurabilityForSlot(17);`
+- Returns NumberValue: `1300`
+
+### `getLatestChatMessage()`
+
+- This returns the latest chat message, it contains the creation tick of the message and the string of the message
+- Example: `getLatestChatMessage();`
+- Returns ListValue: `[1400, "<senseiwells> This was sent in chat"]`
+
+### `getOnlinePlayers()`
+
+- This returns a list of the online players
+- Example: `getOnlinePlayers();`
+- Returns ListValue: `["senseiwells", "SuperSanta"]`
+
+### `getGamemode()`
+
+- This returns the current gamemode that the player is in
+- Example: `getGamemode();`
+- Returns StringValue: `creative`
+
+### `getPlayerName()`
+
+- This returns the players name
+- Example: `getPlayerName();`
+- Returns StringValue: `senseiwells`
+
+### `getWeather()`
+
+- This returns the current weather in the world
+- Example: `getWeather();`
+- Returns StringValue: `rain`
+
+### `getTimeOfDay()`
+
+- This returns the current time of day
+- Example: `getTimeOfDay();`
+- Returns NumberValue: `1800`
+
+### `isSneaking()`
+
+- This returns whether the player is sneaking
+- Example: `isSneaking();`
+- Returns BooleanValue: `false`
+
+### `isSprinting()`
+
+- This returns whether the player is sprinting
+- Example: `isSprinting();`
+- Returns BooleanValue: `true`
+
+### `isFalling()`
+
+- This returns whether the player is falling
+- Example: `isFalling();`
+- Returns BooleanValue: `false`
+
+## Minecraft Events
+
+### `_onClientTick_()`
+
+- This event gets called every client tick
+- Example: `fun _onClientTick() { message("Hi"); }`
+
+### `_onHealthUpdate_()`
+
+- This event gets called when the players health changes
+- Example: `fun _onHealthUpdate_() { message("Health Update"); }`
+
+### `_onTotem_()`
+
+- This event gets called when the player activates a totem
+- Example: `fun _onTotem_() { message("You just used a totem"); }`
+
+### `_onAttack_()`
+
+- This event gets called when the player attacks
+- Example: `fun _onAttack_() { message("You just attacked") } `
+
+### `_onUse_()`
+
+- This event gets called when the player uses
+- Example: `fun _onUse_() { message("You just used"); }`
+
+### `_onPickBlock_()`
+
+- This event gets called when the player picks block
+- Example: `fun _onPickBlock_() { message("You just picked a block"); }`
+
+### `_onCloseScreen_()`
+
+- This event gets called when the player closes a screen
+- Example: `fun _onCloseScreen_() { message("You just closed screen"); } `
+
+### `_onCommand_(commandName, arguments)`
+
+- This event gets called when a set command that you added gets called, passes in a string and a list of strings
+- Example: `fun _onCommand_(commandName, arguments) { if (commandName == "cs") { message(stringOf(arguments)); } } `
+
+### `_onOpenScreen_(screen)`
+
+- This event gets called when a screen is opened and it will pass the name of the screen in
+- Example: `fun _onOpenScreen_(screen) { message("You just opened " + screen); } `
+
+### `_onPickUp_(entity)`
+
+- This event gets called when the player picks up an item/xp, the item name/exp will get passed in
+- Example: `fun _onPickUp_(entity) { message("You just picked up " + entity); }`
+
+### `_onDropItem_(item)`
+
+- This event gets called when the player drops an item, the item name gets passed in
+- Example: `fun _onDropItem_(item) { message("You just dropped " + item); } `
+
+### `_onEat_(food)`
+
+- This event gets called when you eat, the food gets passed in
+- Example: `fun _onEat_(food) { message("You just ate " + food); } `
+
+### `_onInteractItem_(item)`
+
+- This event gets called when the player interacts with an item (e.g using an enderpearl), the item gets passed in 
+- Example: `fun _onInteractItem_(item) { message("You just interacted with " + item); } `
+
+### `_onInteractBlock_(block)`
+
+- This event gets called when the player interacts with a block (e.g opening a chest), the block gets passed in
+- Example: `fun _onInteractBlock_(block) { message("You just interacted with " + block); } `
+
+### `_onInteractEntity_(entity)`
+
+- This event gets called when the player interacts with an entity (e.g interacting with a villager), the entity gets passed in
+- Example: `fun _onInteractEntity_(entity) { message("You just interacted with " + entity); } `
+
+### `_onChatMessage_(message)`
+
+- This event gets called when a chat message is added to the chat screen, the message gets passed in
+- Example: `fun _onChatMessage_(message) { message("Message: " + message); } `
+
+### `_onGamemodeChange_(gamemode)`
+
+- This event gets called when the player changes gamemode
+- Example: `fun _onGamemodeChange_(gamemode) { message("You just changed gamemode to: " + gamemode); } `
+
+### `_onClickSlot_(slotNum)`
+
+- This event gets called when the player clicks on an inventory slot, slot number gets passed in
+- Example: `fun _onClickSlot_(slotNum) { message("You just clicked on slot: " + slotNum); } `
+
+### `_onBlockBroken_(block, x, y, z)`
+
+- This event gets called when the player breaks a block, block name, x, y, and z gets passed in
+- Example: `fun _onBlockBroken_(block, x, y ,z) { message("You just broke " + block + " at " + stringOf(x) + " " + stringOf(y) + " " + stringOf(z)); } `
 
 ## Additional Information:
 
@@ -422,9 +673,9 @@ I will probably upload a video about this shortly, if I have it will be linked h
 
 Top Tip - Don't run a `while(true)` loop without at least 10ms delay :)
 
-#### Notepad++
+#### VSCode
 
-Notepad++ syntax highlighting xml file can be found [here](https://cdn.discordapp.com/attachments/559400132710236160/894352681529925652/arucas.xml)
+VSCode syntax highlighting file can be found [here]()
 
 ## Example Code
 
@@ -435,12 +686,12 @@ For loops are useless, we have to work with while loops, thankfully it's still v
 ```groovy
 // Lets sort this list for only strings
 
-var valueList = ["foo", 89, true, "bar", null, false, 3.14, "baz"];
-var stringList = [];
-var iterator = 0;
+valueList = ["foo", 89, true, "bar", null, false, 3.14, "baz"];
+stringList = [];
+iterator = 0;
 
 while (len(valueList) > iterator) {
-    var value = getIndex(valueList, iterator);
+    value = getIndex(valueList, iterator);
     if (isString(value)) { 
         append(stringList, value);
     }
@@ -495,7 +746,7 @@ fun isLookingAtBlockShulker() {
 
     // I know this doesn't look amazing but it works
     
-    var block = getLookingAtBlock();
+    block = getLookingAtBlock();
     if (
     block == "shulker_box" ||
     block == "white_shulker_box" ||
@@ -513,7 +764,7 @@ fun isLookingAtBlockShulker() {
     block == "brown_shulker_box" || 
     block == "red_shulker_box" ||
     block == "black_shulker_box"
-        ) -> return true;
+        ) { return true; } 
     return false;
 }
 
@@ -522,7 +773,7 @@ while (true) {
     // The sleep statement here means that this will loop every 0.2 seconds
     
     sleep(200);
-    if (isLookingAtBlockShulker()) -> message("you are looking at a shulker");
+    if (isLookingAtBlockShulker()) { message("you are looking at a shulker"); }
     
     // This sends a message to the client if they are looking at a shulker
     
@@ -535,7 +786,7 @@ Let's create a simple script that will give us a block if we are looking at it
 
 ```groovy
 fun giveBlock() {
-    var block = getLookingAtBlock();
+    block = getLookingAtBlock();
     
     // We can't give the player "air", "water", or "lava", so we ignore those
     
@@ -543,7 +794,7 @@ fun giveBlock() {
     block == "air" ||
     block == "water" || 
     block == "lava" || 
-        ) -> return;
+        ) { return; }
     say("/give senseiwells " + block);
 }
 
@@ -555,4 +806,103 @@ while (true) {
     
 }
 
+```
+
+### CommandCameraMode clientside!
+
+This obviously requires you to have OP on the server as it relies on using vanilla commands, but it stores all the information on the client
+essentially allowing you to use CommandCameraMode on any Server as long as you have the permissions :)
+
+```groovy
+prevGamemode = null;
+location = null;
+
+// Inner scope just for adding commands, not needed but looks less messy
+
+{
+    // adds the command you want and the number of arguments you can have
+  
+    addCommand("cs", 0);
+    addCommand("c", 0);
+    addCommand("s", 0);
+}
+
+fun listString(list, index) {
+    return stringOf(list, index);
+}
+
+// This is the onCommand event, which gets called everytime you send a command with the name that you added previously
+
+fun _onCommand_(command, arguments) {
+    if (command == "cs") {
+        if (getGamemode() != "spectator") {
+            prevGamemode = getGamemode();
+            location = getPos();
+            append(location, getDimension());
+            say("/gamemode spectator");
+            return;
+        }
+        if (prevGamemode == null) {
+            prevGamemode = getGamemode();
+            say("/gamemode survival");
+        }
+        else { 
+            say("/gamemode " + prevGamemode); 
+        }
+      
+        // This is restoring the location  
+      
+        if (location != null) {
+            say(
+                "/execute in " + getIndex(location, 5) + 
+                " run tp @s " + listString(location, 0) + " " + 
+                listString(location, 1) + " " + 
+                listString(location, 2) + " " + 
+                listString(location, 3) + " " + 
+                listString(location, 4)
+            );
+        }
+    }
+    else if (command == "c") {
+        say("/gamemode spectator");
+    }
+    else if (command == "s") {
+        say("/gamemode survival");
+    }
+}
+
+// Add a nice touch by letting the user know their gamemode :)
+
+fun _onGamemodeChange_(gamemode) {
+  messageActionBar("§6You are now in §a" +  gamemode);
+}
+```
+
+### Infinite Trading Script
+
+This is meant to automate the process of infinite trading, you'd have a setup in the end in Minecraft and run this script and it should trade automatically for you
+infinitely!
+
+```groovy
+item = "iron_axe"   // Change this depending on the item you want to trade
+
+// Could also use _onClientTick_() here
+
+while (true) {
+	if (getLookingAtEntity() == "villager") {
+		if (!isInInventoryGui()) {
+			use("once");
+		}
+	}
+	else if (isInInventoryGui()) {
+		sleep(200);
+		while(!isTradeDisabled(item)) {
+			sleep(20);
+			tradeFor(item, true);
+		}
+		sleep(1000);
+		inventory("close");
+	}
+	sleep(50);
+}
 ```

@@ -1,5 +1,8 @@
 package essentialclient.feature.clientscript;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -20,6 +23,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -152,10 +157,23 @@ public class MinecraftFunction extends BuiltInFunction {
             StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, mustBeItem);
             BooleanValue booleanValue = (BooleanValue) function.getValueForType(BooleanValue.class, 1, null);
             Item item = Registry.ITEM.get(new Identifier(stringValue.value));
-            int index = InventoryUtils.getIndexOfItem(client, item);
+            int index = InventoryUtils.getIndexOfItemInMerchant(client, item);
             if (index == -1)
                 throw new ErrorRuntime("Villager does not have that trade", function.startPos, function.endPos, function.context);
             InventoryUtils.tradeAllItems(client, index, booleanValue.value);
+            return new NullValue();
+        }),
+
+        new MinecraftFunction("getEnchantmentsForTrade", "value", function -> {
+            Value<?> value = function.getValueFromTable(function.argumentNames.get(0));
+            if (value instanceof NumberValue numberValue)
+                return new ListValue(InventoryUtils.checkEnchantmentForTrade(client, numberValue.value.intValue()));
+            if (value instanceof StringValue stringValue) {
+                int index = InventoryUtils.getIndexOfItemInMerchant(client, Registry.ITEM.get(new Identifier(stringValue.value)));
+                if (index == -1)
+                    throw new ErrorRuntime("Villager does not have that trade", function.startPos, function.endPos, function.context);
+                return new ListValue(InventoryUtils.checkEnchantmentForTrade(client, index));
+            }
             return new NullValue();
         }),
 
@@ -234,9 +252,9 @@ public class MinecraftFunction extends BuiltInFunction {
             list.add(new NumberValue((float) client.player.getX()));
             list.add(new NumberValue((float) client.player.getY()));
             list.add(new NumberValue((float) client.player.getZ()));
-            list.add(new NumberValue(client.player.pitch));
             float yaw = client.player.yaw % 360;
             list.add(new NumberValue(yaw < -180 ? 360 + yaw : yaw));
+            list.add(new NumberValue(client.player.pitch));
             return new ListValue(list);
         }),
 
@@ -338,6 +356,16 @@ public class MinecraftFunction extends BuiltInFunction {
             return new StringValue(Registry.ITEM.getId(screenHandler.slots.get(index).getStack().getItem()).getPath());
         }),
 
+        new MinecraftFunction("getEnchantmentsForSlot", "slotNum", function -> {
+            NumberValue numberValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
+            return new ListValue(InventoryUtils.checkEnchantment(client, numberValue.value.intValue() - 1));
+        }),
+
+        new MinecraftFunction("getDurabilityForSlot", "slotNum", function -> {
+            NumberValue numberValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
+            return new NumberValue(InventoryUtils.getDurability(client, numberValue.value.intValue() - 1));
+        }),
+
         new MinecraftFunction("getLatestChatMessage", function -> {
             List<ChatHudLine<Text>> chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages();
             if (chat.size() == 0)
@@ -360,6 +388,62 @@ public class MinecraftFunction extends BuiltInFunction {
         new MinecraftFunction("getGamemode", function -> {
             assert client.interactionManager != null;
             return new StringValue(client.interactionManager.getCurrentGameMode().getName());
+        }),
+
+        new MinecraftFunction("addCommand", List.of("commandName", "arguments"), function -> {
+            StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, null);
+            NumberValue numberValue = (NumberValue) function.getValueForType(NumberValue.class, 1, null);
+            int argumentNum = numberValue.value.intValue();
+            if (argumentNum < 0 || argumentNum > 5)
+                throw new ErrorRuntime("Invalid number of arguments", function.startPos, function.endPos, function.context);
+            CommandHelper.functionCommand.add(stringValue.value);
+            LiteralArgumentBuilder<ServerCommandSource> command = CommandManager.literal(stringValue.value);
+            while (argumentNum > 0) {
+                command = command.then(CommandManager.argument(String.valueOf(argumentNum), StringArgumentType.greedyString()));
+                argumentNum--;
+            }
+            CommandHelper.functionCommands.add(command.build());
+            CommandHelper.needUpdate = true;
+            return new NullValue();
+        }),
+
+        new MinecraftFunction("getPlayerName", function -> {
+            assert client.player != null;
+            return new StringValue(client.player.getEntityName());
+        }),
+
+        new MinecraftFunction("getWeather", function -> {
+            assert client.world != null;
+            if (client.world.isThundering())
+                return new StringValue("thunder");
+            if (client.world.isRaining())
+                return new StringValue("rain");
+            return new StringValue("clear");
+        }),
+
+        new MinecraftFunction("getTimeOfDay", function -> {
+            assert client.world != null;
+            return new NumberValue(client.world.getTimeOfDay());
+        }),
+
+        new MinecraftFunction("isSneaking", function -> {
+            assert client.player != null;
+            return new BooleanValue(client.player.isSneaking());
+        }),
+
+        new MinecraftFunction("isSprinting", function -> {
+            assert client.player != null;
+            return new BooleanValue(client.player.isSprinting());
+        }),
+
+        new MinecraftFunction("isFalling", function -> {
+            assert client.player != null;
+            return new BooleanValue(client.player.fallDistance > 0);
+        }),
+
+        new MinecraftFunction("clearChat", function -> {
+            client.inGameHud.getChatHud().clear(true);
+            return new NullValue();
         })
 
         // Add any other functions here!
