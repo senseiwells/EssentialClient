@@ -10,13 +10,13 @@ import essentialclient.utils.command.PlayerListCommandHelper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 
-import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class PlayerListCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 
-        if (!ClientRules.COMMAND_PLAYERLIST.getBoolean())
+        if (!ClientRules.COMMAND_PLAYERLIST.getBoolean() || !ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
             return;
 
         CommandHelper.clientCommands.add("pl");
@@ -26,7 +26,7 @@ public class PlayerListCommand {
                 literal("playerlist")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
                 .build();
         LiteralCommandNode<ServerCommandSource> plNode =
-                literal("pl").requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
+                literal("pl")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean() && ClientRules.COMMAND_PLAYERLIST.getBoolean())
                 .build();
         LiteralCommandNode<ServerCommandSource> createlistNode =
                 literal("createlist")

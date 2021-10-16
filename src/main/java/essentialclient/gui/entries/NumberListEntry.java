@@ -1,24 +1,29 @@
 package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
+import com.google.common.collect.ImmutableList;
 import essentialclient.feature.clientrule.ClientRuleHelper;
 import essentialclient.feature.clientrule.ClientRules;
-import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.ConfigListWidget;
-import essentialclient.utils.render.RuleWidget;
+import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
-import net.minecraft.client.render.DiffuseLighting;
+import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 public class NumberListEntry extends BaseListEntry {
     private final TextFieldWidget numberField;
@@ -52,6 +57,15 @@ public class NumberListEntry extends BaseListEntry {
         gui.getNumberFieldList().add(this.numberField);
     }
 
+    @Override
+    public List<? extends Element> children() {
+        return ImmutableList.of(this.resetButton, this.numberField);
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.resetButton, this.numberField);
+    }
     
     @Override
     public boolean charTyped(char chr, int keyCode)

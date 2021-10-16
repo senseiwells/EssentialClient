@@ -2,8 +2,8 @@ package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
-import essentialclient.gui.ConfigListWidget;
 import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.gui.ConfigListWidget;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.render.ITooltipEntry;
@@ -83,6 +83,7 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
     public List<? extends Element> children() {
         return ImmutableList.of(this.editButton, this.resetButton);
     }
+
 
     @Override
     public List<? extends Selectable> selectableChildren() {

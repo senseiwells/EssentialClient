@@ -18,6 +18,7 @@ public enum ClientRules {
     DISABLE_RECIPE_NOTIFICATIONS            ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
     DISABLE_TUTORIAL_NOTIFICATIONS          ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
     DISPLAY_TIME_PLAYED                     ("displayTimePlayed"                        , "This will display how long you have had your current client open for in the corner of the pause menu"    , false),
+    ENABLE_SCRIPT_ON_JOIN                   ("enableScriptOnJoin"                       , "This will enable your selected script when you join a world automatically"                               , false),
     ESSENTIAL_CLIENT_MAIN_MENU              ("essentialClientMainMenu"                  , "This renders the Essential Client Menu on the main menu screen"                                          , false),
     HIGHLIGHT_LAVA_SOURCES                  ("highlightLavaSources"                     , "Highlights lava sources, credit to plusls for the original code for this"                                , false),
     INCREASE_SPECTATOR_SCROLL_SPEED         ("increaseSpectatorScrollSpeed"             , "Increases the limit at which you can scroll to go faster in spectator"                                   , false),
@@ -25,7 +26,7 @@ public enum ClientRules {
     REMOVE_WARN_RECEIVED_PASSENGERS         ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unknown entity' warning on the client"                         , false),
     STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
     STACKABLE_SHULKERS_WITH_ITEMS           ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
-    UNLOCK_ALL_RECIPES_ON_JOIN              ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a singleplayer world"                                                  , false),
+    UNLOCK_ALL_RECIPES_ON_JOIN              ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a world"                                                               , false),
 
     //Number Rules
     ANNOUNCE_AFK                            ("announceAFK"                              , Type.INTEGER          , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),

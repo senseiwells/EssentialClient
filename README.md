@@ -33,6 +33,7 @@ Feel free to contribute by adding as many features as you want!
 * [disableTutorialNotifications](#disabletutorialnotifications)
 * [displayRuleType](#displayruletype)
 * [displayTimePlayed](#displaytimeplayed)
+* [enableScriptOnJoin](#enablescriptonjoin)
 * [essentialClientMainMenu](#essentialclientmainmenu)
 * [highlightLavaSources](#highlightlavasource)
 * [increaseSpectatorScrollSensitivity](#increasespectatorscrollsensitivity)
@@ -179,6 +180,13 @@ This will display how long you have had your current client open for in the corn
 * Default Value: `false`
 * Extra Info:
   * Now you can see how much time you've ~~wasted~~ been productive
+
+## enableScriptOnJoin
+This will automatically run your clientscript when you join a world
+* Type: `Boolean`
+* Default Value `false`
+* Extra Info:
+  * This may impact performance while the world is loading
 
 ## essentialClientMainMenu
 This renders the Essential Client Menu on the main menu screen

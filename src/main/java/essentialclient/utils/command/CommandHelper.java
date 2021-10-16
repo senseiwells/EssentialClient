@@ -4,26 +4,35 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import essentialclient.feature.clientscript.MinecraftEventFunction;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
+import me.senseiwells.arucas.values.ListValue;
+import me.senseiwells.arucas.values.StringValue;
+import me.senseiwells.arucas.values.Value;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandHelper {
 
-    // I know this is bad way of doing it but don't want to refactor ClientRules, most likely will not add more commands, if do then will refactor
-    public static Set<String> clientCommands = new HashSet<>();
-
-    public static DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    public static final Set<String> clientCommands = new HashSet<>();
+    public static final Set<String> functionCommand = new HashSet<>();
+    public static final Set<LiteralCommandNode<ServerCommandSource>> functionCommands = new HashSet<>();
+    public static final DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    public static boolean needUpdate = false;
 
     public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {
         return switch (type) {
@@ -78,5 +87,19 @@ public class CommandHelper {
                     .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
             e.printStackTrace();
         }
+    }
+
+    public static boolean tryRunFunctionCommand(String message) {
+        message = message.replace("/", "");
+        List<Value<?>> arguments = new ArrayList<>();
+        for (String argument : message.split(" "))
+            arguments.add(new StringValue(argument));
+        StringValue command = (StringValue) arguments.remove(0);
+        if (functionCommand.contains(command.value)) {
+            List<Value<?>> parameters = List.of(command, new ListValue(arguments));
+            MinecraftEventFunction.ON_COMMAND.tryRunFunction(parameters);
+            return true;
+        }
+        return false;
     }
 }

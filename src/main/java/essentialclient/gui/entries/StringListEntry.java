@@ -1,15 +1,18 @@
 package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
-import essentialclient.gui.ConfigListWidget;
+import com.google.common.collect.ImmutableList;
 import essentialclient.feature.clientrule.ClientRuleHelper;
 import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.gui.ConfigListWidget;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
-import essentialclient.utils.render.RuleWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
+import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -20,9 +23,10 @@ import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
+
 public class StringListEntry extends BaseListEntry {
     private final TextFieldWidget textField;
-    private final ButtonWidget resetButton;
     private boolean invalid;
     
     public StringListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
@@ -51,6 +55,16 @@ public class StringListEntry extends BaseListEntry {
             ClientRuleHelper.executeOnChange(client, settings, gui);
         });
         gui.getStringFieldList().add(this.textField);
+    }
+
+    @Override
+    public List<? extends Element> children() {
+        return ImmutableList.of(this.resetButton, this.textField);
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.resetButton, this.textField);
     }
     
     @Override

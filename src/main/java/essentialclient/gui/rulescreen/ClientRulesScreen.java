@@ -71,8 +71,7 @@ public class ClientRulesScreen extends Screen {
         return this.searchBox.getText();
     }
 
-    public void drawTooltip(int mouseX, int mouseY, float delta)
-    {
+    public void drawTooltip(int mouseX, int mouseY, float delta) {
         this.list.drawTooltip(mouseX, mouseY, delta);
     }
 

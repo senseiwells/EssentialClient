@@ -15,17 +15,17 @@ import net.minecraft.util.Util;
 public class ConfigScreen extends Screen {
     private final Screen parent;
     private static String carpetServerVersion;
-
+    
     public static void setCarpetServerVersion(String string)
     {
         carpetServerVersion = string;
     }
-
+    
     public ConfigScreen(Screen parent) {
         super(new LiteralText("Essential Client Options"));
         this.parent = parent;
     }
-
+    
     @Override
     protected void init() {
         if (this.client == null)
@@ -51,7 +51,7 @@ public class ConfigScreen extends Screen {
         }));
         this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
     }
-
+    
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);

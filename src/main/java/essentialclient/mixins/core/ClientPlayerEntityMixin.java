@@ -22,6 +22,8 @@ public class ClientPlayerEntityMixin {
                 CommandHelper.executeCommand(reader, message);
                 ci.cancel();
             }
+            if (CommandHelper.tryRunFunctionCommand(message))
+                ci.cancel();
         }
     }
 }

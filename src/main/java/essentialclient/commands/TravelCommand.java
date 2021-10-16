@@ -7,14 +7,13 @@ import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Vec3d;
 
-import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class TravelCommand {
 
@@ -59,7 +58,6 @@ public class TravelCommand {
                 )
                 .then(literal("ping")
                         .then(argument("discordId", StringArgumentType.string())
-                                .suggests( ((context, builder) -> CommandSource.suggestMatching(new String[]{"546239692048302091"}, builder)))
                                 .executes(context -> {
                                     player = CommandHelper.getPlayer();
                                     ping = context.getArgument("discordId", String.class);

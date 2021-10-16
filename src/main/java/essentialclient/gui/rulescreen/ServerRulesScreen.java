@@ -11,8 +11,7 @@ import net.minecraft.text.LiteralText;
 
 import java.util.ArrayList;
 
-public class ServerRulesScreen extends Screen
-{
+public class ServerRulesScreen extends Screen {
     private final Screen parent;
     private ConfigListWidget list;
     private TextFieldWidget searchBox;
@@ -20,12 +19,12 @@ public class ServerRulesScreen extends Screen
     private boolean isEmpty;
     private final ArrayList<TextFieldWidget> stringFieldList = new ArrayList<>();
     private final ArrayList<TextFieldWidget> numberFieldList = new ArrayList<>();
-
+    
     public ServerRulesScreen(Screen parent) {
         super(new LiteralText("Carpet Server Options"));
         this.parent = parent;
     }
-
+    
     @Override
     protected void init() {
         if (this.client == null)
@@ -39,13 +38,13 @@ public class ServerRulesScreen extends Screen
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 155 + 160, this.height - 29, 150, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
         this.setInitialFocus(this.searchBox);
     }
-
+    
     @Override
     public void tick() {
         this.stringFieldList.forEach(TextFieldWidget::tick);
         this.numberFieldList.forEach(TextFieldWidget::tick);
     }
-
+    
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
@@ -67,27 +66,26 @@ public class ServerRulesScreen extends Screen
         this.list = new ConfigListWidget(this, this.client, filter);
         this.addSelectableChild(this.list);
     }
-
-    public void drawTooltip(int mouseX, int mouseY, float delta)
-    {
+    
+    public void drawTooltip(int mouseX, int mouseY, float delta) {
         this.list.drawTooltip(mouseX, mouseY, delta);
     }
-
+    
     public void setInvalid(boolean invalid)
     {
         this.invalid = invalid;
     }
-
+    
     public void setEmpty(boolean isEmpty)
     {
         this.isEmpty = isEmpty;
     }
-
+    
     public ArrayList<TextFieldWidget> getStringFieldList()
     {
         return stringFieldList;
     }
-
+    
     public ArrayList<TextFieldWidget> getNumberFieldList()
     {
         return numberFieldList;

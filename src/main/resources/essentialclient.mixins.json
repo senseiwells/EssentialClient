@@ -5,15 +5,14 @@
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
-    "core.ClientPlayerEntityMixin",
-    "core.ClientPlayNetworkHandlerMixin",
-    "core.MinecraftServer_noopMixin",
-    "unlockAllRecipes.PlayerManagerMixin"
+    "core.MinecraftServer_noopMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",
     "betterMusic.MusicTrackerMixin",
     "carpet.ClientPlayNetworkHandlerMixin",
+    "core.ClientPlayerEntityMixin",
+    "core.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
@@ -24,6 +23,11 @@
     "disableTutorialNotifications.TutorialToastMixin",
     "displayTimePlayed.GameMenuScreenMixin",
     "functions.ChatHudMixin",
+    "functions.ClientPlayerEntityMixin",
+    "functions.ClientPlayerInteractionManagerMixin",
+    "functions.ClientPlayNetworkHandlerMixin",
+    "functions.MinecraftClientMixin",
+    "functions.PlayerEntityMixin",
     "keyboardRebinds.KeyboardMixin",
     "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",
@@ -33,7 +37,8 @@
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",
     "stackableShulkers.ScreenHandlerMixin",
-    "switchToTotem.ClientPlayerEntityMixin"
+    "switchToTotem.ClientPlayerEntityMixin",
+    "unlockAllRecipes.ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
