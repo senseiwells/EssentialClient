@@ -12,33 +12,25 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class KeyboardInputMixin {
 
     private int ticks = 0;
-    private boolean letgo;
+    private boolean shouldAutoHold = false;
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
     private boolean onIsForwardPressed(KeyBinding keyBinding) {
-        if (keyBinding.isPressed()) {
-            if (letgo)
-                ticks = 0;
-            ticks++;
-            return true;
-        }
-        else if (ClientRules.AUTO_WALK.getInt() != 0 && ticks >= ClientRules.AUTO_WALK.getInt()) {
-            if (!letgo) {
+        if (keyBinding.isPressed()){
+            shouldAutoHold = ClientRules.AUTO_WALK.getInt() > 0 && ticks++ > ClientRules.AUTO_WALK.getInt();
+            if (shouldAutoHold)
                 EssentialUtils.sendMessageToActionBar("§aYou are now autowalking");
-                letgo = true;
-            }
             return true;
         }
         ticks = 0;
-        letgo = false;
-        return false;
+        return shouldAutoHold;
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 1))
     private boolean onIsBackPressed(KeyBinding keyBinding) {
         if (keyBinding.isPressed()) {
             ticks = 0;
-            letgo = false;
+            shouldAutoHold = false;
             return true;
         }
         return false;
