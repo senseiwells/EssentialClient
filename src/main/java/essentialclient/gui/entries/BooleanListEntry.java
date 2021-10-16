@@ -40,7 +40,7 @@ public class BooleanListEntry extends BaseListEntry {
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
             settings.setValue(settings.defaultValue);
             ClientRuleHelper.writeSaveFile();
-            this.editButton.setMessage(new LiteralText(settings.defaultValue));
+            this.editButton.setMessage(new LiteralText(settings.defaultValue.equals("true") ? "§2true" : "§4false"));
         });
     }
 }
