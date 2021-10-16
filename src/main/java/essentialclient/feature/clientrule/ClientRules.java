@@ -26,7 +26,7 @@ public enum ClientRules {
     REMOVE_WARN_RECEIVED_PASSENGERS         ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unknown entity' warning on the client"                         , false),
     STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
     STACKABLE_SHULKERS_WITH_ITEMS           ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
-    UNLOCK_ALL_RECIPES_ON_JOIN              ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a singleplayer world"                                                  , false),
+    UNLOCK_ALL_RECIPES_ON_JOIN              ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a world"                                                               , false),
 
     //Number Rules
     ANNOUNCE_AFK                            ("announceAFK"                              , Type.INTEGER          , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
