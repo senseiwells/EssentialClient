@@ -9,7 +9,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
-    @Redirect(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;)V"))
+    //remap = false to suppress warning
+    @Redirect(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;)V"), remap = false)
     private void onWarn(Logger logger, String message) {
         if (ClientRules.REMOVE_WARN_RECEIVED_PASSENGERS.getBoolean())
             return;
