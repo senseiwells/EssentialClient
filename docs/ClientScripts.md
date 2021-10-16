@@ -884,7 +884,7 @@ This is meant to automate the process of infinite trading, you'd have a setup in
 infinitely!
 
 ```groovy
-item = "iron_axe"   // Change this depending on the item you want to trade
+item = "iron_axe";   // Change this depending on the item you want to trade
 
 // Could also use _onClientTick_() here
 
