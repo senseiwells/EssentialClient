@@ -358,6 +358,12 @@ These are functions that hook into Minecraft
 - This allows you to swap 2 slots with one another
 - Example: `swapSlots(13, 46)`
 
+### `craftRecipe(recipe)`
+
+- This allows you to craft an item using the recipe book
+- Example: `craftRecipe(["birch_planks", "air", "air", "air", "air", "air", "air", "air", "air")]);`
+- ^ This would craft birch buttons
+
 ### `screenshot()`
 
 - This takes a screenshot

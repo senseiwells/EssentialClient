@@ -15,12 +15,15 @@ import me.senseiwells.arucas.values.functions.FunctionDefinition;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.ScreenshotRecorder;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.*;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -34,10 +37,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class MinecraftFunction extends BuiltInFunction {
 
@@ -444,6 +444,32 @@ public class MinecraftFunction extends BuiltInFunction {
 
         new MinecraftFunction("clearChat", function -> {
             client.inGameHud.getChatHud().clear(true);
+            return new NullValue();
+        }),
+
+        new MinecraftFunction("craftRecipe", "recipe", function -> {
+            ListValue listValue = (ListValue) function.getValueForType(ListValue.class, 0, null);
+            if (listValue.value.size() != 9)
+                throw new ErrorRuntime("That recipe has too little items", function.startPos, function.endPos, function.context);
+            assert client.getNetworkHandler() != null;
+            assert client.player != null;
+            assert client.interactionManager != null;
+            ScreenHandler screenHandler = new Generic3x3ContainerScreenHandler(-1, client.player.getInventory());
+            CraftingInventory craftingInventory = new CraftingInventory(screenHandler, 3, 3);
+            for (int i = 0; i < listValue.value.size(); i++) {
+                if (!(listValue.value.get(i) instanceof StringValue stringValue))
+                    throw new ErrorRuntime("The recipe must only include strings", function.startPos, function.endPos, function.context);
+                Item item = Registry.ITEM.get(new Identifier(stringValue.value));
+                craftingInventory.setStack(i, item.getDefaultStack());
+            }
+            RecipeManager recipeManager = client.getNetworkHandler().getRecipeManager();
+            Optional<CraftingRecipe> recipe = recipeManager.getFirstMatch(RecipeType.CRAFTING, craftingInventory, client.world);
+            if (recipe.isEmpty())
+                throw new ErrorRuntime("That recipe doesn't exist", function.startPos, function.endPos, function.context);
+            if (!(client.currentScreen instanceof HandledScreen<?> handledScreen))
+                throw new ErrorRuntime("Not in a handled screen", function.startPos, function.endPos, function.context);
+            client.interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipe.get(), true);
+            InventoryUtils.shiftClickSlot(client, handledScreen, 0);
             return new NullValue();
         })
 
