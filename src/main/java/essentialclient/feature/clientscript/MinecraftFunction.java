@@ -293,7 +293,7 @@ public class MinecraftFunction extends BuiltInFunction {
 
         new MinecraftFunction("isInventoryFull", function -> {
             assert client.player != null;
-            return new BooleanValue(client.player.getInventory().getEmptySlot() != -1);
+            return new BooleanValue(client.player.getInventory().getEmptySlot() == -1);
         }),
 
         new MinecraftFunction("isInInventoryGui", function -> {
@@ -325,6 +325,19 @@ public class MinecraftFunction extends BuiltInFunction {
             return new NullValue();
         }),
 
+        new MinecraftFunction("getAllSlotsFor", "itemType", function -> {
+            StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, mustBeItem);
+            assert client.player != null;
+            ItemStack itemStack = new ItemStack(Registry.ITEM.get(new Identifier(stringValue.value)));
+            ScreenHandler screenHandler = client.player.currentScreenHandler;
+            List<Value<?>> slotList = new ArrayList<>();
+            for (Slot slot : screenHandler.slots) {
+                if (slot.getStack().getItem() == itemStack.getItem())
+                    slotList.add(new NumberValue(slot.id + 1));
+            }
+            return new ListValue(slotList);
+        }),
+
         new MinecraftFunction("swapSlots", List.of("slot1", "slot2"), function -> {
             NumberValue numberValue1 = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
             NumberValue numberValue2 = (NumberValue) function.getValueForType(NumberValue.class, 1, null);
@@ -341,6 +354,14 @@ public class MinecraftFunction extends BuiltInFunction {
             return new NullValue();
         }),
 
+        new MinecraftFunction("dropSlot", "slot", function -> {
+            NumberValue numberValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
+            assert client.player != null;
+            assert client.interactionManager != null;
+            client.interactionManager.clickSlot(client.player.currentScreenHandler.syncId, numberValue.value.intValue() - 1, 1, SlotActionType.THROW, client.player);
+            return new NullValue();
+        }),
+
         new MinecraftFunction("getTotalSlots", function -> {
             assert client.player != null;
             ScreenHandler screenHandler = client.player.currentScreenHandler;
@@ -354,7 +375,8 @@ public class MinecraftFunction extends BuiltInFunction {
             int index = numberValue.value.intValue() - 1;
             if (index > screenHandler.slots.size() || index < 0)
                 return new NullValue();
-            return new StringValue(Registry.ITEM.getId(screenHandler.slots.get(index).getStack().getItem()).getPath());
+            ItemStack itemStack = screenHandler.slots.get(index).getStack();
+            return new ListValue(List.of(new StringValue(Registry.ITEM.getId(itemStack.getItem()).getPath()), new NumberValue(itemStack.getCount())));
         }),
 
         new MinecraftFunction("getEnchantmentsForSlot", "slotNum", function -> {
@@ -447,28 +469,18 @@ public class MinecraftFunction extends BuiltInFunction {
             return new NullValue();
         }),
 
-        new MinecraftFunction("craftRecipe", "recipe", function -> {
-            ListValue listValue = (ListValue) function.getValueForType(ListValue.class, 0, null);
-            if (listValue.value.size() != 9)
-                throw new ErrorRuntime("That recipe has too little items", function.startPos, function.endPos, function.context);
-            assert client.getNetworkHandler() != null;
-            assert client.player != null;
+        new MinecraftFunction("craft", List.of("recipe"), function -> {
             assert client.interactionManager != null;
-            ScreenHandler screenHandler = new Generic3x3ContainerScreenHandler(-1, client.player.getInventory());
-            CraftingInventory craftingInventory = new CraftingInventory(screenHandler, 3, 3);
+            ListValue listValue = (ListValue) function.getValueForType(ListValue.class, 0, null);
+            if (!(client.currentScreen instanceof HandledScreen<?> handledScreen))
+                throw new ErrorRuntime("Not in a handled screen", function.startPos, function.endPos, function.context);
+            ItemStack[] itemStacks = new ItemStack[9];
             for (int i = 0; i < listValue.value.size(); i++) {
                 if (!(listValue.value.get(i) instanceof StringValue stringValue))
                     throw new ErrorRuntime("The recipe must only include strings", function.startPos, function.endPos, function.context);
-                Item item = Registry.ITEM.get(new Identifier(stringValue.value));
-                craftingInventory.setStack(i, item.getDefaultStack());
+                itemStacks[i] = Registry.ITEM.get(new Identifier(stringValue.value)).getDefaultStack();
             }
-            RecipeManager recipeManager = client.getNetworkHandler().getRecipeManager();
-            Optional<CraftingRecipe> recipe = recipeManager.getFirstMatch(RecipeType.CRAFTING, craftingInventory, client.world);
-            if (recipe.isEmpty())
-                throw new ErrorRuntime("That recipe doesn't exist", function.startPos, function.endPos, function.context);
-            if (!(client.currentScreen instanceof HandledScreen<?> handledScreen))
-                throw new ErrorRuntime("Not in a handled screen", function.startPos, function.endPos, function.context);
-            client.interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipe.get(), true);
+            InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen);
             InventoryUtils.shiftClickSlot(client, handledScreen, 0);
             return new NullValue();
         })
