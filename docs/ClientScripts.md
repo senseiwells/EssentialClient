@@ -306,7 +306,7 @@ These are functions that hook into Minecraft
 ### `addCommand(commandName, arguments)`
 
 - This allows you to add your own custom commands
-- Example: `addCommand("cs", 0)`
+- Example: `addCommand("cs", 0);`
 
 ### `setSelectedSlot(slotNumber)`
 
@@ -356,18 +356,23 @@ These are functions that hook into Minecraft
 ### `swapSlots(slot1, slot2)`
 
 - This allows you to swap 2 slots with one another
-- Example: `swapSlots(13, 46)`
+- Example: `swapSlots(13, 46);`
 
-### `craftRecipe(recipe)`
+### `dropSlot(slot)`
 
-- This allows you to craft an item using the recipe book
-- Example: `craftRecipe(["birch_planks", "air", "air", "air", "air", "air", "air", "air", "air")]);`
+- This allows you to drop a slot
+- Example: `dropSlot(14);`
+
+### `craft(recipe)`
+
+- This allows you to craft an item, you may need a small delay after calling the craft function as there is delay in the crafting function to prevent desync
+- Example: `craft(["birch_planks", "air", "air", "air", "air", "air", "air", "air", "air")]);`
 - ^ This would craft birch buttons
 
 ### `screenshot()`
 
 - This takes a screenshot
-- Example: `screenshot()`
+- Example: `screenshot();`
 
 ### `look(yaw, pitch)`
 
@@ -377,7 +382,7 @@ These are functions that hook into Minecraft
 ### `jump()`
 
 - This will make the player jump if they are on the ground
-- Example: `jump()`
+- Example: `jump();`
 
 ### `clearChat()`
 
@@ -387,7 +392,7 @@ These are functions that hook into Minecraft
 ### `hold()`
 
 - This stops the macro from ending after it has executed all of its code, meaning it needs to be stopped manually
-- Example: `hold()`
+- Example: `hold();`
 
 
 ## Minecraft Functions (that return values)
@@ -407,7 +412,7 @@ These are functions that hook into Minecraft
 ### `getStatusEffects()`
 
 - This returns the current status effects the player currently has
-- Example: `getStatusEffects()`
+- Example: `getStatusEffects();`
 - Returns ListValue: `["resistance", "fire_resistance", "regeneration"]`
 
 ### `getLookingAtBlock()`
@@ -506,9 +511,9 @@ These are functions that hook into Minecraft
 
 ### `getItemForSlot(slotNum)`
 
-- This returns the item in a current slot
+- This returns the item and item count in a current slot
 - Example: `getItemForSlot(46);`
-- Returns StringValue: `shield`
+- Returns ListValue: `[shield, 1]`
 
 ### `getEnchantmentsForSlot(slotNum)`
 
