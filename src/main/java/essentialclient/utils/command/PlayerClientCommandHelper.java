@@ -113,9 +113,9 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             pitch = clientPlayerEntity.getPitch();
         }
         switch (dimension) {
-            case "minecraft:overworld":
-            case "minecraft:the_nether":
-            case "minecraft:the_end":
+            case "overworld":
+            case "the_nether":
+            case "the_end":
                 break;
             default:
                 EssentialUtils.sendMessage(ChatColour.RED + "That is not a valid dimension");
