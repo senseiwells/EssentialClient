@@ -99,7 +99,7 @@ This command allows you to save /player... commands and execute them
 * Default Value: `false`
 * Extra Info:
   * Requires `commandPlayer` (from carpet) on server/singeplayer to be `true`
-  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/PlayerClient.md)
+  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/wiki/CommandPlayerClient)
 
 ## commandPlayerList
 This command allows you to execute /player... commands in one command
@@ -107,7 +107,7 @@ This command allows you to execute /player... commands in one command
 * Default Value: `false`
 * Extra Info:
   * Requires [commandPlayerClient](#commandplayerclient)
-  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/PlayerList.md)
+  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/wiki/CommandPlayerList)
 
 ## commandRegion
 This command allows you to determine the region you are in or the region at set coords
@@ -287,7 +287,7 @@ You can find more about it on the original github: [here](https://github.com/gne
 ## clientScripts
 This is a mini scripting language that allows you to make simple scripts directly in minecraft without any external programs.
 
-Documentation and how to use can be found: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/ClientScripts.md)
+Documentation and how to use can be found: [here](https://github.com/senseiwells/EssentialClient/wiki/ClientScript)
 
 ## gameruleScreen
 This is a GUI that allows you to modify gamerules in singleplayer, it is accessible from the Essential Client menu
