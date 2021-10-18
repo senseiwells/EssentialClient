@@ -105,7 +105,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             pitch = context.getArgument("pitch", Double.class);
         } else {
             ClientPlayerEntity clientPlayerEntity = CommandHelper.getPlayer();
-            dimension = clientPlayerEntity.world.getRegistryKey().getValue().toString();
+            dimension = clientPlayerEntity.world.getRegistryKey().getValue().getPath();
             x = clientPlayerEntity.getX();
             y = clientPlayerEntity.getY();
             z = clientPlayerEntity.getZ();
@@ -113,9 +113,9 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             pitch = clientPlayerEntity.pitch;
         }
         switch (dimension) {
-            case "minecraft:overworld":
-            case "minecraft:the_nether":
-            case "minecraft:the_end":
+            case "overworld":
+            case "the_nether":
+            case "the_end":
                 break;
             default:
                 EssentialUtils.sendMessage(ChatColour.RED + "That is not a valid dimension");
