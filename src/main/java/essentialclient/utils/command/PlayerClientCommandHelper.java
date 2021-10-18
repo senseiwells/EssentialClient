@@ -105,7 +105,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             pitch = context.getArgument("pitch", Double.class);
         } else {
             ClientPlayerEntity clientPlayerEntity = CommandHelper.getPlayer();
-            dimension = clientPlayerEntity.world.getRegistryKey().getValue().toString();
+            dimension = clientPlayerEntity.world.getRegistryKey().getValue().getPath();
             x = clientPlayerEntity.getX();
             y = clientPlayerEntity.getY();
             z = clientPlayerEntity.getZ();
