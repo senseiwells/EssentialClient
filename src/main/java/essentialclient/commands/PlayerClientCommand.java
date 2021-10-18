@@ -74,7 +74,7 @@ public class PlayerClientCommand {
                                                                                                 .then(literal("in")
                                                                                                         .then(argument("gamemode", StringArgumentType.word())
                                                                                                                 .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"spectator", "survival", "any"}, builder))
-                                                                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, true, true))
+                                                                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, true))
                                                                                                         )
                                                                                                 )
                                                                                         )
