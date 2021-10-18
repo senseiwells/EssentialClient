@@ -280,8 +280,6 @@ This will switch to a totem (if you have one), under a set amount of health
 Unlocks every recipe when joining a singleplayer world
 * Type: `Boolean`
 * Default Value: `false`
-* Extra Info:
-  * This currently only works in singleplayer
 
 # Other Features
 
