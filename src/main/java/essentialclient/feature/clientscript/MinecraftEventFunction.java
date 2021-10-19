@@ -20,6 +20,9 @@ public enum MinecraftEventFunction {
     ON_PICK_BLOCK("_onPickBlock_"),
     ON_CLOSE_SCREEN("_onCloseScreen_"),
 
+    ON_KEY_PRESS("_onKeyPress_"),
+    ON_KEY_HOLD("_onKeyHold_"),
+    ON_KEY_RELEASE("_onKeyRelease_"),
     ON_COMMAND("_onCommand_"),
     ON_OPEN_SCREEN("_onOpenScreen_"),
     ON_PICKUP("_onPickUp_"),
