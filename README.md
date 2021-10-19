@@ -1,4 +1,7 @@
 # EssentialClient
+
+[![Discord](https://badgen.net/discord/online-members/j32CVJvPHg?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
+
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
 This mod is currently supporting 1.16.5 and 1.17.1 
@@ -11,6 +14,9 @@ To access the Essential Client menu you must join a world, then it will be acces
 `ESC`, you can enable menu access from the title screen by enabling [essentialClientMainMenu](#essentialclientmainmenu).
 
 Feel free to contribute by adding as many features as you want!
+
+## Here is a link to my YouTube video about the mod
+[![Image](https://cdn.discordapp.com/attachments/559400132710236160/899739577995108372/EssentialClient480.jpg)](https://youtu.be/lmMkC102T24)
 
 ## Index of Client Rules
 
@@ -274,8 +280,6 @@ This will switch to a totem (if you have one), under a set amount of health
 Unlocks every recipe when joining a singleplayer world
 * Type: `Boolean`
 * Default Value: `false`
-* Extra Info:
-  * This currently only works in singleplayer
 
 # Other Features
 
