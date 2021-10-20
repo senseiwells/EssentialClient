@@ -6,12 +6,14 @@ import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
+import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.ErrorRuntime;
 import me.senseiwells.arucas.throwables.ThrowStop;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionDefinition;
+import me.senseiwells.arucas.values.functions.FunctionValue;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
@@ -20,10 +22,8 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.ScreenshotRecorder;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.*;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -154,14 +154,20 @@ public class MinecraftFunction extends BuiltInFunction {
             return new NullValue();
         }),
 
+        new MinecraftFunction("getIndexOfTrade", "itemType", function -> {
+            StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, mustBeItem);
+            Item item = Registry.ITEM.get(new Identifier(stringValue.value));
+            int index = InventoryUtils.getIndexOfItemInMerchant(client, item);
+            return new NumberValue(index);
+        }),
+
         new MinecraftFunction("tradeFor", List.of("itemType", "boolean"), function -> {
             StringValue stringValue = (StringValue) function.getValueForType(StringValue.class, 0, mustBeItem);
             BooleanValue booleanValue = (BooleanValue) function.getValueForType(BooleanValue.class, 1, null);
             Item item = Registry.ITEM.get(new Identifier(stringValue.value));
             int index = InventoryUtils.getIndexOfItemInMerchant(client, item);
-            if (index == -1)
-                throw new ErrorRuntime("Villager does not have that trade", function.startPos, function.endPos, function.context);
-            InventoryUtils.tradeAllItems(client, index, booleanValue.value);
+            if (index != -1)
+                InventoryUtils.tradeAllItems(client, index, booleanValue.value);
             return new NullValue();
         }),
 
@@ -171,9 +177,8 @@ public class MinecraftFunction extends BuiltInFunction {
                 return new ListValue(InventoryUtils.checkEnchantmentForTrade(client, numberValue.value.intValue()));
             if (value instanceof StringValue stringValue) {
                 int index = InventoryUtils.getIndexOfItemInMerchant(client, Registry.ITEM.get(new Identifier(stringValue.value)));
-                if (index == -1)
-                    throw new ErrorRuntime("Villager does not have that trade", function.startPos, function.endPos, function.context);
-                return new ListValue(InventoryUtils.checkEnchantmentForTrade(client, index));
+                if (index != -1)
+                    return new ListValue(InventoryUtils.checkEnchantmentForTrade(client, index));
             }
             return new NullValue();
         }),
@@ -250,9 +255,9 @@ public class MinecraftFunction extends BuiltInFunction {
         new MinecraftFunction("getPos", function -> {
             List<Value<?>> list = new ArrayList<>();
             assert client.player != null;
-            list.add(new NumberValue((float) client.player.getX()));
-            list.add(new NumberValue((float) client.player.getY()));
-            list.add(new NumberValue((float) client.player.getZ()));
+            list.add(new NumberValue(client.player.getX()));
+            list.add(new NumberValue(client.player.getY()));
+            list.add(new NumberValue(client.player.getZ()));
             float yaw = client.player.getYaw() % 360;
             list.add(new NumberValue(yaw < -180 ? 360 + yaw : yaw));
             list.add(new NumberValue(client.player.getPitch()));
@@ -403,7 +408,7 @@ public class MinecraftFunction extends BuiltInFunction {
             List<Value<?>> players = new ArrayList<>();
             ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
             if (networkHandler == null || networkHandler.getPlayerList() == null)
-                throw new ErrorRuntime("You are not connected to a server", function.startPos, function.endPos, function.context);
+                return new NullValue();
             networkHandler.getPlayerList().forEach(p -> players.add(new StringValue(p.getProfile().getName())));
             return new ListValue(players);
         }),
@@ -473,7 +478,7 @@ public class MinecraftFunction extends BuiltInFunction {
             assert client.interactionManager != null;
             ListValue listValue = (ListValue) function.getValueForType(ListValue.class, 0, null);
             if (!(client.currentScreen instanceof HandledScreen<?> handledScreen))
-                throw new ErrorRuntime("Not in a handled screen", function.startPos, function.endPos, function.context);
+                return new NullValue();
             ItemStack[] itemStacks = new ItemStack[9];
             for (int i = 0; i < listValue.value.size(); i++) {
                 if (!(listValue.value.get(i) instanceof StringValue stringValue))
@@ -482,6 +487,17 @@ public class MinecraftFunction extends BuiltInFunction {
             }
             InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen);
             InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+            return new NullValue();
+        }),
+
+        new MinecraftFunction("addGameEvent", List.of("eventName", "function"), function -> {
+            String eventName = (String) function.getValueForType(StringValue.class, 0, null).value;
+            FunctionValue functionValue = (FunctionValue) function.getValueForType(FunctionValue.class, 1, null);
+            eventName = eventName.startsWith("_") ? eventName : "_" + eventName;
+            eventName = eventName.endsWith("_") ? eventName : eventName + "_";
+            if (!MinecraftEventFunction.isEvent(eventName))
+                throw new ErrorRuntime("The event name must be a predefined event", function.startPos, function.endPos, function.context);
+            Run.symbolTable.set(eventName, functionValue);
             return new NullValue();
         })
 

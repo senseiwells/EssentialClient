@@ -20,10 +20,8 @@ import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandHelper {
@@ -31,7 +29,7 @@ public class CommandHelper {
     public static final Set<String> clientCommands = new HashSet<>();
     public static final Set<String> functionCommand = new HashSet<>();
     public static final Set<LiteralCommandNode<ServerCommandSource>> functionCommands = new HashSet<>();
-    public static final DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    public static final DecimalFormat decimalFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
     public static boolean needUpdate = false;
 
     public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {

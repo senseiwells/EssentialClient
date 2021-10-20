@@ -68,4 +68,11 @@ public enum MinecraftEventFunction {
     public void tryRunFunction() {
         this.tryRunFunction(null);
     }
+
+    public static boolean isEvent(String word) {
+        for (MinecraftEventFunction function : MinecraftEventFunction.values())
+            if (function.functionName.equals(word))
+                return true;
+        return false;
+    }
 }
