@@ -1,6 +1,7 @@
 package essentialclient.mixins.core;
 
 import essentialclient.EssentialClient;
+import essentialclient.feature.AFKLogout;
 import essentialclient.feature.AnnounceAFK;
 import essentialclient.commands.TravelCommand;
 import essentialclient.feature.clientrule.ClientRules;
@@ -40,6 +41,8 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
             TravelCommand.tickTravel();
         if (ClientRules.ANNOUNCE_AFK.getInt() > 0)
             AnnounceAFK.tickAFK(player);
+        if (ClientRules.AFK_LOGOUT.getInt() > 199)
+            AFKLogout.tickAFK(player);
     }
 
     @Inject(method = "joinWorld", at = @At("TAIL"))
