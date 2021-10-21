@@ -95,7 +95,7 @@ public class CommandHelper {
         StringValue command = (StringValue) arguments.remove(0);
         if (functionCommand.contains(command.value)) {
             List<Value<?>> parameters = List.of(command, new ListValue(arguments));
-            MinecraftEventFunction.ON_COMMAND.tryRunFunction(parameters);
+            MinecraftEventFunction.ON_COMMAND.runFunction(parameters);
             return true;
         }
         return false;
