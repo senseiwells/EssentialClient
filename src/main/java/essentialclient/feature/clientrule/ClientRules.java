@@ -30,6 +30,7 @@ public enum ClientRules {
 
     //Number Rules
     ANNOUNCE_AFK                            ("announceAFK"                              , Type.INTEGER          , "This announces when you become afk after a set amount of time (ticks)"       , "0"           , false),
+    AFK_LOGOUT                              ("afkLogout"                                , Type.INTEGER          , "Number of ticks until client will disconnect you from world (must be >= 200 to be active)"               , "0"           , false),
     AUTO_WALK                               ("autoWalk"                                 , Type.INTEGER          , "This will auto walk after you have held your key for set amount of ticks"    , "0"           , false),
     INCREASE_SPECTATOR_SCROLL_SENSITIVITY   ("increaseSpectatorScrollSensitivity"       , Type.INTEGER          , "Increases the sensitivity at which you can scroll to go faster in spectator" , "0"           , false),
     MUSIC_INTERVAL                          ("musicInterval"                            , Type.INTEGER          , "The amount of ticks between each soundtrack that is played, 0 = random"      , "0"           , false),
