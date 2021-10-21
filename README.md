@@ -19,7 +19,7 @@ Feel free to contribute by adding as many features as you want!
 [![Image](https://cdn.discordapp.com/attachments/559400132710236160/899739577995108372/EssentialClient480.jpg)](https://youtu.be/lmMkC102T24)
 
 ## Index of Client Rules
-
+* [afkLogout](#afklogout)
 * [announceAFK](#announceafk)
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
@@ -64,6 +64,12 @@ Feel free to contribute by adding as many features as you want!
 # Client Rules:
 
 For commands any value inside [ ] are variables and should be replaced with real values when using the command
+
+## afkLogout
+This will disconnect you after you have been afk for a set number of ticks
+* Type: `Integer`
+* Default Value: `0`
+* Extra Info: value must be `>=200` to be enabled
 
 ## announceAFK
 This announces when you become afk after a set amount of time (ticks), 
