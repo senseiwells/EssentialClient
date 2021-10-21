@@ -13,7 +13,7 @@ To access the Essential Client menu you must join a world, then it will be acces
 Feel free to contribute by adding as many features as you want!
 
 ## Index of Client Rules
-
+* [afkLogout](#afklogout)
 * [announceAFK](#announceafk)
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
@@ -58,6 +58,12 @@ Feel free to contribute by adding as many features as you want!
 # Client Rules:
 
 For commands any value inside [ ] are variables and should be replaced with real values when using the command
+
+## afkLogout
+This will disconnect you after you have been afk for a set number of ticks
+* Type: `Integer`
+* Default Value: `0`
+* Extra Info: value must be `>=200` to be enabled
 
 ## announceAFK
 This announces when you become afk after a set amount of time (ticks),
