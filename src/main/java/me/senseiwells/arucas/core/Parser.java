@@ -142,7 +142,7 @@ public class Parser {
     private Node statements() throws CodeError {
         List<Node> statements = new ArrayList<>();
         Position startPos = this.currentToken.startPos;
-        if (this.currentToken.type == Token.Type.FINISH) {
+        if (this.currentToken.type == Token.Type.FINISH || this.currentToken.type == Token.Type.RIGHT_CURLY_BRACKET) {
             return new NullNode(this.currentToken, this.context);
         }
         while (this.currentToken.type == Token.Type.SEMICOLON) {
@@ -353,7 +353,7 @@ public class Parser {
         return whileNode;
     }
     
-    private int functionLambdaIndex = 1;
+    private static int functionLambdaIndex = 1;
     //updated
     private Node functionDefinition(boolean isLambda) throws CodeError {
         List<Token> argumentNameTokens = new ArrayList<>();
@@ -418,15 +418,12 @@ public class Parser {
         return new ListNode(elementList, startPos, this.currentToken.endPos, this.context);
     }
 
-
     private boolean currentHasNoBracket() {
         return this.currentToken.type != Token.Type.LEFT_BRACKET;
     }
 
     private Context generateNewContext() {
-        this.recede();
         Context context = new Context(this.currentToken.content, this.context, this.currentToken.startPos);
-        this.advance();
         context.symbolTable = new SymbolTable(context.parentContext.symbolTable);
         return context;
     }

@@ -16,4 +16,9 @@ public class ClientPlayerEntityMixin {
     public void onChatMessage(String message, CallbackInfo ci) {
         MinecraftEventFunction.ON_CHAT_MESSAGE.tryRunFunction(List.of(new StringValue(message)));
     }
+
+    @Inject(method = "closeScreen", at = @At("HEAD"))
+    private void onCloseScreen(CallbackInfo ci) {
+        MinecraftEventFunction.ON_CLOSE_SCREEN.tryRunFunction();
+    }
 }

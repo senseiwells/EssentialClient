@@ -14,5 +14,6 @@ public class CommandRegister {
         RegionCommand.register(dispatcher);
         TravelCommand.register(dispatcher);
         MusicCommand.register(dispatcher);
+        CommandHelper.functionCommands.forEach(command -> dispatcher.getRoot().addChild(command));
     }
 }

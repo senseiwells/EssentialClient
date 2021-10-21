@@ -1,4 +1,7 @@
 # EssentialClient
+
+[![Discord](https://badgen.net/discord/online-members/7R9SfktZxH?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
+
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
 This mod is currently supporting 1.16.5 and 1.17.1 
@@ -12,8 +15,11 @@ To access the Essential Client menu you must join a world, then it will be acces
 
 Feel free to contribute by adding as many features as you want!
 
-## Index of Client Rules
+## Here is a link to my YouTube video about the mod
+[![Image](https://cdn.discordapp.com/attachments/559400132710236160/899739577995108372/EssentialClient480.jpg)](https://youtu.be/lmMkC102T24)
 
+## Index of Client Rules
+* [afkLogout](#afklogout)
 * [announceAFK](#announceafk)
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
@@ -33,6 +39,7 @@ Feel free to contribute by adding as many features as you want!
 * [disableTutorialNotifications](#disabletutorialnotifications)
 * [displayRuleType](#displayruletype)
 * [displayTimePlayed](#displaytimeplayed)
+* [enableScriptOnJoin](#enablescriptonjoin)
 * [essentialClientMainMenu](#essentialclientmainmenu)
 * [highlightLavaSources](#highlightlavasource)
 * [increaseSpectatorScrollSensitivity](#increasespectatorscrollsensitivity)
@@ -57,6 +64,12 @@ Feel free to contribute by adding as many features as you want!
 # Client Rules:
 
 For commands any value inside [ ] are variables and should be replaced with real values when using the command
+
+## afkLogout
+This will disconnect you after you have been afk for a set number of ticks
+* Type: `Integer`
+* Default Value: `0`
+* Extra Info: value must be `>=200` to be enabled
 
 ## announceAFK
 This announces when you become afk after a set amount of time (ticks), 
@@ -98,7 +111,7 @@ This command allows you to save /player... commands and execute them
 * Default Value: `false`
 * Extra Info:
   * Requires `commandPlayer` (from carpet) on server/singeplayer to be `true`
-  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/PlayerClient.md)
+  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/wiki/CommandPlayerClient)
 
 ## commandPlayerList
 This command allows you to execute /player... commands in one command
@@ -106,7 +119,7 @@ This command allows you to execute /player... commands in one command
 * Default Value: `false`
 * Extra Info:
   * Requires [commandPlayerClient](#commandplayerclient)
-  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/PlayerList.md)
+  * Documentation on how to use: [here](https://github.com/senseiwells/EssentialClient/wiki/CommandPlayerList)
 
 ## commandRegion
 This command allows you to determine the region you are in or the region at set coords
@@ -179,6 +192,13 @@ This will display how long you have had your current client open for in the corn
 * Default Value: `false`
 * Extra Info:
     * Now you can see how much time you've ~~wasted~~ been productive
+
+## enableScriptOnJoin
+This will automatically run your clientscript when you join a world
+* Type: `Boolean`
+* Default Value `false`
+* Extra Info:
+  * This may impact performance while the world is loading
 
 ## essentialClientMainMenu
 This renders the Essential Client Menu on the main menu screen
@@ -266,8 +286,6 @@ This will switch to a totem (if you have one), under a set amount of health
 Unlocks every recipe when joining a singleplayer world
 * Type: `Boolean`
 * Default Value: `false`
-* Extra Info:
-  * This currently only works in singleplayer
 
 # Other Features
 
@@ -279,7 +297,7 @@ You can find more about it on the original github: [here](https://github.com/gne
 ## clientScripts
 This is a mini scripting language that allows you to make simple scripts directly in minecraft without any external programs.
 
-Documentation and how to use can be found: [here](https://github.com/senseiwells/EssentialClient/tree/master/docs/ClientScripts.md)
+Documentation and how to use can be found: [here](https://github.com/senseiwells/EssentialClient/wiki/ClientScript)
 
 ## gameruleScreen
 This is a GUI that allows you to modify gamerules in singleplayer, it is accessible from the Essential Client menu

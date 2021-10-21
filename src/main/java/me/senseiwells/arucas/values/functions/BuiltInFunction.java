@@ -122,7 +122,7 @@ public class BuiltInFunction extends FunctionValue {
     
             new BuiltInFunction("random", "bound", function -> {
                 NumberValue numValue = (NumberValue) function.getValueForType(NumberValue.class, 0, null);
-                return new NumberValue(Math.round(numValue.value));
+                return new NumberValue(new Random().nextInt(numValue.value.intValue()));
             }),
     
             new BuiltInFunction("round", "number", function -> {

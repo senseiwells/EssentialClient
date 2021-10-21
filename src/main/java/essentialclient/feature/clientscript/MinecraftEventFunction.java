@@ -18,7 +18,13 @@ public enum MinecraftEventFunction {
     ON_ATTACK("_onAttack_"),
     ON_USE("_onUse_"),
     ON_PICK_BLOCK("_onPickBlock_"),
+    ON_CLOSE_SCREEN("_onCloseScreen_"),
 
+    ON_KEY_PRESS("_onKeyPress_"),
+    ON_KEY_HOLD("_onKeyHold_"),
+    ON_KEY_RELEASE("_onKeyRelease_"),
+    ON_COMMAND("_onCommand_"),
+    ON_OPEN_SCREEN("_onOpenScreen_"),
     ON_PICKUP("_onPickUp_"),
     ON_DROP_ITEM("_onDropItem_"),
     ON_EAT("_onEat_"),
@@ -48,7 +54,13 @@ public enum MinecraftEventFunction {
                 functionValue.execute(arguments);
             }
             catch (ThrowValue | CodeError e) {
-                EssentialUtils.sendMessage(e.getMessage());
+                if (!ClientScript.enabled)
+                    return;
+                EssentialUtils.sendMessage("§cAn error occurred while trying to read the macro");
+                if (e instanceof CodeError)
+                    EssentialUtils.sendMessage("§c--------------------------------------------\n" + e);
+                ClientScript.enabled = false;
+                EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
             }
         }, "Minecraft Event Thread").start();
     }
@@ -57,4 +69,10 @@ public enum MinecraftEventFunction {
         this.tryRunFunction(null);
     }
 
+    public static boolean isEvent(String word) {
+        for (MinecraftEventFunction function : MinecraftEventFunction.values())
+            if (function.functionName.equals(word))
+                return true;
+        return false;
+    }
 }

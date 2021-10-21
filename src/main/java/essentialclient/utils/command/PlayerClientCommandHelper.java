@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.serialization.Codec;
@@ -20,6 +21,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -28,7 +30,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -84,7 +88,20 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
     }
 
     public static void sendCommand(ClientPlayerEntity playerEntity, PlayerClientCommandHelper data, double x, double y, double z) {
-        playerEntity.sendChatMessage(String.format("/player %s spawn at %f %f %f facing %f %f in %s", data.name, data.x + x, data.y + y, data.z + z, data.yaw, data.pitch, data.dimension));
+        playerEntity.sendChatMessage(String.format(
+                "/player %s spawn at %s %s %s facing %s %s in %s",
+                data.name,
+                formatDecimal(data.x + x),
+                formatDecimal(data.y + y),
+                formatDecimal(data.z + z),
+                formatDecimal(data.yaw),
+                formatDecimal(data.pitch),
+                data.dimension)
+        );
+    }
+
+    public static String formatDecimal(Double doubleValue) {
+        return DecimalFormat.getInstance(Locale.UK).format(doubleValue);
     }
 
     public static int createNewPlayerClient(CommandContext<ServerCommandSource> context, boolean isHere, boolean isGamemode) throws CommandSyntaxException {
@@ -105,7 +122,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             pitch = context.getArgument("pitch", Double.class);
         } else {
             ClientPlayerEntity clientPlayerEntity = CommandHelper.getPlayer();
-            dimension = clientPlayerEntity.world.getRegistryKey().getValue().toString();
+            dimension = clientPlayerEntity.world.getRegistryKey().getValue().getPath();
             x = clientPlayerEntity.getX();
             y = clientPlayerEntity.getY();
             z = clientPlayerEntity.getZ();
@@ -113,13 +130,13 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             pitch = clientPlayerEntity.pitch;
         }
         switch (dimension) {
-            case "minecraft:overworld":
-            case "minecraft:the_nether":
-            case "minecraft:the_end":
+            case "overworld":
+            case "the_nether":
+            case "the_end":
                 break;
             default:
-                EssentialUtils.sendMessage(ChatColour.RED + "That is not a valid dimension");
-                return 0;
+                Text text = new LiteralText("That is not a valid dimension");
+                throw new CommandSyntaxException(new SimpleCommandExceptionType(text), text);
         }
         if (isGamemode) {
             gamemode = context.getArgument("gamemode", String.class);
@@ -129,8 +146,8 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
                 case "any":
                     break;
                 default:
-                    EssentialUtils.sendMessage(ChatColour.RED + "That is not a valid gamemode");
-                    return 0;
+                    Text text = new LiteralText("That is not a valid gamemode");
+                    throw new CommandSyntaxException(new SimpleCommandExceptionType(text), text);
             }
         } else {
             gamemode = "any";
