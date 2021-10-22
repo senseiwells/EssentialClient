@@ -22,6 +22,9 @@
   "entrypoints": {
     "main": [
       "essentialclient.EssentialClient"
+    ],
+    "modmenu": [
+      "essentialclient.gui.modmenu.ModMenuImpl"
     ]
   },
   "mixins": [
