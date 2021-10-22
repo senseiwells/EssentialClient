@@ -7,6 +7,9 @@ repositories {
 	maven {
 		url 'https://masa.dy.fi/maven'
 	}
+	maven {
+		url  "https://maven.terraformersmc.com/releases/"
+	}
 	mavenCentral()
 }
 
@@ -26,6 +29,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
