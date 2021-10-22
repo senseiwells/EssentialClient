@@ -47,13 +47,14 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
 
     @Inject(method = "joinWorld", at = @At("TAIL"))
     private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
-        ClientScript.enabled = ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean();
-        ClientScript.run();
+		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean()) {
+			ClientScript.startScript();
+		}
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
     private void onLeaveWorld(Screen screen, CallbackInfo ci) {
-        ClientScript.enabled = false;
+		ClientScript.stopScript();
     }
 
     @Override

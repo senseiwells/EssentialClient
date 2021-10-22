@@ -5,6 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,16 +14,27 @@ import java.nio.file.Path;
 public class EssentialUtils {
 
     public static void sendMessageToActionBar(String message) {
-        ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
-        if (playerEntity == null)
-            return;
-        playerEntity.sendMessage(new LiteralText(message), true);
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity playerEntity = client.player;
+        if (playerEntity != null) {
+            client.execute(() -> playerEntity.sendMessage(new LiteralText(message), true));
+        }
     }
+    
     public static void sendMessage(String message) {
-        ClientPlayerEntity playerEntity = MinecraftClient.getInstance().player;
-        if (playerEntity == null)
-            return;
-        playerEntity.sendMessage(new LiteralText(message), false);
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity playerEntity = client.player;
+        if (playerEntity != null) {
+            client.execute(() -> playerEntity.sendMessage(new LiteralText(message), false));
+        }
+    }
+    
+    public static void sendMessage(Text text) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity playerEntity = client.player;
+        if (playerEntity != null) {
+            client.execute(() -> playerEntity.sendMessage(text, false));
+        }
     }
 
     public static void checkIfEssentialClientDirExists() {

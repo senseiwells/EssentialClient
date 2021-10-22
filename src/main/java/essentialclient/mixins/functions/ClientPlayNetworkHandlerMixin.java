@@ -31,17 +31,17 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onHealthUpdate", at = @At("HEAD"))
     private void onHealthUpdate(CallbackInfo ci) {
-        MinecraftEventFunction.ON_HEALTH_UPDATE.tryRunFunction();
+        MinecraftEventFunction.ON_HEALTH_UPDATE.runFunction();
     }
 
     @Inject(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;showFloatingItem(Lnet/minecraft/item/ItemStack;)V"))
     private void onTotem(CallbackInfo ci) {
-        MinecraftEventFunction.ON_TOTEM.tryRunFunction();
+        MinecraftEventFunction.ON_TOTEM.runFunction();
     }
 
     @Inject(method = "onGameStateChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;setGameMode(Lnet/minecraft/world/GameMode;)V"))
     private void onGamemodeChange(GameStateChangeS2CPacket packet, CallbackInfo ci) {
-        MinecraftEventFunction.ON_GAMEMODE_CHANGE.tryRunFunction(List.of(new StringValue(GameMode.byId((int) packet.getValue()).getName())));
+        MinecraftEventFunction.ON_GAMEMODE_CHANGE.runFunction(List.of(new StringValue(GameMode.byId((int) packet.getValue()).getName())));
     }
 
     @Inject(method = "onItemPickupAnimation", at = @At("HEAD"))
@@ -50,7 +50,7 @@ public class ClientPlayNetworkHandlerMixin {
         LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
         if (entity != null && livingEntity == this.client.player) {
             String entityName = entity.getType() != EntityType.ITEM ? "experience_orb" : Registry.ITEM.getId(((ItemEntity) entity).getStack().getItem()).getPath();
-            MinecraftEventFunction.ON_PICKUP.tryRunFunction(List.of(new StringValue(entityName)));
+            MinecraftEventFunction.ON_PICKUP.runFunction(List.of(new StringValue(entityName)));
         }
     }
 }
