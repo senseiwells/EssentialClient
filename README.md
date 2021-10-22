@@ -1,6 +1,6 @@
 # EssentialClient
 
-[![Discord](https://badgen.net/discord/online-members/j32CVJvPHg?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
+[![Discord](https://badgen.net/discord/online-members/7R9SfktZxH?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
