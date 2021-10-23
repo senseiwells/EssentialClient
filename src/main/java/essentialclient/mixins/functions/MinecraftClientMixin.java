@@ -48,11 +48,8 @@ public class MinecraftClientMixin {
 
     @Inject(method = "openScreen", at = @At("HEAD"))
     private void onOpenScreen(Screen screen, CallbackInfo ci) {
-        if (screen == null || screen.getTitle() == null)
+        if (screen == null)
             return;
-        String screenName = screen.getTitle().getString();
-        if (screenName.length() == 0)
-            return;
-        MinecraftEventFunction.ON_OPEN_SCREEN.runFunction(List.of(new StringValue(screenName)));
+        MinecraftEventFunction.ON_OPEN_SCREEN.runFunction(List.of(new StringValue(screen.getClass().getSimpleName())));
     }
 }

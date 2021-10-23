@@ -76,9 +76,9 @@ public class InventoryUtils {
         }
     }
 
-    public static void tradeAllItems(MinecraftClient client, int index, boolean dropItems) {
+    public static boolean tradeAllItems(MinecraftClient client, int index, boolean dropItems) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return;
+            return false;
         Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
         while (true) {
             selectTrade(client, merchantScreen, index);
@@ -92,6 +92,7 @@ public class InventoryUtils {
                 break;
         }
         clearTradeInputSlot(client, merchantScreen);
+        return true;
     }
 
     public static void selectTrade(MinecraftClient client, MerchantScreen merchantScreen, int index) {
@@ -174,7 +175,7 @@ public class InventoryUtils {
 
     public static int getIndexOfItemInMerchant(MinecraftClient client, Item item) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return -1;
+            return -2;
         int i = 0;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
             if (offer.getSellItem().getItem() == item)

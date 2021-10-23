@@ -28,7 +28,7 @@ public class StringListEntry extends BaseListEntry {
     private final TextFieldWidget textField;
     private boolean invalid;
     
-    public StringListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
+    public StringListEntry(final ParsedRule<?> settings, final MinecraftClient client, final ServerRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
         stringField.setText(settings.getAsString());
@@ -41,7 +41,7 @@ public class StringListEntry extends BaseListEntry {
         gui.getStringFieldList().add(this.textField);
     }
 
-    public StringListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
+    public StringListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
         stringField.setText(settings.getString());

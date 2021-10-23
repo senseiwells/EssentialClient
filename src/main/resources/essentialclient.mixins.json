@@ -5,13 +5,13 @@
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
-    "core.MinecraftServer_noopMixin",
-    "functions.KeyboardMixin"
+    "core.MinecraftServer_noopMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",
     "betterMusic.MusicTrackerMixin",
     "carpet.ClientPlayNetworkHandlerMixin",
+    "cleanConfirmScreen.ConfirmScreenMixin",
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
@@ -27,6 +27,7 @@
     "functions.ClientPlayerEntityMixin",
     "functions.ClientPlayerInteractionManagerMixin",
     "functions.ClientPlayNetworkHandlerMixin",
+    "functions.KeyboardMixin",
     "functions.MinecraftClientMixin",
     "functions.PlayerEntityMixin",
     "keyboardRebinds.KeyboardMixin",
@@ -40,7 +41,11 @@
     "stackableShulkers.ItemStackMixin",
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
-    "unlockAllRecipes.ClientPlayNetworkHandlerMixin"
+    "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
+    "disableFovChangeInWater.GameRendererMixin",
+    "fixCommand.CommandDispatcherMixin",
+    "fixCommand.CommandSuggestorMixin",
+    "permanentChatHud.ChatHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

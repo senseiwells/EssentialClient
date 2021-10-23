@@ -17,6 +17,9 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -167,7 +170,7 @@ public class ClientScript {
             catch (CodeError e) {
                 EssentialUtils.sendMessage("§cAn error occurred while running the script");
                 EssentialUtils.sendMessage("§c--------------------------------------------\n" + e.toString(context));
-                EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
+                EssentialUtils.sendMessageToActionBar("§6Script now §cOFF");
                 ClientScript.stopScript();
             }
             catch(Throwable t) {
@@ -181,13 +184,24 @@ public class ClientScript {
     }
     
     private static void sendReportMessage(Throwable t) {
+        String gitReport = "%s%s%s%s%s%s".formatted(
+                "https://github.com/senseiwells/EssentialClient/issues/new?title=ClientScript%20Crash",
+                "&body=Minecraft%20Version:%20" + EssentialUtils.getMinecraftVersion() + "%0A%0A",
+                "Essential%20Client%20Version:%20" + EssentialUtils.getVersion() + "%0A%0A",
+                "Arucas%20Version:%20" + EssentialUtils.getArucasVersion() + "%0A%0A",
+                "Crash:%0A%0A",
+                "%09" + ExceptionUtils.getStackTrace(t)
+                        .replaceAll("\r\n", "%0A%0A")
+                        .replace("\t", "%09")
+                        .replaceAll(" ", "%20")
+        );
         EssentialUtils.sendMessage("§cAn error occurred while running the script");
         EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
         EssentialUtils.sendMessage(
             new LiteralText("https://github.com/senseiwells/EssentialClient/issues/new")
                 .formatted(Formatting.UNDERLINE)
                 .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-                    "https://github.com/senseiwells/EssentialClient/issues/new"))
+                    gitReport))
                 )
             .append("\n")
         );
