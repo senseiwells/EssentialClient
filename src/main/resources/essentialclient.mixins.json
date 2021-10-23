@@ -12,12 +12,14 @@
     "betterMusic.MusicTrackerMixin",
     "carpet.ClientPlayNetworkHandlerMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",
+    "commandSuggestorIgnoresSpaces.CommandSuggestorMixin",
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
+    "disableFovChangeInWater.GameRendererMixin",
     "disableNarrator.KeyboardMixin",
     "disableNightVisionFlash.GameRendererMixin",
     "disableRecipeNotifications.RecipeToastMixin",
@@ -34,6 +36,7 @@
     "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
+    "permanentChatHud.ChatHudMixin",
     "removeWarnReceivedPassengers.ClientPlayNetworkHandlerMixin",
     "sodium.FluidRendererMixin",
     "stackableShulkers.HopperBlockEntityMixin",
@@ -41,11 +44,7 @@
     "stackableShulkers.ItemStackMixin",
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
-    "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
-    "disableFovChangeInWater.GameRendererMixin",
-    "fixCommand.CommandDispatcherMixin",
-    "fixCommand.CommandSuggestorMixin",
-    "permanentChatHud.ChatHudMixin"
+    "unlockAllRecipes.ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

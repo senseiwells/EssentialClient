@@ -28,8 +28,10 @@ Feel free to contribute by adding as many features as you want!
 * [commandPlayerClient](#commandplayerclient)
 * [commandPlayerList](#commandplayerlist)
 * [commandRegion](#commandregion)
+* [commandSuggestorIgnoresSpaces](#commandsuggestorignoresspaces)
 * [commandTravel](#commandtravel)
 * [disableBobViewWhenHurt](#disablebobviewwhenhurt)
+* [disableFovChangeInWater](#disablefovchangeinwater)
 * [disableHotbarScrolling](#disablehotbarscrolling)
 * [disableJoinLeaveMessages](#disablejoinleavemessages)
 * [disableNarrator](#disablenarrator)
@@ -48,6 +50,7 @@ Feel free to contribute by adding as many features as you want!
 * [musicInterval](#musicinterval)
 * [musicTypes](#musictypes)
 * [overrideCreativeWalkSpeed](#overridecreativewalkspeed)
+* [permanentChatHud](#permanentchathud)
 * [removeWarnReceivedPassengers](#removewarnreceivedpassengers)
 * [stackableShulkerInPlayerInventories](#stackableshulkersinplayerinventories)
 * [stackableShulkersWithItems](#stackableshulkerswithitems)
@@ -128,6 +131,11 @@ This command allows you to determine the region you are in or the region at set 
 * Extra Info:
   * Usage: `/region get`, `/region get [x] [y]`
 
+## commandSuggestorIgnoresSpaces
+This makes the command suggestor suggest the correct commands even if you type extra spaces
+* Type: `Boolean`
+* Default Value: `false`
+
 ## commandTravel
 This command allows you to travel to a set location
 * Type: `Boolean`
@@ -137,6 +145,11 @@ This command allows you to travel to a set location
 
 ## disableBobViewWhenHurt
 Disables the camera bobbing when you get hurt
+* Type: `Boolean`
+* Default Value: `false`
+
+## disableFovChangeInWater
+This stops the FOV changing when you are submerged in water
 * Type: `Boolean`
 * Default Value: `false`
 
@@ -253,6 +266,13 @@ This allows you to override the vanilla walk speed in creative mode
 * Default Value: `0.0`
 * Extra Info:
   * Limited to creative mode, stop thinking of cheating
+
+## permanentChatHud
+This prevents chat from being cleared, this also prevents chat from being cleared when leaving worlds/servers
+* Type: `Boolean`
+* Default Value: `false`
+* Extra Info:
+  * This means you can swap worlds and still have the same chat :)
 
 ## removeWarnReceivedPassengers
 "This removes the 'Received passengers for unknown entity' warning on the client

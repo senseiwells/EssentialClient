@@ -1,4 +1,4 @@
-package essentialclient.mixins.fixCommand;
+package essentialclient.mixins.commandSuggestorIgnoresSpaces;
 
 import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.CommandSuggestor;

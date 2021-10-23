@@ -1,9 +1,5 @@
 package essentialclient.feature.clientscript;
 
-import essentialclient.utils.EssentialUtils;
-import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.ThrowValue;
-import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 
