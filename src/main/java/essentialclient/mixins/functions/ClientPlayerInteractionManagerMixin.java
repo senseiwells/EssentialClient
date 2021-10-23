@@ -42,18 +42,18 @@ public class ClientPlayerInteractionManagerMixin {
         assert this.client.world != null;
         Block block = this.client.world.getBlockState(pos).getBlock();
         String blockName = Registry.BLOCK.getId(block).getPath();
-        MinecraftEventFunction.ON_BLOCK_BROKEN.tryRunFunction(List.of(new StringValue(blockName), new NumberValue(pos.getX()), new NumberValue(pos.getY()), new NumberValue(pos.getZ())));
+        MinecraftEventFunction.ON_BLOCK_BROKEN.runFunction(List.of(new StringValue(blockName), new NumberValue(pos.getX()), new NumberValue(pos.getY()), new NumberValue(pos.getZ())));
     }
 
     @Inject(method = "clickSlot", at = @At("HEAD"))
     private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        MinecraftEventFunction.ON_CLICK_SLOT.tryRunFunction(List.of(new NumberValue(slotId + 1)));
+        MinecraftEventFunction.ON_CLICK_SLOT.runFunction(List.of(new NumberValue(slotId + 1)));
     }
 
     @Redirect(method = "interactItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;"), require = 0)
     private TypedActionResult<ItemStack> onInteractItem(ItemStack itemStack, World world, PlayerEntity user, Hand hand) {
         String item = Registry.ITEM.getId(itemStack.getItem()).getPath();
-        MinecraftEventFunction.ON_INTERACT_ITEM.tryRunFunction(List.of(new StringValue(item)));
+        MinecraftEventFunction.ON_INTERACT_ITEM.runFunction(List.of(new StringValue(item)));
         return itemStack.use(world, user, hand);
     }
 
@@ -63,13 +63,13 @@ public class ClientPlayerInteractionManagerMixin {
         if (result.isAccepted()) {
             Block block = world.getBlockState(hitResult.getBlockPos()).getBlock();
             String blockName = Registry.BLOCK.getId(block).getPath();
-            MinecraftEventFunction.ON_INTERACT_BLOCK.tryRunFunction(List.of(new StringValue(blockName)));
+            MinecraftEventFunction.ON_INTERACT_BLOCK.runFunction(List.of(new StringValue(blockName)));
         }
     }
 
     @Inject(method = "interactEntity", at = @At("TAIL"))
     private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         String entityName = Registry.ENTITY_TYPE.getId(entity.getType()).getPath();
-        MinecraftEventFunction.ON_INTERACT_ENTITY.tryRunFunction(List.of(new StringValue(entityName)));
+        MinecraftEventFunction.ON_INTERACT_ENTITY.runFunction(List.of(new StringValue(entityName)));
     }
 }

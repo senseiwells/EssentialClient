@@ -10,8 +10,8 @@ import essentialclient.utils.command.PlayerListCommandHelper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 
-import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
 
 public class PlayerListCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {

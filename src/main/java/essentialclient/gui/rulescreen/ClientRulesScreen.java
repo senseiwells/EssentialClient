@@ -9,6 +9,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClientRulesScreen extends Screen {
     private final Screen parent;
@@ -16,8 +17,8 @@ public class ClientRulesScreen extends Screen {
     protected TextFieldWidget searchBox;
     private boolean invalid;
     private boolean isEmpty;
-    private final ArrayList<TextFieldWidget> stringFieldList = new ArrayList<>();
-    private final ArrayList<TextFieldWidget> numberFieldList = new ArrayList<>();
+    private final List<TextFieldWidget> stringFieldList = new ArrayList<>();
+    private final List<TextFieldWidget> numberFieldList = new ArrayList<>();
 
     public ClientRulesScreen(Screen parent) {
         super(new LiteralText("Essential Client Options"));
@@ -41,7 +42,7 @@ public class ClientRulesScreen extends Screen {
     public void tick() {
         this.stringFieldList.forEach(TextFieldWidget::tick);
         this.numberFieldList.forEach(TextFieldWidget::tick);
-        //this.searchBox.tick();
+        this.searchBox.tick();
     }
 
     @Override
@@ -58,6 +59,12 @@ public class ClientRulesScreen extends Screen {
             this.textRenderer.draw(matrices,  text, 18, 12, 16733525);
         }
         super.render(matrices, mouseX, mouseY, delta);
+    }
+
+    @Override
+    public void onClose() {
+        if (this.client != null)
+            this.client.setScreen(this.parent);
     }
 
     public void refreshRules(String filter) {
@@ -85,12 +92,12 @@ public class ClientRulesScreen extends Screen {
         this.isEmpty = isEmpty;
     }
 
-    public ArrayList<TextFieldWidget> getStringFieldList()
+    public List<TextFieldWidget> getStringFieldList()
     {
         return stringFieldList;
     }
 
-    public ArrayList<TextFieldWidget> getNumberFieldList()
+    public List<TextFieldWidget> getNumberFieldList()
     {
         return numberFieldList;
     }

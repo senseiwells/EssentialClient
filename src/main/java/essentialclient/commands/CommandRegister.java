@@ -1,7 +1,9 @@
 package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 
 public class CommandRegister {

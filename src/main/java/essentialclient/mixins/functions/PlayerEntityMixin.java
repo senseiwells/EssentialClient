@@ -23,7 +23,7 @@ public class PlayerEntityMixin {
         if ((Object) this != MinecraftClient.getInstance().player)
             return;
         String itemName = Registry.ITEM.getId(stack.getItem()).getPath();
-        MinecraftEventFunction.ON_DROP_ITEM.tryRunFunction(List.of(new StringValue(itemName)));
+        MinecraftEventFunction.ON_DROP_ITEM.runFunction(List.of(new StringValue(itemName)));
     }
 
     @Inject(method = "eatFood", at = @At("HEAD"))
@@ -31,6 +31,6 @@ public class PlayerEntityMixin {
         if ((Object) this != MinecraftClient.getInstance().player)
             return;
         String itemName = Registry.ITEM.getId(stack.getItem()).getPath();
-        MinecraftEventFunction.ON_EAT.tryRunFunction(List.of(new StringValue(itemName)));
+        MinecraftEventFunction.ON_EAT.runFunction(List.of(new StringValue(itemName)));
     }
 }

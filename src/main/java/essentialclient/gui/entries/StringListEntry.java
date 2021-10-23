@@ -2,13 +2,13 @@ package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
+import essentialclient.gui.ConfigListWidget;
 import essentialclient.feature.clientrule.ClientRuleHelper;
 import essentialclient.feature.clientrule.ClientRules;
-import essentialclient.gui.ConfigListWidget;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
+import essentialclient.utils.render.RuleWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
-import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
@@ -29,7 +29,7 @@ public class StringListEntry extends BaseListEntry {
     private final TextFieldWidget textField;
     private boolean invalid;
     
-    public StringListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
+    public StringListEntry(final ParsedRule<?> settings, final MinecraftClient client, final ServerRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
         stringField.setText(settings.getAsString());
@@ -42,7 +42,7 @@ public class StringListEntry extends BaseListEntry {
         gui.getStringFieldList().add(this.textField);
     }
 
-    public StringListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
+    public StringListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
         stringField.setText(settings.getString());
@@ -66,7 +66,7 @@ public class StringListEntry extends BaseListEntry {
     public List<? extends Selectable> selectableChildren() {
         return ImmutableList.of(this.resetButton, this.textField);
     }
-    
+
     @Override
     public boolean charTyped(char chr, int keyCode) {
         return this.textField.charTyped(chr, keyCode);

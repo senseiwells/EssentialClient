@@ -17,8 +17,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
 
-
-
 public class PlayerClientCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 

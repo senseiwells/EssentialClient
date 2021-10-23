@@ -140,7 +140,7 @@ public class PlayerListCommandHelper {
                 errors++;
                 continue;
             }
-            PlayerClientCommandHelper.spawnPlayer(CommandHelper.getPlayer(), player);
+            PlayerClientCommandHelper.spawnPlayer(EssentialUtils.getPlayer(), player);
         }
         if (errors > 0)
             EssentialUtils.sendMessage(ChatColour.RED + errors + " players were invalid and couldn't be spawned");

@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(PickaxeItem.class)
 public class PickaxeItemMixin extends MiningToolItem {
-
     //Client implementation of missingTools
     protected PickaxeItemMixin(float attackDamage, float attackSpeed, ToolMaterial material, Tag<Block> tag, Item.Settings settings) {
         super(attackDamage, attackSpeed, material, tag, settings);

@@ -2,8 +2,8 @@ package essentialclient.gui.entries;
 
 import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
-import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.gui.ConfigListWidget;
+import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.render.ITooltipEntry;

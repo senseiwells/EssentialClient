@@ -13,7 +13,7 @@ import net.minecraft.text.LiteralText;
 @Environment(EnvType.CLIENT)
 public class CycleListEntry extends BaseListEntry {
 
-    public CycleListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
+    public CycleListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
         super(settings, client, gui);
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString()), (buttonWidget) -> {
             settings.cycleValues();

@@ -24,7 +24,7 @@ public class MinecraftClientMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
-        MinecraftEventFunction.ON_CLIENT_TICK.tryRunFunction();
+        MinecraftEventFunction.ON_CLIENT_TICK.runFunction();
         if (CommandHelper.needUpdate && this.player != null) {
             this.player.networkHandler.onCommandTree(ClientRuleHelper.serverPacket);
             CommandHelper.needUpdate = false;
@@ -33,26 +33,23 @@ public class MinecraftClientMixin {
 
     @Inject(method = "doAttack", at = @At("HEAD"))
     private void onAttack(CallbackInfo ci) {
-        MinecraftEventFunction.ON_ATTACK.tryRunFunction();
+        MinecraftEventFunction.ON_ATTACK.runFunction();
     }
 
     @Inject(method = "doItemUse", at = @At("HEAD"))
     private void onUse(CallbackInfo ci) {
-        MinecraftEventFunction.ON_USE.tryRunFunction();
+        MinecraftEventFunction.ON_USE.runFunction();
     }
 
     @Inject(method = "doItemPick", at = @At("HEAD"))
     private void onPickBlock(CallbackInfo ci) {
-        MinecraftEventFunction.ON_PICK_BLOCK.tryRunFunction();
+        MinecraftEventFunction.ON_PICK_BLOCK.runFunction();
     }
 
     @Inject(method = "setScreen", at = @At("HEAD"))
     private void onOpenScreen(Screen screen, CallbackInfo ci) {
-        if (screen == null || screen.getTitle() == null)
+        if (screen == null)
             return;
-        String screenName = screen.getTitle().getString();
-        if (screenName.length() == 0)
-            return;
-        MinecraftEventFunction.ON_OPEN_SCREEN.tryRunFunction(List.of(new StringValue(screenName)));
+        MinecraftEventFunction.ON_OPEN_SCREEN.runFunction(List.of(new StringValue(screen.getClass().getSimpleName())));
     }
 }

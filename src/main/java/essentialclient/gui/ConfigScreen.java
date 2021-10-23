@@ -51,7 +51,13 @@ public class ConfigScreen extends Screen {
         }));
         this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
     }
-    
+
+    @Override
+    public void onClose() {
+        if (this.client != null)
+            this.client.setScreen(this.parent);
+    }
+
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);

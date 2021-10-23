@@ -14,11 +14,11 @@ import java.util.List;
 public class ClientPlayerEntityMixin {
     @Inject(method = "sendChatMessage", at = @At("HEAD"))
     public void onChatMessage(String message, CallbackInfo ci) {
-        MinecraftEventFunction.ON_CHAT_MESSAGE.tryRunFunction(List.of(new StringValue(message)));
+        MinecraftEventFunction.ON_CHAT_MESSAGE.runFunction(List.of(new StringValue(message)));
     }
 
     @Inject(method = "closeScreen", at = @At("HEAD"))
     private void onCloseScreen(CallbackInfo ci) {
-        MinecraftEventFunction.ON_CLOSE_SCREEN.tryRunFunction();
+        MinecraftEventFunction.ON_CLOSE_SCREEN.runFunction();
     }
 }

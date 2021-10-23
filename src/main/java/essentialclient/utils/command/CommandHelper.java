@@ -11,7 +11,6 @@ import essentialclient.utils.render.ChatColour;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -34,11 +33,11 @@ public class CommandHelper {
 
     public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {
         return switch (type) {
-            case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getX()))}, builder);
-            case "y" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getY()))}, builder);
-            case "z" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getZ()))}, builder);
-            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getYaw()))}, builder);
-            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(getPlayer().getPitch()))}, builder);
+            case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getX()))}, builder);
+            case "y" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getY()))}, builder);
+            case "z" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getZ()))}, builder);
+            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getYaw()))}, builder);
+            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getPitch()))}, builder);
             case "dimension" -> CommandSource.suggestMatching(new String[]{"overworld", "the_nether", "the_end"}, builder);
             default -> null;
         };
@@ -52,12 +51,8 @@ public class CommandHelper {
         clientCommands.clear();
     }
 
-    public static ClientPlayerEntity getPlayer() {
-        return MinecraftClient.getInstance().player;
-    }
-
     public static void executeCommand(StringReader reader, String command) {
-        ClientPlayerEntity player = getPlayer();
+        ClientPlayerEntity player = EssentialUtils.getPlayer();
         try {
             player.networkHandler.getCommandDispatcher().execute(reader, new FakeCommandSource(player));
         } catch (CommandException e) {
@@ -77,11 +72,11 @@ public class CommandHelper {
                 }
 
                 text.append(new TranslatableText("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
-                getPlayer().sendMessage(text, false);
+                EssentialUtils.getPlayer().sendMessage(text, false);
             }
         } catch (Exception e) {
             LiteralText error = new LiteralText(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
-            getPlayer().sendMessage(new TranslatableText("command.failed")
+            EssentialUtils.getPlayer().sendMessage(new TranslatableText("command.failed")
                     .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
             e.printStackTrace();
         }
@@ -95,7 +90,7 @@ public class CommandHelper {
         StringValue command = (StringValue) arguments.remove(0);
         if (functionCommand.contains(command.value)) {
             List<Value<?>> parameters = List.of(command, new ListValue(arguments));
-            MinecraftEventFunction.ON_COMMAND.tryRunFunction(parameters);
+            MinecraftEventFunction.ON_COMMAND.runFunction(parameters);
             return true;
         }
         return false;

@@ -4,7 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
@@ -12,15 +14,13 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Vec3d;
 
-import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
 
 public class TravelCommand {
 
     public static boolean enabled = false;
     public static Vec3d destination;
-
-    private static ClientPlayerEntity player;
     private static String ping;
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -37,10 +37,10 @@ public class TravelCommand {
                                 .then(argument("z", DoubleArgumentType.doubleArg())
                                         .suggests( ((context, builder) -> CommandHelper.suggestLocation(builder, "z")))
                                         .executes(context -> {
-                                            player = CommandHelper.getPlayer();
+                                            ClientPlayerEntity player = EssentialUtils.getPlayer();
                                             destination = new Vec3d(context.getArgument("x", Double.class), player.getY() + 1, context.getArgument("z", Double.class));
-                                            player.sendMessage(new LiteralText("§6You will travel to " + destination.x + ", " + destination.z), false);
-                                            player.sendMessage(new LiteralText("§6To stop type /travel stop"), false);
+                                            EssentialUtils.sendMessage("§6You will travel to " + destination.x + ", " + destination.z);
+                                            EssentialUtils.sendMessage("§6To stop type /travel stop");
                                             enabled = true;
                                             return 0;
                                         })
@@ -49,7 +49,7 @@ public class TravelCommand {
                 )
                 .then(literal("stop")
                         .executes(context -> {
-                            player = CommandHelper.getPlayer();
+                            ClientPlayerEntity player = EssentialUtils.getPlayer();
                             enabled = false;
                             MinecraftClient.getInstance().options.keyForward.setPressed(false);
                             player.sendMessage(new LiteralText("§6You have stopped travelling"), false);
@@ -59,9 +59,8 @@ public class TravelCommand {
                 .then(literal("ping")
                         .then(argument("discordId", StringArgumentType.string())
                                 .executes(context -> {
-                                    player = CommandHelper.getPlayer();
                                     ping = context.getArgument("discordId", String.class);
-                                    player.sendMessage(new LiteralText("§6You will now ping <@" + ping + ">, after you have reached your destination"), false);
+                                    EssentialUtils.sendMessage("§6You will now ping <@" + ping + ">, after you have reached your destination");
                                     return 0;
                                 })
                         )
@@ -69,16 +68,21 @@ public class TravelCommand {
         );
     }
 
-    public static void tickTravel() {
-        if (Math.round(player.getX()) == destination.getX() && Math.round(player.getZ()) == destination.getZ()) {
-            player.sendMessage(new LiteralText("§6You have reached your destination"), false);
-            if (ping != null)
-                player.sendChatMessage("<@" + ping + ">, I have reached my destination :)");
-            MinecraftClient.getInstance().options.keyForward.setPressed(false);
-            enabled = false;
-            return;
-        }
-        player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, destination);
-        MinecraftClient.getInstance().options.keyForward.setPressed(true);
+    public static void registerTickTravel() {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            ClientPlayerEntity playerEntity = client.player;
+            if (playerEntity == null || !enabled)
+                return;
+            if (Math.round(playerEntity.getX()) == destination.getX() && Math.round(playerEntity.getZ()) == destination.getZ()) {
+                playerEntity.sendMessage(new LiteralText("§6You have reached your destination"), false);
+                if (ping != null)
+                    playerEntity.sendChatMessage("<@" + ping + ">, I have reached my destination :)");
+                MinecraftClient.getInstance().options.keyForward.setPressed(false);
+                enabled = false;
+                return;
+            }
+            playerEntity.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, destination);
+            MinecraftClient.getInstance().options.keyForward.setPressed(true);
+        });
     }
 }

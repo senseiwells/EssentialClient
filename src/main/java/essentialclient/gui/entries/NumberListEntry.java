@@ -4,18 +4,18 @@ import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
 import essentialclient.feature.clientrule.ClientRuleHelper;
 import essentialclient.feature.clientrule.ClientRules;
-import essentialclient.gui.ConfigListWidget;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
+import essentialclient.gui.ConfigListWidget;
+import essentialclient.utils.render.RuleWidget;
 import essentialclient.gui.rulescreen.ServerRulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
-import essentialclient.utils.render.RuleWidget;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public class NumberListEntry extends BaseListEntry {
     private final TextFieldWidget numberField;
     private boolean invalid;
     
-    public NumberListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
+    public NumberListEntry(final ParsedRule<?> settings, final MinecraftClient client, final ServerRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget numField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type an number value"));
         numField.setText(settings.getAsString());
@@ -42,7 +42,7 @@ public class NumberListEntry extends BaseListEntry {
         gui.getNumberFieldList().add(this.numberField);
     }
 
-    public NumberListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
+    public NumberListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget numField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a number value"));
         numField.setText(settings.getString());
@@ -66,7 +66,7 @@ public class NumberListEntry extends BaseListEntry {
     public List<? extends Selectable> selectableChildren() {
         return ImmutableList.of(this.resetButton, this.numberField);
     }
-    
+
     @Override
     public boolean charTyped(char chr, int keyCode)
     {

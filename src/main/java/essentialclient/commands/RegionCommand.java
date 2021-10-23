@@ -31,7 +31,7 @@ public class RegionCommand {
                                 })
                         )
                         .executes(context -> {
-                            ClientPlayerEntity playerEntity = CommandHelper.getPlayer();
+                            ClientPlayerEntity playerEntity = EssentialUtils.getPlayer();
                             EssentialUtils.sendMessage(ChatColour.GOLD + "You are in region: " + ChatColour.GREEN + (int) Math.floor(playerEntity.getX()/512) + "." + (int) Math.floor(playerEntity.getZ()/512));
                             return 0;
                         })
