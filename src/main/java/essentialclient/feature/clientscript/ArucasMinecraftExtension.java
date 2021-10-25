@@ -29,7 +29,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.*;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.CommandManager;
@@ -138,7 +138,8 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			
 			new MinecraftFunction("dropAll", "itemType", (context, function) -> {
 				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
-				InventoryUtils.dropAllItemType(this.getClient().player, stringValue.value);
+				MinecraftClient client = this.getClient();
+				client.execute(() -> InventoryUtils.dropAllItemType(client.player, stringValue.value));
 				return new NullValue();
 			}),
 			

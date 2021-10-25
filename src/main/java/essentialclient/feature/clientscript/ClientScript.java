@@ -17,9 +17,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -194,6 +192,7 @@ public class ClientScript {
                         .replaceAll("\r\n", "%0A%0A")
                         .replace("\t", "%09")
                         .replaceAll(" ", "%20")
+                        .replaceAll("\"", "")
         );
         EssentialUtils.sendMessage("§cAn error occurred while running the script");
         EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
