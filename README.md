@@ -1,6 +1,7 @@
 # EssentialClient
 
 [![Discord](https://badgen.net/discord/online-members/7R9SfktZxH?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
+[![GitHub downloads](https://img.shields.io/github/downloads/senseiwells/essentialclient/total?label=Github%20downloads&logo=github)](https://github.com/senseiwells/essentialclient/releases)
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
@@ -24,6 +25,7 @@ Feel free to contribute by adding as many features as you want!
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
 * [clientScriptFileName](#clientscriptfilename)
+* [commandClientNick](#commandclientnick)
 * [commandMusic](#commandmusic)
 * [commandPlayerClient](#commandplayerclient)
 * [commandPlayerList](#commandplayerlist)
@@ -55,6 +57,7 @@ Feel free to contribute by adding as many features as you want!
 * [stackableShulkerInPlayerInventories](#stackableshulkersinplayerinventories)
 * [stackableShulkersWithItems](#stackableshulkerswithitems)
 * [switchToTotem](#switchtototem)
+* [toggleTab](#toggletab)
 * [unlockAllRecipesOnJoin](#unlockallrecipesonjoin)
 
 # Index of Other Features:
@@ -83,7 +86,7 @@ This announces when you become afk after a set amount of time (ticks),
   * Prints the message determined by [announceAFKMessage](#announceafkmessage)
 
 ## announceAFKMessage
-This is the message you announce after you are afk"
+This is the message you announce after you are afk
 * Type: `String`
 * Default Value: `I am now AFK`
 * Extra Info:
@@ -100,6 +103,14 @@ This will auto walk after you have held your key for set amount of ticks
 This allows you to choose the file you want to use for your script
 * Type: `String`
 * Default Value: `clientscript`
+
+## commandClientNick
+This allows you to nickname other players using, this is only on the client, this can be any string (with spaces and special characters),
+you can also use Mojang formatting, use `&` instead of `§` 
+* Type: `Boolean`
+* Default Value: `false`
+* Extra Info:
+  * `/clientnick set [playername] [replacementname]`, `/clientnick delete [playername]`, `/clientnick get [playername]`
 
 ## commandMusic
 This command allows you to manipulate the current music
@@ -301,6 +312,11 @@ This will switch to a totem (if you have one), under a set amount of health
 * Default Value: `0`
 * Extra Info:
   * Health is out of 20
+
+## toggleTab
+This will make tab a toggle instead of a press to activate
+* Type: `Boolean`
+* Default Value: `false`
 
 ## unlockAllRecipesOnJoin
 Unlocks every recipe when joining a singleplayer world

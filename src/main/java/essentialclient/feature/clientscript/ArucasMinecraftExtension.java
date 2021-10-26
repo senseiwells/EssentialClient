@@ -10,7 +10,6 @@ import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.extensions.BuiltInFunction;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
-import me.senseiwells.arucas.throwables.ThrowStop;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.Position;
 import me.senseiwells.arucas.values.*;
@@ -47,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ArucasMinecraftExtension implements IArucasExtension {
-	private static final String mustBeItem = "String must be item type, for example \"grass_block\" or \"diamond\"";
+	private static final String MUST_BE_ITEM = "String must be item type, for example \"grass_block\" or \"diamond\"";
 	
 	@Override
 	public String getName() {
@@ -92,7 +91,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			}),
 			
 			new MinecraftFunction("say", "text", (context, function) -> {
-                this.getPlayer().sendChatMessage(function.getParameterValue(context, 0).value.toString());
+                this.getPlayer().sendChatMessage(function.getParameterValue(context, 0).toString());
 				return new NullValue();
 			}),
 			
@@ -109,24 +108,27 @@ public class ArucasMinecraftExtension implements IArucasExtension {
                 this.getClient().execute(() -> player.sendMessage(new LiteralText(value.toString()), true));
 				return new NullValue();
 			}),
-			
-			new MinecraftFunction("inventory", "action", (context, function) -> {
-				final String error = "String must be \"open\" or \"close\"";
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, error);
-				switch (stringValue.value) {
-					case "open" -> this.getClient().openScreen(new InventoryScreen(this.getPlayer()));
-					case "close" -> this.getPlayer().closeHandledScreen();
-					default -> throw function.throwInvalidParameterError(error, context);
-				}
-				return new NullValue();
-			}),
+
+				new MinecraftFunction("inventory", "action", (context, function) -> {
+					final String error = "String must be \"open\" or \"close\"";
+					StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, error);
+					final ClientPlayerEntity player = this.getPlayer();
+					final MinecraftClient client = this.getClient();
+					switch (stringValue.value) {
+						case "open" -> client.execute(() -> client.openScreen(new InventoryScreen(player)));
+						case "close" -> client.execute(player::closeHandledScreen);
+						default -> throw function.throwInvalidParameterError(error, context);
+					}
+					return new NullValue();
+				}),
 			
 			new MinecraftFunction("setWalking", "boolean", (context, function) -> setKey(context, function, this.getClient().options.keyForward)),
 			new MinecraftFunction("setSneaking", "boolean", (context, function) -> setKey(context, function, this.getClient().options.keySneak)),
 			
 			new MinecraftFunction("setSprinting", "boolean", (context, function) -> {
 				BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 0);
-				this.getPlayer().setSprinting(booleanValue.value);
+				final ClientPlayerEntity player = this.getPlayer();
+				this.getClient().execute(() -> player.setSprinting(booleanValue.value));
 				return new NullValue();
 			}),
 			
@@ -137,7 +139,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			}),
 			
 			new MinecraftFunction("dropAll", "itemType", (context, function) -> {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
+				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, MUST_BE_ITEM);
 				MinecraftClient client = this.getClient();
 				client.execute(() -> InventoryUtils.dropAllItemType(client.player, stringValue.value));
 				return new NullValue();
@@ -152,22 +154,19 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			}),
 			
 			new MinecraftFunction("getIndexOfTrade", "itemType", (context, function) -> {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
+				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, MUST_BE_ITEM);
 				Item item = Registry.ITEM.get(new Identifier(stringValue.value));
 				int index = InventoryUtils.getIndexOfItemInMerchant(this.getClient(), item);
-				if (index == -2)
-					throw new RuntimeError("Not in merchant gui", function.startPos, function.endPos, context);
+				this.checkVillagerValid(index, function, context);
 				return new NumberValue(index);
 			}),
 			
 			new MinecraftFunction("tradeFor", List.of("itemType", "boolean"), (context, function) -> {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
+				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, MUST_BE_ITEM);
 				BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 				Item item = Registry.ITEM.get(new Identifier(stringValue.value));
 				int index = InventoryUtils.getIndexOfItemInMerchant(this.getClient(), item);
-				if (index == -1) {
-					throw new RuntimeError("Villager does not have that trade", function.startPos, function.endPos, context);
-                }
+				this.checkVillagerValid(index, function, context);
 				InventoryUtils.tradeAllItems(this.getClient(), index, booleanValue.value);
 				return new NullValue();
 			}),
@@ -175,14 +174,20 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			new MinecraftFunction("getEnchantmentsForTrade", "value", (context, function) -> {
 				Value<?> value = function.getParameterValue(context, 0);
 				if (value instanceof NumberValue numberValue) {
-                    return new ListValue(InventoryUtils.checkEnchantmentForTrade(this.getClient(), numberValue.value.intValue()));
+					List<Value<?>> valueList = InventoryUtils.checkEnchantmentForTrade(this.getClient(), numberValue.value.intValue());
+					if (valueList == null) {
+						throw new RuntimeError("Invalid GUI or invalid index", function.startPos, function.endPos, context);
+					}
+                    return new ListValue(valueList);
                 }
 				if (value instanceof StringValue stringValue) {
 					int index = InventoryUtils.getIndexOfItemInMerchant(this.getClient(), Registry.ITEM.get(new Identifier(stringValue.value)));
-					if (index == -1) {
-						throw new RuntimeError("Villager does not have that trade", function.startPos, function.endPos, context);
-                    }
-					return new ListValue(InventoryUtils.checkEnchantmentForTrade(this.getClient(), index));
+					this.checkVillagerValid(index, function, context);
+					List<Value<?>> valueList = InventoryUtils.checkEnchantmentForTrade(this.getClient(), index);
+					if (valueList == null) {
+						throw new RuntimeError("You are not in merchant GUI", function.startPos, function.endPos, context);
+					}
+					return new ListValue(valueList);
 				}
 				return new NullValue();
 			}),
@@ -208,6 +213,11 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			}),
 			
 			new MinecraftFunction("jump", (context, function) -> {
+				/*
+				This should definitely be on main thread
+				Player can gain insane momentum if they schedule hundreds of jumps in the same tick
+				But I kinda like it, so I'm going to keep it :)
+				 */
 				if (this.getPlayer().isOnGround()) {
                     this.getPlayer().jump();
                 }
@@ -219,7 +229,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 					Thread.sleep(Long.MAX_VALUE);
 				}
 				catch (InterruptedException e) {
-					throw new ThrowStop();
+					throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.startPos, function.endPos);
 				}
 				return new NullValue();
 			}),
@@ -281,30 +291,51 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			
 			new MinecraftFunction("getScriptsPath", (context, function) -> new StringValue(ClientScript.getDir().toString())),
 			
-			new MinecraftFunction("isTradeDisabled", "arg", (context, function) -> {
+			new MinecraftFunction("isTradeDisabled", "value", (context, function) -> {
 				final String error = "Parameter for isTradeDisabled() should either be an item type (e.g. \"grass_block\") or an index";
 				Value<?> value = function.getParameterValue(context, 0);
-				if (value instanceof NumberValue numberValue)
-                    return new BooleanValue(InventoryUtils.checkTradeDisabled(this.getClient(), numberValue.value.intValue()));
-				if (value instanceof StringValue stringValue)
-                    return new BooleanValue(InventoryUtils.checkTradeDisabled(this.getClient(), Registry.ITEM.get(new Identifier(stringValue.value))));
+				if (value instanceof NumberValue numberValue) {
+					int code = InventoryUtils.checkTradeDisabled(this.getClient(), numberValue.value.intValue());
+					return new BooleanValue(this.checkVillagerValid(code, function, context));
+				}
+				if (value instanceof StringValue stringValue) {
+					int code = InventoryUtils.checkTradeDisabled(this.getClient(), Registry.ITEM.get(new Identifier(stringValue.value)));
+					return new BooleanValue(this.checkVillagerValid(code, function, context));
+				}
                 throw function.throwInvalidParameterError(error, context);
+			}),
+
+			new MinecraftFunction("getPriceForTrade", "value", (context, function) -> {
+				Value<?> value = function.getParameterValue(context, 0);
+				if (value instanceof NumberValue numberValue) {
+					int price = InventoryUtils.checkPriceForTrade(getClient(), numberValue.value.intValue());
+					this.checkVillagerValid(price, function, context);
+					return new NumberValue(price);
+				}
+				if (value instanceof StringValue stringValue) {
+					int index = InventoryUtils.getIndexOfItemInMerchant(getClient(), Registry.ITEM.get(new Identifier(stringValue.value)));
+					int price = InventoryUtils.checkPriceForTrade(getClient(), index);
+					this.checkVillagerValid(price, function, context);
+					return new NumberValue(price);
+				}
+				return new NullValue();
 			}),
 			
 			new MinecraftFunction("doesVillagerHaveTrade", "itemType", (context, function) -> {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
-				return new BooleanValue(InventoryUtils.checkHasTrade(this.getClient(), Registry.ITEM.get(new Identifier(stringValue.value))));
+				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, MUST_BE_ITEM);
+				int code = InventoryUtils.checkHasTrade(this.getClient(), Registry.ITEM.get(new Identifier(stringValue.value)));
+				return new BooleanValue(this.checkVillagerValid(code, function, context));
 			}),
 			
 			new MinecraftFunction("isInventoryFull", (context, function) -> new BooleanValue(this.getPlayer().inventory.getEmptySlot() == -1)),
 			
 			new MinecraftFunction("isBlockEntity", "block", (context, function) -> {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
+				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, MUST_BE_ITEM);
 				return new BooleanValue(Registry.BLOCK.get(new Identifier(stringValue.value)).hasBlockEntity());
 			}),
 			
 			new MinecraftFunction("getSlotFor", "itemType", (context, function) -> {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
+				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, MUST_BE_ITEM);
 				ItemStack itemStack = new ItemStack(Registry.ITEM.get(new Identifier(stringValue.value)));
 				ScreenHandler screenHandler = this.getPlayer().currentScreenHandler;
 				for (Slot slot : screenHandler.slots) {
@@ -316,7 +347,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			}),
 			
 			new MinecraftFunction("getAllSlotsFor", "itemType", (context, function) -> {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, mustBeItem);
+				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0, MUST_BE_ITEM);
 				ItemStack itemStack = new ItemStack(Registry.ITEM.get(new Identifier(stringValue.value)));
 				ScreenHandler screenHandler = this.getPlayer().currentScreenHandler;
 				List<Value<?>> slotList = new ArrayList<>();
@@ -492,8 +523,13 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 				FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
 				
                 ClientScript.runBranchAsyncFunction((branchContext) -> {
-                    Thread.sleep(numberValue.value.longValue());
-                    functionValue.call(branchContext, List.of());
+					try {
+						Thread.sleep(numberValue.value.longValue());
+						functionValue.call(branchContext, List.of());
+					}
+					catch (InterruptedException e) {
+						throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.startPos, function.endPos);
+					}
                 });
 				return new NullValue();
 			}),
@@ -538,6 +574,17 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public ClientPlayerInteractionManager getInteractionManager() throws CodeError {
 		return this.getClient().interactionManager;
 	}
+
+	public boolean checkVillagerValid(int code, BuiltInFunction function, Context context) throws RuntimeError {
+		boolean bool = false;
+		switch (code) {
+			case -2 -> throw new RuntimeError("You are not in merchant GUI", function.startPos, function.endPos, context);
+			case -1 -> throw new RuntimeError("That trade is out of bounds", function.startPos, function.endPos, context);
+			case 1 -> bool = true;
+		}
+		return bool;
+	}
+
     
 	private static NullValue setKey(Context context, BuiltInFunction function, KeyBinding keyBinding) throws CodeError {
 		BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 0);

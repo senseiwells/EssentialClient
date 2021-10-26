@@ -11,6 +11,7 @@ import essentialclient.utils.render.ChatColour;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -41,6 +42,16 @@ public class CommandHelper {
             case "dimension" -> CommandSource.suggestMatching(new String[]{"overworld", "the_nether", "the_end"}, builder);
             default -> null;
         };
+    }
+
+    public static CompletableFuture<Suggestions> suggestOnlinePlayers(SuggestionsBuilder builder) {
+        ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
+        if (networkHandler == null || networkHandler.getPlayerList() == null) {
+            return CommandSource.suggestMatching(new String[0], builder);
+        }
+        List<String> playerList = new ArrayList<>();
+        networkHandler.getPlayerList().forEach(p -> playerList.add(p.getProfile().getName()));
+        return CommandSource.suggestMatching(playerList.toArray(String[]::new), builder);
     }
 
     public static boolean isClientCommand(String command) {

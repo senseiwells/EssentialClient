@@ -12,6 +12,9 @@
     "betterMusic.MusicTrackerMixin",
     "carpet.ClientPlayNetworkHandlerMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",
+    "clientNick.InGameHudMixin",
+    "clientNick.PlayerEntityRendererMixin",
+    "clientNick.PlayerListHudMixin",
     "commandSuggestorIgnoresSpaces.CommandSuggestorMixin",
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
@@ -44,6 +47,7 @@
     "stackableShulkers.ItemStackMixin",
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
+    "toggleTab.InGameHudMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {

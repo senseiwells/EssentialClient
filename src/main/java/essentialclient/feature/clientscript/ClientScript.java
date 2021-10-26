@@ -20,6 +20,8 @@ import net.minecraft.util.Formatting;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -31,9 +33,12 @@ public class ClientScript {
      * it will never stop executing.
      */
     public static final ThreadGroup arucasThreadGroup = new ThreadGroup("Arucas Thread Group");
-    
+    public static final Object ERROR_LOCK = new Object();
+
     private static Context context;
     private static Thread thread;
+
+    private static boolean hasErrored;
 
     public static void registerKeyPress() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -65,7 +70,7 @@ public class ClientScript {
             // We need to close the already running code?????
             stopScript();
         }
-        
+        hasErrored = false;
         executeScript();
     }
     
@@ -128,15 +133,22 @@ public class ClientScript {
                 EssentialUtils.sendMessage("§c%s".formatted(e.toString(context)));
             }
             catch (CodeError e) {
-                EssentialUtils.sendMessage("§cAn error occurred while running the script");
-                EssentialUtils.sendMessage("§c--------------------------------------------\n" + e.toString(context));
+                if (e.errorType != CodeError.ErrorType.INTERRUPTED_ERROR) {
+                    synchronized (ERROR_LOCK) {
+                        if (hasErrored) {
+                            return;
+                        }
+                        EssentialUtils.sendMessage("§cAn error occurred while running the script");
+                        EssentialUtils.sendMessage("§c--------------------------------------------\n" + e.toString(context));
+                        hasErrored = true;
+                    }
+                }
             }
             catch (Throwable t) {
-                ClientScript.sendReportMessage(t);
+                ClientScript.sendReportMessage(t, fileContent);
                 t.printStackTrace();
             }
             finally {
-                // Stop the client script from running.
                 ClientScript.stopScript();
             }
         }, "Client Script Thread");
@@ -166,12 +178,19 @@ public class ClientScript {
                 consumer.accept(context);
             }
             catch (CodeError e) {
-                EssentialUtils.sendMessage("§cAn error occurred while running the script");
-                EssentialUtils.sendMessage("§c--------------------------------------------\n" + e.toString(context));
-                EssentialUtils.sendMessageToActionBar("§6Script now §cOFF");
-                ClientScript.stopScript();
+                if (e.errorType != CodeError.ErrorType.INTERRUPTED_ERROR) {
+                    synchronized (ERROR_LOCK) {
+                        if (hasErrored) {
+                            return;
+                        }
+                        EssentialUtils.sendMessage("§cAn error occurred while running the script");
+                        EssentialUtils.sendMessage("§c--------------------------------------------\n" + e.toString(context));
+                        hasErrored = true;
+                        ClientScript.stopScript();
+                    }
+                }
             }
-            catch(Throwable t) {
+            catch (Throwable t) {
                 ClientScript.sendReportMessage(t);
                 t.printStackTrace();
                 ClientScript.stopScript();
@@ -180,20 +199,13 @@ public class ClientScript {
         thread.setDaemon(true);
         thread.start();
     }
-    
+
     private static void sendReportMessage(Throwable t) {
-        String gitReport = "%s%s%s%s%s%s".formatted(
-                "https://github.com/senseiwells/EssentialClient/issues/new?title=ClientScript%20Crash",
-                "&body=Minecraft%20Version:%20" + EssentialUtils.getMinecraftVersion() + "%0A%0A",
-                "Essential%20Client%20Version:%20" + EssentialUtils.getVersion() + "%0A%0A",
-                "Arucas%20Version:%20" + EssentialUtils.getArucasVersion() + "%0A%0A",
-                "Crash:%0A%0A",
-                "%09" + ExceptionUtils.getStackTrace(t)
-                        .replaceAll("\r\n", "%0A%0A")
-                        .replace("\t", "%09")
-                        .replaceAll(" ", "%20")
-                        .replaceAll("\"", "")
-        );
+        sendReportMessage(t, null);
+    }
+
+    private static void sendReportMessage(Throwable t, String content) {
+        String gitReport = getGithubLink(t, content);
         EssentialUtils.sendMessage("§cAn error occurred while running the script");
         EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
         EssentialUtils.sendMessage(
@@ -204,6 +216,31 @@ public class ClientScript {
                 )
             .append("\n")
         );
+    }
+
+    private static String getGithubLink(Throwable t, String content) {
+        String stacktrace = ExceptionUtils.getStackTrace(t);
+        int charsLeft = 1400 - stacktrace.length();
+        String report = """
+        ### Minecraft Version: `%s`
+        ### Essential Client Version: `%s`
+        ### Arucas Version: `%s`
+        ### Script:
+        ```kotlin
+        %s
+        ```
+        ### Crash:
+        ```
+        %s
+        ```
+        """.formatted(
+            EssentialUtils.getMinecraftVersion(),
+            EssentialUtils.getVersion(),
+            EssentialUtils.getArucasVersion(),
+            content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
+            stacktrace
+        );
+        return "https://github.com/senseiwells/EssentialClient/issues/new?title=ClientScript%20Crash&body=" + URLEncoder.encode(report, StandardCharsets.UTF_8);
     }
 
     public static void resetKeys(MinecraftClient client) {

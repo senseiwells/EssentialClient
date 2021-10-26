@@ -7,7 +7,6 @@ import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
 import essentialclient.gui.rulescreen.ClientRulesScreen;
 import essentialclient.utils.EssentialUtils;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
@@ -22,7 +21,6 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class ClientRuleHelper {
-
     public static CommandTreeS2CPacket serverPacket;
 
     protected static Map<String, String> clientRulesMap = new HashMap<>();
@@ -71,7 +69,7 @@ public class ClientRuleHelper {
     }
 
     private static Path getFile() {
-        return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient").resolve("EssentialClientRules.json");
+        return EssentialUtils.getEssentialConfigFile().resolve("EssentialClientRules.json");
     }
 
     public static void executeOnChange(MinecraftClient client, ClientRules settings, ClientRulesScreen gui) {
@@ -93,6 +91,7 @@ public class ClientRuleHelper {
             case CLIENT_SCRIPT_FILENAME -> EssentialUtils.checkifScriptFileExists();
         }
     }
+
     protected static void checkRules() {
         for (ClientRules rule : ClientRules.values()) {
             clientRulesMap.putIfAbsent(rule.name, rule.defaultValue);
