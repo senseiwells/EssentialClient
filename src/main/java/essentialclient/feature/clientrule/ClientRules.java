@@ -4,18 +4,19 @@ import java.util.Arrays;
 
 public enum ClientRules {
     //Boolean Rules
+    COMMAND_CLIENT_NICK                     ("commandClientNick"                        , "This allows you to rename player names on the client"                                                    , true),
     COMMAND_MUSIC                           ("commandMusic"                             , "This command allows you to manipulate the current music"                                                 , true),
     COMMAND_PLAYERCLIENT                    ("commandPlayerClient"                      , "This command allows you to save /player... commands and execute them"                                    , true),
     COMMAND_PLAYERLIST                      ("commandPlayerList"                        , "This command allows you to execute /player... commands in one command (requires commandPlayerClient)"    , true),
     COMMAND_REGION                          ("commandRegion"                            , "This command allows you to determine the region you are in or the region at set coords"                  , true),
-    COMMAND_SUGGESTOR_IGNORES_SPACES        ("commandSuggestorIgnoresSpaces"            ,"This makes the command suggestor ignore spaces"                                                           , false),
+    COMMAND_SUGGESTOR_IGNORES_SPACES        ("commandSuggestorIgnoresSpaces"            , "This makes the command suggestor ignore spaces"                                                          , false),
     COMMAND_TRAVEL                          ("commandTravel"                            , "This command allows you to travel to a set location"                                                     , true),
     DISABLE_BOB_VIEW_WHEN_HURT              ("disableBobViewWhenHurt"                   , "Disables the camera bobbing when you get hurt"                                                           , false),
-    DISABLE_FOV_CHANGE_IN_WATER             ("disableFovChangeInWater"                  , "Stops the FOV changing when the player is submerged in water"                                            ,false),
+    DISABLE_FOV_CHANGE_IN_WATER             ("disableFovChangeInWater"                  , "Stops the FOV changing when the player is submerged in water"                                            , false),
     DISABLE_HOTBAR_SCROLLING                ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
     DISABLE_JOIN_LEAVE_MESSAGES             ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
     DISABLE_NARRATOR                        ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
-    DISABLE_NIGHT_VISION_FLASH              ("disableNightVisionFlash"                  , "Disables the flash that occurs when night vision is about to run out"                                    , false ),
+    DISABLE_NIGHT_VISION_FLASH              ("disableNightVisionFlash"                  , "Disables the flash that occurs when night vision is about to run out"                                    , false),
     DISABLE_OP_MESSAGES                     ("disableOpMessages"                        , "This will prevent system messages from displaying"                                                       , false),
     DISABLE_RECIPE_NOTIFICATIONS            ("disableRecipeNotifications"               , "Disables the recipe toast from showing"                                                                  , false),
     DISABLE_TUTORIAL_NOTIFICATIONS          ("disableTutorialNotifications"             , "Disables the tutorial toast from showing"                                                                , false),
@@ -29,6 +30,7 @@ public enum ClientRules {
     REMOVE_WARN_RECEIVED_PASSENGERS         ("removeWarnReceivedPassengers"             , "This removes the 'Received passengers for unknown entity' warning on the client"                         , false),
     STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES("stackableShulkersInPlayerInventories"     , "This allows for shulkers to stack only in your inventory"                                                , false),
     STACKABLE_SHULKERS_WITH_ITEMS           ("stackableShulkersWithItems"               , "This allows for shulkers with items to stack only in your inventory"                                     , false),
+    TOGGLE_TAB                              ("toggleTab"                                , "This allows you to toggle tab instead of holding to see tab"                                             , false),
     UNLOCK_ALL_RECIPES_ON_JOIN              ("unlockAllRecipesOnJoin"                   , "Unlocks every recipe when joining a world"                                                               , false),
 
     //Number Rules

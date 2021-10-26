@@ -1,10 +1,11 @@
 # EssentialClient
 
 [![Discord](https://badgen.net/discord/online-members/7R9SfktZxH?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
+[![GitHub downloads](https://img.shields.io/github/downloads/senseiwells/essentialclient/total?label=Github%20downloads&logo=github)](https://github.com/senseiwells/essentialclient/releases)
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
-This mod is currently supporting 1.16.5 and 1.17.1 
+This mod is currently supporting 1.16.5 and 1.17.1
 
 1.16.5 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.26+.
 
@@ -24,6 +25,7 @@ Feel free to contribute by adding as many features as you want!
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
 * [clientScriptFileName](#clientscriptfilename)
+* [commandClientNick](#commandclientnick)
 * [commandMusic](#commandmusic)
 * [commandPlayerClient](#commandplayerclient)
 * [commandPlayerList](#commandplayerlist)
@@ -55,6 +57,7 @@ Feel free to contribute by adding as many features as you want!
 * [stackableShulkerInPlayerInventories](#stackableshulkersinplayerinventories)
 * [stackableShulkersWithItems](#stackableshulkerswithitems)
 * [switchToTotem](#switchtototem)
+* [toggleTab](#toggletab)
 * [unlockAllRecipesOnJoin](#unlockallrecipesonjoin)
 
 # Index of Other Features:
@@ -75,10 +78,10 @@ This will disconnect you after you have been afk for a set number of ticks
 * Extra Info: value must be `>=200` to be enabled
 
 ## announceAFK
-This announces when you become afk after a set amount of time (ticks), 
+This announces when you become afk after a set amount of time (ticks),
 * Type: `Integer`
 * Default Value: `0`
-* Extra Info: 
+* Extra Info:
   * This is judges by weather your player position is constant
   * Prints the message determined by [announceAFKMessage](#announceafkmessage)
 
@@ -87,7 +90,7 @@ This is the message you announce after you are afk"
 * Type: `String`
 * Default Value: `I am now AFK`
 * Extra Info:
-    * Requires [announceAFK](#announceafk)
+  * Requires [announceAFK](#announceafk)
 
 ## autoWalk
 This will auto walk after you have held your key for set amount of ticks
@@ -100,6 +103,14 @@ This will auto walk after you have held your key for set amount of ticks
 This allows you to choose the file you want to use for your script
 * Type: `String`
 * Default Value: `clientscript`
+
+## commandClientNick
+This allows you to nickname other players using, this is only on the client, this can be any string (with spaces and special characters),
+you can also use Mojang formatting, use `&` instead of `§`
+* Type: `Boolean`
+* Default Value: `false`
+* Extra Info:
+  * `/clientnick set [playername] [replacementname]`, `/clientnick delete [playername]`, `/clientnick get [playername]`
 
 ## commandMusic
 This command allows you to manipulate the current music
@@ -196,7 +207,7 @@ Disables the tutorial toast from showing
 This allows you to choose the order you want rules to be displayed
 * Type: `Cycle`
 * Default Value: `Alphabetical`
-* Extra Info: 
+* Extra Info:
   * Current options: `Alphabetical` and `RuleType`
 
 ## displayTimePlayed
@@ -204,7 +215,7 @@ This will display how long you have had your current client open for in the corn
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
-    * Now you can see how much time you've ~~wasted~~ been productive
+  * Now you can see how much time you've ~~wasted~~ been productive
 
 ## enableScriptOnJoin
 This will automatically run your clientscript when you join a world
@@ -301,6 +312,11 @@ This will switch to a totem (if you have one), under a set amount of health
 * Default Value: `0`
 * Extra Info:
   * Health is out of 20
+
+## toggleTab
+This will make tab a toggle instead of a press to activate
+* Type: `Boolean`
+* Default Value: `false`
 
 ## unlockAllRecipesOnJoin
 Unlocks every recipe when joining a singleplayer world

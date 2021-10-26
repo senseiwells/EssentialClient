@@ -40,6 +40,6 @@
     "minecraft": "1.17.x"
   },
   "suggests": {
-    "arucas": "1.0.2"
+    "arucas": "1.0.3"
   }
 }
