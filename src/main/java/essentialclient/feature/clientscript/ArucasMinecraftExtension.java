@@ -498,6 +498,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			new MinecraftFunction("craft", List.of("recipe"), (context, function) -> {
 				ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 0);
 				if (!(this.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
+					// not in crafting
 					return new NullValue();
 				}
 				ItemStack[] itemStacks = new ItemStack[9];

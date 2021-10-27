@@ -164,8 +164,10 @@ public class InventoryUtils {
     public static List<Value<?>> checkEnchantment(MinecraftClient client, int index) {
         assert client.player != null;
         ScreenHandler playerContainer = client.player.currentScreenHandler;
-        if (index > playerContainer.slots.size() || index < 0)
+        if (index > playerContainer.slots.size() || index < 0) {
+            // throw
             return new ArrayList<>();
+        }
         NbtList nbtList = playerContainer.getSlot(index).getStack().getEnchantments();
         List<Value<?>> enchantmentList = new ArrayList<>();
         EnchantmentHelper.fromNbt(nbtList).forEach((enchantment, integer) -> enchantmentList.add(new ListValue(List.of(
