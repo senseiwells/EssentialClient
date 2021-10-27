@@ -17,9 +17,9 @@ public class KeyboardMixin {
     private void onKey(long window, int key, int scancode, int i, int modifiers, CallbackInfo ci) {
         String keyName = KeyboardHelper.translate(key);
         switch (i) {
-            case 0 -> MinecraftEventFunction.ON_KEY_RELEASE.tryRunFunction(List.of(new StringValue(keyName)));
-            case 1 -> MinecraftEventFunction.ON_KEY_PRESS.tryRunFunction(List.of(new StringValue(keyName)));
-            case 2 -> MinecraftEventFunction.ON_KEY_HOLD.tryRunFunction(List.of(new StringValue(keyName)));
+            case 0 -> MinecraftEventFunction.ON_KEY_RELEASE.runFunction(List.of(new StringValue(keyName)));
+            case 1 -> MinecraftEventFunction.ON_KEY_PRESS.runFunction(List.of(new StringValue(keyName)));
+            case 2 -> MinecraftEventFunction.ON_KEY_HOLD.runFunction(List.of(new StringValue(keyName)));
         }
     }
 }

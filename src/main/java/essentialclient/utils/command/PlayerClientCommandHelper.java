@@ -121,7 +121,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             yaw = context.getArgument("yaw", Double.class);
             pitch = context.getArgument("pitch", Double.class);
         } else {
-            ClientPlayerEntity clientPlayerEntity = CommandHelper.getPlayer();
+            ClientPlayerEntity clientPlayerEntity = EssentialUtils.getPlayer();
             dimension = clientPlayerEntity.world.getRegistryKey().getValue().getPath();
             x = clientPlayerEntity.getX();
             y = clientPlayerEntity.getY();
@@ -170,7 +170,7 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             EssentialUtils.sendMessage(ChatColour.RED + "That player doesn't exist in your config");
             return 0;
         }
-        ClientPlayerEntity playerEntity = CommandHelper.getPlayer();
+        ClientPlayerEntity playerEntity = EssentialUtils.getPlayer();
         if (data.gamemode.equalsIgnoreCase("spectator") && !playerEntity.isSpectator()) {
             EssentialUtils.sendMessage(ChatColour.RED + "You should be in spectator");
             return 0;

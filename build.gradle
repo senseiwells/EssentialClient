@@ -7,7 +7,13 @@ repositories {
 	maven {
 		url 'https://masa.dy.fi/maven'
 	}
+	maven {
+		url  "https://maven.terraformersmc.com/releases/"
+	}
 	mavenCentral()
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -20,20 +26,31 @@ group = project.maven_group
 minecraft {
 }
 
+configurations {
+    // implementations that should be included in the jar file
+    packImplementation {
+        transitive false
+    }
+
+    implementation.extendsFrom(packImplementation)
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
-
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
+
+    packImplementation "com.github.senseiwells:Arucas:v${project.arucas_version}"
 }
 
 processResources {
@@ -60,9 +77,11 @@ java {
 	withSourcesJar()
 }
 
-
 jar {
 	from "LICENSE"
+    from {
+        configurations.packImplementation.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 // configure the maven publication

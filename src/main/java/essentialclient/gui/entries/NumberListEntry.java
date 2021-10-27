@@ -28,7 +28,7 @@ public class NumberListEntry extends BaseListEntry {
     private final TextFieldWidget numberField;
     private boolean invalid;
     
-    public NumberListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
+    public NumberListEntry(final ParsedRule<?> settings, final MinecraftClient client, final ServerRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget numField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type an number value"));
         numField.setText(settings.getAsString());
@@ -41,7 +41,7 @@ public class NumberListEntry extends BaseListEntry {
         gui.getNumberFieldList().add(this.numberField);
     }
 
-    public NumberListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
+    public NumberListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
         super(settings, client, gui);
         TextFieldWidget numField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a number value"));
         numField.setText(settings.getString());

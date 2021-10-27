@@ -16,7 +16,7 @@ import net.minecraft.text.LiteralText;
 @Environment(EnvType.CLIENT)
 public class BooleanListEntry extends BaseListEntry {
 
-    public BooleanListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
+    public BooleanListEntry(final ParsedRule<?> settings, final MinecraftClient client, final ServerRulesScreen gui) {
         super(settings, client, gui);
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getAsString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
             String invertedBoolean = buttonWidget.getMessage().getString().equals("§2true") ? "false" : "true";
@@ -29,7 +29,7 @@ public class BooleanListEntry extends BaseListEntry {
         });
     }
 
-    public BooleanListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
+    public BooleanListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
         super(settings, client, gui);
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
             settings.invertBoolean();

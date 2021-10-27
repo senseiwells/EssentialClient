@@ -22,6 +22,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradeOfferList;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -76,9 +77,9 @@ public class InventoryUtils {
         }
     }
 
-    public static void tradeAllItems(MinecraftClient client, int index, boolean dropItems) {
+    public static boolean tradeAllItems(MinecraftClient client, int index, boolean dropItems) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return;
+            return false;
         Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
         while (true) {
             selectTrade(client, merchantScreen, index);
@@ -92,6 +93,7 @@ public class InventoryUtils {
                 break;
         }
         clearTradeInputSlot(client, merchantScreen);
+        return true;
     }
 
     public static void selectTrade(MinecraftClient client, MerchantScreen merchantScreen, int index) {
@@ -111,31 +113,51 @@ public class InventoryUtils {
             shiftClickSlot(client, merchantScreen, slot.id);
     }
 
-    public static boolean checkTradeDisabled(MinecraftClient client, int index) {
+    public static int checkTradeDisabled(MinecraftClient client, int index) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return false;
-        return merchantScreen.getScreenHandler().getRecipes().get(index).isDisabled();
+            return -2;
+        TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
+        if (index > tradeOffers.size() - 1)
+            return -1;
+        return tradeOffers.get(index).isDisabled() ? 1 : 0;
     }
 
-    public static boolean checkTradeDisabled(MinecraftClient client, Item item) {
+    public static int checkTradeDisabled(MinecraftClient client, Item item) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return false;
+            return -2;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
             if (offer.getSellItem().getItem() == item)
-                return offer.isDisabled();
+                return offer.isDisabled() ? 1 : 0;
         }
-        return false;
+        return -1;
+    }
+
+    public static int checkPriceForTrade(MinecraftClient client, int index) {
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+            return -2;
+        TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
+        if (index > tradeOffers.size() - 1)
+            return -1;
+        return tradeOffers.get(index).getAdjustedFirstBuyItem().getCount();
     }
 
     public static List<Value<?>> checkEnchantmentForTrade(MinecraftClient client, int index) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
             return null;
-        NbtList nbtList = merchantScreen.getScreenHandler().getRecipes().get(index).getSellItem().getEnchantments();
+        TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
+        if (index > tradeOffers.size() - 1)
+            return null;
+        NbtList nbtList = tradeOffers.get(index).getSellItem().getEnchantments();
         List<Value<?>> enchantmentList = new ArrayList<>();
-        EnchantmentHelper.fromNbt(nbtList).forEach((enchantment, integer) -> enchantmentList.add(new ListValue(List.of(
-                new StringValue(Objects.requireNonNull(Registry.ENCHANTMENT.getId(enchantment)).getPath()),
-                new NumberValue(integer)
-                ))));
+        EnchantmentHelper.fromNbt(nbtList).forEach((enchantment, integer) ->  {
+            Identifier enchantmentId = Registry.ENCHANTMENT.getId(enchantment);
+            if (enchantmentId != null) {
+                enchantmentList.add(new ListValue(List.of(
+                    new StringValue(enchantmentId.getPath()),
+                    new NumberValue(integer)
+                )));
+            }
+        });
         return enchantmentList;
     }
 
@@ -162,19 +184,19 @@ public class InventoryUtils {
         return stack.getMaxDamage() - stack.getDamage();
     }
 
-    public static boolean checkHasTrade(MinecraftClient client, Item item) {
+    public static int checkHasTrade(MinecraftClient client, Item item) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return false;
+            return -2;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
             if (offer.getSellItem().getItem() == item)
-                return true;
+                return 1;
         }
-        return false;
+        return 0;
     }
 
     public static int getIndexOfItemInMerchant(MinecraftClient client, Item item) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return -1;
+            return -2;
         int i = 0;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
             if (offer.getSellItem().getItem() == item)

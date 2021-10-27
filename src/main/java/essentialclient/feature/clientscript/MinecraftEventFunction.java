@@ -1,9 +1,5 @@
 package essentialclient.feature.clientscript;
 
-import essentialclient.utils.EssentialUtils;
-import me.senseiwells.arucas.core.Run;
-import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 
@@ -37,42 +33,33 @@ public enum MinecraftEventFunction {
     ON_BLOCK_BROKEN("_onBlockBroken_"),         // fun _onBlockBroken(block, x, y, z) { code }
     ;
 
-    String functionName;
+    final String functionName;
 
     MinecraftEventFunction(String functionName) {
         this.functionName = functionName;
     }
-
-    public void tryRunFunction(List<Value<?>> arguments) {
-        if (!ClientScript.enabled)
-            return;
-        new Thread(() -> {
-            try {
-                Value<?> value = Run.symbolTable.get(this.functionName);
-                if (!(value instanceof FunctionValue functionValue))
-                    return;
-                functionValue.execute(arguments);
+    
+    public void runFunction(List<Value<?>> arguments) {
+        ClientScript.runRootAsyncFunction((context) -> {
+            Value<?> value = context.getVariable(this.functionName);
+            if (!(value instanceof FunctionValue functionValue)) {
+                return;
             }
-            catch (ThrowValue | CodeError e) {
-                if (!ClientScript.enabled)
-                    return;
-                EssentialUtils.sendMessage("§cAn error occurred while trying to read the macro");
-                if (e instanceof CodeError)
-                    EssentialUtils.sendMessage("§c--------------------------------------------\n" + e);
-                ClientScript.enabled = false;
-                EssentialUtils.sendMessageToActionBar("§6Macro now §cOFF");
-            }
-        }, "Minecraft Event Thread").start();
+    
+            functionValue.call(context, arguments);
+        });
     }
-
-    public void tryRunFunction() {
-        this.tryRunFunction(null);
+    
+    public void runFunction() {
+        this.runFunction(List.of());
     }
-
+    
     public static boolean isEvent(String word) {
-        for (MinecraftEventFunction function : MinecraftEventFunction.values())
-            if (function.functionName.equals(word))
+        for (MinecraftEventFunction function : MinecraftEventFunction.values()) {
+            if (function.functionName.equals(word)) {
                 return true;
+            }
+        }
         return false;
     }
 }

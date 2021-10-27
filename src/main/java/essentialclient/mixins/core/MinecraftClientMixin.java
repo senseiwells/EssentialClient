@@ -1,9 +1,6 @@
 package essentialclient.mixins.core;
 
 import essentialclient.EssentialClient;
-import essentialclient.feature.AFKLogout;
-import essentialclient.feature.AnnounceAFK;
-import essentialclient.commands.TravelCommand;
 import essentialclient.feature.clientrule.ClientRules;
 import essentialclient.feature.clientscript.ClientScript;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
@@ -35,25 +32,16 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
         EssentialClient.noop();
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
-    public void onTick(CallbackInfo ci) {
-        if (TravelCommand.enabled)
-            TravelCommand.tickTravel();
-        if (ClientRules.ANNOUNCE_AFK.getInt() > 0)
-            AnnounceAFK.tickAFK(player);
-        if (ClientRules.AFK_LOGOUT.getInt() > 199)
-            AFKLogout.tickAFK(player);
-    }
-
     @Inject(method = "joinWorld", at = @At("TAIL"))
     private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
-        ClientScript.enabled = ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean();
-        ClientScript.run();
+		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean()) {
+			ClientScript.startScript();
+		}
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
     private void onLeaveWorld(Screen screen, CallbackInfo ci) {
-        ClientScript.enabled = false;
+		ClientScript.stopScript();
     }
 
     @Override

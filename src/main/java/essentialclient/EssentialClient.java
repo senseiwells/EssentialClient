@@ -2,6 +2,10 @@ package essentialclient;
 
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import essentialclient.commands.TravelCommand;
+import essentialclient.feature.AFKRules;
 import essentialclient.feature.HighlightLavaSources;
 import essentialclient.feature.clientrule.ClientRuleHelper;
 import essentialclient.feature.keybinds.ClientKeybinds;
@@ -9,8 +13,7 @@ import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.carpet.Reference;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import essentialclient.utils.command.ClientNickHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import essentialclient.utils.command.PlayerListCommandHelper;
 import net.fabricmc.api.ModInitializer;
@@ -33,12 +36,16 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
         EssentialUtils.checkIfEssentialClientDirExists();
         PlayerClientCommandHelper.readSaveFile();
         PlayerListCommandHelper.readSaveFile();
+        ClientNickHelper.readSaveFile();
         ClientRuleHelper.readSaveFile();
         EssentialUtils.checkifScriptFileExists();
 
         HighlightLavaSources.init();
 
         ClientKeybinds.loadKeybinds();
+
+        AFKRules.INSTANCE.registerAFKRules();
+        TravelCommand.registerTickTravel();
     }
 
     public static void noop() {
