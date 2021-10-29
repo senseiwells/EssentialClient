@@ -16,8 +16,8 @@
     "clientNick.PlayerEntityRendererMixin",
     "clientNick.PlayerListHudMixin",
     "commandSuggestorIgnoresSpaces.CommandSuggestorMixin",
-    "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
+    "core.ClientPlayerEntityMixin",
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
@@ -29,9 +29,9 @@
     "disableTutorialNotifications.TutorialToastMixin",
     "displayTimePlayed.GameMenuScreenMixin",
     "functions.ChatHudMixin",
+    "functions.ClientPlayNetworkHandlerMixin",
     "functions.ClientPlayerEntityMixin",
     "functions.ClientPlayerInteractionManagerMixin",
-    "functions.ClientPlayNetworkHandlerMixin",
     "functions.KeyboardMixin",
     "functions.MinecraftClientMixin",
     "functions.PlayerEntityMixin",
@@ -48,7 +48,8 @@
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
-    "unlockAllRecipes.ClientPlayNetworkHandlerMixin"
+    "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
+    "unlockAllRecipes.RecipeBookWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1
