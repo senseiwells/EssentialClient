@@ -5,7 +5,8 @@
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
-    "core.MinecraftServer_noopMixin"
+    "core.MinecraftServer_noopMixin",
+    "disableMapRendering.ItemFrameEntityRendererMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",

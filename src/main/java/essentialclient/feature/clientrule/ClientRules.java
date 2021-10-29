@@ -15,6 +15,7 @@ public enum ClientRules {
     DISABLE_FOV_CHANGE_IN_WATER             ("disableFovChangeInWater"                  , "Stops the FOV changing when the player is submerged in water"                                            , false),
     DISABLE_HOTBAR_SCROLLING                ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
     DISABLE_JOIN_LEAVE_MESSAGES             ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
+    DISABLE_MAP_RENDERING       	        ("disableMapRendering"                      , "This disables maps rendering in item frames"                                                             , false),
     DISABLE_NARRATOR                        ("disableNarrator"                          , "Disables cycling narrator when pressing CTRL + B"                                                        , false),
     DISABLE_NIGHT_VISION_FLASH              ("disableNightVisionFlash"                  , "Disables the flash that occurs when night vision is about to run out"                                    , false),
     DISABLE_OP_MESSAGES                     ("disableOpMessages"                        , "This will prevent system messages from displaying"                                                       , false),
