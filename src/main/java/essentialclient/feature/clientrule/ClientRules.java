@@ -42,6 +42,7 @@ public enum ClientRules {
     MUSIC_INTERVAL                          ("musicInterval"                            , Type.INTEGER          , "The amount of ticks between each soundtrack that is played, 0 = random"                      , "0"           , false),
     OVERRIDE_CREATIVE_WALK_SPEED            ("overrideCreativeWalkSpeed"                , Type.DOUBLE           , "This allows you to override the vanilla walk speed in creative mode"                         , "0.0"         , false),
     SWITCH_TO_TOTEM                         ("switchToTotem"                            , Type.INTEGER          , "This will switch to a totem (if you have one), under a set amount of health"                 , "0"           , false),
+    SOUL_BLOCKS_EFFECT_ON_FOV               ("soulBlocksEffectOnFov"                    , Type.INTEGER          , "This determines the percentage of Fov scaling when walking on soil soul or soul sand"        , "0"           , false),
 
     //String Rules
     ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk"              , "I am now AFK"),
