@@ -43,7 +43,6 @@
     "overrideCreativeWalkSpeed.LivingEntityMixin",
     "permanentChatHud.ChatHudMixin",
     "removeWarnReceivedPassengers.ClientPlayNetworkHandlerMixin",
-    "sodium.FluidRendererMixin",
     "stackableShulkers.HopperBlockEntityMixin",
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",

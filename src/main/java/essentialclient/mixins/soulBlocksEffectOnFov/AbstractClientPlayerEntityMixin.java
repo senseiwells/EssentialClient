@@ -28,7 +28,7 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
     public void injectedBefore(CallbackInfoReturnable<Float> cir) {
         if (this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).getModifier(SOUL_SPEED_BOOST_ID) != null) {
             this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).removeModifier(SOUL_SPEED_BOOST_ID);
-            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).addTemporaryModifier(new EntityAttributeModifier(SOUL_SPEED_BOOST_ID, "Soul speed boost", 0.01*ClientRules.SOUL_BLOCKS_EFFECT_ON_FOV.getInt() * (0.03F * (1.0F + (float) EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, (AbstractClientPlayerEntity) (Object) this) * 0.35F)), EntityAttributeModifier.Operation.ADDITION));
+            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).addTemporaryModifier(new EntityAttributeModifier(SOUL_SPEED_BOOST_ID, "Soul speed boost", 0.01*ClientRules.SOUL_SPEED_FOV_MULTIPLIER.getInt() * (0.03F * (1.0F + (float) EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, this) * 0.35F)), EntityAttributeModifier.Operation.ADDITION));
         }
     }
 
@@ -36,7 +36,7 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
     private void injectedAfter(CallbackInfoReturnable<Float> cir) {
         if (this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).getModifier(SOUL_SPEED_BOOST_ID) != null) {
             this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).removeModifier(SOUL_SPEED_BOOST_ID);
-            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).addTemporaryModifier(new EntityAttributeModifier(SOUL_SPEED_BOOST_ID, "Soul speed boost", (0.03F * (1.0F + (float) EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, (AbstractClientPlayerEntity) (Object) this) * 0.35F)), EntityAttributeModifier.Operation.ADDITION));
+            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).addTemporaryModifier(new EntityAttributeModifier(SOUL_SPEED_BOOST_ID, "Soul speed boost", (0.03F * (1.0F + (float) EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, this) * 0.35F)), EntityAttributeModifier.Operation.ADDITION));
         }
     }
 
