@@ -12,7 +12,6 @@ public enum ClientRules {
     COMMAND_SUGGESTOR_IGNORES_SPACES        ("commandSuggestorIgnoresSpaces"            , "This makes the command suggestor ignore spaces"                                                          , false),
     COMMAND_TRAVEL                          ("commandTravel"                            , "This command allows you to travel to a set location"                                                     , true),
     DISABLE_BOB_VIEW_WHEN_HURT              ("disableBobViewWhenHurt"                   , "Disables the camera bobbing when you get hurt"                                                           , false),
-    DISABLE_FOV_CHANGE_IN_WATER             ("disableFovChangeInWater"                  , "Stops the FOV changing when the player is submerged in water"                                            , false),
     DISABLE_HOTBAR_SCROLLING                ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
     DISABLE_JOIN_LEAVE_MESSAGES             ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),
     DISABLE_MAP_RENDERING       	        ("disableMapRendering"                      , "This disables maps rendering in item frames"                                                             , false),
@@ -42,7 +41,8 @@ public enum ClientRules {
     MUSIC_INTERVAL                          ("musicInterval"                            , Type.INTEGER          , "The amount of ticks between each soundtrack that is played, 0 = random"                      , "0"           , false),
     OVERRIDE_CREATIVE_WALK_SPEED            ("overrideCreativeWalkSpeed"                , Type.DOUBLE           , "This allows you to override the vanilla walk speed in creative mode"                         , "0.0"         , false),
     SWITCH_TO_TOTEM                         ("switchToTotem"                            , Type.INTEGER          , "This will switch to a totem (if you have one), under a set amount of health"                 , "0"           , false),
-    SOUL_BLOCKS_EFFECT_ON_FOV               ("soulBlocksEffectOnFov"                    , Type.INTEGER          , "This determines the percentage of Fov scaling when walking on soil soul or soul sand"        , "0"           , false),
+    SOUL_SPEED_FOV_MULTIPLIER               ("soulSpeedFovMultiplier"                   , Type.INTEGER          , "Determines the percentage of Fov scaling when walking on soil soul or soul sand"             , "0"           , false),
+    WATER_FOV_MULTIPLIER                    ("waterFovMultiplier"                       , Type.INTEGER          , "Determines the percentage of Fov scaling when fully submerged in water"                      , "0"           , false),
 
     //String Rules
     ANNOUNCE_AFK_MESSAGE                    ("announceAFKMessage"                       , "This is the message you announce after you are afk"              , "I am now AFK"),
