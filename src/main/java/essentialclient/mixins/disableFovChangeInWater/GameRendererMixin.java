@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class GameRendererMixin {
 	@ModifyConstant(method = "getFov", constant = @Constant(doubleValue = 60D))
 	private double onSubmergedFov(double old) {
-		return ClientRules.DISABLE_FOV_CHANGE_IN_WATER.getBoolean() ? 70D : old;
+		return 0.1 * (100 - ClientRules.WATER_FOV_MULTIPLIER.getInt()) + old;
 	}
 }
