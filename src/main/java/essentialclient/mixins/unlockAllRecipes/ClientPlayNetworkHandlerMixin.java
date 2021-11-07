@@ -1,6 +1,6 @@
 package essentialclient.mixins.unlockAllRecipes;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.UnlockRecipesS2CPacket;

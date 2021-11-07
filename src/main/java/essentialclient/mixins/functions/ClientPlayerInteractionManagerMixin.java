@@ -1,9 +1,10 @@
 package essentialclient.mixins.functions;
 
-import essentialclient.feature.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.values.BlockStateValue;
+import essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
-import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -38,21 +39,20 @@ public class ClientPlayerInteractionManagerMixin {
 
     @Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V", shift = At.Shift.BEFORE))
     private void onBreakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        assert this.client.world != null;
-        Block block = this.client.world.getBlockState(pos).getBlock();
-        String blockName = Registry.BLOCK.getId(block).getPath();
-        MinecraftEventFunction.ON_BLOCK_BROKEN.runFunction(List.of(new StringValue(blockName), new NumberValue(pos.getX()), new NumberValue(pos.getY()), new NumberValue(pos.getZ())));
+        if (this.client.world == null) {
+            return;
+        }
+        MinecraftEventFunction.ON_BLOCK_BROKEN.runFunction(List.of(new BlockStateValue(this.client.world.getBlockState(pos)), new NumberValue(pos.getX()), new NumberValue(pos.getY()), new NumberValue(pos.getZ())));
     }
 
     @Inject(method = "clickSlot", at = @At("HEAD"))
     private void onClickSlot(int syncId, int slotId, int clickData, SlotActionType actionType, PlayerEntity player, CallbackInfoReturnable<ItemStack> cir) {
-        MinecraftEventFunction.ON_CLICK_SLOT.runFunction(List.of(new NumberValue(slotId + 1)));
+        MinecraftEventFunction.ON_CLICK_SLOT.runFunction(List.of(new NumberValue(slotId)));
     }
 
     @Redirect(method = "interactItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;"), require = 0)
     private TypedActionResult<ItemStack> onInteractItem(ItemStack itemStack, World world, PlayerEntity user, Hand hand) {
-        String item = Registry.ITEM.getId(itemStack.getItem()).getPath();
-        MinecraftEventFunction.ON_INTERACT_ITEM.runFunction(List.of(new StringValue(item)));
+        MinecraftEventFunction.ON_INTERACT_ITEM.runFunction(List.of(new ItemStackValue(itemStack)));
         return itemStack.use(world, user, hand);
     }
 
@@ -60,9 +60,7 @@ public class ClientPlayerInteractionManagerMixin {
     private void onInteractBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
         ActionResult result = cir.getReturnValue();
         if (result.isAccepted()) {
-            Block block = world.getBlockState(hitResult.getBlockPos()).getBlock();
-            String blockName = Registry.BLOCK.getId(block).getPath();
-            MinecraftEventFunction.ON_INTERACT_BLOCK.runFunction(List.of(new StringValue(blockName)));
+            MinecraftEventFunction.ON_INTERACT_BLOCK.runFunction(List.of(new BlockStateValue(world.getBlockState(hitResult.getBlockPos()))));
         }
     }
 

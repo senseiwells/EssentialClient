@@ -1,7 +1,7 @@
 package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.render.ChatColour;

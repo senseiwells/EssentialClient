@@ -1,6 +1,6 @@
 package essentialclient.utils;
 
-import essentialclient.feature.clientscript.ClientScript;
+import essentialclient.clientscript.ClientScript;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModDependency;

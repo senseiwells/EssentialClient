@@ -1,30 +1,25 @@
 package essentialclient.utils.inventory;
 
-import me.senseiwells.arucas.values.ListValue;
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.arucas.values.Value;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
 import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class InventoryUtils {
@@ -62,11 +57,10 @@ public class InventoryUtils {
         }
     }
 
-    public static void dropAllItemType(ClientPlayerEntity playerEntity, String itemIdentifier) {
+    public static void dropAllItemType(ClientPlayerEntity playerEntity, Item item) {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.interactionManager == null)
             return;
-        Item item = Registry.ITEM.get(new Identifier(itemIdentifier));
         ScreenHandler containerPlayer = playerEntity.currentScreenHandler;
         Predicate<ItemStack> filterItemStack = (s) -> s.getItem() == item;
         for (Slot slot : containerPlayer.slots) {
@@ -88,7 +82,7 @@ public class InventoryUtils {
             ItemStack tradeStack = tradeSlot.getStack().copy();
             shiftClickSlot(client, merchantScreen, tradeSlot.id);
             if (dropItems)
-                dropAllItemType(client.player, Registry.ITEM.getId(tradeStack.getItem()).getPath());
+                dropAllItemType(client.player, tradeStack.getItem());
             if (tradeSlot.hasStack())
                 break;
         }
@@ -141,49 +135,6 @@ public class InventoryUtils {
         return tradeOffers.get(index).getAdjustedFirstBuyItem().getCount();
     }
 
-    public static List<Value<?>> checkEnchantmentForTrade(MinecraftClient client, int index) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return null;
-        TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
-        if (index > tradeOffers.size() - 1)
-            return null;
-        NbtList nbtList = tradeOffers.get(index).getSellItem().getEnchantments();
-        List<Value<?>> enchantmentList = new ArrayList<>();
-        EnchantmentHelper.fromNbt(nbtList).forEach((enchantment, integer) ->  {
-            Identifier enchantmentId = Registry.ENCHANTMENT.getId(enchantment);
-            if (enchantmentId != null) {
-                enchantmentList.add(new ListValue(List.of(
-                    new StringValue(enchantmentId.getPath()),
-                    new NumberValue(integer)
-                )));
-            }
-        });
-        return enchantmentList;
-    }
-
-    public static List<Value<?>> checkEnchantment(MinecraftClient client, int index) {
-        assert client.player != null;
-        ScreenHandler playerContainer = client.player.currentScreenHandler;
-        if (index > playerContainer.slots.size() || index < 0)
-            return new ArrayList<>();
-        NbtList nbtList = playerContainer.getSlot(index).getStack().getEnchantments();
-        List<Value<?>> enchantmentList = new ArrayList<>();
-        EnchantmentHelper.fromNbt(nbtList).forEach((enchantment, integer) -> enchantmentList.add(new ListValue(List.of(
-                new StringValue(Objects.requireNonNull(Registry.ENCHANTMENT.getId(enchantment)).getPath()),
-                new NumberValue(integer)
-        ))));
-        return enchantmentList;
-    }
-
-    public static int getDurability(MinecraftClient client, int index) {
-        assert client.player != null;
-        ScreenHandler playerContainer = client.player.currentScreenHandler;
-        if (index > playerContainer.slots.size() || index < 0)
-            return -1;
-        ItemStack stack = playerContainer.getSlot(index).getStack();
-        return stack.getMaxDamage() - stack.getDamage();
-    }
-
     public static int checkHasTrade(MinecraftClient client, Item item) {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
             return -2;
@@ -192,6 +143,15 @@ public class InventoryUtils {
                 return 1;
         }
         return 0;
+    }
+
+    public static ItemStack getTrade(MinecraftClient client, int index) {
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+            return null;
+        TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
+        if (index > tradeOffers.size() - 1)
+            return null;
+        return tradeOffers.get(index).getSellItem();
     }
 
     public static int getIndexOfItemInMerchant(MinecraftClient client, Item item) {

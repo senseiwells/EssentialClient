@@ -2,8 +2,8 @@ package essentialclient.mixins.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import essentialclient.commands.CommandRegister;
-import essentialclient.feature.clientrule.ClientRuleHelper;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRuleHelper;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandSource;

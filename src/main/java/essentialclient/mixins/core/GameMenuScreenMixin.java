@@ -1,6 +1,6 @@
 package essentialclient.mixins.core;
 
-import essentialclient.gui.ConfigScreen;
+import essentialclient.config.ConfigScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

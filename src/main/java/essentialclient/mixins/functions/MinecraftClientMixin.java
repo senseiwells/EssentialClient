@@ -1,8 +1,6 @@
 package essentialclient.mixins.functions;
 
-import essentialclient.feature.clientrule.ClientRuleHelper;
-import essentialclient.feature.clientscript.MinecraftEventFunction;
-import essentialclient.utils.command.CommandHelper;
+import essentialclient.clientscript.MinecraftEventFunction;
 import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,13 +20,9 @@ public class MinecraftClientMixin {
     @Nullable
     public ClientPlayerEntity player;
 
-    @Inject(method = "tick", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("TAIL"))
     private void onTick(CallbackInfo ci) {
         MinecraftEventFunction.ON_CLIENT_TICK.runFunction();
-        if (CommandHelper.needUpdate && this.player != null) {
-            this.player.networkHandler.onCommandTree(ClientRuleHelper.serverPacket);
-            CommandHelper.needUpdate = false;
-        }
     }
 
     @Inject(method = "doAttack", at = @At("HEAD"))

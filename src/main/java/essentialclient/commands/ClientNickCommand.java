@@ -2,7 +2,7 @@ package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.ClientNickHelper;
 import essentialclient.utils.command.CommandHelper;

@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
@@ -14,8 +14,8 @@ import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
-import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 
 

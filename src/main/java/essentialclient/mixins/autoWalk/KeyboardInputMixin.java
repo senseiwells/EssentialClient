@@ -1,6 +1,6 @@
 package essentialclient.mixins.autoWalk;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.KeyBinding;

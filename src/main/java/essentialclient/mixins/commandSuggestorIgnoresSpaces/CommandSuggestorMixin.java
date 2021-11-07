@@ -1,6 +1,6 @@
 package essentialclient.mixins.commandSuggestorIgnoresSpaces;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.CommandSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.spongepowered.asm.mixin.Mixin;

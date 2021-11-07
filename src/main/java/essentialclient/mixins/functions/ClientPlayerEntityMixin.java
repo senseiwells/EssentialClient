@@ -1,6 +1,6 @@
 package essentialclient.mixins.functions;
 
-import essentialclient.feature.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.MinecraftEventFunction;
 import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;

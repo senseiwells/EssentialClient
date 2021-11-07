@@ -1,6 +1,6 @@
 package essentialclient.mixins.disableNightVisionFlash;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;

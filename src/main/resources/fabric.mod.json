@@ -27,7 +27,7 @@
       "essentialclient.EssentialClient"
     ],
     "modmenu": [
-      "essentialclient.gui.modmenu.ModMenuImpl"
+      "essentialclient.config.modmenu.ModMenuImpl"
     ]
   },
   "mixins": [
@@ -41,6 +41,6 @@
 
   },
   "suggests": {
-    "arucas": "1.0.3"
+    "arucas": "1.0.4"
   }
 }

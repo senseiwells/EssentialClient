@@ -3,7 +3,7 @@ package essentialclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

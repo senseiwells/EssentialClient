@@ -1,7 +1,6 @@
 package essentialclient.mixins.core;
 
 import com.mojang.brigadier.StringReader;
-import essentialclient.feature.clientscript.MinecraftEventFunction;
 import essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,6 +1,6 @@
 package essentialclient.mixins.soulBlocksEffectOnFov;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;

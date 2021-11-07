@@ -5,7 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.feature.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.MinecraftEventFunction;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
 import me.senseiwells.arucas.values.ListValue;
@@ -27,10 +27,9 @@ import java.util.concurrent.CompletableFuture;
 public class CommandHelper {
 
     public static final Set<String> clientCommands = new HashSet<>();
-    public static final Set<String> functionCommand = new HashSet<>();
-    public static final Set<LiteralCommandNode<ServerCommandSource>> functionCommands = new HashSet<>();
+    public static final Set<String> functionCommands = new HashSet<>();
+    public static final Set<LiteralCommandNode<ServerCommandSource>> functionCommandNodes = new HashSet<>();
     public static final DecimalFormat decimalFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
-    public static boolean needUpdate = false;
 
     public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {
         return switch (type) {
@@ -99,7 +98,7 @@ public class CommandHelper {
         for (String argument : message.split(" "))
             arguments.add(new StringValue(argument));
         StringValue command = (StringValue) arguments.remove(0);
-        if (functionCommand.contains(command.value)) {
+        if (functionCommands.contains(command.value)) {
             List<Value<?>> parameters = List.of(command, new ListValue(arguments));
             MinecraftEventFunction.ON_COMMAND.runFunction(parameters);
             return true;

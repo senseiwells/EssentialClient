@@ -1,6 +1,6 @@
 package essentialclient.mixins.functions;
 
-import essentialclient.feature.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.MinecraftEventFunction;
 import essentialclient.utils.keyboard.KeyboardHelper;
 import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.Keyboard;
@@ -19,7 +19,6 @@ public class KeyboardMixin {
         switch (i) {
             case 0 -> MinecraftEventFunction.ON_KEY_RELEASE.runFunction(List.of(new StringValue(keyName)));
             case 1 -> MinecraftEventFunction.ON_KEY_PRESS.runFunction(List.of(new StringValue(keyName)));
-            case 2 -> MinecraftEventFunction.ON_KEY_HOLD.runFunction(List.of(new StringValue(keyName)));
         }
     }
 }

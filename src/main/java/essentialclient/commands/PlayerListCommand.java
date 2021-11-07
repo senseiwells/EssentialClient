@@ -3,7 +3,7 @@ package essentialclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import essentialclient.utils.command.PlayerListCommandHelper;

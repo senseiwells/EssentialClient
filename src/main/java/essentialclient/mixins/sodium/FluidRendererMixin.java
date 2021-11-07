@@ -1,7 +1,7 @@
 package essentialclient.mixins.sodium;
 
 import essentialclient.feature.HighlightLavaSources;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;

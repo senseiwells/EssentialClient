@@ -1,6 +1,6 @@
 package essentialclient.mixins.missingTools;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.block.Material;
 import net.minecraft.item.PickaxeItem;
 import org.spongepowered.asm.mixin.Mixin;

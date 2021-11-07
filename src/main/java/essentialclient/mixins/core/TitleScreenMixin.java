@@ -1,7 +1,7 @@
 package essentialclient.mixins.core;
 
-import essentialclient.gui.ConfigScreen;
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.ConfigScreen;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;

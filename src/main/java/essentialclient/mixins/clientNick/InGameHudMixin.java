@@ -1,6 +1,6 @@
 package essentialclient.mixins.clientNick;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.ClientNickHelper;
 import net.minecraft.client.font.TextVisitFactory;

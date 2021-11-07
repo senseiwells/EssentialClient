@@ -1,6 +1,6 @@
 package essentialclient.mixins.toggleTab;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.PlayerListHud;

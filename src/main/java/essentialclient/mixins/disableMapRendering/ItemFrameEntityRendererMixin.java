@@ -1,6 +1,6 @@
 package essentialclient.mixins.disableMapRendering;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ItemFrameEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
