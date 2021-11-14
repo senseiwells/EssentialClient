@@ -9,7 +9,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 	}
 
 	@Override
-	public Value<?> copy() {
-		return new PlayerValue(this.value);
+	public Value<ClientPlayerEntity> copy() {
+		return this;
 	}
 }

@@ -6,10 +6,10 @@ import essentialclient.clientscript.values.BlockStateValue;
 import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.clientscript.values.MinecraftClientValue;
 import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.utils.Position;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
@@ -71,7 +71,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 				functionValue.call(branchContext, List.of());
 			}
 			catch (InterruptedException e) {
-				throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.startPos, function.endPos);
+				throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
 			}
 		});
 		return new NullValue();
@@ -83,9 +83,9 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		eventName = eventName.startsWith("_") ? eventName : "_" + eventName;
 		eventName = eventName.endsWith("_") ? eventName : eventName + "_";
 		if (!MinecraftEventFunction.isEvent(eventName)) {
-			throw new RuntimeError("The event name must be a predefined event", function.startPos, function.endPos, context);
+			throw new RuntimeError("The event name must be a predefined event", function.syntaxPosition, context);
 		}
-		context.getSymbolTable().getRoot().set(eventName, functionValue);
+		context.getStackTable().getRoot().set(eventName, functionValue);
 		return new NullValue();
 	}
 
@@ -104,17 +104,15 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			Thread.sleep(Long.MAX_VALUE);
 		}
 		catch (InterruptedException e) {
-			throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.startPos, function.endPos);
+			throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
 		}
 		return new NullValue();
 	}
 
-	private static final Position newPos = new Position(0, 0, 0, "");
-
 	public static MinecraftClient getClient() throws CodeError {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client == null) {
-			throw new RuntimeError("MinecraftClient was null", newPos, newPos);
+			throw new RuntimeError("MinecraftClient was null", ISyntax.empty());
 		}
 		return client;
 	}
@@ -122,7 +120,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayerEntity getPlayer() throws CodeError {
 		ClientPlayerEntity player = getClient().player;
 		if (player == null) {
-			throw new RuntimeError("MinecraftClient.player was null", newPos, newPos);
+			throw new RuntimeError("MinecraftClient.player was null", ISyntax.empty());
 		}
 		return player;
 	}
@@ -130,7 +128,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayerEntity getPlayer(MinecraftClient client) throws CodeError {
 		ClientPlayerEntity player = client.player;
 		if (player == null) {
-			throw new RuntimeError("MinecraftClient.player was null", newPos, newPos);
+			throw new RuntimeError("MinecraftClient.player was null", ISyntax.empty());
 		}
 		return player;
 	}
@@ -138,7 +136,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientWorld getWorld() throws CodeError {
 		ClientWorld world = getClient().world;
 		if (world == null) {
-			throw new RuntimeError("MinecraftClient.world was null", newPos, newPos);
+			throw new RuntimeError("MinecraftClient.world was null", ISyntax.empty());
 		}
 		return world;
 	}
@@ -146,7 +144,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientWorld getWorld(MinecraftClient client) throws CodeError {
 		ClientWorld world = client.world;
 		if (world == null) {
-			throw new RuntimeError("MinecraftClient.world was null", newPos, newPos);
+			throw new RuntimeError("MinecraftClient.world was null", ISyntax.empty());
 		}
 		return world;
 	}
@@ -154,7 +152,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayNetworkHandler getNetworkHandler() throws CodeError {
 		ClientPlayNetworkHandler networkHandler = getClient().getNetworkHandler();
 		if (networkHandler == null) {
-			throw new RuntimeError("MinecraftClient.networkHandler was null", newPos, newPos);
+			throw new RuntimeError("MinecraftClient.networkHandler was null", ISyntax.empty());
 		}
 		return networkHandler;
 	}
@@ -162,7 +160,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayerInteractionManager getInteractionManager() throws CodeError {
 		ClientPlayerInteractionManager interactionManager = getClient().interactionManager;
 		if (interactionManager == null) {
-			throw new RuntimeError("MinecraftClient.interactionManager was null", newPos, newPos);
+			throw new RuntimeError("MinecraftClient.interactionManager was null", ISyntax.empty());
 		}
 		return interactionManager;
 	}

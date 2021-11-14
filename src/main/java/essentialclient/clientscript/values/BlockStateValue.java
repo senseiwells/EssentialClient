@@ -9,8 +9,8 @@ public class BlockStateValue extends Value<BlockState> {
 	}
 
 	@Override
-	public Value<?> copy() {
-		return new BlockStateValue(this.value);
+	public Value<BlockState> copy() {
+		return this;
 	}
 
 	@Override

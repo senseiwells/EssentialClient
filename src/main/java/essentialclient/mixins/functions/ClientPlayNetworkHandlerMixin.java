@@ -2,6 +2,7 @@ package essentialclient.mixins.functions;
 
 import essentialclient.clientscript.MinecraftEventFunction;
 import essentialclient.clientscript.values.ItemStackValue;
+import essentialclient.clientscript.values.PlayerValue;
 import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -11,6 +12,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.network.packet.s2c.play.ItemPickupAnimationS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,5 +52,10 @@ public class ClientPlayNetworkHandlerMixin {
         if (entity != null && this.client.player != null && this.client.player.equals(livingEntity) && entity instanceof ItemEntity itemEntity) {
             MinecraftEventFunction.ON_PICKUP.runFunction(List.of(new ItemStackValue(itemEntity.getStack())));
         }
+    }
+
+    @Inject(method = "onPlayerRespawn", at = @At("TAIL"))
+    private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
+        MinecraftEventFunction.ON_RESPAWN.runFunction(List.of(new PlayerValue(this.client.player)));
     }
 }

@@ -9,7 +9,7 @@ public class WorldValue extends Value<ClientWorld> {
 	}
 
 	@Override
-	public Value<?> copy() {
-		return new WorldValue(this.value);
+	public Value<ClientWorld> copy() {
+		return this;
 	}
 }

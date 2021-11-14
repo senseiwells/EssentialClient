@@ -5,6 +5,7 @@ import essentialclient.clientscript.values.EntityValue;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
@@ -15,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Set;
@@ -36,6 +38,7 @@ public class ArucasEntityMembers implements IArucasExtension {
 		new MemberFunction("isSprinting", (context, function) -> new BooleanValue(this.getEntity(context, function).isSprinting())),
 		new MemberFunction("isFalling", (context, function) -> new BooleanValue(this.getEntity(context, function).fallDistance > 0)),
 		new MemberFunction("getLookingAtBlock", this::getLookingAtBlock),
+		new MemberFunction("getLookingAtPos", "maxDistance", this::getLookingAtPos),
 		new MemberFunction("getEntityId", (context, function) -> new NumberValue(this.getEntity(context, function).getEntityId())),
 		new MemberFunction("getX", (context, function) -> new NumberValue(this.getEntity(context, function).getX())),
 		new MemberFunction("getY", (context, function) -> new NumberValue(this.getEntity(context, function).getY())),
@@ -58,6 +61,17 @@ public class ArucasEntityMembers implements IArucasExtension {
 			return new BlockStateValue(entity.getEntityWorld().getBlockState(blockPos));
 		}
 		return new BlockStateValue(Blocks.AIR.getDefaultState());
+	}
+
+	private Value<?> getLookingAtPos(Context context, MemberFunction function) throws CodeError {
+		Entity entity = this.getEntity(context, function);
+		double maxDistance = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+		Vec3d pos = entity.raycast(maxDistance, 0.0F, true).getPos();
+		ArucasValueList list = new ArucasValueList();
+		list.add(new NumberValue(pos.x));
+		list.add(new NumberValue(pos.y));
+		list.add(new NumberValue(pos.z));
+		return new ListValue(list);
 	}
 
 	private Value<?> getYaw(Context context, MemberFunction function) throws CodeError {
@@ -87,7 +101,7 @@ public class ArucasEntityMembers implements IArucasExtension {
 	private Entity getEntity(Context context, MemberFunction function) throws CodeError {
 		EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 0);
 		if (entityValue.value == null) {
-			throw new RuntimeError("Entity was null", function.startPos, function.endPos, context);
+			throw new RuntimeError("Entity was null", function.syntaxPosition, context);
 		}
 		return entityValue.value;
 	}

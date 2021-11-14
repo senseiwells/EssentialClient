@@ -49,8 +49,10 @@ public enum ClientRules {
     CLIENT_SCRIPT_FILENAME                  ("clientScriptFilename"                     , "This allows you to choose a specific script file name"           , "clientscript"),
 
     //Cycling Rules
-    DISPLAY_RULE_TYPE                       ("displayRuleType"                          , Type.CYCLE            , "This allows you to choose the order you want rules to be displayed"          , "Alphabetical", new String[]{"Alphabetical", "Rule Type"}                                                                             , false),
-    MUSIC_TYPES                             ("musicTypes"                               , Type.CYCLE            , "This allows you to select what music types play"                             , "Default"     , new String[]{"Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"}       , false);
+    CUSTOM_CLIENT_CAPE                      ("customClientCape"                         , Type.CYCLE            , "This allows you to select a Minecraft cape to wear, this only appears client side"   , "None"        , new String[]{"None", "Old Mojang", "Mojang", "Mojang Studios", "Minecon 2011", "Minecon 2012", "Minecon 2013", "Minecon 2015", "Minecon 2016", "Bacon", "Millionth", "DannyB", "Julian", "Cheapsh0t", "MrMessiah", "Prismarine", "Birthday", "Translator", "Scrolls", "Cobalt", "Mojira", "Turtle", "Migrator", "Christmas 2010", "New Year 2011"}    , false),
+    DISPLAY_RULE_TYPE                       ("displayRuleType"                          , Type.CYCLE            , "This allows you to choose the order you want rules to be displayed"                  , "Alphabetical", new String[]{"Alphabetical", "Rule Type"} , false),
+    MUSIC_TYPES                             ("musicTypes"                               , Type.CYCLE            , "This allows you to select what music types play"                                     , "Default"     , new String[]{"Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"}   , false),
+    ;
 
     public final String name;
     public final Type type;

@@ -9,7 +9,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 	}
 
 	@Override
-	public Value<?> copy() {
-		return new MinecraftClientValue(this.value);
+	public Value<MinecraftClient> copy() {
+		return this;
 	}
 }

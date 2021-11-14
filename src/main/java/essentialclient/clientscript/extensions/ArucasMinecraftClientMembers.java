@@ -91,7 +91,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		int i = 1;
 		for (Value<?> value : listValue.value) {
 			if (!(value instanceof ListValue suggestionListValue)) {
-				throw new RuntimeError("You must pass in a list of lists as parameter 2 for addCommand()", function.startPos, function.endPos, context);
+				throw new RuntimeError("You must pass in a list of lists as parameter 2 for addCommand()", function.syntaxPosition, context);
 			}
 			List<String> suggestionList = new ArrayList<>();
 			for (Value<?> suggestion : suggestionListValue.value) {
@@ -128,7 +128,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		MinecraftClient client = this.getClient(context, function);
 		ServerInfo serverInfo = client.getCurrentServerEntry();
 		if (serverInfo == null) {
-			throw new RuntimeError("Failed to get server name", function.startPos, function.endPos, context);
+			throw new RuntimeError("Failed to get server name", function.syntaxPosition, context);
 		}
 		return new StringValue(serverInfo.name);
 	}
@@ -146,7 +146,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 	private MinecraftClient getClient(Context context, MemberFunction function) throws CodeError {
 		MinecraftClient client = function.getParameterValueOfType(context, MinecraftClientValue.class, 0).value;
 		if (client == null) {
-			throw new RuntimeError("Client was null", function.startPos, function.endPos, context);
+			throw new RuntimeError("Client was null", function.syntaxPosition, context);
 		}
 		return client;
 	}

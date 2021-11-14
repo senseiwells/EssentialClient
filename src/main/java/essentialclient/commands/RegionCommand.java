@@ -10,8 +10,8 @@ import net.minecraft.command.argument.Vec2ArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.Vec2f;
 
-import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class RegionCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {

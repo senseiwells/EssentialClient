@@ -29,88 +29,88 @@ public class PlayerClientCommand {
         CommandHelper.clientCommands.add("pc");
 
         LiteralCommandNode<ServerCommandSource> playerclientNode = CommandManager
-                .literal("playerclient")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
-                .build();
+            .literal("playerclient")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+            .build();
         LiteralCommandNode<ServerCommandSource> pcNode = CommandManager
-                .literal("pc")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
-                .build();
+            .literal("pc")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+            .build();
         LiteralCommandNode<ServerCommandSource> spawnNode = CommandManager
-                .literal("spawn")
-                        .then(argument("playername", StringArgumentType.word())
-                                .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
-                                .executes(context -> PlayerClientCommandHelper.spawnPlayer(context, false))
-                                .then(literal("offset")
-                                        .then(argument("x-axis", DoubleArgumentType.doubleArg())
-                                                .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"0", "160", "-160", "256", "-256"}, builder))
-                                                .then(argument("y-axis", DoubleArgumentType.doubleArg())
-                                                        .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"0", "128"}, builder))
-                                                        .then(argument("z-axis", DoubleArgumentType.doubleArg())
-                                                                .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"0", "160", "-160", "256", "-256"}, builder))
-                                                                .executes(context -> PlayerClientCommandHelper.spawnPlayer(context, true))
-                                                        )
-                                                )
-                                        )
+            .literal("spawn")
+                .then(argument("playername", StringArgumentType.word())
+                    .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
+                    .executes(context -> PlayerClientCommandHelper.spawnPlayer(context, false))
+                    .then(literal("offset")
+                        .then(argument("x-axis", DoubleArgumentType.doubleArg())
+                            .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"0", "160", "-160", "256", "-256"}, builder))
+                            .then(argument("y-axis", DoubleArgumentType.doubleArg())
+                                .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"0", "128"}, builder))
+                                .then(argument("z-axis", DoubleArgumentType.doubleArg())
+                                    .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"0", "160", "-160", "256", "-256"}, builder))
+                                    .executes(context -> PlayerClientCommandHelper.spawnPlayer(context, true))
                                 )
+                            )
                         )
-                .build();
+                    )
+                )
+            .build();
         LiteralCommandNode<ServerCommandSource> addNode = CommandManager
-                .literal("add")
-                        .then(argument("playername", StringArgumentType.word())
-                                .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
-                                .then(literal("spawn")
-                                        .then(literal("at")
-                                                .then(argument("pos", Vec3ArgumentType.vec3())
-                                                        .then(literal("facing")
-                                                                // Can't use RotationArgumentType - Needs Server
-                                                                .then(argument("yaw", DoubleArgumentType.doubleArg())
-                                                                        .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "yaw"))
-                                                                        .then(argument("pitch", DoubleArgumentType.doubleArg())
-                                                                                .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "pitch"))
-                                                                                .then(literal("in")
-                                                                                        // Can't use DimensionArgumentType - Needs Server
-                                                                                        .then(argument("dimension", StringArgumentType.string())
-                                                                                                .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "dimension"))
-                                                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, false))
-                                                                                                .then(literal("in")
-                                                                                                        .then(argument("gamemode", StringArgumentType.word())
-                                                                                                                .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"spectator", "survival", "any"}, builder))
-                                                                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, true))
-                                                                                                        )
-                                                                                                )
-                                                                                        )
-                                                                                )
-                                                                        )
-                                                                )
-                                                        )
-                                                )
-                                        )
-                                        .then(literal("here")
-                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, true, false))
-                                                .then(literal("in")
+            .literal("add")
+                .then(argument("playername", StringArgumentType.word())
+                    .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
+                    .then(literal("spawn")
+                        .then(literal("at")
+                            .then(argument("pos", Vec3ArgumentType.vec3())
+                                .then(literal("facing")
+                                    // Can't use RotationArgumentType - Needs Server
+                                    .then(argument("yaw", DoubleArgumentType.doubleArg())
+                                        .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "yaw"))
+                                        .then(argument("pitch", DoubleArgumentType.doubleArg())
+                                            .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "pitch"))
+                                            .then(literal("in")
+                                                // Can't use DimensionArgumentType - Needs Server
+                                                .then(argument("dimension", StringArgumentType.string())
+                                                    .suggests((context, builder) -> CommandHelper.suggestLocation(builder, "dimension"))
+                                                    .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, false))
+                                                    .then(literal("in")
                                                         .then(argument("gamemode", StringArgumentType.word())
-                                                                .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"spectator", "survival", "any"}, builder))
-                                                                .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, true, true))
+                                                            .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"spectator", "survival", "any"}, builder))
+                                                            .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, false, true))
                                                         )
+                                                    )
                                                 )
+                                            )
                                         )
+                                    )
                                 )
+                            )
                         )
-                .build();
+                        .then(literal("here")
+                            .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, true, false))
+                            .then(literal("in")
+                                .then(argument("gamemode", StringArgumentType.word())
+                                    .suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"spectator", "survival", "any"}, builder))
+                                    .executes(context -> PlayerClientCommandHelper.createNewPlayerClient(context, true, true))
+                                )
+                            )
+                        )
+                    )
+                )
+            .build();
         LiteralCommandNode<ServerCommandSource> removeNode =
-                literal("remove")
-                        .then(argument("playername", StringArgumentType.word())
-                                .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
-                                .executes(context -> {
-                                    PlayerClientCommandHelper data = PlayerClientCommandHelper.playerClientHelperMap.remove(context.getArgument("playername", String.class));
-                                    if (data == null)
-                                        EssentialUtils.sendMessage(ChatColour.RED + "That player is not in your config");
-                                    else
-                                        EssentialUtils.sendMessage(ChatColour.GOLD + "That player has been removed from your config");
-                                    PlayerClientCommandHelper.writeSaveFile();
-                                    return 0;
-                                })
-                        )
-                .build();
+            literal("remove")
+                .then(argument("playername", StringArgumentType.word())
+                    .suggests((context, builder) -> PlayerClientCommandHelper.suggestPlayerClient(builder))
+                    .executes(context -> {
+                        PlayerClientCommandHelper data = PlayerClientCommandHelper.playerClientHelperMap.remove(context.getArgument("playername", String.class));
+                        if (data == null)
+                            EssentialUtils.sendMessage(ChatColour.RED + "That player is not in your config");
+                        else
+                            EssentialUtils.sendMessage(ChatColour.GOLD + "That player has been removed from your config");
+                        PlayerClientCommandHelper.writeSaveFile();
+                        return 0;
+                    })
+                )
+            .build();
 
         //Stitching commands
         dispatcher.getRoot().addChild(playerclientNode);

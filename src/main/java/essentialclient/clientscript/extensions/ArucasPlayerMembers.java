@@ -19,11 +19,13 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 import java.util.Set;
@@ -139,7 +141,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 2);
 			if (!InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), booleanValue.value))
-				throw new RuntimeError("Not in merchant gui", function.startPos, function.endPos, context);
+				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			return new NullValue();
 		}),
 
@@ -156,7 +158,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			ItemStack itemStack = InventoryUtils.getTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
 			if (itemStack == null) {
-				throw new RuntimeError("Could not find trade", function.startPos, function.endPos, context);
+				throw new RuntimeError("Could not find trade", function.syntaxPosition, context);
 			}
 			return new ItemStackValue(itemStack);
 		}),
@@ -192,6 +194,15 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			return new NullValue();
 		}),
 
+		new MemberFunction("lookAtPos", List.of("x", "y", "z"), (context, function) -> {
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+			double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+			double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+			player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, new Vec3d(x, y, z));
+			return new NullValue();
+		}),
+
 		new MemberFunction("jump", (context, function) -> {
 			ClientPlayerEntity player = this.getPlayer(context, function);
 			ArucasMinecraftExtension.getClient().execute(() -> {
@@ -215,7 +226,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			int tempSlot = (this.getPlayer(context, function).inventory.selectedSlot) % 9;
 			int size = screenHandler.slots.size();
 			if (numberValue1.value > size || numberValue1.value < 1 || numberValue2.value > size || numberValue2.value < 1)
-				throw new RuntimeError("That slot is out of bounds", function.startPos, function.endPos, context);
+				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
 			interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
@@ -228,7 +239,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
 			int size = screenHandler.slots.size();
 			if (numberValue1.value > size || numberValue1.value < 1)
-				throw new RuntimeError("That slot is out of bounds", function.startPos, function.endPos, context);
+				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			ArucasMinecraftExtension.getInteractionManager().clickSlot(screenHandler.syncId, numberValue1.value.intValue() - 1, 0, SlotActionType.QUICK_MOVE, this.getPlayer(context, function));
 			return new NullValue();
 		}),
@@ -267,7 +278,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			ItemStack[] itemStacks = new ItemStack[9];
 			for (int i = 0; i < listValue.value.size(); i++) {
 				if (!(listValue.value.get(i) instanceof ItemStackValue itemStackValue)) {
-					throw new RuntimeError("The recipe must only include items", function.startPos, function.endPos, context);
+					throw new RuntimeError("The recipe must only include items", function.syntaxPosition, context);
 				}
 				itemStacks[i] = itemStackValue.value;
 			}
@@ -286,8 +297,8 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	public boolean checkVillagerValid(int code, AbstractBuiltInFunction<?> function, Context context) throws RuntimeError {
 		boolean bool = false;
 		switch (code) {
-			case -2 -> throw new RuntimeError("You are not in merchant GUI", function.startPos, function.endPos, context);
-			case -1 -> throw new RuntimeError("That trade is out of bounds", function.startPos, function.endPos, context);
+			case -2 -> throw new RuntimeError("You are not in merchant GUI", function.syntaxPosition, context);
+			case -1 -> throw new RuntimeError("That trade is out of bounds", function.syntaxPosition, context);
 			case 1 -> bool = true;
 		}
 		return bool;
@@ -307,7 +318,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private ClientPlayerEntity getPlayer(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerEntity player = function.getParameterValueOfType(context, PlayerValue.class, 0).value;
 		if (player == null) {
-			throw new RuntimeError("OtherPlayer was null", function.startPos, function.endPos, context);
+			throw new RuntimeError("Player was null", function.syntaxPosition, context);
 		}
 		return player;
 	}

@@ -40,7 +40,7 @@ public class ArucasBlockStateMembers implements IArucasExtension {
 	private BlockState getBlockState(Context context, MemberFunction function) throws CodeError {
 		BlockState block = function.getParameterValueOfType(context, BlockStateValue.class, 0).value;
 		if (block == null) {
-			throw new RuntimeError("Block was null", function.startPos, function.endPos, context);
+			throw new RuntimeError("Block was null", function.syntaxPosition, context);
 		}
 		return block;
 	}

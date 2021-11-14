@@ -2,9 +2,9 @@ package essentialclient.mixins.functions;
 
 import essentialclient.clientscript.MinecraftEventFunction;
 import essentialclient.clientscript.values.BlockStateValue;
+import essentialclient.clientscript.values.EntityValue;
 import essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -18,7 +18,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,7 +65,6 @@ public class ClientPlayerInteractionManagerMixin {
 
     @Inject(method = "interactEntity", at = @At("TAIL"))
     private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        String entityName = Registry.ENTITY_TYPE.getId(entity.getType()).getPath();
-        MinecraftEventFunction.ON_INTERACT_ENTITY.runFunction(List.of(new StringValue(entityName)));
+        MinecraftEventFunction.ON_INTERACT_ENTITY.runFunction(List.of(EntityValue.getEntityValue(entity)));
     }
 }

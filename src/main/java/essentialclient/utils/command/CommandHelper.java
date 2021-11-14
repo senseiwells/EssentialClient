@@ -8,6 +8,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import essentialclient.clientscript.MinecraftEventFunction;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
+import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
@@ -94,7 +95,7 @@ public class CommandHelper {
 
     public static boolean tryRunFunctionCommand(String message) {
         message = message.replace("/", "");
-        List<Value<?>> arguments = new ArrayList<>();
+        ArucasValueList arguments = new ArucasValueList();
         for (String argument : message.split(" "))
             arguments.add(new StringValue(argument));
         StringValue command = (StringValue) arguments.remove(0);

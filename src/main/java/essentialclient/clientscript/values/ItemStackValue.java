@@ -9,7 +9,7 @@ public class ItemStackValue extends Value<ItemStack> {
 	}
 
 	@Override
-	public Value<?> copy() {
+	public Value<ItemStack> copy() {
 		return new ItemStackValue(this.value.copy());
 	}
 

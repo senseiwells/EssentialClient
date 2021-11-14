@@ -5,6 +5,7 @@ import essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
@@ -15,8 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class ArucasAbstractPlayerMembers implements IArucasExtension {
@@ -48,7 +47,7 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
 			int index = numberValue.value.intValue();
 			if (index > screenHandler.slots.size() || index < 0) {
-				throw new RuntimeError("That slot is out of bounds", function.startPos, function.endPos, context);
+				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
 			ItemStack itemStack = screenHandler.slots.get(index).getStack();
 			return new ItemStackValue(itemStack);
@@ -68,7 +67,7 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 		new MemberFunction("getAllSlotsFor", "itemStack", (context, function) -> {
 			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
-			List<Value<?>> slotList = new ArrayList<>();
+			ArucasValueList slotList = new ArucasValueList();
 			for (Slot slot : screenHandler.slots) {
 				if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
 					slotList.add(new NumberValue(slot.id));
@@ -90,7 +89,7 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 	private AbstractClientPlayerEntity getOtherPlayer(Context context, MemberFunction function) throws CodeError {
 		AbstractPlayerValue<?> player = function.getParameterValueOfType(context, AbstractPlayerValue.class, 0);
 		if (player == null) {
-			throw new RuntimeError("OtherPlayer was null", function.startPos, function.endPos, context);
+			throw new RuntimeError("OtherPlayer was null", function.syntaxPosition, context);
 		}
 		return player.value;
 	}

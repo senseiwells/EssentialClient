@@ -23,6 +23,8 @@ public enum MinecraftEventFunction {
     ON_OPEN_SCREEN("_onOpenScreen_"),
     ON_PICKUP("_onPickUp_"),
     ON_DROP_ITEM("_onDropItem_"),
+    ON_DEATH("_onDeath_"),
+    ON_RESPAWN("_onRespawn_"),
     ON_EAT("_onEat_"),
     ON_INTERACT_ITEM("_onInteractItem_"),
     ON_INTERACT_BLOCK("_onInteractBlock_"),

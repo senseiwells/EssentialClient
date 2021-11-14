@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
 import essentialclient.config.rulescreen.ClientRulesScreen;
 import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.render.CapeHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
@@ -51,8 +52,8 @@ public class ClientRuleHelper {
         }
         try (BufferedReader reader = Files.newBufferedReader(file)) {
             clientRulesMap = new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
-                    .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read rule data: {}", e))
-                    .getFirst());
+                .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read rule data: {}", e))
+                .getFirst());
         }
         //many exceptions
         catch (Exception e) {
@@ -89,6 +90,7 @@ public class ClientRuleHelper {
             case MUSIC_TYPES -> client.getMusicTracker().stop();
             case DISPLAY_RULE_TYPE -> gui.refreshRules(gui.getSearchBoxText());
             case CLIENT_SCRIPT_FILENAME -> EssentialUtils.checkifScriptFileExists();
+            case CUSTOM_CLIENT_CAPE -> CapeHelper.setCapeTexture(settings.getString());
         }
     }
 

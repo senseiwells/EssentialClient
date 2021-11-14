@@ -38,6 +38,7 @@ public class BooleanListEntry extends BaseListEntry {
             ClientRuleHelper.executeOnChange(client, settings, gui);
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
+            ClientRuleHelper.executeOnChange(client, settings, gui);
             settings.setValue(settings.defaultValue);
             ClientRuleHelper.writeSaveFile();
             this.editButton.setMessage(new LiteralText(settings.defaultValue.equals("true") ? "§2true" : "§4false"));

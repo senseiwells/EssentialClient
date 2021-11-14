@@ -9,7 +9,7 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 	}
 
 	@Override
-	public Value<?> copy() {
+	public Value<T> copy() {
 		return new LivingEntityValue<>(this.value);
 	}
 }

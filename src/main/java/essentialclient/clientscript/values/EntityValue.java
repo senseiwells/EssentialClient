@@ -13,8 +13,8 @@ public class EntityValue<T extends Entity> extends Value<T> {
 	}
 
 	@Override
-	public Value<?> copy() {
-		return new EntityValue<>(this.value);
+	public Value<T> copy() {
+		return this;
 	}
 
 	public static Value<?> getEntityValue(Entity entity) {
