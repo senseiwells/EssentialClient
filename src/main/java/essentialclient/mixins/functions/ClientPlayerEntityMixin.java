@@ -1,6 +1,8 @@
 package essentialclient.mixins.functions;
 
-import essentialclient.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.events.MinecraftScriptEvents;
+import essentialclient.clientscript.values.ScreenValue;
+import essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,17 +10,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
-
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin {
     @Inject(method = "sendChatMessage", at = @At("HEAD"))
     public void onChatMessage(String message, CallbackInfo ci) {
-        MinecraftEventFunction.ON_CHAT_MESSAGE.runFunction(List.of(new StringValue(message)));
+        MinecraftScriptEvents.ON_SEND_MESSAGE.run(new StringValue(message));
     }
 
     @Inject(method = "closeScreen", at = @At("HEAD"))
     private void onCloseScreen(CallbackInfo ci) {
-        MinecraftEventFunction.ON_CLOSE_SCREEN.runFunction();
+        MinecraftScriptEvents.ON_CLOSE_SCREEN.run(new ScreenValue(EssentialUtils.getClient().currentScreen));
     }
 }

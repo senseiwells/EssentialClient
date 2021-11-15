@@ -17,7 +17,8 @@ public class ItemFrameEntityRendererMixin {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void onRender(ItemFrameEntity itemFrameEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
 		ItemStack itemStack = itemFrameEntity.getHeldItemStack();
-		if (itemStack.getItem() == Items.FILLED_MAP && ClientRules.DISABLE_MAP_RENDERING.getBoolean())
+		if (itemStack.getItem() == Items.FILLED_MAP && ClientRules.DISABLE_MAP_RENDERING.getBoolean()) {
 			ci.cancel();
+		}
 	}
 }

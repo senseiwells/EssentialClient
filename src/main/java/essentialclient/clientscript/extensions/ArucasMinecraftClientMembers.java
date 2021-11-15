@@ -3,9 +3,10 @@ package essentialclient.clientscript.extensions;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.clientscript.values.MinecraftClientValue;
-import essentialclient.clientscript.values.PlayerValue;
-import essentialclient.clientscript.values.WorldValue;
+import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.events.MinecraftScriptEvent;
+import essentialclient.clientscript.events.MinecraftScriptEvents;
+import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRuleHelper;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
@@ -15,6 +16,7 @@ import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
+import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
@@ -25,6 +27,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +53,16 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand),
 		new MemberFunction("isInSinglePlayer", (context, function) -> new BooleanValue(this.getClient(context, function).isInSingleplayer())),
 		new MemberFunction("getServerName", this::getServerName),
+		new MemberFunction("getScriptsPath", (context, function) -> new StringValue(ClientScript.getDir().toString())),
 
 		new MemberFunction("getPlayer", this::getPlayer),
-		new MemberFunction("getWorld", this::getWorld)
+		new MemberFunction("getWorld", this::getWorld),
+
+		new MemberFunction("addGameEvent", List.of("eventName", "function"), this::addGameEvent),
+		new MemberFunction("removeGameEvent", List.of("eventName", "id"), this::removeGameEvent),
+		new MemberFunction("removeAllGameEvents", this::removeAllGameEvents),
+		new MemberFunction("itemFromString", "name", this::itemFromString),
+		new MemberFunction("blockFromString", "name", this::blockFromString)
 	);
 
 	private Value<?> screenshot(Context context, MemberFunction function) throws CodeError {
@@ -73,11 +83,11 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 	}
 
 	private Value<?> getLatestChatMessage(Context context, MemberFunction function) throws CodeError {
-		List<ChatHudLine<Text>> chat = ((ChatHudAccessor) this.getClient(context, function).inGameHud.getChatHud()).getMessages();
-		if (chat.size() == 0) {
+		final ChatHudLine<?>[] chat = ((ChatHudAccessor) this.getClient(context, function).inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+		if (chat.length == 0) {
 			return new NullValue();
 		}
-		return new StringValue(chat.get(0).getText().getString());
+		return new StringValue(((Text) chat[0].getText()).getString());
 	}
 
 	private Value<?> addCommand(Context context, MemberFunction function) throws CodeError {
@@ -131,6 +141,44 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 			throw new RuntimeError("Failed to get server name", function.syntaxPosition, context);
 		}
 		return new StringValue(serverInfo.name);
+	}
+
+	private Value<?> addGameEvent(Context context, MemberFunction function) throws CodeError {
+		String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 2);
+		MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
+		if (event == null) {
+			throw new RuntimeError("The event name must be a predefined event", function.syntaxPosition, context);
+		}
+		return new NumberValue(event.addFunction(context, functionValue));
+	}
+
+	private Value<?> removeGameEvent(Context context, MemberFunction function) throws CodeError {
+		String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		int eventId = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
+		MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
+		if (event == null) {
+			throw new RuntimeError("The event name must be a predefined event", function.syntaxPosition, context);
+		}
+		if (!event.removeFunction(eventId)) {
+			throw new RuntimeError("Invalid eventId", function.syntaxPosition, context);
+		}
+		return new NullValue();
+	}
+
+	private Value<?> removeAllGameEvents(Context context, MemberFunction function) {
+		MinecraftScriptEvents.clearEventFunctions();
+		return new NullValue();
+	}
+
+	private Value<?> itemFromString(Context context, MemberFunction function) throws CodeError {
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		return new ItemStackValue(Registry.ITEM.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).getDefaultStack());
+	}
+
+	private Value<?> blockFromString(Context context, MemberFunction function) throws CodeError {
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		return new BlockStateValue(Registry.BLOCK.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).getDefaultState());
 	}
 
 	private Value<?> getPlayer(Context context, MemberFunction function) throws CodeError {

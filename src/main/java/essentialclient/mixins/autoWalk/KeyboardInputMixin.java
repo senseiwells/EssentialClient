@@ -19,8 +19,9 @@ public class KeyboardInputMixin {
         if (keyBinding.isPressed()){
             int autoWalk = ClientRules.AUTO_WALK.getInt();
             shouldAutoHold = autoWalk > 0 && ticks++ > autoWalk;
-            if (shouldAutoHold)
+            if (shouldAutoHold) {
                 EssentialUtils.sendMessageToActionBar("§aYou are now autowalking");
+            }
             return true;
         }
         ticks = 0;

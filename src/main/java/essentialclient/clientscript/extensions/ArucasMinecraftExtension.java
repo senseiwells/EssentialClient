@@ -1,16 +1,16 @@
 package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.ClientScript;
-import essentialclient.clientscript.MinecraftEventFunction;
-import essentialclient.clientscript.values.BlockStateValue;
-import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.clientscript.values.MinecraftClientValue;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.values.*;
+import me.senseiwells.arucas.values.ListValue;
+import me.senseiwells.arucas.values.NullValue;
+import me.senseiwells.arucas.values.NumberValue;
+import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
@@ -20,7 +20,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.InvalidIdentifierException;
 
 import java.util.List;
 import java.util.Set;
@@ -38,15 +38,11 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	}
 
 	private final Set<? extends AbstractBuiltInFunction<?>> minecraftFunctions = Set.of(
-			new BuiltInFunction("getMinecraftClient", this::getMinecraftClient),
-			new BuiltInFunction("runThreaded", List.of("function", "parameters"), this::runThreaded),
-			new BuiltInFunction("schedule", List.of("milliseconds", "function"), this::schedule, true),
-			new BuiltInFunction("addGameEvent", List.of("eventName", "function"), this::addGameEvent),
-			new BuiltInFunction("itemFromString", "name", this::itemFromString),
-			new BuiltInFunction("blockFromString", "name", this::blockFromString),
-			new BuiltInFunction("getScriptsPath", (context, function) -> new StringValue(ClientScript.getDir().toString())),
-			new BuiltInFunction("throwUncatchableError", (context, function) -> { throw new NullPointerException(); }),
-			new BuiltInFunction("hold", this::hold)
+		new BuiltInFunction("getMinecraftClient", this::getMinecraftClient),
+		new BuiltInFunction("runThreaded", List.of("function", "parameters"), this::runThreaded),
+		new BuiltInFunction("schedule", List.of("milliseconds", "function"), this::schedule, true),
+		new BuiltInFunction("throwUncatchableError", (context, function) -> { throw new NullPointerException(); }),
+		new BuiltInFunction("hold", this::hold)
 	);
 
 	private Value<?> getMinecraftClient(Context context, BuiltInFunction function) throws CodeError {
@@ -77,27 +73,6 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		return new NullValue();
 	}
 
-	private Value<?> addGameEvent(Context context, BuiltInFunction function) throws CodeError {
-		String eventName = function.getParameterValueOfType(context, StringValue.class, 0).value;
-		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
-		eventName = eventName.startsWith("_") ? eventName : "_" + eventName;
-		eventName = eventName.endsWith("_") ? eventName : eventName + "_";
-		if (!MinecraftEventFunction.isEvent(eventName)) {
-			throw new RuntimeError("The event name must be a predefined event", function.syntaxPosition, context);
-		}
-		context.getStackTable().getRoot().set(eventName, functionValue);
-		return new NullValue();
-	}
-
-	private Value<?> itemFromString(Context context, BuiltInFunction function) throws CodeError {
-		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
-		return new ItemStackValue(Registry.ITEM.get(new Identifier(stringValue.value)).getDefaultStack());
-	}
-
-	private Value<?> blockFromString(Context context, BuiltInFunction function) throws CodeError {
-		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
-		return new BlockStateValue(Registry.BLOCK.get(new Identifier(stringValue.value)).getDefaultState());
-	}
 
 	private Value<?> hold(Context context, BuiltInFunction function) throws CodeError {
 		try {
@@ -165,5 +140,12 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		return interactionManager;
 	}
 
-
+	public static Identifier getIdentifier(Context context, ISyntax syntaxHandler, String name) throws RuntimeError {
+		try {
+			return new Identifier(name);
+		}
+		catch (InvalidIdentifierException e) {
+			throw new RuntimeError("Invalid identifier name", syntaxHandler, context);
+		}
+	}
 }

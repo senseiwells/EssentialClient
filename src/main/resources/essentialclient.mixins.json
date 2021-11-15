@@ -3,11 +3,9 @@
   "package": "essentialclient.mixins",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
     "carpet.CustomPayloadC2SPacketAccessor",
-    "carpet.ServerPlayNetworkHandlerMixin",
-    "core.MinecraftServer_noopMixin",
-    "customClientCape.AbstractClientPlayerEntityMixin",
-    "disableMapRendering.ItemFrameEntityRendererMixin"
+    "carpet.ServerPlayNetworkHandlerMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",
@@ -23,8 +21,10 @@
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
+    "customClientCape.AbstractClientPlayerEntityMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableFovChangeInWater.GameRendererMixin",
+    "disableMapRendering.ItemFrameEntityRendererMixin",
     "disableNarrator.KeyboardMixin",
     "disableNightVisionFlash.GameRendererMixin",
     "disableRecipeNotifications.RecipeToastMixin",
