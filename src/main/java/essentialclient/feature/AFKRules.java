@@ -14,7 +14,7 @@ public class AFKRules {
     private double prevMouseX;
     private double prevMouseY;
 
-    public void registerAFKRules() {
+    public void register() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             ClientPlayerEntity playerEntity = client.player;
             if (playerEntity == null || (ClientRules.ANNOUNCE_AFK.getInt() < 1 && ClientRules.AFK_LOGOUT.getInt() < 200))

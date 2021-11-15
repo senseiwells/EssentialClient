@@ -1,6 +1,7 @@
 package essentialclient.mixins.core;
 
 import com.mojang.brigadier.CommandDispatcher;
+import essentialclient.clientscript.ClientScript;
 import essentialclient.commands.CommandRegister;
 import essentialclient.config.clientrule.ClientRuleHelper;
 import essentialclient.config.clientrule.ClientRules;
@@ -9,6 +10,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -46,5 +48,13 @@ public class ClientPlayNetworkHandlerMixin {
             }
         }
         inGameHud.addChatMessage(type, message, sender);
+    }
+
+    @Inject(method = "onGameJoin", at = @At("TAIL"))
+    private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
+        System.out.println("JOINED");
+        if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean()) {
+            ClientScript.getInstance().startScript();
+        }
     }
 }

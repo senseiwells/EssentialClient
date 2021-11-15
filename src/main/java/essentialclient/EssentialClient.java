@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import essentialclient.commands.TravelCommand;
 import essentialclient.config.clientrule.ClientRuleHelper;
 import essentialclient.feature.AFKRules;
+import essentialclient.feature.BetterAccurateBlockPlacement;
 import essentialclient.feature.ClientKeybinds;
 import essentialclient.feature.HighlightLavaSources;
 import essentialclient.utils.EssentialUtils;
@@ -44,11 +45,9 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
         ClientKeybinds.loadKeybinds();
 
-        AFKRules.INSTANCE.registerAFKRules();
-        TravelCommand.registerTickTravel();
-    }
-
-    public static void noop() {
+        AFKRules.INSTANCE.register();
+        TravelCommand.register();
+        BetterAccurateBlockPlacement.register();
     }
 
     static {
@@ -62,11 +61,11 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
     @Override
     public void onGameStarted() {
-        // let's /carpet handle our few simple settings
         CarpetServer.settingsManager.addRuleObserver((source, parsedRule, s) -> {
             try {
                 CarpetSettingsServerNetworkHandler.updateCarpetClientRules(parsedRule.name, parsedRule.getAsString(), source.getPlayer());
-            } catch (CommandSyntaxException e) {
+            }
+            catch (CommandSyntaxException e) {
                 e.printStackTrace();
             }
         });
@@ -81,12 +80,10 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
     }
 
     @Override
-    public void onTick(MinecraftServer server) {
-    }
+    public void onTick(MinecraftServer server) { }
 
     @Override
-    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
-    }
+    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) { }
 
     @Override
     public void onPlayerLoggedIn(ServerPlayerEntity player) {
@@ -94,6 +91,5 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
     }
 
     @Override
-    public void onPlayerLoggedOut(ServerPlayerEntity player) {
-    }
+    public void onPlayerLoggedOut(ServerPlayerEntity player) { }
 }

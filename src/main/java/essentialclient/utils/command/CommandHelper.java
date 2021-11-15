@@ -5,7 +5,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
 import me.senseiwells.arucas.utils.ArucasValueList;
@@ -94,14 +94,14 @@ public class CommandHelper {
     }
 
     public static boolean tryRunFunctionCommand(String message) {
-        message = message.replace("/", "");
+        message = message.replaceFirst("/", "");
         ArucasValueList arguments = new ArucasValueList();
         for (String argument : message.split(" "))
             arguments.add(new StringValue(argument));
         StringValue command = (StringValue) arguments.remove(0);
         if (functionCommands.contains(command.value)) {
             List<Value<?>> parameters = List.of(command, new ListValue(arguments));
-            MinecraftEventFunction.ON_COMMAND.runFunction(parameters);
+            MinecraftScriptEvents.ON_COMMAND.run(parameters);
             return true;
         }
         return false;

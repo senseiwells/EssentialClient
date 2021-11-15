@@ -1,6 +1,6 @@
 package essentialclient.mixins.functions;
 
-import essentialclient.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.BlockStateValue;
 import essentialclient.clientscript.values.EntityValue;
 import essentialclient.clientscript.values.ItemStackValue;
@@ -31,7 +31,6 @@ import java.util.List;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
-
     @Final
     @Shadow
     private MinecraftClient client;
@@ -41,17 +40,22 @@ public class ClientPlayerInteractionManagerMixin {
         if (this.client.world == null) {
             return;
         }
-        MinecraftEventFunction.ON_BLOCK_BROKEN.runFunction(List.of(new BlockStateValue(this.client.world.getBlockState(pos)), new NumberValue(pos.getX()), new NumberValue(pos.getY()), new NumberValue(pos.getZ())));
+        MinecraftScriptEvents.ON_BLOCK_BROKEN.run(List.of(
+            new BlockStateValue(this.client.world.getBlockState(pos)),
+            new NumberValue(pos.getX()),
+            new NumberValue(pos.getY()),
+            new NumberValue(pos.getZ())
+        ));
     }
 
     @Inject(method = "clickSlot", at = @At("HEAD"))
     private void onClickSlot(int syncId, int slotId, int clickData, SlotActionType actionType, PlayerEntity player, CallbackInfoReturnable<ItemStack> cir) {
-        MinecraftEventFunction.ON_CLICK_SLOT.runFunction(List.of(new NumberValue(slotId)));
+        MinecraftScriptEvents.ON_CLICK_SLOT.run(new NumberValue(slotId));
     }
 
     @Redirect(method = "interactItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;"), require = 0)
     private TypedActionResult<ItemStack> onInteractItem(ItemStack itemStack, World world, PlayerEntity user, Hand hand) {
-        MinecraftEventFunction.ON_INTERACT_ITEM.runFunction(List.of(new ItemStackValue(itemStack)));
+        MinecraftScriptEvents.ON_INTERACT_ITEM.run(new ItemStackValue(itemStack));
         return itemStack.use(world, user, hand);
     }
 
@@ -59,12 +63,12 @@ public class ClientPlayerInteractionManagerMixin {
     private void onInteractBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
         ActionResult result = cir.getReturnValue();
         if (result.isAccepted()) {
-            MinecraftEventFunction.ON_INTERACT_BLOCK.runFunction(List.of(new BlockStateValue(world.getBlockState(hitResult.getBlockPos()))));
+            MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockStateValue(world.getBlockState(hitResult.getBlockPos())));
         }
     }
 
     @Inject(method = "interactEntity", at = @At("TAIL"))
     private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        MinecraftEventFunction.ON_INTERACT_ENTITY.runFunction(List.of(EntityValue.getEntityValue(entity)));
+        MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.getEntityValue(entity));
     }
 }

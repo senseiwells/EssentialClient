@@ -67,7 +67,7 @@ public class TravelCommand {
         );
     }
 
-    public static void registerTickTravel() {
+    public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             ClientPlayerEntity playerEntity = client.player;
             if (playerEntity == null || !enabled)

@@ -36,45 +36,10 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 		new MemberFunction("isInventoryFull", (context, function) -> new BooleanValue(this.getOtherPlayer(context, function).inventory.getEmptySlot() == -1)),
 		new MemberFunction("getPlayerName", (context, function) -> new StringValue(this.getOtherPlayer(context, function).getEntityName())),
 		new MemberFunction("getGamemode", this::getGamemode),
-
-		new MemberFunction("getTotalSlots", (context, function) -> {
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
-			return new NumberValue(screenHandler.slots.size());
-		}),
-
-		new MemberFunction("getItemForSlot", "slot", (context, function) -> {
-			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
-			int index = numberValue.value.intValue();
-			if (index > screenHandler.slots.size() || index < 0) {
-				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
-			}
-			ItemStack itemStack = screenHandler.slots.get(index).getStack();
-			return new ItemStackValue(itemStack);
-		}),
-
-		new MemberFunction("getSlotFor", "itemStack", (context, function) -> {
-			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
-			for (Slot slot : screenHandler.slots) {
-				if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
-					return new NumberValue(slot.id);
-				}
-			}
-			return new NullValue();
-		}),
-
-		new MemberFunction("getAllSlotsFor", "itemStack", (context, function) -> {
-			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
-			ArucasValueList slotList = new ArucasValueList();
-			for (Slot slot : screenHandler.slots) {
-				if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
-					slotList.add(new NumberValue(slot.id));
-				}
-			}
-			return new ListValue(slotList);
-		})
+		new MemberFunction("getTotalSlots", this::getTotalSlots),
+		new MemberFunction("getItemForSlot", "slot", this::getItemForSlot),
+		new MemberFunction("getSlotFor", "itemStack", this::getSlotFor),
+		new MemberFunction("getAllSlotsFor", "itemStack", this::getAllSlotsFor)
 	);
 
 	private Value<?> getGamemode(Context context, MemberFunction function) throws CodeError {
@@ -84,6 +49,45 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 			return new NullValue();
 		}
 		return new StringValue(playerInfo.getGameMode().getName());
+	}
+
+	private Value<?> getTotalSlots(Context context, MemberFunction function) throws CodeError {
+		ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		return new NumberValue(screenHandler.slots.size());
+	}
+
+	private Value<?> getItemForSlot(Context context, MemberFunction function) throws CodeError {
+		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
+		ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		int index = numberValue.value.intValue();
+		if (index > screenHandler.slots.size() || index < 0) {
+			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
+		}
+		ItemStack itemStack = screenHandler.slots.get(index).getStack();
+		return new ItemStackValue(itemStack);
+	}
+
+	private Value<?> getSlotFor(Context context, MemberFunction function) throws CodeError {
+		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
+		ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		for (Slot slot : screenHandler.slots) {
+			if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
+				return new NumberValue(slot.id);
+			}
+		}
+		return new NullValue();
+	}
+
+	private Value<?> getAllSlotsFor(Context context, MemberFunction function) throws CodeError {
+		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
+		ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		ArucasValueList slotList = new ArucasValueList();
+		for (Slot slot : screenHandler.slots) {
+			if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
+				slotList.add(new NumberValue(slot.id));
+			}
+		}
+		return new ListValue(slotList);
 	}
 
 	private AbstractClientPlayerEntity getOtherPlayer(Context context, MemberFunction function) throws CodeError {

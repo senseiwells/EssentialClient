@@ -11,6 +11,7 @@ public enum ClientRules {
     COMMAND_REGION                          ("commandRegion"                            , "This command allows you to determine the region you are in or the region at set coords"                  , true),
     COMMAND_SUGGESTOR_IGNORES_SPACES        ("commandSuggestorIgnoresSpaces"            , "This makes the command suggestor ignore spaces"                                                          , false),
     COMMAND_TRAVEL                          ("commandTravel"                            , "This command allows you to travel to a set location"                                                     , true),
+    BETTER_ACCURATE_BLOCK_PLACEMENT         ("betterAccurateBlockPlacement"             , "This is the same as accurate block placement for tweakeroo but handled all client side, see controls..." , false),
     DISABLE_BOB_VIEW_WHEN_HURT              ("disableBobViewWhenHurt"                   , "Disables the camera bobbing when you get hurt"                                                           , false),
     DISABLE_HOTBAR_SCROLLING                ("disableHotbarScrolling"                   , "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"                            , false),
     DISABLE_JOIN_LEAVE_MESSAGES             ("disableJoinLeaveMessages"                 , "This will prevent join/leave messages from displaying"                                                   , false),

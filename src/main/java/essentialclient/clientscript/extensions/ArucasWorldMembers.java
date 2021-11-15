@@ -23,7 +23,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
@@ -49,6 +48,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		new MemberFunction("getClosestPlayer", List.of("entity", "maxDistance"), this::getClosestPlayer),
 		new MemberFunction("getAllEntities", this::getAllEntities),
 		new MemberFunction("getEntityFromId", "id", this::getEntityFromId),
+		new MemberFunction("getDimensionName", (context, function) -> new StringValue(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
 		new MemberFunction("isRaining", (context, function) -> new BooleanValue(this.getWorld(context, function).isRaining())),
 		new MemberFunction("isThundering", (context, function) -> new BooleanValue(this.getWorld(context, function).isThundering())),
 		new MemberFunction("getTimeOfDay", (context, function) -> new NumberValue(this.getWorld(context, function).getTimeOfDay())),
@@ -116,7 +116,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 	private Value<?> renderParticle(Context context, MemberFunction function) throws CodeError {
 		ClientWorld world = this.getWorld(context, function);
 		String particleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
-		ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(new Identifier(particleName));
+		ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, particleName));
 		if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
 			throw new RuntimeError("Particle Invalid", function.syntaxPosition, context);
 		}

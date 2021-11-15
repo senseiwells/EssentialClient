@@ -1,5 +1,6 @@
 package essentialclient.clientscript;
 
+import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.*;
 import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRules;
@@ -86,6 +87,7 @@ public class ClientScript {
         this.thread = null;
 
         CommandHelper.functionCommands.clear();
+        MinecraftScriptEvents.clearEventFunctions();
         this.resetKeys(MinecraftClient.getInstance());
 
         EssentialUtils.sendMessageToActionBar("§6Script is now §cOFF");
@@ -113,30 +115,32 @@ public class ClientScript {
 
         // Create a new context for the file we should run.
         ContextBuilder contextBuilder = new ContextBuilder()
-                .setDisplayName("Arucas client")
-                .addDefaultExtensions()
-                .addExtensions(
-                        ArucasMinecraftExtension.class,
-                        ArucasMinecraftClientMembers.class,
-                        ArucasEntityMembers.class,
-                        ArucasLivingEntityMembers.class,
-                        ArucasAbstractPlayerMembers.class,
-                        ArucasPlayerMembers.class,
-                        ArucasBlockStateMembers.class,
-                        ArucasItemStackMembers.class,
-                        ArucasWorldMembers.class
-                )
-                .addDefaultValues()
-                .addValues(
-                        MinecraftClientValue.class,
-                        EntityValue.class,
-                        LivingEntityValue.class,
-                        OtherPlayerValue.class,
-                        PlayerValue.class,
-                        BlockStateValue.class,
-                        ItemStackValue.class,
-                        WorldValue.class
-                );
+            .setDisplayName("Arucas client")
+            .addDefaultExtensions()
+            .addExtensions(
+                ArucasMinecraftExtension.class,
+                ArucasMinecraftClientMembers.class,
+                ArucasEntityMembers.class,
+                ArucasLivingEntityMembers.class,
+                ArucasAbstractPlayerMembers.class,
+                ArucasPlayerMembers.class,
+                ArucasBlockStateMembers.class,
+                ArucasItemStackMembers.class,
+                ArucasWorldMembers.class,
+                ArucasScreenMembers.class
+            )
+            .addDefaultValues()
+            .addValues(
+                MinecraftClientValue.class,
+                EntityValue.class,
+                LivingEntityValue.class,
+                OtherPlayerValue.class,
+                PlayerValue.class,
+                BlockStateValue.class,
+                ItemStackValue.class,
+                WorldValue.class,
+                ScreenValue.class
+            );
 
         this.context = contextBuilder.build();
 
@@ -163,19 +167,19 @@ public class ClientScript {
         this.thread.start();
     }
 
-    protected Context getRootContextBranch() {
-        return this.context == null ? null :this.context.createRootBranch();
-    }
-    
-    public synchronized void runBranchAsyncFunction(ThrowableConsumer<Context> consumer) {
+    public synchronized void runAsyncFunctionInContext(Context context, ThrowableConsumer<Context> consumer) {
         if (!this.isScriptRunning()) {
             return;
         }
 
-        this.runAsyncFunction(context.createBranch(), consumer);
+        this.runAsyncFunction(context, consumer);
     }
     
-    protected synchronized void runAsyncFunction(final Context context, ThrowableConsumer<Context> consumer) {
+    public synchronized void runBranchAsyncFunction(ThrowableConsumer<Context> consumer) {
+        this.runAsyncFunctionInContext(this.context.createBranch(), consumer);
+    }
+    
+    private synchronized void runAsyncFunction(final Context context, ThrowableConsumer<Context> consumer) {
         Thread thread = new Thread(this.arucasThreadGroup, () -> {
             try {
                 consumer.accept(context);
