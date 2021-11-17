@@ -16,7 +16,7 @@ public class ClientPlayerEntityMixin {
 
     @Inject(method = "updateHealth", at = @At("HEAD"))
     private void checkHealth(float health, CallbackInfo ci) {
-        int switchToTotemHealth = ClientRules.SWITCH_TO_TOTEM.getInt();
+        int switchToTotemHealth = ClientRules.SWITCH_TO_TOTEM.getValue();
         if (switchToTotemHealth > 0 && switchToTotemHealth > health) {
             ClientPlayerEntity playerEntity = (ClientPlayerEntity) (Object) this;
             Slot totemSlot = InventoryUtils.getItemSlot(playerEntity, Items.TOTEM_OF_UNDYING);

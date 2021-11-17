@@ -24,7 +24,7 @@ public class TravelCommand {
     private static String ping;
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        if (!ClientRules.COMMAND_TRAVEL.getBoolean())
+        if (!ClientRules.COMMAND_TRAVEL.getValue())
             return;
 
         CommandHelper.clientCommands.add("travel");

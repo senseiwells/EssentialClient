@@ -16,7 +16,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class PlayerListCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 
-        if (!ClientRules.COMMAND_PLAYERLIST.getBoolean() || !ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+        if (!ClientRules.COMMAND_PLAYER_LIST.getValue() || !ClientRules.COMMAND_PLAYER_CLIENT.getValue())
             return;
 
         CommandHelper.clientCommands.add("pl");

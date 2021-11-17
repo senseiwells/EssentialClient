@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class ClientPlayNetworkHandlerMixin {
     @Redirect(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;)V"))
     private void onWarn(Logger logger, String message) {
-        if (ClientRules.REMOVE_WARN_RECEIVED_PASSENGERS.getBoolean())
+        if (ClientRules.REMOVE_WARN_RECEIVED_PASSENGERS.getValue())
             return;
         logger.warn(message);
     }

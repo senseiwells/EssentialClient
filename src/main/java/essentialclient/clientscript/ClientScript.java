@@ -94,7 +94,7 @@ public class ClientScript {
     }
     
     public static Path getFile() {
-        return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getString() + ".arucas");
+        return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getValue() + ".arucas");
     }
     
     public static Path getDir() {
@@ -102,7 +102,7 @@ public class ClientScript {
     }
     
     private synchronized void executeScript() {
-        final String fileName = ClientRules.CLIENT_SCRIPT_FILENAME.getString();
+        final String fileName = ClientRules.CLIENT_SCRIPT_FILENAME.getValue();
         final String fileContent;
         try {
             fileContent = Files.readString(getFile());

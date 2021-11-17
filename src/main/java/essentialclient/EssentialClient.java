@@ -6,6 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import essentialclient.commands.TravelCommand;
 import essentialclient.config.clientrule.ClientRuleHelper;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.AFKRules;
 import essentialclient.feature.BetterAccurateBlockPlacement;
 import essentialclient.feature.ClientKeybinds;
@@ -36,14 +37,9 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
     @Override
     public void onInitialize() {
         EssentialUtils.checkIfEssentialClientDirExists();
-        PlayerClientCommandHelper.readSaveFile();
-        PlayerListCommandHelper.readSaveFile();
-        ClientNickHelper.readSaveFile();
-        ClientRuleHelper.readSaveFile();
-        EssentialUtils.checkifScriptFileExists();
+        ClientRules.init();
 
         HighlightLavaSources.init();
-        CapeHelper.init();
 
         ClientKeybinds.loadKeybinds();
 

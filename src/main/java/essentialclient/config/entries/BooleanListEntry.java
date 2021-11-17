@@ -1,10 +1,9 @@
 package essentialclient.config.entries;
 
 import carpet.settings.ParsedRule;
+import essentialclient.config.clientrule.BooleanClientRule;
 import essentialclient.config.clientrule.ClientRuleHelper;
-import essentialclient.config.clientrule.ClientRules;
-import essentialclient.config.rulescreen.ClientRulesScreen;
-import essentialclient.config.rulescreen.ServerRulesScreen;
+import essentialclient.config.rulescreen.RulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,32 +15,32 @@ import net.minecraft.text.LiteralText;
 @Environment(EnvType.CLIENT)
 public class BooleanListEntry extends BaseListEntry {
 
-    public BooleanListEntry(final ParsedRule<?> settings, final MinecraftClient client, final ServerRulesScreen gui) {
-        super(settings, client, gui);
-        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getAsString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
+    public BooleanListEntry(final ParsedRule<?> parsedRule, final MinecraftClient client, final RulesScreen gui) {
+        super(parsedRule, client, gui);
+        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(parsedRule.getAsString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
             String invertedBoolean = buttonWidget.getMessage().getString().equals("§2true") ? "false" : "true";
-            CarpetSettingsServerNetworkHandler.ruleChange(settings.name, invertedBoolean, client);
+            CarpetSettingsServerNetworkHandler.ruleChange(parsedRule.name, invertedBoolean, client);
             buttonWidget.setMessage(new LiteralText(invertedBoolean.equals("true") ? "§2true" : "§4false"));
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            CarpetSettingsServerNetworkHandler.ruleChange(settings.name, settings.defaultAsString, client);
-            this.editButton.setMessage(new LiteralText(settings.defaultAsString.equals("true") ? "§2true" : "§4false"));
+            CarpetSettingsServerNetworkHandler.ruleChange(parsedRule.name, parsedRule.defaultAsString, client);
+            this.editButton.setMessage(new LiteralText(parsedRule.defaultAsString.equals("true") ? "§2true" : "§4false"));
         });
     }
 
-    public BooleanListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
-        super(settings, client, gui);
-        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(settings.getString().equals("true") ? "§2true" : "§4false"), (buttonWidget) -> {
-            settings.invertBoolean();
-            buttonWidget.setMessage(new LiteralText(settings.getString().equals("true") ? "§2true" : "§4false"));
+    public BooleanListEntry(final BooleanClientRule clientRule, final MinecraftClient client, final RulesScreen gui) {
+        super(clientRule, client, gui);
+        this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(clientRule.getValue() ? "§2true" : "§4false"), (buttonWidget) -> {
+            buttonWidget.setMessage(new LiteralText(clientRule.getValue() ? "§2true" : "§4false"));
+            clientRule.invertBoolean();
             ClientRuleHelper.writeSaveFile();
-            ClientRuleHelper.executeOnChange(client, settings, gui);
+            clientRule.run();
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            ClientRuleHelper.executeOnChange(client, settings, gui);
-            settings.setValue(settings.defaultValue);
+            this.editButton.setMessage(new LiteralText(clientRule.getDefaultValue() ? "§2true" : "§4false"));
+            clientRule.setValue(clientRule.getDefaultValue());
+            clientRule.run();
             ClientRuleHelper.writeSaveFile();
-            this.editButton.setMessage(new LiteralText(settings.defaultValue.equals("true") ? "§2true" : "§4false"));
         });
     }
 }

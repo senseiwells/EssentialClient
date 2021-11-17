@@ -3,9 +3,8 @@ package essentialclient.config.entries;
 import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
 import essentialclient.config.ConfigListWidget;
-import essentialclient.config.clientrule.ClientRules;
-import essentialclient.config.rulescreen.ClientRulesScreen;
-import essentialclient.config.rulescreen.ServerRulesScreen;
+import essentialclient.config.clientrule.ClientRule;
+import essentialclient.config.rulescreen.RulesScreen;
 import essentialclient.utils.render.ITooltipEntry;
 import essentialclient.utils.render.RenderHelper;
 import essentialclient.utils.render.RuleWidget;
@@ -18,33 +17,28 @@ import net.minecraft.client.util.math.MatrixStack;
 import java.util.List;
 
 public abstract class BaseListEntry extends ConfigListWidget.Entry implements ITooltipEntry {
-    protected final ParsedRule<?> serverSettings;
-    protected final ClientRules clientSettings;
-    protected final String rule;
-    protected final ServerRulesScreen serverGui;
-    protected final ClientRulesScreen clientGui;
+    protected ParsedRule<?> parsedRule = null;
+    protected ClientRule<?> clientRule = null;
+    protected final String ruleName;
+    protected final RulesScreen rulesScreen;
     protected final MinecraftClient client;
     protected RuleWidget ruleWidget;
     protected ButtonWidget editButton;
     protected ButtonWidget resetButton;
 
 
-    public BaseListEntry(final ParsedRule<?> settings, MinecraftClient client, ServerRulesScreen gui) {
-        this.serverSettings = settings;
+    public BaseListEntry(final ParsedRule<?> parsedRule, MinecraftClient client, RulesScreen gui) {
+        this.parsedRule = parsedRule;
         this.client = client;
-        this.serverGui = gui;
-        this.rule = settings.name;
-        this.clientGui = null;
-        this.clientSettings = null;
+        this.rulesScreen = gui;
+        this.ruleName = parsedRule.name;
     }
 
-    public BaseListEntry(final ClientRules settings, MinecraftClient client, ClientRulesScreen gui) {
-        this.clientSettings = settings;
+    public BaseListEntry(final ClientRule<?> clientRule, MinecraftClient client, RulesScreen gui) {
+        this.clientRule = clientRule;
         this.client = client;
-        this.clientGui = gui;
-        this.rule = settings.name;
-        this.serverGui = null;
-        this.serverSettings = null;
+        this.rulesScreen = gui;
+        this.ruleName = clientRule.getName();
     }
 
     @Override
@@ -53,14 +47,13 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
         float fontX = (float)(x + 90 - ConfigListWidget.length);
         float fontY = (float)(y + height / 2 - 9 / 2);
 
-        this.ruleWidget = new RuleWidget(this.rule, x - 50, y + 2, 200, 15);
+        this.ruleWidget = new RuleWidget(this.ruleName, x - 50, y + 2, 200, 15);
         this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
 
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
 
-        assert this.clientSettings != null;
-        this.resetButton.active = this.serverSettings == null ? !this.clientSettings.getString().equals(this.clientSettings.defaultValue) : !this.serverSettings.getAsString().equals(this.serverSettings.defaultAsString);
+        this.resetButton.active = this.parsedRule == null ? this.clientRule.isNotDefault() : !this.parsedRule.getAsString().equals(this.parsedRule.defaultAsString);
 
         this.editButton.x = x + 180;
         this.editButton.y = y;
@@ -72,8 +65,7 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
         if (this.ruleWidget != null && this.ruleWidget.isHovered(mouseX, mouseY)) {
-            assert this.clientSettings != null;
-            String description = this.serverSettings == null ? this.clientSettings.description : this.serverSettings.description;
+            String description = this.parsedRule == null ? this.clientRule.getDescription() : this.parsedRule.description;
             RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseX, mouseY);
         }
     }

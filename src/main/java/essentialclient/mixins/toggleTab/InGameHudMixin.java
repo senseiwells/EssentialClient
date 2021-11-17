@@ -26,12 +26,12 @@ public class InGameHudMixin {
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
 	private boolean onIsPressed(KeyBinding keyBinding) {
-		return ClientRules.TOGGLE_TAB.getBoolean() || keyBinding.isPressed();
+		return ClientRules.TOGGLE_TAB.getValue() || keyBinding.isPressed();
 	}
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;tick(Z)V"))
 	private void onTabTick(PlayerListHud playerListHud, boolean visible) {
-		if (ClientRules.TOGGLE_TAB.getBoolean()) {
+		if (ClientRules.TOGGLE_TAB.getValue()) {
 			KeyBinding tabKey = this.client.options.keyPlayerList;
 			if (tabKey.isPressed() && !tabKey.wasPressed()) {
 				tabKey.setPressed(false);

@@ -22,7 +22,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 
 	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 2), require = 0)
 	private void onSendPacketVehicle(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
-		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getBoolean()) {
+		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
 		}
 		Vec3d vec3d = this.getVelocity();
@@ -31,7 +31,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 
 	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 3), require = 0)
 	private void onSendPacketAll(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
-		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getBoolean()) {
+		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.PositionOnly(this.getX(), this.getY(), this.getZ(), this.isOnGround()));
 		}
 		clientPlayNetworkHandler.sendPacket(packet);
@@ -39,7 +39,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 
 	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 5), require = 0)
 	private void onSendPacketLook(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
-		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getBoolean()) {
+		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
 		}
 	}

@@ -4,11 +4,10 @@ import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
 import essentialclient.config.ConfigListWidget;
 import essentialclient.config.clientrule.ClientRuleHelper;
-import essentialclient.config.clientrule.ClientRules;
-import essentialclient.config.rulescreen.ClientRulesScreen;
-import essentialclient.utils.render.RuleWidget;
-import essentialclient.config.rulescreen.ServerRulesScreen;
+import essentialclient.config.clientrule.StringClientRule;
+import essentialclient.config.rulescreen.RulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
+import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
@@ -28,30 +27,30 @@ public class StringListEntry extends BaseListEntry {
     private final TextFieldWidget textField;
     private boolean invalid;
     
-    public StringListEntry(final ParsedRule<?> settings, final MinecraftClient client, final ServerRulesScreen gui) {
-        super(settings, client, gui);
+    public StringListEntry(final ParsedRule<?> parsedRule, final MinecraftClient client, final RulesScreen rulesScreen) {
+        super(parsedRule, client, rulesScreen);
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
-        stringField.setText(settings.getAsString());
+        stringField.setText(parsedRule.getAsString());
         stringField.setChangedListener(s -> this.checkForInvalid(stringField));
         this.textField = stringField;
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            CarpetSettingsServerNetworkHandler.ruleChange(settings.name, settings.defaultAsString, client);
-            stringField.setText(settings.defaultAsString);
+            CarpetSettingsServerNetworkHandler.ruleChange(parsedRule.name, parsedRule.defaultAsString, client);
+            stringField.setText(parsedRule.defaultAsString);
         });
-        gui.getStringFieldList().add(this.textField);
+        rulesScreen.getStringFieldList().add(this.textField);
     }
 
-    public StringListEntry(final ClientRules settings, final MinecraftClient client, final ClientRulesScreen gui) {
-        super(settings, client, gui);
+    public StringListEntry(final StringClientRule clientRule, final MinecraftClient client, final RulesScreen gui) {
+        super(clientRule, client, gui);
         TextFieldWidget stringField = new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, new LiteralText("Type a string value"));
-        stringField.setText(settings.getString());
+        stringField.setText(clientRule.getValue());
         stringField.setChangedListener(s -> this.checkForInvalid(stringField));
         this.textField = stringField;
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            settings.setValue(settings.defaultValue);
-            stringField.setText(settings.defaultValue);
+            stringField.setText(clientRule.getDefaultValue());
+            clientRule.resetToDefault();
             ClientRuleHelper.writeSaveFile();
-            ClientRuleHelper.executeOnChange(client, settings, gui);
+            clientRule.run();
         });
         gui.getStringFieldList().add(this.textField);
     }
@@ -68,12 +67,11 @@ public class StringListEntry extends BaseListEntry {
     
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        // ENTER KEY -> 257
         if (keyCode == GLFW.GLFW_KEY_ENTER) {
             this.textField.setText(this.textField.getText());
             this.textField.changeFocus(false);
-            if (!this.invalid && this.serverSettings != null)
-                CarpetSettingsServerNetworkHandler.ruleChange(this.serverSettings.name, this.textField.getText(), this.client);
+            if (!this.invalid && this.parsedRule != null)
+                CarpetSettingsServerNetworkHandler.ruleChange(this.parsedRule.name, this.textField.getText(), this.client);
         }
         return super.keyPressed(keyCode, scanCode, modifiers) || this.textField.keyPressed(keyCode, scanCode, modifiers);
     }
@@ -84,20 +82,20 @@ public class StringListEntry extends BaseListEntry {
         float fontX = (float)(x + 90 - ConfigListWidget.length);
         float fontY = (float)(y + height / 2 - 9 / 2);
 
-        this.ruleWidget = new RuleWidget(this.rule, x - 50, y + 2, 200, 15);
+        this.ruleWidget = new RuleWidget(this.ruleName, x - 50, y + 2, 200, 15);
         this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
 
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
 
-        this.resetButton.active = this.serverSettings == null ? !this.clientSettings.getString().equals(this.clientSettings.defaultValue) || this.invalid : !this.serverSettings.getAsString().equals(this.serverSettings.defaultAsString) || this.invalid;
+        this.resetButton.active = this.parsedRule == null ? this.clientRule.isNotDefault() || this.invalid : !this.parsedRule.getAsString().equals(this.parsedRule.defaultAsString) || this.invalid;
 
         this.textField.x = x + 182;
         this.textField.y = y + 3;
         this.textField.setEditableColor(this.invalid ? 16733525 : 16777215);
-        if (invalid) {
+        if (this.invalid) {
             DiffuseLighting.enable();
-            client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.textField.x + this.textField.getWidth() - 18, this.textField.y- 1);
+            this.client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.textField.x + this.textField.getWidth() - 18, this.textField.y- 1);
             DiffuseLighting.disable();
         }
 
@@ -107,27 +105,21 @@ public class StringListEntry extends BaseListEntry {
     
     private void setInvalid(boolean invalid) {
         this.invalid = invalid;
-        if (this.serverGui != null)
-            this.serverGui.setInvalid(invalid);
-        else
-            this.clientGui.setInvalid(invalid);
+        this.rulesScreen.setInvalid(invalid);
     }
     
     private void checkForInvalid(TextFieldWidget widget) {
         boolean empty = widget.getText().isEmpty();
         if (empty) {
-            if (this.serverGui != null)
-                this.serverGui.setEmpty(true);
-            else
-                this.clientGui.setEmpty(true);
+            this.rulesScreen.setEmpty(true);
             this.setInvalid(true);
         }
         else {
             this.setInvalid(false);
-            if (this.serverSettings != null)
-                return;
-            this.clientSettings.setValue(widget.getText());
-            ClientRuleHelper.writeSaveFile();
+            if (this.parsedRule == null) {
+                ((StringClientRule) this.clientRule).setValue(widget.getText());
+                ClientRuleHelper.writeSaveFile();
+            }
         }
     }
 }

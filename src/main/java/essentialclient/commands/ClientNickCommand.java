@@ -15,7 +15,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class ClientNickCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 
-		if (!ClientRules.COMMAND_CLIENT_NICK.getBoolean())
+		if (!ClientRules.COMMAND_CLIENT_NICK.getValue())
 			return;
 
 		CommandHelper.clientCommands.add("clientnick");

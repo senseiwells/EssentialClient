@@ -21,7 +21,7 @@ import java.util.UUID;
 public class InGameHudMixin {
 	@Redirect(method = "addChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ClientChatListener;onChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"))
 	private void onChatMessage(ClientChatListener clientChatListener, MessageType messageType, Text text, UUID sender) {
-		if (ClientRules.COMMAND_CLIENT_NICK.getBoolean()) {
+		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(sender);
 			if (playerListEntry != null) {
 				String newName = ClientNickHelper.getRename(playerListEntry.getProfile().getName());

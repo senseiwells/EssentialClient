@@ -29,7 +29,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onUnlockRecipes", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/UnlockRecipesS2CPacket;getRecipeIdsToChange()Ljava/util/List;", ordinal = 1, shift = At.Shift.BEFORE), cancellable = true)
     private void onInitRecipes(UnlockRecipesS2CPacket packet, CallbackInfo ci) {
-        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getBoolean() && client.player != null) {
+        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && client.player != null) {
             List<Identifier> recipes = this.getRecipeManager().keys().collect(Collectors.toList());
             this.onUnlockRecipes(new UnlockRecipesS2CPacket(UnlockRecipesS2CPacket.Action.ADD, recipes, Collections.emptyList(), client.player.getRecipeBook().getOptions()));
             ci.cancel();

@@ -18,7 +18,7 @@ public class BetterAccurateBlockPlacement {
 
 	private static void accurateBlockPlacement(MinecraftClient client) {
 		fakeDirection = null;
-		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getBoolean() && client.getNetworkHandler() != null) {
+		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue() && client.getNetworkHandler() != null) {
 			ClientPlayerEntity playerEntity = client.player;
 			if (playerEntity == null) {
 				return;

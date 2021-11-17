@@ -3,14 +3,14 @@
   "package": "essentialclient.mixins",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
-    "betterAccurateBlockPlacement.ItemPlacementContextMixin",
-    "betterAccurateBlockPlacement.ItemUsageContextMixin",
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",
+    "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
+    "betterAccurateBlockPlacement.ItemPlacementContextMixin",
+    "betterAccurateBlockPlacement.ItemUsageContextMixin",
     "betterMusic.MusicTrackerMixin",
     "carpet.ClientPlayNetworkHandlerMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",

@@ -18,12 +18,12 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 
-
 public class PlayerClientCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 
-        if (!ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+        if (!ClientRules.COMMAND_PLAYER_CLIENT.getValue()) {
             return;
+        }
 
         CommandHelper.clientCommands.add("playerclient");
         CommandHelper.clientCommands.add("pc");

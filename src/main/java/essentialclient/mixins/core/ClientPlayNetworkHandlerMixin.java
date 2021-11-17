@@ -39,9 +39,9 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Redirect(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"))
     private void checkMessages(InGameHud inGameHud, MessageType type, Text message, UUID sender) {
-        if (type == MessageType.SYSTEM && ClientRules.DISABLE_OP_MESSAGES.getBoolean())
+        if (type == MessageType.SYSTEM && ClientRules.DISABLE_OP_MESSAGES.getValue())
                 return;
-        if (message instanceof TranslatableText && ClientRules.DISABLE_JOIN_LEAVE_MESSAGES.getBoolean()) {
+        if (message instanceof TranslatableText && ClientRules.DISABLE_JOIN_LEAVE_MESSAGES.getValue()) {
             switch (((TranslatableText) message).getKey()) {
                 case "multiplayer.player.joined": case "multiplayer.player.left": case "multiplayer.player.joined.renamed":
                     return;
@@ -52,7 +52,7 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At("TAIL"))
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean()) {
+        if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getValue()) {
             ClientScript.getInstance().startScript();
         }
     }

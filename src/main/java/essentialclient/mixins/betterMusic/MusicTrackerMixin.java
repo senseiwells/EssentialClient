@@ -1,7 +1,7 @@
 package essentialclient.mixins.betterMusic;
 
-import essentialclient.feature.MusicSounds;
 import essentialclient.config.clientrule.ClientRules;
+import essentialclient.feature.MusicSounds;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MusicTracker;
 import net.minecraft.client.sound.MusicType;
@@ -40,7 +40,7 @@ public class MusicTrackerMixin {
      */
     @Overwrite
     public void tick() {
-        String type = ClientRules.MUSIC_TYPES.getString();
+        String type = ClientRules.MUSIC_TYPES.getValue();
         MusicSound musicSound = switch (type) {
             case "Overworld" -> MusicType.GAME;
             case "Nether" -> MusicSounds.getRandomNetherMusic();
@@ -60,10 +60,11 @@ public class MusicTrackerMixin {
 
             if (!this.client.getSoundManager().isPlaying(this.current)) {
                 this.current = null;
-                this.timeUntilNextSong = Math.min(this.timeUntilNextSong, MathHelper.nextInt(this.random, musicSound.getMinDelay(), ClientRules.MUSIC_INTERVAL.getInt() == 0 ? musicSound.getMaxDelay() : ClientRules.MUSIC_INTERVAL.getInt()));
+                this.timeUntilNextSong = Math.min(this.timeUntilNextSong, MathHelper.nextInt(this.random, musicSound.getMinDelay(), ClientRules.MUSIC_INTERVAL.getValue() == 0 ? musicSound.getMaxDelay() : ClientRules.MUSIC_INTERVAL.getValue()));
             }
         }
-        this.timeUntilNextSong = Math.min(this.timeUntilNextSong, ClientRules.MUSIC_INTERVAL.getInt() == 0 ? musicSound.getMaxDelay() : ClientRules.MUSIC_INTERVAL.getInt());
+        int musicInterval = ClientRules.MUSIC_INTERVAL.getValue();
+        this.timeUntilNextSong = Math.min(this.timeUntilNextSong, musicInterval == 0 ? musicSound.getMaxDelay() : musicInterval);
         if (this.current == null && this.timeUntilNextSong-- <= 1) {
             this.play(musicSound);
         }

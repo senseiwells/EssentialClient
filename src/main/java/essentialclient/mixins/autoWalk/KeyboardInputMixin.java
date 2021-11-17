@@ -17,22 +17,22 @@ public class KeyboardInputMixin {
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
     private boolean onIsForwardPressed(KeyBinding keyBinding) {
         if (keyBinding.isPressed()){
-            int autoWalk = ClientRules.AUTO_WALK.getInt();
-            shouldAutoHold = autoWalk > 0 && ticks++ > autoWalk;
-            if (shouldAutoHold) {
+            int autoWalk = ClientRules.AUTO_WALK.getValue();
+            this.shouldAutoHold = autoWalk > 0 && this.ticks++ > autoWalk;
+            if (this.shouldAutoHold) {
                 EssentialUtils.sendMessageToActionBar("§aYou are now autowalking");
             }
             return true;
         }
-        ticks = 0;
-        return shouldAutoHold;
+        this.ticks = 0;
+        return this.shouldAutoHold;
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 1))
     private boolean onIsBackPressed(KeyBinding keyBinding) {
         if (keyBinding.isPressed()) {
-            ticks = 0;
-            shouldAutoHold = false;
+            this.ticks = 0;
+            this.shouldAutoHold = false;
             return true;
         }
         return false;

@@ -5,13 +5,12 @@ import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
-import essentialclient.config.rulescreen.ClientRulesScreen;
+import essentialclient.config.rulescreen.RulesScreen;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.CapeHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.JsonHelper;
 
 import java.io.BufferedReader;
@@ -19,12 +18,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClientRuleHelper {
     public static CommandTreeS2CPacket serverPacket;
-
-    protected static Map<String, String> clientRulesMap = new HashMap<>();
 
     public static final Codec<String> CODEC = Codec.STRING;
     public static final Codec<Map<String, String>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
@@ -32,10 +30,11 @@ public class ClientRuleHelper {
 
     public static void writeSaveFile() {
         Path file = getFile();
-        try(BufferedWriter writer = Files.newBufferedWriter(file)) {
-            MAP_CODEC.encodeStart(JsonOps.INSTANCE, clientRulesMap)
-                    .resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write rule data: {}", e))
-                    .ifPresent(obj -> GSON.toJson(obj, writer));
+        Map<String, String> stringClientRulesMap = ClientRules.rulesAsStringMap();
+        try (BufferedWriter writer = Files.newBufferedWriter(file)) {
+            MAP_CODEC.encodeStart(JsonOps.INSTANCE, stringClientRulesMap)
+                .resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write rule data: {}", e))
+                .ifPresent(obj -> GSON.toJson(obj, writer));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -43,19 +42,17 @@ public class ClientRuleHelper {
         }
     }
 
-    public static void readSaveFile() {
+    protected static void readSaveFile() {
         Path file = getFile();
-        clientRulesMap = new HashMap<>();
         if (!Files.isRegularFile(file)) {
-            checkRules();
             return;
         }
+        Map<String, String> stringClientRulesMap;
         try (BufferedReader reader = Files.newBufferedReader(file)) {
-            clientRulesMap = new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
+            stringClientRulesMap = new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
                 .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read rule data: {}", e))
                 .getFirst());
         }
-        //many exceptions
         catch (Exception e) {
             try {
                 Files.deleteIfExists(file);
@@ -64,58 +61,41 @@ public class ClientRuleHelper {
             catch (IOException ioException) {
                 EssentialClient.LOGGER.error("Something went very wrong, please delete your config file manually");
             }
-            EssentialClient.LOGGER.info("Created default rule data");
+            return;
         }
-        checkRules();
+        for (Map.Entry<String, String> entry : stringClientRulesMap.entrySet()) {
+            ClientRule<?> rule =  ClientRules.ruleFromString(entry.getKey());
+            if (rule == null) {
+                continue;
+            }
+            try {
+                rule.setValueFromString(entry.getValue());
+            }
+            catch (Exception e) {
+                EssentialClient.LOGGER.error("Error reading EssentialClient config for rule: {}.\n{}", rule.getName(), e.toString());
+            }
+        }
     }
 
     private static Path getFile() {
         return EssentialUtils.getEssentialConfigFile().resolve("EssentialClientRules.json");
     }
 
-    public static void executeOnChange(MinecraftClient client, ClientRules settings, ClientRulesScreen gui) {
-        ClientPlayerEntity playerEntity = client.player;
+    public static void refreshCommand() {
+        ClientPlayerEntity playerEntity =  EssentialUtils.getPlayer();
         if (playerEntity != null) {
-            if (settings.isCommand) {
-                playerEntity.sendMessage(new LiteralText("§cRelog for client command changes to take full effect"), false);
-                playerEntity.networkHandler.onCommandTree(serverPacket);
-                /* The game still suggests the command but it registers it as invalid, idk how to fix :P
-                 * MinecraftClient.getInstance().getNetworkHandler().onCommandTree(new CommandTreeS2CPacket((RootCommandNode<CommandSource>) (Object) ClientCommandManager.DISPATCHER.getRoot()));
-                 * MinecraftClient.getInstance().getNetworkHandler().onCommandSuggestions(new CommandSuggestionsS2CPacket());
-                 */
-            }
-        }
-        switch (settings) {
-            case HIGHLIGHT_LAVA_SOURCES -> client.worldRenderer.reload();
-            case MUSIC_TYPES -> client.getMusicTracker().stop();
-            case DISPLAY_RULE_TYPE -> gui.refreshRules(gui.getSearchBoxText());
-            case CLIENT_SCRIPT_FILENAME -> EssentialUtils.checkifScriptFileExists();
-            case CUSTOM_CLIENT_CAPE -> CapeHelper.setCapeTexture(settings.getString());
+            playerEntity.networkHandler.onCommandTree(serverPacket);
         }
     }
 
-    protected static void checkRules() {
-        for (ClientRules rule : ClientRules.values()) {
-            clientRulesMap.putIfAbsent(rule.name, rule.defaultValue);
-        }
+    public static void refreshCape() {
+        CapeHelper.setCapeTexture(ClientRules.CUSTOM_CLIENT_CAPE.getValue());
     }
 
-    public static Collection<ClientRules> getRulesAlphabetically() {
-        SortedMap<String, ClientRules> sortedMap = new TreeMap<>();
-        for (ClientRules rule : ClientRules.values())
-            sortedMap.put(rule.name, rule);
-        return sortedMap.values();
-    }
-
-    public static Collection<ClientRules> getRulesInType() {
-        SortedMap<String, ClientRules> sortedMap = new TreeMap<>();
-        for (ClientRules.Type type : ClientRules.Type.values()) {
-            for (ClientRules rule : ClientRules.values()) {
-                if (rule.type == type) {
-                    sortedMap.put(type.toString() + rule.name, rule);
-                }
-            }
+    public static void refreshScreen() {
+        MinecraftClient client = EssentialUtils.getClient();
+        if (client.currentScreen instanceof RulesScreen rulesScreen) {
+            rulesScreen.refreshRules(rulesScreen.getSearchBoxText());
         }
-        return sortedMap.values();
     }
 }

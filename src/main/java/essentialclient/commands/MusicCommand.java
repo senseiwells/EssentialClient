@@ -19,8 +19,9 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class MusicCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        if (!ClientRules.COMMAND_MUSIC.getBoolean())
+        if (!ClientRules.COMMAND_MUSIC.getValue()) {
             return;
+        }
 
         CommandHelper.clientCommands.add("music");
 
