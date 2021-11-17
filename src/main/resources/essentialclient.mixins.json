@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
+    "betterAccurateBlockPlacement.ItemPlacementContextMixin",
+    "betterAccurateBlockPlacement.ItemUsageContextMixin",
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin"
   ],

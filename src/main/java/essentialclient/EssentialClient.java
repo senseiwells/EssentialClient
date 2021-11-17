@@ -17,6 +17,7 @@ import essentialclient.utils.carpet.Reference;
 import essentialclient.utils.command.ClientNickHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import essentialclient.utils.command.PlayerListCommandHelper;
+import essentialclient.utils.render.CapeHelper;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -42,6 +43,7 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
         EssentialUtils.checkifScriptFileExists();
 
         HighlightLavaSources.init();
+        CapeHelper.init();
 
         ClientKeybinds.loadKeybinds();
 

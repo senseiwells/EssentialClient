@@ -1,5 +1,6 @@
 package essentialclient.utils.render;
 
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
@@ -38,5 +39,9 @@ public class CapeHelper {
 
 	public static void setCapeTexture(String capeName) {
 		capeTexture = capeMap.get(capeName);
+	}
+
+	public static void init() {
+		capeTexture = capeMap.get(ClientRules.CUSTOM_CLIENT_CAPE.getString());
 	}
 }

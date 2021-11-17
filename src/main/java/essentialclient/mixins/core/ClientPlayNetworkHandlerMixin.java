@@ -52,7 +52,6 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At("TAIL"))
     private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        System.out.println("JOINED");
         if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getBoolean()) {
             ClientScript.getInstance().startScript();
         }
