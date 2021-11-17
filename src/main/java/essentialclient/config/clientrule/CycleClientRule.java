@@ -27,6 +27,12 @@ public class CycleClientRule extends ClientRule<String> {
 		return this.cycleValues.contains(value);
 	}
 
+	@Override
+	public void resetToDefault() {
+		super.resetToDefault();
+		this.index = 0;
+	}
+
 	public void cycleValues() {
 		if (this.index >= this.maxIndex) {
 			this.index = 0;

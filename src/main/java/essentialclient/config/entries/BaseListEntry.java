@@ -48,7 +48,7 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
         float fontY = (float)(y + height / 2 - 9 / 2);
 
         this.ruleWidget = new RuleWidget(this.ruleName, x - 50, y + 2, 200, 15);
-        this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
+        this.ruleWidget.drawRule(matrices, font, fontX, fontY, 16777215);
 
         this.resetButton.x = x + 290;
         this.resetButton.y = y;
@@ -64,9 +64,9 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
 
     @Override
     public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
-        if (this.ruleWidget != null && this.ruleWidget.isHovered(mouseX, mouseY)) {
+        if (this.ruleWidget != null && y > 45 && y < listHeight - 50 && this.ruleWidget.isHovered(mouseX, mouseY) ) {
             String description = this.parsedRule == null ? this.clientRule.getDescription() : this.parsedRule.description;
-            RenderHelper.drawGuiInfoBox(client.textRenderer, description, mouseX, mouseY);
+            RenderHelper.drawGuiInfoBox(this.client.textRenderer, description, mouseX, mouseY);
         }
     }
 

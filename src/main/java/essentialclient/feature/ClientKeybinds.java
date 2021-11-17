@@ -1,6 +1,5 @@
 package essentialclient.feature;
 
-import essentialclient.clientscript.ClientScript;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -28,8 +27,8 @@ public enum ClientKeybinds {
     }
 
     public static void loadKeybinds() {
-        for (ClientKeybinds clientKeybinds : ClientKeybinds.values())
+        for (ClientKeybinds clientKeybinds : ClientKeybinds.values()) {
             KeyBindingHelper.registerKeyBinding(clientKeybinds.key);
-        ClientScript.getInstance().registerKeyPress();
+        }
     }
 }

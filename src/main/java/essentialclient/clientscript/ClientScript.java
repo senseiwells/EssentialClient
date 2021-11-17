@@ -42,7 +42,7 @@ public class ClientScript {
     private Thread thread;
     private boolean hasErrored;
 
-    public void registerKeyPress() {
+    public void register() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             KeyBinding clientKeybind = ClientKeybinds.CLIENT_SCRIPT.getKeyBinding();
             if (clientKeybind.isPressed() && !clientKeybind.wasPressed()) {

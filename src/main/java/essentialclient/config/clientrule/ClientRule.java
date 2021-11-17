@@ -78,6 +78,5 @@ public abstract class ClientRule<T> {
 		public String toString() {
 			return this.name;
 		}
-
 	}
 }

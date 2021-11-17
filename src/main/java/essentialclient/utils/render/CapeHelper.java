@@ -2,6 +2,7 @@ package essentialclient.utils.render;
 
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Map;
 
 public class CapeHelper {
@@ -34,6 +35,37 @@ public class CapeHelper {
 		Map.entry("Migrator", new Identifier(namespace, "textures/capes/migrator.png")),
 		Map.entry("Christmas 2010", new Identifier(namespace, "textures/capes/christmas2010.png")),
 		Map.entry("New Year 2011", new Identifier(namespace, "textures/capes/newyear2011.png"))
+	);
+
+	/**
+	 * Cannot do map.keySet() as the order would not be preserved
+	 */
+	public static final List<String> capeNames = List.of(
+		"None",
+		"Old Mojang",
+		"Mojang",
+		"Mojang Studios",
+		"Minecon 2011",
+		"Minecon 2012",
+		"Minecon 2013",
+		"Minecon 2015",
+		"Minecon 2016",
+		"Bacon",
+		"Millionth",
+		"DannyB",
+		"Julian",
+		"Cheapsh0t",
+		"MrMessiah",
+		"Prismarine",
+		"Birthday",
+		"Translator",
+		"Scrolls",
+		"Cobalt",
+		"Mojira",
+		"Turtle",
+		"Migrator",
+		"Christmas 2010",
+		"New Year 2011"
 	);
 
 	public static void setCapeTexture(String capeName) {

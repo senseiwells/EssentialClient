@@ -5,14 +5,11 @@ import essentialclient.config.clientrule.BooleanClientRule;
 import essentialclient.config.clientrule.ClientRuleHelper;
 import essentialclient.config.rulescreen.RulesScreen;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.LiteralText;
 
-@Environment(EnvType.CLIENT)
 public class BooleanListEntry extends BaseListEntry {
 
     public BooleanListEntry(final ParsedRule<?> parsedRule, final MinecraftClient client, final RulesScreen gui) {
@@ -31,14 +28,14 @@ public class BooleanListEntry extends BaseListEntry {
     public BooleanListEntry(final BooleanClientRule clientRule, final MinecraftClient client, final RulesScreen gui) {
         super(clientRule, client, gui);
         this.editButton = new ButtonWidget(0, 0, 100, 20, new LiteralText(clientRule.getValue() ? "§2true" : "§4false"), (buttonWidget) -> {
-            buttonWidget.setMessage(new LiteralText(clientRule.getValue() ? "§2true" : "§4false"));
             clientRule.invertBoolean();
+            buttonWidget.setMessage(new LiteralText(clientRule.getValue() ? "§2true" : "§4false"));
             ClientRuleHelper.writeSaveFile();
             clientRule.run();
         });
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            this.editButton.setMessage(new LiteralText(clientRule.getDefaultValue() ? "§2true" : "§4false"));
             clientRule.setValue(clientRule.getDefaultValue());
+            this.editButton.setMessage(new LiteralText(clientRule.getDefaultValue() ? "§2true" : "§4false"));
             clientRule.run();
             ClientRuleHelper.writeSaveFile();
         });

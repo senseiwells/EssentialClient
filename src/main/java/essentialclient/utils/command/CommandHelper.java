@@ -32,6 +32,10 @@ public class CommandHelper {
     public static final Set<LiteralCommandNode<ServerCommandSource>> functionCommandNodes = new HashSet<>();
     public static final DecimalFormat decimalFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
 
+    static {
+        decimalFormat.setGroupingUsed(false);
+    }
+
     public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {
         return switch (type) {
             case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getX()))}, builder);

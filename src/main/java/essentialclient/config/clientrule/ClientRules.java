@@ -1,10 +1,15 @@
 package essentialclient.config.clientrule;
 
+import essentialclient.clientscript.ClientScript;
+import essentialclient.commands.TravelCommand;
+import essentialclient.feature.AFKRules;
+import essentialclient.feature.BetterAccurateBlockPlacement;
+import essentialclient.feature.HighlightLavaSources;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.ClientNickHelper;
 import essentialclient.utils.command.PlayerClientCommandHelper;
 import essentialclient.utils.command.PlayerListCommandHelper;
-import net.minecraft.client.MinecraftClient;
+import essentialclient.utils.render.CapeHelper;
 
 import java.util.*;
 
@@ -32,7 +37,7 @@ public class ClientRules {
 	public static BooleanClientRule DISPLAY_TIME_PLAYED = new BooleanClientRule("displayTimePlayed", "This will display how long you have had your current client open for in the corner of the pause menu");
 	public static BooleanClientRule ENABLE_SCRIPT_ON_JOIN = new BooleanClientRule("enableScriptOnJoin", "This will enable your selected script when you join a world automatically");
 	public static BooleanClientRule ESSENTIAL_CLIENT_MAIN_MENU = new BooleanClientRule("essentialClientMainMenu", "This renders the Essential Client Menu on the main menu screen");
-	public static BooleanClientRule HIGHLIGHT_LAVA_SOURCES = new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", () -> { MinecraftClient client = EssentialUtils.getClient(); if (client.worldRenderer != null) client.worldRenderer.reload(); });
+	public static BooleanClientRule HIGHLIGHT_LAVA_SOURCES = new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", ClientRuleHelper::refreshWorld);
 	public static BooleanClientRule INCREASE_SPECTATOR_SCROLL_SPEED = new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator");
 	public static BooleanClientRule MISSING_TOOLS = new BooleanClientRule("missingTools", "Adds client functionality to missingTools from Carpet for the client");
 	public static BooleanClientRule PERMANENT_CHAT_HUD = new BooleanClientRule("permanentChatHud", "This prevents the chat from being cleared, also applies when chaning worlds/servers");
@@ -56,16 +61,27 @@ public class ClientRules {
 	public static StringClientRule ANNOUNCE_AFK_MESSAGE = new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK");
 	public static StringClientRule CLIENT_SCRIPT_FILENAME = new StringClientRule("clientScriptFilename", "This allows you to choose a specific script file name", "clientscript", EssentialUtils::checkifScriptFileExists);
 
-	public static CycleClientRule CUSTOM_CLIENT_CAPE = new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", List.of("None", "Old Mojang", "Mojang", "Mojang Studios", "Minecon 2011", "Minecon 2012", "Minecon 2013", "Minecon 2015", "Minecon 2016", "Bacon", "Millionth", "DannyB", "Julian", "Cheapsh0t", "MrMessiah", "Prismarine", "Birthday", "Translator", "Scrolls", "Cobalt", "Mojira", "Turtle", "Migrator", "Christmas 2010", "New Year 2011"), ClientRuleHelper::refreshCape);
+	public static CycleClientRule CUSTOM_CLIENT_CAPE = new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CapeHelper.capeNames, ClientRuleHelper::refreshCape);
 	public static CycleClientRule DISPLAY_RULE_TYPE = new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRuleHelper::refreshScreen);
-	public static CycleClientRule MUSIC_TYPES = new CycleClientRule("musicTypes", "This allows you to select what music types play", List.of("Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"), () -> { MinecraftClient client = EssentialUtils.getClient(); if (client.getMusicTracker() != null) client.getMusicTracker().stop(); });
+	public static CycleClientRule MUSIC_TYPES = new CycleClientRule("musicTypes", "This allows you to select what music types play", List.of("Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"), ClientRuleHelper::refreshMusic);
 
 	public static void init() {
+		// IO stuff
+		EssentialUtils.checkIfEssentialClientDirExists();
 		ClientRuleHelper.readSaveFile();
 		PlayerClientCommandHelper.readSaveFile();
 		PlayerListCommandHelper.readSaveFile();
 		ClientNickHelper.readSaveFile();
 		EssentialUtils.checkifScriptFileExists();
+
+		// Registering ticking methods
+		AFKRules.INSTANCE.register();
+		TravelCommand.register();
+		BetterAccurateBlockPlacement.register();
+		ClientScript.getInstance().register();
+
+		// Init anything else
+		HighlightLavaSources.init();
 
 		for (ClientRule<?> rule : clientRuleMap.values()) {
 			rule.run();

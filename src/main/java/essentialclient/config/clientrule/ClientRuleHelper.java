@@ -10,6 +10,7 @@ import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.CapeHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.sound.MusicTracker;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.util.JsonHelper;
 
@@ -96,6 +97,20 @@ public class ClientRuleHelper {
         MinecraftClient client = EssentialUtils.getClient();
         if (client.currentScreen instanceof RulesScreen rulesScreen) {
             rulesScreen.refreshRules(rulesScreen.getSearchBoxText());
+        }
+    }
+
+    public static void refreshWorld() {
+        MinecraftClient client = EssentialUtils.getClient();
+        if (client.worldRenderer != null) {
+            client.worldRenderer.reload();
+        }
+    }
+
+    public static void refreshMusic() {
+        MusicTracker musicTracker = EssentialUtils.getClient().getMusicTracker();
+        if (musicTracker != null) {
+            musicTracker.stop();
         }
     }
 }

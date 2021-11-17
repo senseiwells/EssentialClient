@@ -2,17 +2,17 @@ package essentialclient.config.entries;
 
 import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
-import essentialclient.config.clientrule.*;
 import essentialclient.config.ConfigListWidget;
+import essentialclient.config.clientrule.*;
 import essentialclient.config.rulescreen.RulesScreen;
-import essentialclient.utils.render.RuleWidget;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.render.DiffuseLighting;
+import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -46,8 +46,8 @@ public class NumberListEntry extends BaseListEntry {
         numField.setChangedListener(s -> this.checkForInvalid(s, numField, clientRule));
         this.numberField = numField;
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            numField.setText(clientRule.getDefaultValue().toString());
             clientRule.resetToDefault();
+            numField.setText(clientRule.getDefaultValue().toString());
             ClientRuleHelper.writeSaveFile();
             clientRule.run();
         });
@@ -83,7 +83,7 @@ public class NumberListEntry extends BaseListEntry {
         float fontY = (float)(y + height / 2 - 9 / 2);
 
         this.ruleWidget = new RuleWidget(this.ruleName, x - 50, y + 2, 200, 15);
-        this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
+        this.ruleWidget.drawRule(matrices, font, fontX, fontY, 16777215);
 
         this.resetButton.x = x + 290;
         this.resetButton.y = y;

@@ -47,8 +47,8 @@ public class StringListEntry extends BaseListEntry {
         stringField.setChangedListener(s -> this.checkForInvalid(stringField));
         this.textField = stringField;
         this.resetButton = new ButtonWidget(0, 0, 50, 20, new LiteralText(I18n.translate("controls.reset")), (buttonWidget) -> {
-            stringField.setText(clientRule.getDefaultValue());
             clientRule.resetToDefault();
+            stringField.setText(clientRule.getDefaultValue());
             ClientRuleHelper.writeSaveFile();
             clientRule.run();
         });
@@ -83,7 +83,7 @@ public class StringListEntry extends BaseListEntry {
         float fontY = (float)(y + height / 2 - 9 / 2);
 
         this.ruleWidget = new RuleWidget(this.ruleName, x - 50, y + 2, 200, 15);
-        this.ruleWidget.drawRule(font, fontX, fontY, 16777215);
+        this.ruleWidget.drawRule(matrices, font, fontX, fontY, 16777215);
 
         this.resetButton.x = x + 290;
         this.resetButton.y = y;

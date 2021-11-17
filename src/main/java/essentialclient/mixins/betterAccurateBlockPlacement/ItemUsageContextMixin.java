@@ -13,8 +13,10 @@ public class ItemUsageContextMixin {
 	@Inject(method = "getPlayerFacing", at = @At("HEAD"), cancellable = true)
 	private void onGetFacing(CallbackInfoReturnable<Direction> cir) {
 		Direction direction = BetterAccurateBlockPlacement.fakeDirection;
-		switch (direction) {
-			case WEST, EAST, NORTH, SOUTH -> cir.setReturnValue(direction);
+		if (direction != null) {
+			switch (direction) {
+				case WEST, EAST, NORTH, SOUTH -> cir.setReturnValue(direction);
+			}
 		}
 	}
 }
