@@ -16,11 +16,11 @@ public class BetterAccurateBlockPlacement {
 				if (playerEntity == null) {
 					return;
 				}
+				float fakeYaw = playerEntity.yaw;
+				float fakePitch = playerEntity.pitch;
 				boolean reversePressed = ClientKeybinds.ACCURATE_REVERSE.getKeyBinding().isPressed();
 				boolean intoPressed = ClientKeybinds.ACCURATE_INTO.getKeyBinding().isPressed();
 				if (reversePressed || intoPressed) {
-					float fakeYaw = playerEntity.yaw;
-					float fakePitch = playerEntity.pitch;
 					Direction facing = Direction.getEntityFacingOrder(playerEntity)[0];
 					BlockHitResult blockHitResult = (BlockHitResult) client.crosshairTarget;
 					if (intoPressed && blockHitResult != null) {
@@ -42,12 +42,12 @@ public class BetterAccurateBlockPlacement {
 							case UP, DOWN -> fakePitch = fakePitch < 0 ? fakePitch + 180 : fakePitch - 180;
 						}
 					}
-					client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookOnly(
-						fakeYaw,
-						fakePitch,
-						playerEntity.isOnGround()
-					));
 				}
+				client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookOnly(
+					fakeYaw,
+					fakePitch,
+					playerEntity.isOnGround()
+				));
 			}
 		});
 	}

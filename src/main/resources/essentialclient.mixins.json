@@ -3,6 +3,7 @@
   "package": "essentialclient.mixins",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin"
   ],
