@@ -3,8 +3,8 @@ package essentialclient.mixins.unlockAllRecipes;
 import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.recipebook.ClientRecipeBook;
 import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
-import net.minecraft.recipe.book.RecipeBook;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +19,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onSynchronizeRecipes", at = @At("HEAD"))
     private void onSyncRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
         if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getBoolean() && client.player != null) {
-            RecipeBook recipeBook = client.player.getRecipeBook();
+            ClientRecipeBook recipeBook = client.player.getRecipeBook();
             packet.getRecipes().forEach(recipeBook::add);
         }
     }
