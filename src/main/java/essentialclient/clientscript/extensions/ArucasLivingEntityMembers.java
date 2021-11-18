@@ -29,13 +29,14 @@ public class ArucasLivingEntityMembers implements IArucasExtension {
 
 	private final Set<? extends AbstractBuiltInFunction<?>> livingEntityFunctions = Set.of(
 		new MemberFunction("getStatusEffects", this::getStatusEffects),
-		new MemberFunction("getHealth", (context, function) -> new NumberValue(this.getLivingEntity(context, function).getHealth()))
+		new MemberFunction("getHealth", (context, function) -> new NumberValue(this.getLivingEntity(context, function).getHealth())),
+		new MemberFunction("isFlyFalling", (context, function) -> new BooleanValue(this.getLivingEntity(context, function).isFallFlying()))
 	);
 
 	private Value<?> getStatusEffects(Context context, MemberFunction function) throws CodeError {
-		LivingEntity playerEntity = this.getLivingEntity(context, function);
+		LivingEntity livingEntity = this.getLivingEntity(context, function);
 		ArucasValueList potionList = new ArucasValueList();
-		playerEntity.getStatusEffects().forEach(s -> {
+		livingEntity.getStatusEffects().forEach(s -> {
 			Identifier effectId = Registry.STATUS_EFFECT.getId(s.getEffectType());
 			potionList.add(effectId == null ? new NullValue() : new StringValue(effectId.getPath()));
 		});

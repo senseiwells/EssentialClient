@@ -53,7 +53,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		new MemberFunction("isThundering", (context, function) -> new BooleanValue(this.getWorld(context, function).isThundering())),
 		new MemberFunction("getTimeOfDay", (context, function) -> new NumberValue(this.getWorld(context, function).getTimeOfDay())),
 		new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
-		new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock)
+		new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, true)
 	);
 
 	private Value<?> getBlockAt(Context context, MemberFunction function) throws CodeError {
@@ -128,6 +128,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		return new NullValue();
 	}
 
+	@Deprecated
 	private Value<?> setGhostBlock(Context context, MemberFunction function) throws CodeError {
 		ClientWorld world = this.getWorld(context, function);
 		BlockState blockState = function.getParameterValueOfType(context, BlockStateValue.class, 1).value;
