@@ -1,4 +1,4 @@
-package essentialclient.mixins.disableFovChangeInWater;
+package essentialclient.mixins.waterFovMultipler;
 
 import essentialclient.feature.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
