@@ -33,8 +33,6 @@ Feel free to contribute by adding as many features as you want!
 * [commandSuggestorIgnoresSpaces](#commandsuggestorignoresspaces)
 * [commandTravel](#commandtravel)
 * [disableBobViewWhenHurt](#disablebobviewwhenhurt)
-* [waterFovMultiplier](#waterFovMultiplier)
-* [soulSpeedFovMultiplier](#soulSpeedFovMultiplier)
 * [disableHotbarScrolling](#disablehotbarscrolling)
 * [disableJoinLeaveMessages](#disablejoinleavemessages)
 * [disableNarrator](#disablenarrator)
@@ -47,6 +45,8 @@ Feel free to contribute by adding as many features as you want!
 * [enableScriptOnJoin](#enablescriptonjoin)
 * [essentialClientMainMenu](#essentialclientmainmenu)
 * [highlightLavaSources](#highlightlavasource)
+* [waterFovMultiplier](#waterFovMultiplier)
+* [soulSpeedFovMultiplier](#soulSpeedFovMultiplier)
 * [increaseSpectatorScrollSensitivity](#increasespectatorscrollsensitivity)
 * [increaseSpectatorScrollSpeed](#increasespectatorscrollspeed)
 * [missingTools](#missingtools)
@@ -160,16 +160,6 @@ Disables the camera bobbing when you get hurt
 * Type: `Boolean`
 * Default Value: `false`
 
-## waterFovMultiplier
-Determines the percentage of Fov scaling when fully submerged in water
-* Type: `Integer`
-* Default Value: `0`
-
-## soulSpeedFovMultiplier
-Determines the percentage of Fov scaling when walking on soil soul or soul sand
-* Type: `Integer`
-* Default Value: `0`
-
 ## disableHotbarScrolling
 This will prevent you from scrolling in your hotbar
 * Type: `Boolean`
@@ -241,6 +231,16 @@ This renders the Essential Client Menu on the main menu screen
 Highlights lava sources, credit to [plusls](https://github.com/plusls) for the original code for this in [their mod](https://github.com/plusls/oh-my-minecraft-client)
 * Type: `Boolean`
 * Default Value: `false`
+
+## waterFovMultiplier
+Determines the percentage of Fov scaling when fully submerged in water
+* Type: `Integer`
+* Default Value: `0`
+
+## soulSpeedFovMultiplier
+Determines the percentage of Fov scaling when walking on soil soul or soul sand
+* Type: `Integer`
+* Default Value: `0`
 
 ## increaseSpectatorScrollSensitivity
 Increases the sensitivity at which you can scroll to go faster in spectator
