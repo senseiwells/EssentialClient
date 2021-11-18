@@ -33,7 +33,8 @@ Feel free to contribute by adding as many features as you want!
 * [commandSuggestorIgnoresSpaces](#commandsuggestorignoresspaces)
 * [commandTravel](#commandtravel)
 * [disableBobViewWhenHurt](#disablebobviewwhenhurt)
-* [disableFovChangeInWater](#disablefovchangeinwater)
+* [waterFovMultiplier](#waterFovMultiplier)
+* [soulSpeedFovMultiplier](#soulSpeedFovMultiplier)
 * [disableHotbarScrolling](#disablehotbarscrolling)
 * [disableJoinLeaveMessages](#disablejoinleavemessages)
 * [disableNarrator](#disablenarrator)
@@ -159,10 +160,15 @@ Disables the camera bobbing when you get hurt
 * Type: `Boolean`
 * Default Value: `false`
 
-## disableFovChangeInWater
-This stops the FOV changing when you are submerged in water
-* Type: `Boolean`
-* Default Value: `false`
+## waterFovMultiplier
+Determines the percentage of Fov scaling when fully submerged in water
+* Type: `Integer`
+* Default Value: `0`
+
+## soulSpeedFovMultiplier
+Determines the percentage of Fov scaling when walking on soil soul or soul sand
+* Type: `Integer`
+* Default Value: `0`
 
 ## disableHotbarScrolling
 This will prevent you from scrolling in your hotbar
