@@ -25,6 +25,7 @@
     "core.TitleScreenMixin",
     "customClientCape.AbstractClientPlayerEntityMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
+    "disableBossBar.BossBarHudMixin",
     "disableFovChangeInWater.GameRendererMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
     "disableNarrator.KeyboardMixin",

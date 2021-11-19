@@ -77,22 +77,26 @@ public class InventoryUtils {
         Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
         while (true) {
             selectTrade(client, merchantScreen, index);
-            if (!tradeSlot.hasStack())
+            if (!tradeSlot.hasStack()) {
                 break;
+            }
             ItemStack tradeStack = tradeSlot.getStack().copy();
             shiftClickSlot(client, merchantScreen, tradeSlot.id);
-            if (dropItems)
+            if (dropItems) {
                 dropAllItemType(client.player, tradeStack.getItem());
-            if (tradeSlot.hasStack())
+            }
+            if (tradeSlot.hasStack()) {
                 break;
+            }
         }
         clearTradeInputSlot(client, merchantScreen);
         return true;
     }
 
     public static void selectTrade(MinecraftClient client, MerchantScreen merchantScreen, int index) {
-        if (client.getNetworkHandler() == null)
+        if (client.getNetworkHandler() == null) {
             return;
+        }
         MerchantScreenHandler handler = merchantScreen.getScreenHandler();
         handler.setRecipeIndex(index);
         client.getNetworkHandler().sendPacket(new SelectMerchantTradeC2SPacket(index));
@@ -100,67 +104,69 @@ public class InventoryUtils {
 
     public static void clearTradeInputSlot(MinecraftClient client, MerchantScreen merchantScreen) {
         Slot slot = merchantScreen.getScreenHandler().getSlot(0);
-        if (slot.hasStack())
+        if (slot.hasStack()) {
             shiftClickSlot(client, merchantScreen, slot.id);
+        }
         slot = merchantScreen.getScreenHandler().getSlot(1);
-        if (slot.hasStack())
+        if (slot.hasStack()) {
             shiftClickSlot(client, merchantScreen, slot.id);
+        }
     }
 
     public static int checkTradeDisabled(MinecraftClient client, int index) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
             return -2;
+        }
         TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
-        if (index > tradeOffers.size() - 1)
+        if (index > tradeOffers.size() - 1) {
             return -1;
+        }
         return tradeOffers.get(index).isDisabled() ? 1 : 0;
     }
 
-    public static int checkTradeDisabled(MinecraftClient client, Item item) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
-            return -2;
-        for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
-            if (offer.getSellItem().getItem() == item)
-                return offer.isDisabled() ? 1 : 0;
-        }
-        return -1;
-    }
-
     public static int checkPriceForTrade(MinecraftClient client, int index) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
             return -2;
+        }
         TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
-        if (index > tradeOffers.size() - 1)
+        if (index > tradeOffers.size() - 1) {
             return -1;
+        }
         return tradeOffers.get(index).getAdjustedFirstBuyItem().getCount();
     }
 
     public static int checkHasTrade(MinecraftClient client, Item item) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
             return -2;
+        }
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
-            if (offer.getSellItem().getItem() == item)
+            if (offer.getSellItem().getItem() == item) {
                 return 1;
+            }
         }
         return 0;
     }
 
     public static ItemStack getTrade(MinecraftClient client, int index) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
             return null;
+        }
         TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
-        if (index > tradeOffers.size() - 1)
+        if (index > tradeOffers.size() - 1) {
             return null;
+        }
         return tradeOffers.get(index).getSellItem();
     }
 
     public static int getIndexOfItemInMerchant(MinecraftClient client, Item item) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
             return -2;
+        }
         int i = 0;
         for (TradeOffer offer : merchantScreen.getScreenHandler().getRecipes()) {
-            if (offer.getSellItem().getItem() == item)
+            if (offer.getSellItem().getItem() == item) {
                 return i;
+            }
             i++;
         }
         return -1;
@@ -170,8 +176,9 @@ public class InventoryUtils {
         ScreenHandler container = screen.getScreenHandler();
         int numSlots = container.slots.size();
         if (9 < numSlots) {
-            if (!clearCraftingGridOfItems(client, itemStacks, screen))
+            if (!clearCraftingGridOfItems(client, itemStacks, screen)) {
                 return;
+            }
             Slot slotGridFirst = container.getSlot(1);
             Map<ItemStack, List<Integer>> ingredientSlots = getSlotsPerItem(itemStacks);
             for (Map.Entry<ItemStack, List<Integer>> entry : ingredientSlots.entrySet()) {
@@ -184,7 +191,6 @@ public class InventoryUtils {
                 fillCraftingGrid(client, screen, slotGridFirst, ingredientReference, targetSlots);
             }
         }
-
     }
 
     private static boolean clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
@@ -206,18 +212,23 @@ public class InventoryUtils {
     private static void fillCraftingGrid(MinecraftClient client, HandledScreen<? extends ScreenHandler> gui, Slot slotGridFirst, ItemStack ingredientReference, List<Integer> targetSlots) {
         ScreenHandler container = gui.getScreenHandler();
         PlayerEntity player = client.player;
-        assert player != null;
+        if (player == null) {
+            return;
+        }
         int slotNum;
         int slotReturn = -1;
         int sizeOrig;
-        if (ingredientReference.isEmpty())
+        if (ingredientReference.isEmpty()) {
             return;
+        }
         while (true) {
             slotNum = getSlotNumberOfLargestMatchingStackFromDifferentInventory(container, slotGridFirst, ingredientReference);
-            if (slotNum < 0)
+            if (slotNum < 0) {
                 break;
-            if (slotReturn == -1)
+            }
+            if (slotReturn == -1) {
                 slotReturn = slotNum;
+            }
             leftClickSlot(client, gui, slotNum);
             ItemStack stackCursor = player.inventory.getCursorStack();
             if (areStacksEqual(ingredientReference, stackCursor)) {
@@ -225,8 +236,9 @@ public class InventoryUtils {
                 dragSplitItemsIntoSlots(client, gui, targetSlots);
                 stackCursor = player.inventory.getCursorStack();
                 if (!stackCursor.isEmpty()) {
-                    if (stackCursor.getCount() >= sizeOrig)
+                    if (stackCursor.getCount() >= sizeOrig) {
                         break;
+                    }
                     leftClickSlot(client, gui, slotReturn);
                     if (!player.inventory.getCursorStack().isEmpty()) {
                         slotReturn = slotNum;
@@ -234,20 +246,27 @@ public class InventoryUtils {
                     }
                 }
             }
-            else
+            else {
                 break;
-            if (!player.inventory.getCursorStack().isEmpty())
+            }
+            if (!player.inventory.getCursorStack().isEmpty()) {
                 break;
+            }
         }
-        if (slotNum >= 0 && !player.inventory.getCursorStack().isEmpty())
+        if (slotNum >= 0 && !player.inventory.getCursorStack().isEmpty()) {
             leftClickSlot(client, gui, slotNum);
+        }
     }
 
     private static void dragSplitItemsIntoSlots(MinecraftClient client, HandledScreen<? extends ScreenHandler> gui, List<Integer> targetSlots) {
-        assert client.player != null;
-        ItemStack stackInCursor = client.player.inventory.getCursorStack();
-        if (stackInCursor.isEmpty())
+        ClientPlayerEntity player = client.player;
+        if (player == null) {
             return;
+        }
+        ItemStack stackInCursor = player.inventory.getCursorStack();
+        if (stackInCursor.isEmpty()) {
+            return;
+        }
         if (targetSlots.size() == 1) {
             leftClickSlot(client, gui, targetSlots.get(0));
             return;
@@ -295,26 +314,30 @@ public class InventoryUtils {
     }
 
     public static void shiftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int index) {
-        if (client.interactionManager == null)
+        if (client.interactionManager == null) {
             return;
+        }
         client.interactionManager.clickSlot(screen.getScreenHandler().syncId, index, 0, SlotActionType.QUICK_MOVE, client.player);
     }
 
     public static void leftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
-        if (client.interactionManager == null)
+        if (client.interactionManager == null) {
             return;
+        }
         client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.PICKUP, client.player);
     }
 
     public static void craftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum, int mouseButton) {
-        if (client.interactionManager == null)
+        if (client.interactionManager == null) {
             return;
+        }
         client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, mouseButton, SlotActionType.QUICK_CRAFT, client.player);
     }
 
     public static void dropStack(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
-        if (client.interactionManager == null)
+        if (client.interactionManager == null) {
             return;
+        }
         client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 1, SlotActionType.THROW, client.player);
     }
 }

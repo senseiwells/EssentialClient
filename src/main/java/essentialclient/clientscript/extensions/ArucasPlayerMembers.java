@@ -52,7 +52,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("message", "text", this::message),
 		new MemberFunction("messageActionBar", "text", this::messageActionBar),
 		new MemberFunction("openInventory", this::openInventory),
-		new MemberFunction("closeInventory", this::closeInventory),
+		new MemberFunction("closeScreen", this::closeScreen),
 		new MemberFunction("setWalking", "boolean", (context, function) -> this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keyForward)),
 		new MemberFunction("setSneaking", "boolean", (context, function) -> this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keySneak)),
 		new MemberFunction("setSprinting", "boolean", this::setSprinting),
@@ -141,7 +141,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		return new NullValue();
 	}
 
-	private Value<?> closeInventory(Context context, MemberFunction function) throws CodeError {
+	private Value<?> closeScreen(Context context, MemberFunction function) throws CodeError {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		final MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(player::closeHandledScreen);

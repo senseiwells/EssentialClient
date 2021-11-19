@@ -7,9 +7,12 @@ import essentialclient.clientscript.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvent;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.*;
+import essentialclient.config.clientrule.ClientRule;
 import essentialclient.config.clientrule.ClientRuleHelper;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
+import essentialclient.utils.keyboard.KeyboardHelper;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -28,6 +31,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +52,18 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 
 	private final Set<? extends AbstractBuiltInFunction<?>> minecraftClientFunctions = Set.of(
 		new MemberFunction("screenshot", this::screenshot),
+		new MemberFunction("pressKey", "key", this::pressKey),
+		new MemberFunction("releaseKey", "key", this::releaseKey),
+		new MemberFunction("holdKey", List.of("key", "ms"), this::holdKey),
 		new MemberFunction("clearChat", this::clearChat),
 		new MemberFunction("getLatestChatMessage", this::getLatestChatMessage),
 		new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand),
 		new MemberFunction("isInSinglePlayer", (context, function) -> new BooleanValue(this.getClient(context, function).isInSingleplayer())),
 		new MemberFunction("getServerName", this::getServerName),
 		new MemberFunction("getScriptsPath", (context, function) -> new StringValue(ClientScript.getDir().toString())),
+		new MemberFunction("setEssentialClientRule", List.of("ruleName", "value"), this::setEssentialClientRule),
+		new MemberFunction("resetEssentialClientRule", "ruleName", this::resetEssentialClientRule),
+		new MemberFunction("getEssentialClientValue", "ruleName", this::getEssentialClientRuleValue),
 
 		new MemberFunction("getPlayer", this::getPlayer),
 		new MemberFunction("getWorld", this::getWorld),
@@ -74,6 +84,59 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);
+		return new NullValue();
+	}
+
+	private Value<?> pressKey(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		String key = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		final int keyCode = KeyboardHelper.translateStringToKey(key);
+		if (keyCode == -1) {
+			throw new RuntimeError("Tried to press unknown key", function.syntaxPosition, context);
+		}
+		client.execute(() -> {
+			long handler = client.getWindow().getHandle();
+			int scanCode = GLFW.glfwGetKeyScancode(keyCode);
+			client.keyboard.onKey(handler, keyCode, scanCode, 1, 0);
+		});
+		return new NullValue();
+	}
+
+	private Value<?> releaseKey(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		String key = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		final int keyCode = KeyboardHelper.translateStringToKey(key);
+		if (keyCode == -1) {
+			throw new RuntimeError("Tried to press unknown key", function.syntaxPosition, context);
+		}
+		client.execute(() -> {
+			long handler = client.getWindow().getHandle();
+			int scanCode = GLFW.glfwGetKeyScancode(keyCode);
+			client.keyboard.onKey(handler, keyCode, scanCode, 0, 0);
+		});
+		return new NullValue();
+	}
+
+	private Value<?> holdKey(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		String key = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		final int milliseconds = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
+		int keyCode = KeyboardHelper.translateStringToKey(key);
+		if (keyCode == -1) {
+			throw new RuntimeError("Tried to press unknown key", function.syntaxPosition, context);
+		}
+		final long handler = client.getWindow().getHandle();
+		final int scanCode = GLFW.glfwGetKeyScancode(keyCode);
+		ClientScript.getInstance().runAsyncFunctionInContext(null, ctx -> {
+			client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 1, 0));
+			int ms = milliseconds;
+			while (ms > 50) {
+				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 2, 0));
+				Thread.sleep(50);
+				ms -= 50;
+			}
+			client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 0, 0));
+		});
 		return new NullValue();
 	}
 
@@ -141,6 +204,48 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 			throw new RuntimeError("Failed to get server name", function.syntaxPosition, context);
 		}
 		return new StringValue(serverInfo.name);
+	}
+
+	private Value<?> setEssentialClientRule(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
+		String clientRuleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		String clientRuleValue = function.getParameterValue(context, 2).toString();
+		ClientRule<?> clientRule = ClientRules.ruleFromString(clientRuleName);
+		if (clientRule == null) {
+			throw new RuntimeError("Invalid ClientRule name", function.syntaxPosition, context);
+		}
+		try {
+			clientRule.setValueFromString(clientRuleValue);
+			ClientRuleHelper.writeSaveFile();
+			clientRule.run();
+		}
+		catch (Exception e) {
+			throw new RuntimeError("Cannot set that value", function.syntaxPosition, context);
+		}
+		return new NullValue();
+	}
+
+	private Value<?> resetEssentialClientRule(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
+		String clientRuleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		ClientRule<?> clientRule = ClientRules.ruleFromString(clientRuleName);
+		if (clientRule == null) {
+			throw new RuntimeError("Invalid ClientRule name", function.syntaxPosition, context);
+		}
+		clientRule.resetToDefault();
+		ClientRuleHelper.writeSaveFile();
+		clientRule.run();
+		return new NullValue();
+	}
+
+	private Value<?> getEssentialClientRuleValue(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
+		String clientRuleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		ClientRule<?> clientRule = ClientRules.ruleFromString(clientRuleName);
+		if (clientRule == null) {
+			throw new RuntimeError("Invalid ClientRule name", function.syntaxPosition, context);
+		}
+		return new StringValue(clientRule.getValue().toString());
 	}
 
 	private Value<?> addGameEvent(Context context, MemberFunction function) throws CodeError {

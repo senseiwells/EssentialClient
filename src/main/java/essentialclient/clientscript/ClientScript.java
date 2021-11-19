@@ -117,6 +117,7 @@ public class ClientScript {
         ContextBuilder contextBuilder = new ContextBuilder()
             .setDisplayName("Arucas client")
             .addDefaultExtensions()
+            .setOutputHandler(EssentialUtils::sendMessage)
             .addExtensions(
                 ArucasMinecraftExtension.class,
                 ArucasMinecraftClientMembers.class,
