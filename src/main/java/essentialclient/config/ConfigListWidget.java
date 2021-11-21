@@ -15,9 +15,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ParentElement;
-import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.gui.widget.ElementListWidget;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 @Environment(EnvType.CLIENT)
 public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> {
@@ -38,11 +41,13 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
                         BooleanListEntry booleanList = new BooleanListEntry(r, client, gui);
                         this.addEntry(booleanList);
                         this.entries.add(booleanList);
-                    } else if (r.type == int.class || r.type == double.class) {
+                    }
+                    else if (r.type == int.class || r.type == double.class) {
                         NumberListEntry numberList = new NumberListEntry(r, client, gui);
                         this.addEntry(numberList);
                         this.entries.add(numberList);
-                    } else {
+                    }
+                    else {
                         StringListEntry stringList = new StringListEntry(r, client, gui);
                         this.addEntry(stringList);
                         this.entries.add(stringList);

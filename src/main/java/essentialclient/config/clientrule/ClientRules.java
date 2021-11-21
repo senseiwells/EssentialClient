@@ -18,6 +18,8 @@ public class ClientRules {
 	private static final Map<String, ClientRule<?>> clientRuleMap = new HashMap<>();
 
 	public static BooleanClientRule
+		BETTER_ACCURATE_BLOCK_PLACEMENT = new BooleanClientRule("betterAccurateBlockPlacement", "This is the same as accurate block placement for tweakeroo but handled all client side, see controls..."),
+		BETTER_PING_DISPLAY = new BooleanClientRule("betterPingDisplay", "This displays the real ping in the tab list"),
 		COMMAND_CLIENT_NICK = new BooleanClientRule("commandClientNick", "This allows you to rename player names on the client", ClientRuleHelper::refreshCommand),
 		COMMAND_MUSIC = new BooleanClientRule("commandMusic", "This command allows you to manipulate the current music", ClientRuleHelper::refreshCommand),
 		COMMAND_PLAYER_CLIENT = new BooleanClientRule("commandPlayerClient", "This command allows you to save /player... commands and execute them", ClientRuleHelper::refreshCommand),
@@ -25,7 +27,6 @@ public class ClientRules {
 		COMMAND_REGION = new BooleanClientRule("commandRegion", "This command allows you to determine the region you are in or the region at set coords", ClientRuleHelper::refreshCommand),
 		COMMAND_SUGGESTOR_IGNORES_SPACES = new BooleanClientRule("commandSuggestorIgnoresSpaces", "This makes the command suggestor ignore spaces"),
 		COMMAND_TRAVEL = new BooleanClientRule("commandTravel", "This command allows you to travel to a set location", ClientRuleHelper::refreshCommand),
-		BETTER_ACCURATE_BLOCK_PLACEMENT = new BooleanClientRule("betterAccurateBlockPlacement", "This is the same as accurate block placement for tweakeroo but handled all client side, see controls..."),
 		DISABLE_BOB_VIEW_WHEN_HURT = new BooleanClientRule("disableBobViewWhenHurt", "Disables the camera bobbing when you get hurt"),
 		DISABLE_BOSS_BAR = new BooleanClientRule("disableBossBar", "This will disable the boss bar from rendering"),
 		DISABLE_HOTBAR_SCROLLING = new BooleanClientRule("disableHotbarScrolling", "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"),
@@ -38,7 +39,7 @@ public class ClientRules {
 		DISABLE_TUTORIAL_NOTIFICATIONS = new BooleanClientRule("disableTutorialNotifications", "Disables the tutorial toast from showing"   ),
 		DISPLAY_TIME_PLAYED = new BooleanClientRule("displayTimePlayed", "This will display how long you have had your current client open for in the corner of the pause menu"),
 		ENABLE_SCRIPT_ON_JOIN = new BooleanClientRule("enableScriptOnJoin", "This will enable your selected script when you join a world automatically"),
-		ESSENTIAL_CLIENT_MAIN_MENU = new BooleanClientRule("essentialClientMainMenu", "This renders the Essential Client Menu on the main menu screen"),
+		ESSENTIAL_CLIENT_BUTTON = new BooleanClientRule("essentialClientButton", "This renders the Essential Client Menu on the main menu screen, and pause screen", true),
 		HIGHLIGHT_LAVA_SOURCES = new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", ClientRuleHelper::refreshWorld),
 		INCREASE_SPECTATOR_SCROLL_SPEED = new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator"),
 		MISSING_TOOLS = new BooleanClientRule("missingTools", "Adds client functionality to missingTools from Carpet for the client"),

@@ -12,6 +12,7 @@
     "betterAccurateBlockPlacement.ItemPlacementContextMixin",
     "betterAccurateBlockPlacement.ItemUsageContextMixin",
     "betterMusic.MusicTrackerMixin",
+    "betterPingDisplay.PlayerListHudMixin",
     "carpet.ClientPlayNetworkHandlerMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",
     "clientNick.InGameHudMixin",
