@@ -87,8 +87,12 @@ public class ClientScript {
         this.thread = null;
 
         CommandHelper.functionCommands.clear();
+        MinecraftClient client = EssentialUtils.getClient();
+        if (CommandHelper.getCommandPacket() != null) {
+            client.execute(() -> EssentialUtils.getNetworkHandler().onCommandTree(CommandHelper.getCommandPacket()));
+        }
         MinecraftScriptEvents.clearEventFunctions();
-        this.resetKeys(MinecraftClient.getInstance());
+        this.resetKeys(client);
 
         EssentialUtils.sendMessageToActionBar("§6Script is now §cOFF");
     }

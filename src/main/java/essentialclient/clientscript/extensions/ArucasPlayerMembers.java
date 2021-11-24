@@ -251,8 +251,12 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		if (!(ArucasMinecraftExtension.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
 			return new NullValue();
 		}
-		ItemStack[] itemStacks = new ItemStack[9];
-		for (int i = 0; i < listValue.value.size(); i++) {
+		int listSize = listValue.value.size();
+		if (listSize != 9 && listSize != 4) {
+			throw new RuntimeError("Recipe must either be 3x3 or 2x2", function.syntaxPosition, context);
+		}
+		ItemStack[] itemStacks = new ItemStack[listSize];
+		for (int i = 0; i < listSize; i++) {
 			if (!(listValue.value.get(i) instanceof ItemStackValue itemStackValue)) {
 				throw new RuntimeError("The recipe must only include items", function.syntaxPosition, context);
 			}

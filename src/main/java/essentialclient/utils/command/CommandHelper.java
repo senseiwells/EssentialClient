@@ -4,7 +4,9 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.brigadier.tree.RootCommandNode;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
@@ -16,6 +18,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
@@ -26,6 +29,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandHelper {
+    private static CommandTreeS2CPacket fakeCommandPacket;
 
     public static final Set<String> clientCommands = new HashSet<>();
     public static final Set<String> functionCommands = new HashSet<>();
@@ -70,16 +74,19 @@ public class CommandHelper {
         ClientPlayerEntity player = EssentialUtils.getPlayer();
         try {
             player.networkHandler.getCommandDispatcher().execute(reader, new FakeCommandSource(player));
-        } catch (CommandException e) {
+        }
+        catch (CommandException e) {
             EssentialUtils.sendMessage(ChatColour.RED + e.getTextMessage());
-        } catch (CommandSyntaxException e) {
+        }
+        catch (CommandSyntaxException e) {
             EssentialUtils.sendMessage(ChatColour.RED + e.getMessage());
             if (e.getInput() != null && e.getCursor() >= 0) {
                 int cursor = Math.min(e.getCursor(), e.getInput().length());
                 MutableText text = new LiteralText("").formatted(Formatting.GRAY)
-                        .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
-                if (cursor > 10)
+                    .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
+                if (cursor > 10) {
                     text.append("...");
+                }
 
                 text.append(e.getInput().substring(Math.max(0, cursor - 10), cursor));
                 if (cursor < e.getInput().length()) {
@@ -89,10 +96,11 @@ public class CommandHelper {
                 text.append(new TranslatableText("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
                 EssentialUtils.getPlayer().sendMessage(text, false);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             LiteralText error = new LiteralText(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
             EssentialUtils.getPlayer().sendMessage(new TranslatableText("command.failed")
-                    .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
+                .styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
             e.printStackTrace();
         }
     }
@@ -100,8 +108,9 @@ public class CommandHelper {
     public static boolean tryRunFunctionCommand(String message) {
         message = message.replaceFirst("/", "");
         ArucasValueList arguments = new ArucasValueList();
-        for (String argument : message.split(" "))
+        for (String argument : message.split(" ")) {
             arguments.add(new StringValue(argument));
+        }
         StringValue command = (StringValue) arguments.remove(0);
         if (functionCommands.contains(command.value)) {
             List<Value<?>> parameters = List.of(command, new ListValue(arguments));
@@ -109,5 +118,21 @@ public class CommandHelper {
             return true;
         }
         return false;
+    }
+
+    public static void setCommandPacket(CommandTreeS2CPacket packet) {
+        if (packet == null) {
+            return;
+        }
+        Collection<CommandNode<CommandSource>> commandNodes =  packet.getCommandTree().getChildren();
+        RootCommandNode<CommandSource> newRootCommandNode = new RootCommandNode<>();
+        for (CommandNode<CommandSource> commandNode : commandNodes) {
+            newRootCommandNode.addChild(commandNode);
+        }
+        fakeCommandPacket = new CommandTreeS2CPacket(newRootCommandNode);
+    }
+
+    public static CommandTreeS2CPacket getCommandPacket() {
+        return fakeCommandPacket;
     }
 }

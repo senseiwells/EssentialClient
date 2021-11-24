@@ -14,7 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class HopperBlockEntityMixin {
     @Inject(method = "canMergeItems", at = @At("HEAD"), cancellable = true)
     private static void canMergeItems(ItemStack first, ItemStack second, CallbackInfoReturnable<Boolean> cir) {
-        if (ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES.getValue() && first.getItem() instanceof BlockItem && ((BlockItem) first.getItem()).getBlock() instanceof ShulkerBoxBlock)
+        if (ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES.getValue() && first.getItem() instanceof BlockItem && ((BlockItem) first.getItem()).getBlock() instanceof ShulkerBoxBlock) {
             cir.setReturnValue(false);
+        }
     }
 }

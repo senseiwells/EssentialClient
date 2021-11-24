@@ -14,8 +14,9 @@ public abstract class CommandSuggestorMixin {
 		int current = textFieldWidget.getCursor();
 		boolean hasSpace = false;
 		String message = textFieldWidget.getText();
-		if (current == 0 || !message.startsWith("/") || !ClientRules.COMMAND_SUGGESTOR_IGNORES_SPACES.getValue())
+		if (current == 0 || !message.startsWith("/") || !ClientRules.COMMAND_SUGGESTOR_IGNORES_SPACES.getValue()) {
 			return current;
+		}
 		current--;
 		while (message.charAt(current) == ' ') {
 			hasSpace = true;

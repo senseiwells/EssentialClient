@@ -133,7 +133,5 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
     }
     
     @Environment(EnvType.CLIENT)
-    public abstract static class Entry extends ElementListWidget.Entry<ConfigListWidget.Entry> {
-    
-    }
+    public abstract static class Entry extends ElementListWidget.Entry<ConfigListWidget.Entry> { }
 }

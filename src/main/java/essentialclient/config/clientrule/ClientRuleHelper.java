@@ -7,11 +7,11 @@ import com.mojang.serialization.JsonOps;
 import essentialclient.EssentialClient;
 import essentialclient.config.rulescreen.RulesScreen;
 import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.render.CapeHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.MusicTracker;
-import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.util.JsonHelper;
 
 import java.io.BufferedReader;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ClientRuleHelper {
-    public static CommandTreeS2CPacket serverPacket;
 
     public static final Codec<String> CODEC = Codec.STRING;
     public static final Codec<Map<String, String>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC);
@@ -85,7 +84,7 @@ public class ClientRuleHelper {
     public static void refreshCommand() {
         ClientPlayerEntity playerEntity =  EssentialUtils.getPlayer();
         if (playerEntity != null) {
-            playerEntity.networkHandler.onCommandTree(serverPacket);
+            playerEntity.networkHandler.onCommandTree(CommandHelper.getCommandPacket());
         }
     }
 

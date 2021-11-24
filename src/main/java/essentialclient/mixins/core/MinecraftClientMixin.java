@@ -18,10 +18,10 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
     public ClientPlayerEntity player;
 
     @Shadow
-    private void doAttack() {}
+    private void doAttack() { }
 
     @Shadow
-    private void doItemUse() {}
+    private void doItemUse() { }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
     private void onLeaveWorld(Screen screen, CallbackInfo ci) {

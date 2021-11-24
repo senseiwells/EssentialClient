@@ -22,7 +22,7 @@ public class RegionCommand {
 
         CommandHelper.clientCommands.add("region");
 
-        dispatcher.register(literal("region")//.requires((p) -> ClientRules.COMMAND_REGION.getBoolean())
+        dispatcher.register(literal("region")
             .then(literal("get")
                 .then(argument("pos", Vec2ArgumentType.vec2())
                     .executes(context -> {

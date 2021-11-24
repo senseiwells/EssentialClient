@@ -27,8 +27,9 @@ public abstract class ItemStackMixin {
                 stack.removeSubTag("BlockEntityTag");
                 cir.setReturnValue(64);
             }
-            else if (ClientRules.STACKABLE_SHULKERS_WITH_ITEMS.getValue())
+            else if (ClientRules.STACKABLE_SHULKERS_WITH_ITEMS.getValue()) {
                 cir.setReturnValue(64);
+            }
         }
     }
 }

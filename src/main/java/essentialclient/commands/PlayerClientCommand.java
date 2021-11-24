@@ -29,10 +29,10 @@ public class PlayerClientCommand {
         CommandHelper.clientCommands.add("pc");
 
         LiteralCommandNode<ServerCommandSource> playerclientNode = CommandManager
-            .literal("playerclient")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+            .literal("playerclient")
             .build();
         LiteralCommandNode<ServerCommandSource> pcNode = CommandManager
-            .literal("pc")//.requires((p) -> ClientRules.COMMAND_PLAYERCLIENT.getBoolean())
+            .literal("pc")
             .build();
         LiteralCommandNode<ServerCommandSource> spawnNode = CommandManager
             .literal("spawn")

@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ChatHudMixin {
 	@Inject(method = "clear", at = @At("HEAD"), cancellable = true)
 	private void onClear(boolean clearHistory, CallbackInfo ci) {
-		if (ClientRules.PERMANENT_CHAT_HUD.getValue())
+		if (ClientRules.PERMANENT_CHAT_HUD.getValue()) {
 			ci.cancel();
+		}
 	}
 }

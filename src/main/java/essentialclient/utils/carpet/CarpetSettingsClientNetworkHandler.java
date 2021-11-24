@@ -24,7 +24,9 @@ public class CarpetSettingsClientNetworkHandler
     
     private static void split() {
         NbtCompound compound = data.readNbt();
-        if (compound == null) return;
+        if (compound == null) {
+            return;
+        }
         String carpetServerVersion = compound.getString("CarpetVersion");
     
         NbtList rulesList = compound.getList("rules", 10);

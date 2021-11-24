@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RecipeToast.class)
 public abstract class RecipeToastMixin {
-
     @Inject(at = @At("HEAD"), method = "draw", cancellable = true)
     private void hideToast(CallbackInfoReturnable<Toast.Visibility> cir) {
         if (ClientRules.DISABLE_RECIPE_NOTIFICATIONS.getValue()) {

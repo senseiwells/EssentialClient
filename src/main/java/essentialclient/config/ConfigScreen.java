@@ -28,13 +28,15 @@ public class ConfigScreen extends Screen {
     
     @Override
     protected void init() {
-        if (this.client == null)
+        if (this.client == null) {
             return;
+        }
         this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.openScreen(new ClientRulesScreen(this))));
         ButtonWidget serverRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), (button) -> this.client.openScreen(new ServerRulesScreen(this))));
         ButtonWidget gameRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Gamerule Options"), (button -> {
-            if (this.client.getServer() == null)
+            if (this.client.getServer() == null) {
                 return;
+            }
             this.client.openScreen(new EditGameRulesScreen(this.client.getServer().getGameRules(), (rules) -> {
                 this.client.openScreen(this);
                 rules.ifPresent((gameRules -> this.client.getServer().getGameRules().setAllValues(gameRules, this.client.getServer())));
@@ -54,18 +56,21 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        if (this.client != null)
+        if (this.client != null) {
             this.client.openScreen(this.parent);
+        }
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
         drawCenteredText(matrices, this.textRenderer, "Essential Client", this.width / 2, 8, 0xFFFFFF);
-        if (carpetServerVersion != null)
+        if (carpetServerVersion != null) {
             drawCenteredText(matrices, this.textRenderer, String.format("You are running carpet version: %s", carpetServerVersion), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0xFFFFFF);
-        else if (this.client != null && this.client.getCurrentServerEntry() != null)
+        }
+        else if (this.client != null && this.client.getCurrentServerEntry() != null) {
             drawCenteredText(matrices, this.textRenderer, String.format("You are currently connected to: %s", this.client.getCurrentServerEntry().name), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0xFFFFFF);
+        }
         super.render(matrices, mouseX, mouseY, delta);
     }
 }

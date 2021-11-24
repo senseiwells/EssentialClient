@@ -193,7 +193,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		CommandHelper.functionCommandNodes.add(command);
 		MinecraftClient client = this.getClient(context, function);
 		ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
-		client.execute(() -> player.networkHandler.onCommandTree(ClientRuleHelper.serverPacket));
+		client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
 		return new NullValue();
 	}
 

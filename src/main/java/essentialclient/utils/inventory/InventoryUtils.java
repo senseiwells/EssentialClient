@@ -8,6 +8,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
 import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -42,8 +43,9 @@ public class InventoryUtils {
         if (sourceSlot != -1 && playerEntity.currentScreenHandler == playerEntity.playerScreenHandler) {
             ScreenHandler container = playerEntity.playerScreenHandler;
             MinecraftClient client = MinecraftClient.getInstance();
-            if (client.interactionManager == null)
+            if (client.interactionManager == null) {
                 return;
+            }
             if (slotType == EquipmentSlot.MAINHAND) {
                 int currentHotbarSlot = playerEntity.inventory.selectedSlot;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
@@ -59,8 +61,9 @@ public class InventoryUtils {
 
     public static void dropAllItemType(ClientPlayerEntity playerEntity, Item item) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.interactionManager == null)
+        if (client.interactionManager == null) {
             return;
+        }
         ScreenHandler containerPlayer = playerEntity.currentScreenHandler;
         Predicate<ItemStack> filterItemStack = (s) -> s.getItem() == item;
         for (Slot slot : containerPlayer.slots) {
@@ -72,8 +75,9 @@ public class InventoryUtils {
     }
 
     public static boolean tradeAllItems(MinecraftClient client, int index, boolean dropItems) {
-        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null)
+        if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
             return false;
+        }
         Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
         while (true) {
             selectTrade(client, merchantScreen, index);
@@ -180,9 +184,9 @@ public class InventoryUtils {
                 return;
             }
             Slot slotGridFirst = container.getSlot(1);
-            Map<ItemStack, List<Integer>> ingredientSlots = getSlotsPerItem(itemStacks);
-            for (Map.Entry<ItemStack, List<Integer>> entry : ingredientSlots.entrySet()) {
-                ItemStack ingredientReference = entry.getKey();
+            Map<Item, List<Integer>> ingredientSlots = getSlotsPerItem(itemStacks);
+            for (Map.Entry<Item, List<Integer>> entry : ingredientSlots.entrySet()) {
+                ItemStack ingredientReference = entry.getKey().getDefaultStack();
                 List<Integer> recipeSlots = entry.getValue();
                 List<Integer> targetSlots = new ArrayList<>();
                 for (int s : recipeSlots) {
@@ -197,7 +201,7 @@ public class InventoryUtils {
         final int invSlots = gui.getScreenHandler().slots.size();
         for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
             try { Thread.sleep(0, 1); }
-            catch (InterruptedException ignored) {}
+            catch (InterruptedException ignored) { }
             Slot slotTmp = gui.getScreenHandler().getSlot(slotNum);
             if (slotTmp != null && slotTmp.hasStack() && (!areStacksEqual(recipe[i], slotTmp.getStack()))) {
                 shiftClickSlot(client, gui, slotNum);
@@ -272,13 +276,16 @@ public class InventoryUtils {
             return;
         }
         int numSlots = gui.getScreenHandler().slots.size();
+        // Start to drag the items
         craftClickSlot(client, gui, -999, 0);
         for (int slotNum : targetSlots) {
             if (slotNum >= numSlots) {
                 break;
             }
+            // Dragging the items
             craftClickSlot(client, gui, slotNum, 1);
         }
+        // Finish dragging itemsoak
         craftClickSlot(client, gui, -999, 2);
     }
 
@@ -301,13 +308,23 @@ public class InventoryUtils {
         return slotNum;
     }
 
-    private static Map<ItemStack, List<Integer>> getSlotsPerItem(ItemStack[] stacks) {
-        Map<ItemStack, List<Integer>> mapSlots = new HashMap<>();
+    /**
+     * @param stacks - this is the array of stacks that you want to craft
+     * @return - a map of the itemStack with a list of all the slots it is needed in
+     */
+    private static Map<Item, List<Integer>> getSlotsPerItem(ItemStack[] stacks) {
+        Map<Item, List<Integer>> mapSlots = new HashMap<>();
         for (int i = 0; i < stacks.length; i++) {
-            ItemStack stack = stacks[i];
-            if (!stack.isEmpty()) {
-                List<Integer> slots = mapSlots.computeIfAbsent(stack, k -> new ArrayList<>());
-                slots.add(i);
+            Item item = stacks[i].getItem();
+            if (item != Items.AIR) {
+                if (mapSlots.containsKey(item)) {
+                    mapSlots.get(item).add(i);
+                }
+                else {
+                    List<Integer> integerList = new ArrayList<>();
+                    integerList.add(i);
+                    mapSlots.put(item, integerList);
+                }
             }
         }
         return mapSlots;

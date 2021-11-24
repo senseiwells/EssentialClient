@@ -25,7 +25,7 @@ public class MusicCommand {
 
         CommandHelper.clientCommands.add("music");
 
-        dispatcher.register(literal("music")//.requires((p) -> ClientRules.COMMAND_MUSIC.getBoolean())
+        dispatcher.register(literal("music")
             .then(literal("skip")
                 .executes(context -> {
                     MinecraftClient client = MinecraftClient.getInstance();

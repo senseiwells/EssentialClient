@@ -84,19 +84,23 @@ public class EssentialUtils {
 
     public static String getVersion() {
         ModContainer modContainer = getModContainer();
-        if (modContainer == null)
+        if (modContainer == null) {
             return "unknown";
+        }
         return modContainer.getMetadata().getVersion().getFriendlyString();
     }
 
     public static String getArucasVersion() {
         ModContainer modContainer = getModContainer();
-        if (modContainer != null)
-            for (ModDependency modDependency : modContainer.getMetadata().getSuggests())
-                if (modDependency.getModId().equals("arucas"))
+        if (modContainer != null) {
+            for (ModDependency modDependency : modContainer.getMetadata().getSuggests()) {
+                if (modDependency.getModId().equals("arucas")) {
                     return modDependency.getVersionRequirements().toString()
-                            .replaceAll("\\[=", "")
-                            .replaceAll("]", "");
+                        .replaceAll("\\[=", "")
+                        .replaceAll("]", "");
+                }
+            }
+        }
         return "unknown";
     }
 
