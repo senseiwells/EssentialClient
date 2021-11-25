@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "essential-client",
-  "version": "1.0.3",
+  "version": "1.1.0",
 
   "name": "Essential Client",
   "description": "A client mod that provides utilities and client support for carpet rules",
@@ -27,7 +27,7 @@
       "essentialclient.EssentialClient"
     ],
     "modmenu": [
-      "essentialclient.gui.modmenu.ModMenuImpl"
+      "essentialclient.config.modmenu.ModMenuImpl"
     ]
   },
   "mixins": [
@@ -41,6 +41,6 @@
 
   },
   "suggests": {
-    "arucas": "1.0.3"
+    "arucas": "1.0.5"
   }
 }

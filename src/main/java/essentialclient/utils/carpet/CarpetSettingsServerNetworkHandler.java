@@ -18,7 +18,6 @@ public class CarpetSettingsServerNetworkHandler {
     public static void sendGUIInfo(ServerPlayerEntity playerEntity) {
         NbtCompound data = new NbtCompound();
 
-        
         data.putString("CarpetVersion", CarpetSettings.carpetVersion);
         data.putFloat("Tickrate", TickSpeed.tickrate);
         
@@ -44,8 +43,8 @@ public class CarpetSettingsServerNetworkHandler {
         if (player.hasPermissionLevel(2)) {
             CarpetServer.settingsManager.getRule(rule).set(player.getCommandSource(), newValue);
             Messenger.m(player.getCommandSource(), "w " + rule + ": " + newValue + ", ", "c [change permanently?]",
-                    "^w Click to keep the settings in carpet.conf to save across restarts",
-                    "?/carpet setDefault " + rule + " " + newValue);
+                "^w Click to keep the settings in carpet.conf to save across restarts",
+                "?/carpet setDefault " + rule + " " + newValue);
         }
         else {
             Messenger.m(player, "r You do not have permissions to change the rules.");

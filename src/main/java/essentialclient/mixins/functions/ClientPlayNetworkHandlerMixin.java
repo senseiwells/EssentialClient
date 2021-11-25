@@ -1,17 +1,17 @@
 package essentialclient.mixins.functions;
 
-import essentialclient.feature.clientscript.MinecraftEventFunction;
+import essentialclient.clientscript.events.MinecraftScriptEvents;
+import essentialclient.clientscript.values.ItemStackValue;
+import essentialclient.clientscript.values.PlayerValue;
+import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
-import net.minecraft.network.packet.s2c.play.ItemPickupAnimationS2CPacket;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,27 +30,44 @@ public class ClientPlayNetworkHandlerMixin {
     private MinecraftClient client;
 
     @Inject(method = "onHealthUpdate", at = @At("HEAD"))
-    private void onHealthUpdate(CallbackInfo ci) {
-        MinecraftEventFunction.ON_HEALTH_UPDATE.runFunction();
+    private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
+        MinecraftScriptEvents.ON_HEALTH_UPDATE.run(List.of(new NumberValue(packet.getHealth())));
     }
 
     @Inject(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;showFloatingItem(Lnet/minecraft/item/ItemStack;)V"))
     private void onTotem(CallbackInfo ci) {
-        MinecraftEventFunction.ON_TOTEM.runFunction();
+        MinecraftScriptEvents.ON_TOTEM.run();
     }
 
     @Inject(method = "onGameStateChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;setGameMode(Lnet/minecraft/world/GameMode;)V"))
     private void onGamemodeChange(GameStateChangeS2CPacket packet, CallbackInfo ci) {
-        MinecraftEventFunction.ON_GAMEMODE_CHANGE.runFunction(List.of(new StringValue(GameMode.byId((int) packet.getValue()).getName())));
+        MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(List.of(new StringValue(GameMode.byId((int) packet.getValue()).getName())));
     }
 
     @Inject(method = "onItemPickupAnimation", at = @At("HEAD"))
     private void onPickUp(ItemPickupAnimationS2CPacket packet, CallbackInfo ci) {
         Entity entity = this.world.getEntityById(packet.getEntityId());
         LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
-        if (entity != null && livingEntity == this.client.player) {
-            String entityName = entity.getType() != EntityType.ITEM ? "experience_orb" : Registry.ITEM.getId(((ItemEntity) entity).getStack().getItem()).getPath();
-            MinecraftEventFunction.ON_PICKUP.runFunction(List.of(new StringValue(entityName)));
+        if (entity != null && this.client.player != null && this.client.player.equals(livingEntity) && entity instanceof ItemEntity itemEntity) {
+            MinecraftScriptEvents.ON_PICK_UP_ITEM.run(List.of(new ItemStackValue(itemEntity.getStack())));
+        }
+    }
+
+    @Inject(method = "onPlayerRespawn", at = @At("TAIL"))
+    private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
+        MinecraftScriptEvents.ON_RESPAWN.run(List.of(new PlayerValue(this.client.player)));
+    }
+
+    @Inject(method = "onGameMessage", at = @At("HEAD"))
+    private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+        MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(new StringValue(packet.getMessage().getString()));
+    }
+
+    @Inject(method = "onPlayerList", at = @At("HEAD"))
+    public void onPlayerList(PlayerListS2CPacket packet, CallbackInfo info) {
+        switch (packet.getAction()) {
+            case ADD_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(new StringValue(entry.getProfile().getName())));
+            case REMOVE_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_LEAVE.run(new StringValue(entry.getProfile().getName())));
         }
     }
 }

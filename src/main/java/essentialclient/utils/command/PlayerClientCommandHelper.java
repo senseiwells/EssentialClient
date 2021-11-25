@@ -30,9 +30,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,14 +39,14 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
     public static Map<String, PlayerClientCommandHelper> playerClientHelperMap = new HashMap<>();
 
     public static final MapCodec<PlayerClientCommandHelper> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
-            Codec.STRING.fieldOf("name").forGetter(s -> s.name),
-            Codec.DOUBLE.fieldOf("x").forGetter(d -> d.x),
-            Codec.DOUBLE.fieldOf("y").forGetter(d -> d.y),
-            Codec.DOUBLE.fieldOf("z").forGetter(d -> d.z),
-            Codec.DOUBLE.fieldOf("yaw").forGetter(d -> d.yaw),
-            Codec.DOUBLE.fieldOf("pitch").forGetter(d -> d.pitch),
-            Codec.STRING.fieldOf("dimension").forGetter(s -> s.dimension),
-            Codec.STRING.fieldOf("gamemode").forGetter(s -> s.gamemode)
+        Codec.STRING.fieldOf("name").forGetter(s -> s.name),
+        Codec.DOUBLE.fieldOf("x").forGetter(d -> d.x),
+        Codec.DOUBLE.fieldOf("y").forGetter(d -> d.y),
+        Codec.DOUBLE.fieldOf("z").forGetter(d -> d.z),
+        Codec.DOUBLE.fieldOf("yaw").forGetter(d -> d.yaw),
+        Codec.DOUBLE.fieldOf("pitch").forGetter(d -> d.pitch),
+        Codec.STRING.fieldOf("dimension").forGetter(s -> s.dimension),
+        Codec.STRING.fieldOf("gamemode").forGetter(s -> s.gamemode)
     ).apply(it, PlayerClientCommandHelper::new));
 
     public static final Codec<Map<String, PlayerClientCommandHelper>> MAP_CODEC = Codec.unboundedMap(Codec.STRING, CODEC.codec());
@@ -89,19 +87,19 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
 
     public static void sendCommand(ClientPlayerEntity playerEntity, PlayerClientCommandHelper data, double x, double y, double z) {
         playerEntity.sendChatMessage(String.format(
-                "/player %s spawn at %s %s %s facing %s %s in %s",
-                data.name,
-                formatDecimal(data.x + x),
-                formatDecimal(data.y + y),
-                formatDecimal(data.z + z),
-                formatDecimal(data.yaw),
-                formatDecimal(data.pitch),
-                data.dimension)
+            "/player %s spawn at %s %s %s facing %s %s in %s",
+            data.name,
+            formatDecimal(data.x + x),
+            formatDecimal(data.y + y),
+            formatDecimal(data.z + z),
+            formatDecimal(data.yaw),
+            formatDecimal(data.pitch),
+            data.dimension)
         );
     }
 
     public static String formatDecimal(Double doubleValue) {
-        return DecimalFormat.getInstance(Locale.UK).format(doubleValue);
+        return CommandHelper.decimalFormat.format(doubleValue);
     }
 
     public static int createNewPlayerClient(CommandContext<ServerCommandSource> context, boolean isHere, boolean isGamemode) throws CommandSyntaxException {

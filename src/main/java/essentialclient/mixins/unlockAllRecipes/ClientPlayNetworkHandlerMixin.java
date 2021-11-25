@@ -1,6 +1,6 @@
 package essentialclient.mixins.unlockAllRecipes;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.recipebook.ClientRecipeBook;
@@ -18,7 +18,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onSynchronizeRecipes", at = @At("HEAD"))
     private void onSyncRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
-        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getBoolean() && client.player != null) {
+        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && client.player != null) {
             ClientRecipeBook recipeBook = client.player.getRecipeBook();
             packet.getRecipes().forEach(recipeBook::add);
         }
