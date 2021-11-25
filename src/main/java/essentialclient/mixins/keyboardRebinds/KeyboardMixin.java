@@ -1,6 +1,6 @@
 package essentialclient.mixins.keyboardRebinds;
 
-import essentialclient.feature.keybinds.ClientKeybinds;
+import essentialclient.feature.ClientKeybinds;
 import net.minecraft.client.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;

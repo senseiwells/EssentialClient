@@ -19,8 +19,8 @@ public class RuleWidget {
         this.height = height;
     }
 
-    public void drawRule(TextRenderer font, float fontX, float fontY, int colour) {
-        font.draw(new MatrixStack(), this.name, fontX, fontY, colour);
+    public void drawRule(MatrixStack matrices, TextRenderer font, float fontX, float fontY, int colour) {
+        font.draw(matrices, this.name, fontX, fontY, colour);
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
