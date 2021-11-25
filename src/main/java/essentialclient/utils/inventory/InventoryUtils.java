@@ -227,7 +227,7 @@ public class InventoryUtils {
 
     }
 
-    private static boolean clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
+    public static boolean clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
         final int invSlots = gui.getScreenHandler().slots.size();
         for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
             try { Thread.sleep(0, 1); }
