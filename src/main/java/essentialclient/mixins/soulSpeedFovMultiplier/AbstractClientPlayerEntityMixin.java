@@ -1,4 +1,4 @@
-package essentialclient.mixins.soulBlocksEffectOnFov;
+package essentialclient.mixins.soulSpeedFovMultiplier;
 
 import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
