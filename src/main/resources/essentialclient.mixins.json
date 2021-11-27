@@ -28,8 +28,6 @@
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
-    "waterFovMultiplier.GameRendererMixin",
-    "soulSpeedFovMultiplier.AbstractClientPlayerEntityMixin",
     "disableNarrator.KeyboardMixin",
     "disableNightVisionFlash.GameRendererMixin",
     "disableRecipeNotifications.RecipeToastMixin",
@@ -56,7 +54,8 @@
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
-    "unlockAllRecipes.ClientPlayNetworkHandlerMixin"
+    "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
+    "waterFovMultiplier.GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

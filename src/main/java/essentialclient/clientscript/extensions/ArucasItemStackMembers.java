@@ -13,7 +13,9 @@ import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -52,7 +54,7 @@ public class ArucasItemStackMembers implements IArucasExtension {
 
 	private Value<?> getEnchantments(Context context, MemberFunction function) throws CodeError {
 		ItemStack itemStack = this.getItemStack(context, function);
-		NbtList nbtList = itemStack.getEnchantments();
+		NbtList nbtList = itemStack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantmentNbt(itemStack) : itemStack.getEnchantments();
 		ArucasValueMap enchantmentMap = new ArucasValueMap();
 		for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.fromNbt(nbtList).entrySet()) {
 			Identifier enchantmentId = Registry.ENCHANTMENT.getId(entry.getKey());
