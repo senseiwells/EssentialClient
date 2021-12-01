@@ -3,6 +3,7 @@ package essentialclient.feature;
 import essentialclient.config.clientrule.ClientRules;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Vec3d;
 
 public class AFKRules {
@@ -31,7 +32,7 @@ public class AFKRules {
                     playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue());
                 }
                 if (logout >= 200 && this.ticks == logout) {
-                    playerEntity.clientWorld.disconnect();
+                    playerEntity.networkHandler.onDisconnected(new LiteralText("You've been lazy! (AFK Logout)"));
                 }
                 return;
             }

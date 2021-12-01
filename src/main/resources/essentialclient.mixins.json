@@ -27,7 +27,6 @@
     "customClientCape.AbstractClientPlayerEntityMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
-    "disableFovChangeInWater.GameRendererMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
     "disableNarrator.KeyboardMixin",
     "disableNightVisionFlash.GameRendererMixin",
@@ -56,7 +55,8 @@
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
-    "unlockAllRecipes.RecipeBookWidgetMixin"
+    "unlockAllRecipes.RecipeBookWidgetMixin",
+    "waterFovMultiplier.GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

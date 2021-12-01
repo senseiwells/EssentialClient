@@ -14,6 +14,7 @@ public class CommandRegister {
         MusicCommand.register(dispatcher);
         ClientNickCommand.register(dispatcher);
         UpdateClientCommand.register(dispatcher);
+        AlternateDimensionCommand.register(dispatcher);
         CommandHelper.functionCommandNodes.forEach(command -> dispatcher.getRoot().addChild(command));
     }
 }

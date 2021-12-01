@@ -4,14 +4,17 @@ import essentialclient.clientscript.values.EntityValue;
 import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.clientscript.values.PlayerValue;
 import essentialclient.clientscript.values.ScreenValue;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
+import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -22,8 +25,14 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
+import net.minecraft.recipe.StonecuttingRecipe;
+import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.StonecutterScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
@@ -67,8 +76,11 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("dropSlot", "slot", this::dropSlot),
 		new MemberFunction("getCurrentScreen", this::getCurrentScreen),
 		new MemberFunction("craft", List.of("recipe"), this::craft),
-		new MemberFunction("logout", this::logout),
+		new MemberFunction("logout", "message", this::logout),
 		new MemberFunction("interactWithEntity", "entity", this::interactWithEntity),
+		new MemberFunction("anvil", List.of("item1", "item2", "predicate1", "predicate2"), this::anvil),
+		new MemberFunction("anvilRename", List.of("item", "name", "predicate"), this::anvilRename),
+		new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
 
 		// Villager Stuff
 		new MemberFunction("tradeIndex", "index", this::tradeIndex),
@@ -269,7 +281,8 @@ public class ArucasPlayerMembers implements IArucasExtension {
 
 	private Value<?> logout(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
-		ArucasMinecraftExtension.getWorld().disconnect();
+		String reason = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		ArucasMinecraftExtension.getNetworkHandler().onDisconnected(new LiteralText(reason));
 		return new NullValue();
 	}
 
@@ -278,6 +291,133 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		EntityValue<?> entity  = function.getParameterValueOfType(context, EntityValue.class, 1);
 		player.interact(entity.value, Hand.MAIN_HAND);
 		return new NullValue();
+	}
+
+	private Value<?> anvil(Context context, MemberFunction function) throws CodeError {
+		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
+		if (interactionManager == null) {
+			return new NullValue();
+		}
+		ClientPlayerEntity player =  this.getPlayer(context, function);
+		ScreenHandler handler = player.currentScreenHandler;
+		if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
+			throw new RuntimeError("Not in anvil gui", function.syntaxPosition, context);
+		}
+		Item item1 = function.getParameterValueOfType(context, ItemStackValue.class, 1).value.getItem();
+		Item item2 = function.getParameterValueOfType(context, ItemStackValue.class, 2).value.getItem();
+		FunctionValue predicate1 = function.getParameterValueOfType(context, FunctionValue.class, 3);
+		FunctionValue predicate2 = function.getParameterValueOfType(context, FunctionValue.class, 4);
+		boolean firstValid = false;
+		boolean secondValid = false;
+		for (Slot slot : anvilHandler.slots) {
+			if (firstValid && secondValid) {
+				break;
+			}
+			ItemStack itemStack = slot.getStack();
+			Item item = itemStack.getItem();
+			try {
+				if (!firstValid && item == item1) {
+					Value<?> predicateReturn = predicate1.call(context.createBranch(), List.of(new ItemStackValue(itemStack)));
+					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
+						firstValid = true;
+						interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
+						interactionManager.clickSlot(anvilHandler.syncId, 0, 0, SlotActionType.PICKUP, player);
+						continue;
+					}
+				}
+				if (!secondValid && item == item2) {
+					Value<?> predicateReturn = predicate2.call(context.createBranch(), List.of(new ItemStackValue(itemStack)));
+					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
+						secondValid = true;
+						interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
+						interactionManager.clickSlot(anvilHandler.syncId, 1, 0, SlotActionType.PICKUP, player);
+					}
+				}
+			}
+			catch (ThrowValue throwValue) {
+				throw new RuntimeError("Invalid function parameter", function.syntaxPosition, context);
+			}
+		}
+		anvilHandler.updateResult();
+		if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
+			throw new RuntimeError("Not enough experience", function.syntaxPosition, context);
+		}
+		interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player);
+		return new BooleanValue(firstValid && secondValid);
+	}
+
+	private Value<?> anvilRename(Context context, MemberFunction function) throws CodeError {
+		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
+		if (interactionManager == null) {
+			return new NullValue();
+		}
+		ClientPlayerEntity player =  this.getPlayer(context, function);
+		ScreenHandler handler = player.currentScreenHandler;
+		if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
+			throw new RuntimeError("Not in anvil gui", function.syntaxPosition, context);
+		}
+		Item item = function.getParameterValueOfType(context, ItemStackValue.class, 1).value.getItem();
+		String newName = function.getParameterValueOfType(context, StringValue.class, 2).value;
+		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 3);
+		boolean valid = false;
+		for (Slot slot : handler.slots) {
+			ItemStack itemStack = slot.getStack();
+			try {
+				if (itemStack.getItem() == item && !itemStack.getName().asString().equals(newName)) {
+					Value<?> predicateReturn = functionValue.call(context.createBranch(), List.of(new ItemStackValue(itemStack)));
+					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
+						valid = true;
+						interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, player);
+						break;
+					}
+				}
+			}
+			catch (ThrowValue throwValue) {
+				throw new RuntimeError("Invalid function parameter", function.syntaxPosition, context);
+			}
+		}
+		anvilHandler.updateResult();
+		anvilHandler.setNewItemName(newName);
+		EssentialUtils.getNetworkHandler().sendPacket(new RenameItemC2SPacket(newName));
+		if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
+			throw new RuntimeError("Not enough experience", function.syntaxPosition, context);
+		}
+		interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player);
+		return new BooleanValue(valid);
+	}
+
+	private Value<?> stonecutter(Context context, MemberFunction function) throws CodeError {
+		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
+		if (interactionManager == null) {
+			return new NullValue();
+		}
+		ClientPlayerEntity player =  this.getPlayer(context, function);
+		ScreenHandler handler = player.currentScreenHandler;
+		if (!(handler instanceof StonecutterScreenHandler cutterHandler)) {
+			throw new RuntimeError("Not in stonecutter gui", function.syntaxPosition, context);
+		}
+		Item itemInput = function.getParameterValueOfType(context, ItemStackValue.class, 1).value.getItem();
+		Item itemOutput = function.getParameterValueOfType(context, ItemStackValue.class, 2).value.getItem();
+		boolean valid = false;
+		for (Slot slot : cutterHandler.slots) {
+			if (slot.getStack().getItem() == itemInput) {
+				interactionManager.clickSlot(cutterHandler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, player);
+				valid = true;
+				break;
+			}
+		}
+		if (!valid) {
+			return new BooleanValue(false);
+		}
+		List<StonecuttingRecipe> stonecuttingRecipes = cutterHandler.getAvailableRecipes();
+		for (int i = 0; i < stonecuttingRecipes.size(); i++) {
+			if (stonecuttingRecipes.get(i).getOutput().getItem() == itemOutput) {
+				interactionManager.clickButton(cutterHandler.syncId, i);
+				interactionManager.clickSlot(cutterHandler.syncId, 1, 0, SlotActionType.QUICK_MOVE, player);
+				return new BooleanValue(true);
+			}
+		}
+		throw new RuntimeError("Recipe does not exist", function.syntaxPosition, context);
 	}
 
 	private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {

@@ -20,6 +20,7 @@ public class ClientRules {
 	public static BooleanClientRule
 		BETTER_ACCURATE_BLOCK_PLACEMENT = new BooleanClientRule("betterAccurateBlockPlacement", "This is the same as accurate block placement for tweakeroo but handled all client side, see controls..."),
 		BETTER_PING_DISPLAY = new BooleanClientRule("betterPingDisplay", "This displays the real ping in the tab list"),
+		COMMAND_ALTERNATE_DIMENSION = new BooleanClientRule("commandAlternateDimension", "This command calculates the coordinates of the alternate dimension", ClientRuleHelper::refreshCommand),
 		COMMAND_CLIENT_NICK = new BooleanClientRule("commandClientNick", "This allows you to rename player names on the client", ClientRuleHelper::refreshCommand),
 		COMMAND_MUSIC = new BooleanClientRule("commandMusic", "This command allows you to manipulate the current music", ClientRuleHelper::refreshCommand),
 		COMMAND_PLAYER_CLIENT = new BooleanClientRule("commandPlayerClient", "This command allows you to save /player... commands and execute them", ClientRuleHelper::refreshCommand),

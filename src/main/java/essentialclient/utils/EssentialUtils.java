@@ -67,12 +67,10 @@ public class EssentialUtils {
         return getClient().world;
     }
 
-    @SuppressWarnings("unused")
     public static ClientPlayerInteractionManager getInteractionManager() {
         return getClient().interactionManager;
     }
 
-    @SuppressWarnings("unused")
     public static ClientPlayNetworkHandler getNetworkHandler() {
         return getClient().getNetworkHandler();
     }
