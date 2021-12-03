@@ -44,7 +44,7 @@ public class ArucasItemStackMembers implements IArucasExtension {
 		new MemberFunction("isStackable", (context, function) -> new BooleanValue(this.getItemStack(context, function).isStackable())),
 		new MemberFunction("asBlock", this::asBlock),
 		new MemberFunction("getItemName", (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString())),
-		new MemberFunction("isNbtEqual", this::isNbtEqual)
+		new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual)
 	);
 
 	private Value<?> getDurability(Context context, MemberFunction function) throws CodeError {

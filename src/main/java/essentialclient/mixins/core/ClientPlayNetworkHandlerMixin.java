@@ -23,14 +23,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
 
-
-@SuppressWarnings("unchecked")
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
 
     @Shadow
     private CommandDispatcher<CommandSource> commandDispatcher;
 
+    @SuppressWarnings("unchecked")
     @Inject(method = "onCommandTree", at = @At("TAIL"))
     public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
         CommandHelper.setCommandPacket(packet);

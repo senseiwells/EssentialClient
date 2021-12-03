@@ -45,6 +45,7 @@ public class ClientRules {
 		INCREASE_SPECTATOR_SCROLL_SPEED = new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator"),
 		MISSING_TOOLS = new BooleanClientRule("missingTools", "Adds client functionality to missingTools from Carpet for the client"),
 		PERMANENT_CHAT_HUD = new BooleanClientRule("permanentChatHud", "This prevents the chat from being cleared, also applies when chaning worlds/servers"),
+		QUICK_LOCK_RECIPE = new BooleanClientRule("quickLockRecipe", "If you middle click a recipe it will put the name of the item in the search bar stopping you from craftin the wrong recipe"),
 		REMOVE_WARN_RECEIVED_PASSENGERS = new BooleanClientRule("removeWarnReceivedPassengers", "This removes the 'Received passengers for unknown entity' warning on the client"),
 		STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES = new BooleanClientRule("stackableShulkersInPlayerInventories", "This allows for shulkers to stack only in your inventory"),
 		STACKABLE_SHULKERS_WITH_ITEMS = new BooleanClientRule("stackableShulkersWithItems", "This allows for shulkers with items to stack only in your inventory"),

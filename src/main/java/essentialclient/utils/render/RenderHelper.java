@@ -12,6 +12,8 @@ import net.minecraft.util.math.Matrix4f;
 import java.util.List;
 
 public class RenderHelper {
+    //public static boolean isRenderingHotBarGui = false;
+
     // Taken from Screen Class
     public static void drawGuiInfoBox(TextRenderer font, String text, int x, int y) {
         if (text == null)

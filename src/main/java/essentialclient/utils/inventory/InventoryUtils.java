@@ -285,7 +285,7 @@ public class InventoryUtils {
             // Dragging the items
             craftClickSlot(client, gui, slotNum, 1);
         }
-        // Finish dragging itemsoak
+        // Finish dragging items
         craftClickSlot(client, gui, -999, 2);
     }
 

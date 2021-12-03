@@ -29,7 +29,10 @@ import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.lwjgl.glfw.GLFW;
 
@@ -72,7 +75,8 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("removeGameEvent", List.of("eventName", "id"), this::removeGameEvent),
 		new MemberFunction("removeAllGameEvents", this::removeAllGameEvents),
 		new MemberFunction("itemFromString", "name", this::itemFromString),
-		new MemberFunction("blockFromString", "name", this::blockFromString)
+		new MemberFunction("blockFromString", "name", this::blockFromString),
+		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound)
 	);
 
 	private Value<?> screenshot(Context context, MemberFunction function) throws CodeError {
@@ -249,6 +253,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 	}
 
 	private Value<?> addGameEvent(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
 		String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 2);
 		MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
@@ -259,6 +264,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 	}
 
 	private Value<?> removeGameEvent(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
 		String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 		int eventId = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
 		MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
@@ -271,19 +277,33 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		return new NullValue();
 	}
 
-	private Value<?> removeAllGameEvents(Context context, MemberFunction function) {
+	private Value<?> removeAllGameEvents(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
 		MinecraftScriptEvents.clearEventFunctions();
 		return new NullValue();
 	}
 
 	private Value<?> itemFromString(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
 		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 		return new ItemStackValue(Registry.ITEM.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).getDefaultStack());
 	}
 
 	private Value<?> blockFromString(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
 		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 		return new BlockStateValue(Registry.BLOCK.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).getDefaultState());
+	}
+
+	private Value<?> playSound(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		Double volume = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+		Double pitch = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+		SoundEvent soundEvent = Registry.SOUND_EVENT.get(new Identifier(stringValue.value));
+		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
+		return new NullValue();
 	}
 
 	private Value<?> getPlayer(Context context, MemberFunction function) throws CodeError {
