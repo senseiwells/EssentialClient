@@ -1,6 +1,7 @@
 package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.ScreenValue;
+import essentialclient.utils.clientscript.ScreenRemapper;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -27,7 +28,7 @@ public class ArucasScreenMembers implements IArucasExtension {
 	}
 
 	private final Set<? extends AbstractBuiltInFunction<?>> livingEntityFunctions = Set.of(
-		new MemberFunction("getClassName", (context, function) -> new StringValue(this.getTitle(context, function).getClass().getSimpleName())),
+		new MemberFunction("getScreenName", (context, function) -> new StringValue(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()))),
 		new MemberFunction("getTitle", this::getTitle)
 	);
 
