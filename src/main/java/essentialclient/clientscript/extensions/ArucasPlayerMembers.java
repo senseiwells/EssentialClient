@@ -75,7 +75,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("shiftClickSlot", "slot", this::shiftClickSlot),
 		new MemberFunction("dropSlot", "slot", this::dropSlot),
 		new MemberFunction("getCurrentScreen", this::getCurrentScreen),
-		new MemberFunction("craft", List.of("recipe"), this::craft),
+		new MemberFunction("craft", "recipe", this::craft),
 		new MemberFunction("logout", "message", this::logout),
 		new MemberFunction("interactWithEntity", "entity", this::interactWithEntity),
 		new MemberFunction("anvil", List.of("item1", "item2", "predicate1", "predicate2"), this::anvil),
@@ -88,7 +88,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("getTradeItemForIndex", "index", this::getTradeItemForIndex),
 		new MemberFunction("doesVillagerHaveTrade", "itemStack", this::doesVillagerHaveTrade),
 		new MemberFunction("isTradeDisabled", "index", this::isTradeDisabled),
-		new MemberFunction("getPriceForIndex", "value", this::getPriceForIndex)
+		new MemberFunction("getPriceForIndex", "index", this::getPriceForIndex)
 	);
 
 	private Value<?> use(Context context, MemberFunction function) throws CodeError {
