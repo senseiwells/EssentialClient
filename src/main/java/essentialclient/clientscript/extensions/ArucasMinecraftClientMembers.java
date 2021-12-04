@@ -26,6 +26,7 @@ import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotUtils;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -76,6 +77,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("removeAllGameEvents", this::removeAllGameEvents),
 		new MemberFunction("itemFromString", "name", this::itemFromString),
 		new MemberFunction("blockFromString", "name", this::blockFromString),
+		new MemberFunction("entityFromString", "name", this::entityFromString),
 		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound)
 	);
 
@@ -293,6 +295,13 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		this.getClient(context, function);
 		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 		return new BlockStateValue(Registry.BLOCK.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).getDefaultState());
+	}
+
+	private Value<?> entityFromString(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		ClientWorld world = ArucasMinecraftExtension.getWorld(client);
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		return EntityValue.getEntityValue(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
 	}
 
 	private Value<?> playSound(Context context, MemberFunction function) throws CodeError {

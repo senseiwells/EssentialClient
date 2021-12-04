@@ -38,6 +38,7 @@
     "functions.ClientPlayerInteractionManagerMixin",
     "functions.ClientPlayNetworkHandlerMixin",
     "functions.KeyboardMixin",
+    "functions.LivingEntityMixin",
     "functions.MinecraftClientMixin",
     "functions.PlayerEntityMixin",
     "hotbarFade.InGameHudMixin",

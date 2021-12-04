@@ -9,9 +9,13 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.util.math.Matrix4f;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class RenderHelper {
+    private static int backwardsEntityId = Integer.MAX_VALUE;
+    private static Set<Integer> fakeEntityId = new HashSet<>();
     //public static boolean isRenderingHotBarGui = false;
 
     // Taken from Screen Class
@@ -88,5 +92,19 @@ public class RenderHelper {
         bufferBuilder.vertex(matrix, (float)startX, (float)startY, (float) 400).color(g, h, i, f).next();
         bufferBuilder.vertex(matrix, (float)startX, (float)endY, (float) 400).color(k, l, m, j).next();
         bufferBuilder.vertex(matrix, (float)endX, (float)endY, (float) 400).color(k, l, m, j).next();
+    }
+
+    public static int getNextEntityId() {
+        int nextId = backwardsEntityId--;
+        fakeEntityId.add(nextId);
+        return nextId;
+    }
+
+    public static boolean removeFakeEntity(int id) {
+        return fakeEntityId.remove(id);
+    }
+
+    public static boolean isFakeEntity(int id) {
+        return fakeEntityId.contains(id);
     }
 }

@@ -39,9 +39,11 @@ public class ArucasItemStackMembers implements IArucasExtension {
 		new MemberFunction("getItemId", (context, function) -> new StringValue(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath())),
 		new MemberFunction("getCount", (context, function) -> new NumberValue(this.getItemStack(context, function).getCount())),
 		new MemberFunction("getDurability", this::getDurability),
+		new MemberFunction("getMaxDurability", (context, function) -> new NumberValue(this.getItemStack(context, function).getMaxDamage())),
 		new MemberFunction("getEnchantments", this::getEnchantments),
 		new MemberFunction("isBlockItem", (context, function) -> new BooleanValue(this.getItemStack(context, function).getItem() instanceof BlockItem)),
 		new MemberFunction("isStackable", (context, function) -> new BooleanValue(this.getItemStack(context, function).isStackable())),
+		new MemberFunction("getMaxCount", (context, function) -> new NumberValue(this.getItemStack(context, function).getMaxCount())),
 		new MemberFunction("asBlock", this::asBlock),
 		new MemberFunction("getItemName", (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString())),
 		new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual)

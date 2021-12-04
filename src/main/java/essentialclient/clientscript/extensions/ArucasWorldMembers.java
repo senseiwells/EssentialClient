@@ -4,6 +4,8 @@ import essentialclient.clientscript.values.BlockStateValue;
 import essentialclient.clientscript.values.EntityValue;
 import essentialclient.clientscript.values.OtherPlayerValue;
 import essentialclient.clientscript.values.WorldValue;
+import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.render.RenderHelper;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -53,7 +55,9 @@ public class ArucasWorldMembers implements IArucasExtension {
 		new MemberFunction("isThundering", (context, function) -> new BooleanValue(this.getWorld(context, function).isThundering())),
 		new MemberFunction("getTimeOfDay", (context, function) -> new NumberValue(this.getWorld(context, function).getTimeOfDay())),
 		new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
-		new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, true)
+		new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, true),
+		new MemberFunction("spawnGhostEntity", List.of("entity", "x", "y", "z", "yaw", "pitch", "bodyYaw"), this::spawnGhostEntity),
+		new MemberFunction("removeGhostEntity", "entityId", this::removeFakeEntity)
 	);
 
 	private Value<?> getBlockAt(Context context, MemberFunction function) throws CodeError {
@@ -138,6 +142,44 @@ public class ArucasWorldMembers implements IArucasExtension {
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		BlockPos blockPos = new BlockPos(x, y, z);
 		client.execute(() -> world.setBlockState(blockPos, blockState));
+		return new NullValue();
+	}
+
+	private Value<?> spawnGhostEntity(Context context, MemberFunction function) throws CodeError {
+		ClientWorld world = this.getWorld(context, function);
+		EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
+		double x = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+		double y = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+		double z = function.getParameterValueOfType(context, NumberValue.class, 4).value;
+		float yaw = function.getParameterValueOfType(context, NumberValue.class, 5).value.floatValue();
+		float pitch = function.getParameterValueOfType(context, NumberValue.class, 6).value.floatValue();
+		float bodyYaw = function.getParameterValueOfType(context, NumberValue.class, 7).value.floatValue();
+		Entity entity = entityValue.value;
+		Entity newEntity = entity.getType().create(world);
+		if (newEntity == null) {
+			return new NullValue();
+		}
+		int nextId = RenderHelper.getNextEntityId();
+		newEntity.setEntityId(nextId);
+		EssentialUtils.getClient().execute(() -> {
+			newEntity.setBodyYaw(bodyYaw);
+			newEntity.setHeadYaw(yaw);
+			newEntity.refreshPositionAndAngles(x, y, z, yaw, pitch);
+			newEntity.updatePositionAndAngles(x, y, z, yaw, pitch);
+			newEntity.updateTrackedPositionAndAngles(x, y, z, yaw, pitch, 3, true);
+			newEntity.refreshPositionAfterTeleport(x, y, z);
+			world.addEntity(nextId, newEntity);
+		});
+		return new NumberValue(nextId);
+	}
+
+	private Value<?> removeFakeEntity(Context context, MemberFunction function) throws CodeError {
+		ClientWorld world = this.getWorld(context, function);
+		int entityId = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
+		if (!RenderHelper.removeFakeEntity(entityId)) {
+			throw new RuntimeError("No such fake entity exists", function.syntaxPosition, context);
+		}
+		EssentialUtils.getClient().execute(() -> world.removeEntity(entityId));
 		return new NullValue();
 	}
 
