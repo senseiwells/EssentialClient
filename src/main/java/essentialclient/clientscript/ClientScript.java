@@ -123,16 +123,16 @@ public class ClientScript {
             .addDefaultExtensions()
             .setOutputHandler(EssentialUtils::sendMessage)
             .addExtensions(
-                ArucasMinecraftExtension.class,
-                ArucasMinecraftClientMembers.class,
-                ArucasEntityMembers.class,
-                ArucasLivingEntityMembers.class,
-                ArucasAbstractPlayerMembers.class,
-                ArucasPlayerMembers.class,
-                ArucasBlockStateMembers.class,
-                ArucasItemStackMembers.class,
-                ArucasWorldMembers.class,
-                ArucasScreenMembers.class
+                ArucasMinecraftExtension::new,
+                ArucasMinecraftClientMembers::new,
+                ArucasEntityMembers::new,
+                ArucasLivingEntityMembers::new,
+                ArucasAbstractPlayerMembers::new,
+                ArucasPlayerMembers::new,
+                ArucasBlockStateMembers::new,
+                ArucasItemStackMembers::new,
+                ArucasWorldMembers::new,
+                ArucasScreenMembers::new
             )
             .addDefaultValues()
             .addValues(

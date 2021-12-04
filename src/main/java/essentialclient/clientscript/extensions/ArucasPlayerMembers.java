@@ -18,6 +18,7 @@ import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -78,8 +79,8 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("craft", "recipe", this::craft),
 		new MemberFunction("logout", "message", this::logout),
 		new MemberFunction("interactWithEntity", "entity", this::interactWithEntity),
-		new MemberFunction("anvil", List.of("item1", "item2", "predicate1", "predicate2"), this::anvil),
-		new MemberFunction("anvilRename", List.of("item", "name", "predicate"), this::anvilRename),
+		new MemberFunction("anvil", List.of("predicate1", "predicate2"), this::anvil),
+		new MemberFunction("anvilRename", List.of("name", "predicate"), this::anvilRename),
 		new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
 
 		// Villager Stuff
@@ -118,7 +119,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	}
 
 	private Value<?> setSelectedSlot(Context context, MemberFunction function) throws CodeError {
-		final String error = "Number must be between 0-8";
+		final String error = "Number must be between 0 - 8";
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1, error);
 		if (numberValue.value < 0 || numberValue.value > 8) {
 			throw function.throwInvalidParameterError(error, context);
@@ -236,8 +237,9 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
 		int size = screenHandler.slots.size();
-		if (numberValue1.value > size || numberValue1.value < 1)
+		if (numberValue1.value > size || numberValue1.value < 1) {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
+		}
 		ArucasMinecraftExtension.getInteractionManager().clickSlot(screenHandler.syncId, numberValue1.value.intValue() - 1, 0, SlotActionType.QUICK_MOVE, this.getPlayer(context, function));
 		return new NullValue();
 	}
@@ -264,7 +266,12 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			return new NullValue();
 		}
 		int listSize = listValue.value.size();
-		if (listSize != 9 && listSize != 4) {
+		if (listSize == 9) {
+			if (!(handledScreen instanceof CraftingScreen)) {
+				throw new RuntimeError("You must be in a crafting table to craft a 3x3", function.syntaxPosition, context);
+			}
+		}
+		if (listSize != 4) {
 			throw new RuntimeError("Recipe must either be 3x3 or 2x2", function.syntaxPosition, context);
 		}
 		ItemStack[] itemStacks = new ItemStack[listSize];
@@ -296,17 +303,15 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> anvil(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		if (interactionManager == null) {
-			return new NullValue();
+			return new BooleanValue(false);
 		}
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		ScreenHandler handler = player.currentScreenHandler;
 		if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
 			throw new RuntimeError("Not in anvil gui", function.syntaxPosition, context);
 		}
-		Item item1 = function.getParameterValueOfType(context, ItemStackValue.class, 1).value.getItem();
-		Item item2 = function.getParameterValueOfType(context, ItemStackValue.class, 2).value.getItem();
-		FunctionValue predicate1 = function.getParameterValueOfType(context, FunctionValue.class, 3);
-		FunctionValue predicate2 = function.getParameterValueOfType(context, FunctionValue.class, 4);
+		FunctionValue predicate1 = function.getParameterValueOfType(context, FunctionValue.class, 1);
+		FunctionValue predicate2 = function.getParameterValueOfType(context, FunctionValue.class, 2);
 		boolean firstValid = false;
 		boolean secondValid = false;
 		for (Slot slot : anvilHandler.slots) {
@@ -314,9 +319,8 @@ public class ArucasPlayerMembers implements IArucasExtension {
 				break;
 			}
 			ItemStack itemStack = slot.getStack();
-			Item item = itemStack.getItem();
 			try {
-				if (!firstValid && item == item1) {
+				if (!firstValid) {
 					Value<?> predicateReturn = predicate1.call(context.createBranch(), List.of(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						firstValid = true;
@@ -325,7 +329,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 						continue;
 					}
 				}
-				if (!secondValid && item == item2) {
+				if (!secondValid) {
 					Value<?> predicateReturn = predicate2.call(context.createBranch(), List.of(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						secondValid = true;
@@ -340,7 +344,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		}
 		anvilHandler.updateResult();
 		if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
-			throw new RuntimeError("Not enough experience", function.syntaxPosition, context);
+			return new NumberValue(anvilHandler.getLevelCost());
 		}
 		interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player);
 		return new BooleanValue(firstValid && secondValid);
@@ -356,14 +360,13 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
 			throw new RuntimeError("Not in anvil gui", function.syntaxPosition, context);
 		}
-		Item item = function.getParameterValueOfType(context, ItemStackValue.class, 1).value.getItem();
-		String newName = function.getParameterValueOfType(context, StringValue.class, 2).value;
-		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 3);
+		String newName = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 2);
 		boolean valid = false;
 		for (Slot slot : handler.slots) {
 			ItemStack itemStack = slot.getStack();
 			try {
-				if (itemStack.getItem() == item && !itemStack.getName().asString().equals(newName)) {
+				if (!itemStack.getName().asString().equals(newName)) {
 					Value<?> predicateReturn = functionValue.call(context.createBranch(), List.of(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						valid = true;
@@ -380,7 +383,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		anvilHandler.setNewItemName(newName);
 		EssentialUtils.getNetworkHandler().sendPacket(new RenameItemC2SPacket(newName));
 		if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
-			throw new RuntimeError("Not enough experience", function.syntaxPosition, context);
+			return new NumberValue(anvilHandler.getLevelCost());
 		}
 		interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player);
 		return new BooleanValue(valid);
@@ -389,7 +392,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> stonecutter(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		if (interactionManager == null) {
-			return new NullValue();
+			return new BooleanValue(false);
 		}
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		ScreenHandler handler = player.currentScreenHandler;
@@ -433,6 +436,9 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		this.checkMainPlayer(context, function);
 		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 		int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
+		if (index == -1) {
+			return new NullValue();
+		}
 		this.checkVillagerValid(index, function, context);
 		return new NumberValue(index);
 	}
@@ -440,11 +446,16 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> getTradeItemForIndex(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
-		ItemStack itemStack = InventoryUtils.getTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
-		if (itemStack == null) {
-			throw new RuntimeError("Could not find trade", function.syntaxPosition, context);
+		try {
+			ItemStack itemStack = InventoryUtils.getTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
+			if (itemStack == null) {
+				throw new RuntimeError("That trade is out of bounds", function.syntaxPosition, context);
+			}
+			return new ItemStackValue(itemStack);
 		}
-		return new ItemStackValue(itemStack);
+		catch (RuntimeException e) {
+			throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
+		}
 	}
 
 	private Value<?> doesVillagerHaveTrade(Context context, MemberFunction function) throws CodeError {
@@ -472,7 +483,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	public boolean checkVillagerValid(int code, AbstractBuiltInFunction<?> function, Context context) throws RuntimeError {
 		boolean bool = false;
 		switch (code) {
-			case -2 -> throw new RuntimeError("You are not in merchant GUI", function.syntaxPosition, context);
+			case -2 -> throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			case -1 -> throw new RuntimeError("That trade is out of bounds", function.syntaxPosition, context);
 			case 1 -> bool = true;
 		}

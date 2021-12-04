@@ -18,7 +18,10 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class ArucasEntityMembers implements IArucasExtension {
@@ -91,7 +94,8 @@ public class ArucasEntityMembers implements IArucasExtension {
 
 	private Value<?> getBiome(Context context, MemberFunction function) throws CodeError {
 		Entity entity = this.getEntity(context, function);
-		return new StringValue(entity.getEntityWorld().getBiome(entity.getBlockPos()).getCategory().getName());
+		Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
+		return biomeKey.isPresent() ? new StringValue(biomeKey.get().getValue().getPath()) : new NullValue();
 	}
 
 	private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {

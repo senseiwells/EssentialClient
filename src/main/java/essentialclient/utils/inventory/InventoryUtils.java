@@ -151,9 +151,9 @@ public class InventoryUtils {
         return 0;
     }
 
-    public static ItemStack getTrade(MinecraftClient client, int index) {
+    public static ItemStack getTrade(MinecraftClient client, int index) throws RuntimeException {
         if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
-            return null;
+            throw new RuntimeException();
         }
         TradeOfferList tradeOffers = merchantScreen.getScreenHandler().getRecipes();
         if (index > tradeOffers.size() - 1) {

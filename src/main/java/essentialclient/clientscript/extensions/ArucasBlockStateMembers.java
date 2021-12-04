@@ -15,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Map;
 import java.util.Set;
 
 public class ArucasBlockStateMembers implements IArucasExtension {
@@ -41,12 +42,19 @@ public class ArucasBlockStateMembers implements IArucasExtension {
 	private Value<?> getBlockProperties(Context context, MemberFunction function) throws CodeError {
 		BlockState blockState = this.getBlockState(context, function);
 		ArucasValueMap propertyMap = new ArucasValueMap();
-		for (Property<?> property : blockState.getProperties()) {
-			try {
-				Comparable<? extends Comparable<?>> comparable = blockState.get(property);
-				propertyMap.put(new StringValue(property.getName()), new StringValue(comparable.toString()));
+		for (Map.Entry<Property<?>, Comparable<?>> entry : blockState.getEntries().entrySet()) {
+			Value<?> mapValue;
+			Comparable<?> comparable = entry.getValue();
+			if (comparable instanceof Number value) {
+				mapValue = new NumberValue(value.doubleValue());
 			}
-			catch (IllegalArgumentException ignored) { }
+			else if (comparable instanceof Boolean value) {
+				mapValue = new BooleanValue(value);
+			}
+			else {
+				mapValue = new StringValue(comparable.toString());
+			}
+			propertyMap.put(new StringValue(entry.getKey().getName()), mapValue);
 		}
 		return new MapValue(propertyMap);
 	}

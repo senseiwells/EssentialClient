@@ -6,12 +6,14 @@ import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueList;
+import me.senseiwells.arucas.utils.ArucasValueMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -39,7 +41,9 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 		new MemberFunction("getTotalSlots", this::getTotalSlots),
 		new MemberFunction("getItemForSlot", "slot", this::getItemForSlot),
 		new MemberFunction("getSlotFor", "itemStack", this::getSlotFor),
-		new MemberFunction("getAllSlotsFor", "itemStack", this::getAllSlotsFor)
+		new MemberFunction("getAllSlotsFor", "itemStack", this::getAllSlotsFor),
+		new MemberFunction("getAbilities", this::getAbilities),
+		new MemberFunction("getLevels", this::getLevels)
 	);
 
 	private Value<?> getGamemode(Context context, MemberFunction function) throws CodeError {
@@ -88,6 +92,25 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 			}
 		}
 		return new ListValue(slotList);
+	}
+
+	private Value<?> getAbilities(Context context, MemberFunction function) throws CodeError {
+		AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+		PlayerAbilities playerAbilities = playerEntity.abilities;
+		ArucasValueMap map = new ArucasValueMap() {{
+			put(new StringValue("invulnerable"), new BooleanValue(playerAbilities.invulnerable));
+			put(new StringValue("canFly"), new BooleanValue(playerAbilities.allowFlying));
+			put(new StringValue("canBreakBlocks"), new BooleanValue(playerAbilities.allowModifyWorld));
+			put(new StringValue("isCreative"), new BooleanValue(playerAbilities.creativeMode));
+			put(new StringValue("walkSpeed"), new NumberValue(playerAbilities.getWalkSpeed()));
+			put(new StringValue("flySpeed"), new NumberValue(playerAbilities.getFlySpeed()));
+		}};
+		return new MapValue(map);
+	}
+
+	private Value<?> getLevels(Context context, MemberFunction function) throws CodeError {
+		AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+		return new NumberValue(playerEntity.experienceLevel);
 	}
 
 	private AbstractClientPlayerEntity getOtherPlayer(Context context, MemberFunction function) throws CodeError {

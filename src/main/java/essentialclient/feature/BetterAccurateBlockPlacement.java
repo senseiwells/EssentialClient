@@ -28,9 +28,8 @@ public class BetterAccurateBlockPlacement {
 			Direction facing = Direction.getEntityFacingOrder(playerEntity)[0];
 			boolean reversePressed = ClientKeybinds.ACCURATE_REVERSE.getKeyBinding().isPressed();
 			boolean intoPressed = ClientKeybinds.ACCURATE_INTO.getKeyBinding().isPressed();
-			if (reversePressed || intoPressed) {
-				BlockHitResult blockHitResult = (BlockHitResult) client.crosshairTarget;
-				if (intoPressed && blockHitResult != null) {
+			if ((reversePressed || intoPressed) && client.crosshairTarget instanceof BlockHitResult blockHitResult) {
+				if (intoPressed) {
 					fakeYaw = 0;
 					fakePitch = 0;
 					facing = blockHitResult.getSide();
