@@ -6,11 +6,13 @@
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
-This mod is currently supporting 1.16.5 and 1.17.1
+This mod is currently supporting 1.16.5 and 1.17.1 
 
 1.16.5 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.26+.
 
 1.17.1 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.40.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.44+.
+
+1.18 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.44.0+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.56+.
 
 To access the Essential Client menu you must join a world, then it will be accessible to you when you press
 `ESC`, you can enable menu access from the title screen by enabling [essentialClientMainMenu](#essentialclientmainmenu).
@@ -88,10 +90,10 @@ This will disconnect you after you have been afk for a set number of ticks
 * Extra Info: value must be `>=200` to be enabled
 
 ## announceAFK
-This announces when you become afk after a set amount of time (ticks),
+This announces when you become afk after a set amount of time (ticks), 
 * Type: `Integer`
 * Default Value: `0`
-* Extra Info:
+* Extra Info: 
   * This is judges by weather your player position is constant
   * Prints the message determined by [announceAFKMessage](#announceafkmessage)
 
@@ -100,7 +102,7 @@ This is the message you announce after you are afk
 * Type: `String`
 * Default Value: `I am now AFK`
 * Extra Info:
-  * Requires [announceAFK](#announceafk)
+    * Requires [announceAFK](#announceafk)
 
 ## autoWalk
 This will auto walk after you have held your key for set amount of ticks
@@ -114,7 +116,7 @@ This is the same as accurate block placement in tweakeroo, it allows you to plac
 * Type: `Boolean`
 * Default Value: `false`
 * Extra info
-  * This may not work on servers with strong anticheat
+	* This may not work on servers with strong anticheat
 
 ## betterPingDisplay
 This will show the ping in milliseconds in the tab list
@@ -133,7 +135,7 @@ This command will give you the coordinates of your position in the alternate dim
 
 ## commandClientNick
 This allows you to nickname other players using, this is only on the client, this can be any string (with spaces and special characters),
-you can also use Mojang formatting, use `&` instead of `§`
+you can also use Mojang formatting, use `&` instead of `§` 
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
@@ -195,7 +197,7 @@ Disables the camera bobbing when you get hurt
 This disables boss bars from rendering
 * Type: `Boolean`
 * Default Value: `false`
-*
+* 
 ## disableFovChangeInWater
 This stops the FOV changing when you are submerged in water
 * Type: `Boolean`
@@ -249,7 +251,7 @@ Disables the tutorial toast from showing
 This allows you to choose the order you want rules to be displayed
 * Type: `Cycle`
 * Default Value: `Alphabetical`
-* Extra Info:
+* Extra Info: 
   * Current options: `Alphabetical` and `RuleType`
 
 ## displayTimePlayed
@@ -257,7 +259,7 @@ This will display how long you have had your current client open for in the corn
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
-  * Now you can see how much time you've ~~wasted~~ been productive
+    * Now you can see how much time you've ~~wasted~~ been productive
 
 ## enableScriptOnJoin
 This will automatically run your clientscript when you join a world
@@ -339,7 +341,7 @@ When you middle click a recipe it searches it essentially locking it inplace, mi
 * Extra Info:
   * This warning just clogs up logs when arround Minecarts
 
-
+  
 ## soulSpeedFovMultiplier
 
 Determines the percentage of Fov scaling when walking on soil soul or soul sand
