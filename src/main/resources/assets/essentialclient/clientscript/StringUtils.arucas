@@ -1,0 +1,36 @@
+/**
+ * Here are some utils for strings
+ */
+
+fun throwIfNot(value, type) {
+    if (!value.instanceOf(type)) {
+        throwRuntimeError("required %s found %s".formatted(type, value.getValueType()));
+    }
+}
+
+return {
+    "getCharacter" : fun(string, index) {
+        throwIfNot(string, "String");
+        throwIfNot(index, "Number");
+        sList = string.toList();
+        return sList.getIndex(index);
+    },
+    "capitalise" : fun(string) {
+        throwIfNot(string, "String");
+        sList = string.toList();
+        if (sList.isEmpty()) {
+            return "";
+        }
+        newString = sList.getIndex(0).uppercase();
+        i = 1;
+        while (i < len(sList)) {
+            newString = newString + sList.getIndex(i);
+            i++;
+        }
+        return newString;
+    },
+    "trim" : fun(string) {
+        throwIfNot(string, "String");
+        return string.replaceAll("\\p{javaSpaceChar}[\\p{javaSpaceChar}s\\p{javaSpaceChar}]*\\p{javaSpaceChar}", " ");
+    }
+};

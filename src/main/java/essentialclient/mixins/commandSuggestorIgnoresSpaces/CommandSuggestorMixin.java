@@ -1,6 +1,6 @@
 package essentialclient.mixins.commandSuggestorIgnoresSpaces;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.CommandSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,8 +14,9 @@ public abstract class CommandSuggestorMixin {
 		int current = textFieldWidget.getCursor();
 		boolean hasSpace = false;
 		String message = textFieldWidget.getText();
-		if (current == 0 || !message.startsWith("/") || !ClientRules.COMMAND_SUGGESTOR_IGNORES_SPACES.getBoolean())
+		if (current == 0 || !message.startsWith("/") || !ClientRules.COMMAND_SUGGESTOR_IGNORES_SPACES.getValue()) {
 			return current;
+		}
 		current--;
 		while (message.charAt(current) == ' ') {
 			hasSpace = true;

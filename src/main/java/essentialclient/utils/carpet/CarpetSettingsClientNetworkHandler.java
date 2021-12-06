@@ -1,7 +1,7 @@
 package essentialclient.utils.carpet;
 
 import carpet.CarpetServer;
-import essentialclient.gui.ConfigScreen;
+import essentialclient.config.ConfigScreen;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -24,7 +24,9 @@ public class CarpetSettingsClientNetworkHandler
     
     private static void split() {
         NbtCompound compound = data.readNbt();
-        if (compound == null) return;
+        if (compound == null) {
+            return;
+        }
         String carpetServerVersion = compound.getString("CarpetVersion");
     
         NbtList rulesList = compound.getList("rules", 10);

@@ -37,8 +37,8 @@ public class PlayerListCommandHelper {
         Path file = getFile();
         try(BufferedWriter writer = Files.newBufferedWriter(file)) {
             MAP_CODEC.encodeStart(JsonOps.INSTANCE, playerListHelperMap)
-                    .resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write /playerlist data: {}", e))
-                    .ifPresent(obj -> GSON.toJson(obj, writer));
+                .resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write /playerlist data: {}", e))
+                .ifPresent(obj -> GSON.toJson(obj, writer));
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -54,8 +54,8 @@ public class PlayerListCommandHelper {
         }
         try (BufferedReader reader = Files.newBufferedReader(file)) {
             playerListHelperMap = new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
-                    .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read /playerlist data: {}", e))
-                    .getFirst());
+                .getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read /playerlist data: {}", e))
+                .getFirst());
             return;
         }
         catch (JsonParseException | IOException e) {
@@ -77,10 +77,12 @@ public class PlayerListCommandHelper {
     public static int createList(CommandContext<ServerCommandSource> context) {
         String listName = context.getArgument("listname", String.class);
         String data = playerListHelperMap.putIfAbsent(listName, "");
-        if (data != null)
+        if (data != null) {
             EssentialUtils.sendMessage(ChatColour.RED + "There is already a list with that name");
-        else
+        }
+        else {
             EssentialUtils.sendMessage(ChatColour.GREEN + "New list has been created");
+        }
         PlayerListCommandHelper.writeSaveFile();
         return 0;
     }
@@ -88,10 +90,12 @@ public class PlayerListCommandHelper {
     public static int deleteList(CommandContext<ServerCommandSource> context) {
         String listName = context.getArgument("listname", String.class);
         String data = playerListHelperMap.remove(listName);
-        if (data == null)
+        if (data == null) {
             EssentialUtils.sendMessage(ChatColour.RED + "There is no list with that name");
-        else
+        }
+        else {
             EssentialUtils.sendMessage(ChatColour.GOLD + "List has been deleted");
+        }
         PlayerListCommandHelper.writeSaveFile();
         return 0;
     }
@@ -112,10 +116,12 @@ public class PlayerListCommandHelper {
             EssentialUtils.sendMessage(ChatColour.RED + "That player is already saved in the list");
             return 0;
         }
-        if (playerList.equals(""))
+        if (playerList.equals("")) {
             playerList = playerName;
-        else
+        }
+        else {
             playerList = String.join(", ", playerList, playerName);
+        }
         playerListHelperMap.put(listName, playerList);
         EssentialUtils.sendMessage(ChatColour.GOLD + "Player has been added to the list");
         PlayerListCommandHelper.writeSaveFile();
@@ -142,10 +148,12 @@ public class PlayerListCommandHelper {
             }
             PlayerClientCommandHelper.spawnPlayer(EssentialUtils.getPlayer(), player);
         }
-        if (errors > 0)
+        if (errors > 0) {
             EssentialUtils.sendMessage(ChatColour.RED + errors + " players were invalid and couldn't be spawned");
-        else
+        }
+        else {
             EssentialUtils.sendMessageToActionBar(ChatColour.GOLD + "All player were spawned successfully");
+        }
         return 0;
     }
 }

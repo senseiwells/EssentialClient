@@ -1,6 +1,6 @@
 package essentialclient.mixins.clientNick;
 
-import essentialclient.feature.clientrule.ClientRules;
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.command.ClientNickHelper;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
@@ -20,7 +20,7 @@ public abstract class PlayerListHudMixin {
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;getPlayerName(Lnet/minecraft/client/network/PlayerListEntry;)Lnet/minecraft/text/Text;"))
 	private Text onGetName(PlayerListHud playerListHud, PlayerListEntry entry) {
-		if (ClientRules.COMMAND_CLIENT_NICK.getBoolean()) {
+		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			String playerName = entry.getProfile().getName();
 			String newName = ClientNickHelper.getRename(playerName);
 			if (newName != null) {
