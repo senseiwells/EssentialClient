@@ -14,6 +14,7 @@ import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.keyboard.KeyboardHelper;
 import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
@@ -28,6 +29,7 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
@@ -37,10 +39,16 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ArucasMinecraftClientMembers implements IArucasExtension {
 
@@ -78,7 +86,9 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("itemFromString", "name", this::itemFromString),
 		new MemberFunction("blockFromString", "name", this::blockFromString),
 		new MemberFunction("entityFromString", "name", this::entityFromString),
-		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound)
+		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound),
+
+		new MemberFunction("importUtils", "util", this::importUtils)
 	);
 
 	private Value<?> screenshot(Context context, MemberFunction function) throws CodeError {
@@ -313,6 +323,27 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		SoundEvent soundEvent = Registry.SOUND_EVENT.get(new Identifier(stringValue.value));
 		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
 		return new NullValue();
+	}
+
+	private Value<?> importUtils(Context context, MemberFunction function) throws CodeError{
+		MinecraftClient client = this.getClient(context, function);
+		String util = function.getParameterValueOfType(context, StringValue.class, 1).value;
+		ResourceManager resourceManager = client.getResourceManager();
+		Identifier identifier = ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, "essentialclient:clientscript/%s.arucas".formatted(util));
+		if (!resourceManager.containsResource(identifier)) {
+			throw new RuntimeError("That util does not exist", function.syntaxPosition, context);
+		}
+		try {
+			InputStream stream = resourceManager.getResource(identifier).getInputStream();
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+				String file = reader.lines().collect(Collectors.joining("\n", "", ""));
+				Context childContext = context.createChildContext("Util - %s".formatted(util));
+				return Run.run(childContext, util, file);
+			}
+		}
+		catch (IOException e) {
+			throw new RuntimeError("Failed to run Util file", function.syntaxPosition, context);
+		}
 	}
 
 	private Value<?> getPlayer(Context context, MemberFunction function) throws CodeError {

@@ -88,8 +88,8 @@ public class ClientScript {
 
         CommandHelper.functionCommands.clear();
         MinecraftClient client = EssentialUtils.getClient();
-        if (CommandHelper.getCommandPacket() != null) {
-            client.execute(() -> EssentialUtils.getNetworkHandler().onCommandTree(CommandHelper.getCommandPacket()));
+        if (CommandHelper.getCommandPacket() != null && client.getNetworkHandler() != null) {
+            client.execute(() -> client.getNetworkHandler().onCommandTree(CommandHelper.getCommandPacket()));
         }
         MinecraftScriptEvents.clearEventFunctions();
         this.resetKeys(client);

@@ -223,7 +223,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
 		int tempSlot = (this.getPlayer(context, function).inventory.selectedSlot) % 9;
 		int size = screenHandler.slots.size();
-		if (numberValue1.value > size || numberValue1.value < 1 || numberValue2.value > size || numberValue2.value < 1) {
+		if (numberValue1.value > size || numberValue1.value < 0 || numberValue2.value > size || numberValue2.value < 0) {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 		}
 		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -237,16 +237,16 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
 		int size = screenHandler.slots.size();
-		if (numberValue1.value > size || numberValue1.value < 1) {
+		if (numberValue1.value > size || numberValue1.value < 0) {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 		}
-		ArucasMinecraftExtension.getInteractionManager().clickSlot(screenHandler.syncId, numberValue1.value.intValue() - 1, 0, SlotActionType.QUICK_MOVE, this.getPlayer(context, function));
+		ArucasMinecraftExtension.getInteractionManager().clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.QUICK_MOVE, this.getPlayer(context, function));
 		return new NullValue();
 	}
 
 	private Value<?> dropSlot(Context context, MemberFunction function) throws CodeError {
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
-		ArucasMinecraftExtension.getInteractionManager().clickSlot(this.getPlayer(context, function).currentScreenHandler.syncId, numberValue.value.intValue() - 1, 1, SlotActionType.THROW, ArucasMinecraftExtension.getClient().player);
+		ArucasMinecraftExtension.getInteractionManager().clickSlot(this.getPlayer(context, function).currentScreenHandler.syncId, numberValue.value.intValue(), 1, SlotActionType.THROW, ArucasMinecraftExtension.getClient().player);
 		return new NullValue();
 	}
 
