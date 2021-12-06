@@ -1,7 +1,6 @@
 package essentialclient.config.rulescreen;
 
 import essentialclient.config.ConfigListWidget;
-import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -34,9 +33,9 @@ public class RulesScreen extends Screen {
 		this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, this.searchBox, new LiteralText("Search Rules"));
 		this.searchBox.setChangedListener(this::refreshRules);
 		this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
-		this.children.add(this.list);
-		this.addButton(this.searchBox);
-		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.openScreen(this.parent)));
+		this.addSelectableChild(this.list);
+		this.addDrawableChild(this.searchBox);
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.setScreen(this.parent)));
 		this.setInitialFocus(this.searchBox);
 	}
 
@@ -65,7 +64,7 @@ public class RulesScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (this.client != null) {
-			this.client.openScreen(this.parent);
+			this.client.setScreen(this.parent);
 		}
 	}
 
@@ -74,10 +73,10 @@ public class RulesScreen extends Screen {
 	}
 
 	public void refreshRules(String filter) {
-		this.children.remove(this.list);
+		this.children().remove(this.list);
 		this.list.clear();
 		this.list = new ConfigListWidget(this, this.client, filter);
-		this.children.add(this.list);
+		this.addSelectableChild(this.list);
 	}
 
 	public void drawTooltip(int mouseX, int mouseY, float delta) {

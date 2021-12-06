@@ -29,8 +29,8 @@ public class InGameHudMixin {
 		return ClientRules.TOGGLE_TAB.getValue() || keyBinding.isPressed();
 	}
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;tick(Z)V"))
-	private void onTabTick(PlayerListHud playerListHud, boolean visible) {
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setVisible(Z)V"))
+	private void onSetVisible(PlayerListHud playerListHud, boolean visible) {
 		if (ClientRules.TOGGLE_TAB.getValue()) {
 			KeyBinding tabKey = this.client.options.keyPlayerList;
 			if (tabKey.isPressed() && !tabKey.wasPressed()) {
@@ -42,7 +42,7 @@ public class InGameHudMixin {
 		else {
 			this.tabVisible = visible;
 		}
-		playerListHud.tick(visible);
+		playerListHud.setVisible(visible);
 	}
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))

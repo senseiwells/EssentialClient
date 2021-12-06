@@ -160,7 +160,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 			return new NullValue();
 		}
 		int nextId = RenderHelper.getNextEntityId();
-		newEntity.setEntityId(nextId);
+		newEntity.setId(nextId);
 		EssentialUtils.getClient().execute(() -> {
 			newEntity.setBodyYaw(bodyYaw);
 			newEntity.setHeadYaw(yaw);
@@ -179,7 +179,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		if (!RenderHelper.removeFakeEntity(entityId)) {
 			throw new RuntimeError("No such fake entity exists", function.syntaxPosition, context);
 		}
-		EssentialUtils.getClient().execute(() -> world.removeEntity(entityId));
+		EssentialUtils.getClient().execute(() -> world.removeEntity(entityId, Entity.RemovalReason.DISCARDED));
 		return new NullValue();
 	}
 

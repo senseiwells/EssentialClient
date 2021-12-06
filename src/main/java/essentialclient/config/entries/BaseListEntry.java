@@ -11,6 +11,7 @@ import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -72,6 +73,11 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
 
     @Override
     public List<? extends Element> children() {
+        return ImmutableList.of(this.editButton, this.resetButton);
+    }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
         return ImmutableList.of(this.editButton, this.resetButton);
     }
 }

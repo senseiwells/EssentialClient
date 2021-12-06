@@ -37,7 +37,7 @@
   "depends": {
     "fabricloader": ">=0.10.0",
     "carpet": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.17.x"
 
   },
   "suggests": {

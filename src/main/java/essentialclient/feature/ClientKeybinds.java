@@ -39,7 +39,7 @@ public enum ClientKeybinds {
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (OPEN_ESSENTIAL_CLIENT_MENU.getKeyBinding().isPressed()) {
-                client.openScreen(new ConfigScreen(null));
+                client.setScreen(new ConfigScreen(null));
             }
         });
     }

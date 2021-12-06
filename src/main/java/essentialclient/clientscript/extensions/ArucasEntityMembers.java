@@ -48,12 +48,12 @@ public class ArucasEntityMembers implements IArucasExtension {
 		new MemberFunction("isOnFire", (context, function) -> new BooleanValue(this.getEntity(context, function).isOnFire())),
 		new MemberFunction("getLookingAtBlock", this::getLookingAtBlock),
 		new MemberFunction("getLookingAtPos", "maxDistance", this::getLookingAtPos),
-		new MemberFunction("getEntityIdNumber", (context, function) -> new NumberValue(this.getEntity(context, function).getEntityId())),
+		new MemberFunction("getEntityIdNumber", (context, function) -> new NumberValue(this.getEntity(context, function).getId())),
 		new MemberFunction("getX", (context, function) -> new NumberValue(this.getEntity(context, function).getX())),
 		new MemberFunction("getY", (context, function) -> new NumberValue(this.getEntity(context, function).getY())),
 		new MemberFunction("getZ", (context, function) -> new NumberValue(this.getEntity(context, function).getZ())),
 		new MemberFunction("getYaw", this::getYaw),
-		new MemberFunction("getPitch", (context, function) -> new NumberValue(this.getEntity(context, function).pitch)),
+		new MemberFunction("getPitch", (context, function) -> new NumberValue(this.getEntity(context, function).getPitch())),
 		new MemberFunction("getDimension", (context, function) -> new StringValue(this.getEntity(context, function).getEntityWorld().getRegistryKey().getValue().getPath())),
 		new MemberFunction("getBiome", this::getBiome),
 		new MemberFunction("getEntityType", (context, function) -> new StringValue(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath())),
@@ -88,7 +88,7 @@ public class ArucasEntityMembers implements IArucasExtension {
 
 	private Value<?> getYaw(Context context, MemberFunction function) throws CodeError {
 		Entity entity = this.getEntity(context, function);
-		float yaw = entity.yaw % 360;
+		float yaw = entity.getYaw() % 360;
 		return new NumberValue(yaw < -180 ? 360 + yaw : yaw);
 	}
 

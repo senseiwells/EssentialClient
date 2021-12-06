@@ -24,7 +24,7 @@ public abstract class ItemStackMixin {
         if (ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES.getValue() && this.getItem() instanceof BlockItem && ((BlockItem) this.getItem()).getBlock() instanceof ShulkerBoxBlock) {
             ItemStack stack = (ItemStack) (Object) this;
             if (!InventoryHelper.shulkerBoxHasItems(stack)) {
-                stack.removeSubTag("BlockEntityTag");
+                stack.removeSubNbt("BlockEntityTag");
                 cir.setReturnValue(64);
             }
             else if (ClientRules.STACKABLE_SHULKERS_WITH_ITEMS.getValue()) {

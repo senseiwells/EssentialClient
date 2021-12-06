@@ -76,7 +76,7 @@ public class ArucasItemStackMembers implements IArucasExtension {
 	private Value<?> isNbtEqual(Context context, MemberFunction function) throws CodeError {
 		ItemStack itemStack = this.getItemStack(context, function);
 		ItemStack otherItemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
-		return new BooleanValue(ItemStack.areTagsEqual(itemStack, otherItemStack));
+		return new BooleanValue(ItemStack.areNbtEqual(itemStack, otherItemStack));
 	}
 
 	private ItemStack getItemStack(Context context, MemberFunction function) throws CodeError {

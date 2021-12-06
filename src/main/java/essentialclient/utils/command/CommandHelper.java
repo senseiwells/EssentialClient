@@ -45,8 +45,8 @@ public class CommandHelper {
             case "x" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getX()))}, builder);
             case "y" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getY()))}, builder);
             case "z" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getZ()))}, builder);
-            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().yaw))}, builder);
-            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().pitch))}, builder);
+            case "yaw" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getYaw()))}, builder);
+            case "pitch" -> CommandSource.suggestMatching(new String[]{String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getPitch()))}, builder);
             case "dimension" -> CommandSource.suggestMatching(new String[]{"overworld", "the_nether", "the_end"}, builder);
             default -> null;
         };

@@ -124,8 +124,8 @@ public record PlayerClientCommandHelper(String name, Double x, Double y, Double 
             x = clientPlayerEntity.getX();
             y = clientPlayerEntity.getY();
             z = clientPlayerEntity.getZ();
-            yaw = clientPlayerEntity.yaw;
-            pitch = clientPlayerEntity.pitch;
+            yaw = clientPlayerEntity.getYaw();
+            pitch = clientPlayerEntity.getPitch();
         }
         switch (dimension) {
             case "overworld":

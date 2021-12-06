@@ -124,7 +124,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		if (numberValue.value < 0 || numberValue.value > 8) {
 			throw function.throwInvalidParameterError(error, context);
 		}
-		this.getPlayer(context, function).inventory.selectedSlot = numberValue.value.intValue();
+		this.getPlayer(context, function).getInventory().selectedSlot = numberValue.value.intValue();
 		return new NullValue();
 	}
 
@@ -150,7 +150,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> openInventory(Context context, MemberFunction function) throws CodeError {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		final MinecraftClient client = ArucasMinecraftExtension.getClient();
-		client.execute(() -> client.openScreen(new InventoryScreen(player)));
+		client.execute(() -> client.setScreen(new InventoryScreen(player)));
 		return new NullValue();
 	}
 
@@ -187,8 +187,8 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 		NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
 		ClientPlayerEntity player = this.getPlayer(context, function);
-		player.yaw = numberValue.value.floatValue();
-		player.pitch = numberValue2.value.floatValue();
+		player.setYaw(numberValue.value.floatValue());
+		player.setPitch(numberValue2.value.floatValue());
 		return new NullValue();
 	}
 
@@ -221,7 +221,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
 		ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
-		int tempSlot = (this.getPlayer(context, function).inventory.selectedSlot) % 9;
+		int tempSlot = (this.getPlayer(context, function).getInventory().selectedSlot) % 9;
 		int size = screenHandler.slots.size();
 		if (numberValue1.value > size || numberValue1.value < 0 || numberValue2.value > size || numberValue2.value < 0) {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);

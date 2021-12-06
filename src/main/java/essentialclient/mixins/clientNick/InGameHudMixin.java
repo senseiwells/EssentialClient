@@ -25,7 +25,7 @@ public class InGameHudMixin {
 			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(sender);
 			if (playerListEntry != null) {
 				String newName = ClientNickHelper.getRename(playerListEntry.getProfile().getName());
-				String message = TextVisitFactory.method_31402(text);
+				String message = TextVisitFactory.removeFormattingCodes(text);
 				String oldName = StringUtils.substringBetween(message, "<", ">");
 				text = newName != null && oldName != null ? new LiteralText(message.replaceAll(oldName, newName)) : text;
 			}

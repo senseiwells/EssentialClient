@@ -23,8 +23,8 @@ public class BetterAccurateBlockPlacement {
 			if (playerEntity == null) {
 				return;
 			}
-			float fakeYaw = playerEntity.yaw;
-			float fakePitch = playerEntity.pitch;
+			float fakeYaw = playerEntity.getYaw();
+			float fakePitch = playerEntity.getPitch();
 			Direction facing = Direction.getEntityFacingOrder(playerEntity)[0];
 			boolean reversePressed = ClientKeybinds.ACCURATE_REVERSE.getKeyBinding().isPressed();
 			boolean intoPressed = ClientKeybinds.ACCURATE_INTO.getKeyBinding().isPressed();
@@ -49,7 +49,7 @@ public class BetterAccurateBlockPlacement {
 					}
 					facing = facing.getOpposite();
 				}
-				client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookOnly(
+				client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
 					fakeYaw,
 					fakePitch,
 					playerEntity.isOnGround()
@@ -57,7 +57,7 @@ public class BetterAccurateBlockPlacement {
 			}
 			// This is for the client, so it doesn't look jank
 			fakeDirection = facing;
-			client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookOnly(
+			client.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
 				fakeYaw,
 				fakePitch,
 				playerEntity.isOnGround()

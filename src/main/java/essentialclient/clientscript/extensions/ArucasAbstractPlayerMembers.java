@@ -33,9 +33,9 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 	}
 
 	private final Set<? extends AbstractBuiltInFunction<?>> abstractPlayerFunctions = Set.of(
-		new MemberFunction("getCurrentSlot", (context, function) -> new NumberValue(this.getOtherPlayer(context, function).inventory.selectedSlot)),
-		new MemberFunction("getHeldItem", (context, function) -> new ItemStackValue(this.getOtherPlayer(context, function).inventory.getMainHandStack())),
-		new MemberFunction("isInventoryFull", (context, function) -> new BooleanValue(this.getOtherPlayer(context, function).inventory.getEmptySlot() == -1)),
+		new MemberFunction("getCurrentSlot", (context, function) -> new NumberValue(this.getOtherPlayer(context, function).getInventory().selectedSlot)),
+		new MemberFunction("getHeldItem", (context, function) -> new ItemStackValue(this.getOtherPlayer(context, function).getInventory().getMainHandStack())),
+		new MemberFunction("isInventoryFull", (context, function) -> new BooleanValue(this.getOtherPlayer(context, function).getInventory().getEmptySlot() == -1)),
 		new MemberFunction("getPlayerName", (context, function) -> new StringValue(this.getOtherPlayer(context, function).getEntityName())),
 		new MemberFunction("getGamemode", this::getGamemode),
 		new MemberFunction("getTotalSlots", this::getTotalSlots),
@@ -96,7 +96,7 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 
 	private Value<?> getAbilities(Context context, MemberFunction function) throws CodeError {
 		AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
-		PlayerAbilities playerAbilities = playerEntity.abilities;
+		PlayerAbilities playerAbilities = playerEntity.getAbilities();
 		ArucasValueMap map = new ArucasValueMap() {{
 			put(new StringValue("invulnerable"), new BooleanValue(playerAbilities.invulnerable));
 			put(new StringValue("canFly"), new BooleanValue(playerAbilities.allowFlying));

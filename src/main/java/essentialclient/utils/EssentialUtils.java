@@ -103,7 +103,7 @@ public class EssentialUtils {
     }
 
     public static String getMinecraftVersion() {
-        return MinecraftVersion.field_25319.getName();
+        return MinecraftVersion.GAME_VERSION.getName();
     }
 
     public static void checkIfEssentialClientDirExists() {

@@ -11,6 +11,7 @@ import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -59,6 +60,11 @@ public class StringListEntry extends BaseListEntry {
     public List<? extends Element> children() {
         return ImmutableList.of(this.resetButton, this.textField);
     }
+
+    @Override
+    public List<? extends Selectable> selectableChildren() {
+        return ImmutableList.of(this.resetButton, this.textField);
+    }
     
     @Override
     public boolean charTyped(char chr, int keyCode) {
@@ -94,9 +100,9 @@ public class StringListEntry extends BaseListEntry {
         this.textField.y = y + 3;
         this.textField.setEditableColor(this.invalid ? 16733525 : 16777215);
         if (this.invalid) {
-            DiffuseLighting.enable();
+            DiffuseLighting.enableGuiDepthLighting();
             this.client.getItemRenderer().renderGuiItemIcon(new ItemStack(Items.BARRIER), this.textField.x + this.textField.getWidth() - 18, this.textField.y- 1);
-            DiffuseLighting.disable();
+            DiffuseLighting.disableGuiDepthLighting();
         }
 
         this.textField.render(new MatrixStack(), mouseX, mouseY, delta);

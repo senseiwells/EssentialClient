@@ -13,6 +13,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.world.GameMode;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +27,7 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientWorld world;
 
+    @Final
     @Shadow
     private MinecraftClient client;
 

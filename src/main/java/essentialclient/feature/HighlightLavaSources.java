@@ -43,7 +43,7 @@ public class HighlightLavaSources implements SimpleSynchronousResourceReloadList
         final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         lavaSourceFlowSprite = atlas.apply(FLOWING_SPRITE_ID);
         lavaSourceStillSprite = atlas.apply(STILL_SPRITE_ID);
-        defaultLavaSourceStillSprite = MinecraftClient.getInstance().getBakedModelManager().getBlockModels().getModel(Blocks.LAVA.getDefaultState()).getSprite();
+        defaultLavaSourceStillSprite = MinecraftClient.getInstance().getBakedModelManager().getBlockModels().getModel(Blocks.LAVA.getDefaultState()).getParticleSprite();
         defaultLavaSourceFlowSprite = ModelLoader.LAVA_FLOW.getSprite();
         FluidRenderHandler lavaSourceRenderHandler = (view, pos, state) -> {
             if (view != null && pos != null && ClientRules.HIGHLIGHT_LAVA_SOURCES.getValue()) {

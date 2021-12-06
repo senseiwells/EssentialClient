@@ -31,14 +31,14 @@ public class ConfigScreen extends Screen {
         if (this.client == null) {
             return;
         }
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.openScreen(new ClientRulesScreen(this))));
-        ButtonWidget serverRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), (button) -> this.client.openScreen(new ServerRulesScreen(this))));
-        ButtonWidget gameRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Gamerule Options"), (button -> {
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.setScreen(new ClientRulesScreen(this))));
+        ButtonWidget serverRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), (button) -> this.client.setScreen(new ServerRulesScreen(this))));
+        ButtonWidget gameRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Gamerule Options"), (button -> {
             if (this.client.getServer() == null) {
                 return;
             }
-            this.client.openScreen(new EditGameRulesScreen(this.client.getServer().getGameRules(), (rules) -> {
-                this.client.openScreen(this);
+            this.client.setScreen(new EditGameRulesScreen(this.client.getServer().getGameRules(), (rules) -> {
+                this.client.setScreen(this);
                 rules.ifPresent((gameRules -> this.client.getServer().getGameRules().setAllValues(gameRules, this.client.getServer())));
             }));
         })));
@@ -46,18 +46,18 @@ public class ConfigScreen extends Screen {
             serverRuleButton.active = false;
             gameRuleButton.active = false;
         }
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.openScreen(this.parent)));
-        this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Script File"), (button) -> {
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.setScreen(this.parent)));
+        this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Script File"), (button) -> {
             EssentialUtils.checkifScriptFileExists();
             Util.getOperatingSystem().open(ClientScript.getFile().toFile());
         }));
-        this.addButton(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
+        this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
     }
 
     @Override
     public void onClose() {
         if (this.client != null) {
-            this.client.openScreen(this.parent);
+            this.client.setScreen(this.parent);
         }
     }
 

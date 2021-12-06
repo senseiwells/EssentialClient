@@ -47,11 +47,11 @@ public class InventoryUtils {
                 return;
             }
             if (slotType == EquipmentSlot.MAINHAND) {
-                int currentHotbarSlot = playerEntity.inventory.selectedSlot;
+                int currentHotbarSlot = playerEntity.getInventory().selectedSlot;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
             }
             else if (slotType == EquipmentSlot.OFFHAND) {
-                int tempSlot = (playerEntity.inventory.selectedSlot + 1) % 9;
+                int tempSlot = (playerEntity.getInventory().selectedSlot + 1) % 9;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, 45, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
@@ -234,17 +234,17 @@ public class InventoryUtils {
                 slotReturn = slotNum;
             }
             leftClickSlot(client, gui, slotNum);
-            ItemStack stackCursor = player.inventory.getCursorStack();
+            ItemStack stackCursor = gui.getScreenHandler().getCursorStack();
             if (areStacksEqual(ingredientReference, stackCursor)) {
                 sizeOrig = stackCursor.getCount();
                 dragSplitItemsIntoSlots(client, gui, targetSlots);
-                stackCursor = player.inventory.getCursorStack();
+                stackCursor = gui.getScreenHandler().getCursorStack();
                 if (!stackCursor.isEmpty()) {
                     if (stackCursor.getCount() >= sizeOrig) {
                         break;
                     }
                     leftClickSlot(client, gui, slotReturn);
-                    if (!player.inventory.getCursorStack().isEmpty()) {
+                    if (!gui.getScreenHandler().getCursorStack().isEmpty()) {
                         slotReturn = slotNum;
                         leftClickSlot(client, gui, slotReturn);
                     }
@@ -253,11 +253,11 @@ public class InventoryUtils {
             else {
                 break;
             }
-            if (!player.inventory.getCursorStack().isEmpty()) {
+            if (!gui.getScreenHandler().getCursorStack().isEmpty()) {
                 break;
             }
         }
-        if (slotNum >= 0 && !player.inventory.getCursorStack().isEmpty()) {
+        if (slotNum >= 0 && !gui.getScreenHandler().getCursorStack().isEmpty()) {
             leftClickSlot(client, gui, slotNum);
         }
     }
@@ -267,7 +267,7 @@ public class InventoryUtils {
         if (player == null) {
             return;
         }
-        ItemStack stackInCursor = player.inventory.getCursorStack();
+        ItemStack stackInCursor = gui.getScreenHandler().getCursorStack();
         if (stackInCursor.isEmpty()) {
             return;
         }
@@ -290,7 +290,7 @@ public class InventoryUtils {
     }
 
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2) {
-        return !stack1.isEmpty() && stack1.isItemEqual(stack2) && ItemStack.areTagsEqual(stack1, stack2);
+        return !stack1.isEmpty() && stack1.isItemEqual(stack2) && ItemStack.areItemsEqual(stack1, stack2);
     }
 
     private static int getSlotNumberOfLargestMatchingStackFromDifferentInventory(ScreenHandler container, Slot slotReference, ItemStack stackReference) {

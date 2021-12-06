@@ -14,6 +14,6 @@ public abstract class LivingEntityMixin {
 
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;turnHead(FF)F"))
 	private float onTurnHead(LivingEntity instance, float bodyRotation, float headRotation) {
-		return RenderHelper.isFakeEntity(instance.getEntityId()) ? 0 : this.turnHead(bodyRotation, headRotation);
+		return RenderHelper.isFakeEntity(instance.getId()) ? 0 : this.turnHead(bodyRotation, headRotation);
 	}
 }

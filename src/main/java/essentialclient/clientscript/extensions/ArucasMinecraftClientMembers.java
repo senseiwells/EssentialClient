@@ -26,7 +26,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.util.ScreenshotUtils;
+import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
 import net.minecraft.resource.ResourceManager;
@@ -93,10 +93,8 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 
 	private Value<?> screenshot(Context context, MemberFunction function) throws CodeError {
 		MinecraftClient client = this.getClient(context, function);
-		ScreenshotUtils.saveScreenshot(
+		ScreenshotRecorder.saveScreenshot(
 			client.runDirectory,
-			client.getWindow().getWidth(),
-			client.getWindow().getHeight(),
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);
