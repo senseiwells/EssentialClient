@@ -42,7 +42,7 @@ public class RenderHelper {
         BufferBuilder bufferBuilder = tessellator.getBuffer();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        Matrix4f matrix4f = matrices.peek().getModel();
+        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY - 4, mouseX + i + 3, mouseY - 3, -267386864, -267386864);
         fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY + k + 3, mouseX + i + 3, mouseY + k + 4, -267386864, -267386864);
         fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY - 3, mouseX + i + 3, mouseY + k + 3, -267386864, -267386864);

@@ -91,7 +91,7 @@ public class EssentialUtils {
     public static String getArucasVersion() {
         ModContainer modContainer = getModContainer();
         if (modContainer != null) {
-            for (ModDependency modDependency : modContainer.getMetadata().getSuggests()) {
+            for (ModDependency modDependency : modContainer.getMetadata().getDependencies()) {
                 if (modDependency.getModId().equals("arucas")) {
                     return modDependency.getVersionRequirements().toString()
                         .replaceAll("\\[=", "")
@@ -103,7 +103,7 @@ public class EssentialUtils {
     }
 
     public static String getMinecraftVersion() {
-        return MinecraftVersion.GAME_VERSION.getName();
+        return MinecraftVersion.CURRENT.getName();
     }
 
     public static void checkIfEssentialClientDirExists() {
