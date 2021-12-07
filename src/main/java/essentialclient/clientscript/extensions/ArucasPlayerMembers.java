@@ -271,7 +271,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 				throw new RuntimeError("You must be in a crafting table to craft a 3x3", function.syntaxPosition, context);
 			}
 		}
-		if (listSize != 4) {
+		else if (listSize != 4) {
 			throw new RuntimeError("Recipe must either be 3x3 or 2x2", function.syntaxPosition, context);
 		}
 		ItemStack[] itemStacks = new ItemStack[listSize];

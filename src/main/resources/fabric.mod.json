@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "essential-client",
-  "version": "1.1.0",
+  "version": "1.1.1",
 
   "name": "Essential Client",
   "description": "A client mod that provides utilities and client support for carpet rules",
@@ -12,7 +12,8 @@
     "SuperSanta",
     "Crec0",
     "Pixeils",
-    "HardCoded"
+    "HardCoded",
+    "BvngeeCord"
   ],
   "contact": {
     "homepage": "https://github.com/senseiwells/EssentialClient"
