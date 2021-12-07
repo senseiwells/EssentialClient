@@ -6,7 +6,7 @@
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
-This mod is currently supporting 1.16.5 and 1.17.1 
+This mod is currently supporting 1.16.5, 1.17.1, and 1.18
 
 1.16.5 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.26+.
 
@@ -15,7 +15,7 @@ This mod is currently supporting 1.16.5 and 1.17.1
 1.18 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.44.0+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.56+.
 
 To access the Essential Client menu you must join a world, then it will be accessible to you when you press
-`ESC`, you can enable menu access from the title screen by enabling [essentialClientMainMenu](#essentialclientmainmenu).
+`ESC`, you can enable menu access from the title screen by enabling [essentialClientButton](#essentialclientbutton).
 
 Feel free to contribute by adding as many features as you want!
 
@@ -38,6 +38,7 @@ Feel free to contribute by adding as many features as you want!
 * [commandRegion](#commandregion)
 * [commandSuggestorIgnoresSpaces](#commandsuggestorignoresspaces)
 * [commandTravel](#commandtravel)
+* [commandUpdateClient](#commandupdateclient)
 * [customClientCape](#customclientcape)
 * [disableBobViewWhenHurt](#disablebobviewwhenhurt)
 * [disableBossBar](#disablebossbar)
@@ -182,6 +183,13 @@ This command allows you to travel to a set location
 * Default Value: `false`
 * Extra Info:
   * Usage: `/travel start [x] [y]`, `/travel stop`
+
+## commandUpdateClient
+This command will try and download the latest jar of EssentialClient, you will have to delete the old one manually and then restart your game
+* Type: `N/A`
+* Default Value: `true`
+* Extra Info:
+  * Usage: `/updateclient`
 
 ## customClientCape
 This allows you to choose a Minecraft cape to apply to your player. This will only render for **your** client
