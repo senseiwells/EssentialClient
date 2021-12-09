@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
 public class EntityValue<T extends Entity> extends Value<T> {
-	public EntityValue(T value) {
+	protected EntityValue(T value) {
 		super(value);
 	}
 

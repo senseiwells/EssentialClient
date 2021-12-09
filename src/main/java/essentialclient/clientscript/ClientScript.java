@@ -87,6 +87,7 @@ public class ClientScript {
         this.thread = null;
 
         CommandHelper.functionCommands.clear();
+        CommandHelper.functionCommandNodes.clear();
         MinecraftClient client = EssentialUtils.getClient();
         if (CommandHelper.getCommandPacket() != null && client.getNetworkHandler() != null) {
             client.execute(() -> client.getNetworkHandler().onCommandTree(CommandHelper.getCommandPacket()));
@@ -132,7 +133,8 @@ public class ClientScript {
                 ArucasBlockStateMembers::new,
                 ArucasItemStackMembers::new,
                 ArucasWorldMembers::new,
-                ArucasScreenMembers::new
+                ArucasScreenMembers::new,
+                ArucasTextMembers::new
             )
             .addDefaultValues()
             .addValues(

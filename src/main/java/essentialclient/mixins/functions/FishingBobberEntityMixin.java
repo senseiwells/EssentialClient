@@ -1,0 +1,34 @@
+package essentialclient.mixins.functions;
+
+import essentialclient.clientscript.events.MinecraftScriptEvents;
+import essentialclient.clientscript.values.EntityValue;
+import essentialclient.utils.EssentialUtils;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(FishingBobberEntity.class)
+public abstract class FishingBobberEntityMixin extends Entity {
+    @Shadow
+    public abstract PlayerEntity getPlayerOwner();
+
+    public FishingBobberEntityMixin(EntityType<?> type, World world) {
+        super(type, world);
+    }
+
+    @Inject(method = "onTrackedDataSet", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/FishingBobberEntity;setVelocity(DDD)V", shift = At.Shift.BEFORE))
+    private void onFishBite(TrackedData<?> data, CallbackInfo ci) {
+        PlayerEntity playerEntity = this.getPlayerOwner();
+        if (playerEntity != null && playerEntity == EssentialUtils.getPlayer()) {
+            MinecraftScriptEvents.ON_FISH_BITE.run(EntityValue.getEntityValue(this));
+        }
+    }
+}

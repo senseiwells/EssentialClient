@@ -67,7 +67,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		NumberValue num2 = function.getParameterValueOfType(context, NumberValue.class, 2, error);
 		NumberValue num3 = function.getParameterValueOfType(context, NumberValue.class, 3, error);
 		BlockPos blockPos = new BlockPos(Math.floor(num1.value), num2.value, Math.floor(num3.value));
-		return new BlockStateValue(world.getBlockState(blockPos));
+		return new BlockStateValue(world.getBlockState(blockPos), blockPos);
 	}
 
 	private Value<?> getOtherPlayer(Context context, MemberFunction function) throws CodeError {

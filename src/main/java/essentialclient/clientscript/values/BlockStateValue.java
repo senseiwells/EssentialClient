@@ -1,11 +1,33 @@
 package essentialclient.clientscript.values;
 
+import me.senseiwells.arucas.values.NullValue;
+import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 
 public class BlockStateValue extends Value<BlockState> {
-	public BlockStateValue(BlockState block) {
+	private final BlockPos blockPos;
+
+	public BlockStateValue(BlockState block, BlockPos pos) {
 		super(block);
+		this.blockPos = pos;
+	}
+
+	public BlockStateValue(BlockState block) {
+		this(block, null);
+	}
+
+	public Value<?> getBlockX() {
+		return this.blockPos == null ? new NullValue() : new NumberValue(this.blockPos.getX());
+	}
+
+	public Value<?> getBlockY() {
+		return this.blockPos == null ? new NullValue() : new NumberValue(this.blockPos.getY());
+	}
+
+	public Value<?> getBlockZ() {
+		return this.blockPos == null ? new NullValue() : new NumberValue(this.blockPos.getZ());
 	}
 
 	@Override

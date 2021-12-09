@@ -1,9 +1,6 @@
 package essentialclient.clientscript.extensions;
 
-import essentialclient.clientscript.values.EntityValue;
-import essentialclient.clientscript.values.ItemStackValue;
-import essentialclient.clientscript.values.PlayerValue;
-import essentialclient.clientscript.values.ScreenValue;
+import essentialclient.clientscript.values.*;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -36,6 +33,7 @@ import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 
@@ -61,6 +59,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("say", "text", this::say),
 		new MemberFunction("message", "text", this::message),
 		new MemberFunction("messageActionBar", "text", this::messageActionBar),
+		new MemberFunction("showTitle", "text", this::showTitle),
 		new MemberFunction("openInventory", this::openInventory),
 		new MemberFunction("closeScreen", this::closeScreen),
 		new MemberFunction("setWalking", "boolean", (context, function) -> this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keyForward)),
@@ -136,14 +135,30 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> message(Context context, MemberFunction function) throws CodeError {
 		Value<?> value = function.getParameterValue(context, 1);
 		final ClientPlayerEntity player = this.getPlayer(context, function);
-		ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(new LiteralText(value.toString()), false));
+		Text text = value instanceof TextValue textValue ? textValue.value : new LiteralText(value.toString());
+		ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, false));
 		return new NullValue();
 	}
 
 	private Value<?> messageActionBar(Context context, MemberFunction function) throws CodeError {
 		Value<?> value = function.getParameterValue(context, 1);
 		final ClientPlayerEntity player = this.getPlayer(context, function);
-		ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(new LiteralText(value.toString()), true));
+		Text text = value instanceof TextValue textValue ? textValue.value : new LiteralText(value.toString());
+		ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, true));
+		return new NullValue();
+	}
+
+	private Value<?> showTitle(Context context, MemberFunction function) throws CodeError {
+		this.getPlayer(context, function);
+		Value<?> value = function.getParameterValue(context, 1);
+		Value<?> subValue = function.getParameterValue(context, 2);
+		Text text = value instanceof TextValue textValue ? textValue.value : value.value == null ? null : new LiteralText(value.toString());
+		Text subText = subValue instanceof TextValue textValue ? textValue.value : subValue.value == null ? null : new LiteralText(subValue.toString());
+		MinecraftClient client = ArucasMinecraftExtension.getClient();
+		client.execute(() -> {
+			client.inGameHud.setTitle(text);
+			client.inGameHud.setSubtitle(subText);
+		});
 		return new NullValue();
 	}
 
@@ -296,7 +311,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> interactWithEntity(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		EntityValue<?> entity  = function.getParameterValueOfType(context, EntityValue.class, 1);
-		player.interact(entity.value, Hand.MAIN_HAND);
+		ArucasMinecraftExtension.getInteractionManager().interactEntity(player, entity.value, Hand.MAIN_HAND);
 		return new NullValue();
 	}
 

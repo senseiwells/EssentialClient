@@ -37,6 +37,7 @@
     "functions.ClientPlayerEntityMixin",
     "functions.ClientPlayerInteractionManagerMixin",
     "functions.ClientPlayNetworkHandlerMixin",
+    "functions.FishingBobberEntityMixin",
     "functions.KeyboardMixin",
     "functions.LivingEntityMixin",
     "functions.MinecraftClientMixin",
