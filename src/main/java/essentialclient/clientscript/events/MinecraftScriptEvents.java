@@ -21,6 +21,7 @@ public class MinecraftScriptEvents {
 		ON_COMMAND = new MinecraftScriptEvent("onCommand"),
 		ON_OPEN_SCREEN = new MinecraftScriptEvent("onOpenScreen"),
 		ON_PICK_UP_ITEM = new MinecraftScriptEvent("onPickUpItem"),
+		ON_FISH_BITE = new MinecraftScriptEvent("onFishBite"),
 		ON_DROP_ITEM = new MinecraftScriptEvent("onDropItem"),
 		ON_DEATH = new MinecraftScriptEvent("onDeath"),
 		ON_RESPAWN = new MinecraftScriptEvent("onRespawn"),

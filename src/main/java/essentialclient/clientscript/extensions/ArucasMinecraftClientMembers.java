@@ -34,6 +34,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -86,6 +87,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("itemFromString", "name", this::itemFromString),
 		new MemberFunction("blockFromString", "name", this::blockFromString),
 		new MemberFunction("entityFromString", "name", this::entityFromString),
+		new MemberFunction("textFromString", "text", this::textFromString),
 		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound),
 
 		new MemberFunction("importUtils", "util", this::importUtils)
@@ -312,6 +314,12 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		ClientWorld world = ArucasMinecraftExtension.getWorld(client);
 		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 		return EntityValue.getEntityValue(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
+	}
+
+	private Value<?> textFromString(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		return new TextValue(new LiteralText(stringValue.value));
 	}
 
 	private Value<?> playSound(Context context, MemberFunction function) throws CodeError {

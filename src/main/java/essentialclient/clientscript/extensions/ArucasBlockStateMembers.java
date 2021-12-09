@@ -36,7 +36,11 @@ public class ArucasBlockStateMembers implements IArucasExtension {
 		new MemberFunction("isTransparent", (context, function) -> new BooleanValue(!this.getBlockState(context, function).isOpaque())),
 		new MemberFunction("asItemStack", (context, function) -> new ItemStackValue(this.getBlockState(context, function).getBlock().asItem().getDefaultStack())),
 		new MemberFunction("getBlastResistance", (context, function) -> new NumberValue(this.getBlockState(context, function).getBlock().getBlastResistance())),
-		new MemberFunction("getBlockProperties", this::getBlockProperties)
+		new MemberFunction("getBlockProperties", this::getBlockProperties),
+		new MemberFunction("hasBlockPosition", this::hasBlockPosition),
+		new MemberFunction("getBlockX", this::getBlockX),
+		new MemberFunction("getBlockZ", this::getBlockZ),
+		new MemberFunction("getBlockY", this::getBlockY)
 	);
 
 	private Value<?> getBlockProperties(Context context, MemberFunction function) throws CodeError {
@@ -57,6 +61,26 @@ public class ArucasBlockStateMembers implements IArucasExtension {
 			propertyMap.put(new StringValue(entry.getKey().getName()), mapValue);
 		}
 		return new MapValue(propertyMap);
+	}
+
+	private Value<?> hasBlockPosition(Context context, MemberFunction function) throws CodeError {
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return new BooleanValue(blockStateValue.getBlockX().value != null);
+	}
+
+	private Value<?> getBlockX(Context context, MemberFunction function) throws CodeError {
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return blockStateValue.getBlockX();
+	}
+
+	private Value<?> getBlockY(Context context, MemberFunction function) throws CodeError {
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return blockStateValue.getBlockY();
+	}
+
+	private Value<?> getBlockZ(Context context, MemberFunction function) throws CodeError {
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return blockStateValue.getBlockZ();
 	}
 
 	private BlockState getBlockState(Context context, MemberFunction function) throws CodeError {

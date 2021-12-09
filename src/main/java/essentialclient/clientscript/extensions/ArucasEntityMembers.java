@@ -70,9 +70,9 @@ public class ArucasEntityMembers implements IArucasExtension {
 		HitResult result = entity.raycast(20D, 0.0F, true);
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-			return new BlockStateValue(entity.getEntityWorld().getBlockState(blockPos));
+			return new BlockStateValue(entity.getEntityWorld().getBlockState(blockPos), blockPos);
 		}
-		return new BlockStateValue(Blocks.AIR.getDefaultState());
+		return new BlockStateValue(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
 	}
 
 	private Value<?> getLookingAtPos(Context context, MemberFunction function) throws CodeError {

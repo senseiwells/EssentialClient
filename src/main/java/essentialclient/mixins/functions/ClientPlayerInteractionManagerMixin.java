@@ -40,12 +40,7 @@ public class ClientPlayerInteractionManagerMixin {
         if (this.client.world == null) {
             return;
         }
-        MinecraftScriptEvents.ON_BLOCK_BROKEN.run(List.of(
-            new BlockStateValue(this.client.world.getBlockState(pos)),
-            new NumberValue(pos.getX()),
-            new NumberValue(pos.getY()),
-            new NumberValue(pos.getZ())
-        ));
+        MinecraftScriptEvents.ON_BLOCK_BROKEN.run(List.of(new BlockStateValue(this.client.world.getBlockState(pos), pos)));
     }
 
     @Inject(method = "clickSlot", at = @At("HEAD"))
@@ -63,7 +58,8 @@ public class ClientPlayerInteractionManagerMixin {
     private void onInteractBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
         ActionResult result = cir.getReturnValue();
         if (result.isAccepted()) {
-            MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockStateValue(world.getBlockState(hitResult.getBlockPos())));
+            BlockPos pos = hitResult.getBlockPos();
+            MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockStateValue(world.getBlockState(pos), pos));
         }
     }
 
