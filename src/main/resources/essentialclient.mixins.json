@@ -41,6 +41,7 @@
     "functions.KeyboardMixin",
     "functions.LivingEntityMixin",
     "functions.MinecraftClientMixin",
+    "functions.NbtListMixin",
     "functions.PlayerEntityMixin",
     "hotbarFade.InGameHudMixin",
     "keyboardRebinds.KeyboardMixin",

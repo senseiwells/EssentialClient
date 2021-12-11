@@ -5,6 +5,7 @@ import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 
 public class BlockStateValue extends Value<BlockState> {
 	private final BlockPos blockPos;
@@ -41,5 +42,10 @@ public class BlockStateValue extends Value<BlockState> {
 			return false;
 		}
 		return this.value.getBlock().equals(otherValue.value.getBlock());
+	}
+
+	@Override
+	public String toString() {
+		return "Block{id=%s}".formatted(Registry.BLOCK.getId(this.value.getBlock()).getPath());
 	}
 }

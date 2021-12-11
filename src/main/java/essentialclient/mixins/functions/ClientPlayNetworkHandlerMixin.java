@@ -31,7 +31,7 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onHealthUpdate", at = @At("HEAD"))
     private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_HEALTH_UPDATE.run(List.of(new NumberValue(packet.getHealth())));
+        MinecraftScriptEvents.ON_HEALTH_UPDATE.run(new NumberValue(packet.getHealth()));
     }
 
     @Inject(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;showFloatingItem(Lnet/minecraft/item/ItemStack;)V"))
@@ -49,7 +49,7 @@ public class ClientPlayNetworkHandlerMixin {
         Entity entity = this.world.getEntityById(packet.getEntityId());
         LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
         if (entity != null && this.client.player != null && this.client.player.equals(livingEntity) && entity instanceof ItemEntity itemEntity) {
-            MinecraftScriptEvents.ON_PICK_UP_ITEM.run(List.of(new ItemStackValue(itemEntity.getStack())));
+            MinecraftScriptEvents.ON_PICK_UP_ITEM.run(new ItemStackValue(itemEntity.getStack()));
         }
     }
 

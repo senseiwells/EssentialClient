@@ -4,6 +4,7 @@ import essentialclient.clientscript.values.*;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
+import essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -61,6 +62,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("messageActionBar", "text", this::messageActionBar),
 		new MemberFunction("showTitle", "text", this::showTitle),
 		new MemberFunction("openInventory", this::openInventory),
+		new MemberFunction("openScreen", "screen", this::openScreen),
 		new MemberFunction("closeScreen", this::closeScreen),
 		new MemberFunction("setWalking", "boolean", (context, function) -> this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keyForward)),
 		new MemberFunction("setSneaking", "boolean", (context, function) -> this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keySneak)),
@@ -163,6 +165,17 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		final MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(() -> client.openScreen(new InventoryScreen(player)));
+		return new NullValue();
+	}
+
+	private Value<?> openScreen(Context context, MemberFunction function) throws CodeError {
+		this.checkMainPlayer(context, function);
+		final MinecraftClient client = ArucasMinecraftExtension.getClient();
+		ScreenValue screenValue = function.getParameterValueOfType(context, ScreenValue.class, 1);
+		if (screenValue.value instanceof HandledScreen && !(screenValue.value instanceof FakeInventoryScreen)) {
+			throw new RuntimeError("Opening handled screens is unsafe", function.syntaxPosition, context);
+		}
+		client.openScreen(screenValue.value);
 		return new NullValue();
 	}
 

@@ -12,4 +12,9 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 	public Value<OtherClientPlayerEntity> copy() {
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "OtherPlayer{name=%s}".formatted(this.value.getEntityName());
+	}
 }

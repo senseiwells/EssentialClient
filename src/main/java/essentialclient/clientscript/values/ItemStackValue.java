@@ -22,4 +22,9 @@ public class ItemStackValue extends Value<ItemStack> {
 			return this.value != null && otherValue.value != null ? this.value.isItemEqual(otherValue.value) : this.value == otherValue.value;
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "ItemStack{id=%s}".formatted(this.value.getItem().toString());
+	}
 }

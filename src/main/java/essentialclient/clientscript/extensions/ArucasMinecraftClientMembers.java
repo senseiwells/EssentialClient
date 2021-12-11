@@ -13,6 +13,7 @@ import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.keyboard.KeyboardHelper;
+import essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
@@ -88,6 +89,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("blockFromString", "name", this::blockFromString),
 		new MemberFunction("entityFromString", "name", this::entityFromString),
 		new MemberFunction("textFromString", "text", this::textFromString),
+        new MemberFunction("createFakeScreen", List.of("screenTitle", "rows"), this::createFakeScreen),
 		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound),
 
 		new MemberFunction("importUtils", "util", this::importUtils)
@@ -321,6 +323,19 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 		return new TextValue(new LiteralText(stringValue.value));
 	}
+
+    private Value<?> createFakeScreen(Context context, MemberFunction function) throws CodeError {
+        MinecraftClient client = this.getClient(context, function);
+        ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
+        StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 2);
+		try {
+			return new FakeInventoryScreenValue(new FakeInventoryScreen(player.inventory, stringValue.value, numberValue.value.intValue()));
+		}
+		catch (IllegalArgumentException e) {
+			throw new RuntimeError(e.getMessage(), function.syntaxPosition, context);
+		}
+    }
 
 	private Value<?> playSound(Context context, MemberFunction function) throws CodeError {
 		MinecraftClient client = this.getClient(context, function);

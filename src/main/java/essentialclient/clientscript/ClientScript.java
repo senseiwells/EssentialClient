@@ -11,6 +11,7 @@ import me.senseiwells.arucas.api.ContextBuilder;
 import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.ThrowStop;
+import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -122,7 +123,10 @@ public class ClientScript {
         ContextBuilder contextBuilder = new ContextBuilder()
             .setDisplayName("Arucas client")
             .addDefaultExtensions()
-            .setOutputHandler(EssentialUtils::sendMessage)
+            .setOutputHandler(s -> {
+                s = !s.endsWith("\n") ? s : s.substring(0, s.length() - 1);
+                EssentialUtils.sendMessage(s);
+            })
             .addExtensions(
                 ArucasMinecraftExtension::new,
                 ArucasMinecraftClientMembers::new,
@@ -134,6 +138,7 @@ public class ClientScript {
                 ArucasItemStackMembers::new,
                 ArucasWorldMembers::new,
                 ArucasScreenMembers::new,
+                ArucasFakeInventoryScreenMembers::new,
                 ArucasTextMembers::new
             )
             .addDefaultValues()
@@ -146,7 +151,9 @@ public class ClientScript {
                 BlockStateValue.class,
                 ItemStackValue.class,
                 WorldValue.class,
-                ScreenValue.class
+                ScreenValue.class,
+                FakeInventoryScreenValue.class,
+                TextValue.class
             );
 
         this.context = contextBuilder.build();
@@ -190,22 +197,25 @@ public class ClientScript {
         Thread thread = new Thread(this.arucasThreadGroup, () -> {
             try {
                 consumer.accept(context);
+                return;
             }
             catch (CodeError e) {
                 this.tryError(e);
-                this.stopScript();
+            }
+            catch (ThrowValue tv) {
+                this.tryError();
             }
             catch (Throwable t) {
                 this.sendReportMessage(t);
                 t.printStackTrace();
-                this.stopScript();
             }
+            this.stopScript();
         }, "Client Runnable Thread");
         thread.setDaemon(true);
         thread.start();
     }
 
-    private synchronized void tryError(CodeError error) {
+    private void tryError(CodeError error) {
         if (error.errorType != CodeError.ErrorType.INTERRUPTED_ERROR) {
             synchronized (this.ERROR_LOCK) {
                 if (this.hasErrored) {
@@ -215,6 +225,17 @@ public class ClientScript {
                 EssentialUtils.sendMessage("§c--------------------------------------------\n" + error.toString(context));
                 this.hasErrored = true;
             }
+        }
+    }
+
+    private void tryError() {
+        synchronized (this.ERROR_LOCK) {
+            if (this.hasErrored) {
+                return;
+            }
+            EssentialUtils.sendMessage("§cAn error occurred while running the script");
+            EssentialUtils.sendMessage("§c--------------------------------------------\nInvalid position for a break, continue or return");
+            this.hasErrored = true;
         }
     }
 
@@ -237,7 +258,6 @@ public class ClientScript {
     }
 
     private String getGithubLink(Throwable t, String content) {
-        
         String stacktrace = ExceptionUtils.getStackTrace(t);
         int charsLeft = 1400 - stacktrace.length();
         String report = """
