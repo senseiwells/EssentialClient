@@ -1,5 +1,6 @@
 package essentialclient.mixins.unlockAllRecipes;
 
+import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.inventory.InventoryUtils;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -48,9 +49,16 @@ public abstract class RecipeBookWidgetMixin {
                     target = "net/minecraft/client/network/ClientPlayerInteractionManager.clickRecipe(ILnet/minecraft/recipe/Recipe;Z)V"
             )
     )
-    private void redirectClickSlotCall(ClientPlayerInteractionManager instance, int syncId, Recipe<?> recipe, boolean craftAll) {
+    private void redirectClickSlotCall(ClientPlayerInteractionManager interactionManager, int syncId, Recipe<?> recipe, boolean craftAll) {
         PlayerEntity player = this.client.player;
-        if (player != null && this.client.currentScreen instanceof HandledScreen<?> handledScreen) {
+        if (player == null) return;
+
+        if (!ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue()) {
+            interactionManager.clickRecipe(player.currentScreenHandler.syncId, recipe, craftAll);
+            return;
+        }
+
+        if (this.client.currentScreen instanceof HandledScreen<?> handledScreen) {
             int gridLength = InventoryUtils.getCraftingSlotLength(handledScreen);
             InventoryUtils.clearCraftingGridNEW(this.client, handledScreen, player, gridLength);
 
