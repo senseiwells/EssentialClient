@@ -245,16 +245,16 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> swapSlots(Context context, MemberFunction function) throws CodeError {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
-		ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
-		int tempSlot = (this.getPlayer(context, function).inventory.selectedSlot) % 9;
+		ClientPlayerEntity player = this.getPlayer(context, function);
+		ScreenHandler screenHandler = player.currentScreenHandler;
 		int size = screenHandler.slots.size();
 		if (numberValue1.value > size || numberValue1.value < 0 || numberValue2.value > size || numberValue2.value < 0) {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 		}
 		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
-		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
+		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
+		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), 0, SlotActionType.SWAP, player);
+		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
 		return new NullValue();
 	}
 
