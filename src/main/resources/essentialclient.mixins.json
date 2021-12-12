@@ -45,6 +45,7 @@
     "functions.PlayerEntityMixin",
     "hotbarFade.InGameHudMixin",
     "keyboardRebinds.KeyboardMixin",
+    "missingTools.MiningToolItemMixin",
     "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",

@@ -1,28 +1,20 @@
 package essentialclient.mixins.missingTools;
 
 import essentialclient.config.clientrule.ClientRules;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
 import org.spongepowered.asm.mixin.Mixin;
-
-import java.util.Set;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PickaxeItem.class)
-public class PickaxeItemMixin extends MiningToolItem {
-
+public class PickaxeItemMixin extends MiningToolItemMixin {
     //Client implementation of missingTools
-    protected PickaxeItemMixin(float attackDamage, float attackSpeed, ToolMaterial material, Set<Block> tag, Item.Settings settings) {
-        super(attackDamage, attackSpeed, material, tag, settings);
-    }
-
     @Override
-    public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        Material material = state.getMaterial();
-        if (ClientRules.MISSING_TOOLS.getValue() && material == Material.GLASS) {
-            return miningSpeed;
+    public void miningSpeedHandler(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> cir) {
+        if (ClientRules.MISSING_TOOLS.getValue() && state.getMaterial() == Material.GLASS) {
+            cir.setReturnValue(this.miningSpeed);
         }
-        return super.getMiningSpeedMultiplier(stack, state);
     }
 }
