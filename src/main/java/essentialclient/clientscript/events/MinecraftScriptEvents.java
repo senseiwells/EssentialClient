@@ -25,7 +25,7 @@ public class MinecraftScriptEvents {
 		ON_DROP_ITEM = new MinecraftScriptEvent("onDropItem"),
 		ON_DEATH = new MinecraftScriptEvent("onDeath"),
 		ON_RESPAWN = new MinecraftScriptEvent("onRespawn"),
-		ON_EAT = new MinecraftScriptEvent("onHealthUpdate"),
+		ON_EAT = new MinecraftScriptEvent("onEat"),
 		ON_INTERACT_ITEM = new MinecraftScriptEvent("onInteractItem"),
 		ON_INTERACT_BLOCK = new MinecraftScriptEvent("onInteractBlock"),
 		ON_INTERACT_ENTITY = new MinecraftScriptEvent("onInteractEntity"),

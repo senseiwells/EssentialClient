@@ -11,6 +11,7 @@ import me.senseiwells.arucas.api.ContextBuilder;
 import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.ThrowStop;
+import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -55,11 +56,11 @@ public class ClientScript {
     public static ClientScript getInstance() {
         return instance;
     }
-    
+
     public boolean isScriptRunning() {
         return this.context != null;
     }
-    
+
     public void toggleScript() {
         boolean running = this.isScriptRunning();
         if (running) {
@@ -68,10 +69,10 @@ public class ClientScript {
         else {
             this.startScript();
         }
-        
+
         EssentialUtils.sendMessageToActionBar("§6Script is now " + (running ? "§cOFF" : "§aON"));
     }
-    
+
     public synchronized void startScript() {
         if (isScriptRunning()) {
             this.stopScript();
@@ -79,7 +80,7 @@ public class ClientScript {
         this.hasErrored = false;
         this.executeScript();
     }
-    
+
     public synchronized void stopScript() {
         this.arucasThreadGroup.interrupt();
 
@@ -97,15 +98,15 @@ public class ClientScript {
 
         EssentialUtils.sendMessageToActionBar("§6Script is now §cOFF");
     }
-    
+
     public static Path getFile() {
         return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getValue() + ".arucas");
     }
-    
+
     public static Path getDir() {
         return EssentialUtils.getEssentialConfigFile().resolve("Scripts");
     }
-    
+
     private synchronized void executeScript() {
         final String fileName = ClientRules.CLIENT_SCRIPT_FILENAME.getValue();
         final String fileContent;
@@ -120,34 +121,40 @@ public class ClientScript {
 
         // Create a new context for the file we should run.
         ContextBuilder contextBuilder = new ContextBuilder()
-            .setDisplayName("Arucas client")
-            .addDefaultExtensions()
-            .setOutputHandler(EssentialUtils::sendMessage)
-            .addExtensions(
-                ArucasMinecraftExtension::new,
-                ArucasMinecraftClientMembers::new,
-                ArucasEntityMembers::new,
-                ArucasLivingEntityMembers::new,
-                ArucasAbstractPlayerMembers::new,
-                ArucasPlayerMembers::new,
-                ArucasBlockStateMembers::new,
-                ArucasItemStackMembers::new,
-                ArucasWorldMembers::new,
-                ArucasScreenMembers::new,
-                ArucasTextMembers::new
-            )
-            .addDefaultValues()
-            .addValues(
-                MinecraftClientValue.class,
-                EntityValue.class,
-                LivingEntityValue.class,
-                OtherPlayerValue.class,
-                PlayerValue.class,
-                BlockStateValue.class,
-                ItemStackValue.class,
-                WorldValue.class,
-                ScreenValue.class
-            );
+                .setDisplayName("Arucas client")
+                .addDefaultExtensions()
+                .setOutputHandler(s -> {
+                    s = !s.endsWith("\n") ? s : s.substring(0, s.length() - 1);
+                    EssentialUtils.sendMessage(s);
+                })
+                .addExtensions(
+                        ArucasMinecraftExtension::new,
+                        ArucasMinecraftClientMembers::new,
+                        ArucasEntityMembers::new,
+                        ArucasLivingEntityMembers::new,
+                        ArucasAbstractPlayerMembers::new,
+                        ArucasPlayerMembers::new,
+                        ArucasBlockStateMembers::new,
+                        ArucasItemStackMembers::new,
+                        ArucasWorldMembers::new,
+                        ArucasScreenMembers::new,
+                        ArucasFakeInventoryScreenMembers::new,
+                        ArucasTextMembers::new
+                )
+                .addDefaultValues()
+                .addValues(
+                        MinecraftClientValue.class,
+                        EntityValue.class,
+                        LivingEntityValue.class,
+                        OtherPlayerValue.class,
+                        PlayerValue.class,
+                        BlockStateValue.class,
+                        ItemStackValue.class,
+                        WorldValue.class,
+                        ScreenValue.class,
+                        FakeInventoryScreenValue.class,
+                        TextValue.class
+                );
 
         this.context = contextBuilder.build();
 
@@ -181,31 +188,34 @@ public class ClientScript {
 
         this.runAsyncFunction(context, consumer);
     }
-    
+
     public synchronized void runBranchAsyncFunction(ThrowableConsumer<Context> consumer) {
         this.runAsyncFunctionInContext(this.context.createBranch(), consumer);
     }
-    
+
     private synchronized void runAsyncFunction(final Context context, ThrowableConsumer<Context> consumer) {
         Thread thread = new Thread(this.arucasThreadGroup, () -> {
             try {
                 consumer.accept(context);
+                return;
             }
             catch (CodeError e) {
                 this.tryError(e);
-                this.stopScript();
+            }
+            catch (ThrowValue tv) {
+                this.tryError();
             }
             catch (Throwable t) {
                 this.sendReportMessage(t);
                 t.printStackTrace();
-                this.stopScript();
             }
+            this.stopScript();
         }, "Client Runnable Thread");
         thread.setDaemon(true);
         thread.start();
     }
 
-    private synchronized void tryError(CodeError error) {
+    private void tryError(CodeError error) {
         if (error.errorType != CodeError.ErrorType.INTERRUPTED_ERROR) {
             synchronized (this.ERROR_LOCK) {
                 if (this.hasErrored) {
@@ -218,6 +228,17 @@ public class ClientScript {
         }
     }
 
+    private void tryError() {
+        synchronized (this.ERROR_LOCK) {
+            if (this.hasErrored) {
+                return;
+            }
+            EssentialUtils.sendMessage("§cAn error occurred while running the script");
+            EssentialUtils.sendMessage("§c--------------------------------------------\nInvalid position for a break, continue or return");
+            this.hasErrored = true;
+        }
+    }
+
     private void sendReportMessage(Throwable t) {
         this.sendReportMessage(t, null);
     }
@@ -227,17 +248,16 @@ public class ClientScript {
         EssentialUtils.sendMessage("§cAn error occurred while running the script");
         EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
         EssentialUtils.sendMessage(
-            new LiteralText("https://github.com/senseiwells/EssentialClient/issues/new")
-                .formatted(Formatting.UNDERLINE)
-                .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-                    gitReport))
-                )
-            .append("\n")
+                new LiteralText("https://github.com/senseiwells/EssentialClient/issues/new")
+                        .formatted(Formatting.UNDERLINE)
+                        .styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                                gitReport))
+                        )
+                        .append("\n")
         );
     }
 
     private String getGithubLink(Throwable t, String content) {
-        
         String stacktrace = ExceptionUtils.getStackTrace(t);
         int charsLeft = 1400 - stacktrace.length();
         String report = """
@@ -253,11 +273,11 @@ public class ClientScript {
         %s
         ```
         """.formatted(
-            EssentialUtils.getMinecraftVersion(),
-            EssentialUtils.getVersion(),
-            EssentialUtils.getArucasVersion(),
-            content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
-            stacktrace
+                EssentialUtils.getMinecraftVersion(),
+                EssentialUtils.getVersion(),
+                EssentialUtils.getArucasVersion(),
+                content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
+                stacktrace
         );
         return "https://github.com/senseiwells/EssentialClient/issues/new?title=ClientScript%20Crash&body=" + URLEncoder.encode(report, StandardCharsets.UTF_8);
     }

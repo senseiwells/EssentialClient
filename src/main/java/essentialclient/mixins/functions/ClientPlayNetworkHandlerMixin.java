@@ -33,7 +33,7 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onHealthUpdate", at = @At("HEAD"))
     private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_HEALTH_UPDATE.run(List.of(new NumberValue(packet.getHealth())));
+        MinecraftScriptEvents.ON_HEALTH_UPDATE.run(new NumberValue(packet.getHealth()));
     }
 
     @Inject(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;showFloatingItem(Lnet/minecraft/item/ItemStack;)V"))
@@ -43,7 +43,7 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameStateChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;setGameMode(Lnet/minecraft/world/GameMode;)V"))
     private void onGamemodeChange(GameStateChangeS2CPacket packet, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(List.of(new StringValue(GameMode.byId((int) packet.getValue()).getName())));
+        MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(new StringValue(GameMode.byId((int) packet.getValue()).getName()));
     }
 
     @Inject(method = "onItemPickupAnimation", at = @At("HEAD"))

@@ -12,6 +12,8 @@ import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.item.ItemGroup;
 
 import java.util.Set;
 
@@ -19,7 +21,7 @@ public class ArucasScreenMembers implements IArucasExtension {
 
 	@Override
 	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
-		return this.livingEntityFunctions;
+		return this.screenFunctions;
 	}
 
 	@Override
@@ -27,13 +29,18 @@ public class ArucasScreenMembers implements IArucasExtension {
 		return "ScreenMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> livingEntityFunctions = Set.of(
+	private final Set<? extends AbstractBuiltInFunction<?>> screenFunctions = Set.of(
 		new MemberFunction("getScreenName", (context, function) -> new StringValue(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()))),
 		new MemberFunction("getTitle", this::getTitle)
 	);
 
 	private Value<?> getTitle(Context context, MemberFunction function) throws CodeError {
-		String title = this.getScreen(context, function).getTitle().getString();
+		Screen screen = this.getScreen(context, function);
+		String title = screen.getTitle().getString();
+		if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
+			int tabIndex = creativeInventoryScreen.getSelectedTab();
+			title = ItemGroup.GROUPS[tabIndex].getName();
+		}
 		return title == null ? new NullValue() : new StringValue(title);
 	}
 

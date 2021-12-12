@@ -12,4 +12,9 @@ public class WorldValue extends Value<ClientWorld> {
 	public Value<ClientWorld> copy() {
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "World{level=%s, dimension=%s}".formatted(this.value.toString(), this.value.getRegistryKey().getValue().getPath());
+	}
 }
