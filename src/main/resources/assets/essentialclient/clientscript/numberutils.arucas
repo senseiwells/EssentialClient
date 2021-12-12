@@ -1,0 +1,34 @@
+/**
+ * Here are some utils for numbers
+ */
+
+fun throwIfNot(value, type) {
+    if (!value.instanceOf(type)) {
+        throwRuntimeError("required %s found %s".formatted(type, value.getValueType()));
+    }
+}
+
+return {
+    "sqrt" : fun(num) {
+        throwIfNot(num, "Number");
+        return num ^ 0.5;
+    },
+    "max" : fun(num1, num2) {
+        throwIfNot(num1, "Number");
+        throwIfNot(num2, "Number");
+        if (num1 >= num2) {
+            return num1;
+        }
+        return num2;
+    },
+    "min" : fun(num1, num2) {
+        throwIfNot(num1, "Number");
+        throwIfNot(num2, "Number");
+        if (num1 <= num2) {
+            return num1;
+        }
+        return num2;
+    },
+    "pi" : 3.141592659323589,
+    "e" : 2.718281828459045
+};

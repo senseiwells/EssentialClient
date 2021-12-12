@@ -13,8 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin
-{
+public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onCustomPayload", at = @At(value = "CONSTANT", args = "stringValue=Unknown custom packed identifier: {}"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)
     private void onCustomPayloadNotFound(CustomPayloadS2CPacket packet, CallbackInfo ci, Identifier id, PacketByteBuf buf) {
         if (Reference.CARPET_CHANNEL_NAME.equals(id)) {
@@ -25,12 +24,10 @@ public abstract class ClientPlayNetworkHandlerMixin
         }
     }
     
-    @Inject(method = "onCustomPayload", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "onCustomPayload", at = @At("TAIL"))
     private void onOnCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
         Identifier channel = packet.getChannel();
         PacketByteBuf buf = packet.getData();
         ClientMessageHandler.receivedPacket(channel, buf);
-        //removed to fix incompatibility with syncmatica
-        //ci.cancel();
     }
 }

@@ -13,6 +13,8 @@ public class CommandRegister {
         TravelCommand.register(dispatcher);
         MusicCommand.register(dispatcher);
         ClientNickCommand.register(dispatcher);
-        CommandHelper.functionCommands.forEach(command -> dispatcher.getRoot().addChild(command));
+        UpdateClientCommand.register(dispatcher);
+        AlternateDimensionCommand.register(dispatcher);
+        CommandHelper.functionCommandNodes.forEach(command -> dispatcher.getRoot().addChild(command));
     }
 }

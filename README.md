@@ -1,3 +1,4 @@
+
 # EssentialClient
 
 [![Discord](https://badgen.net/discord/online-members/7R9SfktZxH?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
@@ -5,14 +6,16 @@
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
-This mod is currently supporting 1.16.5 and 1.17.1 
+This mod is currently supporting 1.16.5, 1.17.1, and 1.18
 
 1.16.5 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.26+.
 
 1.17.1 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.40.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.44+.
 
+1.18 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.44.0+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.56+.
+
 To access the Essential Client menu you must join a world, then it will be accessible to you when you press
-`ESC`, you can enable menu access from the title screen by enabling [essentialClientMainMenu](#essentialclientmainmenu).
+`ESC`, you can enable menu access from the title screen by enabling [essentialClientButton](#essentialclientbutton).
 
 Feel free to contribute by adding as many features as you want!
 
@@ -24,7 +27,10 @@ Feel free to contribute by adding as many features as you want!
 * [announceAFK](#announceafk)
 * [announceAFKMessage](#announceafkmessage)
 * [autoWalk](#autowalk)
+* [betterAccurateBlockPlacement](#betteraccurateblockplacement)
+* [betterPingDisplay](#betterpingdisplay)
 * [clientScriptFileName](#clientscriptfilename)
+* [commandAlternateDimension](#commandalternatedimension)
 * [commandClientNick](#commandclientnick)
 * [commandMusic](#commandmusic)
 * [commandPlayerClient](#commandplayerclient)
@@ -32,10 +38,14 @@ Feel free to contribute by adding as many features as you want!
 * [commandRegion](#commandregion)
 * [commandSuggestorIgnoresSpaces](#commandsuggestorignoresspaces)
 * [commandTravel](#commandtravel)
+* [commandUpdateClient](#commandupdateclient)
+* [customClientCape](#customclientcape)
 * [disableBobViewWhenHurt](#disablebobviewwhenhurt)
+* [disableBossBar](#disablebossbar)
 * [disableFovChangeInWater](#disablefovchangeinwater)
 * [disableHotbarScrolling](#disablehotbarscrolling)
 * [disableJoinLeaveMessages](#disablejoinleavemessages)
+* [disableMapRendering](#disablemaprendering)
 * [disableNarrator](#disablenarrator)
 * [disableNightVisionFlash](#disablenightvisionflash)
 * [disableOpMessages](#disableopmessages)
@@ -44,7 +54,7 @@ Feel free to contribute by adding as many features as you want!
 * [displayRuleType](#displayruletype)
 * [displayTimePlayed](#displaytimeplayed)
 * [enableScriptOnJoin](#enablescriptonjoin)
-* [essentialClientMainMenu](#essentialclientmainmenu)
+* [essentialClientButton](#essentialclientbutton)
 * [highlightLavaSources](#highlightlavasource)
 * [increaseSpectatorScrollSensitivity](#increasespectatorscrollsensitivity)
 * [increaseSpectatorScrollSpeed](#increasespectatorscrollspeed)
@@ -53,12 +63,15 @@ Feel free to contribute by adding as many features as you want!
 * [musicTypes](#musictypes)
 * [overrideCreativeWalkSpeed](#overridecreativewalkspeed)
 * [permanentChatHud](#permanentchathud)
+* [quickLockRecipe](#quicklockrecipe)
 * [removeWarnReceivedPassengers](#removewarnreceivedpassengers)
+* [soulSpeedFovMultiplier](#soulspeedfovmultiplier)
 * [stackableShulkerInPlayerInventories](#stackableshulkersinplayerinventories)
 * [stackableShulkersWithItems](#stackableshulkerswithitems)
 * [switchToTotem](#switchtototem)
 * [toggleTab](#toggletab)
 * [unlockAllRecipesOnJoin](#unlockallrecipesonjoin)
+* [waterFovMultiplier](#waterfovmultiplier)
 
 # Index of Other Features:
 
@@ -99,10 +112,27 @@ This will auto walk after you have held your key for set amount of ticks
 * Extra Info:
   * Once auto walking press backwards or forward again to cancel
 
+## betterAccurateBlockPlacement
+This is the same as accurate block placement in tweakeroo, it allows you to place blocks in different orientations when holding a keybind. This does not need server side support, everything is handled on the client
+* Type: `Boolean`
+* Default Value: `false`
+* Extra info
+	* This may not work on servers with strong anticheat
+
+## betterPingDisplay
+This will show the ping in milliseconds in the tab list
+* Type: `Boolean`
+* Default Value: `false`
+
 ## clientScriptFilename
 This allows you to choose the file you want to use for your script
 * Type: `String`
 * Default Value: `clientscript`
+
+## commandAlternateDimension
+This command will give you the coordinates of your position in the alternate dimension (nether or overworld), you can click on the coordinates to teleport there (must have permissions)
+* Type: `Boolean`
+* Default Value: `false`
 
 ## commandClientNick
 This allows you to nickname other players using, this is only on the client, this can be any string (with spaces and special characters),
@@ -154,11 +184,28 @@ This command allows you to travel to a set location
 * Extra Info:
   * Usage: `/travel start [x] [y]`, `/travel stop`
 
+## commandUpdateClient
+This command will try and download the latest jar of EssentialClient, you will have to delete the old one manually and then restart your game
+* Type: `N/A`
+* Default Value: `true`
+* Extra Info:
+  * Usage: `/updateclient`
+
+## customClientCape
+This allows you to choose a Minecraft cape to apply to your player. This will only render for **your** client
+* Type: `Cycle`
+* Default Value: `None`
+
 ## disableBobViewWhenHurt
 Disables the camera bobbing when you get hurt
 * Type: `Boolean`
 * Default Value: `false`
 
+## disableBossBar
+This disables boss bars from rendering
+* Type: `Boolean`
+* Default Value: `false`
+* 
 ## disableFovChangeInWater
 This stops the FOV changing when you are submerged in water
 * Type: `Boolean`
@@ -173,6 +220,11 @@ This will prevent you from scrolling in your hotbar
 
 ## disableJoinLeaveMessages
 This will prevent join/leave messages from displaying
+* Type: `Boolean`
+* Default Value: `false`
+
+## disableMapRendering
+This stops all item frames with maps in them from rendering, good for preventing lag around huge maps.
 * Type: `Boolean`
 * Default Value: `false`
 
@@ -224,12 +276,12 @@ This will automatically run your clientscript when you join a world
 * Extra Info:
   * This may impact performance while the world is loading
 
-## essentialClientMainMenu
-This renders the Essential Client Menu on the main menu screen
+## essentialClientButton
+This renders the Essential Client Button on the pause menu and the main menu
 * Type: `Boolean`
-* Default Value: `false`
+* Default Value: `true`
 * Extra Info:
-  * This doesn't default to `true` because it might conflict with replay mod
+  * This may conflict with other mods so you are able to disable this. You can also oppen the menu by setting a keybind.
 
 ## highlightLavaSource
 Highlights lava sources, credit to [plusls](https://github.com/plusls) for the original code for this in [their mod](https://github.com/plusls/oh-my-minecraft-client)
@@ -285,12 +337,24 @@ This prevents chat from being cleared, this also prevents chat from being cleare
 * Extra Info:
   * This means you can swap worlds and still have the same chat :)
 
+## quickLockRecipe
+When you middle click a recipe it searches it essentially locking it inplace, middle click empty space or another recipe to change it
+* Type: `Boolean`
+* Default Value: `false`
+
 ## removeWarnReceivedPassengers
 "This removes the 'Received passengers for unknown entity' warning on the client
 * Type: `Boolean`
 * Default Value: `false`
 * Extra Info:
   * This warning just clogs up logs when arround Minecarts
+
+  
+## soulSpeedFovMultiplier
+
+Determines the percentage of Fov scaling when walking on soil soul or soul sand
+* Type: `Integer`
+* Default Value: `0`
 
 ## stackableShulkersInPlayerInventories
 This allows for shulkers to stack only in your inventory
@@ -319,9 +383,16 @@ This will make tab a toggle instead of a press to activate
 * Default Value: `false`
 
 ## unlockAllRecipesOnJoin
-Unlocks every recipe when joining a singleplayer world
+Unlocks every recipe when joining a world.
 * Type: `Boolean`
 * Default Value: `false`
+
+##  waterFovMultiplier
+
+Determines the percentage of Fov scaling when fully submerged in water
+
+* Type: `Integer`
+* Default Value: `0`
 
 # Other Features
 

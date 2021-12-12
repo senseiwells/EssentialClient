@@ -4,18 +4,11 @@ import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import essentialclient.commands.TravelCommand;
-import essentialclient.feature.AFKRules;
-import essentialclient.feature.HighlightLavaSources;
-import essentialclient.feature.clientrule.ClientRuleHelper;
-import essentialclient.feature.keybinds.ClientKeybinds;
-import essentialclient.utils.EssentialUtils;
+import essentialclient.config.clientrule.ClientRules;
+import essentialclient.feature.ClientKeybinds;
 import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.carpet.Reference;
-import essentialclient.utils.command.ClientNickHelper;
-import essentialclient.utils.command.PlayerClientCommandHelper;
-import essentialclient.utils.command.PlayerListCommandHelper;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -33,22 +26,8 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
     @Override
     public void onInitialize() {
-        EssentialUtils.checkIfEssentialClientDirExists();
-        PlayerClientCommandHelper.readSaveFile();
-        PlayerListCommandHelper.readSaveFile();
-        ClientNickHelper.readSaveFile();
-        ClientRuleHelper.readSaveFile();
-        EssentialUtils.checkifScriptFileExists();
-
-        HighlightLavaSources.init();
-
+        ClientRules.init();
         ClientKeybinds.loadKeybinds();
-
-        AFKRules.INSTANCE.registerAFKRules();
-        TravelCommand.registerTickTravel();
-    }
-
-    public static void noop() {
     }
 
     static {
@@ -62,11 +41,11 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
 
     @Override
     public void onGameStarted() {
-        // let's /carpet handle our few simple settings
         CarpetServer.settingsManager.addRuleObserver((source, parsedRule, s) -> {
             try {
                 CarpetSettingsServerNetworkHandler.updateCarpetClientRules(parsedRule.name, parsedRule.getAsString(), source.getPlayer());
-            } catch (CommandSyntaxException e) {
+            }
+            catch (CommandSyntaxException e) {
                 e.printStackTrace();
             }
         });
@@ -81,12 +60,10 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
     }
 
     @Override
-    public void onTick(MinecraftServer server) {
-    }
+    public void onTick(MinecraftServer server) { }
 
     @Override
-    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
-    }
+    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) { }
 
     @Override
     public void onPlayerLoggedIn(ServerPlayerEntity player) {
@@ -94,6 +71,5 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
     }
 
     @Override
-    public void onPlayerLoggedOut(ServerPlayerEntity player) {
-    }
+    public void onPlayerLoggedOut(ServerPlayerEntity player) { }
 }

@@ -9,28 +9,38 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.util.math.Matrix4f;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class RenderHelper {
+    private static int backwardsEntityId = Integer.MAX_VALUE;
+    private static final Set<Integer> fakeEntityId = new HashSet<>();
+    //public static boolean isRenderingHotBarGui = false;
+
     // Taken from Screen Class
     public static void drawGuiInfoBox(TextRenderer font, String text, int x, int y) {
-        if (text == null)
+        if (text == null) {
             return;
+        }
         MatrixStack matrices = new MatrixStack();
         List<OrderedText> lines = wordWrap(text, 150);
-        if (lines.isEmpty())
+        if (lines.isEmpty()) {
             return;
+        }
         int i = 0;
         for(OrderedText orderedText : lines) {
             int j = font.getWidth(orderedText);
-            if (j > i)
+            if (j > i) {
                 i = j;
+            }
         }
         int mouseX = x + 12;
         int mouseY = y - 12;
         int k = 8;
-        if (lines.size() > 1)
+        if (lines.size() > 1) {
             k += 2 + (lines.size() - 1) * 10;
+        }
         matrices.push();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
@@ -57,10 +67,12 @@ public class RenderHelper {
         matrices.translate(0.0D, 0.0D, 400.0D);
         for(int l1 = 0; l1 < lines.size(); ++l1) {
             OrderedText orderedText = lines.get(l1);
-            if (orderedText != null)
-                font.draw(orderedText, (float)mouseX, (float)mouseY, -1, true, matrix4f, immediate, false, 0, 15728880);
-            if (l1 == 0)
+            if (orderedText != null) {
+                font.draw(orderedText, (float) mouseX, (float) mouseY, -1, true, matrix4f, immediate, false, 0, 15728880);
+            }
+            if (l1 == 0) {
                 mouseY += 2;
+            }
             mouseY += 10;
         }
         immediate.draw();
@@ -86,5 +98,19 @@ public class RenderHelper {
         bufferBuilder.vertex(matrix, (float)startX, (float)startY, (float) 400).color(g, h, i, f).next();
         bufferBuilder.vertex(matrix, (float)startX, (float)endY, (float) 400).color(k, l, m, j).next();
         bufferBuilder.vertex(matrix, (float)endX, (float)endY, (float) 400).color(k, l, m, j).next();
+    }
+
+    public static int getNextEntityId() {
+        int nextId = backwardsEntityId--;
+        fakeEntityId.add(nextId);
+        return nextId;
+    }
+
+    public static boolean removeFakeEntity(int id) {
+        return fakeEntityId.remove(id);
+    }
+
+    public static boolean isFakeEntity(int id) {
+        return fakeEntityId.contains(id);
     }
 }
