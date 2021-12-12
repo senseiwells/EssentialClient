@@ -7,25 +7,23 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookGhostSlots;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
-import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
+import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeMatcher;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.screen.slot.Slot;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Mixin(RecipeBookWidget.class)
 public abstract class RecipeBookWidgetMixin {
@@ -39,40 +37,54 @@ public abstract class RecipeBookWidgetMixin {
     @Unique
     RecipeMatcher matcher = new RecipeMatcher();
 
-    @Shadow @Final protected RecipeBookGhostSlots ghostSlots;
+    @Shadow
+    @Final
+    protected RecipeBookGhostSlots ghostSlots;
 
-    @Inject(
+    @Redirect(
             method = "mouseClicked",
-            locals = LocalCapture.CAPTURE_FAILHARD,
             at = @At(
                     value = "INVOKE",
-                    shift = At.Shift.AFTER,
                     target = "net/minecraft/client/network/ClientPlayerInteractionManager.clickRecipe(ILnet/minecraft/recipe/Recipe;Z)V"
             )
     )
-    private void postClickRecipe(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir, Recipe<?> recipe, RecipeResultCollection recipeResultCollection) {
+    private void redirectClickSlotCall(ClientPlayerInteractionManager instance, int syncId, Recipe<?> recipe, boolean craftAll) {
         PlayerEntity player = this.client.player;
-        if (player != null) {
+        if (player != null && this.client.currentScreen instanceof HandledScreen<?> handledScreen) {
+            int gridLength = InventoryUtils.getCraftingSlotLength(handledScreen);
+            InventoryUtils.clearCraftingGridNEW(this.client, handledScreen, player, gridLength);
 
-            player.inventory.populateRecipeFinder(this.matcher);
             IntList craftInputIds = new IntArrayList();
+            player.inventory.populateRecipeFinder(this.matcher);
             int craftsOps = matcher.countCrafts(recipe, craftInputIds);
 
             if (craftsOps == 0) {
                 this.showGhostRecipe(recipe, this.client.player.currentScreenHandler.slots);
             } else {
+                // if crafting possible, we fill the slots.
+                // this is the fix for special event locked recipes like chest, boat, bowl, etc.
                 this.ghostSlots.reset();
-                if (this.client.currentScreen != null && this.client.currentScreen instanceof HandledScreen<?> handledScreen) {
-                    List<ItemStack> stacks = craftInputIds.stream()
-                                                          .map(Item::byRawId)
-                                                          .map(Item::getDefaultStack)
-                                                          .collect(Collectors.toList());
-                    for (int i = stacks.size(); i < 9; i++) {
-                        stacks.add(Items.AIR.getDefaultStack());
-                    }
-                    InventoryUtils.tryMoveItemsToCraftingGridSlots(this.client, stacks.toArray(ItemStack[]::new), handledScreen);
+
+                List<Item> stacks = new ArrayList<>(gridLength);
+
+                for (int id: craftInputIds) {
+                    stacks.add(RecipeMatcher.getStackFromId(id).getItem());
                 }
+
+                if (recipe instanceof ShapedRecipe shapedRecipe) {
+                    int gridSide = (int) Math.sqrt(gridLength);
+                    int recipeWidth = shapedRecipe.getWidth();
+                    int recipeHeight = shapedRecipe.getHeight();
+
+                    for (int i = 0; i < recipeHeight - 1; i++) {
+                        for (int j = recipeWidth; j < gridSide; j++) {
+                            stacks.add(i * gridSide + j, ItemStack.EMPTY.getItem());
+                        }
+                    }
+                }
+                InventoryUtils.tryMoveItemsToCraftingGridSlotsNEW(this.client, stacks, handledScreen, craftsOps, !craftAll);
             }
+            matcher.clear();
         }
     }
 }

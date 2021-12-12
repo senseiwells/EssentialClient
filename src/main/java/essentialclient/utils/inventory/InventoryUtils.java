@@ -6,6 +6,8 @@ import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -49,8 +51,7 @@ public class InventoryUtils {
             if (slotType == EquipmentSlot.MAINHAND) {
                 int currentHotbarSlot = playerEntity.inventory.selectedSlot;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
-            }
-            else if (slotType == EquipmentSlot.OFFHAND) {
+            } else if (slotType == EquipmentSlot.OFFHAND) {
                 int tempSlot = (playerEntity.inventory.selectedSlot + 1) % 9;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, 45, tempSlot, SlotActionType.SWAP, client.player);
@@ -197,7 +198,7 @@ public class InventoryUtils {
         }
     }
 
-    private static boolean clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
+    public static boolean clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
         final int invSlots = gui.getScreenHandler().slots.size();
         for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
             try { Thread.sleep(0, 1); }
@@ -249,8 +250,7 @@ public class InventoryUtils {
                         leftClickSlot(client, gui, slotReturn);
                     }
                 }
-            }
-            else {
+            } else {
                 break;
             }
             if (!player.inventory.getCursorStack().isEmpty()) {
@@ -319,8 +319,7 @@ public class InventoryUtils {
             if (item != Items.AIR) {
                 if (mapSlots.containsKey(item)) {
                     mapSlots.get(item).add(i);
-                }
-                else {
+                } else {
                     List<Integer> integerList = new ArrayList<>();
                     integerList.add(i);
                     mapSlots.put(item, integerList);
@@ -356,5 +355,78 @@ public class InventoryUtils {
             return;
         }
         client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 1, SlotActionType.THROW, client.player);
+    }
+
+    public static ItemStack getCursorStack(MinecraftClient client) {
+        if (client == null || client.player == null) {
+            return null;
+        }
+        ItemStack cursorStack = client.player.inventory.getCursorStack();
+        if (cursorStack.isEmpty()) {
+            return null;
+        }
+        return cursorStack;
+    }
+
+    public static int getCraftingSlotLength(HandledScreen<? extends ScreenHandler> gui) {
+        ScreenHandler grid = gui.getScreenHandler();
+        int counter = 0;
+        for (Slot slot : grid.slots) {
+            if (slot.inventory instanceof PlayerInventory) break;
+            counter += slot.inventory instanceof CraftingInventory ? 1 : 0;
+        }
+        return counter;
+    }
+
+    public static void clearCraftingGridNEW(MinecraftClient client, HandledScreen<?> handledScreen, PlayerEntity player, int gridSize) {
+        List<Slot> slots = player.currentScreenHandler.slots;
+        for (int i = 1; i < gridSize + 1; i++) {
+            try { Thread.sleep(0, 1); }
+            catch (InterruptedException ignored) { }
+            shiftClickSlot(client, handledScreen, i);
+            if (slots.get(i).hasStack()) {
+                dropStack(client, handledScreen, i);
+            }
+        }
+    }
+
+    public static void tryMoveItemsToCraftingGridSlotsNEW(MinecraftClient client, List<Item> slotStacks, HandledScreen<?> handledScreen, int craftOps, boolean craftAll) {
+        Map<Item, List<Integer>> inventoryCache = new HashMap<>();
+        Map<Item, List<Integer>> craftingCache = new HashMap<>();
+        List<Slot> slots = handledScreen.getScreenHandler().slots;
+        for (Slot slot : slots) {
+            if (slot.hasStack()) {
+                inventoryCache.computeIfAbsent(slot.getStack().getItem(), k -> new ArrayList<>()).add(slot.id);
+            }
+        }
+        for (int i = 0; i < slotStacks.size(); i++) {
+            Item item = slotStacks.get(i);
+            if (item != Items.AIR) {
+                craftingCache.computeIfAbsent(item, k -> new ArrayList<>()).add(i + 1);
+            }
+        }
+        fillCraftingGridNEW(client, handledScreen, inventoryCache, craftingCache, craftAll);
+    }
+
+    public static void fillCraftingGridNEW(MinecraftClient client, HandledScreen<?> handledScreen, Map<Item, List<Integer>> inventoryCache, Map<Item, List<Integer>> craftingCache, boolean craftAll) {
+        for (Item item : craftingCache.keySet()) {
+            for (int slotId : inventoryCache.get(item)) {
+                leftClickSlot(client, handledScreen, slotId);
+                dragSplitItemsIntoSlotsNEW(client, handledScreen, craftingCache.get(item), craftAll);
+                if (getCursorStack(client) != null) {
+                    leftClickSlot(client, handledScreen, slotId);
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("PointlessArithmeticExpression")
+    public static void dragSplitItemsIntoSlotsNEW(MinecraftClient client, HandledScreen<?> handledScreen, List<Integer> craftingSlotIds, boolean craftAll) {
+        int modifier = craftAll ? 4 : 0;
+        craftClickSlot(client, handledScreen, -999, 0 + modifier);
+        for (int craftingSlotId : craftingSlotIds) {
+            craftClickSlot(client, handledScreen, craftingSlotId, 1 + modifier);
+        }
+        craftClickSlot(client, handledScreen, -999, 2 + modifier);
     }
 }
