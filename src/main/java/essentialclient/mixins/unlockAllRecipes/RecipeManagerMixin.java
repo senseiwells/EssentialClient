@@ -17,9 +17,9 @@ public class RecipeManagerMixin {
     @Redirect(method = "getFirstMatch", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;findFirst()Ljava/util/Optional;"))
     public <C extends Inventory, T extends Recipe<C>> Optional<T> onCall(Stream<T> instance) {
         Optional<T> result = instance.findFirst();
-        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && result.isPresent() && RecipeBookCache.RECIPE_CACHE.contains(result.get())) {
+        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && result.isPresent() && RecipeBookCache.isCached(result.get())) {
             return Optional.empty();
         }
-        return result;
+        return result;  
     }
 }

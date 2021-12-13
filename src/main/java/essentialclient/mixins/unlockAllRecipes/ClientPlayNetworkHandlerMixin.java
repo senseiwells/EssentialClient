@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin implements RecipeBookCache {
+public abstract class ClientPlayNetworkHandlerMixin {
     @Shadow
     private MinecraftClient client;
 
@@ -28,7 +28,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements RecipeBookCache {
         if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && client.player != null) {
             ClientRecipeBook recipeBook = client.player.getRecipeBook();
             packet.getRecipes().forEach(recipeBook::add);
-            this.setRecipeCache(packet.getRecipes());
+            RecipeBookCache.setRecipeCache(packet.getRecipes());
         }
     }
 
@@ -38,12 +38,12 @@ public abstract class ClientPlayNetworkHandlerMixin implements RecipeBookCache {
         switch (packet.getAction()) {
             case ADD, INIT -> {
                 for (Identifier identifier : packet.getRecipeIdsToChange()) {
-                    this.recipeManager.get(identifier).ifPresent(this::removeRecipeFromCache);
+                    this.recipeManager.get(identifier).ifPresent(RecipeBookCache::removeRecipeFromCache);
                 }
             }
             case REMOVE -> {
                 for (Identifier identifier : packet.getRecipeIdsToChange()) {
-                    this.recipeManager.get(identifier).ifPresent(this::addRecipeToCache);
+                    this.recipeManager.get(identifier).ifPresent(RecipeBookCache::addRecipeToCache);
                 }
             }
         }

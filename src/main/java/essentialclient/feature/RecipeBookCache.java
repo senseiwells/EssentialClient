@@ -6,22 +6,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public interface RecipeBookCache {
-    Set<Recipe<?>> RECIPE_CACHE = new HashSet<>();
+public class RecipeBookCache {
+    private static final Set<Recipe<?>> RECIPE_CACHE = new HashSet<>();
 
-    static boolean isCached(Recipe<?> recipe) {
+    public static boolean isCached(Recipe<?> recipe) {
         return RECIPE_CACHE.contains(recipe);
     }
 
-    default void setRecipeCache(List<Recipe<?>> recipeCache) {
-        recipeCache.forEach(this::addRecipeToCache);
+    public static void setRecipeCache(List<Recipe<?>> recipeCache) {
+        recipeCache.forEach(RecipeBookCache::addRecipeToCache);
     }
 
-    default void addRecipeToCache(Recipe<?> recipe) {
-        this.RECIPE_CACHE.add(recipe);
+    public static void addRecipeToCache(Recipe<?> recipe) {
+        RECIPE_CACHE.add(recipe);
     }
 
-    default void removeRecipeFromCache(Recipe<?> recipe) {
-        this.RECIPE_CACHE.remove(recipe);
+    public static void removeRecipeFromCache(Recipe<?> recipe) {
+        RECIPE_CACHE.remove(recipe);
     }
 }
