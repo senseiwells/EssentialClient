@@ -5,6 +5,7 @@
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
+    "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
     "unlockAllRecipes.RecipeManagerMixin"
   ],
   "client": [
@@ -64,7 +65,7 @@
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
-    "unlockAllRecipes.RecipeBookWidgetMixin",
+    "unlockAllRecipes.GhostSlotClearInvoker",
     "waterFovMultiplier.GameRendererMixin"
   ],
   "injectors": {

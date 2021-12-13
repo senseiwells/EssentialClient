@@ -9,12 +9,12 @@ import java.util.Set;
 public interface RecipeBookCache {
     Set<Recipe<?>> RECIPE_CACHE = new HashSet<>();
 
-    default Set<Recipe<?>> getRecipeCache() {
-        return RECIPE_CACHE;
+    static boolean isCached(Recipe<?> recipe) {
+        return RECIPE_CACHE.contains(recipe);
     }
 
     default void setRecipeCache(List<Recipe<?>> recipeCache) {
-        this.RECIPE_CACHE.addAll(recipeCache);
+        recipeCache.forEach(this::addRecipeToCache);
     }
 
     default void addRecipeToCache(Recipe<?> recipe) {
