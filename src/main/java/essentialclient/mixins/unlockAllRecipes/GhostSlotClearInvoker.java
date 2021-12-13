@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(RecipeBookWidget.class)
 public abstract class GhostSlotClearInvoker implements IGhostRecipeBookWidget {
+
     @Shadow
     @Final
     protected RecipeBookGhostSlots ghostSlots;
