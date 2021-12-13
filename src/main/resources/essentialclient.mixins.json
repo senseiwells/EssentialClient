@@ -5,8 +5,7 @@
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
     "carpet.ServerPlayNetworkHandlerMixin",
-    "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
-    "unlockAllRecipes.RecipeManagerMixin"
+    "unlockAllRecipes.RecipeBookWidgetMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",
@@ -64,6 +63,7 @@
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
+    "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
     "unlockAllRecipes.GhostSlotClearInvoker",
     "waterFovMultiplier.GameRendererMixin"

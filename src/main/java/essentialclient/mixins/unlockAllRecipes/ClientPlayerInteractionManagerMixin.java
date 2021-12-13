@@ -1,6 +1,7 @@
 package essentialclient.mixins.unlockAllRecipes;
 
 import essentialclient.config.clientrule.ClientRules;
+import essentialclient.feature.VanillaRecipeBookClickTracker;
 import essentialclient.feature.RecipeBookCache;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -19,8 +20,9 @@ public class ClientPlayerInteractionManagerMixin {
     @Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
     public void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
         MinecraftClient mc = EssentialUtils.getClient();
-        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && RecipeBookCache.isCached(recipe) && mc.currentScreen instanceof HandledScreen<?> handledScreen) {
+        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && VanillaRecipeBookClickTracker.IS_VANILLA_CLICK.get() && RecipeBookCache.isCached(recipe) && mc.currentScreen instanceof HandledScreen<?> handledScreen) {
             InventoryUtils.doCraftingSlotsFillAction(recipe, handledScreen, craftAll);
+            VanillaRecipeBookClickTracker.IS_VANILLA_CLICK.set(false);
             ci.cancel();
         }
     }
