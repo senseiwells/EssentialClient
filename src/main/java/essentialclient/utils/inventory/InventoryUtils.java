@@ -405,12 +405,14 @@ public class InventoryUtils {
                 craftingCache.computeIfAbsent(item, k -> new ArrayList<>()).add(i + 1);
             }
         }
-        fillCraftingGridNEW(client, handledScreen, inventoryCache, craftingCache, craftAll);
+        fillCraftingGridNEW(client, handledScreen, inventoryCache, craftingCache, craftOps, craftAll);
     }
 
-    public static void fillCraftingGridNEW(MinecraftClient client, HandledScreen<?> handledScreen, Map<Item, List<Integer>> inventoryCache, Map<Item, List<Integer>> craftingCache, boolean craftAll) {
+    public static void fillCraftingGridNEW(MinecraftClient client, HandledScreen<?> handledScreen, Map<Item, List<Integer>> inventoryCache, Map<Item, List<Integer>> craftingCache, int craftOps, boolean craftAll) {
         for (Item item : craftingCache.keySet()) {
-            for (int slotId : inventoryCache.get(item)) {
+            List<Integer> inventorySlots = inventoryCache.get(item);
+            for (int i = 0; i < craftOps && i < inventorySlots.size(); i++) {
+                int slotId = inventorySlots.get(i);
                 leftClickSlot(client, handledScreen, slotId);
                 dragSplitItemsIntoSlotsNEW(client, handledScreen, craftingCache.get(item), craftAll);
                 if (getCursorStack(client) != null) {
@@ -422,7 +424,7 @@ public class InventoryUtils {
 
     @SuppressWarnings("PointlessArithmeticExpression")
     public static void dragSplitItemsIntoSlotsNEW(MinecraftClient client, HandledScreen<?> handledScreen, List<Integer> craftingSlotIds, boolean craftAll) {
-        int modifier = craftAll ? 4 : 0;
+        int modifier = craftAll ? 0 : 4;
         craftClickSlot(client, handledScreen, -999, 0 + modifier);
         for (int craftingSlotId : craftingSlotIds) {
             craftClickSlot(client, handledScreen, craftingSlotId, 1 + modifier);

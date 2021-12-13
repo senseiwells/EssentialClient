@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
-    "carpet.ServerPlayNetworkHandlerMixin"
+    "carpet.ServerPlayNetworkHandlerMixin",
+    "unlockAllRecipes.RecipeManagerMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",

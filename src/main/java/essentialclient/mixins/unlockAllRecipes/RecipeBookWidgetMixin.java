@@ -90,7 +90,7 @@ public abstract class RecipeBookWidgetMixin {
                         }
                     }
                 }
-                InventoryUtils.tryMoveItemsToCraftingGridSlotsNEW(this.client, stacks, handledScreen, craftsOps, !craftAll);
+                InventoryUtils.tryMoveItemsToCraftingGridSlotsNEW(this.client, stacks, handledScreen, craftAll ? craftsOps : 1, craftAll);
             }
             matcher.clear();
         }
