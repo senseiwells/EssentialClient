@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "carpet.CustomPayloadC2SPacketAccessor",
-    "carpet.ServerPlayNetworkHandlerMixin",
-    "unlockAllRecipes.RecipeBookWidgetMixin"
+    "carpet.ServerPlayNetworkHandlerMixin"
   ],
   "client": [
     "autoWalk.KeyboardInputMixin",
@@ -66,6 +65,7 @@
     "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
     "unlockAllRecipes.GhostSlotClearInvoker",
+    "unlockAllRecipes.RecipeBookWidgetMixin",
     "waterFovMultiplier.GameRendererMixin"
   ],
   "injectors": {

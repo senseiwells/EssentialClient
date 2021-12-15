@@ -26,8 +26,11 @@ import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Pair;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +39,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class InventoryUtils {
+
+    private static final Logger log = LogManager.getLogger();
 
     public static Slot getItemSlot(ClientPlayerEntity playerEntity, Item item) {
         ScreenHandler containerPlayer = playerEntity.currentScreenHandler;
@@ -380,12 +385,34 @@ public class InventoryUtils {
         return cursorStack;
     }
 
-    public static void doCraftingSlotsFillAction(Recipe<?> recipe, HandledScreen<?> handledScreen, boolean craftAll) {
+    public static boolean areRecipesEqual(Recipe<?> recipe, Recipe<?> other) {
+        if (recipe == null || other == null) {
+            return false;
+        }
+        return recipe.getId().equals(other.getId());
+    }
 
+    public static boolean isGridEmpty(HandledScreen<?> handledScreen, int gridLength) {
+        boolean isEmpty = true;
+        List<Slot> slots = handledScreen.getScreenHandler().slots;
+        for (int i = 0; i < gridLength; i++) {
+            isEmpty &= slots.get(i + 1).hasStack();
+        }
+        return isEmpty;
+    }
+
+    public static void doCraftingSlotsFillAction(Recipe<?> recipe, HandledScreen<?> handledScreen, boolean craftAll) {
+        doCraftingSlotsFillAction(recipe, null, handledScreen, craftAll);
+    }
+
+    public static void doCraftingSlotsFillAction(Recipe<?> recipe, Recipe<?> lastRecipe, HandledScreen<?> handledScreen, boolean craftAll) {
         RecipeBookWidget widget;
+        ScreenHandler handler = handledScreen.getScreenHandler();
         if (handledScreen instanceof InventoryScreen playerScreen) {
+            handler = playerScreen.getScreenHandler();
             widget = playerScreen.getRecipeBookWidget();
         } else if (handledScreen instanceof CraftingScreen craftingScreen) {
+            handler = craftingScreen.getScreenHandler();
             widget = craftingScreen.getRecipeBookWidget();
         } else {
             // We not in correct screen. Should never happen really but just for the edge case
@@ -396,15 +423,22 @@ public class InventoryUtils {
         PlayerEntity player = EssentialUtils.getPlayer();
 
         int gridLength = InventoryUtils.getCraftingSlotLength(handledScreen);
-        InventoryUtils.clearCraftingGridNEW(mc, handledScreen, player, gridLength);
+
+        if (!InventoryUtils.areRecipesEqual(recipe, lastRecipe)){
+            InventoryUtils.emptyCraftingGrid(mc, handledScreen, player, gridLength);
+        }
 
         RecipeMatcher matcher = new RecipeMatcher();
+
+        List<Slot> slots = handledScreen.getScreenHandler().slots;
+        for (int i = 1; i < slots.size(); i++) {
+            matcher.addUnenchantedInput(slots.get(i).getStack());
+        }
+
         IntList craftInputIds = new IntArrayList();
+        int totalCraftOps = matcher.countCrafts(recipe, craftInputIds);
 
-        player.inventory.populateRecipeFinder(matcher);
-        int craftsOps = matcher.countCrafts(recipe, craftInputIds);
-
-        if (craftsOps == 0) {
+        if (totalCraftOps == 0 && isGridEmpty(handledScreen, gridLength)) {
             widget.showGhostRecipe(recipe, player.currentScreenHandler.slots);
         } else {
             ((IGhostRecipeBookWidget) widget).clearGhostSlots();
@@ -425,7 +459,7 @@ public class InventoryUtils {
                     }
                 }
             }
-            InventoryUtils.tryMoveItemsToCraftingGridSlotsNEW(mc, stacks, handledScreen, craftAll ? craftsOps : 1, craftAll);
+            InventoryUtils.cacheAndFillSlots(mc, stacks, handledScreen, craftAll ? totalCraftOps : 1, craftAll);
         }
         matcher.clear();
     }
@@ -440,52 +474,50 @@ public class InventoryUtils {
         return counter;
     }
 
-    public static void clearCraftingGridNEW(MinecraftClient client, HandledScreen<?> handledScreen, PlayerEntity player, int gridSize) {
+    public static void emptyCraftingGrid(MinecraftClient client, HandledScreen<?> handledScreen, PlayerEntity player, int gridSize) {
         List<Slot> slots = player.currentScreenHandler.slots;
         for (int i = 1; i < gridSize + 1; i++) {
-            try {
-                Thread.sleep(0, 1);
-            } catch (InterruptedException ignored) {
-            }
             shiftClickSlot(client, handledScreen, i);
             if (slots.get(i).hasStack()) {
                 dropStack(client, handledScreen, i);
             }
+            try {
+                Thread.sleep(0, 1);
+            } catch (InterruptedException ignored) {}
         }
     }
 
-    public static void tryMoveItemsToCraftingGridSlotsNEW(MinecraftClient client, List<Item> slotStacks, HandledScreen<?> handledScreen, int craftOps, boolean craftAll) {
-        Map<Item, List<Integer>> inventoryCache = new HashMap<>();
-        Map<Item, List<Integer>> craftingCache = new HashMap<>();
+    public static void cacheAndFillSlots(MinecraftClient client, List<Item> slotStacks, HandledScreen<?> handledScreen, int craftOps, boolean craftAll) {
+        Map<Item, Pair<List<Integer>, List<Integer>>> cache = new HashMap<>();
         List<Slot> slots = handledScreen.getScreenHandler().slots;
-        for (Slot slot : slots) {
-            if (slot.hasStack()) {
-                inventoryCache.computeIfAbsent(slot.getStack().getItem(), k -> new ArrayList<>()).add(slot.id);
-            }
-        }
+
         for (int i = 0; i < slotStacks.size(); i++) {
             Item item = slotStacks.get(i);
             if (item != Items.AIR) {
-                craftingCache.computeIfAbsent(item, k -> new ArrayList<>()).add(i + 1);
+                cache.computeIfAbsent(item, k -> new Pair<>(new ArrayList<>(), new ArrayList<>())).getLeft().add(i + 1);
             }
         }
-        fillCraftingGridNEW(client, handledScreen, inventoryCache, craftingCache, craftOps, craftAll);
+
+        for (Slot slot : slots) {
+            if (!(slot.inventory instanceof PlayerInventory))
+                continue;
+            Item slotItem = slot.getStack().getItem();
+            if (cache.containsKey(slotItem))
+                cache.get(slotItem)
+                     .getRight()
+                     .add(slot.id);
+        }
+
+        fillCraftingGridWithItems(client, handledScreen, cache, craftOps, craftAll);
     }
 
-    public static void fillCraftingGridNEW(
-            MinecraftClient client,
-            HandledScreen<?> handledScreen,
-            Map<Item, List<Integer>> inventoryCache,
-            Map<Item, List<Integer>> craftingCache,
-            int craftOps,
-            boolean craftAll
-    ) {
-        for (Item item : craftingCache.keySet()) {
-            List<Integer> inventorySlots = inventoryCache.get(item);
-            for (int i = 0; i < craftOps && i < inventorySlots.size(); i++) {
-                int slotId = inventorySlots.get(i);
+    public static void fillCraftingGridWithItems(MinecraftClient client, HandledScreen<?> handledScreen, Map<Item, Pair<List<Integer>, List<Integer>>> cache, int craftOps, boolean craftAll) {
+        for (Item item : cache.keySet()) {
+            Pair<List<Integer>, List<Integer>> itemCache = cache.get(item);
+            for (int i = 0; i < itemCache.getRight().size() && i < craftOps; i++) {
+                int slotId = itemCache.getRight().get(i);
                 leftClickSlot(client, handledScreen, slotId);
-                dragSplitItemsIntoSlotsNEW(client, handledScreen, craftingCache.get(item), craftAll);
+                dragSplitItemsIntoGrid(client, handledScreen, itemCache.getLeft(), craftAll);
                 if (getCursorStack(client) != null) {
                     leftClickSlot(client, handledScreen, slotId);
                 }
@@ -493,13 +525,12 @@ public class InventoryUtils {
         }
     }
 
-    @SuppressWarnings("PointlessArithmeticExpression")
-    public static void dragSplitItemsIntoSlotsNEW(MinecraftClient client, HandledScreen<?> handledScreen, List<Integer> craftingSlotIds, boolean craftAll) {
+    public static void dragSplitItemsIntoGrid(MinecraftClient client, HandledScreen<?> handledScreen, List<Integer> craftingSlotIds, boolean craftAll) {
         int modifier = craftAll ? 0 : 4;
-        craftClickSlot(client, handledScreen, -999, 0 + modifier);
-        for (int craftingSlotId : craftingSlotIds) {
-            craftClickSlot(client, handledScreen, craftingSlotId, 1 + modifier);
+        craftClickSlot(client, handledScreen, -999, modifier);
+        for (int slotId : craftingSlotIds) {
+            craftClickSlot(client, handledScreen, slotId, modifier + 1);
         }
-        craftClickSlot(client, handledScreen, -999, 2 + modifier);
+        craftClickSlot(client, handledScreen, -999, modifier + 2);
     }
 }
