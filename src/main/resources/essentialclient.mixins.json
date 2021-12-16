@@ -45,6 +45,7 @@
     "functions.PlayerEntityMixin",
     "hotbarFade.InGameHudMixin",
     "keyboardRebinds.KeyboardMixin",
+    "missingTools.MiningToolItemMixin",
     "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
@@ -61,7 +62,10 @@
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
+    "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
+    "unlockAllRecipes.GhostSlotClearInvoker",
+    "unlockAllRecipes.RecipeBookWidgetMixin",
     "waterFovMultiplier.GameRendererMixin"
   ],
   "injectors": {
