@@ -376,13 +376,9 @@ public class InventoryUtils {
 
     public static ItemStack getCursorStack(MinecraftClient client) {
         if (client == null || client.player == null) {
-            return null;
+            return ItemStack.EMPTY;
         }
-        ItemStack cursorStack = client.player.inventory.getCursorStack();
-        if (cursorStack.isEmpty()) {
-            return null;
-        }
-        return cursorStack;
+        return client.player.inventory.getCursorStack();
     }
 
     public static ItemStack getStackAtSlot(HandledScreen<?> handledScreen, int slotId) {
@@ -425,7 +421,7 @@ public class InventoryUtils {
 
         int gridLength = InventoryUtils.getCraftingSlotLength(handledScreen);
 
-        if (!InventoryUtils.areRecipesEqual(recipe, lastRecipe)){
+        if (!InventoryUtils.areRecipesEqual(recipe, lastRecipe) || (!isGridEmpty(handledScreen, gridLength) && getStackAtSlot(handledScreen, 0).isEmpty())){
             InventoryUtils.emptyCraftingGrid(mc, handledScreen, player, gridLength);
         }
 
@@ -460,7 +456,7 @@ public class InventoryUtils {
                     }
                 }
             }
-            InventoryUtils.cacheAndFillSlots(mc, stacks, handledScreen, craftAll ? totalCraftOps : 1, craftAll);
+            InventoryUtils.cacheAndFillSlots(mc, stacks, handledScreen, craftAll);
         }
         matcher.clear();
     }
@@ -488,7 +484,7 @@ public class InventoryUtils {
         }
     }
 
-    public static void cacheAndFillSlots(MinecraftClient client, List<Item> slotStacks, HandledScreen<?> handledScreen, int craftOps, boolean craftAll) {
+    public static void cacheAndFillSlots(MinecraftClient client, List<Item> slotStacks, HandledScreen<?> handledScreen, boolean craftAll) {
         Map<Item, Pair<List<Integer>, List<Integer>>> cache = new HashMap<>();
         List<Slot> slots = handledScreen.getScreenHandler().slots;
 
@@ -509,32 +505,30 @@ public class InventoryUtils {
                      .add(slot.id);
         }
 
-        fillCraftingGridWithItems(client, handledScreen, cache, craftOps, craftAll);
+        fillCraftingGridWithItems(client, handledScreen, cache, craftAll);
     }
 
-    public static void fillCraftingGridWithItems(MinecraftClient client, HandledScreen<?> handledScreen, Map<Item, Pair<List<Integer>, List<Integer>>> cache, int craftOps, boolean craftAll) {
+    public static void fillCraftingGridWithItems(MinecraftClient client, HandledScreen<?> handledScreen, Map<Item, Pair<List<Integer>, List<Integer>>> cache, boolean craftAll) {
         for (Item item : cache.keySet()) {
             Pair<List<Integer>, List<Integer>> itemCache = cache.get(item);
+            if (itemCache.getRight().isEmpty()) continue;
+
+            int recipeRequiredAmount = itemCache.getLeft().size();
+            int startAt = 0;
             int slotCounter = 0;
-            for (int i = 0; itemCache.getRight().size() > 0 &&  i < craftOps; i++) {
-                int recipeRequiredAmount = itemCache.getLeft().size();
-                int startAt = 0;
-                do {
-                    int slotId = itemCache.getRight().get(slotCounter++);
-                    int endAt = recipeRequiredAmount;
-                    int count = getStackAtSlot(handledScreen, slotId).getCount();
-                    if (count < endAt) {
-                        endAt = startAt + count;
-                    }
+
+            do {
+                int slotId = itemCache.getRight().get(slotCounter);
+                int count = getStackAtSlot(handledScreen, slotId).getCount();
+                int endAt = Math.min(startAt + count, recipeRequiredAmount);
+
+                leftClickSlot(client, handledScreen, slotId);
+                dragSplitItemsIntoGrid(client, handledScreen, itemCache.getLeft(), startAt, endAt, craftAll);
+                if (getCursorStack(client) != null) {
                     leftClickSlot(client, handledScreen, slotId);
-                    dragSplitItemsIntoGrid(client, handledScreen, itemCache.getLeft(), startAt, endAt, craftAll);
-                    if (getCursorStack(client) != null) {
-                        leftClickSlot(client, handledScreen, slotId);
-                    }
-                    log.info("{} {}", startAt, endAt);
-                    startAt = endAt;
-                } while (startAt <= recipeRequiredAmount && slotCounter < itemCache.getRight().size());
-            }
+                }
+                startAt = endAt;
+            } while (startAt < recipeRequiredAmount && ++slotCounter < itemCache.getRight().size());
         }
     }
 
