@@ -385,6 +385,10 @@ public class InventoryUtils {
         return cursorStack;
     }
 
+    public static ItemStack getStackAtSlot(HandledScreen<?> handledScreen, int slotId) {
+        return handledScreen.getScreenHandler().slots.get(slotId).getStack();
+    }
+
     public static boolean areRecipesEqual(Recipe<?> recipe, Recipe<?> other) {
         if (recipe == null || other == null) {
             return false;
@@ -407,12 +411,9 @@ public class InventoryUtils {
 
     public static void doCraftingSlotsFillAction(Recipe<?> recipe, Recipe<?> lastRecipe, HandledScreen<?> handledScreen, boolean craftAll) {
         RecipeBookWidget widget;
-        ScreenHandler handler = handledScreen.getScreenHandler();
         if (handledScreen instanceof InventoryScreen playerScreen) {
-            handler = playerScreen.getScreenHandler();
             widget = playerScreen.getRecipeBookWidget();
         } else if (handledScreen instanceof CraftingScreen craftingScreen) {
-            handler = craftingScreen.getScreenHandler();
             widget = craftingScreen.getRecipeBookWidget();
         } else {
             // We not in correct screen. Should never happen really but just for the edge case
@@ -514,21 +515,34 @@ public class InventoryUtils {
     public static void fillCraftingGridWithItems(MinecraftClient client, HandledScreen<?> handledScreen, Map<Item, Pair<List<Integer>, List<Integer>>> cache, int craftOps, boolean craftAll) {
         for (Item item : cache.keySet()) {
             Pair<List<Integer>, List<Integer>> itemCache = cache.get(item);
-            for (int i = 0; i < itemCache.getRight().size() && i < craftOps; i++) {
-                int slotId = itemCache.getRight().get(i);
-                leftClickSlot(client, handledScreen, slotId);
-                dragSplitItemsIntoGrid(client, handledScreen, itemCache.getLeft(), craftAll);
-                if (getCursorStack(client) != null) {
+            int slotCounter = 0;
+            for (int i = 0; itemCache.getRight().size() > 0 &&  i < craftOps; i++) {
+                int recipeRequiredAmount = itemCache.getLeft().size();
+                int startAt = 0;
+                do {
+                    int slotId = itemCache.getRight().get(slotCounter++);
+                    int endAt = recipeRequiredAmount;
+                    int count = getStackAtSlot(handledScreen, slotId).getCount();
+                    if (count < endAt) {
+                        endAt = startAt + count;
+                    }
                     leftClickSlot(client, handledScreen, slotId);
-                }
+                    dragSplitItemsIntoGrid(client, handledScreen, itemCache.getLeft(), startAt, endAt, craftAll);
+                    if (getCursorStack(client) != null) {
+                        leftClickSlot(client, handledScreen, slotId);
+                    }
+                    log.info("{} {}", startAt, endAt);
+                    startAt = endAt;
+                } while (startAt <= recipeRequiredAmount && slotCounter < itemCache.getRight().size());
             }
         }
     }
 
-    public static void dragSplitItemsIntoGrid(MinecraftClient client, HandledScreen<?> handledScreen, List<Integer> craftingSlotIds, boolean craftAll) {
+    public static void dragSplitItemsIntoGrid(MinecraftClient client, HandledScreen<?> handledScreen, List<Integer> craftingSlotIds, int startAt, int endAt, boolean craftAll) {
         int modifier = craftAll ? 0 : 4;
         craftClickSlot(client, handledScreen, -999, modifier);
-        for (int slotId : craftingSlotIds) {
+        for (int i = startAt; i < craftingSlotIds.size() && i < endAt; i++) {
+            int slotId = craftingSlotIds.get(i);
             craftClickSlot(client, handledScreen, slotId, modifier + 1);
         }
         craftClickSlot(client, handledScreen, -999, modifier + 2);
