@@ -2,7 +2,6 @@ package essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.values.Value;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.registry.Registry;
 
 public class WorldValue extends Value<ClientWorld> {
 	public WorldValue(ClientWorld world) {

@@ -96,6 +96,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		new MemberFunction("textFromString", "text", this::textFromString),
 		new MemberFunction("createFakeScreen", List.of("screenTitle", "rows"), this::createFakeScreen),
 		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound),
+		new MemberFunction("stripFormatting", "string", this::stripFormatting),
 
 		new MemberFunction("importUtils", "util", this::importUtils)
 	);
@@ -338,10 +339,10 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		return new TextValue(new LiteralText(stringValue.value));
 	}
 
-    private Value<?> createFakeScreen(Context context, MemberFunction function) throws CodeError {
-        MinecraftClient client = this.getClient(context, function);
-        ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
-        StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+	private Value<?> createFakeScreen(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 2);
 		try {
 			return new FakeInventoryScreenValue(new FakeInventoryScreen(player.inventory, stringValue.value, numberValue.value.intValue()));
@@ -349,7 +350,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		catch (IllegalArgumentException e) {
 			throw new RuntimeError(e.getMessage(), function.syntaxPosition, context);
 		}
-    }
+	}
 
 	private Value<?> playSound(Context context, MemberFunction function) throws CodeError {
 		MinecraftClient client = this.getClient(context, function);
@@ -360,6 +361,12 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		SoundEvent soundEvent = Registry.SOUND_EVENT.get(new Identifier(stringValue.value));
 		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
 		return new NullValue();
+	}
+
+	private Value<?> stripFormatting(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		return new StringValue(stringValue.value.replaceAll("§[0-9a-gk-or]", ""));
 	}
 
 	private Value<?> importUtils(Context context, MemberFunction function) throws CodeError{

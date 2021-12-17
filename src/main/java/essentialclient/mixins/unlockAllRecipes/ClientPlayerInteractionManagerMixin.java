@@ -18,17 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
 
-    @Unique
-    private Recipe<?> lastRecipeCache = null;
+	@Unique
+	private Recipe<?> lastRecipeCache = null;
 
-    @Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
-    public void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
-        MinecraftClient mc = EssentialUtils.getClient();
-        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && VanillaRecipeBookClickTracker.IS_VANILLA_CLICK.get() && RecipeBookCache.isCached(recipe) && mc.currentScreen instanceof HandledScreen<?> handledScreen) {
-            InventoryUtils.doCraftingSlotsFillAction(recipe, lastRecipeCache, handledScreen, craftAll);
-            VanillaRecipeBookClickTracker.IS_VANILLA_CLICK.set(false);
-            lastRecipeCache = recipe;
-            ci.cancel();
-        }
-    }
+	@Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
+	public void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
+		MinecraftClient mc = EssentialUtils.getClient();
+		if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && VanillaRecipeBookClickTracker.IS_VANILLA_CLICK.get() && RecipeBookCache.isCached(recipe) && mc.currentScreen instanceof HandledScreen<?> handledScreen) {
+			InventoryUtils.doCraftingSlotsFillAction(recipe, lastRecipeCache, handledScreen, craftAll);
+			VanillaRecipeBookClickTracker.IS_VANILLA_CLICK.set(false);
+			this.lastRecipeCache = recipe;
+			ci.cancel();
+		}
+	}
 }

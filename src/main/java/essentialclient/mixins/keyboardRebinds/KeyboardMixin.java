@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(Keyboard.class)
 public class KeyboardMixin {
-    @ModifyConstant(method = "onKey", constant = @Constant(intValue = 292))
-    private int onKey292(int original) {
-        return ClientKeybinds.DEBUG_MENU.getKeyCode();
-    }
+	@ModifyConstant(method = "onKey", constant = @Constant(intValue = 292))
+	private int onKey292(int original) {
+		return ClientKeybinds.DEBUG_MENU.getKeyCode();
+	}
 }

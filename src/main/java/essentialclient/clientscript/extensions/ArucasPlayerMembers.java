@@ -180,7 +180,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		if (screenValue.value instanceof HandledScreen && !(screenValue.value instanceof FakeInventoryScreen)) {
 			throw new RuntimeError("Opening handled screens is unsafe", function.syntaxPosition, context);
 		}
-		client.openScreen(screenValue.value);
+		client.execute(() -> client.openScreen(screenValue.value));
 		return new NullValue();
 	}
 

@@ -50,7 +50,7 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 	}
 
 	private final Set<MemberFunction> MemberFunctions = Set.of(
-		new MemberFunction("getItemId", (context, function) -> new StringValue(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath())),
+		new MemberFunction("getItemId", List.of(), (context, function) -> new StringValue(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath()), true),
 		new MemberFunction("getId", (context, function) -> new StringValue(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath())),
 		new MemberFunction("getCount", (context, function) -> new NumberValue(this.getItemStack(context, function).getCount())),
 		new MemberFunction("getDurability", this::getDurability),
@@ -60,7 +60,7 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 		new MemberFunction("isStackable", (context, function) -> new BooleanValue(this.getItemStack(context, function).isStackable())),
 		new MemberFunction("getMaxCount", (context, function) -> new NumberValue(this.getItemStack(context, function).getMaxCount())),
 		new MemberFunction("asBlock", this::asBlock),
-		new MemberFunction("getItemName", (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString())),
+		new MemberFunction("getItemName", List.of(), (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString()), true),
 		new MemberFunction("getCustomName", (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString())),
 		new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual),
 		new MemberFunction("getNbt", this::getNbt),

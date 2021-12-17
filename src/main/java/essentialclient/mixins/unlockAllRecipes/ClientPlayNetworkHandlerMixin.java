@@ -19,34 +19,36 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
-    @Shadow
-    private MinecraftClient client;
+	@Shadow
+	private MinecraftClient client;
 
-    @Shadow @Final private RecipeManager recipeManager;
+	@Shadow
+	@Final
+	private RecipeManager recipeManager;
 
-    @Inject(method = "onSynchronizeRecipes", at = @At("HEAD"))
-    private void onSyncRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
-        if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && client.player != null) {
-            ClientRecipeBook recipeBook = client.player.getRecipeBook();
-            packet.getRecipes().forEach(recipeBook::add);
-            RecipeBookCache.setRecipeCache(packet.getRecipes());
-        }
-    }
+	@Inject(method = "onSynchronizeRecipes", at = @At("HEAD"))
+	private void onSyncRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
+		if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && client.player != null) {
+			ClientRecipeBook recipeBook = client.player.getRecipeBook();
+			packet.getRecipes().forEach(recipeBook::add);
+			RecipeBookCache.setRecipeCache(packet.getRecipes());
+		}
+	}
 
-    @Inject(method = "onUnlockRecipes", at = @At("HEAD"))
-    private void onUnlock(UnlockRecipesS2CPacket packet, CallbackInfo ci) {
-        if (!ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue()) return;
-        switch (packet.getAction()) {
-            case ADD, INIT -> {
-                for (Identifier identifier : packet.getRecipeIdsToChange()) {
-                    this.recipeManager.get(identifier).ifPresent(RecipeBookCache::removeRecipeFromCache);
-                }
-            }
-            case REMOVE -> {
-                for (Identifier identifier : packet.getRecipeIdsToChange()) {
-                    this.recipeManager.get(identifier).ifPresent(RecipeBookCache::addRecipeToCache);
-                }
-            }
-        }
-    }
+	@Inject(method = "onUnlockRecipes", at = @At("HEAD"))
+	private void onUnlock(UnlockRecipesS2CPacket packet, CallbackInfo ci) {
+		if (!ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue()) return;
+		switch (packet.getAction()) {
+			case ADD, INIT -> {
+				for (Identifier identifier : packet.getRecipeIdsToChange()) {
+					this.recipeManager.get(identifier).ifPresent(RecipeBookCache::removeRecipeFromCache);
+				}
+			}
+			case REMOVE -> {
+				for (Identifier identifier : packet.getRecipeIdsToChange()) {
+					this.recipeManager.get(identifier).ifPresent(RecipeBookCache::addRecipeToCache);
+				}
+			}
+		}
+	}
 }

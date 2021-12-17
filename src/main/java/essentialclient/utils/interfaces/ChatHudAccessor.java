@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ChatHudAccessor {
 
-    List<ChatHudLine<Text>> getMessages();
+	List<ChatHudLine<Text>> getMessages();
 
 }

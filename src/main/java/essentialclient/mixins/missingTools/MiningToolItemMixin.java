@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MiningToolItem.class)
 public abstract class MiningToolItemMixin {
-    @Shadow
-    @Final
-    protected float miningSpeed;
+	@Shadow
+	@Final
+	protected float miningSpeed;
 
-    @Inject(method = "getMiningSpeedMultiplier", at = @At("HEAD"), cancellable = true)
-    public void miningSpeedHandler(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> cir){}
+	@Inject(method = "getMiningSpeedMultiplier", at = @At("HEAD"), cancellable = true)
+	public void miningSpeedHandler(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> cir){}
 }

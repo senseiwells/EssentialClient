@@ -14,6 +14,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.registry.Registry;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,13 +37,16 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 
 	private final Set<MemberFunction> blockStateFunctions = Set.of(
 		new MemberFunction("getId", (context, function) -> new StringValue(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath())),
-		new MemberFunction("getBlockId", (context, function) -> new StringValue(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath())),
+		new MemberFunction("getBlockId", List.of(), (context, function) -> new StringValue(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath()), true),
 		new MemberFunction("isBlockEntity", (context, function) -> new BooleanValue(this.getBlockState(context, function).getBlock() instanceof BlockEntityProvider)),
 		new MemberFunction("isTransparent", (context, function) -> new BooleanValue(!this.getBlockState(context, function).isOpaque())),
 		new MemberFunction("asItemStack", (context, function) -> new ItemStackValue(this.getBlockState(context, function).getBlock().asItem().getDefaultStack())),
 		new MemberFunction("getBlastResistance", (context, function) -> new NumberValue(this.getBlockState(context, function).getBlock().getBlastResistance())),
 		new MemberFunction("getBlockProperties", this::getBlockProperties),
 		new MemberFunction("hasBlockPosition", this::hasBlockPosition),
+		new MemberFunction("getBlockX", this::getBlockX),
+		new MemberFunction("getBlockZ", this::getBlockZ),
+		new MemberFunction("getBlockY", this::getBlockY),
 		new MemberFunction("getX", this::getBlockX),
 		new MemberFunction("getZ", this::getBlockZ),
 		new MemberFunction("getY", this::getBlockY)

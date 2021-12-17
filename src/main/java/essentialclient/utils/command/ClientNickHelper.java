@@ -43,8 +43,8 @@ public class ClientNickHelper {
 		Path file = getFile();
 		try(BufferedWriter writer = Files.newBufferedWriter(file)) {
 			MAP_CODEC.encodeStart(JsonOps.INSTANCE, renamePlayerMap)
-					.resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write player rename data: {}", e))
-					.ifPresent(obj -> GSON.toJson(obj, writer));
+				.resultOrPartial(e -> EssentialClient.LOGGER.error("Could not write player rename data: {}", e))
+				.ifPresent(obj -> GSON.toJson(obj, writer));
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -60,8 +60,8 @@ public class ClientNickHelper {
 		}
 		try (BufferedReader reader = Files.newBufferedReader(file)) {
 			renamePlayerMap = new HashMap<>(MAP_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
-					.getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read player rename data: {}", e))
-					.getFirst());
+				.getOrThrow(false, e -> EssentialClient.LOGGER.error("Could not read player rename data: {}", e))
+				.getFirst());
 		}
 		//many exceptions
 		catch (Exception e) {

@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.item.ItemGroup;
 
+import java.util.List;
 import java.util.Set;
 
 public class ArucasScreenMembers implements IArucasValueExtension {
@@ -34,7 +35,8 @@ public class ArucasScreenMembers implements IArucasValueExtension {
 	}
 
 	private final Set<MemberFunction> screenFunctions = Set.of(
-		new MemberFunction("getScreenName", (context, function) -> new StringValue(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()))),
+		new MemberFunction("getScreenName", List.of(), (context, function) -> new StringValue(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass())), true),
+		new MemberFunction("getName", (context, function) -> new StringValue(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()))),
 		new MemberFunction("getTitle", this::getTitle)
 	);
 

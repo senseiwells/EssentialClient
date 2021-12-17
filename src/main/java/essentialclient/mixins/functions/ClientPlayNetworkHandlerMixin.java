@@ -23,51 +23,51 @@ import java.util.List;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
-    @Shadow
-    private ClientWorld world;
+	@Shadow
+	private ClientWorld world;
 
-    @Shadow
-    private MinecraftClient client;
+	@Shadow
+	private MinecraftClient client;
 
-    @Inject(method = "onHealthUpdate", at = @At("HEAD"))
-    private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_HEALTH_UPDATE.run(new NumberValue(packet.getHealth()));
-    }
+	@Inject(method = "onHealthUpdate", at = @At("HEAD"))
+	private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
+		MinecraftScriptEvents.ON_HEALTH_UPDATE.run(new NumberValue(packet.getHealth()));
+	}
 
-    @Inject(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;showFloatingItem(Lnet/minecraft/item/ItemStack;)V"))
-    private void onTotem(CallbackInfo ci) {
-        MinecraftScriptEvents.ON_TOTEM.run();
-    }
+	@Inject(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;showFloatingItem(Lnet/minecraft/item/ItemStack;)V"))
+	private void onTotem(CallbackInfo ci) {
+		MinecraftScriptEvents.ON_TOTEM.run();
+	}
 
-    @Inject(method = "onGameStateChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;setGameMode(Lnet/minecraft/world/GameMode;)V"))
-    private void onGamemodeChange(GameStateChangeS2CPacket packet, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(List.of(new StringValue(GameMode.byId((int) packet.getValue()).getName())));
-    }
+	@Inject(method = "onGameStateChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;setGameMode(Lnet/minecraft/world/GameMode;)V"))
+	private void onGamemodeChange(GameStateChangeS2CPacket packet, CallbackInfo ci) {
+		MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(List.of(new StringValue(GameMode.byId((int) packet.getValue()).getName())));
+	}
 
-    @Inject(method = "onItemPickupAnimation", at = @At("HEAD"))
-    private void onPickUp(ItemPickupAnimationS2CPacket packet, CallbackInfo ci) {
-        Entity entity = this.world.getEntityById(packet.getEntityId());
-        LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
-        if (entity != null && this.client.player != null && this.client.player.equals(livingEntity) && entity instanceof ItemEntity itemEntity) {
-            MinecraftScriptEvents.ON_PICK_UP_ITEM.run(new ItemStackValue(itemEntity.getStack()));
-        }
-    }
+	@Inject(method = "onItemPickupAnimation", at = @At("HEAD"))
+	private void onPickUp(ItemPickupAnimationS2CPacket packet, CallbackInfo ci) {
+		Entity entity = this.world.getEntityById(packet.getEntityId());
+		LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
+		if (entity != null && this.client.player != null && this.client.player.equals(livingEntity) && entity instanceof ItemEntity itemEntity) {
+			MinecraftScriptEvents.ON_PICK_UP_ITEM.run(new ItemStackValue(itemEntity.getStack()));
+		}
+	}
 
-    @Inject(method = "onPlayerRespawn", at = @At("TAIL"))
-    private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_RESPAWN.run(List.of(new PlayerValue(this.client.player)));
-    }
+	@Inject(method = "onPlayerRespawn", at = @At("TAIL"))
+	private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
+		MinecraftScriptEvents.ON_RESPAWN.run(List.of(new PlayerValue(this.client.player)));
+	}
 
-    @Inject(method = "onGameMessage", at = @At("HEAD"))
-    private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(new StringValue(packet.getMessage().getString()));
-    }
+	@Inject(method = "onGameMessage", at = @At("HEAD"))
+	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+		MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(new StringValue(packet.getMessage().getString()));
+	}
 
-    @Inject(method = "onPlayerList", at = @At("HEAD"))
-    public void onPlayerList(PlayerListS2CPacket packet, CallbackInfo info) {
-        switch (packet.getAction()) {
-            case ADD_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(new StringValue(entry.getProfile().getName())));
-            case REMOVE_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_LEAVE.run(new StringValue(entry.getProfile().getName())));
-        }
-    }
+	@Inject(method = "onPlayerList", at = @At("HEAD"))
+	public void onPlayerList(PlayerListS2CPacket packet, CallbackInfo info) {
+		switch (packet.getAction()) {
+			case ADD_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(new StringValue(entry.getProfile().getName())));
+			case REMOVE_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_LEAVE.run(new StringValue(entry.getProfile().getName())));
+		}
+	}
 }

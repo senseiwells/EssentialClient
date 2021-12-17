@@ -34,9 +34,7 @@ public class ArucasTextMembers implements IArucasValueExtension {
 
 	private final Set<MemberFunction> textFunctions = Set.of(
 		new MemberFunction("withClickEvent", List.of("type", "value"), this::withClickEvent),
-		new MemberFunction("formatText", "formatting", this::formatText),
 		new MemberFunction("format", "formatting", this::formatText),
-		new MemberFunction("appendText", "otherText", this::appendText),
 		new MemberFunction("append", "otherText", this::appendText)
 	);
 

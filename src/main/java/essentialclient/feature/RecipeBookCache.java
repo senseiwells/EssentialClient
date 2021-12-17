@@ -7,21 +7,21 @@ import java.util.List;
 import java.util.Set;
 
 public class RecipeBookCache {
-    private static final Set<Recipe<?>> RECIPE_CACHE = new HashSet<>();
+	private static final Set<Recipe<?>> RECIPE_CACHE = new HashSet<>();
 
-    public static boolean isCached(Recipe<?> recipe) {
-        return RECIPE_CACHE.contains(recipe);
-    }
+	public static boolean isCached(Recipe<?> recipe) {
+		return RECIPE_CACHE.contains(recipe);
+	}
 
-    public static void setRecipeCache(List<Recipe<?>> recipeCache) {
-        recipeCache.forEach(RecipeBookCache::addRecipeToCache);
-    }
+	public static void setRecipeCache(List<Recipe<?>> recipeCache) {
+		recipeCache.forEach(RecipeBookCache::addRecipeToCache);
+	}
 
-    public static void addRecipeToCache(Recipe<?> recipe) {
-        RECIPE_CACHE.add(recipe);
-    }
+	public static void addRecipeToCache(Recipe<?> recipe) {
+		RECIPE_CACHE.add(recipe);
+	}
 
-    public static void removeRecipeFromCache(Recipe<?> recipe) {
-        RECIPE_CACHE.remove(recipe);
-    }
+	public static void removeRecipeFromCache(Recipe<?> recipe) {
+		RECIPE_CACHE.remove(recipe);
+	}
 }

@@ -14,8 +14,9 @@ public class ConfirmScreenMixin {
 	@Redirect(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/MultilineText;create(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/StringVisitable;I)Lnet/minecraft/client/font/MultilineText;"))
 	private MultilineText onDisplayMessage(TextRenderer renderer, StringVisitable text, int width) {
 		String message = text.getString();
-		if (message.length() > 120)
+		if (message.length() > 120) {
 			text = new LiteralText(message.substring(0, 120) + "...");
+		}
 		return MultilineText.create(renderer, text, width);
 	}
 }

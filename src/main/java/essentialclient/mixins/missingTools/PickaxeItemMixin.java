@@ -10,11 +10,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PickaxeItem.class)
 public class PickaxeItemMixin extends MiningToolItemMixin {
-    //Client implementation of missingTools
-    @Override
-    public void miningSpeedHandler(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> cir) {
-        if (ClientRules.MISSING_TOOLS.getValue() && state.getMaterial() == Material.GLASS) {
-            cir.setReturnValue(this.miningSpeed);
-        }
-    }
+	//Client implementation of missingTools
+	@Override
+	public void miningSpeedHandler(ItemStack stack, BlockState state, CallbackInfoReturnable<Float> cir) {
+		if (ClientRules.MISSING_TOOLS.getValue() && state.getMaterial() == Material.GLASS) {
+			cir.setReturnValue(this.miningSpeed);
+		}
+	}
 }

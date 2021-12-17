@@ -43,7 +43,6 @@
     "functions.MinecraftClientMixin",
     "functions.NbtListMixin",
     "functions.PlayerEntityMixin",
-    "hotbarFade.InGameHudMixin",
     "keyboardRebinds.KeyboardMixin",
     "missingTools.MiningToolItemMixin",
     "missingTools.PickaxeItemMixin",

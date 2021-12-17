@@ -20,6 +20,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -61,7 +62,7 @@ public class ArucasEntityMembers implements IArucasValueExtension {
 		new MemberFunction("getPitch", (context, function) -> new NumberValue(this.getEntity(context, function).pitch)),
 		new MemberFunction("getDimension", (context, function) -> new StringValue(this.getEntity(context, function).getEntityWorld().getRegistryKey().getValue().getPath())),
 		new MemberFunction("getBiome", this::getBiome),
-		new MemberFunction("getEntityId", (context, function) -> new StringValue(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath())),
+		new MemberFunction("getEntityId", List.of(), (context, function) -> new StringValue(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath()), true),
 		new MemberFunction("getId", (context, function) -> new StringValue(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath())),
 		new MemberFunction("getAge", (context, function) -> new NumberValue(this.getEntity(context, function).age)),
 		new MemberFunction("getCustomName", this::getCustomName),
