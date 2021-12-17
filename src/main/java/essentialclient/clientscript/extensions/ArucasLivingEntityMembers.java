@@ -1,13 +1,12 @@
 package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.LivingEntityValue;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
@@ -15,11 +14,17 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Set;
 
-public class ArucasLivingEntityMembers implements IArucasExtension {
+public class ArucasLivingEntityMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.livingEntityFunctions;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Class<LivingEntityValue> getValueType() {
+		return LivingEntityValue.class;
 	}
 
 	@Override
@@ -27,7 +32,7 @@ public class ArucasLivingEntityMembers implements IArucasExtension {
 		return "LivingEntityMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> livingEntityFunctions = Set.of(
+	private final Set<MemberFunction> livingEntityFunctions = Set.of(
 		new MemberFunction("getStatusEffects", this::getStatusEffects),
 		new MemberFunction("getHealth", (context, function) -> new NumberValue(this.getLivingEntity(context, function).getHealth())),
 		new MemberFunction("isFlyFalling", (context, function) -> new BooleanValue(this.getLivingEntity(context, function).isFallFlying()))

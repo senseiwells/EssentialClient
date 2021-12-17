@@ -2,8 +2,8 @@ package essentialclient.utils.interfaces;
 
 public interface MinecraftClientInvoker {
 
-    void rightClickMouseAccessor();
+	void rightClickMouseAccessor();
 
-    void leftClickMouseAccessor();
+	void leftClickMouseAccessor();
 
 }

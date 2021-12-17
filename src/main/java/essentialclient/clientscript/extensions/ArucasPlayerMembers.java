@@ -5,7 +5,7 @@ import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
 import essentialclient.utils.render.FakeInventoryScreen;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.throwables.ThrowValue;
@@ -41,11 +41,16 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 import java.util.Set;
 
-public class ArucasPlayerMembers implements IArucasExtension {
+public class ArucasPlayerMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.playerFunctions;
+	}
+
+	@Override
+	public Class<PlayerValue> getValueType() {
+		return PlayerValue.class;
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		return "PlayerMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> playerFunctions = Set.of(
+	private final Set<MemberFunction> playerFunctions = Set.of(
 		new MemberFunction("use", "type", this::use),
 		new MemberFunction("attack", "type", this::attack),
 		new MemberFunction("setSelectedSlot", "slotNum", this::setSelectedSlot),
@@ -178,7 +183,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		if (screenValue.value instanceof HandledScreen && !(screenValue.value instanceof FakeInventoryScreen)) {
 			throw new RuntimeError("Opening handled screens is unsafe", function.syntaxPosition, context);
 		}
-		client.setScreen(screenValue.value);
+		client.execute(() -> client.setScreen(screenValue.value));
 		return new NullValue();
 	}
 
@@ -248,16 +253,16 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> swapSlots(Context context, MemberFunction function) throws CodeError {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
-		ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
-		int tempSlot = (this.getPlayer(context, function).getInventory().selectedSlot) % 9;
+		ClientPlayerEntity player = this.getPlayer(context, function);
+		ScreenHandler screenHandler = player.currentScreenHandler;
 		int size = screenHandler.slots.size();
 		if (numberValue1.value > size || numberValue1.value < 0 || numberValue2.value > size || numberValue2.value < 0) {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 		}
 		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
-		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
+		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
+		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), 0, SlotActionType.SWAP, player);
+		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
 		return new NullValue();
 	}
 
@@ -289,8 +294,9 @@ public class ArucasPlayerMembers implements IArucasExtension {
 
 	private Value<?> craft(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
+		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 1);
-		if (!(ArucasMinecraftExtension.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
+		if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
 			return new NullValue();
 		}
 		int listSize = listValue.value.size();
@@ -309,9 +315,12 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			}
 			itemStacks[i] = itemStackValue.value;
 		}
-		InventoryUtils.tryMoveItemsToCraftingGridSlots(ArucasMinecraftExtension.getClient(), itemStacks, handledScreen);
-		InventoryUtils.shiftClickSlot(ArucasMinecraftExtension.getClient(), handledScreen, 0);
-		return new NullValue();
+		InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen);
+		if (handledScreen.getScreenHandler().slots.get(0).getStack() == ItemStack.EMPTY) {
+			return new BooleanValue(false);
+		}
+		InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+		return new BooleanValue(true);
 	}
 
 	private Value<?> logout(Context context, MemberFunction function) throws CodeError {

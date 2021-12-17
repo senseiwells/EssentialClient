@@ -38,7 +38,6 @@
     "functions.ClientPlayerInteractionManagerMixin",
     "functions.ClientPlayNetworkHandlerMixin",
     "functions.FishingBobberEntityMixin",
-    "functions.HandledScreenMixin",
     "functions.KeyboardMixin",
     "functions.LivingEntityMixin",
     "functions.MinecraftClientMixin",
@@ -60,7 +59,10 @@
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
+    "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
+    "unlockAllRecipes.GhostSlotClearInvoker",
+    "unlockAllRecipes.RecipeBookWidgetMixin",
     "waterFovMultiplier.GameRendererMixin"
   ],
   "injectors": {

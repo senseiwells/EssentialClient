@@ -14,13 +14,12 @@ import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.keyboard.KeyboardHelper;
 import essentialclient.utils.render.FakeInventoryScreen;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
@@ -52,11 +51,16 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ArucasMinecraftClientMembers implements IArucasExtension {
+public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.minecraftClientFunctions;
+	}
+
+	@Override
+	public Class<MinecraftClientValue> getValueType() {
+		return MinecraftClientValue.class;
 	}
 
 	@Override
@@ -64,7 +68,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		return "MinecraftClientMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> minecraftClientFunctions = Set.of(
+	private final Set<MemberFunction> minecraftClientFunctions = Set.of(
 		new MemberFunction("screenshot", this::screenshot),
 		new MemberFunction("pressKey", "key", this::pressKey),
 		new MemberFunction("releaseKey", "key", this::releaseKey),
@@ -74,6 +78,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand),
 		new MemberFunction("isInSinglePlayer", (context, function) -> new BooleanValue(this.getClient(context, function).isInSingleplayer())),
 		new MemberFunction("getServerName", this::getServerName),
+		new MemberFunction("getPing", this::getPing),
 		new MemberFunction("getScriptsPath", (context, function) -> new StringValue(ClientScript.getDir().toString())),
 		new MemberFunction("setEssentialClientRule", List.of("ruleName", "value"), this::setEssentialClientRule),
 		new MemberFunction("resetEssentialClientRule", "ruleName", this::resetEssentialClientRule),
@@ -91,6 +96,7 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		new MemberFunction("textFromString", "text", this::textFromString),
 		new MemberFunction("createFakeScreen", List.of("screenTitle", "rows"), this::createFakeScreen),
 		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound),
+		new MemberFunction("stripFormatting", "string", this::stripFormatting),
 
 		new MemberFunction("importUtils", "util", this::importUtils)
 	);
@@ -224,6 +230,15 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		return new StringValue(serverInfo.name);
 	}
 
+	private Value<?> getPing(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		ServerInfo serverInfo = client.getCurrentServerEntry();
+		if (serverInfo == null) {
+			throw new RuntimeError("Failed to get server ping", function.syntaxPosition, context);
+		}
+		return new NumberValue(serverInfo.ping);
+	}
+
 	private Value<?> setEssentialClientRule(Context context, MemberFunction function) throws CodeError {
 		this.getClient(context, function);
 		String clientRuleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
@@ -344,6 +359,12 @@ public class ArucasMinecraftClientMembers implements IArucasExtension {
 		SoundEvent soundEvent = Registry.SOUND_EVENT.get(new Identifier(stringValue.value));
 		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
 		return new NullValue();
+	}
+
+	private Value<?> stripFormatting(Context context, MemberFunction function) throws CodeError {
+		this.getClient(context, function);
+		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		return new StringValue(stringValue.value.replaceAll("§[0-9a-gk-or]", ""));
 	}
 
 	private Value<?> importUtils(Context context, MemberFunction function) throws CodeError{

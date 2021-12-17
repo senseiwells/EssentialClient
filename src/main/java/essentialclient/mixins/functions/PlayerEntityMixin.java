@@ -22,30 +22,30 @@ import java.util.Objects;
 @SuppressWarnings("EqualsBetweenInconvertibleTypes")
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin {
-    @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", at = @At("HEAD"))
-    private void onDropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
-        if (!Objects.equals(MinecraftClient.getInstance().player, this)) {
-            return;
-        }
-        MinecraftScriptEvents.ON_DROP_ITEM.run(new ItemStackValue(stack));
-    }
+	@Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", at = @At("HEAD"))
+	private void onDropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
+		if (!Objects.equals(MinecraftClient.getInstance().player, this)) {
+			return;
+		}
+		MinecraftScriptEvents.ON_DROP_ITEM.run(new ItemStackValue(stack));
+	}
 
-    @Inject(method = "eatFood", at = @At("HEAD"))
-    private void onEat(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
-        if (!Objects.equals(MinecraftClient.getInstance().player, this)) {
-            return;
-        }
-        MinecraftScriptEvents.ON_EAT.run(new ItemStackValue(stack));
-    }
+	@Inject(method = "eatFood", at = @At("HEAD"))
+	private void onEat(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
+		if (!Objects.equals(MinecraftClient.getInstance().player, this)) {
+			return;
+		}
+		MinecraftScriptEvents.ON_EAT.run(new ItemStackValue(stack));
+	}
 
-    @Inject(method = "onDeath", at = @At("HEAD"))
-    private void onDeath(DamageSource source, CallbackInfo ci) {
-        if (!Objects.equals(MinecraftClient.getInstance().player, this)) {
-            return;
-        }
-        MinecraftScriptEvents.ON_DEATH.run(List.of(
-            EntityValue.getEntityValue(source.getAttacker()),
-            new StringValue(source.getName())
-        ));
-    }
+	@Inject(method = "onDeath", at = @At("HEAD"))
+	private void onDeath(DamageSource source, CallbackInfo ci) {
+		if (!Objects.equals(MinecraftClient.getInstance().player, this)) {
+			return;
+		}
+		MinecraftScriptEvents.ON_DEATH.run(List.of(
+			EntityValue.getEntityValue(source.getAttacker()),
+			new StringValue(source.getName())
+		));
+	}
 }

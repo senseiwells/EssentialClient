@@ -6,13 +6,12 @@ import essentialclient.clientscript.values.OtherPlayerValue;
 import essentialclient.clientscript.values.WorldValue;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.RenderHelper;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -31,11 +30,16 @@ import net.minecraft.util.registry.Registry;
 import java.util.List;
 import java.util.Set;
 
-public class ArucasWorldMembers implements IArucasExtension {
+public class ArucasWorldMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.worldFunctions;
+	}
+
+	@Override
+	public Class<WorldValue> getValueType() {
+		return WorldValue.class;
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		return "WorldMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> worldFunctions = Set.of(
+	private final Set<MemberFunction> worldFunctions = Set.of(
 		new MemberFunction("getBlockAt", List.of("x", "y", "z"), this::getBlockAt),
 		new MemberFunction("getOtherPlayer", "name", this::getOtherPlayer),
 		new MemberFunction("getAllOtherPlayers", this::getAllOtherPlayers),

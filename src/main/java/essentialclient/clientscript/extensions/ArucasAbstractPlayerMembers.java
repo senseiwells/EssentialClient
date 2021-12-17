@@ -2,14 +2,13 @@ package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.AbstractPlayerValue;
 import essentialclient.clientscript.values.ItemStackValue;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.ArucasValueMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -20,11 +19,17 @@ import net.minecraft.screen.slot.Slot;
 
 import java.util.Set;
 
-public class ArucasAbstractPlayerMembers implements IArucasExtension {
+public class ArucasAbstractPlayerMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.abstractPlayerFunctions;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Class<AbstractPlayerValue> getValueType() {
+		return AbstractPlayerValue.class;
 	}
 
 	@Override
@@ -32,7 +37,7 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 		return "AbstractPlayerMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> abstractPlayerFunctions = Set.of(
+	private final Set<MemberFunction> abstractPlayerFunctions = Set.of(
 		new MemberFunction("getCurrentSlot", (context, function) -> new NumberValue(this.getOtherPlayer(context, function).getInventory().selectedSlot)),
 		new MemberFunction("getHeldItem", (context, function) -> new ItemStackValue(this.getOtherPlayer(context, function).getInventory().getMainHandStack())),
 		new MemberFunction("isInventoryFull", (context, function) -> new BooleanValue(this.getOtherPlayer(context, function).getInventory().getEmptySlot() == -1)),

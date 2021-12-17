@@ -2,13 +2,12 @@ package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.BlockStateValue;
 import essentialclient.clientscript.values.EntityValue;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -21,14 +20,21 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class ArucasEntityMembers implements IArucasExtension {
+public class ArucasEntityMembers implements IArucasValueExtension {
 	
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.entityFunctions;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Class<EntityValue> getValueType() {
+		return EntityValue.class;
 	}
 
 	@Override
@@ -36,7 +42,7 @@ public class ArucasEntityMembers implements IArucasExtension {
 		return "EntityMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> entityFunctions = Set.of(
+	private final Set<MemberFunction> entityFunctions = Set.of(
 		new MemberFunction("isSneaking", (context, function) -> new BooleanValue(this.getEntity(context, function).isSneaking())),
 		new MemberFunction("isSprinting", (context, function) -> new BooleanValue(this.getEntity(context, function).isSprinting())),
 		new MemberFunction("isFalling", (context, function) -> new BooleanValue(this.getEntity(context, function).fallDistance > 0)),
@@ -56,7 +62,8 @@ public class ArucasEntityMembers implements IArucasExtension {
 		new MemberFunction("getPitch", (context, function) -> new NumberValue(this.getEntity(context, function).getPitch())),
 		new MemberFunction("getDimension", (context, function) -> new StringValue(this.getEntity(context, function).getEntityWorld().getRegistryKey().getValue().getPath())),
 		new MemberFunction("getBiome", this::getBiome),
-		new MemberFunction("getEntityType", (context, function) -> new StringValue(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath())),
+		new MemberFunction("getEntityId", List.of(), (context, function) -> new StringValue(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath()), true),
+		new MemberFunction("getId", (context, function) -> new StringValue(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath())),
 		new MemberFunction("getAge", (context, function) -> new NumberValue(this.getEntity(context, function).age)),
 		new MemberFunction("getCustomName", this::getCustomName),
 		new MemberFunction("getEntityUuid", (context, function) -> new StringValue(this.getEntity(context, function).getUuidAsString())),

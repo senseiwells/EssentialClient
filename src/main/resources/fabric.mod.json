@@ -8,7 +8,7 @@
   "authors": [
     "DeadlyMC",
     "Gnembon",
-    "Sensei" ,
+    "Sensei",
     "SuperSanta",
     "Crec0",
     "Pixeils",
@@ -42,6 +42,6 @@
 
   },
   "suggests": {
-    "arucas": "1.1.0"
+    "arucas": "1.1.1"
   }
 }
