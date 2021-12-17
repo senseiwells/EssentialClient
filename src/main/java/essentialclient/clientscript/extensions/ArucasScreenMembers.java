@@ -2,14 +2,13 @@ package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.ScreenValue;
 import essentialclient.utils.clientscript.ScreenRemapper;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -17,11 +16,16 @@ import net.minecraft.item.ItemGroup;
 
 import java.util.Set;
 
-public class ArucasScreenMembers implements IArucasExtension {
+public class ArucasScreenMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.screenFunctions;
+	}
+
+	@Override
+	public Class<ScreenValue> getValueType() {
+		return ScreenValue.class;
 	}
 
 	@Override
@@ -29,7 +33,7 @@ public class ArucasScreenMembers implements IArucasExtension {
 		return "ScreenMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> screenFunctions = Set.of(
+	private final Set<MemberFunction> screenFunctions = Set.of(
 		new MemberFunction("getScreenName", (context, function) -> new StringValue(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()))),
 		new MemberFunction("getTitle", this::getTitle)
 	);

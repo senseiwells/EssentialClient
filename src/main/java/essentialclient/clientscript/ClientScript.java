@@ -2,7 +2,6 @@ package essentialclient.clientscript;
 
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.*;
-import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
@@ -122,13 +121,11 @@ public class ClientScript {
         // Create a new context for the file we should run.
         ContextBuilder contextBuilder = new ContextBuilder()
             .setDisplayName("Arucas client")
-            .addDefaultExtensions()
             .setOutputHandler(s -> {
                 s = !s.endsWith("\n") ? s : s.substring(0, s.length() - 1);
                 EssentialUtils.sendMessage(s);
             })
-            .addExtensions(
-                ArucasMinecraftExtension::new,
+            .addValueExtensions(
                 ArucasMinecraftClientMembers::new,
                 ArucasEntityMembers::new,
                 ArucasLivingEntityMembers::new,
@@ -141,20 +138,11 @@ public class ClientScript {
                 ArucasFakeInventoryScreenMembers::new,
                 ArucasTextMembers::new
             )
-            .addDefaultValues()
-            .addValues(
-                MinecraftClientValue.class,
-                EntityValue.class,
-                LivingEntityValue.class,
-                OtherPlayerValue.class,
-                PlayerValue.class,
-                BlockStateValue.class,
-                ItemStackValue.class,
-                WorldValue.class,
-                ScreenValue.class,
-                FakeInventoryScreenValue.class,
-                TextValue.class
-            );
+            .addExtensions(
+                ArucasMinecraftExtension::new
+            )
+            .addDefaultExtensions()
+            ;
 
         this.context = contextBuilder.build();
 

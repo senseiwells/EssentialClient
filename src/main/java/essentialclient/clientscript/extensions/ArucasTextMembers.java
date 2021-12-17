@@ -1,13 +1,12 @@
 package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.TextValue;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
@@ -16,11 +15,16 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 import java.util.Set;
 
-public class ArucasTextMembers implements IArucasExtension {
+public class ArucasTextMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.textFunctions;
+	}
+
+	@Override
+	public Class<TextValue> getValueType() {
+		return TextValue.class;
 	}
 
 	@Override
@@ -28,10 +32,12 @@ public class ArucasTextMembers implements IArucasExtension {
 		return "TextMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> textFunctions = Set.of(
+	private final Set<MemberFunction> textFunctions = Set.of(
 		new MemberFunction("withClickEvent", List.of("type", "value"), this::withClickEvent),
 		new MemberFunction("formatText", "formatting", this::formatText),
-		new MemberFunction("appendText", "otherText", this::appendText)
+		new MemberFunction("format", "formatting", this::formatText),
+		new MemberFunction("appendText", "otherText", this::appendText),
+		new MemberFunction("append", "otherText", this::appendText)
 	);
 
 	private Value<?> withClickEvent(Context context, MemberFunction function) throws CodeError {

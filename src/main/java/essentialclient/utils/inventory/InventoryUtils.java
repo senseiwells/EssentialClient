@@ -29,8 +29,6 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Pair;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +37,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 public class InventoryUtils {
-
-    private static final Logger log = LogManager.getLogger();
-
     public static Slot getItemSlot(ClientPlayerEntity playerEntity, Item item) {
         ScreenHandler containerPlayer = playerEntity.currentScreenHandler;
         Predicate<ItemStack> filterTotemStack = (s) -> s.getItem() == item;
@@ -66,7 +61,8 @@ public class InventoryUtils {
             if (slotType == EquipmentSlot.MAINHAND) {
                 int currentHotbarSlot = playerEntity.inventory.selectedSlot;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
-            } else if (slotType == EquipmentSlot.OFFHAND) {
+            }
+            else if (slotType == EquipmentSlot.OFFHAND) {
                 int tempSlot = (playerEntity.inventory.selectedSlot + 1) % 9;
                 client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
                 client.interactionManager.clickSlot(container.syncId, 45, tempSlot, SlotActionType.SWAP, client.player);
@@ -218,8 +214,8 @@ public class InventoryUtils {
         for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
             try {
                 Thread.sleep(0, 1);
-            } catch (InterruptedException ignored) {
             }
+            catch (InterruptedException ignored) { }
             Slot slotTmp = gui.getScreenHandler().getSlot(slotNum);
             if (slotTmp != null && slotTmp.hasStack() && (!areStacksEqual(recipe[i], slotTmp.getStack()))) {
                 shiftClickSlot(client, gui, slotNum);
@@ -267,7 +263,8 @@ public class InventoryUtils {
                         leftClickSlot(client, gui, slotReturn);
                     }
                 }
-            } else {
+            }
+            else {
                 break;
             }
             if (!getCursorStack(client).isEmpty()) {
@@ -307,7 +304,7 @@ public class InventoryUtils {
     }
 
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2) {
-        return !stack1.isEmpty() && stack1.isItemEqual(stack2) && ItemStack.areTagsEqual(stack1, stack2);
+        return !stack1.isEmpty() && stack1.isItemEqual(stack2) /*&& ItemStack.areTagsEqual(stack1, stack2)*/;
     }
 
     private static int getSlotNumberOfLargestMatchingStackFromDifferentInventory(ScreenHandler container, Slot slotReference, ItemStack stackReference) {
@@ -336,7 +333,8 @@ public class InventoryUtils {
             if (item != Items.AIR) {
                 if (mapSlots.containsKey(item)) {
                     mapSlots.get(item).add(i);
-                } else {
+                }
+                else {
                     List<Integer> integerList = new ArrayList<>();
                     integerList.add(i);
                     mapSlots.put(item, integerList);
@@ -405,7 +403,9 @@ public class InventoryUtils {
         ScreenHandler grid = gui.getScreenHandler();
         int counter = 0;
         for (Slot slot : grid.slots) {
-            if (slot.inventory instanceof PlayerInventory) break;
+            if (slot.inventory instanceof PlayerInventory) {
+                break;
+            }
             counter += slot.inventory instanceof CraftingInventory ? 1 : 0;
         }
         return counter;
@@ -420,10 +420,12 @@ public class InventoryUtils {
             }
             try {
                 Thread.sleep(0, 1);
-            } catch (InterruptedException ignored) {}
+            }
+            catch (InterruptedException ignored) { }
         }
     }
 
+    @SuppressWarnings("unused")
     public static void doCraftingSlotsFillAction(Recipe<?> recipe, HandledScreen<?> handledScreen, boolean craftAll) {
         doCraftingSlotsFillAction(recipe, null, handledScreen, craftAll);
     }
@@ -432,9 +434,11 @@ public class InventoryUtils {
         RecipeBookWidget widget;
         if (handledScreen instanceof InventoryScreen playerScreen) {
             widget = playerScreen.getRecipeBookWidget();
-        } else if (handledScreen instanceof CraftingScreen craftingScreen) {
+        }
+        else if (handledScreen instanceof CraftingScreen craftingScreen) {
             widget = craftingScreen.getRecipeBookWidget();
-        } else {
+        }
+        else {
             // We not in correct screen. Should never happen really but just for the edge case
             return;
         }
@@ -462,7 +466,8 @@ public class InventoryUtils {
 
         if (totalCraftOps == 0 && isGridEmpty(handledScreen, gridLength)) {
             widget.showGhostRecipe(recipe, player.currentScreenHandler.slots);
-        } else {
+        }
+        else {
             ((IGhostRecipeBookWidget) widget).clearGhostSlots();
             parseRecipeAndCacheInventory(mc, handledScreen, gridLength, recipe, craftInputIds, craftAll ? totalCraftOps : 1);
         }
@@ -504,10 +509,11 @@ public class InventoryUtils {
             if (!(slot.inventory instanceof PlayerInventory))
                 continue;
             Item slotItem = slot.getStack().getItem();
-            if (cache.containsKey(slotItem))
+            if (cache.containsKey(slotItem)) {
                 cache.get(slotItem)
-                     .getRight()
-                     .add(slot.id);
+                    .getRight()
+                    .add(slot.id);
+            }
         }
 
         fillCraftingGridWithItems(client, handledScreen, cache, craftOps);
@@ -535,7 +541,8 @@ public class InventoryUtils {
                         leftClickSlot(client, handledScreen, slotId);
                     }
                     startAt = endAt;
-                } while (startAt < recipeRequiredAmount && slotCounter < itemCache.getRight().size());
+                }
+                while (startAt < recipeRequiredAmount && slotCounter < itemCache.getRight().size());
             }
         }
     }

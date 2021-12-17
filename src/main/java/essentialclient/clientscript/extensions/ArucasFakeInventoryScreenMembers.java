@@ -2,24 +2,28 @@ package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.FakeInventoryScreenValue;
 import essentialclient.clientscript.values.ItemStackValue;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 
 import java.util.List;
 import java.util.Set;
 
-public class ArucasFakeInventoryScreenMembers implements IArucasExtension {
+public class ArucasFakeInventoryScreenMembers implements IArucasValueExtension {
 
     @Override
-    public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+    public Set<MemberFunction> getDefinedFunctions() {
         return this.fakeInventoryScreenFunctions;
+    }
+
+    @Override
+    public Class<FakeInventoryScreenValue> getValueType() {
+        return FakeInventoryScreenValue.class;
     }
 
     @Override
@@ -27,7 +31,7 @@ public class ArucasFakeInventoryScreenMembers implements IArucasExtension {
         return "FakeInventoryScreenMemberFunctions";
     }
 
-    private final Set<? extends AbstractBuiltInFunction<?>> fakeInventoryScreenFunctions = Set.of(
+    private final Set<MemberFunction> fakeInventoryScreenFunctions = Set.of(
         new MemberFunction("onClick", "function", this::onClick),
         new MemberFunction("setStackForSlot", List.of("slotNum", "stack"), this::setStackForSlot),
         new MemberFunction("getStackForSlot", "slotNum", this::getStackForSlot)

@@ -5,13 +5,12 @@ import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.clientscript.values.TextValue;
 import essentialclient.mixins.functions.NbtListMixin;
 import essentialclient.utils.clientscript.NbtUtils;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -33,11 +32,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ArucasItemStackMembers implements IArucasExtension {
+public class ArucasItemStackMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.MemberFunctions;
+	}
+
+	@Override
+	public Class<ItemStackValue> getValueType() {
+		return ItemStackValue.class;
 	}
 
 	@Override
@@ -45,8 +49,9 @@ public class ArucasItemStackMembers implements IArucasExtension {
 		return "ItemStackMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> MemberFunctions = Set.of(
+	private final Set<MemberFunction> MemberFunctions = Set.of(
 		new MemberFunction("getItemId", (context, function) -> new StringValue(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath())),
+		new MemberFunction("getId", (context, function) -> new StringValue(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath())),
 		new MemberFunction("getCount", (context, function) -> new NumberValue(this.getItemStack(context, function).getCount())),
 		new MemberFunction("getDurability", this::getDurability),
 		new MemberFunction("getMaxDurability", (context, function) -> new NumberValue(this.getItemStack(context, function).getMaxDamage())),
@@ -56,6 +61,7 @@ public class ArucasItemStackMembers implements IArucasExtension {
 		new MemberFunction("getMaxCount", (context, function) -> new NumberValue(this.getItemStack(context, function).getMaxCount())),
 		new MemberFunction("asBlock", this::asBlock),
 		new MemberFunction("getItemName", (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString())),
+		new MemberFunction("getCustomName", (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString())),
 		new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual),
 		new MemberFunction("getNbt", this::getNbt),
 

@@ -5,7 +5,7 @@ import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
 import essentialclient.utils.render.FakeInventoryScreen;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.throwables.ThrowValue;
@@ -41,11 +41,16 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 import java.util.Set;
 
-public class ArucasPlayerMembers implements IArucasExtension {
+public class ArucasPlayerMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.playerFunctions;
+	}
+
+	@Override
+	public Class<PlayerValue> getValueType() {
+		return PlayerValue.class;
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		return "PlayerMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> playerFunctions = Set.of(
+	private final Set<MemberFunction> playerFunctions = Set.of(
 		new MemberFunction("use", "type", this::use),
 		new MemberFunction("attack", "type", this::attack),
 		new MemberFunction("setSelectedSlot", "slotNum", this::setSelectedSlot),
@@ -286,8 +291,9 @@ public class ArucasPlayerMembers implements IArucasExtension {
 
 	private Value<?> craft(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
+		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 1);
-		if (!(ArucasMinecraftExtension.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
+		if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
 			return new NullValue();
 		}
 		int listSize = listValue.value.size();
@@ -306,9 +312,12 @@ public class ArucasPlayerMembers implements IArucasExtension {
 			}
 			itemStacks[i] = itemStackValue.value;
 		}
-		InventoryUtils.tryMoveItemsToCraftingGridSlots(ArucasMinecraftExtension.getClient(), itemStacks, handledScreen);
-		InventoryUtils.shiftClickSlot(ArucasMinecraftExtension.getClient(), handledScreen, 0);
-		return new NullValue();
+		InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen);
+		if (handledScreen.getScreenHandler().slots.get(0).getStack() == ItemStack.EMPTY) {
+			return new BooleanValue(false);
+		}
+		InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+		return new BooleanValue(true);
 	}
 
 	private Value<?> logout(Context context, MemberFunction function) throws CodeError {
