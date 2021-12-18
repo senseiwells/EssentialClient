@@ -13,7 +13,6 @@ public class CraftingHax {
                     InventoryUtils.dropSingle(client, handledScreen, 0);
                 }
                 CraftingSharedConstants.THROW_AMOUNT.set(0);
-                
             }
         });
     }
