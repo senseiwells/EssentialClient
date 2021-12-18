@@ -372,6 +372,13 @@ public class InventoryUtils {
         client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 1, SlotActionType.THROW, client.player);
     }
 
+    public static void dropSingle(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
+        if (client.interactionManager == null) {
+            return;
+        }
+        client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.THROW, client.player);
+    }
+
     public static ItemStack getCursorStack(MinecraftClient client) {
         if (client == null || client.player == null) {
             return ItemStack.EMPTY;

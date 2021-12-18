@@ -24,6 +24,7 @@
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
+    "craftingHax.ClientPlayerInteractionManagerMixin",
     "customClientCape.AbstractClientPlayerEntityMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",

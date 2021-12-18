@@ -28,6 +28,7 @@ public class ClientRules {
 		COMMAND_REGION = new BooleanClientRule("commandRegion", "This command allows you to determine the region you are in or the region at set coords", ClientRuleHelper::refreshCommand),
 		COMMAND_SUGGESTOR_IGNORES_SPACES = new BooleanClientRule("commandSuggestorIgnoresSpaces", "This makes the command suggestor ignore spaces"),
 		COMMAND_TRAVEL = new BooleanClientRule("commandTravel", "This command allows you to travel to a set location", ClientRuleHelper::refreshCommand),
+		CRAFTING_HAX = new BooleanClientRule("craftingHax", "This allows you to hold CTRL while crafting using recipes to drop the output"),
 		DISABLE_BOB_VIEW_WHEN_HURT = new BooleanClientRule("disableBobViewWhenHurt", "Disables the camera bobbing when you get hurt"),
 		DISABLE_BOSS_BAR = new BooleanClientRule("disableBossBar", "This will disable the boss bar from rendering"),
 		DISABLE_HOTBAR_SCROLLING = new BooleanClientRule("disableHotbarScrolling", "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)"),
