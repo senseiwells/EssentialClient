@@ -1,6 +1,7 @@
 package essentialclient.utils.inventory;
 
 import essentialclient.ducks.IGhostRecipeBookWidget;
+import essentialclient.feature.CraftingSharedConstants;
 import essentialclient.utils.EssentialUtils;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -30,10 +31,9 @@ import net.minecraft.util.Pair;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 public class InventoryUtils {
@@ -432,6 +432,19 @@ public class InventoryUtils {
         }
     }
 
+    public static void dropStackScheduled(MinecraftClient client, HandledScreen<?> handledScreen, boolean craftAll) {
+        CraftingSharedConstants.EXECUTOR.schedule(() -> {
+            int count = craftAll ? 64 : 1;
+            for (int i = 0; i < count; i++) {
+                InventoryUtils.dropStack(client, handledScreen, 0);
+            }
+            try {
+                Thread.sleep(5L);
+            }
+            catch (InterruptedException ignored) { }
+        }, 50L, TimeUnit.MILLISECONDS);
+    }
+
     @SuppressWarnings("unused")
     public static void doCraftingSlotsFillAction(Recipe<?> recipe, HandledScreen<?> handledScreen, boolean craftAll) {
         doCraftingSlotsFillAction(recipe, null, handledScreen, craftAll);
@@ -502,24 +515,25 @@ public class InventoryUtils {
     }
 
     public static void cacheInventoryAndFillGrid(MinecraftClient client, List<Item> slotStacks, HandledScreen<?> handledScreen, int craftOps) {
-        Map<Item, Pair<List<Integer>, List<Integer>>> cache = new HashMap<>();
+        Map<Item, Pair<List<Integer>, List<Integer>>> cache = new ConcurrentHashMap<>();
         List<Slot> slots = handledScreen.getScreenHandler().slots;
 
         for (int i = 0; i < slotStacks.size(); i++) {
             Item item = slotStacks.get(i);
             if (item != Items.AIR) {
-                cache.computeIfAbsent(item, k -> new Pair<>(new ArrayList<>(), new ArrayList<>())).getLeft().add(i + 1);
+                cache.computeIfAbsent(item, func -> {
+                    List<Integer> craftingGrid = new ArrayList<>(9);
+                    List<Integer> inventory = new ArrayList<>(36);
+                    return new Pair<>(craftingGrid, inventory);
+                }).getLeft().add(i + 1);
             }
         }
 
         for (Slot slot : slots) {
-            if (!(slot.inventory instanceof PlayerInventory))
-                continue;
+            if (!(slot.inventory instanceof PlayerInventory)) continue;
             Item slotItem = slot.getStack().getItem();
             if (cache.containsKey(slotItem)) {
-                cache.get(slotItem)
-                    .getRight()
-                    .add(slot.id);
+                cache.get(slotItem).getRight().add(slot.id);
             }
         }
 
@@ -538,18 +552,18 @@ public class InventoryUtils {
                 int startAt = 0;
                 int slotCounter = 0;
                 do {
-                    int slotId = itemCache.getRight().get(slotCounter++);
+                    int slotId = itemCache.getRight().get(slotCounter);
                     int count = getStackAtSlot(handledScreen, slotId).getCount();
                     int endAt = Math.min(startAt + count, recipeRequiredAmount);
 
                     leftClickSlot(client, handledScreen, slotId);
                     dragSplitItemsIntoGrid(client, handledScreen, itemCache.getLeft(), startAt, endAt);
-                    if (getCursorStack(client) != null) {
+                    if (!getCursorStack(client).isEmpty()) {
                         leftClickSlot(client, handledScreen, slotId);
                     }
                     startAt = endAt;
-                }
-                while (startAt < recipeRequiredAmount && slotCounter < itemCache.getRight().size());
+                    slotCounter++;
+                } while (startAt < recipeRequiredAmount && slotCounter < itemCache.getRight().size());
             }
         }
     }

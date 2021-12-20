@@ -1,9 +1,18 @@
 package essentialclient.feature;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public final class CraftingSharedConstants {
-    public static final AtomicInteger THROW_AMOUNT = new AtomicInteger(0);
     public static final AtomicBoolean IS_VANILLA_CLICK = new AtomicBoolean(false);
+    public static ScheduledExecutorService EXECUTOR = new ScheduledThreadPoolExecutor(2);
+
+    public static void registerHandlers() {
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            EXECUTOR.shutdownNow();
+        });
+    }
 }

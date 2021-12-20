@@ -6,7 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.ClientKeybinds;
-import essentialclient.feature.CraftingHax;
+import essentialclient.feature.CraftingSharedConstants;
 import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
 import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import essentialclient.utils.carpet.Reference;
@@ -29,7 +29,7 @@ public class EssentialClient implements CarpetExtension, ModInitializer {
     public void onInitialize() {
         ClientRules.init();
         ClientKeybinds.loadKeybinds();
-        CraftingHax.registerTickEventListener();
+        CraftingSharedConstants.registerHandlers();
     }
 
     static {
