@@ -25,6 +25,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	private void onSendPacketVehicle(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
+			return;
 		}
 		Vec3d vec3d = this.getVelocity();
 		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.Both(
@@ -41,6 +42,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	private void onSendPacketAll(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
+			return;
 		}
 		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.Both(
 			this.getX(),
@@ -56,6 +58,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	private void onSendPacketLook(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
+			return;
 		}
 		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(
 			BetterAccurateBlockPlacement.fakeYaw,
