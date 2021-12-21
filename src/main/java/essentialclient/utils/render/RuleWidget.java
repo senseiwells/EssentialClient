@@ -20,10 +20,17 @@ public class RuleWidget {
 	}
 
 	public void drawRule(MatrixStack matrices, TextRenderer font, float fontX, float fontY, int colour) {
-		font.draw(matrices, this.name, fontX, fontY, colour);
+		font.draw(matrices, getShortName(this.name), fontX, fontY, colour);
 	}
 
 	public boolean isHovered(int mouseX, int mouseY) {
 		return mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+	}
+
+	public static String getShortName(String string) {
+		if (string.length() > 34) {
+			return string.substring(0, 31) + "...";
+		}
+		return string;
 	}
 }

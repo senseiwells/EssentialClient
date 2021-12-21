@@ -3,6 +3,7 @@ package essentialclient.config;
 import essentialclient.clientscript.ClientScript;
 import essentialclient.config.rulescreen.ClientRulesScreen;
 import essentialclient.config.rulescreen.ServerRulesScreen;
+import essentialclient.feature.EssentialCarpetClient;
 import essentialclient.utils.EssentialUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
@@ -14,12 +15,6 @@ import net.minecraft.util.Util;
 
 public class ConfigScreen extends Screen {
 	private final Screen parent;
-	private static String carpetServerVersion;
-	
-	public static void setCarpetServerVersion(String string)
-	{
-		carpetServerVersion = string;
-	}
 	
 	public ConfigScreen(Screen parent) {
 		super(new LiteralText("Essential Client Options"));
@@ -42,8 +37,10 @@ public class ConfigScreen extends Screen {
 				rules.ifPresent((gameRules -> this.client.getServer().getGameRules().setAllValues(gameRules, this.client.getServer())));
 			}));
 		})));
-		if (!client.isInSingleplayer()) {
+		if (!EssentialCarpetClient.serverIsCarpet) {
 			serverRuleButton.active = false;
+		}
+		if (!client.isInSingleplayer()) {
 			gameRuleButton.active = false;
 		}
 		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.openScreen(this.parent)));
@@ -65,10 +62,7 @@ public class ConfigScreen extends Screen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 		drawCenteredText(matrices, this.textRenderer, "Essential Client", this.width / 2, 8, 0xFFFFFF);
-		if (carpetServerVersion != null) {
-			drawCenteredText(matrices, this.textRenderer, String.format("You are running carpet version: %s", carpetServerVersion), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0xFFFFFF);
-		}
-		else if (this.client != null && this.client.getCurrentServerEntry() != null) {
+		if (this.client != null && this.client.getCurrentServerEntry() != null) {
 			drawCenteredText(matrices, this.textRenderer, String.format("You are currently connected to: %s", this.client.getCurrentServerEntry().name), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0xFFFFFF);
 		}
 		super.render(matrices, mouseX, mouseY, delta);

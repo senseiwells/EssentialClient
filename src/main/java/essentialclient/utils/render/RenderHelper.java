@@ -24,12 +24,12 @@ public class RenderHelper {
 			return;
 		}
 		MatrixStack matrices = new MatrixStack();
-		List<OrderedText> lines = wordWrap(text, 150);
+		List<OrderedText> lines = wordWrap(text, 220);
 		if (lines.isEmpty()) {
 			return;
 		}
 		int i = 0;
-		for(OrderedText orderedText : lines) {
+		for (OrderedText orderedText : lines) {
 			int j = font.getWidth(orderedText);
 			if (j > i) {
 				i = j;
@@ -65,10 +65,10 @@ public class RenderHelper {
 		RenderSystem.enableTexture();
 		VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 		matrices.translate(0.0D, 0.0D, 400.0D);
-		for(int l1 = 0; l1 < lines.size(); ++l1) {
+		for (int l1 = 0; l1 < lines.size(); ++l1) {
 			OrderedText orderedText = lines.get(l1);
 			if (orderedText != null) {
-				font.draw(orderedText, (float) mouseX, (float) mouseY, -1, true, matrix4f, immediate, false, 0, 15728880);
+				font.draw(orderedText, (float) mouseX, (float) mouseY, l1 == 0 ? 16760576 : -1, true, matrix4f, immediate, false, 0, 15728880);
 			}
 			if (l1 == 0) {
 				mouseY += 2;

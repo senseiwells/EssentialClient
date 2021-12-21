@@ -1,7 +1,5 @@
 package essentialclient.config;
 
-import carpet.CarpetServer;
-import carpet.settings.ParsedRule;
 import essentialclient.config.clientrule.*;
 import essentialclient.config.entries.BooleanListEntry;
 import essentialclient.config.entries.CycleListEntry;
@@ -10,7 +8,9 @@ import essentialclient.config.entries.StringListEntry;
 import essentialclient.config.rulescreen.ClientRulesScreen;
 import essentialclient.config.rulescreen.RulesScreen;
 import essentialclient.config.rulescreen.ServerRulesScreen;
+import essentialclient.feature.EssentialCarpetClient;
 import essentialclient.utils.render.ITooltipEntry;
+import essentialclient.utils.render.RuleWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -29,69 +29,50 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	
 	public ConfigListWidget(RulesScreen gui, MinecraftClient client, String filter) {
 		super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
+		Collection<ClientRule<?>> clientRules = null;
 		if (gui instanceof ServerRulesScreen) {
-			Collection<ParsedRule<?>> rules = CarpetServer.settingsManager.getRules();
-			rules.forEach(r -> {
-				if (filter == null || r.name.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
-					int i = client.textRenderer.getWidth(r.name) - 50;
-					if (i > length) {
-						length = i;
-					}
-					if (r.type == boolean.class) {
-						BooleanListEntry booleanList = new BooleanListEntry(r, client, gui);
-						this.addEntry(booleanList);
-						this.entries.add(booleanList);
-					}
-					else if (r.type == int.class || r.type == double.class) {
-						NumberListEntry numberList = new NumberListEntry(r, client, gui);
-						this.addEntry(numberList);
-						this.entries.add(numberList);
-					}
-					else {
-						StringListEntry stringList = new StringListEntry(r, client, gui);
-						this.addEntry(stringList);
-						this.entries.add(stringList);
-					}
-				}
-			});
+			clientRules = EssentialCarpetClient.carpetRules.values();
 		}
-		if (gui instanceof ClientRulesScreen) {
-			Collection<ClientRule<?>> clientRules = switch (ClientRules.DISPLAY_RULE_TYPE.getValue()) {
+		else if (gui instanceof ClientRulesScreen) {
+			clientRules = switch (ClientRules.DISPLAY_RULE_TYPE.getValue()) {
 				case "Rule Type" -> ClientRules.getMapInType();
 				case "Alphabetical" -> ClientRules.getMapAlphabetically();
 				default -> ClientRules.getMapAlphabetically();
 			};
-			clientRules.forEach(rule -> {
-				if (filter == null || rule.getName().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
-					int i = client.textRenderer.getWidth(rule.getName()) - 55;
-					if (i > length) {
-						length = i;
+		}
+		if (clientRules == null) {
+			throw new RuntimeException();
+		}
+		clientRules.forEach(rule -> {
+			if (filter == null || rule.getName().toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
+				int i = client.textRenderer.getWidth(RuleWidget.getShortName(rule.getName())) - 55;
+				if (i > length) {
+					length = i;
+				}
+				switch (rule.getType()) {
+					case BOOLEAN -> {
+						BooleanListEntry booleanList = new BooleanListEntry((BooleanClientRule) rule, client, gui);
+						this.addEntry(booleanList);
+						this.entries.add(booleanList);
 					}
-					switch (rule.getType()) {
-						case BOOLEAN -> {
-							BooleanListEntry booleanList = new BooleanListEntry((BooleanClientRule) rule, client, gui);
-							this.addEntry(booleanList);
-							this.entries.add(booleanList);
-						}
-						case INTEGER, DOUBLE -> {
-							NumberListEntry numberList = new NumberListEntry((NumberClientRule<?>) rule, client, gui);
-							this.addEntry(numberList);
-							this.entries.add(numberList);
-						}
-						case STRING -> {
-							StringListEntry stringList = new StringListEntry((StringClientRule) rule, client, gui);
-							this.addEntry(stringList);
-							this.entries.add(stringList);
-						}
-						case CYCLE -> {
-							CycleListEntry cycleList = new CycleListEntry((CycleClientRule) rule, client, gui);
-							this.addEntry(cycleList);
-							this.entries.add(cycleList);
-						}
+					case INTEGER, DOUBLE -> {
+						NumberListEntry numberList = new NumberListEntry((NumberClientRule<?>) rule, client, gui);
+						this.addEntry(numberList);
+						this.entries.add(numberList);
+					}
+					case STRING -> {
+						StringListEntry stringList = new StringListEntry((StringClientRule) rule, client, gui);
+						this.addEntry(stringList);
+						this.entries.add(stringList);
+					}
+					case CYCLE -> {
+						CycleListEntry cycleList = new CycleListEntry((CycleClientRule) rule, client, gui);
+						this.addEntry(cycleList);
+						this.entries.add(cycleList);
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 
 	public void clear() {
@@ -131,7 +112,13 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 			}
 		}
 	}
+
+	public void updateAllEntriesOnClose() {
+		this.entries.forEach(Entry::updateEntryOnClose);
+	}
 	
 	@Environment(EnvType.CLIENT)
-	public abstract static class Entry extends ElementListWidget.Entry<ConfigListWidget.Entry> { }
+	public abstract static class Entry extends ElementListWidget.Entry<ConfigListWidget.Entry> {
+		public abstract void updateEntryOnClose();
+	}
 }

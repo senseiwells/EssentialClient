@@ -9,14 +9,16 @@ public abstract class ClientRule<T> {
 	private final Runnable runnable;
 	private T value;
 
-	public ClientRule(String name, Type type, String description, T defaultValue, Runnable runnable) {
+	public ClientRule(String name, Type type, String description, T defaultValue, Runnable runnable, boolean putInMap) {
 		this.name = name;
 		this.type = type;
 		this.description = description;
 		this.defaultValue = defaultValue;
 		this.runnable = runnable;
 		this.value = defaultValue;
-		ClientRules.addRule(name, this);
+		if (putInMap) {
+			ClientRules.addRule(name, this);
+		}
 	}
 
 	public String getName() {

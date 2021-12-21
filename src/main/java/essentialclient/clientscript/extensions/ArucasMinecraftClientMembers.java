@@ -29,6 +29,7 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotUtils;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
+import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -96,6 +97,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		new MemberFunction("textFromString", "text", this::textFromString),
 		new MemberFunction("createFakeScreen", List.of("screenTitle", "rows"), this::createFakeScreen),
 		new MemberFunction("playSound", List.of("soundName", "volume", "pitch"), this::playSound),
+		new MemberFunction("renderFloatingItem", "itemStack", this::renderFloatingItem),
 		new MemberFunction("stripFormatting", "string", this::stripFormatting),
 
 		new MemberFunction("importUtils", "util", this::importUtils)
@@ -360,6 +362,13 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		Double pitch = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		SoundEvent soundEvent = Registry.SOUND_EVENT.get(new Identifier(stringValue.value));
 		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
+		return new NullValue();
+	}
+
+	private Value<?> renderFloatingItem(Context context, MemberFunction function) throws CodeError {
+		MinecraftClient client = this.getClient(context, function);
+		ItemStack itemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
+		client.gameRenderer.showFloatingItem(itemStack);
 		return new NullValue();
 	}
 

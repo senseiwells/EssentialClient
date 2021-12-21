@@ -1,7 +1,6 @@
 package essentialclient.config.rulescreen;
 
 import essentialclient.config.ConfigListWidget;
-import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -36,7 +35,7 @@ public class RulesScreen extends Screen {
 		this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
 		this.children.add(this.list);
 		this.addButton(this.searchBox);
-		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.client.openScreen(this.parent)));
+		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (buttonWidget) -> this.onClose()));
 		this.setInitialFocus(this.searchBox);
 	}
 
@@ -65,6 +64,7 @@ public class RulesScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (this.client != null) {
+			this.list.updateAllEntriesOnClose();
 			this.client.openScreen(this.parent);
 		}
 	}
