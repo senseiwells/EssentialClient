@@ -24,12 +24,12 @@ public class InGameHudMixin {
 	@Unique
 	private boolean tabVisible = false;
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"), require = 0)
 	private boolean onIsPressed(KeyBinding keyBinding) {
 		return ClientRules.TOGGLE_TAB.getValue() || keyBinding.isPressed();
 	}
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;tick(Z)V"))
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;tick(Z)V"), require = 0)
 	private void onTabTick(PlayerListHud playerListHud, boolean visible) {
 		if (ClientRules.TOGGLE_TAB.getValue()) {
 			KeyBinding tabKey = this.client.options.keyPlayerList;
@@ -45,7 +45,7 @@ public class InGameHudMixin {
 		playerListHud.tick(visible);
 	}
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"))
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V"), require = 0)
 	private void onRender(PlayerListHud playerListHud, MatrixStack matrices, int i, Scoreboard scoreboard, ScoreboardObjective objective) {
 		if (this.tabVisible) {
 			playerListHud.render(matrices, i, scoreboard, objective);

@@ -1,5 +1,6 @@
 package essentialclient.clientscript;
 
+import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.*;
 import essentialclient.config.clientrule.ClientRules;
@@ -262,7 +263,7 @@ public class ClientScript {
 		```
 		""".formatted(
 			EssentialUtils.getMinecraftVersion(),
-			EssentialUtils.getVersion(),
+			EssentialClient.VERSION,
 			EssentialUtils.getArucasVersion(),
 			content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
 			stacktrace
