@@ -302,7 +302,9 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> interactWithEntity(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		EntityValue<?> entity  = function.getParameterValueOfType(context, EntityValue.class, 1);
-		player.interact(entity.value, Hand.MAIN_HAND);
+		//player.interact(entity.value, Hand.MAIN_HAND); //this does not work
+		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+		interactionManager.interactEntity(player, entity.value, Hand.MAIN_HAND);
 		return new NullValue();
 	}
 	private Value<?> placeAtWithDirection(Context context, MemberFunction function) throws CodeError {
@@ -339,6 +341,9 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		if (EssentialUtils.getPlayer().getInventory().getSlotWithStack(itemStackValue.value.getItem().getDefaultStack()) == -1){
 			throw new RuntimeError("No item in inventory", function.syntaxPosition,context);
 		}
+		//set item to hand
+		EssentialUtils.getPlayer().getInventory().swapSlotWithHotbar(EssentialUtils.getPlayer().getInventory().getSlotWithStack(itemStackValue.value.getItem().getDefaultStack()));
+		EssentialUtils.getPlayer().getInventory().selectedSlot = EssentialUtils.getPlayer().getInventory().getSlotWithStack(itemStackValue.value.getItem().getDefaultStack());
 		BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(x,y,z), Direction.NORTH, new BlockPos(x,y,z), false );
 		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
 		return new NullValue();
