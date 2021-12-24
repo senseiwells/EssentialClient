@@ -363,7 +363,10 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		}
 		Vec3d newVec = applyCarpetProtocol(x,y,z,direction);
 		BlockHitResult blockHitResult = new BlockHitResult(newVec, Direction.NORTH, new BlockPos(x,y,z), false );
-		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		ArucasMinecraftExtension.getClient().execute(() -> {
+			interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		});
+
 		return new NullValue();
 	}
 	private Vec3d applyCarpetProtocol(double x, double y, double z, String direction){
@@ -380,7 +383,9 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		//set item to hand but just temporary code
 		BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(x,y,z), Direction.NORTH, new BlockPos(x,y,z), false );
-		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		ArucasMinecraftExtension.getClient().execute(() -> {
+			interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		});
 		//warning : it might result ghost block in NotVanilla servers
 		return new NullValue();
 	}
