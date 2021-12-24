@@ -24,6 +24,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
@@ -36,6 +37,9 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
@@ -88,7 +92,9 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		new MemberFunction("anvil", List.of("predicate1", "predicate2"), this::anvil),
 		new MemberFunction("anvilRename", List.of("name", "predicate"), this::anvilRename),
 		new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
-
+		new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
+		new MemberFunction("placeAt", List.of("x", "y", "z", "itemStack"), this::placeAt),
+		new MemberFunction("placeAtWithDirection", List.of("x", "y", "z", "itemStack", "direction"), this::placeAtWithDirection),
 		// Villager Stuff
 		new MemberFunction("tradeIndex", "index", this::tradeIndex),
 		new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
@@ -333,7 +339,61 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		ArucasMinecraftExtension.getInteractionManager().interactEntity(player, entity.value, Hand.MAIN_HAND);
 		return new NullValue();
 	}
-
+	private Value<?> updateBreakingBlock(Context context, MemberFunction function) throws CodeError{
+		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+		if (ArucasMinecraftExtension.getWorld().isAir(new BlockPos(x,y,z))) {
+			return new NullValue();
+		}
+		interactionManager.updateBlockBreakingProgress(new BlockPos(x,y,z), Direction.UP);
+		this.getPlayer(context, function).swingHand(Hand.MAIN_HAND);
+		return new NullValue();
+	}
+	private Value<?> placeAtWithDirection(Context context, MemberFunction function) throws CodeError {
+		//carpet protocol support but why not client side?
+		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
+		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 4);
+		String direction = function.getParameterValueOfType(context, StringValue.class, 5).value;
+		if (direction != "NORTH" && direction != "SOUTH" && direction != "EAST" && direction != "WEST"){
+			throw new RuntimeError("Not a valid direction", function.syntaxPosition, context);
+		}
+		Vec3d newVec = applyCarpetProtocol(x,y,z,direction);
+		BlockHitResult blockHitResult = new BlockHitResult(newVec, Direction.NORTH, new BlockPos(x,y,z), false );
+		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		return new NullValue();
+	}
+	private Vec3d applyCarpetProtocol(double x, double y, double z, String direction){
+		//just for carpet example since it might need massive rework to work at client side
+		Direction direction1 = Direction.byName(direction);
+		double code = direction1.getId();
+		return new Vec3d(code*2 + 2 + x, y, z);
+	}
+	private Value <?> placeAt(Context context, MemberFunction function) throws CodeError{
+		// without protocol just attempt to place at wherever, needs slab support etc parsing?
+		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
+		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 4);
+		if (!(itemStackValue.value.getItem() instanceof BlockItem)){
+			throw new RuntimeError("Not an block item",function.syntaxPosition,context);
+		}
+		if (EssentialUtils.getPlayer().inventory.getSlotWithStack(itemStackValue.value.getItem().getDefaultStack()) == -1){
+			throw new RuntimeError("No item in inventory", function.syntaxPosition,context);
+		}
+		//set item to hand but just temporary code
+		int SlotNum = EssentialUtils.getPlayer().inventory.getSlotWithStack(itemStackValue.value.getItem().getDefaultStack());
+		if (SlotNum > 8) {EssentialUtils.getPlayer().inventory.swapSlotWithHotbar(SlotNum);};
+		EssentialUtils.getPlayer().inventory.selectedSlot = EssentialUtils.getPlayer().inventory.getSlotWithStack(itemStackValue.value.getItem().getDefaultStack());
+		BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(x,y,z), Direction.NORTH, new BlockPos(x,y,z), false );
+		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		return new NullValue();
+	}
 	private Value<?> anvil(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		if (interactionManager == null) {
