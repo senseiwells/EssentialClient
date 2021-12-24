@@ -43,6 +43,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 import java.util.List;
 import java.util.Set;
@@ -75,6 +76,7 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("dropAll", "itemStack", this::dropAll),
 		new MemberFunction("look", List.of("yaw", "pitch"), this::look),
 		new MemberFunction("lookAtPos", List.of("x", "y", "z"), this::lookAtPos),
+		new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
 		new MemberFunction("jump", this::jump),
 		new MemberFunction("getLookingAtEntity", this::getLookingAtEntity),
 		new MemberFunction("swapSlots", List.of("slot1", "slot2"), this::swapSlots),
@@ -163,6 +165,8 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> closeScreen(Context context, MemberFunction function) throws CodeError {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		final MinecraftClient client = ArucasMinecraftExtension.getClient();
+		//final ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+		//MinecraftClient.getInstance().currentScreen.onClose();
 		client.execute(player::closeHandledScreen);
 		return new NullValue();
 	}
@@ -222,7 +226,18 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		Entity targetedEntity = ArucasMinecraftExtension.getClient().targetedEntity;
 		return EntityValue.getEntityValue(targetedEntity);
 	}
-
+	private Value<?> updateBreakingBlock(Context context, MemberFunction function) throws CodeError{
+		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+		if (ArucasMinecraftExtension.getWorld().isAir(new BlockPos(x,y,z))) {
+			return new NullValue();
+		}
+		interactionManager.updateBlockBreakingProgress(new BlockPos(x,y,z), Direction.UP);
+		this.getPlayer(context, function).swingHand(Hand.MAIN_HAND);
+		return new NullValue();
+	}
 	private Value<?> swapSlots(Context context, MemberFunction function) throws CodeError {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
