@@ -93,8 +93,8 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		new MemberFunction("anvilRename", List.of("name", "predicate"), this::anvilRename),
 		new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
 		new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
-		new MemberFunction("placeAt", List.of("x", "y", "z", "itemStack"), this::placeAt),
-		new MemberFunction("placeAtWithDirection", List.of("x", "y", "z", "itemStack", "direction"), this::placeAtWithDirection),
+		new MemberFunction("placeAt", List.of("x", "y", "z"), this::placeAt),
+		new MemberFunction("placeAtWithDirection", List.of("x", "y", "z", "direction"), this::placeAtWithDirection),
 		// Villager Stuff
 		new MemberFunction("tradeIndex", "index", this::tradeIndex),
 		new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
@@ -357,8 +357,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
-		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 4);
-		String direction = function.getParameterValueOfType(context, StringValue.class, 5).value;
+		String direction = function.getParameterValueOfType(context, StringValue.class, 4).value;
 		if (direction != "NORTH" && direction != "SOUTH" && direction != "EAST" && direction != "WEST"){
 			throw new RuntimeError("Not a valid direction", function.syntaxPosition, context);
 		}
@@ -379,19 +378,10 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
-		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 4);
-		if (!(itemStackValue.value.getItem() instanceof BlockItem)){
-			throw new RuntimeError("Not an block item",function.syntaxPosition,context);
-		}
-		if (EssentialUtils.getPlayer().inventory.getSlotWithStack(itemStackValue.value.getItem().getDefaultStack()) == -1){
-			throw new RuntimeError("No item in inventory", function.syntaxPosition,context);
-		}
 		//set item to hand but just temporary code
-		int SlotNum = EssentialUtils.getPlayer().inventory.getSlotWithStack(itemStackValue.value.getItem().getDefaultStack());
-		if (SlotNum > 8) {EssentialUtils.getPlayer().inventory.swapSlotWithHotbar(SlotNum);};
-		EssentialUtils.getPlayer().inventory.selectedSlot = EssentialUtils.getPlayer().inventory.getSlotWithStack(itemStackValue.value.getItem().getDefaultStack());
 		BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(x,y,z), Direction.NORTH, new BlockPos(x,y,z), false );
 		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		//warning : it might result ghost block in NotVanilla servers
 		return new NullValue();
 	}
 	private Value<?> anvil(Context context, MemberFunction function) throws CodeError {
