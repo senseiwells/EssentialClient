@@ -4,7 +4,7 @@ public enum ChunkType {
 	UNLOADED("Unloaded", 0),
 	BORDER("Border", 0x4FC3F7),
 	LAZY("Lazy", 0xFFA219),
-	ENTITY_TICKING("Entity Ticking", 0x008000);
+	ENTITY_TICKING("Entity Ticking", 0x198C19);
 
 	public final String prettyName;
 	private final int colour;

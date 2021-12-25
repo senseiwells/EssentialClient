@@ -11,9 +11,8 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ChunkGrid {
 
@@ -25,32 +24,36 @@ public class ChunkGrid {
 	private int startY = 0;
 	private int scale = 10;
 
-	private final Point cornerPoint;
-	private final Point cornerDragPoint = new Point();
+	private final DraggablePoint cornerPoint;
 	private final Point mouseDown = new Point();
-	private final Point selectionDragPoint = new Point();
-	protected final List<String> dimensions = List.of("overworld", "the_nether", "the_end");
+	private final List<String> dimensions;
+	private final Map<String, DraggablePoint> dimensionPoints = new LinkedHashMap<>() {{
+		put("overworld", null);
+		put("the_nether", null);
+		put("the_end", null);
+	}};
 
-	private Point selectionPoint = null;
 	private boolean panning = false;
 	private int dimensionIndex = 0;
-	protected String selectionText = null;
+	private String selectionText = null;
+	private Minimap minimapMode = Minimap.NONE;
 
 	public ChunkGrid(MinecraftClient client, int width, int height) {
 		this.width = width;
 		this.height = height;
 		this.updateRowsAndColumns();
+		this.dimensions = this.dimensionPoints.keySet().stream().toList();
 		ClientPlayerEntity player = client.player;
 		if (player != null) {
-			this.cornerPoint = this.getCornerOfCentre(player.chunkX, player.chunkZ);
+			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(player.chunkX, player.chunkZ));
 			String playerDimension = player.world.getRegistryKey().getValue().getPath();
 			int dimensionIndex = this.dimensions.indexOf(playerDimension);
 			this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
 		}
 		else {
-			this.cornerPoint = getCornerOfCentre(0, 0);
+			this.cornerPoint = new DraggablePoint(getCornerOfCentre(0, 0));
 		}
-		this.cornerPoint.y += 5;
+		this.cornerPoint.mainPoint.y += 5;
 	}
 
 	private void updateRowsAndColumns() {
@@ -76,23 +79,38 @@ public class ChunkGrid {
 			if (chunkData.getChunkType() == ChunkType.UNLOADED) {
 				continue;
 			}
-			int x = chunkData.getPosX() - this.cornerPoint.x;
-			int z = chunkData.getPosZ() - this.cornerPoint.y;
+			int x = chunkData.getPosX() - this.cornerPoint.getX();
+			int z = chunkData.getPosZ() - this.cornerPoint.getY();
 			if (x < 0 || x > this.columns || z < 0 || z > this.rows) {
 				continue;
 			}
 			int cellX = thisX + x * this.scale;
 			int cellY = thisY + z * this.scale;
-			this.drawBox(bufferBuilder, cellX, cellY, x, z, chunkData.getChunkType().getColour());
+			boolean shouldRenderTicket = chunkData.hasTicketType() && chunkData.getTicketType().hasColour();
+			int colour = shouldRenderTicket ? chunkData.getTicketType().colour : chunkData.getChunkType().getColour();
+			this.drawBox(bufferBuilder, cellX, cellY, x, z, colour);
 		}
 		tessellator.draw();
 
-		if (this.selectionPoint != null) {
-			this.drawSelectionBox(tessellator, bufferBuilder, thisX, thisY);
+		DraggablePoint selectionPoint = this.getSelectionPoint();
+		if (selectionPoint != null) {
+			this.drawSelectionBox(tessellator, bufferBuilder, thisX, thisY, selectionPoint.mainPoint);
+			this.updateSelectionInfo();
+		}
+		else {
+			this.selectionText = null;
 		}
 
 		RenderSystem.enableTexture();
 		RenderSystem.shadeModel(GL11.GL_FLAT);
+	}
+
+	public void renderMinimap(int width, int height) {
+		int minimapWidth = (int) (width * 0.25F);
+		int minimapHeight = (int) (height * 0.45F);
+		int minimapX = this.getCentreX();
+		int minimapY = this.getCentreZ();
+		this.render(minimapX, minimapY, minimapWidth, minimapHeight);
 	}
 
 	private void drawBox(BufferBuilder bufferBuilder, int cellX, int cellY, int x, int y, int colour) {
@@ -113,19 +131,19 @@ public class ChunkGrid {
 		int green2 = (colour & 0xff00) >> 8;
 		int blue2 = (colour & 0xff);
 
-		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 100).next();
-		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red1, green1, blue1, 100).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red2, green2, blue2, 100).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red1, green1, blue1, 100).next();
+		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red1, green1, blue1, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red2, green2, blue2, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red1, green1, blue1, 255).next();
 	}
 
-	private void drawSelectionBox(Tessellator tessellator, BufferBuilder bufferBuilder, int thisX, int thisY) {
+	private void drawSelectionBox(Tessellator tessellator, BufferBuilder bufferBuilder, int thisX, int thisY, Point selectionPoint) {
 		int red = (-528378 & 0xff0000) >> 16;
 		int green = (-528378 & 0xff00) >> 8;
 		int blue = (-528378 & 0xff);
 
-		int x = this.selectionPoint.x;
-		int z = this.selectionPoint.y;
+		int x = selectionPoint.x;
+		int z = selectionPoint.y;
 		int scaledX = x * scale;
 		int scaledZ = z * scale;
 		int cellX = thisX + scaledX;
@@ -150,20 +168,7 @@ public class ChunkGrid {
 	public boolean onScroll(double mouseX, double mouseY, double amount) {
 		if (this.isInBounds(mouseX, mouseY) && !this.panning) {
 			if ((amount > 0 && this.scale < 20) || (amount < 0 && this.scale > 1)) {
-				if (this.selectionPoint != null) {
-					this.selectionPoint.move(
-						this.cornerPoint.x + this.selectionPoint.x,
-						this.cornerPoint.y + this.selectionPoint.y
-					);
-					this.updateCornerScroll(amount);
-					this.selectionPoint.move(
-						this.selectionPoint.x - this.cornerPoint.x,
-						this.selectionPoint.y - this.cornerPoint.y
-					);
-				}
-				else {
-					this.updateCornerScroll(amount);
-				}
+				this.syncSelectionPointsWithCorner(() -> this.updateCornerScroll(amount));
 				return true;
 			}
 		}
@@ -180,31 +185,26 @@ public class ChunkGrid {
 	public void onClicked(double mouseX, double mouseY, int button) {
 		if (button == 0 && this.isInBounds(mouseX, mouseY)) {
 			this.mouseDown.setLocation((int) mouseX, (int) mouseY);
-			this.cornerDragPoint.setLocation(this.cornerPoint);
-			if (this.selectionPoint != null) {
-				this.selectionDragPoint.setLocation(this.selectionPoint);
-			}
+			this.cornerPoint.getDragPoint().setLocation(this.cornerPoint.mainPoint);
+			this.dimensionPoints.values().forEach(draggablePoint -> {
+				if (draggablePoint != null) {
+					draggablePoint.dragPoint.setLocation(draggablePoint.mainPoint);
+				}
+			});
 		}
 	}
 
 	public void onRelease(double mouseX, double mouseY, int button) {
 		if (button == 0 && !this.panning) {
-			Point selectedPoint = this.getPointFromPosition(mouseX, mouseY);
-			if (this.selectionPoint != null && this.selectionPoint.equals(selectedPoint)) {
-				this.selectionPoint = null;
+			Point newSelectionPoint = this.getPointFromPosition(mouseX, mouseY);
+			DraggablePoint oldSelectionPoint = this.getSelectionPoint();
+			if (oldSelectionPoint != null && oldSelectionPoint.mainPoint.equals(newSelectionPoint)) {
+				this.setSelectionPoint(null);
 				this.selectionText = null;
 			}
-			else if (selectedPoint != null) {
-				this.selectionPoint = selectedPoint;
-				ChunkPos chunkPos = new ChunkPos(this.cornerPoint.x + selectedPoint.x, this.cornerPoint.y + selectedPoint.y);
-				ChunkHandler.ChunkData filterData = new ChunkHandler.ChunkData(chunkPos.x, chunkPos.z, ChunkType.UNLOADED);
-				Optional<ChunkHandler.ChunkData> chunkData = Arrays.stream(ChunkHandler.getChunks(this.getDimension()))
-					.filter(c -> c.equals(filterData)).findFirst();
-				this.selectionText = "Selected Chunk: X: %d, Z: %s Status: %s".formatted(
-					chunkPos.x,
-					chunkPos.z,
-					chunkData.isEmpty() ? "Unloaded" : chunkData.get().getChunkType().prettyName
-				);
+			else if (newSelectionPoint != null) {
+				this.setSelectionPoint(new DraggablePoint(newSelectionPoint));
+				this.updateSelectionInfo();
 			}
 		}
 		this.panning = false;
@@ -214,36 +214,71 @@ public class ChunkGrid {
 		if (button == 0 && this.isInBounds(mouseX, mouseY)) {
 			int changeX = (int) (mouseX - this.mouseDown.getX()) / this.scale;
 			int changeY = (int) (mouseY - this.mouseDown.getY()) / this.scale;
-			if (!this.panning && changeX * changeX + changeY * changeY > 10) {
+			if (!this.panning && changeX * changeX + changeY * changeY > 2) {
 				this.panning = true;
 			}
 			else if (this.panning) {
-				int dragX = (int) (this.cornerDragPoint.getX() - changeX);
-				int dragY = (int) (this.cornerDragPoint.getY() - changeY);
+				int dragX = this.cornerPoint.dragPoint.x - changeX;
+				int dragY = this.cornerPoint.dragPoint.y - changeY;
 				this.cornerPoint.setLocation(dragX, dragY);
-				if (this.selectionPoint != null) {
-					dragX = (int) (this.selectionDragPoint.getX() + changeX);
-					dragY = (int) (this.selectionDragPoint.getY() + changeY);
-					this.selectionPoint.setLocation(dragX, dragY);
-				}
+				this.updateSelectionPointDrag(changeX, changeY);
+
 			}
 		}
 	}
 
 	public void setCentre(int x, int y) {
-		if (this.selectionPoint != null) {
-			this.selectionPoint.move(
-				this.cornerPoint.x + this.selectionPoint.x,
-				this.cornerPoint.y + this.selectionPoint.y
+		this.syncSelectionPointsWithCorner(() -> this.cornerPoint.setLocation(this.getCornerOfCentre(x, y)));
+	}
+
+	private void syncSelectionPointsWithCorner(Runnable cornerFunction) {
+		Collection<DraggablePoint> draggablePoints = this.dimensionPoints.values();
+		draggablePoints.forEach(draggablePoint -> {
+			if (draggablePoint != null) {
+				draggablePoint.setLocation(
+					this.cornerPoint.getX() + draggablePoint.getX(),
+					this.cornerPoint.getY() + draggablePoint.getY()
+				);
+			}
+		});
+		cornerFunction.run();
+		draggablePoints.forEach(draggablePoint -> {
+			if (draggablePoint != null) {
+				draggablePoint.setLocation(
+					draggablePoint.getX() - this.cornerPoint.getX(),
+					draggablePoint.getY() - this.cornerPoint.getY()
+				);
+			}
+		});
+	}
+
+	private void updateSelectionPointDrag(int changeX, int changeY) {
+		this.dimensionPoints.values().forEach(draggablePoint -> {
+			if (draggablePoint != null) {
+				int dragX = draggablePoint.dragPoint.x + changeX;
+				int dragY = draggablePoint.dragPoint.y + changeY;
+				draggablePoint.setLocation(dragX, dragY);
+			}
+		});
+	}
+
+	public void updateSelectionInfo() {
+		DraggablePoint selectionPoint = this.getSelectionPoint();
+		if (selectionPoint != null) {
+			ChunkPos chunkPos = new ChunkPos(this.cornerPoint.getX() + selectionPoint.getX(), this.cornerPoint.getY() + selectionPoint.getY());
+			ChunkHandler.ChunkData filterData = new ChunkHandler.ChunkData(chunkPos.x, chunkPos.z, ChunkType.UNLOADED, TicketType.UNKNOWN);
+			Optional<ChunkHandler.ChunkData> chunkData = Arrays.stream(ChunkHandler.getChunks(this.getDimension()))
+				.filter(c -> c.equals(filterData)).findFirst();
+			boolean isEmpty = chunkData.isEmpty();
+			String selectionText = "Selected Chunk: X: %d, Z: %s || Status: %s".formatted(
+				chunkPos.x,
+				chunkPos.z,
+				isEmpty ? "Unloaded" : chunkData.get().getChunkType().prettyName
 			);
-			this.cornerPoint.setLocation(this.getCornerOfCentre(x, y));
-			this.selectionPoint.move(
-				this.selectionPoint.x - this.cornerPoint.x,
-				this.selectionPoint.y - this.cornerPoint.y
-			);
-		}
-		else {
-			this.cornerPoint.setLocation(this.getCornerOfCentre(x, y));
+			if (chunkData.isPresent() && chunkData.get().hasTicketType()) {
+				selectionText += " || Type: %s".formatted(chunkData.get().getTicketType().prettyName);
+			}
+			this.selectionText = selectionText;
 		}
 	}
 
@@ -257,6 +292,18 @@ public class ChunkGrid {
 
 	public String getDimension() {
 		return this.dimensions.get(this.dimensionIndex);
+	}
+
+	private DraggablePoint getSelectionPoint() {
+		return this.dimensionPoints.get(this.getDimension());
+	}
+
+	private void setSelectionPoint(DraggablePoint newPoint) {
+		this.dimensionPoints.put(this.getDimension(), newPoint);
+	}
+
+	public String getSelectionText() {
+		return this.selectionText;
 	}
 
 	public String getPrettyDimension() {
@@ -273,13 +320,24 @@ public class ChunkGrid {
 		this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
 	}
 
-
 	public void cycleDimension() {
 		if (this.dimensionIndex >= this.dimensions.size() - 1) {
 			this.dimensionIndex = 0;
 			return;
 		}
 		this.dimensionIndex++;
+	}
+
+	public Minimap getMinimapMode() {
+		return this.minimapMode;
+	}
+
+	public void cycleMinimap() {
+		this.minimapMode = this.minimapMode.getNextMinimap();
+	}
+
+	public boolean isPanning() {
+		return this.panning;
 	}
 
 	private boolean isInBounds(double mouseX, double mouseY) {
@@ -289,8 +347,8 @@ public class ChunkGrid {
 	}
 
 	private Point getCentre() {
-		int centreX = this.cornerPoint.x + this.columns / 2;
-		int centreY = this.cornerPoint.y + this.rows / 2;
+		int centreX = this.cornerPoint.getX() + this.columns / 2;
+		int centreY = this.cornerPoint.getY() + this.rows / 2;
 		return new Point(centreX, centreY);
 	}
 
@@ -326,5 +384,54 @@ public class ChunkGrid {
 		green = Integer.min(green - greenOverflow * 3, 255);
 		blue = Integer.min(blue - blueOverflow * 3, 255);
 		return (alpha << 24) | (red << 16) | (green << 8) | (blue);
+	}
+
+	public enum Minimap {
+		NONE("None"),
+		STATIC("Static"),
+		FOLLOW("Follow");
+
+		public final String prettyName;
+
+		Minimap(String prettyName) {
+			this.prettyName = prettyName;
+		}
+
+		private Minimap getNextMinimap() {
+			int ordinal = this.ordinal();
+			if (this.ordinal() >= 2) {
+				return NONE;
+			}
+			return Minimap.values()[ordinal + 1];
+		}
+	}
+
+	private static class DraggablePoint {
+		private final Point mainPoint;
+		private final Point dragPoint = new Point();
+
+		private DraggablePoint(Point main) {
+			this.mainPoint = main;
+		}
+
+		private int getX() {
+			return this.mainPoint.x;
+		}
+
+		private int getY() {
+			return this.mainPoint.y;
+		}
+
+		private Point getDragPoint() {
+			return this.dragPoint;
+		}
+
+		private void setLocation(Point newLocation) {
+			this.mainPoint.setLocation(newLocation);
+		}
+
+		private void setLocation(int x, int y) {
+			this.mainPoint.setLocation(x, y);
+		}
 	}
 }

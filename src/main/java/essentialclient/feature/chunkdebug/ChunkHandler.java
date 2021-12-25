@@ -3,6 +3,7 @@ package essentialclient.feature.chunkdebug;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.util.math.ChunkPos;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,13 +34,14 @@ public class ChunkHandler {
 		}
 		chunkDataMap.putIfAbsent(world, new HashSet<>());
 		Set<ChunkData> chunkDataSet = chunkDataMap.get(world);
-		chunkDataSet.clear();
 		for (NbtElement element : chunkList) {
 			NbtCompound chunkCompound = (NbtCompound) element;
 			int x = chunkCompound.getInt("x");
 			int z = chunkCompound.getInt("z");
-			ChunkType chunkType = ChunkType.decodeChunkType(chunkCompound.getInt("type"));
-			ChunkData chunkData = new ChunkData(x, z, chunkType);
+			ChunkType chunkType = ChunkType.decodeChunkType(chunkCompound.getInt("t"));
+			TicketType ticketType = TicketType.decodeTicketType(chunkCompound.getInt("l"));
+			ChunkData chunkData = new ChunkData(x, z, chunkType, ticketType);
+			chunkDataSet.remove(chunkData);
 			if (chunkType != ChunkType.UNLOADED) {
 				chunkDataSet.add(chunkData);
 			}
@@ -47,34 +49,47 @@ public class ChunkHandler {
 	}
 
 	public static class ChunkData {
-		private final int posX;
-		private final int posZ;
+		private final ChunkPos chunkPos;
 		private final ChunkType chunkType;
+		private final TicketType ticketType;
 
-		public ChunkData(int posX, int posZ, ChunkType chunkType) {
-			this.posX = posX;
-			this.posZ = posZ;
+		public ChunkData(int posX, int posZ, ChunkType chunkType, TicketType ticketType) {
+			this.chunkPos = new ChunkPos(posX, posZ);
 			this.chunkType = chunkType;
+			this.ticketType = ticketType;
 		}
 
 		public int getPosX() {
-			return posX;
+			return this.chunkPos.x;
 		}
 
 		public int getPosZ() {
-			return posZ;
+			return this.chunkPos.z;
 		}
 
 		public ChunkType getChunkType() {
-			return chunkType;
+			return this.chunkType;
+		}
+
+		public boolean hasTicketType() {
+			return this.ticketType != null;
+		}
+
+		public TicketType getTicketType() {
+			return this.ticketType;
+		}
+
+		@Override
+		public int hashCode() {
+			return this.chunkPos.hashCode();
 		}
 
 		@Override
 		public boolean equals(Object other) {
-			if (!(other instanceof ChunkData otherChunk)) {
-				return false;
+			if (other instanceof ChunkData otherChunk) {
+				return this.chunkPos.equals(otherChunk.chunkPos);
 			}
-			return otherChunk.posZ == this.posZ && otherChunk.posX == this.posX;
+			return false;
 		}
 	}
 }

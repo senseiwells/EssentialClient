@@ -145,7 +145,9 @@ public class ClientScript {
 			.addDefault()
 			;
 
-		this.context = contextBuilder.build();
+		// Local variable is needed, it will never be null
+		Context context = contextBuilder.build();
+		this.context = context;
 
 		// Create a new deamon thread.
 		this.thread = new Thread(this.arucasThreadGroup, () -> {

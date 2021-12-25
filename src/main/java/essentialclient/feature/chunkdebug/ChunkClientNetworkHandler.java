@@ -7,13 +7,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
 
 public class ChunkClientNetworkHandler {
 	public static boolean chunkDebugAvailable = false;
 	public static Identifier ESSENTIAL_CHANNEL = new Identifier("essentialclient", "chunkdebug");
 	public static final int
 		HELLO = 0,
+		RELOAD = 15,
 		DATA = 16;
 
 	private ClientPlayNetworkHandler networkHandler;
@@ -54,14 +54,6 @@ public class ChunkClientNetworkHandler {
 		this.requestChunkData(new Identifier("minecraft:dummy"));
 	}
 
-	public void requestChunkData(World world) {
-		if (world == null) {
-			this.requestChunkData();
-			return;
-		}
-		this.requestChunkData(world.getRegistryKey().getValue());
-	}
-
 	public void requestChunkData(String worldName) {
 		this.requestChunkData(new Identifier(worldName));
 	}
@@ -71,6 +63,15 @@ public class ChunkClientNetworkHandler {
 			this.networkHandler.sendPacket(new CustomPayloadC2SPacket(
 				ESSENTIAL_CHANNEL,
 				new PacketByteBuf(Unpooled.buffer()).writeVarInt(DATA).writeIdentifier(worldIdentifier)
+			));
+		}
+	}
+
+	protected void requestServerRefresh() {
+		if (this.networkHandler != null) {
+			this.networkHandler.sendPacket(new CustomPayloadC2SPacket(
+				ESSENTIAL_CHANNEL,
+				new PacketByteBuf(Unpooled.buffer()).writeVarInt(RELOAD)
 			));
 		}
 	}

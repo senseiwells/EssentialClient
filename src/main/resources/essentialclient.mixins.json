@@ -10,6 +10,7 @@
     "betterMusic.MusicTrackerMixin",
     "betterPingDisplay.PlayerListHudMixin",
     "carpet.ClientNetworkHandlerMixin",
+    "chunkDebug.MinecraftClientMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",
     "clientNick.InGameHudMixin",
     "clientNick.PlayerEntityRendererMixin",
