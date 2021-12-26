@@ -222,7 +222,6 @@ public class ChunkGrid {
 				int dragY = this.cornerPoint.dragPoint.y - changeY;
 				this.cornerPoint.setLocation(dragX, dragY);
 				this.updateSelectionPointDrag(changeX, changeY);
-
 			}
 		}
 	}
