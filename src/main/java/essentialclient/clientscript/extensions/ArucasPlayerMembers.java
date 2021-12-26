@@ -22,16 +22,20 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -130,10 +134,14 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value<?> setSelectedSlot(Context context, MemberFunction function) throws CodeError {
 		final String error = "Number must be between 0 - 8";
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1, error);
+		final ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
 		if (numberValue.value < 0 || numberValue.value > 8) {
 			throw function.throwInvalidParameterError(error, context);
 		}
-		this.getPlayer(context, function).getInventory().selectedSlot = numberValue.value.intValue();
+		ArucasMinecraftExtension.getPlayer().getInventory().selectedSlot = numberValue.value.intValue();
+		ArucasMinecraftExtension.getClient().execute(()->networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket((int)numberValue.value.intValue())));
+		;
+		//this.getPlayer(context, function).getInventory().selectedSlot = numberValue.value.intValue();
 		return new NullValue();
 	}
 
@@ -228,14 +236,14 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		return EntityValue.getEntityValue(targetedEntity);
 	}
 	private Value<?> updateBreakingBlock(Context context, MemberFunction function) throws CodeError{
-		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+		final ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		if (ArucasMinecraftExtension.getWorld().isAir(new BlockPos(x,y,z))) {
 			return new NullValue();
 		}
-		interactionManager.updateBlockBreakingProgress(new BlockPos(x,y,z), Direction.UP);
+		ArucasMinecraftExtension.getClient().execute(()-> interactionManager.updateBlockBreakingProgress(new BlockPos(x,y,z), Direction.UP));
 		this.getPlayer(context, function).swingHand(Hand.MAIN_HAND);
 		return new NullValue();
 	}
@@ -243,15 +251,19 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
 		ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
+		final ClientPlayerEntity player = this.getPlayer(context, function);
 		int tempSlot = (this.getPlayer(context, function).getInventory().selectedSlot) % 9;
 		int size = screenHandler.slots.size();
 		if (numberValue1.value > size || numberValue1.value < 0 || numberValue2.value > size || numberValue2.value < 0) {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 		}
-		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
-		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, this.getPlayer(context, function));
+		final ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+		ArucasMinecraftExtension.getClient().execute(()->
+		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, player));
+		ArucasMinecraftExtension.getClient().execute(()->
+		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), tempSlot, SlotActionType.SWAP, player));
+		ArucasMinecraftExtension.getClient().execute(()->
+		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), tempSlot, SlotActionType.SWAP, player));
 		return new NullValue();
 	}
 
@@ -329,14 +341,20 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
-		String direction = function.getParameterValueOfType(context, StringValue.class, 4).value;
-		if (direction != "NORTH" && direction != "SOUTH" && direction != "EAST" && direction != "WEST"){
+		String direction = function.getParameterValueOfType(context, StringValue.class, 4).value.toUpperCase();
+		if (!direction.equals("NORTH") && !direction.equals("SOUTH") && !direction.equals("EAST") && !direction.equals("WEST")&& !direction.equals("UP")&& !direction.equals("DOWN")){
 			throw new RuntimeError("Not a valid direction", function.syntaxPosition, context);
 		}
 		Vec3d newVec = applyCarpetProtocol(x,y,z,direction);
 		BlockHitResult blockHitResult = new BlockHitResult(newVec, Direction.NORTH, new BlockPos(x,y,z), false );
-		MinecraftClient client = ArucasMinecraftExtension.getClient();
-		client.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
+		ArucasMinecraftExtension.getClient().execute(()-> {
+			try {
+				ClientPlayNetworkHandler clientHandler = ArucasMinecraftExtension.getNetworkHandler();
+				clientHandler.sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
+			} catch (CodeError e) {
+				e.printStackTrace();
+			}
+		});
 		return new NullValue();
 	}
 	private Vec3d applyCarpetProtocol(double x, double y, double z, String direction){
@@ -352,7 +370,14 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(x,y,z), Direction.NORTH, new BlockPos(x,y,z), false );
-		client.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
+		ArucasMinecraftExtension.getClient().execute(()-> {
+			try {
+				ClientPlayNetworkHandler clientHandler = ArucasMinecraftExtension.getNetworkHandler();
+				clientHandler.sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
+			} catch (CodeError e) {
+				e.printStackTrace();
+			}
+		});
 		return new NullValue();
 	}
 
