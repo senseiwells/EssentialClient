@@ -35,7 +35,7 @@ public class ArucasLivingEntityMembers implements IArucasValueExtension {
 	private final Set<MemberFunction> livingEntityFunctions = Set.of(
 		new MemberFunction("getStatusEffects", this::getStatusEffects),
 		new MemberFunction("getHealth", (context, function) -> new NumberValue(this.getLivingEntity(context, function).getHealth())),
-		new MemberFunction("isFlyFalling", (context, function) -> new BooleanValue(this.getLivingEntity(context, function).isFallFlying()))
+		new MemberFunction("isFlyFalling", (context, function) -> BooleanValue.of(this.getLivingEntity(context, function).isFallFlying()))
 	);
 
 	private Value<?> getStatusEffects(Context context, MemberFunction function) throws CodeError {
@@ -43,7 +43,7 @@ public class ArucasLivingEntityMembers implements IArucasValueExtension {
 		ArucasValueList potionList = new ArucasValueList();
 		livingEntity.getStatusEffects().forEach(s -> {
 			Identifier effectId = Registry.STATUS_EFFECT.getId(s.getEffectType());
-			potionList.add(effectId == null ? new NullValue() : new StringValue(effectId.getPath()));
+			potionList.add(effectId == null ? NullValue.NULL : new StringValue(effectId.getPath()));
 		});
 		return new ListValue(potionList);
 	}

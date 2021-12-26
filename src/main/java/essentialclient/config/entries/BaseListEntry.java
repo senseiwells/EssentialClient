@@ -1,6 +1,5 @@
 package essentialclient.config.entries;
 
-import carpet.settings.ParsedRule;
 import com.google.common.collect.ImmutableList;
 import essentialclient.config.ConfigListWidget;
 import essentialclient.config.clientrule.ClientRule;
@@ -18,33 +17,26 @@ import net.minecraft.client.util.math.MatrixStack;
 import java.util.List;
 
 public abstract class BaseListEntry extends ConfigListWidget.Entry implements ITooltipEntry {
-	protected ParsedRule<?> parsedRule = null;
-	protected ClientRule<?> clientRule = null;
+	protected final ClientRule<?> clientRule;
 	protected final String ruleName;
 	protected final RulesScreen rulesScreen;
 	protected final MinecraftClient client;
+	protected final boolean isServerScreen;
 	protected RuleWidget ruleWidget;
 	protected ButtonWidget editButton;
 	protected ButtonWidget resetButton;
 
-
-	public BaseListEntry(final ParsedRule<?> parsedRule, MinecraftClient client, RulesScreen gui) {
-		this.parsedRule = parsedRule;
-		this.client = client;
-		this.rulesScreen = gui;
-		this.ruleName = parsedRule.name;
-	}
-
-	public BaseListEntry(final ClientRule<?> clientRule, MinecraftClient client, RulesScreen gui) {
+	public BaseListEntry(final ClientRule<?> clientRule, MinecraftClient client, RulesScreen rulesScreen, boolean isServerScreen) {
 		this.clientRule = clientRule;
 		this.client = client;
-		this.rulesScreen = gui;
+		this.rulesScreen = rulesScreen;
 		this.ruleName = clientRule.getName();
+		this.isServerScreen = isServerScreen;
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
-		TextRenderer font = client.textRenderer;
+		TextRenderer font = this.client.textRenderer;
 		float fontX = (float)(x + 90 - ConfigListWidget.length);
 		float fontY = (float)(y + height / 2 - 9 / 2);
 
@@ -54,7 +46,7 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
 		this.resetButton.x = x + 290;
 		this.resetButton.y = y;
 
-		this.resetButton.active = this.parsedRule == null ? this.clientRule.isNotDefault() : !this.parsedRule.getAsString().equals(this.parsedRule.defaultAsString);
+		this.resetButton.active =  this.clientRule.isNotDefault();
 
 		this.editButton.x = x + 180;
 		this.editButton.y = y;
@@ -66,8 +58,8 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
 	@Override
 	public void drawTooltip(int slotIndex, int x, int y, int mouseX, int mouseY, int listWidth, int listHeight, int slotWidth, int slotHeight, float partialTicks) {
 		if (this.ruleWidget != null && y > 45 && y < listHeight - 50 && this.ruleWidget.isHovered(mouseX, mouseY) ) {
-			String description = this.parsedRule == null ? this.clientRule.getDescription() : this.parsedRule.description;
-			RenderHelper.drawGuiInfoBox(this.client.textRenderer, description, mouseX, mouseY);
+			String description = this.clientRule.getDescription();
+			RenderHelper.drawGuiInfoBox(this.client.textRenderer, "%s\n%s".formatted(this.ruleName, description), mouseX, mouseY);
 		}
 	}
 
@@ -80,4 +72,7 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
 	public List<? extends Selectable> selectableChildren() {
 		return ImmutableList.of(this.editButton, this.resetButton);
 	}
+
+	@Override
+	public void updateEntryOnClose() { }
 }

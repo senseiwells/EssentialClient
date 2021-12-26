@@ -64,6 +64,7 @@ public class RulesScreen extends Screen {
 	@Override
 	public void onClose() {
 		if (this.client != null) {
+			this.list.updateAllEntriesOnClose();
 			this.client.setScreen(this.parent);
 		}
 	}

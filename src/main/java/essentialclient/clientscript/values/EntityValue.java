@@ -31,7 +31,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			}
 			return new EntityValue<>(entity);
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	@Override

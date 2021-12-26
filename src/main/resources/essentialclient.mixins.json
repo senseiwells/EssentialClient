@@ -2,10 +2,6 @@
   "required": true,
   "package": "essentialclient.mixins",
   "compatibilityLevel": "JAVA_16",
-  "mixins": [
-    "carpet.CustomPayloadC2SPacketAccessor",
-    "carpet.ServerPlayNetworkHandlerMixin"
-  ],
   "client": [
     "autoWalk.KeyboardInputMixin",
     "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
@@ -13,7 +9,7 @@
     "betterAccurateBlockPlacement.ItemUsageContextMixin",
     "betterMusic.MusicTrackerMixin",
     "betterPingDisplay.PlayerListHudMixin",
-    "carpet.ClientPlayNetworkHandlerMixin",
+    "carpet.ClientNetworkHandlerMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",
     "clientNick.InGameHudMixin",
     "clientNick.PlayerEntityRendererMixin",
@@ -44,7 +40,6 @@
     "functions.NbtListMixin",
     "functions.PlayerEntityMixin",
     "keyboardRebinds.KeyboardMixin",
-    "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
     "permanentChatHud.ChatHudMixin",

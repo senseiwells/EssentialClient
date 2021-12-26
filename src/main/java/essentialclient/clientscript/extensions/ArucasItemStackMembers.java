@@ -56,8 +56,8 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 		new MemberFunction("getDurability", this::getDurability),
 		new MemberFunction("getMaxDurability", (context, function) -> new NumberValue(this.getItemStack(context, function).getMaxDamage())),
 		new MemberFunction("getEnchantments", this::getEnchantments),
-		new MemberFunction("isBlockItem", (context, function) -> new BooleanValue(this.getItemStack(context, function).getItem() instanceof BlockItem)),
-		new MemberFunction("isStackable", (context, function) -> new BooleanValue(this.getItemStack(context, function).isStackable())),
+		new MemberFunction("isBlockItem", (context, function) -> BooleanValue.of(this.getItemStack(context, function).getItem() instanceof BlockItem)),
+		new MemberFunction("isStackable", (context, function) -> BooleanValue.of(this.getItemStack(context, function).isStackable())),
 		new MemberFunction("getMaxCount", (context, function) -> new NumberValue(this.getItemStack(context, function).getMaxCount())),
 		new MemberFunction("asBlock", this::asBlock),
 		new MemberFunction("getItemName", List.of(), (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString()), true),
@@ -80,7 +80,7 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 		ArucasValueMap enchantmentMap = new ArucasValueMap();
 		for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.fromNbt(nbtList).entrySet()) {
 			Identifier enchantmentId = Registry.ENCHANTMENT.getId(entry.getKey());
-			enchantmentMap.put(enchantmentId == null ? new NullValue() : new StringValue(enchantmentId.getPath()), new NumberValue(entry.getValue()));
+			enchantmentMap.put(enchantmentId == null ? NullValue.NULL : new StringValue(enchantmentId.getPath()), new NumberValue(entry.getValue()));
 		}
 		return new MapValue(enchantmentMap);
 	}
@@ -96,7 +96,7 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 	private Value<?> isNbtEqual(Context context, MemberFunction function) throws CodeError {
 		ItemStack itemStack = this.getItemStack(context, function);
 		ItemStack otherItemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
-		return new BooleanValue(ItemStack.areNbtEqual(itemStack, otherItemStack));
+		return BooleanValue.of(ItemStack.areNbtEqual(itemStack, otherItemStack));
 	}
 
 	private Value<?> getNbt(Context context, MemberFunction function) throws CodeError {

@@ -1,6 +1,7 @@
 package essentialclient.mixins.core;
 
 import essentialclient.clientscript.ClientScript;
+import essentialclient.feature.EssentialCarpetClient;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -26,6 +27,8 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
 	private void onLeaveWorld(Screen screen, CallbackInfo ci) {
 		ClientScript.getInstance().stopScript();
+		EssentialCarpetClient.serverIsCarpet = false;
+		EssentialCarpetClient.carpetRules.clear();
 	}
 
 	@Override
