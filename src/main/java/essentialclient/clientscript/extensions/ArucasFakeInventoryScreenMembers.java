@@ -41,7 +41,7 @@ public class ArucasFakeInventoryScreenMembers implements IArucasValueExtension {
         FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
         FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
         fakeScreen.getValue().setFunctionValue(functionValue);
-        return new NullValue();
+        return NullValue.NULL;
     }
 
     private Value<?> setStackForSlot(Context context, MemberFunction function) throws CodeError {
@@ -49,7 +49,7 @@ public class ArucasFakeInventoryScreenMembers implements IArucasValueExtension {
         NumberValue slot = function.getParameterValueOfType(context, NumberValue.class, 1);
         ItemStackValue stackValue = function.getParameterValueOfType(context, ItemStackValue.class, 2);
         fakeScreen.getValue().setStack(slot.value.intValue(), stackValue.value);
-        return new NullValue();
+        return NullValue.NULL;
     }
 
     private Value<?> getStackForSlot(Context context, MemberFunction function) throws CodeError {

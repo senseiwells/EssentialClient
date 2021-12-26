@@ -43,16 +43,17 @@ public class ArucasEntityMembers implements IArucasValueExtension {
 	}
 
 	private final Set<MemberFunction> entityFunctions = Set.of(
-		new MemberFunction("isSneaking", (context, function) -> new BooleanValue(this.getEntity(context, function).isSneaking())),
-		new MemberFunction("isSprinting", (context, function) -> new BooleanValue(this.getEntity(context, function).isSprinting())),
-		new MemberFunction("isFalling", (context, function) -> new BooleanValue(this.getEntity(context, function).fallDistance > 0)),
-		new MemberFunction("isOnGround", (context, function) -> new BooleanValue(this.getEntity(context, function).isOnGround())),
-		new MemberFunction("isTouchingWater", (context, function) -> new BooleanValue(this.getEntity(context, function).isTouchingWater())),
-		new MemberFunction("isTouchingWaterOrRain", (context, function) -> new BooleanValue(this.getEntity(context, function).isTouchingWaterOrRain())),
-		new MemberFunction("isSubmergedInWater", (context, function) -> new BooleanValue(this.getEntity(context, function).isSubmergedInWater())),
-		new MemberFunction("isInLava", (context, function) -> new BooleanValue(this.getEntity(context, function).isInLava())),
-		new MemberFunction("isOnFire", (context, function) -> new BooleanValue(this.getEntity(context, function).isOnFire())),
+		new MemberFunction("isSneaking", (context, function) -> BooleanValue.of(this.getEntity(context, function).isSneaking())),
+		new MemberFunction("isSprinting", (context, function) -> BooleanValue.of(this.getEntity(context, function).isSprinting())),
+		new MemberFunction("isFalling", (context, function) -> BooleanValue.of(this.getEntity(context, function).fallDistance > 0)),
+		new MemberFunction("isOnGround", (context, function) -> BooleanValue.of(this.getEntity(context, function).isOnGround())),
+		new MemberFunction("isTouchingWater", (context, function) -> BooleanValue.of(this.getEntity(context, function).isTouchingWater())),
+		new MemberFunction("isTouchingWaterOrRain", (context, function) -> BooleanValue.of(this.getEntity(context, function).isTouchingWaterOrRain())),
+		new MemberFunction("isSubmergedInWater", (context, function) -> BooleanValue.of(this.getEntity(context, function).isSubmergedInWater())),
+		new MemberFunction("isInLava", (context, function) -> BooleanValue.of(this.getEntity(context, function).isInLava())),
+		new MemberFunction("isOnFire", (context, function) -> BooleanValue.of(this.getEntity(context, function).isOnFire())),
 		new MemberFunction("getLookingAtBlock", this::getLookingAtBlock),
+		new MemberFunction("getLookingAtBlock", "maxDistance", this::getLookingAtBlock$1),
 		new MemberFunction("getLookingAtPos", "maxDistance", this::getLookingAtPos),
 		new MemberFunction("getEntityIdNumber", (context, function) -> new NumberValue(this.getEntity(context, function).getEntityId())),
 		new MemberFunction("getX", (context, function) -> new NumberValue(this.getEntity(context, function).getX())),
@@ -82,6 +83,17 @@ public class ArucasEntityMembers implements IArucasValueExtension {
 		return new BlockStateValue(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
 	}
 
+	private Value<?> getLookingAtBlock$1(Context context, MemberFunction function) throws CodeError {
+		Entity entity = this.getEntity(context, function);
+		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
+		HitResult result = entity.raycast(numberValue.value, 0.0F, true);
+		if (result.getType() == HitResult.Type.BLOCK) {
+			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
+			return new BlockStateValue(entity.getEntityWorld().getBlockState(blockPos), blockPos);
+		}
+		return new BlockStateValue(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+	}
+
 	private Value<?> getLookingAtPos(Context context, MemberFunction function) throws CodeError {
 		Entity entity = this.getEntity(context, function);
 		double maxDistance = function.getParameterValueOfType(context, NumberValue.class, 1).value;
@@ -102,20 +114,20 @@ public class ArucasEntityMembers implements IArucasValueExtension {
 	private Value<?> getBiome(Context context, MemberFunction function) throws CodeError {
 		Entity entity = this.getEntity(context, function);
 		Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
-		return biomeKey.isPresent() ? new StringValue(biomeKey.get().getValue().getPath()) : new NullValue();
+		return biomeKey.isPresent() ? new StringValue(biomeKey.get().getValue().getPath()) : NullValue.NULL;
 	}
 
 	private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {
 		Entity entity = this.getEntity(context, function);
 		Text customName = entity.getCustomName();
-		return customName == null ? new NullValue() : new StringValue(customName.asString());
+		return customName == null ? NullValue.NULL : new StringValue(customName.asString());
 	}
 
 	private Value<?> setGlowing(Context context, MemberFunction function) throws CodeError {
 		Entity entity = this.getEntity(context, function);
 		BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 		entity.setGlowing(booleanValue.value);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getDistanceTo(Context context, MemberFunction function) throws CodeError {

@@ -108,7 +108,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			case "once" -> ((MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).rightClickMouseAccessor();
 			default -> throw function.throwInvalidParameterError(error, context);
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> attack(Context context, MemberFunction function) throws CodeError {
@@ -121,7 +121,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			case "once" -> ((MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).leftClickMouseAccessor();
 			default -> throw function.throwInvalidParameterError(error, context);
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> setSelectedSlot(Context context, MemberFunction function) throws CodeError {
@@ -131,12 +131,12 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			throw function.throwInvalidParameterError(error, context);
 		}
 		this.getPlayer(context, function).inventory.selectedSlot = numberValue.value.intValue();
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> say(Context context, MemberFunction function) throws CodeError {
 		this.getPlayer(context, function).sendChatMessage(function.getParameterValue(context, 1).toString());
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> message(Context context, MemberFunction function) throws CodeError {
@@ -144,7 +144,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		Text text = value instanceof TextValue textValue ? textValue.value : new LiteralText(value.toString());
 		ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, false));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> messageActionBar(Context context, MemberFunction function) throws CodeError {
@@ -152,7 +152,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		Text text = value instanceof TextValue textValue ? textValue.value : new LiteralText(value.toString());
 		ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, true));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> showTitle(Context context, MemberFunction function) throws CodeError {
@@ -163,14 +163,14 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		Text subText = subValue instanceof TextValue textValue ? textValue.value : subValue.value == null ? null : new LiteralText(subValue.toString());
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(() -> client.inGameHud.setTitles(text, subText, -1, -1, -1));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> openInventory(Context context, MemberFunction function) throws CodeError {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		final MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(() -> client.openScreen(new InventoryScreen(player)));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> openScreen(Context context, MemberFunction function) throws CodeError {
@@ -181,14 +181,14 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			throw new RuntimeError("Opening handled screens is unsafe", function.syntaxPosition, context);
 		}
 		client.execute(() -> client.openScreen(screenValue.value));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> closeScreen(Context context, MemberFunction function) throws CodeError {
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		final MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(player::closeHandledScreen);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> setSprinting(Context context, MemberFunction function) throws CodeError {
@@ -196,13 +196,13 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 		final ClientPlayerEntity player = this.getPlayer(context, function);
 		ArucasMinecraftExtension.getClient().execute(() -> player.setSprinting(booleanValue.value));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> dropItemInHand(Context context, MemberFunction function) throws CodeError {
 		BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 		this.getPlayer(context, function).dropSelectedItem(booleanValue.value);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> dropAll(Context context, MemberFunction function) throws CodeError {
@@ -210,7 +210,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(() -> InventoryUtils.dropAllItemType(client.player, itemStackValue.value.getItem()));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> look(Context context, MemberFunction function) throws CodeError {
@@ -219,7 +219,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		ClientPlayerEntity player = this.getPlayer(context, function);
 		player.yaw = numberValue.value.floatValue();
 		player.pitch = numberValue2.value.floatValue();
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> lookAtPos(Context context, MemberFunction function) throws CodeError {
@@ -228,7 +228,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, new Vec3d(x, y, z));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> jump(Context context, MemberFunction function) throws CodeError {
@@ -238,7 +238,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 				player.jump();
 			}
 		});
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getLookingAtEntity(Context context, MemberFunction function) throws CodeError {
@@ -260,7 +260,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
 		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), 0, SlotActionType.SWAP, player);
 		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> shiftClickSlot(Context context, MemberFunction function) throws CodeError {
@@ -271,20 +271,20 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 		}
 		ArucasMinecraftExtension.getInteractionManager().clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.QUICK_MOVE, this.getPlayer(context, function));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> dropSlot(Context context, MemberFunction function) throws CodeError {
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 		ArucasMinecraftExtension.getInteractionManager().clickSlot(this.getPlayer(context, function).currentScreenHandler.syncId, numberValue.value.intValue(), 1, SlotActionType.THROW, ArucasMinecraftExtension.getClient().player);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getCurrentScreen(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
 		Screen currentScreen = ArucasMinecraftExtension.getClient().currentScreen;
 		if (currentScreen == null) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		return new ScreenValue(currentScreen);
 	}
@@ -294,7 +294,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 1);
 		if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		int listSize = listValue.value.size();
 		if (listSize == 9) {
@@ -314,30 +314,30 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		}
 		InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen);
 		if (handledScreen.getScreenHandler().slots.get(0).getStack() == ItemStack.EMPTY) {
-			return new BooleanValue(false);
+			return BooleanValue.FALSE;
 		}
 		InventoryUtils.shiftClickSlot(client, handledScreen, 0);
-		return new BooleanValue(true);
+		return BooleanValue.TRUE;
 	}
 
 	private Value<?> logout(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
 		String reason = function.getParameterValueOfType(context, StringValue.class, 1).value;
 		ArucasMinecraftExtension.getNetworkHandler().onDisconnected(new LiteralText(reason));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> interactWithEntity(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		EntityValue<?> entity  = function.getParameterValueOfType(context, EntityValue.class, 1);
 		ArucasMinecraftExtension.getInteractionManager().interactEntity(player, entity.value, Hand.MAIN_HAND);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> anvil(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		if (interactionManager == null) {
-			return new BooleanValue(false);
+			return BooleanValue.FALSE;
 		}
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		ScreenHandler handler = player.currentScreenHandler;
@@ -381,13 +381,13 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			return new NumberValue(anvilHandler.getLevelCost());
 		}
 		interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player);
-		return new BooleanValue(firstValid && secondValid);
+		return BooleanValue.of(firstValid && secondValid);
 	}
 
 	private Value<?> anvilRename(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		if (interactionManager == null) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		ScreenHandler handler = player.currentScreenHandler;
@@ -420,13 +420,13 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			return new NumberValue(anvilHandler.getLevelCost());
 		}
 		interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player);
-		return new BooleanValue(valid);
+		return BooleanValue.of(valid);
 	}
 
 	private Value<?> stonecutter(Context context, MemberFunction function) throws CodeError {
 		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		if (interactionManager == null) {
-			return new BooleanValue(false);
+			return BooleanValue.FALSE;
 		}
 		ClientPlayerEntity player =  this.getPlayer(context, function);
 		ScreenHandler handler = player.currentScreenHandler;
@@ -444,14 +444,14 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			}
 		}
 		if (!valid) {
-			return new BooleanValue(false);
+			return BooleanValue.FALSE;
 		}
 		List<StonecuttingRecipe> stonecuttingRecipes = cutterHandler.getAvailableRecipes();
 		for (int i = 0; i < stonecuttingRecipes.size(); i++) {
 			if (stonecuttingRecipes.get(i).getOutput().getItem() == itemOutput) {
 				interactionManager.clickButton(cutterHandler.syncId, i);
 				interactionManager.clickSlot(cutterHandler.syncId, 1, 0, SlotActionType.QUICK_MOVE, player);
-				return new BooleanValue(true);
+				return BooleanValue.TRUE;
 			}
 		}
 		throw new RuntimeError("Recipe does not exist", function.syntaxPosition, context);
@@ -463,7 +463,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		if (!InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
 			throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getIndexOfTrade(Context context, MemberFunction function) throws CodeError {
@@ -471,7 +471,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 		int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
 		if (index == -1) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		this.checkVillagerValid(index, function, context);
 		return new NumberValue(index);
@@ -496,14 +496,14 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		this.checkMainPlayer(context, function);
 		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 		int code = InventoryUtils.checkHasTrade(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
-		return new BooleanValue(this.checkVillagerValid(code, function, context));
+		return BooleanValue.of(this.checkVillagerValid(code, function, context));
 	}
 
 	private Value<?> isTradeDisabled(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
 		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 		int code = InventoryUtils.checkTradeDisabled(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
-		return new BooleanValue(this.checkVillagerValid(code, function, context));
+		return BooleanValue.of(this.checkVillagerValid(code, function, context));
 	}
 
 	private Value<?> getPriceForIndex(Context context, MemberFunction function) throws CodeError {
@@ -528,7 +528,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		this.checkMainPlayer(context, function);
 		BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 		keyBinding.setPressed(booleanValue.value);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private void checkMainPlayer(Context context, MemberFunction function) throws CodeError {

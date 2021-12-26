@@ -6,6 +6,7 @@ import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.ArucasThreadUtils;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.NullValue;
@@ -40,7 +41,6 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	private final Set<? extends AbstractBuiltInFunction<?>> minecraftFunctions = Set.of(
 		new BuiltInFunction("getMinecraftClient", this::getMinecraftClient),
 		new BuiltInFunction("runThreaded", List.of("function", "parameters"), this::runThreaded),
-		new BuiltInFunction("schedule", List.of("milliseconds", "function"), this::schedule, true),
 		new BuiltInFunction("throwUncatchableError", (context, function) -> { throw new NullPointerException(); }),
 		new BuiltInFunction("hold", this::hold)
 	);
@@ -52,27 +52,11 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	private Value<?> runThreaded(Context context, BuiltInFunction function) throws CodeError {
 		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 0);
 		List<Value<?>> list = function.getParameterValueOfType(context, ListValue.class, 1).value;
-		ClientScript.getInstance().runBranchAsyncFunction((branchContext) -> functionValue.call(branchContext, list));
-		return new NullValue();
+		Thread thread = ClientScript.getInstance().runBranchAsyncFunction((branchContext) -> functionValue.call(branchContext, list));
+		long threadId = thread.getId();
+		ArucasThreadUtils.addThreadToMap(threadId, thread);
+		return new NumberValue(threadId);
 	}
-
-	@Deprecated
-	private Value<?> schedule(Context context, BuiltInFunction function) throws CodeError {
-		NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 0);
-		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
-
-		ClientScript.getInstance().runBranchAsyncFunction((branchContext) -> {
-			try {
-				Thread.sleep(numberValue.value.longValue());
-				functionValue.call(branchContext, List.of());
-			}
-			catch (InterruptedException e) {
-				throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
-			}
-		});
-		return new NullValue();
-	}
-
 
 	private Value<?> hold(Context context, BuiltInFunction function) throws CodeError {
 		try {
@@ -81,7 +65,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		catch (InterruptedException e) {
 			throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	public static MinecraftClient getClient() throws CodeError {

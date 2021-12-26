@@ -47,7 +47,7 @@ public class ArucasScreenMembers implements IArucasValueExtension {
 			int tabIndex = creativeInventoryScreen.getSelectedTab();
 			title = ItemGroup.GROUPS[tabIndex].getName();
 		}
-		return title == null ? new NullValue() : new StringValue(title);
+		return title == null ? NullValue.NULL : new StringValue(title);
 	}
 
 	private Screen getScreen(Context context, MemberFunction function) throws CodeError {

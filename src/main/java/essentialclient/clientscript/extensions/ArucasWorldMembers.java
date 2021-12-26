@@ -55,8 +55,8 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 		new MemberFunction("getAllEntities", this::getAllEntities),
 		new MemberFunction("getEntityFromId", "id", this::getEntityFromId),
 		new MemberFunction("getDimensionName", (context, function) -> new StringValue(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
-		new MemberFunction("isRaining", (context, function) -> new BooleanValue(this.getWorld(context, function).isRaining())),
-		new MemberFunction("isThundering", (context, function) -> new BooleanValue(this.getWorld(context, function).isThundering())),
+		new MemberFunction("isRaining", (context, function) -> BooleanValue.of(this.getWorld(context, function).isRaining())),
+		new MemberFunction("isThundering", (context, function) -> BooleanValue.of(this.getWorld(context, function).isThundering())),
 		new MemberFunction("getTimeOfDay", (context, function) -> new NumberValue(this.getWorld(context, function).getTimeOfDay())),
 		new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
 		new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, true),
@@ -85,7 +85,7 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 				return new OtherPlayerValue(otherClientPlayerEntity);
 			}
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getAllOtherPlayers(Context context, MemberFunction function) throws CodeError {
@@ -133,7 +133,7 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 		double z = function.getParameterValueOfType(context, NumberValue.class, 4).value;
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(() -> world.addParticle(defaultParticleType, x, y, z, 0, 0, 0));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	@Deprecated
@@ -146,7 +146,7 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		BlockPos blockPos = new BlockPos(x, y, z);
 		client.execute(() -> world.setBlockState(blockPos, blockState));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> spawnGhostEntity(Context context, MemberFunction function) throws CodeError {
@@ -161,7 +161,7 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 		Entity entity = entityValue.value;
 		Entity newEntity = entity.getType().create(world);
 		if (newEntity == null) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		int nextId = RenderHelper.getNextEntityId();
 		newEntity.setEntityId(nextId);
@@ -184,7 +184,7 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 			throw new RuntimeError("No such fake entity exists", function.syntaxPosition, context);
 		}
 		EssentialUtils.getClient().execute(() -> world.removeEntity(entityId));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private ClientWorld getWorld(Context context, MemberFunction function) throws CodeError {
