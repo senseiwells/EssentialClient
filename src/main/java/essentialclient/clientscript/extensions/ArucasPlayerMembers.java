@@ -19,15 +19,17 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -43,6 +45,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class ArucasPlayerMembers implements IArucasValueExtension {
@@ -136,7 +139,9 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		if (numberValue.value < 0 || numberValue.value > 8) {
 			throw function.throwInvalidParameterError(error, context);
 		}
-		this.getPlayer(context, function).inventory.selectedSlot = numberValue.value.intValue();
+		ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
+		ArucasMinecraftExtension.getPlayer().inventory.selectedSlot = numberValue.value.intValue();
+		ArucasMinecraftExtension.getClient().execute(()->networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(numberValue.value.intValue())));
 		return new NullValue();
 	}
 
@@ -263,9 +268,12 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 			throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 		}
 		ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
-		interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), 0, SlotActionType.SWAP, player);
-		interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
+		ArucasMinecraftExtension.getClient().execute(()->
+			interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player));
+		ArucasMinecraftExtension.getClient().execute(()->
+			interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), 0, SlotActionType.SWAP, player));
+		ArucasMinecraftExtension.getClient().execute(()->
+			interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player));//oh my god
 		return new NullValue();
 	}
 
@@ -347,40 +355,45 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		if (ArucasMinecraftExtension.getWorld().isAir(new BlockPos(x,y,z))) {
 			return new NullValue();
 		}
-		interactionManager.updateBlockBreakingProgress(new BlockPos(x,y,z), Direction.UP);
+		ArucasMinecraftExtension.getClient().execute(()-> interactionManager.updateBlockBreakingProgress(new BlockPos(x,y,z), Direction.UP));
 		this.getPlayer(context, function).swingHand(Hand.MAIN_HAND);
 		return new NullValue();
 	}
 	private Value<?> placeAtWithDirection(Context context, MemberFunction function) throws CodeError {
 		//carpet protocol support but why not client side?
-		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		String direction = function.getParameterValueOfType(context, StringValue.class, 4).value;
-		if (direction != "NORTH" && direction != "SOUTH" && direction != "EAST" && direction != "WEST"){
+		if (!Objects.equals(direction, "NORTH") && !Objects.equals(direction, "SOUTH") && !Objects.equals(direction, "EAST") &&
+			!Objects.equals(direction, "WEST")&& !Objects.equals(direction, "UP")&& !Objects.equals(direction, "DOWN")){
 			throw new RuntimeError("Not a valid direction", function.syntaxPosition, context);
 		}
 		Vec3d newVec = applyCarpetProtocol(x,y,z,direction);
 		BlockHitResult blockHitResult = new BlockHitResult(newVec, Direction.NORTH, new BlockPos(x,y,z), false );
-		ArucasMinecraftExtension.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
+		//needs tweak for wallmountedblocks
+		ClientPlayNetworkHandler clientHandler = ArucasMinecraftExtension.getNetworkHandler();
+		clientHandler.sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
 		return new NullValue();
 	}
 	private Vec3d applyCarpetProtocol(double x, double y, double z, String direction){
 		//just for carpet example since it might need massive rework to work at client side
 		Direction direction1 = Direction.byName(direction);
+		if (direction1 == null){
+			return new Vec3d(x,y,z);
+		}
 		double code = direction1.getId();
 		return new Vec3d(code*2 + 2 + x, y, z);
 	}
 	private Value <?> placeAt(Context context, MemberFunction function) throws CodeError{
 		// without protocol just attempt to place at wherever, needs slab support etc parsing?
-		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		//set item to hand but just temporary code
 		BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(x,y,z), Direction.NORTH, new BlockPos(x,y,z), false );
-		ArucasMinecraftExtension.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
+		ClientPlayNetworkHandler clientHandler = ArucasMinecraftExtension.getNetworkHandler();
+		clientHandler.sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
 		//warning : it might result ghost block in NotVanilla servers
 		return new NullValue();
 	}
