@@ -30,6 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.AnvilScreenHandler;
@@ -89,8 +90,8 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		new MemberFunction("anvil", List.of("predicate1", "predicate2"), this::anvil),
 		new MemberFunction("anvilRename", List.of("name", "predicate"), this::anvilRename),
 		new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
-		new MemberFunction("placeAt", List.of("x", "y", "z", "itemStack"), this::placeAt),
-		new MemberFunction("placeAtWithDirection", List.of("x", "y", "z", "itemStack", "direction"), this::placeAtWithDirection),
+		new MemberFunction("placeAt", List.of("x", "y", "z"), this::placeAt),
+		new MemberFunction("placeAtWithDirection", List.of("x", "y", "z", "direction"), this::placeAtWithDirection),
 		// Villager Stuff
 		new MemberFunction("tradeIndex", "index", this::tradeIndex),
 		new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
@@ -328,14 +329,14 @@ public class ArucasPlayerMembers implements IArucasExtension {
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
-		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 4);
-		String direction = function.getParameterValueOfType(context, StringValue.class, 5).value;
+		String direction = function.getParameterValueOfType(context, StringValue.class, 4).value;
 		if (direction != "NORTH" && direction != "SOUTH" && direction != "EAST" && direction != "WEST"){
 			throw new RuntimeError("Not a valid direction", function.syntaxPosition, context);
 		}
 		Vec3d newVec = applyCarpetProtocol(x,y,z,direction);
 		BlockHitResult blockHitResult = new BlockHitResult(newVec, Direction.NORTH, new BlockPos(x,y,z), false );
-		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		MinecraftClient client = ArucasMinecraftExtension.getClient();
+		client.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
 		return new NullValue();
 	}
 	private Vec3d applyCarpetProtocol(double x, double y, double z, String direction){
@@ -346,21 +347,12 @@ public class ArucasPlayerMembers implements IArucasExtension {
 	private Value <?> placeAt(Context context, MemberFunction function) throws CodeError{
 		// without protocol just attempt to place at wherever, needs slab support etc parsing?
 		ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
+		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 		double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 		double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
-		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 4);
-		if (!(itemStackValue.value.getItem() instanceof BlockItem)){
-			throw new RuntimeError("Not an block item",function.syntaxPosition,context);
-		}
-		if (EssentialUtils.getPlayer().getInventory().getSlotWithStack(itemStackValue.value.getItem().getDefaultStack()) == -1){
-			throw new RuntimeError("No item in inventory", function.syntaxPosition,context);
-		}
-		//set item to hand
-		EssentialUtils.getPlayer().getInventory().swapSlotWithHotbar(EssentialUtils.getPlayer().getInventory().getSlotWithStack(itemStackValue.value.getItem().getDefaultStack()));
-		EssentialUtils.getPlayer().getInventory().selectedSlot = EssentialUtils.getPlayer().getInventory().getSlotWithStack(itemStackValue.value.getItem().getDefaultStack());
 		BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(x,y,z), Direction.NORTH, new BlockPos(x,y,z), false );
-		interactionManager.interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), Hand.MAIN_HAND, blockHitResult );
+		client.getNetworkHandler().sendPacket(new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, blockHitResult));
 		return new NullValue();
 	}
 
