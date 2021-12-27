@@ -115,82 +115,99 @@ public class ChunkDebugScreen extends Screen {
 		this.client.openScreen(this.parent);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 
 		chunkGrid.render(0, HEADER_HEIGHT, this.width, this.height - HEADER_HEIGHT - FOOTER_HEIGHT, false);
 
-		RenderSystem.disableTexture();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
-		this.client.getTextureManager().bindTexture(OPTIONS_BACKGROUND_TEXTURE);
-		RenderSystem.enableBlend();
-		RenderSystem.shadeModel(GL11.GL_SMOOTH);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(0, HEADER_HEIGHT + 4, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(this.width, HEADER_HEIGHT + 4, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).color(0, 0, 0, 255).next();
-		tessellator.draw();
-
-		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0, 0).next();
-		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0, 0).next();
-		tessellator.draw();
-
-		RenderSystem.enableTexture();
-		RenderSystem.disableBlend();
-		RenderSystem.shadeModel(GL11.GL_FLAT);
-
-		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-		bufferBuilder.vertex(0, 0, 0).color(64, 64, 64, 255).texture(0, 0).next();
-		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(0, HEADER_HEIGHT / 32f).next();
-		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f, HEADER_HEIGHT / 32f).next();
-		bufferBuilder.vertex(this.width, 0, 0).color(64, 64, 64, 255).texture(this.width / 32f, 0).next();
-		tessellator.draw();
-
-		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(0, (this.height - FOOTER_HEIGHT) / 32f).next();
-		bufferBuilder.vertex(0, this.height, 0).color(64, 64, 64, 255).texture(0, this.height / 32f).next();
-		bufferBuilder.vertex(this.width, this.height, 0).color(64, 64, 64, 255).texture(this.width / 32f, this.height / 32f).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(width / 32f, (this.height - FOOTER_HEIGHT) / 32f).next();
-		tessellator.draw();
-
-		DrawableHelper.drawCenteredText(matrices, this.client.textRenderer, "Chunk Debug Map", this.width / 2, 8, 0xFFFFFF);
-
-		if (chunkGrid.getSelectionText() != null) {
-			DrawableHelper.drawCenteredText(matrices, this.client.textRenderer, chunkGrid.getSelectionText(), this.width / 2, 30, 0xFFFFFF);
-		}
+		this.drawHeaderAndFooterGradient(tessellator, bufferBuilder);
+		this.drawHeaderAndFooterTexture(tessellator, bufferBuilder);
 
 		if (chunkGrid.isPanning()) {
 			this.xPositionBox.setText(String.valueOf(chunkGrid.getCentreX()));
 			this.zPositionBox.setText(String.valueOf(chunkGrid.getCentreZ()));
 		}
 
+		this.drawText(matrices, "Chunk Debug Map", this.width / 2, 8, 1, true);
+		if (chunkGrid.getSelectionText() != null) {
+			this.drawText(matrices, chunkGrid.getSelectionText(), this.width / 2, 30, 1, true);
+		}
+
 		this.xPositionBox.render(matrices, mouseX, mouseY, delta);
 		this.zPositionBox.render(matrices, mouseX, mouseY, delta);
 
+		int textHeight = this.height - 20;
+		int xOffset = FOOTER_ROW_PADDING + 10;
+		int zOffset = xPositionBox.getWidth() + 50;
 
-		int textHeight = this.height - FOOTER_ROW_HEIGHT * 2 + FOOTER_ROW_PADDING * 3 + 6;
-		this.drawTextWithShadow(matrices, new LiteralText("X"), FOOTER_ROW_PADDING - 2, textHeight);
-		this.drawTextWithShadow(matrices, new LiteralText("Z"), (int) (this.width / 8.6), textHeight);
+		this.drawText(matrices, "X", xOffset, textHeight, 1.5F, false);
+		this.drawText(matrices, "Z", zOffset, textHeight, 1.5F, false);
 
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
-	private void drawTextWithShadow(MatrixStack matrices, Text text, int centerX, int y) {
+	private void drawText(MatrixStack matrices, String text, int x, int y, float scale, boolean center) {
 		matrices.push();
-		matrices.scale(2.0F, 2.0F, 1F);
-		matrices.translate(centerX / 2.0F, (y + this.textRenderer.fontHeight / 2.0F) / 2.0F, 0.0F);
-		DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, text, centerX, -this.textRenderer.fontHeight / 2, 16777215);
+		matrices.translate(x, y, 0.0D);
+		matrices.scale(scale, scale, 0.0F);
+		if (center) {
+			DrawableHelper.drawCenteredText(matrices, this.textRenderer, new LiteralText(text), 0, 0, 0xFFFFFF);
+		} else {
+			DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, new LiteralText(text), 0, 0, 0xFFFFFF);
+		}
 		matrices.pop();
+	}
+
+	@SuppressWarnings({"PointlessArithmeticExpression", "deprecation"})
+	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {
+		RenderSystem.disableTexture();
+		RenderSystem.enableBlend();
+		RenderSystem.shadeModel(GL11.GL_SMOOTH);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+
+		// Header gradient
+		bufferBuilder.vertex(         0,               HEADER_HEIGHT + 0, 0).color(0, 0, 0, 255).next();
+		bufferBuilder.vertex(         0,               HEADER_HEIGHT + 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(this.width,               HEADER_HEIGHT + 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(this.width,               HEADER_HEIGHT + 0, 0).color(0, 0, 0, 255).next();
+
+		// Footer gradient
+		bufferBuilder.vertex(         0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(         0, this.height - FOOTER_HEIGHT - 0, 0).color(0, 0, 0, 255).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 0, 0).color(0, 0, 0, 255).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
+
+		tessellator.draw();
+	}
+
+	@SuppressWarnings("deprecation")
+	private void drawHeaderAndFooterTexture(Tessellator tessellator, BufferBuilder bufferBuilder) {
+		this.client.getTextureManager().bindTexture(OPTIONS_BACKGROUND_TEXTURE);
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
+		RenderSystem.shadeModel(GL11.GL_FLAT);
+
+		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
+
+		// Header
+		bufferBuilder.vertex(         0,                           0, 0).color(64, 64, 64, 255).texture(               0,                                   0).next();
+		bufferBuilder.vertex(         0,               HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(               0,                 HEADER_HEIGHT / 32f).next();
+		bufferBuilder.vertex(this.width,               HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f,                 HEADER_HEIGHT / 32f).next();
+		bufferBuilder.vertex(this.width,                           0, 0).color(64, 64, 64, 255).texture(this.width / 32f,                                   0).next();
+
+		// Footer
+		bufferBuilder.vertex(         0, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(               0, (this.height - FOOTER_HEIGHT) / 32f).next();
+		bufferBuilder.vertex(         0, this.height                , 0).color(64, 64, 64, 255).texture(               0,                   this.height / 32f).next();
+		bufferBuilder.vertex(this.width, this.height                , 0).color(64, 64, 64, 255).texture(this.width / 32f,                   this.height / 32f).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f, (this.height - FOOTER_HEIGHT) / 32f).next();
+
+		tessellator.draw();
 	}
 
 	@Override
