@@ -1,15 +1,18 @@
 package essentialclient.mixins.core;
 
 import com.mojang.brigadier.CommandDispatcher;
+import essentialclient.EssentialClient;
 import essentialclient.clientscript.ClientScript;
 import essentialclient.commands.CommandRegister;
 import essentialclient.config.clientrule.ClientRules;
+import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -55,6 +58,14 @@ public class ClientPlayNetworkHandlerMixin {
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
 		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getValue()) {
 			ClientScript.getInstance().startScript();
+		}
+	}
+
+	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
+	private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
+		if (ChunkClientNetworkHandler.ESSENTIAL_CHANNEL.equals(packet.getChannel())) {
+			EssentialClient.chunkNetHandler.handlePacket(packet.getData(), (ClientPlayNetworkHandler) (Object) this);
+			ci.cancel();
 		}
 	}
 }

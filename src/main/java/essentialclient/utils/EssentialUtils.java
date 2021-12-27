@@ -1,5 +1,6 @@
 package essentialclient.utils;
 
+import essentialclient.EssentialClient;
 import essentialclient.clientscript.ClientScript;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -143,7 +144,7 @@ public class EssentialUtils {
 		sendMessage("Trying to update Essential Client...");
 		try {
 			String version = getLatestVersionUrl();
-			if (version.equals(getVersion())) {
+			if (version.equals(EssentialClient.VERSION)) {
 				sendMessage("You already have the latest version!");
 				return;
 			}
@@ -182,7 +183,7 @@ public class EssentialUtils {
 
 	private static String getLatestVersionUrl() throws IOException{
 		int versionIndex = 0;
-		String lastWorkingVersion = getVersion();
+		String lastWorkingVersion = EssentialClient.VERSION;
 		String essentialClientVersion = incrementVersion(lastWorkingVersion, versionIndex);
 		while (true) {
 			URL url = new URL("https://github.com/senseiwells/EssentialClient/releases/tag/v%s".formatted(essentialClientVersion));
@@ -217,7 +218,7 @@ public class EssentialUtils {
 
 	private static void tryDeleteOldVersion() throws IOException {
 		String minecraftVersion = getMinecraftVersion();
-		String clientVersion = getVersion();
+		String clientVersion = EssentialClient.VERSION;
 		File modDirectory = FabricLoader.getInstance().getGameDir().resolve("mods").toFile();
 		if (!modDirectory.isDirectory()) {
 			throw new FileNotFoundException("Could not find mod directory");

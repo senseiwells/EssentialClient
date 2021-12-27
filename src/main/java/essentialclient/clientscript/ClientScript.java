@@ -1,5 +1,6 @@
 package essentialclient.clientscript;
 
+import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.*;
 import essentialclient.config.clientrule.ClientRules;
@@ -144,6 +145,7 @@ public class ClientScript {
 			.addDefault()
 			;
 
+		// Local variable is needed, it will never be null
 		Context context = contextBuilder.build();
 		this.context = context;
 
@@ -264,7 +266,7 @@ public class ClientScript {
 		```
 		""".formatted(
 			EssentialUtils.getMinecraftVersion(),
-			EssentialUtils.getVersion(),
+			EssentialClient.VERSION,
 			EssentialUtils.getArucasVersion(),
 			content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
 			stacktrace

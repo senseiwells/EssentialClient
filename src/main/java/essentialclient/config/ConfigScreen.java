@@ -4,6 +4,8 @@ import essentialclient.clientscript.ClientScript;
 import essentialclient.config.rulescreen.ClientRulesScreen;
 import essentialclient.config.rulescreen.ServerRulesScreen;
 import essentialclient.feature.EssentialCarpetClient;
+import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import essentialclient.utils.EssentialUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
@@ -27,8 +29,11 @@ public class ConfigScreen extends Screen {
 			return;
 		}
 		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.openScreen(new ClientRulesScreen(this))));
-		ButtonWidget serverRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), (button) -> this.client.openScreen(new ServerRulesScreen(this))));
-		ButtonWidget gameRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Gamerule Options"), (button -> {
+		ButtonWidget serverRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), button -> this.client.openScreen(new ServerRulesScreen(this))));
+		ButtonWidget chunkDebugButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Chunk Debug Map"), button -> {
+			this.client.openScreen(new ChunkDebugScreen(this));
+		}));
+		ButtonWidget gameRuleButton = this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 72, 200, 20, new LiteralText("Gamerule Options"), button -> {
 			if (this.client.getServer() == null) {
 				return;
 			}
@@ -36,12 +41,15 @@ public class ConfigScreen extends Screen {
 				this.client.openScreen(this);
 				rules.ifPresent((gameRules -> this.client.getServer().getGameRules().setAllValues(gameRules, this.client.getServer())));
 			}));
-		})));
-		if (!EssentialCarpetClient.serverIsCarpet) {
-			serverRuleButton.active = false;
-		}
+		}));
 		if (!client.isInSingleplayer()) {
+			if (!EssentialCarpetClient.serverIsCarpet) {
+				serverRuleButton.active = false;
+			}
 			gameRuleButton.active = false;
+		}
+		if (!ChunkClientNetworkHandler.chunkDebugAvailable) {
+			chunkDebugButton.active = false;
 		}
 		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.openScreen(this.parent)));
 		this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Script File"), (button) -> {
