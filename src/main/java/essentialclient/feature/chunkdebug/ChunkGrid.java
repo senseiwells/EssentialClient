@@ -2,6 +2,7 @@ package essentialclient.feature.chunkdebug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import essentialclient.EssentialClient;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
@@ -77,15 +78,18 @@ public class ChunkGrid {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
+		RenderSystem.enableDepthTest();
+		RenderSystem.disableTexture();
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableTexture();
 
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
 
-		if (isMinimap) {
-			int size = this.scale * (this.rows + 1);
-
-			int thatX = thisX + size;
-			int thatY = thisY + size;
+		if (isMinimap && ClientRules.CHUNK_DEBUG_MINIMAP_BACKGROUND.getValue()) {
+			int thatX = thisX + this.scale * (this.columns + 1);
+			int thatY = thisY + this.scale * (this.rows + 1);
 
 			bufferBuilder.vertex(thisX - 5, thisY - 5, 0).color(53, 59, 72, 200).next();
 			bufferBuilder.vertex(thisX - 5, thatY + 5, 0).color(53, 59, 72, 200).next();
@@ -134,6 +138,7 @@ public class ChunkGrid {
 			this.updateStaticCentre();
 		}
 
+		RenderSystem.disableBlend();
 		RenderSystem.enableTexture();
 		RenderSystem.shadeModel(GL11.GL_FLAT);
 	}
@@ -145,7 +150,7 @@ public class ChunkGrid {
 		this.width = (int) (width * 0.25F);
 		this.height = (int) (height * 0.45F);
 		this.updateRowsAndColumns();
-		int minimapX = width - this.width - 20;
+		int minimapX = width - this.scale * (this.columns + 1) - 10;
 		int minimapY = 10;
 		switch (this.minimapMode) {
 			case STATIC -> {
@@ -174,10 +179,10 @@ public class ChunkGrid {
 		int green = (colour & 0xff00)   >> 8;
 		int blue  = (colour & 0xff);
 
-		bufferBuilder.vertex(             cellX,              cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(             cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale,              cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
 	}
 
 	private void drawSelectionBox(Tessellator tessellator, BufferBuilder bufferBuilder, int thisX, int thisY, Point selectionPoint) {
@@ -422,6 +427,7 @@ public class ChunkGrid {
 		return new Point(pointX, pointY);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private static int brighten(int colour, float factor) {
 		int alpha = (colour & 0xff000000) >>> 24;
 		int red = (colour & 0xff0000) >> 16;

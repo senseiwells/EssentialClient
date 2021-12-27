@@ -16,6 +16,7 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
@@ -90,8 +91,14 @@ public class ClientScript {
 		CommandHelper.functionCommands.clear();
 		CommandHelper.functionCommandNodes.clear();
 		MinecraftClient client = EssentialUtils.getClient();
-		if (CommandHelper.getCommandPacket() != null && client.getNetworkHandler() != null) {
-			client.execute(() -> client.getNetworkHandler().onCommandTree(CommandHelper.getCommandPacket()));
+		if (CommandHelper.getCommandPacket() != null) {
+			client.execute(() -> {
+				// Check must be done here, otherwise can result in NPE
+				ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
+				if (networkHandler != null) {
+					networkHandler.onCommandTree(CommandHelper.getCommandPacket());
+				}
+			});
 		}
 		MinecraftScriptEvents.clearEventFunctions();
 		this.resetKeys(client);

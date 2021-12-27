@@ -162,7 +162,7 @@ public class ChunkDebugScreen extends Screen {
 		matrices.pop();
 	}
 
-	@SuppressWarnings({"PointlessArithmeticExpression", "deprecation"})
+	@SuppressWarnings("deprecation")
 	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {
 		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
@@ -172,15 +172,15 @@ public class ChunkDebugScreen extends Screen {
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
 
 		// Header gradient
-		bufferBuilder.vertex(         0,               HEADER_HEIGHT + 0, 0).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(         0,               HEADER_HEIGHT + 4, 0).color(0, 0, 0,   0).next();
-		bufferBuilder.vertex(this.width,               HEADER_HEIGHT + 4, 0).color(0, 0, 0,   0).next();
-		bufferBuilder.vertex(this.width,               HEADER_HEIGHT + 0, 0).color(0, 0, 0, 255).next();
+		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).color(0, 0, 0, 255).next();
+		bufferBuilder.vertex(0, HEADER_HEIGHT + 4, 0).color(0, 0, 0, 0).next();
+		bufferBuilder.vertex(this.width, HEADER_HEIGHT + 4, 0).color(0, 0, 0, 0).next();
+		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).color(0, 0, 0, 255).next();
 
 		// Footer gradient
-		bufferBuilder.vertex(         0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
-		bufferBuilder.vertex(         0, this.height - FOOTER_HEIGHT - 0, 0).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 0, 0).color(0, 0, 0, 255).next();
+		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
 		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
 
 		tessellator.draw();
@@ -196,15 +196,15 @@ public class ChunkDebugScreen extends Screen {
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
 
 		// Header
-		bufferBuilder.vertex(         0,                           0, 0).color(64, 64, 64, 255).texture(               0,                                   0).next();
-		bufferBuilder.vertex(         0,               HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(               0,                 HEADER_HEIGHT / 32f).next();
-		bufferBuilder.vertex(this.width,               HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f,                 HEADER_HEIGHT / 32f).next();
-		bufferBuilder.vertex(this.width,                           0, 0).color(64, 64, 64, 255).texture(this.width / 32f,                                   0).next();
+		bufferBuilder.vertex(0, 0, 0).color(64, 64, 64, 255).texture( 0, 0).next();
+		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture( 0, HEADER_HEIGHT / 32f).next();
+		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f, HEADER_HEIGHT / 32f).next();
+		bufferBuilder.vertex(this.width, 0, 0).color(64, 64, 64, 255).texture(this.width / 32f, 0).next();
 
 		// Footer
-		bufferBuilder.vertex(         0, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(               0, (this.height - FOOTER_HEIGHT) / 32f).next();
-		bufferBuilder.vertex(         0, this.height                , 0).color(64, 64, 64, 255).texture(               0,                   this.height / 32f).next();
-		bufferBuilder.vertex(this.width, this.height                , 0).color(64, 64, 64, 255).texture(this.width / 32f,                   this.height / 32f).next();
+		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(0, (this.height - FOOTER_HEIGHT) / 32f).next();
+		bufferBuilder.vertex(0, this.height, 0).color(64, 64, 64, 255).texture(0, this.height / 32f).next();
+		bufferBuilder.vertex(this.width, this.height, 0).color(64, 64, 64, 255).texture(this.width / 32f, this.height / 32f).next();
 		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f, (this.height - FOOTER_HEIGHT) / 32f).next();
 
 		tessellator.draw();
