@@ -80,6 +80,24 @@ public class ChunkGrid {
 		RenderSystem.disableTexture();
 
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+
+		if (isMinimap) {
+			int size = this.scale * (this.rows + 1);
+
+			int thatX = thisX + size;
+			int thatY = thisY + size;
+
+			bufferBuilder.vertex(thisX - 5, thisY - 5, 0).color(53, 59, 72, 200).next();
+			bufferBuilder.vertex(thisX - 5, thatY + 5, 0).color(53, 59, 72, 200).next();
+			bufferBuilder.vertex(thatX + 5, thatY + 5, 0).color(53, 59, 72, 200).next();
+			bufferBuilder.vertex(thatX + 5, thisY - 5, 0).color(53, 59, 72, 200).next();
+
+			bufferBuilder.vertex(thisX, thisY, 0).color(45, 52, 54, 200).next();
+			bufferBuilder.vertex(thisX, thatY, 0).color(45, 52, 54, 200).next();
+			bufferBuilder.vertex(thatX, thatY, 0).color(45, 52, 54, 200).next();
+			bufferBuilder.vertex(thatX, thisY, 0).color(45, 52, 54, 200).next();
+		}
+
 		for (ChunkHandler.ChunkData chunkData : ChunkHandler.getChunks(this.getDimension())) {
 			if (chunkData.getChunkType() == ChunkType.UNLOADED) {
 				continue;
@@ -101,10 +119,8 @@ public class ChunkGrid {
 		if (selectionPoint != null) {
 			Point drawingPoint = selectionPoint.mainPoint;
 			if (isMinimap) {
-				int minimapSelectionX = this.cornerPoint.getX() + selectionPoint.getX();
-				int minimapSelectionZ = this.cornerPoint.getY() + selectionPoint.getY();
-				minimapSelectionX -= this.minimapCornerPoint.x;
-				minimapSelectionZ -= this.minimapCornerPoint.y;
+				int minimapSelectionX = this.cornerPoint.getX() + selectionPoint.getX() - this.minimapCornerPoint.x;
+				int minimapSelectionZ = this.cornerPoint.getY() + selectionPoint.getY() - this.minimapCornerPoint.y;
 				drawingPoint = new Point(minimapSelectionX, minimapSelectionZ);
 			}
 			this.drawSelectionBox(tessellator, bufferBuilder, thisX, thisY, drawingPoint);
@@ -150,27 +166,18 @@ public class ChunkGrid {
 	}
 
 	private void drawBox(BufferBuilder bufferBuilder, int cellX, int cellY, int x, int y, int colour) {
-		int red = (colour & 0xff0000) >> 16;
-		int green = (colour & 0xff00) >> 8;
-		int blue = (colour & 0xff);
-		float brightness = 0.14F;
-
 		if ((x + y) % 2 == 0) {
-			colour = brighten(colour, brightness);
+			colour = brighten(colour, 0.14F);
 		}
 
-		int red1 = (colour & 0xff0000) >> 16;
-		int green1 = (colour & 0xff00) >> 8;
-		int blue1 = (colour & 0xff);
+		int red   = (colour & 0xff0000) >> 16;
+		int green = (colour & 0xff00)   >> 8;
+		int blue  = (colour & 0xff);
 
-		int red2 = (colour & 0xff0000) >> 16;
-		int green2 = (colour & 0xff00) >> 8;
-		int blue2 = (colour & 0xff);
-
-		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red1, green1, blue1, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red2, green2, blue2, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red1, green1, blue1, 255).next();
+		bufferBuilder.vertex(             cellX,              cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(             cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale,              cellY, 0).color(red, green, blue, 255).next();
 	}
 
 	private void drawSelectionBox(Tessellator tessellator, BufferBuilder bufferBuilder, int thisX, int thisY, Point selectionPoint) {
