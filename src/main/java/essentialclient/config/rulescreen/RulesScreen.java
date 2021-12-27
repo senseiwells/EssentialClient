@@ -30,7 +30,7 @@ public class RulesScreen extends Screen {
 		if (this.client == null) {
 			return;
 		}
-		this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, this.searchBox, new LiteralText("Search Rules"));
+		this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, new LiteralText("Search Rules"));
 		this.searchBox.setChangedListener(this::refreshRules);
 		this.list = new ConfigListWidget(this, this.client, this.searchBox.getText());
 		this.addSelectableChild(this.list);
@@ -93,10 +93,10 @@ public class RulesScreen extends Screen {
 	}
 
 	public List<TextFieldWidget> getStringFieldList() {
-		return stringFieldList;
+		return this.stringFieldList;
 	}
 
 	public List<TextFieldWidget> getNumberFieldList() {
-		return numberFieldList;
+		return this.numberFieldList;
 	}
 }

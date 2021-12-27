@@ -4,6 +4,8 @@ import essentialclient.clientscript.ClientScript;
 import essentialclient.config.rulescreen.ClientRulesScreen;
 import essentialclient.config.rulescreen.ServerRulesScreen;
 import essentialclient.feature.EssentialCarpetClient;
+import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import essentialclient.utils.EssentialUtils;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
@@ -15,20 +17,23 @@ import net.minecraft.util.Util;
 
 public class ConfigScreen extends Screen {
 	private final Screen parent;
-	
+
 	public ConfigScreen(Screen parent) {
 		super(new LiteralText("Essential Client Options"));
 		this.parent = parent;
 	}
-	
+
 	@Override
 	protected void init() {
 		if (this.client == null) {
 			return;
 		}
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.setScreen(new ClientRulesScreen(this))));
-		ButtonWidget serverRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), (button) -> this.client.setScreen(new ServerRulesScreen(this))));
-		ButtonWidget gameRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Gamerule Options"), (button -> {
+		ButtonWidget serverRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), button -> this.client.setScreen(new ServerRulesScreen(this))));
+		ButtonWidget chunkDebugButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Chunk Debug Map"), button -> {
+			this.client.setScreen(new ChunkDebugScreen(this));
+		}));
+		ButtonWidget gameRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 72, 200, 20, new LiteralText("Gamerule Options"), button -> {
 			if (this.client.getServer() == null) {
 				return;
 			}
@@ -36,12 +41,15 @@ public class ConfigScreen extends Screen {
 				this.client.setScreen(this);
 				rules.ifPresent((gameRules -> this.client.getServer().getGameRules().setAllValues(gameRules, this.client.getServer())));
 			}));
-		})));
-		if (!EssentialCarpetClient.serverIsCarpet) {
-			serverRuleButton.active = false;
-		}
+		}));
 		if (!client.isInSingleplayer()) {
+			if (!EssentialCarpetClient.serverIsCarpet) {
+				serverRuleButton.active = false;
+			}
 			gameRuleButton.active = false;
+		}
+		if (!ChunkClientNetworkHandler.chunkDebugAvailable) {
+			chunkDebugButton.active = false;
 		}
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.setScreen(this.parent)));
 		this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Script File"), (button) -> {

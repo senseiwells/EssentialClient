@@ -1,6 +1,7 @@
 package essentialclient.feature;
 
 import essentialclient.config.ConfigScreen;
+import essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
@@ -13,6 +14,7 @@ public enum ClientKeybinds {
 	ACCURATE_REVERSE(new KeyBinding("Accurate Reverse", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
 	ACCURATE_INTO(new KeyBinding("Accurate Into", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
 	OPEN_ESSENTIAL_CLIENT_MENU(new KeyBinding("Open Essential Client Menu", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
+	OPEN_CHUNK_DEBUG(new KeyBinding("Open Chunk Debug", GLFW.GLFW_KEY_UNKNOWN, "Essential Client"))
 	;
 
 	private final KeyBinding key;
@@ -38,8 +40,13 @@ public enum ClientKeybinds {
 
 	public static void register() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (OPEN_ESSENTIAL_CLIENT_MENU.getKeyBinding().isPressed()) {
-				client.setScreen(new ConfigScreen(null));
+			if (client.currentScreen == null) {
+				if (OPEN_ESSENTIAL_CLIENT_MENU.getKeyBinding().isPressed()) {
+					client.setScreen(new ConfigScreen(null));
+				}
+				if (OPEN_CHUNK_DEBUG.getKeyBinding().isPressed()) {
+					client.setScreen(new ChunkDebugScreen(null));
+				}
 			}
 		});
 	}

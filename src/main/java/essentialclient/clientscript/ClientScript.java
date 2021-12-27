@@ -1,5 +1,6 @@
 package essentialclient.clientscript;
 
+import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.*;
 import essentialclient.config.clientrule.ClientRules;
@@ -15,6 +16,7 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
@@ -89,8 +91,14 @@ public class ClientScript {
 		CommandHelper.functionCommands.clear();
 		CommandHelper.functionCommandNodes.clear();
 		MinecraftClient client = EssentialUtils.getClient();
-		if (CommandHelper.getCommandPacket() != null && client.getNetworkHandler() != null) {
-			client.execute(() -> client.getNetworkHandler().onCommandTree(CommandHelper.getCommandPacket()));
+		if (CommandHelper.getCommandPacket() != null) {
+			client.execute(() -> {
+				// Check must be done here, otherwise can result in NPE
+				ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
+				if (networkHandler != null) {
+					networkHandler.onCommandTree(CommandHelper.getCommandPacket());
+				}
+			});
 		}
 		MinecraftScriptEvents.clearEventFunctions();
 		this.resetKeys(client);
@@ -144,6 +152,7 @@ public class ClientScript {
 			.addDefault()
 			;
 
+		// Local variable is needed, it will never be null
 		Context context = contextBuilder.build();
 		this.context = context;
 
@@ -264,7 +273,7 @@ public class ClientScript {
 		```
 		""".formatted(
 			EssentialUtils.getMinecraftVersion(),
-			EssentialUtils.getVersion(),
+			EssentialClient.VERSION,
 			EssentialUtils.getArucasVersion(),
 			content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
 			stacktrace
