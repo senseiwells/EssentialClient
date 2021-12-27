@@ -66,12 +66,11 @@ public class ChunkDebugScreen extends Screen {
 			}
 		}));
 		Text initialMinimapText = new LiteralText("Minimap: %s".formatted(chunkGrid.getMinimapMode().prettyName));
-		ButtonWidget minimapButton = this.addButton(new ButtonWidget(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, initialMinimapText, button -> {
+		this.addButton(new ButtonWidget(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, initialMinimapText, button -> {
 			chunkGrid.cycleMinimap();
 			Text minimapText = new LiteralText("Minimap: %s".formatted(chunkGrid.getMinimapMode().prettyName));
 			button.setMessage(minimapText);
 		}));
-		minimapButton.active = false;
 		buttonHeight = height - FOOTER_ROW_HEIGHT * 2 + FOOTER_ROW_PADDING * 3;
 		this.xPositionBox = new NumberFieldWidget(this.textRenderer, FOOTER_ROW_PADDING + 28, buttonHeight, buttonWidth - 30, 20, new LiteralText("X"));
 		this.xPositionBox.setInitialValue(chunkGrid.getCentreX());
@@ -90,6 +89,14 @@ public class ChunkDebugScreen extends Screen {
 
 		this.addChild(this.xPositionBox);
 		this.addChild(this.zPositionBox);
+	}
+
+	@Override
+	public void resize(MinecraftClient client, int width, int height) {
+		if (chunkGrid != null) {
+			chunkGrid.onResize(width, height - HEADER_HEIGHT - FOOTER_HEIGHT);
+		}
+		super.resize(client, width, height);
 	}
 
 	@Override
@@ -113,7 +120,7 @@ public class ChunkDebugScreen extends Screen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 
-		chunkGrid.render(0, HEADER_HEIGHT, this.width, this.height - HEADER_HEIGHT - FOOTER_HEIGHT);
+		chunkGrid.render(0, HEADER_HEIGHT, this.width, this.height - HEADER_HEIGHT - FOOTER_HEIGHT, false);
 
 		RenderSystem.disableTexture();
 		Tessellator tessellator = Tessellator.getInstance();

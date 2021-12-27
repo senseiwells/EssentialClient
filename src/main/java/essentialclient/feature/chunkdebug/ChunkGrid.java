@@ -1,6 +1,7 @@
 package essentialclient.feature.chunkdebug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import essentialclient.EssentialClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
@@ -24,7 +25,10 @@ public class ChunkGrid {
 	private int startY = 0;
 	private int scale = 10;
 
+	private final MinecraftClient client;
 	private final DraggablePoint cornerPoint;
+	private final Point staticCentrePoint = new Point();
+	private final Point minimapCornerPoint = new Point();
 	private final Point mouseDown = new Point();
 	private final List<String> dimensions;
 	private final Map<String, DraggablePoint> dimensionPoints = new LinkedHashMap<>() {{
@@ -39,6 +43,7 @@ public class ChunkGrid {
 	private Minimap minimapMode = Minimap.NONE;
 
 	public ChunkGrid(MinecraftClient client, int width, int height) {
+		this.client = client;
 		this.width = width;
 		this.height = height;
 		this.updateRowsAndColumns();
@@ -62,7 +67,7 @@ public class ChunkGrid {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void render(int thisX, int thisY, int width, int height) {
+	public void render(int thisX, int thisY, int width, int height, boolean isMinimap) {
 		this.width = width;
 		this.height = height;
 		this.startX = thisX;
@@ -79,8 +84,8 @@ public class ChunkGrid {
 			if (chunkData.getChunkType() == ChunkType.UNLOADED) {
 				continue;
 			}
-			int x = chunkData.getPosX() - this.cornerPoint.getX();
-			int z = chunkData.getPosZ() - this.cornerPoint.getY();
+			int x = chunkData.getPosX() - (isMinimap ? this.minimapCornerPoint.x : this.cornerPoint.getX());
+			int z = chunkData.getPosZ() - (isMinimap ? this.minimapCornerPoint.y : this.cornerPoint.getY());
 			if (x < 0 || x > this.columns || z < 0 || z > this.rows) {
 				continue;
 			}
@@ -94,11 +99,23 @@ public class ChunkGrid {
 
 		DraggablePoint selectionPoint = this.getSelectionPoint();
 		if (selectionPoint != null) {
-			this.drawSelectionBox(tessellator, bufferBuilder, thisX, thisY, selectionPoint.mainPoint);
+			Point drawingPoint = selectionPoint.mainPoint;
+			if (isMinimap) {
+				int minimapSelectionX = this.cornerPoint.getX() + selectionPoint.getX();
+				int minimapSelectionZ = this.cornerPoint.getY() + selectionPoint.getY();
+				minimapSelectionX -= this.minimapCornerPoint.x;
+				minimapSelectionZ -= this.minimapCornerPoint.y;
+				drawingPoint = new Point(minimapSelectionX, minimapSelectionZ);
+			}
+			this.drawSelectionBox(tessellator, bufferBuilder, thisX, thisY, drawingPoint);
 			this.updateSelectionInfo();
 		}
 		else {
 			this.selectionText = null;
+		}
+
+		if (!isMinimap) {
+			this.updateStaticCentre();
 		}
 
 		RenderSystem.enableTexture();
@@ -106,11 +123,30 @@ public class ChunkGrid {
 	}
 
 	public void renderMinimap(int width, int height) {
-		int minimapWidth = (int) (width * 0.25F);
-		int minimapHeight = (int) (height * 0.45F);
-		int minimapX = this.getCentreX();
-		int minimapY = this.getCentreZ();
-		this.render(minimapX, minimapY, minimapWidth, minimapHeight);
+		if (this.minimapMode == Minimap.NONE) {
+			return;
+		}
+		this.width = (int) (width * 0.25F);
+		this.height = (int) (height * 0.45F);
+		this.updateRowsAndColumns();
+		int minimapX = width - this.width - 20;
+		int minimapY = 10;
+		switch (this.minimapMode) {
+			case STATIC -> {
+				Point minimapCorner = this.getCornerOfCentre(this.staticCentrePoint.x, this.staticCentrePoint.y);
+				this.minimapCornerPoint.setLocation(minimapCorner);
+			}
+			case FOLLOW -> {
+				ClientPlayerEntity player = this.client.player;
+				if (player != null) {
+					this.setDimension(player.world);
+					EssentialClient.chunkNetHandler.requestChunkData(this.getDimension());
+					Point minimapCorner = this.getCornerOfCentre(player.chunkX, player.chunkZ);
+					this.minimapCornerPoint.setLocation(minimapCorner);
+				}
+			}
+		}
+		this.render(minimapX, minimapY, this.width, this.height, true);
 	}
 
 	private void drawBox(BufferBuilder bufferBuilder, int cellX, int cellY, int x, int y, int colour) {
@@ -144,23 +180,23 @@ public class ChunkGrid {
 
 		int x = selectionPoint.x;
 		int z = selectionPoint.y;
-		int scaledX = x * scale;
-		int scaledZ = z * scale;
+		int scaledX = x * this.scale;
+		int scaledZ = z * this.scale;
 		int cellX = thisX + scaledX;
 		int cellY = thisY + scaledZ;
 
-		if (cellX < thisX || cellY < thisY || cellX + scale > thisX + this.width || cellY + scale > thisY + this.height) {
+		if (cellX < thisX || cellY < thisY || cellX + this.scale > thisX + this.width || cellY + this.scale > thisY + this.height) {
 			return;
 		}
 
 		bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
 		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY + scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY + scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + scale, cellY + scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + scale, cellY + scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + scale, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + scale, cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
 		tessellator.draw();
 	}
@@ -226,6 +262,14 @@ public class ChunkGrid {
 		}
 	}
 
+	public void onResize(int newWidth, int newHeight) {
+		Point centre = this.getCentre();
+		this.width = newWidth;
+		this.height = newHeight;
+		this.updateRowsAndColumns();
+		this.setCentre(centre.x, centre.y);
+	}
+
 	public void setCentre(int x, int y) {
 		this.syncSelectionPointsWithCorner(() -> this.cornerPoint.setLocation(this.getCornerOfCentre(x, y)));
 	}
@@ -279,6 +323,10 @@ public class ChunkGrid {
 			}
 			this.selectionText = selectionText;
 		}
+	}
+
+	private void updateStaticCentre() {
+		this.staticCentrePoint.setLocation(this.getCentre());
 	}
 
 	public int getCentreX() {
