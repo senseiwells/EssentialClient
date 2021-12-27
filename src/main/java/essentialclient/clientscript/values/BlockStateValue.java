@@ -20,15 +20,15 @@ public class BlockStateValue extends Value<BlockState> {
 	}
 
 	public Value<?> getBlockX() {
-		return this.blockPos == null ? new NullValue() : new NumberValue(this.blockPos.getX());
+		return this.blockPos == null ? NullValue.NULL : new NumberValue(this.blockPos.getX());
 	}
 
 	public Value<?> getBlockY() {
-		return this.blockPos == null ? new NullValue() : new NumberValue(this.blockPos.getY());
+		return this.blockPos == null ? NullValue.NULL : new NumberValue(this.blockPos.getY());
 	}
 
 	public Value<?> getBlockZ() {
-		return this.blockPos == null ? new NullValue() : new NumberValue(this.blockPos.getZ());
+		return this.blockPos == null ? NullValue.NULL : new NumberValue(this.blockPos.getZ());
 	}
 
 	@Override

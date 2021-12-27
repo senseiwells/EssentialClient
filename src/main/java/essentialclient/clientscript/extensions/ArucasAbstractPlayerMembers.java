@@ -40,7 +40,7 @@ public class ArucasAbstractPlayerMembers implements IArucasValueExtension {
 	private final Set<MemberFunction> abstractPlayerFunctions = Set.of(
 		new MemberFunction("getCurrentSlot", (context, function) -> new NumberValue(this.getOtherPlayer(context, function).inventory.selectedSlot)),
 		new MemberFunction("getHeldItem", (context, function) -> new ItemStackValue(this.getOtherPlayer(context, function).inventory.getMainHandStack())),
-		new MemberFunction("isInventoryFull", (context, function) -> new BooleanValue(this.getOtherPlayer(context, function).inventory.getEmptySlot() == -1)),
+		new MemberFunction("isInventoryFull", (context, function) -> BooleanValue.of(this.getOtherPlayer(context, function).inventory.getEmptySlot() == -1)),
 		new MemberFunction("getPlayerName", (context, function) -> new StringValue(this.getOtherPlayer(context, function).getEntityName())),
 		new MemberFunction("getGamemode", this::getGamemode),
 		new MemberFunction("getTotalSlots", this::getTotalSlots),
@@ -55,7 +55,7 @@ public class ArucasAbstractPlayerMembers implements IArucasValueExtension {
 		AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
 		PlayerListEntry playerInfo = ArucasMinecraftExtension.getNetworkHandler().getPlayerListEntry(playerEntity.getUuid());
 		if (playerInfo == null || playerInfo.getGameMode() == null) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		return new StringValue(playerInfo.getGameMode().getName());
 	}
@@ -84,7 +84,7 @@ public class ArucasAbstractPlayerMembers implements IArucasValueExtension {
 				return new NumberValue(slot.id);
 			}
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getAllSlotsFor(Context context, MemberFunction function) throws CodeError {
@@ -103,10 +103,10 @@ public class ArucasAbstractPlayerMembers implements IArucasValueExtension {
 		AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
 		PlayerAbilities playerAbilities = playerEntity.abilities;
 		ArucasValueMap map = new ArucasValueMap() {{
-			put(new StringValue("invulnerable"), new BooleanValue(playerAbilities.invulnerable));
-			put(new StringValue("canFly"), new BooleanValue(playerAbilities.allowFlying));
-			put(new StringValue("canBreakBlocks"), new BooleanValue(playerAbilities.allowModifyWorld));
-			put(new StringValue("isCreative"), new BooleanValue(playerAbilities.creativeMode));
+			put(new StringValue("invulnerable"), BooleanValue.of(playerAbilities.invulnerable));
+			put(new StringValue("canFly"), BooleanValue.of(playerAbilities.allowFlying));
+			put(new StringValue("canBreakBlocks"), BooleanValue.of(playerAbilities.allowModifyWorld));
+			put(new StringValue("isCreative"), BooleanValue.of(playerAbilities.creativeMode));
 			put(new StringValue("walkSpeed"), new NumberValue(playerAbilities.getWalkSpeed()));
 			put(new StringValue("flySpeed"), new NumberValue(playerAbilities.getFlySpeed()));
 		}};

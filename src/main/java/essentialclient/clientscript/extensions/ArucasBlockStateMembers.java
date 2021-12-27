@@ -38,8 +38,8 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 	private final Set<MemberFunction> blockStateFunctions = Set.of(
 		new MemberFunction("getId", (context, function) -> new StringValue(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath())),
 		new MemberFunction("getBlockId", List.of(), (context, function) -> new StringValue(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath()), true),
-		new MemberFunction("isBlockEntity", (context, function) -> new BooleanValue(this.getBlockState(context, function).getBlock() instanceof BlockEntityProvider)),
-		new MemberFunction("isTransparent", (context, function) -> new BooleanValue(!this.getBlockState(context, function).isOpaque())),
+		new MemberFunction("isBlockEntity", (context, function) -> BooleanValue.of(this.getBlockState(context, function).getBlock() instanceof BlockEntityProvider)),
+		new MemberFunction("isTransparent", (context, function) -> BooleanValue.of(!this.getBlockState(context, function).isOpaque())),
 		new MemberFunction("asItemStack", (context, function) -> new ItemStackValue(this.getBlockState(context, function).getBlock().asItem().getDefaultStack())),
 		new MemberFunction("getBlastResistance", (context, function) -> new NumberValue(this.getBlockState(context, function).getBlock().getBlastResistance())),
 		new MemberFunction("getBlockProperties", this::getBlockProperties),
@@ -62,7 +62,7 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 				mapValue = new NumberValue(value.doubleValue());
 			}
 			else if (comparable instanceof Boolean value) {
-				mapValue = new BooleanValue(value);
+				mapValue = BooleanValue.of(value);
 			}
 			else {
 				mapValue = new StringValue(comparable.toString());
@@ -74,7 +74,7 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 
 	private Value<?> hasBlockPosition(Context context, MemberFunction function) throws CodeError {
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
-		return new BooleanValue(blockStateValue.getBlockX().value != null);
+		return BooleanValue.of(blockStateValue.getBlockX().value != null);
 	}
 
 	private Value<?> getBlockX(Context context, MemberFunction function) throws CodeError {

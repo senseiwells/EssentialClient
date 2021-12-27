@@ -77,7 +77,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		new MemberFunction("clearChat", this::clearChat),
 		new MemberFunction("getLatestChatMessage", this::getLatestChatMessage),
 		new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand),
-		new MemberFunction("isInSinglePlayer", (context, function) -> new BooleanValue(this.getClient(context, function).isInSingleplayer())),
+		new MemberFunction("isInSinglePlayer", (context, function) -> BooleanValue.of(this.getClient(context, function).isInSingleplayer())),
 		new MemberFunction("getServerName", this::getServerName),
 		new MemberFunction("getPing", this::getPing),
 		new MemberFunction("getScriptsPath", (context, function) -> new StringValue(ClientScript.getDir().toString())),
@@ -112,7 +112,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> pressKey(Context context, MemberFunction function) throws CodeError {
@@ -127,7 +127,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 			int scanCode = GLFW.glfwGetKeyScancode(keyCode);
 			client.keyboard.onKey(handler, keyCode, scanCode, 1, 0);
 		});
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> releaseKey(Context context, MemberFunction function) throws CodeError {
@@ -142,7 +142,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 			int scanCode = GLFW.glfwGetKeyScancode(keyCode);
 			client.keyboard.onKey(handler, keyCode, scanCode, 0, 0);
 		});
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> holdKey(Context context, MemberFunction function) throws CodeError {
@@ -165,18 +165,18 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 			}
 			client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 0, 0));
 		});
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> clearChat(Context context, MemberFunction function) throws CodeError {
 		this.getClient(context, function).inGameHud.getChatHud().clear(true);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getLatestChatMessage(Context context, MemberFunction function) throws CodeError {
 		final ChatHudLine<?>[] chat = ((ChatHudAccessor) this.getClient(context, function).inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
 		if (chat.length == 0) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		return new StringValue(((Text) chat[0].getText()).getString());
 	}
@@ -222,7 +222,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		MinecraftClient client = this.getClient(context, function);
 		ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 		client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getServerName(Context context, MemberFunction function) throws CodeError {
@@ -259,7 +259,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		catch (Exception e) {
 			throw new RuntimeError("Cannot set that value", function.syntaxPosition, context);
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> resetEssentialClientRule(Context context, MemberFunction function) throws CodeError {
@@ -272,7 +272,7 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		clientRule.resetToDefault();
 		ClientRuleHelper.writeSaveFile();
 		clientRule.run();
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getEssentialClientRuleValue(Context context, MemberFunction function) throws CodeError {
@@ -307,13 +307,13 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		if (!event.removeFunction(eventId)) {
 			throw new RuntimeError("Invalid eventId", function.syntaxPosition, context);
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> removeAllGameEvents(Context context, MemberFunction function) throws CodeError {
 		this.getClient(context, function);
 		MinecraftScriptEvents.clearEventFunctions();
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> itemFromString(Context context, MemberFunction function) throws CodeError {
@@ -362,14 +362,14 @@ public class ArucasMinecraftClientMembers implements IArucasValueExtension {
 		Double pitch = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 		SoundEvent soundEvent = Registry.SOUND_EVENT.get(new Identifier(stringValue.value));
 		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> renderFloatingItem(Context context, MemberFunction function) throws CodeError {
 		MinecraftClient client = this.getClient(context, function);
 		ItemStack itemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
 		client.gameRenderer.showFloatingItem(itemStack);
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> stripFormatting(Context context, MemberFunction function) throws CodeError {

@@ -172,19 +172,19 @@ public class ClientScript {
 		this.thread.start();
 	}
 
-	public synchronized void runAsyncFunctionInContext(Context context, ThrowableConsumer<Context> consumer) {
+	public synchronized Thread runAsyncFunctionInContext(Context context, ThrowableConsumer<Context> consumer) {
 		if (!this.isScriptRunning()) {
-			return;
+			return null;
 		}
 
-		this.runAsyncFunction(context, consumer);
+		return this.runAsyncFunction(context, consumer);
 	}
 	
-	public synchronized void runBranchAsyncFunction(ThrowableConsumer<Context> consumer) {
-		this.runAsyncFunctionInContext(this.context.createBranch(), consumer);
+	public synchronized Thread runBranchAsyncFunction(ThrowableConsumer<Context> consumer) {
+		return this.runAsyncFunctionInContext(this.context.createBranch(), consumer);
 	}
 	
-	private synchronized void runAsyncFunction(final Context context, ThrowableConsumer<Context> consumer) {
+	private synchronized Thread runAsyncFunction(final Context context, ThrowableConsumer<Context> consumer) {
 		Thread thread = new Thread(this.arucasThreadGroup, () -> {
 			try {
 				consumer.accept(context);
@@ -204,6 +204,7 @@ public class ClientScript {
 		}, "Client Runnable Thread");
 		thread.setDaemon(true);
 		thread.start();
+		return thread;
 	}
 
 	private void tryError(CodeError error) {
