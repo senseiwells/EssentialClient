@@ -12,4 +12,9 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 	public Value<MinecraftClient> copy() {
 		return this;
 	}
+
+	@Override
+	public String toString() {
+		return "MinecraftClient";
+	}
 }

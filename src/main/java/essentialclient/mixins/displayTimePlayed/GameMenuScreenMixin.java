@@ -18,19 +18,19 @@ import java.time.LocalDateTime;
 @Mixin(GameMenuScreen.class)
 public class GameMenuScreenMixin extends Screen {
 
-    protected GameMenuScreenMixin(Text title) {
-        super(title);
-    }
+	protected GameMenuScreenMixin(Text title) {
+		super(title);
+	}
 
-    @Inject(method = "render", at = @At("TAIL"))
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta, CallbackInfo callbackInfo) {
+	@Inject(method = "render", at = @At("TAIL"))
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta, CallbackInfo callbackInfo) {
 
-        LocalDateTime currentTime = LocalDateTime.now();
-        Duration duration = Duration.between(EssentialClient.startTime, currentTime);
+		LocalDateTime currentTime = LocalDateTime.now();
+		Duration duration = Duration.between(EssentialClient.startTime, currentTime);
 
-        String draw = DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
-        if (ClientRules.DISPLAY_TIME_PLAYED.getValue()) {
-            drawStringWithShadow(matrixStack, this.textRenderer, draw, 8, 8, 16777215);
-        }
-    }
+		String draw = DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
+		if (ClientRules.DISPLAY_TIME_PLAYED.getValue()) {
+			drawStringWithShadow(matrixStack, this.textRenderer, draw, 8, 8, 16777215);
+		}
+	}
 }

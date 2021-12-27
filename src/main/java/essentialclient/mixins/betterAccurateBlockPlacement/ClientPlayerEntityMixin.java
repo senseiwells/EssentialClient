@@ -2,6 +2,7 @@ package essentialclient.mixins.betterAccurateBlockPlacement;
 
 import com.mojang.authlib.GameProfile;
 import essentialclient.config.clientrule.ClientRules;
+import essentialclient.feature.BetterAccurateBlockPlacement;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,23 +25,45 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	private void onSendPacketVehicle(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
+			return;
 		}
 		Vec3d vec3d = this.getVelocity();
-		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(vec3d.x, -999, vec3d.y, this.isOnGround()));
+		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.Full(
+			vec3d.x,
+			-999,
+			vec3d.y,
+			BetterAccurateBlockPlacement.fakeYaw,
+			BetterAccurateBlockPlacement.fakePitch,
+			this.isOnGround()
+		));
 	}
 
 	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 3), require = 0)
 	private void onSendPacketAll(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
-		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
-			clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(this.getX(), this.getY(), this.getZ(), this.isOnGround()));
+		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
+			clientPlayNetworkHandler.sendPacket(packet);
+			return;
 		}
-		clientPlayNetworkHandler.sendPacket(packet);
+		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.Full(
+			this.getX(),
+			this.getY(),
+			this.getZ(),
+			BetterAccurateBlockPlacement.fakeYaw,
+			BetterAccurateBlockPlacement.fakePitch,
+			this.isOnGround()
+		));
 	}
 
 	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 5), require = 0)
 	private void onSendPacketLook(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
+			return;
 		}
+		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
+			BetterAccurateBlockPlacement.fakeYaw,
+			BetterAccurateBlockPlacement.fakePitch,
+			this.isOnGround()
+		));
 	}
 }

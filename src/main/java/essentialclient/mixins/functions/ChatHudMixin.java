@@ -13,12 +13,12 @@ import java.util.List;
 @Mixin(ChatHud.class)
 public class ChatHudMixin implements ChatHudAccessor {
 
-    @Final
-    @Shadow
-    private List<ChatHudLine<Text>> messages;
+	@Final
+	@Shadow
+	private List<ChatHudLine<Text>> messages;
 
-    @Override
-    public List<ChatHudLine<Text>> getMessages() {
-           return messages;
-    }
+	@Override
+	public List<ChatHudLine<Text>> getMessages() {
+		return messages;
+	}
 }

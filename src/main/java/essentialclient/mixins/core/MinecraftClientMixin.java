@@ -1,6 +1,8 @@
 package essentialclient.mixins.core;
 
 import essentialclient.clientscript.ClientScript;
+import essentialclient.feature.EssentialCarpetClient;
+import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,27 +16,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin implements MinecraftClientInvoker {
 
-    @Shadow
-    public ClientPlayerEntity player;
+	@Shadow
+	public ClientPlayerEntity player;
 
-    @Shadow
-    private void doAttack() { }
+	@Shadow
+	private void doAttack() { }
 
-    @Shadow
-    private void doItemUse() { }
+	@Shadow
+	private void doItemUse() { }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
-    private void onLeaveWorld(Screen screen, CallbackInfo ci) {
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
+	private void onLeaveWorld(Screen screen, CallbackInfo ci) {
 		ClientScript.getInstance().stopScript();
-    }
 
-    @Override
-    public void rightClickMouseAccessor() {
-        this.doItemUse();
-    }
+		EssentialCarpetClient.serverIsCarpet = false;
+		EssentialCarpetClient.carpetRules.clear();
 
-    @Override
-    public void leftClickMouseAccessor() {
-        this.doAttack();
-    }
+		ChunkClientNetworkHandler.chunkDebugAvailable = false;
+	}
+
+	@Override
+	public void rightClickMouseAccessor() {
+		this.doItemUse();
+	}
+
+	@Override
+	public void leftClickMouseAccessor() {
+		this.doAttack();
+	}
 }

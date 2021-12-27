@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "id": "essential-client",
-  "version": "1.1.1",
+  "version": "1.1.2",
 
   "name": "Essential Client",
   "description": "A client mod that provides utilities and client support for carpet rules",
   "authors": [
     "DeadlyMC",
     "Gnembon",
-    "Sensei" ,
+    "Sensei",
     "SuperSanta",
     "Crec0",
     "Pixeils",
@@ -42,6 +42,6 @@
 
   },
   "suggests": {
-    "arucas": "1.1.0"
+    "arucas": "1.1.2"
   }
 }

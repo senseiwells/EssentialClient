@@ -1,8 +1,12 @@
 package essentialclient.config.clientrule;
 
 public class BooleanClientRule extends ClientRule<Boolean> {
+	public BooleanClientRule(String name, String description, boolean defaultValue, Runnable runnable, boolean putInMap) {
+		super(name, Type.BOOLEAN, description, defaultValue, runnable, putInMap);
+	}
+
 	public BooleanClientRule(String name, String description, boolean defaultValue, Runnable runnable) {
-		super(name, Type.BOOLEAN, description, defaultValue, runnable);
+		this(name, description, defaultValue, runnable, true);
 	}
 
 	public BooleanClientRule(String name, String description, boolean defaultValue) {

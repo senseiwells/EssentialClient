@@ -6,9 +6,10 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.registry.Registry;
 
 public class EntityValue<T extends Entity> extends Value<T> {
-	public EntityValue(T value) {
+	protected EntityValue(T value) {
 		super(value);
 	}
 
@@ -30,6 +31,11 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			}
 			return new EntityValue<>(entity);
 		}
-		return new NullValue();
+		return NullValue.NULL;
+	}
+
+	@Override
+	public String toString() {
+		return "Entity{id=%s}".formatted(Registry.ENTITY_TYPE.getId(this.value.getType()).getPath());
 	}
 }

@@ -1,11 +1,7 @@
 {
   "required": true,
   "package": "essentialclient.mixins",
-  "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "carpet.CustomPayloadC2SPacketAccessor",
-    "carpet.ServerPlayNetworkHandlerMixin"
-  ],
+  "compatibilityLevel": "JAVA_16",
   "client": [
     "autoWalk.KeyboardInputMixin",
     "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
@@ -13,7 +9,8 @@
     "betterAccurateBlockPlacement.ItemUsageContextMixin",
     "betterMusic.MusicTrackerMixin",
     "betterPingDisplay.PlayerListHudMixin",
-    "carpet.ClientPlayNetworkHandlerMixin",
+    "carpet.ClientNetworkHandlerMixin",
+    "chunkDebug.MinecraftClientMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",
     "clientNick.InGameHudMixin",
     "clientNick.PlayerEntityRendererMixin",
@@ -37,12 +34,13 @@
     "functions.ClientPlayerEntityMixin",
     "functions.ClientPlayerInteractionManagerMixin",
     "functions.ClientPlayNetworkHandlerMixin",
+    "functions.FishingBobberEntityMixin",
     "functions.KeyboardMixin",
     "functions.LivingEntityMixin",
     "functions.MinecraftClientMixin",
+    "functions.NbtListMixin",
     "functions.PlayerEntityMixin",
     "keyboardRebinds.KeyboardMixin",
-    "missingTools.PickaxeItemMixin",
     "mouseScrollRules.MouseMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
     "permanentChatHud.ChatHudMixin",
@@ -57,7 +55,10 @@
     "stackableShulkers.ScreenHandlerMixin",
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
+    "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
     "unlockAllRecipes.ClientPlayNetworkHandlerMixin",
+    "unlockAllRecipes.GhostSlotClearInvoker",
+    "unlockAllRecipes.RecipeBookWidgetMixin",
     "waterFovMultiplier.GameRendererMixin"
   ],
   "injectors": {

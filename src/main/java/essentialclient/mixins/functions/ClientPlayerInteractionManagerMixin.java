@@ -32,44 +32,40 @@ import java.util.List;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
-    @Final
-    @Shadow
-    private MinecraftClient client;
+	@Final
+	@Shadow
+	private MinecraftClient client;
 
-    @Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V", shift = At.Shift.BEFORE))
-    private void onBreakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (this.client.world == null) {
-            return;
-        }
-        MinecraftScriptEvents.ON_BLOCK_BROKEN.run(List.of(
-            new BlockStateValue(this.client.world.getBlockState(pos)),
-            new NumberValue(pos.getX()),
-            new NumberValue(pos.getY()),
-            new NumberValue(pos.getZ())
-        ));
-    }
+	@Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V", shift = At.Shift.BEFORE))
+	private void onBreakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+		if (this.client.world == null) {
+			return;
+		}
+		MinecraftScriptEvents.ON_BLOCK_BROKEN.run(List.of(new BlockStateValue(this.client.world.getBlockState(pos), pos)));
+	}
 
-    @Inject(method = "clickSlot", at = @At("HEAD"))
-    private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-        MinecraftScriptEvents.ON_CLICK_SLOT.run(new NumberValue(slotId));
-    }
+	@Inject(method = "clickSlot", at = @At("HEAD"))
+	private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
+		MinecraftScriptEvents.ON_CLICK_SLOT.run(new NumberValue(slotId));
+	}
 
-    @Redirect(method = "interactItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;"), require = 0)
-    private TypedActionResult<ItemStack> onInteractItem(ItemStack itemStack, World world, PlayerEntity user, Hand hand) {
-        MinecraftScriptEvents.ON_INTERACT_ITEM.run(new ItemStackValue(itemStack));
-        return itemStack.use(world, user, hand);
-    }
+	@Redirect(method = "interactItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;"), require = 0)
+	private TypedActionResult<ItemStack> onInteractItem(ItemStack itemStack, World world, PlayerEntity user, Hand hand) {
+		MinecraftScriptEvents.ON_INTERACT_ITEM.run(new ItemStackValue(itemStack));
+		return itemStack.use(world, user, hand);
+	}
 
-    @Inject(method = "interactBlock", at = @At("RETURN"))
-    private void onInteractBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
-        ActionResult result = cir.getReturnValue();
-        if (result.isAccepted()) {
-            MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockStateValue(world.getBlockState(hitResult.getBlockPos())));
-        }
-    }
+	@Inject(method = "interactBlock", at = @At("RETURN"))
+	private void onInteractBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
+		ActionResult result = cir.getReturnValue();
+		if (result.isAccepted()) {
+			BlockPos pos = hitResult.getBlockPos();
+			MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockStateValue(world.getBlockState(pos), pos));
+		}
+	}
 
-    @Inject(method = "interactEntity", at = @At("TAIL"))
-    private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-        MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.getEntityValue(entity));
-    }
+	@Inject(method = "interactEntity", at = @At("TAIL"))
+	private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+		MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.getEntityValue(entity));
+	}
 }

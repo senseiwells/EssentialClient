@@ -20,6 +20,7 @@ public class ClientRules {
 	public static BooleanClientRule
 		BETTER_ACCURATE_BLOCK_PLACEMENT = new BooleanClientRule("betterAccurateBlockPlacement", "This is the same as accurate block placement for tweakeroo but handled all client side, see controls..."),
 		BETTER_PING_DISPLAY = new BooleanClientRule("betterPingDisplay", "This displays the real ping in the tab list"),
+		CHUNK_DEBUG_MINIMAP_BACKGROUND = new BooleanClientRule("chunkDebugMinimapBackground", "This renders a box showing the bounds of the chunk debug minimap", true),
 		COMMAND_ALTERNATE_DIMENSION = new BooleanClientRule("commandAlternateDimension", "This command calculates the coordinates of the alternate dimension", ClientRuleHelper::refreshCommand),
 		COMMAND_CLIENT_NICK = new BooleanClientRule("commandClientNick", "This allows you to rename player names on the client", ClientRuleHelper::refreshCommand),
 		COMMAND_MUSIC = new BooleanClientRule("commandMusic", "This command allows you to manipulate the current music", ClientRuleHelper::refreshCommand),
@@ -43,7 +44,6 @@ public class ClientRules {
 		ESSENTIAL_CLIENT_BUTTON = new BooleanClientRule("essentialClientButton", "This renders the Essential Client Menu on the main menu screen, and pause screen", true),
 		HIGHLIGHT_LAVA_SOURCES = new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", ClientRuleHelper::refreshWorld),
 		INCREASE_SPECTATOR_SCROLL_SPEED = new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator"),
-		MISSING_TOOLS = new BooleanClientRule("missingTools", "Adds client functionality to missingTools from Carpet for the client"),
 		PERMANENT_CHAT_HUD = new BooleanClientRule("permanentChatHud", "This prevents the chat from being cleared, also applies when chaning worlds/servers"),
 		QUICK_LOCK_RECIPE = new BooleanClientRule("quickLockRecipe", "If you middle click a recipe it will put the name of the item in the search bar stopping you from craftin the wrong recipe"),
 		REMOVE_WARN_RECEIVED_PASSENGERS = new BooleanClientRule("removeWarnReceivedPassengers", "This removes the 'Received passengers for unknown entity' warning on the client"),

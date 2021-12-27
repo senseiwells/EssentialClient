@@ -2,14 +2,13 @@ package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.AbstractPlayerValue;
 import essentialclient.clientscript.values.ItemStackValue;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.ArucasValueMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -20,11 +19,17 @@ import net.minecraft.screen.slot.Slot;
 
 import java.util.Set;
 
-public class ArucasAbstractPlayerMembers implements IArucasExtension {
+public class ArucasAbstractPlayerMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.abstractPlayerFunctions;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Class<AbstractPlayerValue> getValueType() {
+		return AbstractPlayerValue.class;
 	}
 
 	@Override
@@ -32,10 +37,10 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 		return "AbstractPlayerMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> abstractPlayerFunctions = Set.of(
+	private final Set<MemberFunction> abstractPlayerFunctions = Set.of(
 		new MemberFunction("getCurrentSlot", (context, function) -> new NumberValue(this.getOtherPlayer(context, function).getInventory().selectedSlot)),
 		new MemberFunction("getHeldItem", (context, function) -> new ItemStackValue(this.getOtherPlayer(context, function).getInventory().getMainHandStack())),
-		new MemberFunction("isInventoryFull", (context, function) -> new BooleanValue(this.getOtherPlayer(context, function).getInventory().getEmptySlot() == -1)),
+		new MemberFunction("isInventoryFull", (context, function) -> BooleanValue.of(this.getOtherPlayer(context, function).getInventory().getEmptySlot() == -1)),
 		new MemberFunction("getPlayerName", (context, function) -> new StringValue(this.getOtherPlayer(context, function).getEntityName())),
 		new MemberFunction("getGamemode", this::getGamemode),
 		new MemberFunction("getTotalSlots", this::getTotalSlots),
@@ -50,7 +55,7 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 		AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
 		PlayerListEntry playerInfo = ArucasMinecraftExtension.getNetworkHandler().getPlayerListEntry(playerEntity.getUuid());
 		if (playerInfo == null || playerInfo.getGameMode() == null) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		return new StringValue(playerInfo.getGameMode().getName());
 	}
@@ -79,7 +84,7 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 				return new NumberValue(slot.id);
 			}
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getAllSlotsFor(Context context, MemberFunction function) throws CodeError {
@@ -98,10 +103,10 @@ public class ArucasAbstractPlayerMembers implements IArucasExtension {
 		AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
 		PlayerAbilities playerAbilities = playerEntity.getAbilities();
 		ArucasValueMap map = new ArucasValueMap() {{
-			put(new StringValue("invulnerable"), new BooleanValue(playerAbilities.invulnerable));
-			put(new StringValue("canFly"), new BooleanValue(playerAbilities.allowFlying));
-			put(new StringValue("canBreakBlocks"), new BooleanValue(playerAbilities.allowModifyWorld));
-			put(new StringValue("isCreative"), new BooleanValue(playerAbilities.creativeMode));
+			put(new StringValue("invulnerable"), BooleanValue.of(playerAbilities.invulnerable));
+			put(new StringValue("canFly"), BooleanValue.of(playerAbilities.allowFlying));
+			put(new StringValue("canBreakBlocks"), BooleanValue.of(playerAbilities.allowModifyWorld));
+			put(new StringValue("isCreative"), BooleanValue.of(playerAbilities.creativeMode));
 			put(new StringValue("walkSpeed"), new NumberValue(playerAbilities.getWalkSpeed()));
 			put(new StringValue("flySpeed"), new NumberValue(playerAbilities.getFlySpeed()));
 		}};

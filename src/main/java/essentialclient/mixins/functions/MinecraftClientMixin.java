@@ -21,41 +21,41 @@ import javax.annotation.Nullable;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-    @Shadow
-    @Nullable
-    public ClientPlayerEntity player;
+	@Shadow
+	@Nullable
+	public ClientPlayerEntity player;
 
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void onTick(CallbackInfo ci) {
-        MinecraftScriptEvents.ON_CLIENT_TICK.run();
-    }
+	@Inject(method = "tick", at = @At("TAIL"))
+	private void onTick(CallbackInfo ci) {
+		MinecraftScriptEvents.ON_CLIENT_TICK.run();
+	}
 
-    @Inject(method = "doAttack", at = @At("HEAD"))
-    private void onAttack(CallbackInfo ci) {
-        MinecraftScriptEvents.ON_ATTACK.run();
-    }
+	@Inject(method = "doAttack", at = @At("HEAD"))
+	private void onAttack(CallbackInfo ci) {
+		MinecraftScriptEvents.ON_ATTACK.run();
+	}
 
-    @Inject(method = "doItemUse", at = @At("HEAD"))
-    private void onUse(CallbackInfo ci) {
-        MinecraftScriptEvents.ON_USE.run();
-    }
+	@Inject(method = "doItemUse", at = @At("HEAD"))
+	private void onUse(CallbackInfo ci) {
+		MinecraftScriptEvents.ON_USE.run();
+	}
 
-    @Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD )
-    private void onPickBlock(CallbackInfo ci, boolean bl, BlockEntity blockEntity, ItemStack itemStack12) {
-        MinecraftScriptEvents.ON_PICK_BLOCK.run(new ItemStackValue(itemStack12));
-    }
+	@Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD )
+	private void onPickBlock(CallbackInfo ci, boolean bl, BlockEntity blockEntity, ItemStack itemStack12) {
+		MinecraftScriptEvents.ON_PICK_BLOCK.run(new ItemStackValue(itemStack12));
+	}
 
-    @Inject(method = "joinWorld", at = @At("TAIL"))
-    private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
-        if (world != null) {
-            MinecraftScriptEvents.ON_DIMENSION_CHANGE.run(new WorldValue(world));
-        }
-    }
+	@Inject(method = "joinWorld", at = @At("TAIL"))
+	private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
+		if (world != null) {
+			MinecraftScriptEvents.ON_DIMENSION_CHANGE.run(new WorldValue(world));
+		}
+	}
 
-    @Inject(method = "setScreen", at = @At("HEAD"))
-    private void onOpenScreen(Screen screen, CallbackInfo ci) {
-        if (screen != null) {
-            MinecraftScriptEvents.ON_OPEN_SCREEN.run(new ScreenValue(screen));
-        }
-    }
+	@Inject(method = "setScreen", at = @At("HEAD"))
+	private void onOpenScreen(Screen screen, CallbackInfo ci) {
+		if (screen != null) {
+			MinecraftScriptEvents.ON_OPEN_SCREEN.run(new ScreenValue(screen));
+		}
+	}
 }

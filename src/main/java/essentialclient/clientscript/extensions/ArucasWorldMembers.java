@@ -6,13 +6,12 @@ import essentialclient.clientscript.values.OtherPlayerValue;
 import essentialclient.clientscript.values.WorldValue;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.RenderHelper;
-import me.senseiwells.arucas.api.IArucasExtension;
+import me.senseiwells.arucas.api.IArucasValueExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasValueList;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -31,11 +30,16 @@ import net.minecraft.util.registry.Registry;
 import java.util.List;
 import java.util.Set;
 
-public class ArucasWorldMembers implements IArucasExtension {
+public class ArucasWorldMembers implements IArucasValueExtension {
 
 	@Override
-	public Set<? extends AbstractBuiltInFunction<?>> getDefinedFunctions() {
+	public Set<MemberFunction> getDefinedFunctions() {
 		return this.worldFunctions;
+	}
+
+	@Override
+	public Class<WorldValue> getValueType() {
+		return WorldValue.class;
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		return "WorldMemberFunctions";
 	}
 
-	private final Set<? extends AbstractBuiltInFunction<?>> worldFunctions = Set.of(
+	private final Set<MemberFunction> worldFunctions = Set.of(
 		new MemberFunction("getBlockAt", List.of("x", "y", "z"), this::getBlockAt),
 		new MemberFunction("getOtherPlayer", "name", this::getOtherPlayer),
 		new MemberFunction("getAllOtherPlayers", this::getAllOtherPlayers),
@@ -51,8 +55,8 @@ public class ArucasWorldMembers implements IArucasExtension {
 		new MemberFunction("getAllEntities", this::getAllEntities),
 		new MemberFunction("getEntityFromId", "id", this::getEntityFromId),
 		new MemberFunction("getDimensionName", (context, function) -> new StringValue(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
-		new MemberFunction("isRaining", (context, function) -> new BooleanValue(this.getWorld(context, function).isRaining())),
-		new MemberFunction("isThundering", (context, function) -> new BooleanValue(this.getWorld(context, function).isThundering())),
+		new MemberFunction("isRaining", (context, function) -> BooleanValue.of(this.getWorld(context, function).isRaining())),
+		new MemberFunction("isThundering", (context, function) -> BooleanValue.of(this.getWorld(context, function).isThundering())),
 		new MemberFunction("getTimeOfDay", (context, function) -> new NumberValue(this.getWorld(context, function).getTimeOfDay())),
 		new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
 		new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, true),
@@ -67,7 +71,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		NumberValue num2 = function.getParameterValueOfType(context, NumberValue.class, 2, error);
 		NumberValue num3 = function.getParameterValueOfType(context, NumberValue.class, 3, error);
 		BlockPos blockPos = new BlockPos(Math.floor(num1.value), num2.value, Math.floor(num3.value));
-		return new BlockStateValue(world.getBlockState(blockPos));
+		return new BlockStateValue(world.getBlockState(blockPos), blockPos);
 	}
 
 	private Value<?> getOtherPlayer(Context context, MemberFunction function) throws CodeError {
@@ -81,7 +85,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 				return new OtherPlayerValue(otherClientPlayerEntity);
 			}
 		}
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> getAllOtherPlayers(Context context, MemberFunction function) throws CodeError {
@@ -129,7 +133,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		double z = function.getParameterValueOfType(context, NumberValue.class, 4).value;
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		client.execute(() -> world.addParticle(defaultParticleType, x, y, z, 0, 0, 0));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	@Deprecated
@@ -142,7 +146,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		MinecraftClient client = ArucasMinecraftExtension.getClient();
 		BlockPos blockPos = new BlockPos(x, y, z);
 		client.execute(() -> world.setBlockState(blockPos, blockState));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private Value<?> spawnGhostEntity(Context context, MemberFunction function) throws CodeError {
@@ -157,7 +161,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 		Entity entity = entityValue.value;
 		Entity newEntity = entity.getType().create(world);
 		if (newEntity == null) {
-			return new NullValue();
+			return NullValue.NULL;
 		}
 		int nextId = RenderHelper.getNextEntityId();
 		newEntity.setId(nextId);
@@ -180,7 +184,7 @@ public class ArucasWorldMembers implements IArucasExtension {
 			throw new RuntimeError("No such fake entity exists", function.syntaxPosition, context);
 		}
 		EssentialUtils.getClient().execute(() -> world.removeEntity(entityId, Entity.RemovalReason.DISCARDED));
-		return new NullValue();
+		return NullValue.NULL;
 	}
 
 	private ClientWorld getWorld(Context context, MemberFunction function) throws CodeError {
