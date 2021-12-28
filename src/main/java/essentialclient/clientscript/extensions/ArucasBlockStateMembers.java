@@ -1,6 +1,5 @@
 package essentialclient.clientscript.extensions;
 
-import com.sun.jdi.FloatValue;
 import essentialclient.clientscript.values.BlockStateValue;
 import essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.arucas.api.IArucasValueExtension;
