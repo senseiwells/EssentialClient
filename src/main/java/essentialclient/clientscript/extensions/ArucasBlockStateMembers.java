@@ -1,5 +1,6 @@
 package essentialclient.clientscript.extensions;
 
+import com.sun.jdi.FloatValue;
 import essentialclient.clientscript.values.BlockStateValue;
 import essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.arucas.api.IArucasValueExtension;
@@ -12,6 +13,7 @@ import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import java.util.List;
@@ -49,8 +51,20 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		new MemberFunction("getBlockY", this::getBlockY),
 		new MemberFunction("getX", this::getBlockX),
 		new MemberFunction("getZ", this::getBlockZ),
-		new MemberFunction("getY", this::getBlockY)
+		new MemberFunction("getY", this::getBlockY),
+		new MemberFunction("isReplaceable", this::isReplaceable),
+		new MemberFunction("getHardness", this::getHardness)
 	);
+	private Value<?> isReplaceable(Context context, MemberFunction function) throws  CodeError {
+		BlockState blockState = this.getBlockState(context, function);
+		boolean replaceable = blockState.getMaterial().isReplaceable();
+		return BooleanValue.of(replaceable);
+	}
+	private Value<?> getHardness(Context context, MemberFunction function) throws  CodeError {
+		BlockState blockState = this.getBlockState(context, function);
+		float hardness = blockState.getHardness(ArucasMinecraftExtension.getWorld(), BlockPos.ORIGIN); //requires dummy inputs, why?
+		return new NumberValue(hardness);
+	}
 
 	private Value<?> getBlockProperties(Context context, MemberFunction function) throws CodeError {
 		BlockState blockState = this.getBlockState(context, function);
