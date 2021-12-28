@@ -100,7 +100,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
 		new MemberFunction("interactBlock", List.of("px", "py", "pz", "face", "bx", "by", "bz", "insideBlock"), this::interactBlock),
 		new MemberFunction("getItemForMainSlot","slot", this::getItemForMainSlot),
-		new MemberFunction("swapSlotWithHotbar","slot1", this::swapMainSlotWithHotbar),
+		new MemberFunction("swapMainSlotWithHotbar","slot1", this::swapMainSlotWithHotbar),
 		// Villager Stuff
 		new MemberFunction("tradeIndex", "index", this::tradeIndex),
 		new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
