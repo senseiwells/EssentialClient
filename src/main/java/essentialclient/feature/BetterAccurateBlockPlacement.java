@@ -18,7 +18,7 @@ public class BetterAccurateBlockPlacement {
 	public static float fakeRequestYaw = 0;
 	public static float fakeRequestPitch = 0;
 	public static boolean onRequest = false;
-	private static int count = 0;
+	public static int count = 0;
 	private static boolean wasReversePressed = false;
 	private static boolean wasIntoPressed = false;
 
@@ -34,22 +34,20 @@ public class BetterAccurateBlockPlacement {
 		if (playerEntity == null || networkHandler == null) {
 			return;
 		}
-		if (onRequest){
+		if (onRequest && count > 0){
 			networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(
 				fakeRequestYaw,
 				fakeRequestPitch,
 				playerEntity.isOnGround()
 			));
-			count++;
-			if (count == 2){//for safety
-				count = 0;
-				onRequest = false;
-				fakeRequestYaw = playerEntity.yaw;
-				fakeRequestPitch = playerEntity.pitch;
-				fakeDirection = null;
-			}
+			count--;
+		} else {
+			onRequest = false;
+			count = 0;
 		}
 		if (!onRequest && !reverseKeyBinding.isPressed() && !intoKeyBinding.isPressed()){
+			fakeRequestYaw = playerEntity.yaw;
+			fakeRequestPitch = playerEntity.pitch;
 			fakeDirection = null;
 		}
 	}
