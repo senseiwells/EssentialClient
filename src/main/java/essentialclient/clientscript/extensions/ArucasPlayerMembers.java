@@ -99,8 +99,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
 		new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
 		new MemberFunction("interactBlock", List.of("px", "py", "pz", "face", "bx", "by", "bz", "insideBlock"), this::interactBlock),
-		new MemberFunction("getItemForMainSlot","slot", this::getItemForMainSlot),
-		new MemberFunction("swapMainSlotWithHotbar","slot1", this::swapMainSlotWithHotbar),
+		new MemberFunction("swapPlayerSlotWithHotbar","slot1", this::swapPlayerSlotWithHotbar),
 		// Villager Stuff
 		new MemberFunction("tradeIndex", "index", this::tradeIndex),
 		new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
@@ -142,7 +141,6 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		if (numberValue.value < 0 || numberValue.value > 8) {
 			throw function.throwInvalidParameterError(error, context);
 		}
-		this.getPlayer(context, function).inventory.selectedSlot = numberValue.value.intValue();
 		ClientPlayerEntity player = this.getPlayer(context, function);
 		player.inventory.selectedSlot = numberValue.value.intValue();
 		ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
@@ -291,7 +289,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		});
 		return NullValue.NULL;
 	}
-	private Value<?> swapMainSlotWithHotbar(Context context, MemberFunction function) throws CodeError {
+	private Value<?> swapPlayerSlotWithHotbar(Context context, MemberFunction function) throws CodeError {
 		NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 		ClientPlayerEntity player = this.getPlayer(context, function);
 		ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
@@ -538,13 +536,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		}
 		return NullValue.NULL;
 	}
-	private Value<?> getItemForMainSlot(Context context, MemberFunction function) throws CodeError {
-		ClientPlayerEntity player = this.getPlayer(context, function);
-		int slot = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
-		if (slot < 0 || slot > player.inventory.main.size()){throw new RuntimeError("slot number is not valid", function.syntaxPosition, context); }
-		ItemStack itemStack = player.inventory.main.get(slot); //slot order might be mixed but main locates hotbar slot at first
-		return new ItemStackValue(itemStack);
-	}
+
 	private Value<?> getIndexOfTrade(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);
 		ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
