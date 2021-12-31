@@ -3,6 +3,8 @@ package essentialclient.mixins.core;
 import essentialclient.clientscript.ClientScript;
 import essentialclient.feature.EssentialCarpetClient;
 import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import essentialclient.feature.chunkdebug.ChunkDebugScreen;
+import essentialclient.feature.chunkdebug.ChunkHandler;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -33,6 +35,8 @@ public class MinecraftClientMixin implements MinecraftClientInvoker {
 		EssentialCarpetClient.carpetRules.clear();
 
 		ChunkClientNetworkHandler.chunkDebugAvailable = false;
+		ChunkHandler.clearAllChunks();
+		ChunkDebugScreen.chunkGrid = null;
 	}
 
 	@Override

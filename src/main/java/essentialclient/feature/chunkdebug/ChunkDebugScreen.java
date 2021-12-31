@@ -214,6 +214,7 @@ public class ChunkDebugScreen extends Screen {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (ClientKeybinds.OPEN_CHUNK_DEBUG.getKeyBinding().matchesKey(keyCode, scanCode)) {
 			this.onClose();
+			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}

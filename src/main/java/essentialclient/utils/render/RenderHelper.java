@@ -79,7 +79,6 @@ public class RenderHelper {
 		matrices.pop();
 	}
 
-	
 	public static List<OrderedText> wordWrap(String s, int width) {
 		s = s.replace("\r", "");
 		return MinecraftClient.getInstance().textRenderer.wrapLines(StringVisitable.plain(s), width);
