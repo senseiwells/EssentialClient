@@ -99,6 +99,7 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
 		new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
 		new MemberFunction("interactBlock", List.of("px", "py", "pz", "face", "bx", "by", "bz", "insideBlock"), this::interactBlock),
+		new MemberFunction("getBlockBreakingSpeed", "blockState", this::getBlockBreakingSpeed),
 		new MemberFunction("attackBlock", List.of("x", "y", "z", "direction"), this::attackBlock),
 		new MemberFunction("swapPlayerSlotWithHotbar","slot1", this::swapPlayerSlotWithHotbar),
 		// Villager Stuff
@@ -540,6 +541,12 @@ public class ArucasPlayerMembers implements IArucasValueExtension {
 		Direction direction = Direction.byName(function.getParameterValueOfType(context, StringValue.class, 4).value);
 		ArucasMinecraftExtension.getClient().execute(()-> interactionManager.attackBlock(new BlockPos(x,y,z), direction));
 		return NullValue.NULL;
+	}
+	private Value<?> getBlockBreakingSpeed(Context context, MemberFunction function) throws CodeError {
+		ClientPlayerEntity player = this.getPlayer(context, function);
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 1);
+		float breakingSpeed = player.getBlockBreakingSpeed(blockStateValue.value);
+		return new NumberValue(breakingSpeed);
 	}
 	private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
 		this.checkMainPlayer(context, function);

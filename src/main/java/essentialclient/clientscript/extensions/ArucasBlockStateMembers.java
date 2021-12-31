@@ -11,8 +11,11 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.registry.Registry;
 
 import java.util.List;
@@ -48,6 +51,11 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		new MemberFunction("getBlockX", this::getBlockX),
 		new MemberFunction("getBlockZ", this::getBlockZ),
 		new MemberFunction("getBlockY", this::getBlockY),
+		new MemberFunction("rotateYClockwise", this::rotateYClockwise),
+		new MemberFunction("rotateYCounterClockwise", this::rotateYCounterClockwise),
+		new MemberFunction("mirrorFrontBack", this::mirrorFrontBack),
+		new MemberFunction("mirrorLeftRight", this::mirrorLeftRight),
+		new MemberFunction("isFluid", this::isFluid),
 		new MemberFunction("getX", this::getBlockX),
 		new MemberFunction("getZ", this::getBlockZ),
 		new MemberFunction("getY", this::getBlockY),
@@ -104,7 +112,26 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
 		return blockStateValue.getBlockZ();
 	}
-
+	private Value<?> rotateYClockwise(Context context, MemberFunction function) throws CodeError{
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return new BlockStateValue(blockStateValue.value.rotate(BlockRotation.CLOCKWISE_90));
+	}
+	private Value<?> rotateYCounterClockwise(Context context, MemberFunction function) throws CodeError{
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return new BlockStateValue(blockStateValue.value.rotate(BlockRotation.COUNTERCLOCKWISE_90));
+	}
+	private Value<?> mirrorFrontBack(Context context, MemberFunction function) throws CodeError{
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return new BlockStateValue(blockStateValue.value.mirror(BlockMirror.FRONT_BACK));
+	}
+	private Value<?> mirrorLeftRight(Context context, MemberFunction function) throws CodeError{
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return new BlockStateValue(blockStateValue.value.mirror(BlockMirror.LEFT_RIGHT));
+	}
+	private Value<?> isFluid(Context context, MemberFunction function) throws CodeError{
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return BooleanValue.of(blockStateValue.value.getBlock() instanceof FluidDrainable);
+	}
 	private BlockState getBlockState(Context context, MemberFunction function) throws CodeError {
 		BlockState block = function.getParameterValueOfType(context, BlockStateValue.class, 0).value;
 		if (block == null) {

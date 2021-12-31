@@ -56,6 +56,7 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 		new MemberFunction("getEntityFromId", "id", this::getEntityFromId),
 		new MemberFunction("getDimensionName", (context, function) -> new StringValue(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
 		new MemberFunction("isRaining", (context, function) -> BooleanValue.of(this.getWorld(context, function).isRaining())),
+		new MemberFunction("isAir", List.of("x", "y", "z"), this::isAir),
 		new MemberFunction("isThundering", (context, function) -> BooleanValue.of(this.getWorld(context, function).isThundering())),
 		new MemberFunction("getTimeOfDay", (context, function) -> new NumberValue(this.getWorld(context, function).getTimeOfDay())),
 		new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
@@ -73,7 +74,15 @@ public class ArucasWorldMembers implements IArucasValueExtension {
 		BlockPos blockPos = new BlockPos(Math.floor(num1.value), num2.value, Math.floor(num3.value));
 		return new BlockStateValue(world.getBlockState(blockPos), blockPos);
 	}
-
+	private Value<?> isAir(Context context, MemberFunction function) throws CodeError {
+		final String error = "Position must be in range of player";
+		ClientWorld world = this.getWorld(context, function);
+		NumberValue num1 = function.getParameterValueOfType(context, NumberValue.class, 1, error);
+		NumberValue num2 = function.getParameterValueOfType(context, NumberValue.class, 2, error);
+		NumberValue num3 = function.getParameterValueOfType(context, NumberValue.class, 3, error);
+		BlockPos blockPos = new BlockPos(Math.floor(num1.value), num2.value, Math.floor(num3.value));
+		return BooleanValue.of(world.isAir(blockPos)); //not sure but minecraft do this way
+	}
 	private Value<?> getOtherPlayer(Context context, MemberFunction function) throws CodeError {
 		ClientWorld world = this.getWorld(context, function);
 		StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
