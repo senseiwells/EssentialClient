@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 public class BlockStateValue extends Value<BlockState> {
-	private final BlockPos blockPos;
+	public final BlockPos blockPos;
 
 	public BlockStateValue(BlockState block, BlockPos pos) {
 		super(block);
