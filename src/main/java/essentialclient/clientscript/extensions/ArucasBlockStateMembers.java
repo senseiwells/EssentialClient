@@ -143,6 +143,7 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		posList.add(new NumberValue(blockStateValue.blockPos.getY()));
 		posList.add(new NumberValue(blockStateValue.blockPos.getZ()));
 		return new ListValue(posList);
+	}
 	private Value<?> rotateYClockwise(Context context, MemberFunction function) throws CodeError{
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
 		return new BlockStateValue(blockStateValue.value.rotate(BlockRotation.CLOCKWISE_90));
