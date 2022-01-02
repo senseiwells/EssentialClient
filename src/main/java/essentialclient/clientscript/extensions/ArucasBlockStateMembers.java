@@ -61,6 +61,7 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		new MemberFunction("getX", this::getBlockX),
 		new MemberFunction("getZ", this::getBlockZ),
 		new MemberFunction("getY", this::getBlockY),
+		new MemberFunction("getBlockPos", this::getBlockPos),
 		new MemberFunction("isReplaceable", this::isReplaceable),
 		new MemberFunction("getHardness", this::getHardness),
 		new MemberFunction("sideCoversSmallSquare","direction", this::sideCoversSmallSquare),
@@ -135,6 +136,13 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
 		return blockStateValue.getBlockZ();
 	}
+	private Value<?> getBlockPos(Context context, MemberFunction function) throws CodeError {
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		ArucasValueList posList = new ArucasValueList();
+		posList.add(new NumberValue(blockStateValue.blockPos.getX()));
+		posList.add(new NumberValue(blockStateValue.blockPos.getY()));
+		posList.add(new NumberValue(blockStateValue.blockPos.getZ()));
+		return new ListValue(posList);
 	private Value<?> rotateYClockwise(Context context, MemberFunction function) throws CodeError{
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
 		return new BlockStateValue(blockStateValue.value.rotate(BlockRotation.CLOCKWISE_90));
