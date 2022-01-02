@@ -48,6 +48,7 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		new MemberFunction("asItemStack", (context, function) -> new ItemStackValue(this.getBlockState(context, function).getBlock().asItem().getDefaultStack())),
 		new MemberFunction("getBlastResistance", (context, function) -> new NumberValue(this.getBlockState(context, function).getBlock().getBlastResistance())),
 		new MemberFunction("getBlockProperties", this::getBlockProperties),
+		new MemberFunction("isSolidBlock", this::isSolidBlock),
 		new MemberFunction("hasBlockPosition", this::hasBlockPosition),
 		new MemberFunction("getBlockX", this::getBlockX),
 		new MemberFunction("getBlockZ", this::getBlockZ),
@@ -82,6 +83,12 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		BlockState blockState = this.getBlockState(context, function);
 		boolean replaceable = blockState.getMaterial().isReplaceable();
 		return BooleanValue.of(replaceable);
+	}
+	private Value<?> isSolidBlock(Context context, MemberFunction function) throws  CodeError {
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		BlockState blockState = blockStateValue.value;
+		boolean isSolid = blockState.isSolidBlock(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos);
+		return BooleanValue.of(isSolid);
 	}
 	private Value<?> getHardness(Context context, MemberFunction function) throws  CodeError {
 		BlockState blockState = this.getBlockState(context, function);
