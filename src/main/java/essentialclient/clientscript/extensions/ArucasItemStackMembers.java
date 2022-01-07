@@ -12,6 +12,7 @@ import me.senseiwells.arucas.utils.ArucasValueMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.BlockItem;
@@ -64,7 +65,7 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 		new MemberFunction("getCustomName", (context, function) -> new StringValue(this.getItemStack(context, function).getName().asString())),
 		new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual),
 		new MemberFunction("getNbt", this::getNbt),
-
+		new MemberFunction("getMiningSpeedMultiplier", "block", this::getMiningSpeedMultiplier),
 		new MemberFunction("setCustomName", "name", this::setCustomName),
 		new MemberFunction("setItemLore", "text", this::setLore)
 	);
@@ -73,7 +74,11 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 		ItemStack itemStack = this.getItemStack(context, function);
 		return new NumberValue(itemStack.getMaxDamage() - itemStack.getDamage());
 	}
-
+	private Value<?> getMiningSpeedMultiplier(Context context, MemberFunction function) throws CodeError {
+		ItemStack itemStack = this.getItemStack(context, function);
+		BlockState blockState = function.getParameterValueOfType(context, BlockStateValue.class, 1).value;
+		return new NumberValue(itemStack.getMiningSpeedMultiplier(blockState));
+	}
 	private Value<?> getEnchantments(Context context, MemberFunction function) throws CodeError {
 		ItemStack itemStack = this.getItemStack(context, function);
 		NbtList nbtList = itemStack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantmentNbt(itemStack) : itemStack.getEnchantments();
@@ -96,12 +101,12 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 	private Value<?> isNbtEqual(Context context, MemberFunction function) throws CodeError {
 		ItemStack itemStack = this.getItemStack(context, function);
 		ItemStack otherItemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
-		return BooleanValue.of(ItemStack.areTagsEqual(itemStack, otherItemStack));
+		return BooleanValue.of(ItemStack.areNbtEqual(itemStack, otherItemStack));
 	}
 
 	private Value<?> getNbt(Context context, MemberFunction function) throws CodeError {
 		ItemStack itemStack = this.getItemStack(context, function);
-		NbtCompound nbtCompound = itemStack.getTag();
+		NbtCompound nbtCompound = itemStack.getNbt();
 		ArucasValueMap nbtMap = NbtUtils.mapNbt(nbtCompound, 0);
 		return new MapValue(nbtMap);
 	}
@@ -123,7 +128,7 @@ public class ArucasItemStackMembers implements IArucasValueExtension {
 			}
 			textList.add(NbtString.of(Text.Serializer.toJson(textValue.value)));
 		}
-		itemStack.getOrCreateSubTag("display").put("Lore", NbtListMixin.createNbtList(textList, (byte) 8));
+		itemStack.getOrCreateSubNbt("display").put("Lore", NbtListMixin.createNbtList(textList, (byte) 8));
 
 		return new ItemStackValue(itemStack);
 	}
