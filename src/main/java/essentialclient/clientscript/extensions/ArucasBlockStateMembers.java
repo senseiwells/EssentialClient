@@ -145,7 +145,7 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 	private Value<?> isFluidSource(Context context, MemberFunction function) throws CodeError{
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
 		return BooleanValue.of(blockStateValue.value.getBlock() instanceof BubbleColumnBlock ||
-			blockStateValue.value.getFluidState().getFluid() instanceof FlowableFluid && blockStateValue.value.getFluidState().get(FlowableFluid.LEVEL) ==0 );
+			blockStateValue.value.getBlock() instanceof FluidBlock && blockStateValue.value.get(FluidBlock.LEVEL) ==0 );
 	}
 	private Value<?> hasBlockPosition(Context context, MemberFunction function) throws CodeError {
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
