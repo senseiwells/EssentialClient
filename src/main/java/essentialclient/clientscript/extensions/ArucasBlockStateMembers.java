@@ -55,6 +55,7 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 		new MemberFunction("mirrorLeftRight", this::mirrorLeftRight),
 		new MemberFunction("hasBlockPosition", this::hasBlockPosition),
 		new MemberFunction("isFluid", this::isFluid),
+		new MemberFunction("isFluidSource", this::isFluidSource),
 		new MemberFunction("getBlockX", this::getBlockX),
 		new MemberFunction("getBlockZ", this::getBlockZ),
 		new MemberFunction("getBlockY", this::getBlockY),
@@ -140,6 +141,11 @@ public class ArucasBlockStateMembers implements IArucasValueExtension {
 	private Value<?> isFluid(Context context, MemberFunction function) throws CodeError{
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
 		return BooleanValue.of(blockStateValue.value.getBlock() instanceof FluidDrainable || blockStateValue.value.getFluidState().getFluid() instanceof FlowableFluid);
+	}
+	private Value<?> isFluidSource(Context context, MemberFunction function) throws CodeError{
+		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
+		return BooleanValue.of(blockStateValue.value.getBlock() instanceof BubbleColumnBlock ||
+			blockStateValue.value.getFluidState().getFluid() instanceof FlowableFluid && blockStateValue.value.getFluidState().get(FlowableFluid.LEVEL) ==0 );
 	}
 	private Value<?> hasBlockPosition(Context context, MemberFunction function) throws CodeError {
 		BlockStateValue blockStateValue = function.getParameterValueOfType(context, BlockStateValue.class, 0);
