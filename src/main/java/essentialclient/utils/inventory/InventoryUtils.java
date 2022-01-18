@@ -90,22 +90,24 @@ public class InventoryUtils {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
 			return false;
 		}
-		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
-		while (true) {
-			selectTrade(client, merchantScreen, index);
-			if (!tradeSlot.hasStack()) {
-				break;
+		client.execute(() -> {
+			Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
+			while (true) {
+				selectTrade(client, merchantScreen, index);
+				if (!tradeSlot.hasStack()) {
+					break;
+				}
+				ItemStack tradeStack = tradeSlot.getStack().copy();
+				shiftClickSlot(client, merchantScreen, tradeSlot.id);
+				if (dropItems) {
+					dropAllItemType(client.player, tradeStack.getItem());
+				}
+				if (tradeSlot.hasStack()) {
+					break;
+				}
 			}
-			ItemStack tradeStack = tradeSlot.getStack().copy();
-			shiftClickSlot(client, merchantScreen, tradeSlot.id);
-			if (dropItems) {
-				dropAllItemType(client.player, tradeStack.getItem());
-			}
-			if (tradeSlot.hasStack()) {
-				break;
-			}
-		}
-		clearTradeInputSlot(client, merchantScreen);
+			clearTradeInputSlot(client, merchantScreen);
+		});
 		return true;
 	}
 
@@ -377,6 +379,14 @@ public class InventoryUtils {
 			return ItemStack.EMPTY;
 		}
 		return client.player.inventory.getCursorStack();
+	}
+
+	public static boolean setCursorStack(MinecraftClient client, ItemStack stack) {
+		if (client != null && client.player != null) {
+			client.player.inventory.setCursorStack(stack);
+			return true;
+		}
+		return false;
 	}
 
 	public static ItemStack getStackAtSlot(HandledScreen<?> handledScreen, int slotId) {

@@ -1,7 +1,6 @@
 package essentialclient.mixins.chunkDebug;
 
 import essentialclient.feature.chunkdebug.ChunkDebugScreen;
-import essentialclient.feature.chunkdebug.ChunkGrid;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;

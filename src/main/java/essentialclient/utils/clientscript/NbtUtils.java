@@ -1,7 +1,9 @@
 package essentialclient.utils.clientscript;
 
-import me.senseiwells.arucas.utils.ArucasValueList;
-import me.senseiwells.arucas.utils.ArucasValueMap;
+import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import net.minecraft.nbt.AbstractNbtNumber;
 import net.minecraft.nbt.NbtCompound;
@@ -9,8 +11,8 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 
 public class NbtUtils {
-	public static ArucasValueMap mapNbt(NbtCompound compound, int depth) {
-		ArucasValueMap nbtMap = new ArucasValueMap();
+	public static ArucasMap mapNbt(Context context, NbtCompound compound, int depth) throws CodeError {
+		ArucasMap nbtMap = new ArucasMap();
 		depth++;
 		if (compound == null || depth > 10) {
 			return nbtMap;
@@ -20,33 +22,33 @@ public class NbtUtils {
 			if (element == null) {
 				continue;
 			}
-			nbtMap.put(new StringValue(tagName), getElement(element, depth));
+			nbtMap.put(context, StringValue.of(tagName), getElement(context, element, depth));
 		}
 		return nbtMap;
 	}
 
-	private static ArucasValueList listNbt(NbtList list, int depth) {
-		ArucasValueList nbtList = new ArucasValueList();
+	private static ArucasList listNbt(Context context, NbtList list, int depth) throws CodeError {
+		ArucasList nbtList = new ArucasList();
 		depth++;
 		if (list == null || depth > 10) {
 			return nbtList;
 		}
 		for (NbtElement element : list) {
-			nbtList.add(getElement(element, depth));
+			nbtList.add(getElement(context, element, depth));
 		}
 		return nbtList;
 	}
 
-	private static Value<?> getElement(NbtElement element, int depth) {
+	private static Value<?> getElement(Context context, NbtElement element, int depth) throws CodeError {
 		if (element instanceof NbtCompound inCompound) {
-			return new MapValue(mapNbt(inCompound, depth));
+			return new MapValue(mapNbt(context, inCompound, depth));
 		}
 		if (element instanceof NbtList nbtList) {
-			return new ListValue(listNbt(nbtList, depth));
+			return new ListValue(listNbt(context, nbtList, depth));
 		}
 		if (element instanceof AbstractNbtNumber nbtNumber) {
-			return new NumberValue(nbtNumber.doubleValue());
+			return NumberValue.of(nbtNumber.doubleValue());
 		}
-		return new StringValue(element.asString());
+		return StringValue.of(element.asString());
 	}
 }

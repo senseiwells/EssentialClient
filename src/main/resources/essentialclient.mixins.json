@@ -66,10 +66,7 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "hotbarFade.BlockModelRenderMixin",
-    "hotbarFade.FixedColorVertexConsumerMixin",
-    "hotbarFade.InGameHudMixin",
-    "hotbarFade.ItemRendererMixin",
-    "hotbarFade.OverlayVertexConsumerMixin"
+    "daylightCycleSlowdownMutliplier.ClientPlayNetworkHandlerMixin",
+    "daylightCycleSlowdownMutliplier.ClientWorldMixin"
   ]
 }

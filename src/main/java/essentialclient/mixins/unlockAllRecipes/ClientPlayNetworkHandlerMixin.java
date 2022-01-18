@@ -37,7 +37,9 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onUnlockRecipes", at = @At("HEAD"))
 	private void onUnlock(UnlockRecipesS2CPacket packet, CallbackInfo ci) {
-		if (!ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue()) return;
+		if (!ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue()) {
+			return;
+		}
 		switch (packet.getAction()) {
 			case ADD, INIT -> {
 				for (Identifier identifier : packet.getRecipeIdsToChange()) {

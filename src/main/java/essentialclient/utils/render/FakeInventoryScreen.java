@@ -3,6 +3,7 @@ package essentialclient.utils.render;
 import essentialclient.clientscript.ClientScript;
 import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.utils.EssentialUtils;
+import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.functions.FunctionValue;
@@ -18,11 +19,13 @@ import net.minecraft.text.LiteralText;
 import java.util.List;
 
 public class FakeInventoryScreen extends GenericContainerScreen {
+	private final Context context;
 	private FunctionValue functionValue = null;
 
-	public FakeInventoryScreen(PlayerInventory inventory, String title, int rows) {
+	public FakeInventoryScreen(PlayerInventory inventory, Context screenContext, String title, int rows) {
 		super(getHandler(inventory, rows), inventory, new LiteralText(title));
 		super.init(EssentialUtils.getClient(), this.width, this.height);
+		this.context = screenContext;
 	}
 
 	public void setFunctionValue(FunctionValue functionValue) {
@@ -55,11 +58,11 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 		if (this.functionValue != null && ClientScript.getInstance().isScriptRunning()) {
 			List<Slot> slots = this.handler.slots;
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
-			ClientScript.getInstance().runBranchAsyncFunction(
+			this.context.getThreadHandler().runAsyncFunctionInContext(this.context,
 				context -> this.functionValue.call(context, List.of(
 					new ItemStackValue(stack),
-					new NumberValue(slotNumber),
-					new StringValue(action)
+					NumberValue.of(slotNumber),
+					StringValue.of(action)
 				))
 			);
 		}
@@ -76,4 +79,5 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 			default -> throw new IllegalArgumentException("Invalid number of rows");
 		};
 	}
+
 }

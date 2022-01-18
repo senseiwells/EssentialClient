@@ -56,6 +56,7 @@ public class ClientRules {
 		ANNOUNCE_AFK = new IntegerClientRule("announceAFK", "This announces when you become afk after a set amount of time (ticks)"),
 		AFK_LOGOUT = new IntegerClientRule("afkLogout", "Number of ticks until client will disconnect you from world (must be >= 200 to be active)"),
 		AUTO_WALK = new IntegerClientRule("autoWalk", "This will auto walk after you have held your key for set amount of ticks"),
+		PERMANENT_TIME = new IntegerClientRule("permanentTime", "This forces your client to set a time of day", -1),
 		INCREASE_SPECTATOR_SCROLL_SENSITIVITY = new IntegerClientRule("increaseSpectatorScrollSensitivity", "Increases the sensitivity at which you can scroll to go faster in spectator"),
 		MUSIC_INTERVAL = new IntegerClientRule("musicInterval", "The amount of ticks between each soundtrack that is played, 0 = random"),
 		SWITCH_TO_TOTEM = new IntegerClientRule("switchToTotem", "This will switch to a totem (if you have one), under a set amount of health"),
