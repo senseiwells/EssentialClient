@@ -11,6 +11,7 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -99,6 +100,7 @@ public class ItemStackValue extends Value<ItemStack> {
 				new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual),
 				new MemberFunction("getNbt", this::getNbt),
 				new MemberFunction("getTranslatedName", this::getTranslatedName),
+				new MemberFunction("getMiningSpeedMultiplier", "block", this::getMiningSpeedMultiplier),
 
 				new MemberFunction("setCustomName", "name", this::setCustomName),
 				new MemberFunction("setItemLore", "text", this::setLore)
@@ -152,6 +154,11 @@ public class ItemStackValue extends Value<ItemStack> {
 			Value<?> nameValue = function.getParameterValue(context, 1);
 			Text name = nameValue instanceof TextValue textValue ? textValue.value : new LiteralText(nameValue.getAsString(context));
 			return new ItemStackValue(itemStack.setCustomName(name));
+		}
+		private Value<?> getMiningSpeedMultiplier(Context context, MemberFunction function) throws CodeError {
+			ItemStack itemStack = this.getItemStack(context, function);
+			BlockState blockState = function.getParameterValueOfType(context, BlockValue.class, 1).value;
+			return NumberValue.of(itemStack.getMiningSpeedMultiplier(blockState));
 		}
 
 		private Value<?> setLore(Context context, MemberFunction function) throws CodeError {

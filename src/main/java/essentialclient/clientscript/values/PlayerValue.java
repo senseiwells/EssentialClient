@@ -1,6 +1,7 @@
 package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import essentialclient.feature.BetterAccurateBlockPlacement;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -19,13 +20,16 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.recipe.StonecuttingRecipe;
@@ -37,6 +41,9 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
@@ -93,7 +100,12 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("anvil", List.of("predicate1", "predicate2"), this::anvil),
 				new MemberFunction("anvilRename", List.of("name", "predicate"), this::anvilRename),
 				new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
-
+				new MemberFunction("fakeLook", List.of("yaw", "pitch", "direction", "duration"), this::fakeLook),
+				new MemberFunction("swapPlayerSlotWithHotbar","slot1", this::swapPlayerSlotWithHotbar),
+				new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
+				new MemberFunction("attackBlock", List.of("x", "y", "z", "direction"), this::attackBlock),
+				new MemberFunction("interactBlock", List.of("px", "py", "pz", "face", "bx", "by", "bz", "insideBlock"), this::interactBlock),
+				new MemberFunction("getBlockBreakingSpeed", "blockState", this::getBlockBreakingSpeed),
 				// Villager Stuff
 				new MemberFunction("tradeIndex", "index", this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
 				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade, "Use '<MerchantScreen>.getIndexOfTradeItem(itemStack)'"),
@@ -103,7 +115,20 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("getPriceForIndex", "index", this::getPriceForIndex, "Use '<MerchantScreen>.getPriceForIndex(index)'")
 			);
 		}
-
+		private Value<?> fakeLook(Context context, MemberFunction function) throws CodeError {
+			//registers fake looking request at endtick event
+			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
+			NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
+			Direction direction = Direction.byName(function.getParameterValueOfType(context, StringValue.class, 3).value);
+			int duration = (int) Math.ceil(function.getParameterValueOfType(context, NumberValue.class, 4).value);
+			duration = duration>0 ? duration : 3;
+			BetterAccurateBlockPlacement.onRequest = true;
+			BetterAccurateBlockPlacement.fakeRequestYaw = numberValue.value.floatValue();
+			BetterAccurateBlockPlacement.fakeRequestPitch = numberValue2.value.floatValue();
+			BetterAccurateBlockPlacement.fakeDirection = direction;
+			BetterAccurateBlockPlacement.count = duration;
+			return NullValue.NULL;
+		}
 		private Value<?> use(Context context, MemberFunction function) throws CodeError {
 			final String error = "Must pass \"hold\", \"stop\" or \"once\" into use()";
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1, error);
@@ -134,9 +159,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (numberValue.value < 0 || numberValue.value > 8) {
 				throw function.throwInvalidParameterError(error, context);
 			}
-			int selectedSlot = numberValue.value.intValue();
-			ArucasMinecraftExtension.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(selectedSlot));
-			this.getPlayer(context, function).inventory.selectedSlot = selectedSlot;
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
+			ArucasMinecraftExtension.getClient().execute(()->{player.inventory.selectedSlot = numberValue.value.intValue();
+				networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(numberValue.value.intValue()));});
 			return NullValue.NULL;
 		}
 
@@ -240,6 +266,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ArucasMinecraftExtension.getClient().execute(() -> {
 				if (player.isOnGround()) {
 					player.jump();
+					player.setOnGround(false); //is it cheaty?
 				}
 			});
 			return NullValue.NULL;
@@ -268,7 +295,66 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			});
 			return NullValue.NULL;
 		}
-
+		private Value<?> swapPlayerSlotWithHotbar(Context context, MemberFunction function) throws CodeError {
+			NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
+			if (numberValue1.value < 0 || numberValue1.value > player.inventory.main.size()) {
+				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
+			}
+			//45 = offhand, 46 = 0th hand, 1 2 3 4 craft, 5 6 7 8 armor, 9-17 1st line, 18-26 2nd line, 27-35 3rd line,36 crafted result?, 37-44 2~9th slot of hotbar, 0 = cursorstack?
+			//main index is shuffled when screen is opened so its reliable way is to directly modify main inventory
+			int prepareSlot = player.inventory.getSwappableHotbarSlot();
+			ArucasMinecraftExtension.getClient().execute(()->{
+				networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(prepareSlot));
+				player.inventory.swapSlotWithHotbar(numberValue1.value.intValue());
+				networkHandler.sendPacket(new PickFromInventoryC2SPacket(numberValue1.value.intValue()));});
+			return NullValue.NULL;
+		}
+		private Value<?> updateBreakingBlock(Context context, MemberFunction function) throws CodeError{
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+			double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+			double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+			if (ArucasMinecraftExtension.getWorld().isAir(new BlockPos(x,y,z))) {
+				return NullValue.NULL;
+			}
+			ArucasMinecraftExtension.getClient().execute(()-> interactionManager.updateBlockBreakingProgress(new BlockPos(x,y,z), Direction.UP));
+			this.getPlayer(context, function).swingHand(Hand.MAIN_HAND);
+			return NullValue.NULL;
+		}
+		private Value<?> attackBlock(Context context, MemberFunction function) throws CodeError {
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+			double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+			double z = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+			Direction direction = Direction.byName(function.getParameterValueOfType(context, StringValue.class, 4).value);
+			ArucasMinecraftExtension.getClient().execute(()-> interactionManager.attackBlock(new BlockPos(x,y,z), direction));
+			return NullValue.NULL;
+		}
+		private Value<?> interactBlock(Context context, MemberFunction function) throws CodeError {
+			//carpet protocol support but why not client side?
+			double px = function.getParameterValueOfType(context, NumberValue.class, 1).value;
+			double py = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+			double pz = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+			Direction direction = Direction.byName(function.getParameterValueOfType(context, StringValue.class, 4).value);
+			double bx = function.getParameterValueOfType(context, NumberValue.class, 5).value;
+			double by = function.getParameterValueOfType(context, NumberValue.class, 6).value;
+			double bz = function.getParameterValueOfType(context, NumberValue.class, 7).value;
+			boolean bool = function.getParameterValueOfType(context, BooleanValue.class, 8).value;
+			BlockHitResult hitResult = new BlockHitResult(new Vec3d(px, py, pz), direction, new BlockPos(bx, by, bz), bool);
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			ClientWorld world = ArucasMinecraftExtension.getWorld();
+			ArucasMinecraftExtension.getClient().execute(()->interactionManager.interactBlock(player,world, Hand.MAIN_HAND, hitResult));
+			return NullValue.NULL;
+		}
+		private Value<?> getBlockBreakingSpeed(Context context, MemberFunction function) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 1);
+			float breakingSpeed = player.getBlockBreakingSpeed(blockStateValue.value);
+			return NumberValue.of(breakingSpeed);
+		}
 		private Value<?> shiftClickSlot(Context context, MemberFunction function) throws CodeError {
 			NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;

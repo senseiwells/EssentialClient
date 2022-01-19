@@ -48,6 +48,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				new MemberFunction("getGamemode", this::getGamemode),
 				new MemberFunction("getTotalSlots", this::getTotalSlots),
 				new MemberFunction("getItemForSlot", "slot", this::getItemForSlot),
+				new MemberFunction("getItemForPlayerSlot","slot", this::getItemForPlayerSlot),
 				new MemberFunction("getSlotFor", "itemStack", this::getSlotFor),
 				new MemberFunction("getAllSlotsFor", "itemStack", this::getAllSlotsFor),
 				new MemberFunction("getAbilities", this::getAbilities),
@@ -81,7 +82,15 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			ItemStack itemStack = screenHandler.slots.get(index).getStack();
 			return new ItemStackValue(itemStack);
 		}
-
+		private Value<?> getItemForPlayerSlot(Context context, MemberFunction function) throws CodeError {
+			AbstractClientPlayerEntity player = this.getOtherPlayer(context, function);
+			int slot = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
+			if (slot < 0 || slot > player.inventory.main.size()) {
+				throw new RuntimeError("slot number is not valid", function.syntaxPosition, context);
+			}
+			ItemStack itemStack = player.inventory.main.get(slot); //slot order might be mixed but main locates hotbar slot at first
+			return new ItemStackValue(itemStack);
+		}
 		private Value<?> getSlotFor(Context context, MemberFunction function) throws CodeError {
 			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
@@ -144,7 +153,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 
 		@Override
 		public Class<?> getValueClass() {
-			return OtherPlayerValue.class;
+			return essentialclient.clientscript.values.OtherPlayerValue.class;
 		}
 	}
 }
