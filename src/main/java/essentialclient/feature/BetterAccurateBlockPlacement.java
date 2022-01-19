@@ -13,53 +13,36 @@ import net.minecraft.util.math.Direction;
 public class BetterAccurateBlockPlacement {
 
 	public static Direction fakeDirection = null;
+	public static int requestedTicks = 0;
 	public static float fakeYaw = 0;
 	public static float fakePitch = 0;
-	public static float fakeRequestYaw = 0;
-	public static float fakeRequestPitch = 0;
-	public static boolean onRequest = false;
-	public static int count = 0;
-	private static boolean wasReversePressed = false;
-	private static boolean wasIntoPressed = false;
+	private static float previousFakeYaw = 0;
+	private static float previousFakePitch = 0;
+	public static boolean wasReversePressed = false;
+	public static boolean wasIntoPressed = false;
 
 	public static void register() {
-		ClientTickEvents.END_CLIENT_TICK.register(essentialclient.feature.BetterAccurateBlockPlacement::accurateBlockPlacementOnPress);
-		ClientTickEvents.END_CLIENT_TICK.register(essentialclient.feature.BetterAccurateBlockPlacement::accurateBlockPlacementRequest);
+		ClientTickEvents.END_CLIENT_TICK.register(BetterAccurateBlockPlacement::accurateBlockPlacementOnPress);
 	}
-	private static void accurateBlockPlacementRequest(MinecraftClient client){
+
+	private static void accurateBlockPlacementOnPress(MinecraftClient client) {
 		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
 		ClientPlayerEntity playerEntity = client.player;
-		KeyBinding reverseKeyBinding = ClientKeybinds.ACCURATE_REVERSE.getKeyBinding();
-		KeyBinding intoKeyBinding = ClientKeybinds.ACCURATE_INTO.getKeyBinding();
 		if (playerEntity == null || networkHandler == null) {
 			return;
 		}
-		if (onRequest && count > 0){
-			networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(//1.17 then LookAndOnGround
-				fakeRequestYaw,
-				fakeRequestPitch,
-				playerEntity.isOnGround()
-			));
-			count--;
-		} else {
-			onRequest = false;
-			count = 0;
-		}
-		if (!onRequest && !reverseKeyBinding.isPressed() && !intoKeyBinding.isPressed()){
-			fakeRequestYaw = playerEntity.yaw;
-			fakeRequestPitch = playerEntity.pitch;
-			fakeDirection = null;
-		}
-	}
-	private static void accurateBlockPlacementOnPress(MinecraftClient client) {
-		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue() && networkHandler != null) {
-			ClientPlayerEntity playerEntity = client.player;
-			if (playerEntity == null) {
-				return;
+		if (requestedTicks > 0) {
+			if (fakeYaw != previousFakeYaw || fakePitch != previousFakePitch) {
+				sendLookPacket(networkHandler, playerEntity);
+				previousFakeYaw = fakeYaw;
+				previousFakePitch = fakePitch;
 			}
-			fakeYaw = playerEntity.yaw; //getYaw();
-			fakePitch = playerEntity.pitch; //getPicth();
+			requestedTicks--;
+			return;
+		}
+		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
+			fakeYaw = playerEntity.yaw;
+			fakePitch = playerEntity.pitch;
 			Direction facing = Direction.getEntityFacingOrder(playerEntity)[0];
 			KeyBinding reverseKeyBinding = ClientKeybinds.ACCURATE_REVERSE.getKeyBinding();
 			KeyBinding intoKeyBinding = ClientKeybinds.ACCURATE_INTO.getKeyBinding();
@@ -95,18 +78,20 @@ public class BetterAccurateBlockPlacement {
 					wasReversePressed = true;
 				}
 				facing = facing.getOpposite();
-				fakeDirection = facing;
 			}
 			else if (wasReversePressed) {
 				sendLookPacket(networkHandler, playerEntity);
 				wasReversePressed = false;
 			}
+			previousFakeYaw = fakeYaw;
+			previousFakePitch = fakePitch;
 			// This is for the client, so it doesn't look jank
+			fakeDirection = facing;
 		}
 	}
 
 	private static void sendLookPacket(ClientPlayNetworkHandler networkHandler, ClientPlayerEntity playerEntity) {
-		networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(//1.17 then LookAndOnGround
+		networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(
 			fakeYaw,
 			fakePitch,
 			playerEntity.isOnGround()

@@ -132,7 +132,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("renderFloatingItem", "itemStack", this::renderFloatingItem),
 				new MemberFunction("stripFormatting", "string", this::stripFormatting),
 				new MemberFunction("getCursorStack", this::getCursorStack),
-				new MemberFunction("setCursorStack", this::setCursorStack),
+				new MemberFunction("setCursorStack", "itemStack", this::setCursorStack),
 
 				new MemberFunction("importUtils", "util", this::importUtils, "No replacement as of yet")
 			);
@@ -140,6 +140,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 
 		private Value<?> screenshot(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
+			client.tick();
 			ScreenshotUtils.saveScreenshot(
 				client.runDirectory,
 				client.getWindow().getWidth(),
@@ -386,7 +387,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 2);
 			try {
-				return new FakeInventoryScreenValue(new FakeInventoryScreen(player.inventory, context, stringValue.value, numberValue.value.intValue()));
+				return new FakeInventoryScreenValue(new FakeInventoryScreen(player.inventory, stringValue.value, numberValue.value.intValue()));
 			}
 			catch (IllegalArgumentException e) {
 				throw new RuntimeError(e.getMessage(), function.syntaxPosition, context);
@@ -422,10 +423,13 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		}
 
 		private Value<?> setCursorStack(Context context, MemberFunction function) throws CodeError {
-			MinecraftClient client = this.getClient(context, function);
-			ItemStack itemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
-			InventoryUtils.setCursorStack(client, itemStack);
-			return NullValue.NULL;
+			// In 1.17+ this will be done through the screen handler
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (client.currentScreen instanceof FakeInventoryScreen) {
+				ItemStack itemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
+				return BooleanValue.of(InventoryUtils.setCursorStack(client, itemStack));
+			}
+			return BooleanValue.FALSE;
 		}
 
 		@Deprecated

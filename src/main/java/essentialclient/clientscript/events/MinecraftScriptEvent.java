@@ -40,7 +40,7 @@ public class MinecraftScriptEvent {
 
 	public synchronized void run(List<Value<?>> arguments) {
 		this.functionValues.forEach(eventFunction -> {
-			Context fileContext = eventFunction.context.createRootBranch();
+			Context fileContext = eventFunction.context.createBranch();
 			FunctionValue functionValue = eventFunction.functionValue;
 			fileContext.getThreadHandler().runAsyncFunctionInContext(fileContext, context -> functionValue.call(context, arguments), "ClientScript Event");
 		});

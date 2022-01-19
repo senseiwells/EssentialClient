@@ -1,12 +1,13 @@
 package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import essentialclient.utils.clientscript.NbtUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
@@ -17,6 +18,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -121,6 +123,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 				new MemberFunction("setGlowing", "boolean", this::setGlowing),
 				new MemberFunction("getDistanceTo", "otherEntity", this::getDistanceTo),
 				new MemberFunction("getSquaredDistanceTo", "otherEntity", this::getSquaredDistanceTo),
+				new MemberFunction("getNbt", this::getNbt),
 				new MemberFunction("getTranslatedName", this::getTranslatedName)
 			);
 		}
@@ -150,11 +153,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			Entity entity = this.getEntity(context, function);
 			double maxDistance = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 			Vec3d pos = entity.raycast(maxDistance, 0.0F, true).getPos();
-			ArucasList list = new ArucasList();
-			list.add(NumberValue.of(pos.x));
-			list.add(NumberValue.of(pos.y));
-			list.add(NumberValue.of(pos.z));
-			return new ListValue(list);
+			return new PosValue(pos);
 		}
 
 		private Value<?> getYaw(Context context, MemberFunction function) throws CodeError {
@@ -192,6 +191,13 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			Entity entity = this.getEntity(context, function);
 			EntityValue<?> otherEntity = function.getParameterValueOfType(context, EntityValue.class, 1);
 			return NumberValue.of(entity.squaredDistanceTo(otherEntity.value));
+		}
+
+		private Value<?> getNbt(Context context, MemberFunction function) throws CodeError {
+			Entity entity = this.getEntity(context, function);
+			NbtCompound nbtCompound = entity.writeNbt(new NbtCompound());
+			ArucasMap mappedNbt = NbtUtils.mapNbt(context, nbtCompound, 0);
+			return new MapValue(mappedNbt);
 		}
 
 		private Value<?> getTranslatedName(Context context, MemberFunction function) throws CodeError {

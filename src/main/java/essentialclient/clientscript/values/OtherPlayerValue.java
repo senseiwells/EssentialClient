@@ -82,15 +82,18 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			ItemStack itemStack = screenHandler.slots.get(index).getStack();
 			return new ItemStackValue(itemStack);
 		}
+
 		private Value<?> getItemForPlayerSlot(Context context, MemberFunction function) throws CodeError {
+			// This gets the item for a slot in the player's inventory (no screen inventories)
 			AbstractClientPlayerEntity player = this.getOtherPlayer(context, function);
 			int slot = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
 			if (slot < 0 || slot > player.inventory.main.size()) {
 				throw new RuntimeError("slot number is not valid", function.syntaxPosition, context);
 			}
-			ItemStack itemStack = player.inventory.main.get(slot); //slot order might be mixed but main locates hotbar slot at first
+			ItemStack itemStack = player.inventory.main.get(slot);
 			return new ItemStackValue(itemStack);
 		}
+
 		private Value<?> getSlotFor(Context context, MemberFunction function) throws CodeError {
 			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;

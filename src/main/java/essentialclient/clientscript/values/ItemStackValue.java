@@ -149,16 +149,17 @@ public class ItemStackValue extends Value<ItemStack> {
 			return StringValue.of(I18n.translate(itemStack.getItem().getTranslationKey()));
 		}
 
+		private Value<?> getMiningSpeedMultiplier(Context context, MemberFunction function) throws CodeError {
+			ItemStack itemStack = this.getItemStack(context, function);
+			BlockState blockState = function.getParameterValueOfType(context, BlockValue.class, 1).value;
+			return NumberValue.of(itemStack.getMiningSpeedMultiplier(blockState));
+		}
+
 		private Value<?> setCustomName(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			Value<?> nameValue = function.getParameterValue(context, 1);
 			Text name = nameValue instanceof TextValue textValue ? textValue.value : new LiteralText(nameValue.getAsString(context));
 			return new ItemStackValue(itemStack.setCustomName(name));
-		}
-		private Value<?> getMiningSpeedMultiplier(Context context, MemberFunction function) throws CodeError {
-			ItemStack itemStack = this.getItemStack(context, function);
-			BlockState blockState = function.getParameterValueOfType(context, BlockValue.class, 1).value;
-			return NumberValue.of(itemStack.getMiningSpeedMultiplier(blockState));
 		}
 
 		private Value<?> setLore(Context context, MemberFunction function) throws CodeError {

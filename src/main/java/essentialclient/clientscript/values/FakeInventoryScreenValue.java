@@ -1,21 +1,21 @@
 package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import essentialclient.utils.inventory.InventoryUtils;
 import essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.values.*;
+import me.senseiwells.arucas.values.NullValue;
+import me.senseiwells.arucas.values.NumberValue;
+import me.senseiwells.arucas.values.StringValue;
+import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.ConstructorFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			try {
-				return new FakeInventoryScreenValue(new FakeInventoryScreen(player.inventory, context, stringValue.value, numberValue.value.intValue()));
+				return new FakeInventoryScreenValue(new FakeInventoryScreen(player.inventory, stringValue.value, numberValue.value.intValue()));
 			}
 			catch (IllegalArgumentException e) {
 				throw new RuntimeError(e.getMessage(), function.syntaxPosition, context);
@@ -63,15 +63,14 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			return ArucasFunctionMap.of(
 				new MemberFunction("onClick", "function", this::onClick),
 				new MemberFunction("setStackForSlot", List.of("slotNum", "stack"), this::setStackForSlot),
-				new MemberFunction("getStackForSlot", "slotNum", this::getStackForSlot),
-				new MemberFunction("setCursorStack", "stack", this::setCursorStack)
+				new MemberFunction("getStackForSlot", "slotNum", this::getStackForSlot)
 			);
 		}
 
 		private Value<?> onClick(Context context, MemberFunction function) throws CodeError {
 			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
 			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
-			fakeScreen.value.setFunctionValue(functionValue);
+			fakeScreen.value.setFunctionValue(context, functionValue);
 			return NullValue.NULL;
 		}
 
@@ -87,16 +86,6 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
 			NumberValue slot = function.getParameterValueOfType(context, NumberValue.class, 1);
 			return new ItemStackValue(fakeScreen.value.getScreenHandler().slots.get(slot.value.intValue()).getStack());
-		}
-
-		private Value<?> setCursorStack(Context context, MemberFunction function) throws CodeError {
-			// In 1.17+ this will be done through the screen handler
-			MinecraftClient client = ArucasMinecraftExtension.getClient();
-			if (client.currentScreen instanceof FakeInventoryScreen) {
-				ItemStack itemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
-				return BooleanValue.of(InventoryUtils.setCursorStack(client, itemStack));
-			}
-			return BooleanValue.FALSE;
 		}
 
 		private FakeInventoryScreenValue getFakeScreen(Context context, MemberFunction function) throws CodeError {

@@ -19,17 +19,15 @@ import net.minecraft.text.LiteralText;
 import java.util.List;
 
 public class FakeInventoryScreen extends GenericContainerScreen {
-	private final Context context;
-	private FunctionValue functionValue = null;
+	private ContextFunction contextFunction = null;
 
-	public FakeInventoryScreen(PlayerInventory inventory, Context screenContext, String title, int rows) {
+	public FakeInventoryScreen(PlayerInventory inventory, String title, int rows) {
 		super(getHandler(inventory, rows), inventory, new LiteralText(title));
 		super.init(EssentialUtils.getClient(), this.width, this.height);
-		this.context = screenContext;
 	}
 
-	public void setFunctionValue(FunctionValue functionValue) {
-		this.functionValue = functionValue;
+	public void setFunctionValue(Context context, FunctionValue functionValue) {
+		this.contextFunction = new ContextFunction(context, functionValue);
 	}
 
 	public void setStack(int slot, ItemStack stack) {
@@ -55,11 +53,12 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
 		final int slotNumber = slot == null ? slotId : slot.id;
 		final String action = actionType.toString();
-		if (this.functionValue != null && ClientScript.getInstance().isScriptRunning()) {
+		if (this.contextFunction != null && ClientScript.getInstance().isScriptRunning()) {
 			List<Slot> slots = this.handler.slots;
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
-			this.context.getThreadHandler().runAsyncFunctionInContext(this.context,
-				context -> this.functionValue.call(context, List.of(
+			Context context = this.contextFunction.context.createBranch();
+			context.getThreadHandler().runAsyncFunctionInContext(context,
+				passedContext -> this.contextFunction.functionValue.call(passedContext, List.of(
 					new ItemStackValue(stack),
 					NumberValue.of(slotNumber),
 					StringValue.of(action)
@@ -80,4 +79,5 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 		};
 	}
 
+	private static final record ContextFunction(Context context, FunctionValue functionValue) { }
 }

@@ -26,7 +26,7 @@ public class AFKRules {
 			Vec3d playerLocation = playerEntity.getPos();
 			double mouseX = client.mouse.getX();
 			double mouseY = client.mouse.getX();
-			if (playerLocation == this.prevPlayerLocation && mouseX == this.prevMouseX && mouseY == this.prevMouseY) {
+			if (playerLocation.equals(this.prevPlayerLocation) && mouseX == this.prevMouseX && mouseY == this.prevMouseY) {
 				this.ticks++;
 				if (this.ticks == announceAfk) {
 					playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue());

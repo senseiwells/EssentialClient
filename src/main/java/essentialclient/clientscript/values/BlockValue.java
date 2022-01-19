@@ -22,6 +22,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class BlockValue extends Value<BlockState> {
 	private final PosValue blockPos;
@@ -73,7 +74,7 @@ public class BlockValue extends Value<BlockState> {
 
 	@Override
 	public boolean isEquals(Context context, Value<?> value) {
-		if (!(value instanceof essentialclient.clientscript.values.BlockValue otherValue)) {
+		if (!(value instanceof BlockValue otherValue)) {
 			return false;
 		}
 		return this.value.getBlock().equals(otherValue.value.getBlock());
@@ -101,7 +102,7 @@ public class BlockValue extends Value<BlockState> {
 			if (!(materialValue.value instanceof BlockItem blockItem)) {
 				throw new RuntimeError("Item cannot be converted to block", function.syntaxPosition, context);
 			}
-			return new essentialclient.clientscript.values.BlockValue(blockItem.getBlock().getDefaultState());
+			return new BlockValue(blockItem.getBlock().getDefaultState());
 		}
 
 		@Override
@@ -133,60 +134,7 @@ public class BlockValue extends Value<BlockState> {
 				new MemberFunction("isSideSolidFullSquare","direction", this::isSideSolidFullSquare)
 			);
 		}
-		private Value<?> sideCoversSmallSquare(Context context, MemberFunction function) throws  CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			Direction direction = Direction.byName(function.getParameterValueOfType(context, StringValue.class, 1).value);
-			if (direction == null){direction = Direction.DOWN;}
-			return BooleanValue.of(Block.sideCoversSmallSquare(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value), direction));
-		}
-		private Value<?> isSideSolidFullSquare(Context context, MemberFunction function) throws  CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			Direction direction = Direction.byName(function.getParameterValueOfType(context, StringValue.class, 1).value);
-			if (direction == null){direction = Direction.DOWN;}
-			return BooleanValue.of(blockStateValue.value.isSideSolidFullSquare(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value), direction));
-		}
-		private Value<?> isReplaceable(Context context, MemberFunction function) throws  CodeError {
-			BlockState blockState = this.getBlockState(context, function);
-			boolean replaceable = blockState.getMaterial().isReplaceable();
-			return BooleanValue.of(replaceable);
-		}
-		private Value<?> isSolidBlock(Context context, MemberFunction function) throws  CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			boolean isSolid = blockStateValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value));
-			return BooleanValue.of(isSolid);
-		}
-		private Value<?> getHardness(Context context, MemberFunction function) throws  CodeError {
-			BlockState blockState = this.getBlockState(context, function);
-			float hardness = blockState.getHardness(ArucasMinecraftExtension.getWorld(), BlockPos.ORIGIN); //requires dummy inputs, why?
-			return NumberValue.of(hardness);
-		}
-		private Value<?> rotateYClockwise(Context context, MemberFunction function) throws CodeError{
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			return new essentialclient.clientscript.values.BlockValue(blockStateValue.value.rotate(BlockRotation.CLOCKWISE_90));
-		}
-		private Value<?> rotateYCounterClockwise(Context context, MemberFunction function) throws CodeError{
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			return new essentialclient.clientscript.values.BlockValue(blockStateValue.value.rotate(BlockRotation.COUNTERCLOCKWISE_90));
-		}
-		private Value<?> mirrorFrontBack(Context context, MemberFunction function) throws CodeError{
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			return new essentialclient.clientscript.values.BlockValue(blockStateValue.value.mirror(BlockMirror.FRONT_BACK));
-		}
-		private Value<?> mirrorLeftRight(Context context, MemberFunction function) throws CodeError{
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			return new essentialclient.clientscript.values.BlockValue(blockStateValue.value.mirror(BlockMirror.LEFT_RIGHT));
-		}
-		private Value<?> isFluid(Context context, MemberFunction function) throws CodeError{
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			return BooleanValue.of(blockStateValue.value.contains(FluidBlock.LEVEL));
-		}
-		private Value<?> isFluidSource(Context context, MemberFunction function) throws CodeError{
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
-			boolean waterloggable = blockStateValue.value.getBlock() instanceof Waterloggable;
-			boolean waterlogged = waterloggable && blockStateValue.value.get(Properties.WATERLOGGED);
-			return BooleanValue.of(blockStateValue.value.getBlock() instanceof BubbleColumnBlock || waterlogged ||
-				blockStateValue.value.getBlock() instanceof FluidBlock && blockStateValue.value.get(FluidBlock.LEVEL) ==0 );
-		}
+		
 		private Value<?> getBlockProperties(Context context, MemberFunction function) throws CodeError {
 			BlockState blockState = this.getBlockState(context, function);
 			ArucasMap propertyMap = new ArucasMap();
@@ -208,27 +156,27 @@ public class BlockValue extends Value<BlockState> {
 		}
 
 		private Value<?> hasBlockPosition(Context context, MemberFunction function) throws CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
 			return BooleanValue.of(blockStateValue.hasBlockPos());
 		}
 
 		private Value<?> getPos(Context context, MemberFunction function) throws CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
 			return blockStateValue.getPos();
 		}
 
 		private Value<?> getBlockX(Context context, MemberFunction function) throws CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
 			return blockStateValue.getBlockX();
 		}
 
 		private Value<?> getBlockY(Context context, MemberFunction function) throws CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
 			return blockStateValue.getBlockY();
 		}
 
 		private Value<?> getBlockZ(Context context, MemberFunction function) throws CodeError {
-			essentialclient.clientscript.values.BlockValue blockStateValue = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0);
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
 			return blockStateValue.getBlockZ();
 		}
 
@@ -237,8 +185,81 @@ public class BlockValue extends Value<BlockState> {
 			return StringValue.of(I18n.translate(blockState.getBlock().getTranslationKey()));
 		}
 
+		private Value<?> isSolidBlock(Context context, MemberFunction function) throws CodeError {
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
+			if (!blockStateValue.hasPos) {
+				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
+			}
+			boolean isSolid = blockStateValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value));
+			return BooleanValue.of(isSolid);
+		}
+
+		private Value<?> rotateYClockwise(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			return new BlockValue(blockState.rotate(BlockRotation.CLOCKWISE_90));
+		}
+
+		private Value<?> rotateYCounterClockwise(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			return new BlockValue(blockState.rotate(BlockRotation.COUNTERCLOCKWISE_90));
+		}
+
+		private Value<?> mirrorFrontBack(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			return new BlockValue(blockState.mirror(BlockMirror.FRONT_BACK));
+		}
+
+		private Value<?> mirrorLeftRight(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			return new BlockValue(blockState.mirror(BlockMirror.LEFT_RIGHT));
+		}
+
+		private Value<?> isFluid(Context context, MemberFunction function) throws CodeError {
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
+			return BooleanValue.of(blockStateValue.value.contains(FluidBlock.LEVEL));
+		}
+
+		private Value<?> isFluidSource(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			Block block = blockState.getBlock();
+			if ((block instanceof FluidBlock && blockState.get(FluidBlock.LEVEL) == 0) || block instanceof BubbleColumnBlock) {
+				return BooleanValue.TRUE;
+			}
+			return BooleanValue.of(block instanceof Waterloggable && blockState.get(Properties.WATERLOGGED));
+		}
+
+		private Value<?> isReplaceable(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			return BooleanValue.of(blockState.getMaterial().isReplaceable());
+		}
+
+		private Value<?> getHardness(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			return NumberValue.of(blockState.getHardness(ArucasMinecraftExtension.getWorld(), BlockPos.ORIGIN));
+		}
+
+		private Value<?> sideCoversSmallSquare(Context context, MemberFunction function) throws CodeError {
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
+			StringValue stringDirection = function.getParameterValueOfType(context, StringValue.class, 1);
+			if (!blockStateValue.hasPos) {
+				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
+			}
+			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
+			return BooleanValue.of(Block.sideCoversSmallSquare(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value), direction));
+		}
+
+		private Value<?> isSideSolidFullSquare(Context context, MemberFunction function) throws CodeError {
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
+			StringValue stringDirection = function.getParameterValueOfType(context, StringValue.class, 1);
+			if (!blockStateValue.hasPos) {
+				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
+			}
+			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
+			return BooleanValue.of(blockStateValue.value.isSideSolidFullSquare(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value), direction));
+		}
+
 		private BlockState getBlockState(Context context, MemberFunction function) throws CodeError {
-			BlockState block = function.getParameterValueOfType(context, essentialclient.clientscript.values.BlockValue.class, 0).value;
+			BlockState block = function.getParameterValueOfType(context, BlockValue.class, 0).value;
 			if (block == null) {
 				throw new RuntimeError("Block was null", function.syntaxPosition, context);
 			}
@@ -247,7 +268,7 @@ public class BlockValue extends Value<BlockState> {
 
 		@Override
 		public Class<?> getValueClass() {
-			return essentialclient.clientscript.values.BlockValue.class;
+			return BlockValue.class;
 		}
 	}
 }

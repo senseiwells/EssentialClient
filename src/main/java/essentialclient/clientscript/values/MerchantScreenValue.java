@@ -44,7 +44,8 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				new MemberFunction("selectTrade", "index", this::selectTrade),
 				new MemberFunction("clearTrade", this::clearTrade),
 				new MemberFunction("isTradeSelected", this::isTradeSelected),
-				new MemberFunction("tradeSelectedRecipeAndThrow", this::tradeSelectedRecipeAndThrow)
+				new MemberFunction("tradeSelected", this::tradeSelected),
+				new MemberFunction("tradeSelectedAndThrow", this::tradeSelectedAndThrow)
 			);
 		}
 
@@ -89,6 +90,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			int code = InventoryUtils.checkHasTrade(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
 			return BooleanValue.of(this.checkVillagerValid(code, function, context));
 		}
+
 		private Value<?> selectTrade(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
@@ -97,6 +99,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			}
 			return NullValue.NULL;
 		}
+
 		private Value<?> clearTrade(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
 			if (!InventoryUtils.clearTrade(ArucasMinecraftExtension.getClient())) {
@@ -104,17 +107,28 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			}
 			return NullValue.NULL;
 		}
-		private Value<?> tradeSelectedRecipeAndThrow(Context context, MemberFunction function) throws CodeError {
+
+		private Value<?> tradeSelected(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
-			if (!InventoryUtils.tradeSelectedRecipeAndThrow(ArucasMinecraftExtension.getClient())) {
+			if (!InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), false)) {
 				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			}
 			return NullValue.NULL;
 		}
+
+		private Value<?> tradeSelectedAndThrow(Context context, MemberFunction function) throws CodeError {
+			this.checkIsCurrentScreen(context, function);
+			if (!InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), true)) {
+				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
+			}
+			return NullValue.NULL;
+		}
+
 		private Value<?> isTradeSelected(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
 			return BooleanValue.of(InventoryUtils.isTradeSelected(ArucasMinecraftExtension.getClient()));
 		}
+
 		private Value<?> isTradeDisabled(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
