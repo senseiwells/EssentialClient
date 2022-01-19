@@ -19,17 +19,18 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-public class FakeInventoryScreenValue extends ScreenValue {
+public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
     public FakeInventoryScreenValue(FakeInventoryScreen value) {
         super(value);
     }
 
-    public FakeInventoryScreen getScreen() {
-        return (FakeInventoryScreen) this.value;
-    }
+	@Override
+	public String getAsString(Context context) {
+		return "FakeInventoryScreen@" + this.getHashCode(context);
+	}
 
-    @Override
-    public ScreenValue copy(Context context) {
+	@Override
+    public ScreenValue<FakeInventoryScreen> copy(Context context) {
         return this;
     }
 
@@ -70,7 +71,7 @@ public class FakeInventoryScreenValue extends ScreenValue {
 		private Value<?> onClick(Context context, MemberFunction function) throws CodeError {
 			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
 			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
-			fakeScreen.getScreen().setFunctionValue(functionValue);
+			fakeScreen.value.setFunctionValue(functionValue);
 			return NullValue.NULL;
 		}
 
@@ -78,14 +79,14 @@ public class FakeInventoryScreenValue extends ScreenValue {
 			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
 			NumberValue slot = function.getParameterValueOfType(context, NumberValue.class, 1);
 			ItemStackValue stackValue = function.getParameterValueOfType(context, ItemStackValue.class, 2);
-			fakeScreen.getScreen().setStack(slot.value.intValue(), stackValue.value);
+			fakeScreen.value.setStack(slot.value.intValue(), stackValue.value);
 			return NullValue.NULL;
 		}
 
 		private Value<?> getStackForSlot(Context context, MemberFunction function) throws CodeError {
 			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
 			NumberValue slot = function.getParameterValueOfType(context, NumberValue.class, 1);
-			return new ItemStackValue(fakeScreen.getScreen().getScreenHandler().slots.get(slot.value.intValue()).getStack());
+			return new ItemStackValue(fakeScreen.value.getScreenHandler().slots.get(slot.value.intValue()).getStack());
 		}
 
 		private Value<?> setCursorStack(Context context, MemberFunction function) throws CodeError {

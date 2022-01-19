@@ -19,6 +19,6 @@ public class ClientPlayerEntityMixin {
 
 	@Inject(method = "closeScreen", at = @At("HEAD"))
 	private void onCloseScreen(CallbackInfo ci) {
-		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(new ScreenValue(EssentialUtils.getClient().currentScreen));
+		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(ScreenValue.of(EssentialUtils.getClient().currentScreen));
 	}
 }

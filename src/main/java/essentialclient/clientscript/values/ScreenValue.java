@@ -1,6 +1,7 @@
 package essentialclient.clientscript.values;
 
 import essentialclient.utils.clientscript.ScreenRemapper;
+import essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -12,15 +13,16 @@ import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.item.ItemGroup;
 
-public class ScreenValue extends Value<Screen> {
-	public ScreenValue(Screen screen) {
+public class ScreenValue<T extends Screen> extends Value<T> {
+	protected ScreenValue(T screen) {
 		super(screen);
 	}
 
 	@Override
-	public Value<Screen> copy(Context context) {
+	public ScreenValue<T> copy(Context context) {
 		return this;
 	}
 
@@ -37,6 +39,16 @@ public class ScreenValue extends Value<Screen> {
 	@Override
 	public boolean isEquals(Context context, Value<?> value) {
 		return this.value == value.value;
+	}
+
+	public static Value<?> of(Screen screen) {
+		if (screen instanceof MerchantScreen merchantScreen) {
+			return new MerchantScreenValue(merchantScreen);
+		}
+		if (screen instanceof FakeInventoryScreen fakeInventoryScreen) {
+			return new FakeInventoryScreenValue(fakeInventoryScreen);
+		}
+		return screen == null ? NullValue.NULL : new ScreenValue<>(screen);
 	}
 
 	public static class ArucasScreenClass extends ArucasClassExtension {
@@ -63,11 +75,11 @@ public class ScreenValue extends Value<Screen> {
 		}
 
 		private Screen getScreen(Context context, MemberFunction function) throws CodeError {
-			Screen screen = function.getParameterValueOfType(context, ScreenValue.class, 0).value;
-			if (screen == null) {
+			ScreenValue<?> screen = function.getParameterValueOfType(context, ScreenValue.class, 0);
+			if (screen.value == null) {
 				throw new RuntimeError("Screen was null", function.syntaxPosition, context);
 			}
-			return screen;
+			return screen.value;
 		}
 
 		@Override

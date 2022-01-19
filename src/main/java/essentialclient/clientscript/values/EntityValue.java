@@ -38,22 +38,6 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		return this;
 	}
 
-	public static Value<?> getEntityValue(Entity entity) {
-		if (entity != null) {
-			if (entity instanceof ClientPlayerEntity clientPlayerEntity) {
-				return new PlayerValue(clientPlayerEntity);
-			}
-			if (entity instanceof OtherClientPlayerEntity otherClientPlayerEntity) {
-				return new OtherPlayerValue(otherClientPlayerEntity);
-			}
-			if (entity instanceof LivingEntity livingEntity) {
-				return new LivingEntityValue<>(livingEntity);
-			}
-			return new EntityValue<>(entity);
-		}
-		return NullValue.NULL;
-	}
-
 	@Override
 	public String getAsString(Context context) {
 		return "Entity{id=%s}".formatted(Registry.ENTITY_TYPE.getId(this.value.getType()).getPath());
@@ -72,6 +56,22 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		return false;
 	}
 
+	public static Value<?> of(Entity entity) {
+		if (entity != null) {
+			if (entity instanceof ClientPlayerEntity clientPlayerEntity) {
+				return new PlayerValue(clientPlayerEntity);
+			}
+			if (entity instanceof OtherClientPlayerEntity otherClientPlayerEntity) {
+				return new OtherPlayerValue(otherClientPlayerEntity);
+			}
+			if (entity instanceof LivingEntity livingEntity) {
+				return new LivingEntityValue<>(livingEntity);
+			}
+			return new EntityValue<>(entity);
+		}
+		return NullValue.NULL;
+	}
+
 	public static class ArucasEntityClass extends ArucasClassExtension {
 		public ArucasEntityClass() {
 			super("Entity");
@@ -87,7 +87,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
 			ClientWorld world = ArucasMinecraftExtension.getWorld();
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
-			return getEntityValue(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
+			return EntityValue.of(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
 		}
 
 		@Override

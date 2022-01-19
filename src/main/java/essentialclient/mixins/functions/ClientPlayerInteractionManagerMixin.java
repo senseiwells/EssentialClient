@@ -65,6 +65,6 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "interactEntity", at = @At("TAIL"))
 	private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.getEntityValue(entity));
+		MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.of(entity));
 	}
 }

@@ -55,7 +55,7 @@ public class MinecraftClientMixin {
 	@Inject(method = "openScreen", at = @At("HEAD"))
 	private void onOpenScreen(Screen screen, CallbackInfo ci) {
 		if (screen != null) {
-			MinecraftScriptEvents.ON_OPEN_SCREEN.run(new ScreenValue(screen));
+			MinecraftScriptEvents.ON_OPEN_SCREEN.run(ScreenValue.of(screen));
 		}
 	}
 }

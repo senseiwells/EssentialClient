@@ -28,7 +28,7 @@ public abstract class FishingBobberEntityMixin extends Entity {
 	private void onFishBite(TrackedData<?> data, CallbackInfo ci) {
 		PlayerEntity playerEntity = this.getPlayerOwner();
 		if (playerEntity != null && playerEntity == EssentialUtils.getPlayer()) {
-			MinecraftScriptEvents.ON_FISH_BITE.run(EntityValue.getEntityValue(this));
+			MinecraftScriptEvents.ON_FISH_BITE.run(EntityValue.of(this));
 		}
 	}
 }

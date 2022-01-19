@@ -116,14 +116,14 @@ public class WorldValue extends Value<ClientWorld> {
 			ClientWorld world = this.getWorld(context, function);
 			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 2);
-			return EntityValue.getEntityValue(world.getClosestPlayer(entityValue.value, numberValue.value));
+			return EntityValue.of(world.getClosestPlayer(entityValue.value, numberValue.value));
 		}
 
 		private Value<?> getAllEntities(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			ArucasList valueList = new ArucasList();
 			for (Entity entity : world.getEntities()) {
-				valueList.add(EntityValue.getEntityValue(entity));
+				valueList.add(EntityValue.of(entity));
 			}
 			return new ListValue(valueList);
 		}
@@ -131,7 +131,7 @@ public class WorldValue extends Value<ClientWorld> {
 		private Value<?> getEntityFromId(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			NumberValue id = function.getParameterValueOfType(context, NumberValue.class, 1);
-			return EntityValue.getEntityValue(world.getEntityById(id.value.intValue()));
+			return EntityValue.of(world.getEntityById(id.value.intValue()));
 		}
 
 		private Value<?> renderParticle(Context context, MemberFunction function) throws CodeError {

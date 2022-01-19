@@ -95,17 +95,16 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
 
 				// Villager Stuff
-				new MemberFunction("tradeIndex", "index", this::tradeIndex),
-				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
-				new MemberFunction("getTradeItemForIndex", "index", this::getTradeItemForIndex),
-				new MemberFunction("doesVillagerHaveTrade", "itemStack", this::doesVillagerHaveTrade),
-				new MemberFunction("isTradeDisabled", "index", this::isTradeDisabled),
-				new MemberFunction("getPriceForIndex", "index", this::getPriceForIndex)
+				new MemberFunction("tradeIndex", "index", this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
+				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade, "Use '<MerchantScreen>.getIndexOfTradeItem(itemStack)'"),
+				new MemberFunction("getTradeItemForIndex", "index", this::getTradeItemForIndex, "Use '<MerchantScreen>.getTradeItemForIndex(index)'"),
+				new MemberFunction("doesVillagerHaveTrade", "itemStack", this::doesVillagerHaveTrade, "Use '<MerchantScreen>.doesVillagerHaveTrade(itemStack)'"),
+				new MemberFunction("isTradeDisabled", "index", this::isTradeDisabled, "Use '<MerchantScreen>.isTradeDisabled(index)'"),
+				new MemberFunction("getPriceForIndex", "index", this::getPriceForIndex, "Use '<MerchantScreen>.getPriceForIndex(index)'")
 			);
 		}
 
 		private Value<?> use(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			final String error = "Must pass \"hold\", \"stop\" or \"once\" into use()";
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1, error);
 			switch (stringValue.value.toLowerCase()) {
@@ -118,7 +117,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> attack(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			final String error = "Must pass \"hold\", 'stop\" or \"once\" into attack()";
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1, error);
 			switch (stringValue.value.toLowerCase()) {
@@ -182,9 +180,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> openScreen(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
-			ScreenValue screenValue = function.getParameterValueOfType(context, ScreenValue.class, 1);
+			ScreenValue<?> screenValue = function.getParameterValueOfType(context, ScreenValue.class, 1);
 			if (screenValue.value instanceof HandledScreen && !(screenValue.value instanceof FakeInventoryScreen)) {
 				throw new RuntimeError("Opening handled screens is unsafe", function.syntaxPosition, context);
 			}
@@ -200,7 +197,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> setSprinting(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 			final ClientPlayerEntity player = this.getPlayer(context, function);
 			ArucasMinecraftExtension.getClient().execute(() -> player.setSprinting(booleanValue.value));
@@ -215,7 +211,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> dropAll(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> InventoryUtils.dropAllItemType(client.player, itemStackValue.value.getItem()));
@@ -251,9 +246,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> getLookingAtEntity(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			Entity targetedEntity = ArucasMinecraftExtension.getClient().targetedEntity;
-			return getEntityValue(targetedEntity);
+			return of(targetedEntity);
 		}
 
 		private Value<?> swapSlots(Context context, MemberFunction function) throws CodeError {
@@ -295,16 +289,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> getCurrentScreen(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			Screen currentScreen = ArucasMinecraftExtension.getClient().currentScreen;
 			if (currentScreen == null) {
 				return NullValue.NULL;
 			}
-			return new ScreenValue(currentScreen);
+			return ScreenValue.of(currentScreen);
 		}
 
 		private Value<?> craft(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 1);
 			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
@@ -335,7 +327,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> logout(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			String reason = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			ArucasMinecraftExtension.getNetworkHandler().onDisconnected(new LiteralText(reason));
 			return NullValue.NULL;
@@ -472,7 +463,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			if (!InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
 				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
@@ -481,7 +471,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> getIndexOfTrade(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
 			if (index == -1) {
@@ -492,7 +481,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> getTradeItemForIndex(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			try {
 				ItemStack itemStack = InventoryUtils.getTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
@@ -507,21 +495,18 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> doesVillagerHaveTrade(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
 			int code = InventoryUtils.checkHasTrade(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
 			return BooleanValue.of(this.checkVillagerValid(code, function, context));
 		}
 
 		private Value<?> isTradeDisabled(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			int code = InventoryUtils.checkTradeDisabled(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
 			return BooleanValue.of(this.checkVillagerValid(code, function, context));
 		}
 
 		private Value<?> getPriceForIndex(Context context, MemberFunction function) throws CodeError {
-			this.checkMainPlayer(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			int price = InventoryUtils.checkPriceForTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
 			this.checkVillagerValid(price, function, context);
@@ -539,14 +524,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private NullValue setKey(Context context, MemberFunction function, KeyBinding keyBinding) throws CodeError {
-			this.checkMainPlayer(context, function);
+			
 			BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 			keyBinding.setPressed(booleanValue.value);
 			return NullValue.NULL;
-		}
-
-		private void checkMainPlayer(Context context, MemberFunction function) throws CodeError {
-			function.getParameterValueOfType(context, PlayerValue.class, 0);
 		}
 
 		private ClientPlayerEntity getPlayer(Context context, MemberFunction function) throws CodeError {

@@ -44,7 +44,7 @@ public class PlayerEntityMixin {
 			return;
 		}
 		MinecraftScriptEvents.ON_DEATH.run(List.of(
-			EntityValue.getEntityValue(source.getAttacker()),
+			EntityValue.of(source.getAttacker()),
 			StringValue.of(source.getName())
 		));
 	}

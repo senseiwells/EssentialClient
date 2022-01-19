@@ -370,7 +370,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			MinecraftClient client = this.getClient(context, function);
 			ClientWorld world = ArucasMinecraftExtension.getWorld(client);
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
-			return EntityValue.getEntityValue(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
+			return EntityValue.of(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
 		}
 
 		@Deprecated
