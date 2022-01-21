@@ -218,7 +218,7 @@ public class EssentialUtils {
 
 	private static void tryDeleteOldVersion() throws IOException {
 		String minecraftVersion = getMinecraftVersion();
-		String clientVersion = getVersion();
+		String clientVersion = EssentialClient.VERSION;
 		File modDirectory = FabricLoader.getInstance().getGameDir().resolve("mods").toFile();
 		if (!modDirectory.isDirectory()) {
 			throw new FileNotFoundException("Could not find mod directory");

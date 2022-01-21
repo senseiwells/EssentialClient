@@ -17,7 +17,7 @@ public class ClientRules {
 
 	private static final Map<String, ClientRule<?>> clientRuleMap = new HashMap<>();
 
-	public static BooleanClientRule
+	public static final BooleanClientRule
 		BETTER_ACCURATE_BLOCK_PLACEMENT = new BooleanClientRule("betterAccurateBlockPlacement", "This is the same as accurate block placement for tweakeroo but handled all client side, see controls..."),
 		BETTER_PING_DISPLAY = new BooleanClientRule("betterPingDisplay", "This displays the real ping in the tab list"),
 		CHUNK_DEBUG_MINIMAP_BACKGROUND = new BooleanClientRule("chunkDebugMinimapBackground", "This renders a box showing the bounds of the chunk debug minimap", true),
@@ -52,24 +52,25 @@ public class ClientRules {
 		TOGGLE_TAB = new BooleanClientRule("toggleTab", "This allows you to toggle tab instead of holding to see tab" ),
 		UNLOCK_ALL_RECIPES_ON_JOIN = new BooleanClientRule("unlockAllRecipesOnJoin", "Unlocks every recipe when joining a world");
 
-	public static IntegerClientRule
+	public static final IntegerClientRule
 		ANNOUNCE_AFK = new IntegerClientRule("announceAFK", "This announces when you become afk after a set amount of time (ticks)"),
 		AFK_LOGOUT = new IntegerClientRule("afkLogout", "Number of ticks until client will disconnect you from world (must be >= 200 to be active)"),
 		AUTO_WALK = new IntegerClientRule("autoWalk", "This will auto walk after you have held your key for set amount of ticks"),
+		PERMANENT_TIME = new IntegerClientRule("permanentTime", "This forces your client to set a time of day", -1),
 		INCREASE_SPECTATOR_SCROLL_SENSITIVITY = new IntegerClientRule("increaseSpectatorScrollSensitivity", "Increases the sensitivity at which you can scroll to go faster in spectator"),
 		MUSIC_INTERVAL = new IntegerClientRule("musicInterval", "The amount of ticks between each soundtrack that is played, 0 = random"),
 		SWITCH_TO_TOTEM = new IntegerClientRule("switchToTotem", "This will switch to a totem (if you have one), under a set amount of health"),
 		SOUL_SPEED_FOV_MULTIPLIER = new IntegerClientRule("soulSpeedFovMultiplier", "Determines the percentage of Fov scaling when walking on soil soul or soul sand"),
 		WATER_FOV_MULTIPLIER = new IntegerClientRule("waterFovMultiplier","Determines the percentage of Fov scaling when fully submerged in water");
 
-	public static DoubleClientRule
+	public static final DoubleClientRule
 		OVERRIDE_CREATIVE_WALK_SPEED = new DoubleClientRule("overrideCreativeWalkSpeed", "This allows you to override the vanilla walk speed in creative mode", 0.0D);
 
 	public static StringClientRule
 		ANNOUNCE_AFK_MESSAGE = new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK"),
 		CLIENT_SCRIPT_FILENAME = new StringClientRule("clientScriptFilename", "This allows you to choose a specific script file name", "clientscript", EssentialUtils::checkifScriptFileExists);
 
-	public static CycleClientRule
+	public static final CycleClientRule
 		CUSTOM_CLIENT_CAPE = new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CapeHelper.capeNames, ClientRuleHelper::refreshCape),
 		DISPLAY_RULE_TYPE = new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRuleHelper::refreshScreen),
 		MUSIC_TYPES = new CycleClientRule("musicTypes", "This allows you to select what music types play", List.of("Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"), ClientRuleHelper::refreshMusic);

@@ -3,6 +3,7 @@ package essentialclient.utils.render;
 import essentialclient.clientscript.ClientScript;
 import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.utils.EssentialUtils;
+import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.functions.FunctionValue;
@@ -18,15 +19,15 @@ import net.minecraft.text.LiteralText;
 import java.util.List;
 
 public class FakeInventoryScreen extends GenericContainerScreen {
-	private FunctionValue functionValue = null;
+	private ContextFunction contextFunction = null;
 
 	public FakeInventoryScreen(PlayerInventory inventory, String title, int rows) {
 		super(getHandler(inventory, rows), inventory, new LiteralText(title));
 		super.init(EssentialUtils.getClient(), this.width, this.height);
 	}
 
-	public void setFunctionValue(FunctionValue functionValue) {
-		this.functionValue = functionValue;
+	public void setFunctionValue(Context context, FunctionValue functionValue) {
+		this.contextFunction = new ContextFunction(context, functionValue);
 	}
 
 	public void setStack(int slot, ItemStack stack) {
@@ -51,14 +52,15 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
 		final int slotNumber = slot == null ? slotId : slot.id;
 		final String action = actionType.toString();
-		if (this.functionValue != null && ClientScript.getInstance().isScriptRunning()) {
+		if (this.contextFunction != null && ClientScript.getInstance().isScriptRunning()) {
 			List<Slot> slots = this.handler.slots;
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
-			ClientScript.getInstance().runBranchAsyncFunction(
-				context -> this.functionValue.call(context, List.of(
+			Context context = this.contextFunction.context.createBranch();
+			context.getThreadHandler().runAsyncFunctionInContext(context,
+				passedContext -> this.contextFunction.functionValue.call(passedContext, List.of(
 					new ItemStackValue(stack),
-					new NumberValue(slotNumber),
-					new StringValue(action)
+					NumberValue.of(slotNumber),
+					StringValue.of(action)
 				))
 			);
 		}
@@ -75,4 +77,6 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 			default -> throw new IllegalArgumentException("Invalid number of rows");
 		};
 	}
+
+	private static final record ContextFunction(Context context, FunctionValue functionValue) { }
 }

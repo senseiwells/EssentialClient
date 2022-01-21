@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.awt.*;
@@ -211,7 +212,7 @@ public class ChunkGrid {
 	public boolean onScroll(double mouseX, double mouseY, double amount) {
 		if (this.isInBounds(mouseX, mouseY) && !this.panning) {
 			if ((amount > 0 && this.scale < 20) || (amount < 0 && this.scale > 1)) {
-				this.syncSelectionPointsWithCorner(() -> this.updateCornerScroll(amount));
+				this.syncSelectionPointsWithCorner(() -> this.updateCornerScroll(MathHelper.clamp(amount, -1, 1)));
 				return true;
 			}
 		}

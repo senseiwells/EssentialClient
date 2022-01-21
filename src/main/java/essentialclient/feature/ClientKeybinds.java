@@ -41,10 +41,10 @@ public enum ClientKeybinds {
 	public static void register() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.currentScreen == null) {
-				if (OPEN_ESSENTIAL_CLIENT_MENU.getKeyBinding().isPressed()) {
+				while (OPEN_ESSENTIAL_CLIENT_MENU.getKeyBinding().wasPressed()) {
 					client.setScreen(new ConfigScreen(null));
 				}
-				if (OPEN_CHUNK_DEBUG.getKeyBinding().isPressed()) {
+				while (OPEN_CHUNK_DEBUG.getKeyBinding().wasPressed()) {
 					client.setScreen(new ChunkDebugScreen(null));
 				}
 			}

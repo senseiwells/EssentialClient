@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientPlayerEntityMixin {
 	@Inject(method = "sendChatMessage", at = @At("HEAD"))
 	public void onChatMessage(String message, CallbackInfo ci) {
-		MinecraftScriptEvents.ON_SEND_MESSAGE.run(new StringValue(message));
+		MinecraftScriptEvents.ON_SEND_MESSAGE.run(StringValue.of(message));
 	}
 
 	@Inject(method = "closeScreen", at = @At("HEAD"))
 	private void onCloseScreen(CallbackInfo ci) {
-		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(new ScreenValue(EssentialUtils.getClient().currentScreen));
+		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(ScreenValue.of(EssentialUtils.getClient().currentScreen));
 	}
 }

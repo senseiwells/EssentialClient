@@ -32,9 +32,9 @@ public class EssentialCarpetClient {
 		catch (Exception ignored) { }
 		if (ruleName.contains("command")) {
 			List<String> commandOptions = new ArrayList<>() {{
-				add("true");
-				add("false");
-				add("ops");
+				this.add("true");
+				this.add("false");
+				this.add("ops");
 			}};
 			if (commandOptions.contains(ruleValue)) {
 				commandOptions.remove(ruleValue);

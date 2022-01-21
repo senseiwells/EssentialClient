@@ -1,7 +1,7 @@
 package essentialclient.mixins.functions;
 
 import essentialclient.clientscript.events.MinecraftScriptEvents;
-import essentialclient.clientscript.values.BlockStateValue;
+import essentialclient.clientscript.values.BlockValue;
 import essentialclient.clientscript.values.EntityValue;
 import essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.arucas.values.NumberValue;
@@ -41,12 +41,12 @@ public class ClientPlayerInteractionManagerMixin {
 		if (this.client.world == null) {
 			return;
 		}
-		MinecraftScriptEvents.ON_BLOCK_BROKEN.run(List.of(new BlockStateValue(this.client.world.getBlockState(pos), pos)));
+		MinecraftScriptEvents.ON_BLOCK_BROKEN.run(List.of(new BlockValue(this.client.world.getBlockState(pos), pos)));
 	}
 
 	@Inject(method = "clickSlot", at = @At("HEAD"))
 	private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-		MinecraftScriptEvents.ON_CLICK_SLOT.run(new NumberValue(slotId));
+		MinecraftScriptEvents.ON_CLICK_SLOT.run(NumberValue.of(slotId));
 	}
 
 	@Redirect(method = "interactItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;"), require = 0)
@@ -60,12 +60,12 @@ public class ClientPlayerInteractionManagerMixin {
 		ActionResult result = cir.getReturnValue();
 		if (result.isAccepted()) {
 			BlockPos pos = hitResult.getBlockPos();
-			MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockStateValue(world.getBlockState(pos), pos));
+			MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockValue(world.getBlockState(pos), pos));
 		}
 	}
 
 	@Inject(method = "interactEntity", at = @At("TAIL"))
 	private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.getEntityValue(entity));
+		MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.of(entity));
 	}
 }

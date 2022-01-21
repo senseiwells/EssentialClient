@@ -12,26 +12,35 @@ import net.minecraft.util.math.Direction;
 
 public class BetterAccurateBlockPlacement {
 
-	public static Direction fakeDirection;
-
+	public static Direction fakeDirection = null;
+	public static int requestedTicks = 0;
 	public static float fakeYaw = 0;
 	public static float fakePitch = 0;
-
-	private static boolean wasReversePressed = false;
-	private static boolean wasIntoPressed = false;
+	private static float previousFakeYaw = 0;
+	private static float previousFakePitch = 0;
+	public static boolean wasReversePressed = false;
+	public static boolean wasIntoPressed = false;
 
 	public static void register() {
-		ClientTickEvents.END_CLIENT_TICK.register(BetterAccurateBlockPlacement::accurateBlockPlacement);
+		ClientTickEvents.END_CLIENT_TICK.register(BetterAccurateBlockPlacement::accurateBlockPlacementOnPress);
 	}
 
-	private static void accurateBlockPlacement(MinecraftClient client) {
-		fakeDirection = null;
+	private static void accurateBlockPlacementOnPress(MinecraftClient client) {
 		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue() && networkHandler != null) {
-			ClientPlayerEntity playerEntity = client.player;
-			if (playerEntity == null) {
-				return;
+		ClientPlayerEntity playerEntity = client.player;
+		if (playerEntity == null || networkHandler == null) {
+			return;
+		}
+		if (requestedTicks > 0) {
+			if (fakeYaw != previousFakeYaw || fakePitch != previousFakePitch) {
+				sendLookPacket(networkHandler, playerEntity);
+				previousFakeYaw = fakeYaw;
+				previousFakePitch = fakePitch;
 			}
+			requestedTicks--;
+			return;
+		}
+		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			fakeYaw = playerEntity.getYaw();
 			fakePitch = playerEntity.getPitch();
 			Direction facing = Direction.getEntityFacingOrder(playerEntity)[0];
@@ -41,6 +50,7 @@ public class BetterAccurateBlockPlacement {
 				fakeYaw = 0;
 				fakePitch = 0;
 				facing = blockHitResult.getSide();
+				fakeDirection = facing;
 				switch (facing) {
 					case UP -> fakePitch = -90;
 					case DOWN -> fakePitch = 90;
@@ -73,6 +83,8 @@ public class BetterAccurateBlockPlacement {
 				sendLookPacket(networkHandler, playerEntity);
 				wasReversePressed = false;
 			}
+			previousFakeYaw = fakeYaw;
+			previousFakePitch = fakePitch;
 			// This is for the client, so it doesn't look jank
 			fakeDirection = facing;
 		}

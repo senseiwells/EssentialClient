@@ -29,16 +29,17 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onSynchronizeRecipes", at = @At("HEAD"))
 	private void onSyncRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
-		if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && client.player != null) {
-			ClientRecipeBook recipeBook = client.player.getRecipeBook();
-			packet.getRecipes().forEach(recipeBook::add);
+		if (this.client.player != null) {
 			RecipeBookCache.setRecipeCache(packet.getRecipes());
+			if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue()) {
+				ClientRecipeBook recipeBook = client.player.getRecipeBook();
+				packet.getRecipes().forEach(recipeBook::add);
+			}
 		}
 	}
 
 	@Inject(method = "onUnlockRecipes", at = @At("HEAD"))
 	private void onUnlock(UnlockRecipesS2CPacket packet, CallbackInfo ci) {
-		if (!ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue()) return;
 		switch (packet.getAction()) {
 			case ADD, INIT -> {
 				for (Identifier identifier : packet.getRecipeIdsToChange()) {

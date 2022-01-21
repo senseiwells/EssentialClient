@@ -3,17 +3,15 @@ package essentialclient.clientscript;
 import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.*;
+import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ContextBuilder;
-import me.senseiwells.arucas.core.Run;
-import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.ThrowStop;
-import me.senseiwells.arucas.throwables.ThrowValue;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
+import me.senseiwells.arucas.utils.impl.ArucasThread;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -29,26 +27,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class ClientScript {
-	/**
-	 * This is the ThreadGroup that all script threads should be inside.
-	 *
-	 * If a script thread is not generated inside a thread it is possible
-	 * it will never stop executing.
-	 */
 	private static final ClientScript instance = new ClientScript();
 
-	public final ThreadGroup arucasThreadGroup = new ThreadGroup("Arucas Thread Group");
-	public final Object ERROR_LOCK = new Object();
-
-	private Context context;
-	private Thread thread;
-	private boolean hasErrored;
+	private ArucasThread mainScriptThread;
 
 	public void register() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			KeyBinding clientKeybind = ClientKeybinds.CLIENT_SCRIPT.getKeyBinding();
-			if (clientKeybind.isPressed() && !clientKeybind.wasPressed()) {
-				clientKeybind.setPressed(false);
+			if (clientKeybind.wasPressed()) {
 				this.toggleScript();
 			}
 		});
@@ -57,9 +43,9 @@ public class ClientScript {
 	public static ClientScript getInstance() {
 		return instance;
 	}
-	
+
 	public boolean isScriptRunning() {
-		return this.context != null;
+		return this.mainScriptThread != null;
 	}
 	
 	public void toggleScript() {
@@ -78,22 +64,20 @@ public class ClientScript {
 		if (isScriptRunning()) {
 			this.stopScript();
 		}
-		this.hasErrored = false;
 		this.executeScript();
 	}
 	
 	public synchronized void stopScript() {
-		this.arucasThreadGroup.interrupt();
-
-		this.context = null;
-		this.thread = null;
-
+		if (!this.isScriptRunning()) {
+			return;
+		}
+		this.mainScriptThread.interrupt();
+		this.mainScriptThread = null;
 		CommandHelper.functionCommands.clear();
 		CommandHelper.functionCommandNodes.clear();
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
 			client.execute(() -> {
-				// Check must be done here, otherwise can result in NPE
 				ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
 				if (networkHandler != null) {
 					networkHandler.onCommandTree(CommandHelper.getCommandPacket());
@@ -133,109 +117,48 @@ public class ClientScript {
 				s = !s.endsWith("\n") ? s : s.substring(0, s.length() - 1);
 				EssentialUtils.sendMessage(s);
 			})
-			.addValueExtensions(
-				ArucasMinecraftClientMembers::new,
-				ArucasEntityMembers::new,
-				ArucasLivingEntityMembers::new,
-				ArucasAbstractPlayerMembers::new,
-				ArucasPlayerMembers::new,
-				ArucasBlockStateMembers::new,
-				ArucasItemStackMembers::new,
-				ArucasWorldMembers::new,
-				ArucasScreenMembers::new,
-				ArucasFakeInventoryScreenMembers::new,
-				ArucasTextMembers::new
+			.addClasses(
+				MinecraftClientValue.ArucasMinecraftClientMembers::new,
+				PlayerValue.ArucasPlayerClass::new,
+				EntityValue.ArucasEntityClass::new,
+				OtherPlayerValue.ArucasAbstractPlayerClass::new,
+				LivingEntityValue.ArucasLivingEntityClass::new,
+				BlockValue.ArucasBlockClass::new,
+			 	ItemStackValue.ArucasItemStackClass::new,
+				WorldValue.ArucasWorldClass::new,
+				ScreenValue.ArucasScreenClass::new,
+				FakeInventoryScreenValue.ArucasFakeInventoryScreenClass::new,
+				TextValue.ArucasTextClass::new,
+				MaterialValue.ArucasMaterialClass::new,
+				PosValue.ArucasPosClass::new,
+				RecipeValue.ArucasRecipeClass::new,
+				MerchantScreenValue.ArucasMerchantScreenClass::new
 			)
 			.addExtensions(
 				ArucasMinecraftExtension::new
 			)
-			.addDefault()
-			;
+			.addDefault();
 
-		// Local variable is needed, it will never be null
 		Context context = contextBuilder.build();
-		this.context = context;
 
-		// Create a new deamon thread.
-		this.thread = new Thread(this.arucasThreadGroup, () -> {
-			try {
-				Run.run(context, fileName, fileContent);
-			}
-			catch (ThrowStop e) {
-				EssentialUtils.sendMessage("§c%s".formatted(e.toString(context)));
-			}
-			catch (CodeError e) {
-				this.tryError(e);
-			}
-			catch (Throwable t) {
-				this.sendReportMessage(t, fileContent);
-				t.printStackTrace();
-			}
-			finally {
-				this.stopScript();
-			}
-		}, "Client Script Thread");
-		this.thread.setDaemon(true);
-		this.thread.start();
-	}
-
-	public synchronized Thread runAsyncFunctionInContext(Context context, ThrowableConsumer<Context> consumer) {
-		if (!this.isScriptRunning()) {
-			return null;
-		}
-
-		return this.runAsyncFunction(context, consumer);
-	}
-	
-	public synchronized Thread runBranchAsyncFunction(ThrowableConsumer<Context> consumer) {
-		return this.runAsyncFunctionInContext(this.context.createBranch(), consumer);
-	}
-	
-	private synchronized Thread runAsyncFunction(final Context context, ThrowableConsumer<Context> consumer) {
-		Thread thread = new Thread(this.arucasThreadGroup, () -> {
-			try {
-				consumer.accept(context);
-				return;
-			}
-			catch (CodeError e) {
-				this.tryError(e);
-			}
-			catch (ThrowValue tv) {
-				this.tryError();
-			}
-			catch (Throwable t) {
-				this.sendReportMessage(t);
-				t.printStackTrace();
-			}
-			this.stopScript();
-		}, "Client Runnable Thread");
-		thread.setDaemon(true);
-		thread.start();
-		return thread;
-	}
-
-	private void tryError(CodeError error) {
-		if (error.errorType != CodeError.ErrorType.INTERRUPTED_ERROR) {
-			synchronized (this.ERROR_LOCK) {
-				if (this.hasErrored) {
+		context.getThreadHandler()
+			.setErrorHandler(this::messageError)
+			.setFinalHandler(this::stopScript)
+			.setFatalErrorHandler((c, t, s) -> {
+				if (s.isEmpty()) {
+					this.sendReportMessage(t);
 					return;
 				}
-				EssentialUtils.sendMessage("§cAn error occurred while running the script");
-				EssentialUtils.sendMessage("§c--------------------------------------------\n" + error.toString(context));
-				this.hasErrored = true;
-			}
-		}
+				this.sendReportMessage(t, s);
+			});
+
+		this.mainScriptThread = context.getThreadHandler().runOnThread(context, fileName, fileContent, null);
+
 	}
 
-	private void tryError() {
-		synchronized (this.ERROR_LOCK) {
-			if (this.hasErrored) {
-				return;
-			}
-			EssentialUtils.sendMessage("§cAn error occurred while running the script");
-			EssentialUtils.sendMessage("§c--------------------------------------------\nInvalid position for a break, continue or return");
-			this.hasErrored = true;
-		}
+	private void messageError(String error) {
+		EssentialUtils.sendMessage("§cAn error occurred while running the script");
+		EssentialUtils.sendMessage("§c--------------------------------------------\n" + error);
 	}
 
 	private void sendReportMessage(Throwable t) {
@@ -286,9 +209,5 @@ public class ClientScript {
 		client.options.keyForward.setPressed(false);
 		client.options.keyAttack.setPressed(false);
 		client.options.keyUse.setPressed(false);
-	}
-
-	public interface ThrowableConsumer<T> {
-		void accept(T obj) throws Throwable;
 	}
 }
