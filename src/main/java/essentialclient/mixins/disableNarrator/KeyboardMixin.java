@@ -11,7 +11,7 @@ public class KeyboardMixin {
 	@ModifyConstant(method = "onKey", constant = @Constant(intValue = 66), require = 0)
 	private int disableNarrator(int old) {
 		if (ClientRules.DISABLE_NARRATOR.getValue()) {
-			return -1;
+			return -2;
 		}
 		return old;
 	}
