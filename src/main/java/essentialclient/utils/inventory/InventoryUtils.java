@@ -90,22 +90,24 @@ public class InventoryUtils {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
 			return false;
 		}
-		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
-		while (true) {
-			selectTrade(client, merchantScreen, index);
-			if (!tradeSlot.hasStack()) {
-				break;
+		client.execute(() -> {
+			Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
+			while (true) {
+				selectTrade(client, merchantScreen, index);
+				if (!tradeSlot.hasStack()) {
+					break;
+				}
+				ItemStack tradeStack = tradeSlot.getStack().copy();
+				shiftClickSlot(client, merchantScreen, tradeSlot.id);
+				if (dropItems) {
+					dropAllItemType(client.player, tradeStack.getItem());
+				}
+				if (tradeSlot.hasStack()) {
+					break;
+				}
 			}
-			ItemStack tradeStack = tradeSlot.getStack().copy();
-			shiftClickSlot(client, merchantScreen, tradeSlot.id);
-			if (dropItems) {
-				dropAllItemType(client.player, tradeStack.getItem());
-			}
-			if (tradeSlot.hasStack()) {
-				break;
-			}
-		}
-		clearTradeInputSlot(client, merchantScreen);
+			clearTradeInputSlot(client, merchantScreen);
+		});
 		return true;
 	}
 
@@ -116,6 +118,38 @@ public class InventoryUtils {
 		MerchantScreenHandler handler = merchantScreen.getScreenHandler();
 		handler.setRecipeIndex(index);
 		client.getNetworkHandler().sendPacket(new SelectMerchantTradeC2SPacket(index));
+	}
+
+	public static boolean selectTrade(MinecraftClient client, int index) {
+		if (client.getNetworkHandler() == null || !(client.currentScreen instanceof MerchantScreen merchantScreen)) {
+			return false;
+		}
+		MerchantScreenHandler handler = merchantScreen.getScreenHandler();
+		client.execute(() -> {
+			handler.setRecipeIndex(index);
+			client.getNetworkHandler().sendPacket(new SelectMerchantTradeC2SPacket(index));
+		});
+		return true;
+	}
+
+	public static boolean tradeSelectedRecipe(MinecraftClient client, boolean drop) {
+		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
+			return false;
+		}
+		MerchantScreenHandler screenHandler = merchantScreen.getScreenHandler();
+		Slot tradeSlot = screenHandler.getSlot(2);
+		if (tradeSlot.getStack().getCount() == 0) {
+			return true;
+		}
+		client.execute(() -> {
+			if (drop) {
+				client.interactionManager.clickSlot(screenHandler.syncId, 2, 0, SlotActionType.PICKUP, client.player);
+				client.interactionManager.clickSlot(screenHandler.syncId, -999, 0, SlotActionType.PICKUP, client.player);
+				return;
+			}
+			InventoryUtils.shiftClickSlot(client, merchantScreen, 2);
+		});
+		return true;
 	}
 
 	public static void clearTradeInputSlot(MinecraftClient client, MerchantScreen merchantScreen) {
@@ -161,6 +195,22 @@ public class InventoryUtils {
 			}
 		}
 		return 0;
+	}
+
+	public static boolean clearTrade(MinecraftClient client) {
+		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
+			return false;
+		}
+		client.execute(() -> clearTradeInputSlot(client, merchantScreen));
+		return true;
+	}
+
+	public static boolean isTradeSelected(MinecraftClient client) {
+		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
+			return false;
+		}
+		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(0);
+		return tradeSlot.getStack().getCount() != 0;
 	}
 
 	public static ItemStack getTrade(MinecraftClient client, int index) throws RuntimeException {
@@ -377,6 +427,14 @@ public class InventoryUtils {
 			return ItemStack.EMPTY;
 		}
 		return client.player.currentScreenHandler.getCursorStack();
+	}
+
+	public static boolean setCursorStack(MinecraftClient client, ItemStack stack) {
+		if (client != null && client.player != null) {
+			client.player.currentScreenHandler.setCursorStack(stack);
+			return true;
+		}
+		return false;
 	}
 
 	public static ItemStack getStackAtSlot(HandledScreen<?> handledScreen, int slotId) {

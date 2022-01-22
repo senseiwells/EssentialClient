@@ -197,10 +197,10 @@ public class ChunkDebugScreen extends Screen {
 		bufferBuilder.vertex(this.width, 0, 0).texture(this.width / 32f, 0).color(64, 64, 64, 255).next();
 
 		// Footer
-		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).texture(0, (this.height - FOOTER_HEIGHT) / 32f).color(64, 64, 64, 255).next();
-		bufferBuilder.vertex(0, this.height, 0).texture(0, this.height / 32f).color(64, 64, 64, 255).next();
-		bufferBuilder.vertex(this.width, this.height, 0).texture(this.width / 32f, this.height / 32f).color(64, 64, 64, 255).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).texture(this.width / 32f, (this.height - FOOTER_HEIGHT) / 32f).color(64, 64, 64, 255).next();
+		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(0, (this.height - FOOTER_HEIGHT) / 32f).next();
+		bufferBuilder.vertex(0, this.height, 0).color(64, 64, 64, 255).texture(0, this.height / 32f).next();
+		bufferBuilder.vertex(this.width, this.height, 0).color(64, 64, 64, 255).texture(this.width / 32f, this.height / 32f).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f, (this.height - FOOTER_HEIGHT) / 32f).next();
 
 		tessellator.draw();
 	}
@@ -209,6 +209,7 @@ public class ChunkDebugScreen extends Screen {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (ClientKeybinds.OPEN_CHUNK_DEBUG.getKeyBinding().matchesKey(keyCode, scanCode)) {
 			this.onClose();
+			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}

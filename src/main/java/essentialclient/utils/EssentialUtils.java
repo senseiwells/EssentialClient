@@ -92,7 +92,7 @@ public class EssentialUtils {
 	public static String getArucasVersion() {
 		ModContainer modContainer = getModContainer();
 		if (modContainer != null) {
-			for (ModDependency modDependency : modContainer.getMetadata().getDependencies()) {
+			for (ModDependency modDependency : modContainer.getMetadata().getSuggests()) {
 				if (modDependency.getModId().equals("arucas")) {
 					return modDependency.getVersionRequirements().toString()
 						.replaceAll("\\[=", "")
@@ -218,7 +218,7 @@ public class EssentialUtils {
 
 	private static void tryDeleteOldVersion() throws IOException {
 		String minecraftVersion = getMinecraftVersion();
-		String clientVersion = getVersion();
+		String clientVersion = EssentialClient.VERSION;
 		File modDirectory = FabricLoader.getInstance().getGameDir().resolve("mods").toFile();
 		if (!modDirectory.isDirectory()) {
 			throw new FileNotFoundException("Could not find mod directory");

@@ -17,12 +17,12 @@ import net.minecraft.util.Util;
 
 public class ConfigScreen extends Screen {
 	private final Screen parent;
-
+	
 	public ConfigScreen(Screen parent) {
 		super(new LiteralText("Essential Client Options"));
 		this.parent = parent;
 	}
-
+	
 	@Override
 	protected void init() {
 		if (this.client == null) {

@@ -1,7 +1,6 @@
 package essentialclient.clientscript.events;
 
 import com.google.common.collect.Sets;
-import essentialclient.clientscript.ClientScript;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.FunctionValue;
@@ -41,9 +40,9 @@ public class MinecraftScriptEvent {
 
 	public synchronized void run(List<Value<?>> arguments) {
 		this.functionValues.forEach(eventFunction -> {
-			Context fileContext = eventFunction.context.createRootBranch();
+			Context fileContext = eventFunction.context.createBranch();
 			FunctionValue functionValue = eventFunction.functionValue;
-			ClientScript.getInstance().runAsyncFunctionInContext(fileContext, context -> functionValue.call(context, arguments));
+			fileContext.getThreadHandler().runAsyncFunctionInContext(fileContext, context -> functionValue.call(context, arguments), "ClientScript Event");
 		});
 	}
 

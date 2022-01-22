@@ -38,10 +38,10 @@
   "depends": {
     "fabricloader": ">=0.10.0",
     "carpet": "*",
-    "minecraft": "1.18.x"
+    "minecraft": "1.17.x"
 
   },
   "suggests": {
-    "arucas": "1.1.2"
+    "arucas": "1.1.3"
   }
 }

@@ -1,8 +1,6 @@
 package essentialclient.feature.chunkdebug;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+import essentialclient.EssentialClient;
 import net.minecraft.util.math.ChunkPos;
 
 import java.util.HashMap;
@@ -26,21 +24,21 @@ public class ChunkHandler {
 		chunkDataMap.forEach((s, chunkData) -> chunkData.clear());
 	}
 
-	public synchronized static void deserializeAndProcess(NbtCompound compound) {
-		NbtList chunkList = compound.getList("chunks", 10);
-		String world = compound.getString("world");
-		if (chunkList.isEmpty()) {
+	public synchronized static void deserializeAndProcess(String world, long[] chunkPositions, byte[] levelTypes, byte[] ticketTypes) {
+		int size = chunkPositions.length;
+		if (size != levelTypes.length || size != ticketTypes.length) {
+			EssentialClient.LOGGER.error("Chunk debug received bad packet!");
 			return;
 		}
+
 		chunkDataMap.putIfAbsent(world, new HashSet<>());
 		Set<ChunkData> chunkDataSet = chunkDataMap.get(world);
-		for (NbtElement element : chunkList) {
-			NbtCompound chunkCompound = (NbtCompound) element;
-			int x = chunkCompound.getInt("x");
-			int z = chunkCompound.getInt("z");
-			ChunkType chunkType = ChunkType.decodeChunkType(chunkCompound.getInt("t"));
-			TicketType ticketType = TicketType.decodeTicketType(chunkCompound.getInt("l"));
-			ChunkData chunkData = new ChunkData(x, z, chunkType, ticketType);
+
+		for (int i = 0; i < size; i++) {
+			ChunkPos chunkPos = new ChunkPos(chunkPositions[i]);
+			ChunkType chunkType = ChunkType.decodeChunkType(levelTypes[i]);
+			TicketType ticketType = TicketType.decodeTicketType(ticketTypes[i]);
+			ChunkData chunkData = new ChunkData(chunkPos, chunkType, ticketType);
 			chunkDataSet.remove(chunkData);
 			if (chunkType != ChunkType.UNLOADED) {
 				chunkDataSet.add(chunkData);
@@ -53,10 +51,14 @@ public class ChunkHandler {
 		private final ChunkType chunkType;
 		private final TicketType ticketType;
 
-		public ChunkData(int posX, int posZ, ChunkType chunkType, TicketType ticketType) {
-			this.chunkPos = new ChunkPos(posX, posZ);
+		public ChunkData(ChunkPos chunkPos, ChunkType chunkType, TicketType ticketType) {
+			this.chunkPos = chunkPos;
 			this.chunkType = chunkType;
 			this.ticketType = ticketType;
+		}
+
+		public ChunkData(int posX, int posZ, ChunkType chunkType, TicketType ticketType) {
+			this(new ChunkPos(posX, posZ), chunkType, ticketType);
 		}
 
 		public int getPosX() {
