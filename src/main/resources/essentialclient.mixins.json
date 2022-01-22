@@ -22,6 +22,8 @@
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
     "customClientCape.AbstractClientPlayerEntityMixin",
+    "daylightCycleSlowdownMutliplier.ClientPlayNetworkHandlerMixin",
+    "daylightCycleSlowdownMutliplier.ClientWorldMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
@@ -64,9 +66,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "daylightCycleSlowdownMutliplier.ClientPlayNetworkHandlerMixin",
-    "daylightCycleSlowdownMutliplier.ClientWorldMixin"
-  ]
+  }
 }
