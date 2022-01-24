@@ -118,6 +118,7 @@ public class ClientScript {
 				EssentialUtils.sendMessage(s);
 			})
 			.addClasses(
+				JsonValue.ArucasJsonClass::new,
 				MinecraftClientValue.ArucasMinecraftClientMembers::new,
 				PlayerValue.ArucasPlayerClass::new,
 				EntityValue.ArucasEntityClass::new,
