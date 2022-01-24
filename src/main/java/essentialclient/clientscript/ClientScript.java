@@ -2,7 +2,7 @@ package essentialclient.clientscript;
 
 import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
-import essentialclient.clientscript.extensions.*;
+import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.ClientKeybinds;
@@ -118,6 +118,7 @@ public class ClientScript {
 				EssentialUtils.sendMessage(s);
 			})
 			.addClasses(
+				JsonValue.ArucasJsonClass::new,
 				MinecraftClientValue.ArucasMinecraftClientMembers::new,
 				PlayerValue.ArucasPlayerClass::new,
 				EntityValue.ArucasEntityClass::new,
