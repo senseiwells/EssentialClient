@@ -117,6 +117,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("interactBlock", List.of("pos", "face", "pos", "insideBlock"), this::interactBlockFullPos),
 				new MemberFunction("getBlockBreakingSpeed", "blockState", this::getBlockBreakingSpeed),
 
+				new MemberFunction("interactItem", this::interactItem),
+				new MemberFunction("swapHands", this::swapHands),
+				new MemberFunction("clickSlot",List.of("slot", "clickData", "slotActionType"), this::clickSlot),
+				new MemberFunction("getSwappableHotbarSlot", this::getSwappableHotbarSlot),
 				// Villager Stuff
 				new MemberFunction("tradeIndex", "index", this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
 				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade, "Use '<MerchantScreen>.getIndexOfTradeItem(itemStack)'"),
@@ -290,16 +294,71 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (numberValue1.value > size || numberValue1.value < 0 || numberValue2.value > size || numberValue2.value < 0) {
 				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
+			int number1 =  numberValue1.value.intValue();
+			int number2 =  numberValue2.value.intValue();
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> {
-				interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
-				interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), 0, SlotActionType.SWAP, player);
-				interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
+				interactionManager.clickSlot(screenHandler.syncId, number1, 0, SlotActionType.PICKUP, player);
+				interactionManager.clickSlot(screenHandler.syncId, number2, 0, SlotActionType.PICKUP, player);
+				interactionManager.clickSlot(screenHandler.syncId, number1, 0, SlotActionType.PICKUP, player);
+				player.inventory.updateItems();
 			});
 			return NullValue.NULL;
 		}
-
+		private Value<?> getSwappableHotbarSlot(Context context, MemberFunction function) throws CodeError {
+			//return predicted current swappable hotbar slot
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			return NumberValue.of(player.inventory.getSwappableHotbarSlot());
+		}
+		
+		/*
+			interactItem() : does not require anything, just simulate using item. Not for foods
+		 */
+		private Value<?> interactItem(Context context, MemberFunction function) throws CodeError {
+			final ClientPlayerEntity player = this.getPlayer(context, function);
+			final MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (client.interactionManager == null){
+				throw new RuntimeError("interactionManager was null", function.syntaxPosition, context);
+			}
+			client.execute (() -> client.interactionManager.interactItem(player, client.world, player.getStackInHand(Hand.MAIN_HAND).isEmpty() ? Hand.OFF_HAND : Hand.MAIN_HAND));
+			return NullValue.NULL;
+		}
+		private Value<?> swapHands(Context context, MemberFunction function) throws CodeError {
+			final ClientPlayerEntity player = this.getPlayer(context, function);
+			final MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (client.interactionManager == null || client.getNetworkHandler() == null){
+				throw new RuntimeError("Network/interactionManager was null", function.syntaxPosition, context);
+			}
+			if (player.isSpectator()){
+				return NullValue.NULL;
+			}
+			client.execute (() -> client.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN)));
+			return NullValue.NULL;
+		}
+		
+		//slotNumber -999 or regular slot, clickdata : 0/1 (default to left click), string : slotActionType, default to pickup
+		private Value<?> clickSlot(Context context, MemberFunction function) throws CodeError {
+			int numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
+			int clickData = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue() == 1 ? 1 : 0;
+			String stringValue = function.getParameterValueOfType(context, StringValue.class, 3).value.toUpperCase();
+			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
+			int size = screenHandler.slots.size();
+			if (numberValue1 != -999 && numberValue1 > size || numberValue1 < 0) {
+				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
+			}
+			SlotActionType slotActionType = SlotActionType.PICKUP;
+			try {
+				slotActionType = SlotActionType.valueOf(stringValue);}
+			catch (IllegalArgumentException ignored){
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			SlotActionType finalSlotActionType = slotActionType;
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, numberValue1, clickData, finalSlotActionType, player));
+			return NullValue.NULL;
+		}
+		
 		private Value<?> shiftClickSlot(Context context, MemberFunction function) throws CodeError {
 			NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
