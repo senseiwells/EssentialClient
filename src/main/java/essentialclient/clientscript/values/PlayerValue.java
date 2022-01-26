@@ -31,6 +31,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.recipe.StonecuttingRecipe;
@@ -116,6 +117,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("interactBlock", List.of("px", "py", "pz", "face", "bx", "by", "bz", "insideBlock"), this::interactBlockFull),
 				new MemberFunction("interactBlock", List.of("pos", "face", "pos", "insideBlock"), this::interactBlockFullPos),
 				new MemberFunction("getBlockBreakingSpeed", "blockState", this::getBlockBreakingSpeed),
+				new MemberFunction("swapHands", this::swapHands),
+				new MemberFunction("clickSlot",List.of("slot", "clickData", "slotActionType"), this::clickSlot),
+				new MemberFunction("getSwappableHotbarSlot", this::getSwappableHotbarSlot),
 
 				// Villager Stuff
 				new MemberFunction("tradeIndex", "index", this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
@@ -284,21 +288,75 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> swapSlots(Context context, MemberFunction function) throws CodeError {
-			NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
-			NumberValue numberValue2 = function.getParameterValueOfType(context, NumberValue.class, 2);
+			int slot1 = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
+			int slot2 = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
 			ClientPlayerEntity player = this.getPlayer(context, function);
 			ScreenHandler screenHandler = player.currentScreenHandler;
 			int size = screenHandler.slots.size();
-			if (numberValue1.value > size || numberValue1.value < 0 || numberValue2.value > size || numberValue2.value < 0) {
+			if (slot1 > size || slot1 < 0 || slot2 > size || slot2 < 0) {
 				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
+			boolean isFirstEmpty = screenHandler.getSlot(slot1).getStack().isEmpty();
+			// If first slot was air, we try to swap second first
+			int number1 = isFirstEmpty ? slot2 : slot1;
+			int number2 = isFirstEmpty ? slot1 : slot2;
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> {
-				interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
-				interactionManager.clickSlot(screenHandler.syncId, numberValue2.value.intValue(), 0, SlotActionType.SWAP, player);
-				interactionManager.clickSlot(screenHandler.syncId, numberValue1.value.intValue(), 0, SlotActionType.SWAP, player);
+				interactionManager.clickSlot(screenHandler.syncId, number1, 0, SlotActionType.SWAP, player);
+				interactionManager.clickSlot(screenHandler.syncId, number2, 0, SlotActionType.SWAP, player);
+				interactionManager.clickSlot(screenHandler.syncId, number1, 0, SlotActionType.SWAP, player);
+				player.getInventory().updateItems();
 			});
+			return NullValue.NULL;
+		}
+
+		private Value<?> getSwappableHotbarSlot(Context context, MemberFunction function) throws CodeError {
+			// Return predicted current swappable hotbar slot
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			return NumberValue.of(player.getInventory().getSwappableHotbarSlot());
+		}
+
+		private Value<?> swapHands(Context context, MemberFunction function) throws CodeError {
+			final ClientPlayerEntity player = this.getPlayer(context, function);
+			final MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (client.interactionManager == null || client.getNetworkHandler() == null){
+				throw new RuntimeError("Network/interactionManager was null", function.syntaxPosition, context);
+			}
+			if (player.isSpectator()){
+				return NullValue.NULL;
+			}
+			client.execute (() -> client.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN)));
+			return NullValue.NULL;
+		}
+
+		private Value<?> clickSlot(Context context, MemberFunction function) throws CodeError {
+			int slot = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
+			String clickDataString = function.getParameterValueOfType(context, StringValue.class, 2).value.toLowerCase();
+			int clickData = switch (clickDataString) {
+				case "right" -> 1;
+				case "left" -> 0;
+				default -> throw new RuntimeError("Invalid clickData must be \"left\" or \"right\"", function.syntaxPosition, context);
+			};
+			String stringValue = function.getParameterValueOfType(context, StringValue.class, 3).value.toLowerCase();
+			SlotActionType slotActionType = switch (stringValue) {
+				case "click", "pickup" -> SlotActionType.PICKUP;
+				case "shift_click", "quick_move" -> SlotActionType.QUICK_MOVE;
+				case "swap" -> SlotActionType.SWAP;
+				case "middle_click", "clone" -> SlotActionType.CLONE;
+				case "throw" -> SlotActionType.THROW;
+				case "drag", "quick_craft" -> SlotActionType.QUICK_CRAFT;
+				case "double_click", "pickup_all" -> SlotActionType.PICKUP_ALL;
+				default -> throw new RuntimeError("Invalid slotActionType, see Wiki", function.syntaxPosition, context);
+			};
+			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
+			int size = screenHandler.slots.size();
+			if (slot != -999 && slot > size || slot < 0) {
+				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, slot, clickData, slotActionType, player));
 			return NullValue.NULL;
 		}
 
@@ -317,7 +375,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 
 		private Value<?> dropSlot(Context context, MemberFunction function) throws CodeError {
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
-			ArucasMinecraftExtension.getInteractionManager().clickSlot(this.getPlayer(context, function).currentScreenHandler.syncId, numberValue.value.intValue(), 1, SlotActionType.THROW, ArucasMinecraftExtension.getClient().player);
+			ArucasMinecraftExtension.getInteractionManager()
+					.clickSlot(this.getPlayer(context, function).currentScreenHandler.syncId, numberValue.value.intValue(), 1, SlotActionType.THROW, ArucasMinecraftExtension.getPlayer());
 			return NullValue.NULL;
 		}
 
@@ -498,8 +557,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				if (stonecuttingRecipes.get(i).getOutput().getItem() == itemOutput) {
 					int iFinal = i;
 					client.execute(() -> {
-					interactionManager.clickButton(cutterHandler.syncId, iFinal);
-					interactionManager.clickSlot(cutterHandler.syncId, 1, 0, SlotActionType.QUICK_MOVE, player);
+						interactionManager.clickButton(cutterHandler.syncId, iFinal);
+						interactionManager.clickSlot(cutterHandler.syncId, 1, 0, SlotActionType.QUICK_MOVE, player);
 					});
 					return BooleanValue.TRUE;
 				}
@@ -710,7 +769,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private NullValue setKey(Context context, MemberFunction function, KeyBinding keyBinding) throws CodeError {
-			
+
 			BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 			keyBinding.setPressed(booleanValue.value);
 			return NullValue.NULL;
