@@ -10,6 +10,7 @@ import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -123,6 +124,11 @@ public class NumberListEntry extends BaseListEntry {
 			isNumber = false;
 		}
 		this.setInvalid(!isNumber);
+	}
+
+	@Override
+	public List<? extends Selectable> selectableChildren() {
+		return ImmutableList.of(this.editButton, this.resetButton, this.numberField);
 	}
 
 	@Override
