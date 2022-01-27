@@ -35,6 +35,8 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
+				new MemberFunction("getTradeList", this::getTradeList),
+				new MemberFunction("getTradeListSize", this::getTradeListSize),
 				new MemberFunction("tradeIndex", "index", this::tradeIndex),
 				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
 				new MemberFunction("getTradeItemForIndex", "index", this::getTradeItemForIndex),
@@ -48,7 +50,41 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				new MemberFunction("tradeSelectedAndThrow", this::tradeSelectedAndThrow)
 			);
 		}
-
+		private Value<?> getTradeListSize(Context context, MemberFunction function) throws CodeError {
+			this.checkIsCurrentScreen(context, function);
+			Screen screen = ArucasMinecraftExtension.getClient().currentScreen;
+			if (screen instanceof MerchantScreen){
+				TradeOfferList tradeOfferList = ((MerchantScreen)screen).getScreenHandler().getRecipes();
+				return NumberValue.of(tradeOfferList.size());
+			}
+			return NumberValue.of(-1);
+		}
+		private Value<?> getTradeList(Context context, MemberFunction function) throws CodeError {
+			this.checkIsCurrentScreen(context, function);
+			Screen screen = ArucasMinecraftExtension.getClient().currentScreen;
+			ArucasList valueList = new ArucasList();
+			if (screen instanceof MerchantScreen){
+				TradeOfferList tradeOfferList = ((MerchantScreen)screen).getScreenHandler().getRecipes();
+				for (TradeOffer tradeOffers : tradeOfferList){
+					ItemStack sellItem = tradeOffers.getSellItem();
+					ItemStack buyItem1 = tradeOffers.getAdjustedFirstBuyItem();
+					ItemStack buyItem2 = tradeOffers.getSecondBuyItem();
+					ItemStackValue sellItemStackValue = new ItemStackValue(sellItem);
+					ItemStackValue buyItemStackValue1 = new ItemStackValue(buyItem1);
+					ItemStackValue buyItemStackValue2 = new ItemStackValue(buyItem2.isEmpty()? Items.AIR.getDefaultStack() : buyItem2);
+					ArucasMap map = new ArucasMap();
+					map.put(context, StringValue.of("sell"), sellItemStackValue);
+					map.put(context, StringValue.of("buy1"), buyItemStackValue1);
+					map.put(context, StringValue.of("buy2"), buyItemStackValue2);
+					valueList.add(new MapValue(map));
+				}
+				return new ListValue(valueList);
+			}
+			else {
+				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
+			}
+		}
+		
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
