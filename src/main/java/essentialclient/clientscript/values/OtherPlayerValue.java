@@ -156,7 +156,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 
 		@Override
 		public Class<?> getValueClass() {
-			return essentialclient.clientscript.values.OtherPlayerValue.class;
+			return AbstractPlayerValue.class;
 		}
 	}
 }
