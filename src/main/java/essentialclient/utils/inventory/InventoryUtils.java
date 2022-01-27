@@ -232,7 +232,7 @@ public class InventoryUtils {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
 			return false;
 		}
-		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(0);
+		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
 		return tradeSlot.getStack().getCount() != 0;
 	}
 
