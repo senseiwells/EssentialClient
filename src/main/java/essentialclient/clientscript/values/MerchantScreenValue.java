@@ -37,6 +37,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getTradeList", this::getTradeList),
 				new MemberFunction("getTradeListSize", this::getTradeListSize),
+				new MemberFunction("getVillagerJobLevel", this::getVillagerJobLevel),
 				new MemberFunction("tradeIndex", "index", this::tradeIndex),
 				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
 				new MemberFunction("getTradeItemForIndex", "index", this::getTradeItemForIndex),
@@ -83,6 +84,15 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			else {
 				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			}
+		}
+		
+		private Value<?> getVillagerJobLevel(Context context, MemberFunction function) throws CodeError {
+			this.checkIsCurrentScreen(context, function);
+			Screen screen = ArucasMinecraftExtension.getClient().currentScreen;
+			if (screen instanceof MerchantScreen){
+				return NumberValue.of(((MerchantScreen)screen).getScreenHandler().getLevelProgress());
+			}
+			throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 		}
 		
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
