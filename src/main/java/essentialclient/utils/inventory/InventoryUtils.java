@@ -154,13 +154,35 @@ public class InventoryUtils {
 
 	public static void clearTradeInputSlot(MinecraftClient client, MerchantScreen merchantScreen) {
 		Slot slot = merchantScreen.getScreenHandler().getSlot(0);
+		assert client.player!= null;
 		if (slot.hasStack()) {
-			shiftClickSlot(client, merchantScreen, slot.id);
+			if (canMergeIntoMain(client.player.inventory, slot.getStack())){
+				shiftClickSlot(client, merchantScreen, slot.id);
+			}
+			else {
+				dropStack(client ,merchantScreen, slot.id);
+			}
 		}
 		slot = merchantScreen.getScreenHandler().getSlot(1);
 		if (slot.hasStack()) {
-			shiftClickSlot(client, merchantScreen, slot.id);
+			if (canMergeIntoMain(client.player.inventory, slot.getStack())){
+				shiftClickSlot(client, merchantScreen, slot.id);
+			}
+			else {
+				dropStack(client ,merchantScreen, slot.id);
+			}
 		}
+	}
+	private static boolean canMergeIntoMain(PlayerInventory inventory, ItemStack stack){
+		int count = stack.getCount();
+		for(int i = 0; i< inventory.main.size(); ++i){
+			ItemStack itemStack = inventory.main.get(i);
+			if(itemStack.isItemEqual(stack)){
+				count = count - (itemStack.getMaxCount() - itemStack.getCount());
+				if(count <= 0){ return true;}
+			}
+		}
+		return false;
 	}
 
 	public static int checkTradeDisabled(MinecraftClient client, int index) {
