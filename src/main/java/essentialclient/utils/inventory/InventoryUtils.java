@@ -143,8 +143,7 @@ public class InventoryUtils {
 		}
 		client.execute(() -> {
 			if (drop) {
-				client.interactionManager.clickSlot(screenHandler.syncId, 2, 0, SlotActionType.PICKUP, client.player);
-				client.interactionManager.clickSlot(screenHandler.syncId, -999, 0, SlotActionType.PICKUP, client.player);
+				client.interactionManager.clickSlot(merchantScreen.getScreenHandler().syncId, 2, 1, SlotActionType.THROW, client.player);
 				return;
 			}
 			InventoryUtils.shiftClickSlot(client, merchantScreen, 2);
