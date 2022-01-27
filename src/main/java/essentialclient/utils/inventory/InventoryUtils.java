@@ -177,6 +177,7 @@ public class InventoryUtils {
 		int count = stack.getCount();
 		for(int i = 0; i< inventory.main.size(); ++i){
 			ItemStack itemStack = inventory.main.get(i);
+			if(itemStack.isEmpty()){return true;}
 			if(itemStack.isItemEqual(stack)){
 				count = count - (itemStack.getMaxCount() - itemStack.getCount());
 				if(count <= 0){ return true;}
