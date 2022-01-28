@@ -46,5 +46,5 @@ public class MinecraftScriptEvent {
 		});
 	}
 
-	private static final record EventFunction(Context context, FunctionValue functionValue, int id) { }
+	private record EventFunction(Context context, FunctionValue functionValue, int id) { }
 }

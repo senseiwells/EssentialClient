@@ -2,7 +2,7 @@ package essentialclient.clientscript;
 
 import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
-import essentialclient.clientscript.extensions.*;
+import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.ClientKeybinds;
@@ -47,7 +47,7 @@ public class ClientScript {
 	public boolean isScriptRunning() {
 		return this.mainScriptThread != null;
 	}
-	
+
 	public void toggleScript() {
 		boolean running = this.isScriptRunning();
 		if (running) {
@@ -56,17 +56,17 @@ public class ClientScript {
 		else {
 			this.startScript();
 		}
-		
+
 		EssentialUtils.sendMessageToActionBar("§6Script is now " + (running ? "§cOFF" : "§aON"));
 	}
-	
+
 	public synchronized void startScript() {
 		if (isScriptRunning()) {
 			this.stopScript();
 		}
 		this.executeScript();
 	}
-	
+
 	public synchronized void stopScript() {
 		if (!this.isScriptRunning()) {
 			return;
@@ -89,15 +89,15 @@ public class ClientScript {
 
 		EssentialUtils.sendMessageToActionBar("§6Script is now §cOFF");
 	}
-	
+
 	public static Path getFile() {
 		return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getValue() + ".arucas");
 	}
-	
+
 	public static Path getDir() {
 		return EssentialUtils.getEssentialConfigFile().resolve("Scripts");
 	}
-	
+
 	private synchronized void executeScript() {
 		final String fileName = ClientRules.CLIENT_SCRIPT_FILENAME.getValue();
 		final String fileContent;
@@ -133,7 +133,8 @@ public class ClientScript {
 				MaterialValue.ArucasMaterialClass::new,
 				PosValue.ArucasPosClass::new,
 				RecipeValue.ArucasRecipeClass::new,
-				MerchantScreenValue.ArucasMerchantScreenClass::new
+				MerchantScreenValue.ArucasMerchantScreenClass::new,
+				TradeValue.ArucasTradeOfferClass::new
 			)
 			.addExtensions(
 				ArucasMinecraftExtension::new
@@ -171,12 +172,12 @@ public class ClientScript {
 		EssentialUtils.sendMessage("§cAn error occurred while running the script");
 		EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
 		EssentialUtils.sendMessage(
-			new LiteralText("https://github.com/senseiwells/EssentialClient/issues/new")
-				.formatted(Formatting.UNDERLINE)
-				.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-					gitReport))
-				)
-			.append("\n")
+				new LiteralText("https://github.com/senseiwells/EssentialClient/issues/new")
+						.formatted(Formatting.UNDERLINE)
+						.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+								gitReport))
+						)
+						.append("\n")
 		);
 	}
 

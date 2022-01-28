@@ -100,7 +100,7 @@ public class ChunkGrid {
 		}
 
 		for (ChunkHandler.ChunkData chunkData : ChunkHandler.getChunks(this.getDimension())) {
-			if (chunkData.getChunkType() == ChunkType.UNLOADED) {
+			if (chunkData.getChunkType() == ChunkType.UNLOADED && !ClientRules.CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS.getValue()) {
 				continue;
 			}
 			int x = chunkData.getPosX() - (isMinimap ? this.minimapCornerPoint.x : this.cornerPoint.getX());

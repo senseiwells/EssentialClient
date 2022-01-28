@@ -143,8 +143,7 @@ public class InventoryUtils {
 		}
 		client.execute(() -> {
 			if (drop) {
-				client.interactionManager.clickSlot(screenHandler.syncId, 2, 0, SlotActionType.PICKUP, client.player);
-				client.interactionManager.clickSlot(screenHandler.syncId, -999, 0, SlotActionType.PICKUP, client.player);
+				client.interactionManager.clickSlot(merchantScreen.getScreenHandler().syncId, 2, 1, SlotActionType.THROW, client.player);
 				return;
 			}
 			InventoryUtils.shiftClickSlot(client, merchantScreen, 2);
@@ -153,14 +152,43 @@ public class InventoryUtils {
 	}
 
 	public static void clearTradeInputSlot(MinecraftClient client, MerchantScreen merchantScreen) {
+		if (client.player == null) {
+			return;
+		}
 		Slot slot = merchantScreen.getScreenHandler().getSlot(0);
 		if (slot.hasStack()) {
-			shiftClickSlot(client, merchantScreen, slot.id);
+			if (canMergeIntoMain(client.player.getInventory(), slot.getStack())) {
+				shiftClickSlot(client, merchantScreen, slot.id);
+			}
+			else {
+				dropStack(client, merchantScreen, slot.id);
+			}
 		}
 		slot = merchantScreen.getScreenHandler().getSlot(1);
-		if (slot.hasStack()) {
-			shiftClickSlot(client, merchantScreen, slot.id);
+		if (!slot.hasStack()) {
+			return;
 		}
+		if (canMergeIntoMain(client.player.getInventory(), slot.getStack())) {
+			shiftClickSlot(client, merchantScreen, slot.id);
+			return;
+		}
+		dropStack(client, merchantScreen, slot.id);
+	}
+	private static boolean canMergeIntoMain(PlayerInventory inventory, ItemStack stack) {
+		int count = stack.getCount();
+		for (int i = 0; i < inventory.main.size(); i++) {
+			ItemStack itemStack = inventory.main.get(i);
+			if (itemStack.isEmpty()) {
+				return true;
+			}
+			if (itemStack.isItemEqual(stack)) {
+				count -= itemStack.getMaxCount() - itemStack.getCount();
+				if (count <= 0) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static int checkTradeDisabled(MinecraftClient client, int index) {
@@ -209,7 +237,7 @@ public class InventoryUtils {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
 			return false;
 		}
-		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(0);
+		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
 		return tradeSlot.getStack().getCount() != 0;
 	}
 
@@ -507,7 +535,7 @@ public class InventoryUtils {
 		int gridLength = InventoryUtils.getCraftingSlotLength(handledScreen);
 
 		// if chosen recipe is different or crafting grid has invalid recipe
-		if (!InventoryUtils.areRecipesEqual(recipe, lastRecipe) || (!isGridEmpty(handledScreen, gridLength) && getStackAtSlot(handledScreen, 0).isEmpty())){
+		if (!InventoryUtils.areRecipesEqual(recipe, lastRecipe) || (!isGridEmpty(handledScreen, gridLength) && getStackAtSlot(handledScreen, 0).isEmpty())) {
 			InventoryUtils.emptyCraftingGrid(mc, handledScreen, player, gridLength);
 		}
 
@@ -569,8 +597,8 @@ public class InventoryUtils {
 			Item slotItem = slot.getStack().getItem();
 			if (cache.containsKey(slotItem)) {
 				cache.get(slotItem)
-					.getRight()
-					.add(slot.id);
+						.getRight()
+						.add(slot.id);
 			}
 		}
 
