@@ -78,6 +78,7 @@ java {
 }
 
 jar {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	from "LICENSE"
     from {
         configurations.packImplementation.collect { it.isDirectory() ? it : zipTree(it) }
