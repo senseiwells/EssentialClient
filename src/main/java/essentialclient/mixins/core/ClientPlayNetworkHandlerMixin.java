@@ -3,9 +3,13 @@ package essentialclient.mixins.core;
 import com.mojang.brigadier.CommandDispatcher;
 import essentialclient.EssentialClient;
 import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.events.MinecraftScriptEvents;
+import essentialclient.clientscript.values.PlayerValue;
+import essentialclient.clientscript.values.WorldValue;
 import essentialclient.commands.CommandRegister;
 import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -24,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 import java.util.UUID;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -59,6 +64,7 @@ public class ClientPlayNetworkHandlerMixin {
 		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getValue()) {
 			ClientScript.getInstance().startScript();
 		}
+		MinecraftScriptEvents.ON_CONNECT.run(List.of(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld())));
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)

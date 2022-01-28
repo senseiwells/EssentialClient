@@ -7,15 +7,15 @@ import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.values.BooleanValue;
-import me.senseiwells.arucas.values.NullValue;
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.Value;
+import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradeOfferList;
 
 public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 	public MerchantScreenValue(MerchantScreen screen) {
@@ -35,6 +35,9 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
+				new MemberFunction("getTradeList", this::getTradeList),
+				new MemberFunction("getTradeListSize", this::getTradeListSize),
+				new MemberFunction("getVillagerJobLevel", this::getVillagerJobLevel),
 				new MemberFunction("tradeIndex", "index", this::tradeIndex),
 				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
 				new MemberFunction("getTradeItemForIndex", "index", this::getTradeItemForIndex),
@@ -47,6 +50,27 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				new MemberFunction("tradeSelected", this::tradeSelected),
 				new MemberFunction("tradeSelectedAndThrow", this::tradeSelectedAndThrow)
 			);
+		}
+
+		private Value<?> getTradeListSize(Context context, MemberFunction function) throws CodeError {
+			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
+			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
+			return NumberValue.of(tradeOfferList.size());
+		}
+
+		private Value<?> getTradeList(Context context, MemberFunction function) throws CodeError {
+			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
+			ArucasList valueList = new ArucasList();
+			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
+			for (TradeOffer tradeOffers : tradeOfferList){
+				valueList.add(new TradeValue(tradeOffers));
+			}
+			return new ListValue(valueList);
+		}
+
+		private Value<?> getVillagerJobLevel(Context context, MemberFunction function) throws CodeError {
+			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
+			return NumberValue.of(merchantScreen.getScreenHandler().getLevelProgress());
 		}
 
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
@@ -144,12 +168,13 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			return NumberValue.of(price);
 		}
 
-		public void checkIsCurrentScreen(Context context, MemberFunction function) throws CodeError {
+		public MerchantScreen checkIsCurrentScreen(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
-			ScreenValue<?> screenValue = function.getThis(context, ScreenValue.class);
+			MerchantScreenValue screenValue = function.getThis(context, MerchantScreenValue.class);
 			if (client.currentScreen != screenValue.value) {
 				throw new RuntimeError("Currently not in %s".formatted(screenValue.getAsString(context)), function.syntaxPosition, context);
 			}
+			return screenValue.value;
 		}
 
 		public boolean checkVillagerValid(int code, AbstractBuiltInFunction<?> function, Context context) throws RuntimeError {
