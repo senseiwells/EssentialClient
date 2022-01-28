@@ -7,15 +7,18 @@ import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.values.BooleanValue;
-import me.senseiwells.arucas.values.NullValue;
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.Value;
+import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.impl.ArucasMap;
+import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradeOfferList;
 
 public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 	public MerchantScreenValue(MerchantScreen screen) {
@@ -67,17 +70,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			if (screen instanceof MerchantScreen){
 				TradeOfferList tradeOfferList = ((MerchantScreen)screen).getScreenHandler().getRecipes();
 				for (TradeOffer tradeOffers : tradeOfferList){
-					ItemStack sellItem = tradeOffers.getSellItem();
-					ItemStack buyItem1 = tradeOffers.getAdjustedFirstBuyItem();
-					ItemStack buyItem2 = tradeOffers.getSecondBuyItem();
-					ItemStackValue sellItemStackValue = new ItemStackValue(sellItem);
-					ItemStackValue buyItemStackValue1 = new ItemStackValue(buyItem1);
-					ItemStackValue buyItemStackValue2 = new ItemStackValue(buyItem2.isEmpty()? Items.AIR.getDefaultStack() : buyItem2);
-					ArucasMap map = new ArucasMap();
-					map.put(context, StringValue.of("sell"), sellItemStackValue);
-					map.put(context, StringValue.of("buy1"), buyItemStackValue1);
-					map.put(context, StringValue.of("buy2"), buyItemStackValue2);
-					valueList.add(new MapValue(map));
+					valueList.add(new TradeOfferValue(tradeOffers));
 				}
 				return new ListValue(valueList);
 			}
