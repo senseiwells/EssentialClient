@@ -15,6 +15,8 @@ public class MinecraftScriptEvents {
 		ON_USE = new MinecraftScriptEvent("onUse"),
 		ON_PICK_BLOCK = new MinecraftScriptEvent("onPickBlock"),
 		ON_CLOSE_SCREEN = new MinecraftScriptEvent("onCloseScreen"),
+		ON_CONNECT = new MinecraftScriptEvent("onConnect"),
+		ON_DISCONNECT = new MinecraftScriptEvent("onDisconnect"),
 
 		ON_KEY_PRESS = new MinecraftScriptEvent("onKeyPress"),
 		ON_KEY_RELEASE = new MinecraftScriptEvent("onKeyRelease"),

@@ -1,6 +1,7 @@
 package essentialclient.feature.chunkdebug;
 
 import essentialclient.EssentialClient;
+import essentialclient.config.clientrule.ClientRules;
 import net.minecraft.util.math.ChunkPos;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class ChunkHandler {
 			TicketType ticketType = TicketType.decodeTicketType(ticketTypes[i]);
 			ChunkData chunkData = new ChunkData(chunkPos, chunkType, ticketType);
 			chunkDataSet.remove(chunkData);
-			if (chunkType != ChunkType.UNLOADED) {
+			if (chunkType != ChunkType.UNLOADED || ClientRules.CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS.getValue()) {
 				chunkDataSet.add(chunkData);
 			}
 		}

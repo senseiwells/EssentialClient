@@ -133,6 +133,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("stripFormatting", "string", this::stripFormatting),
 				new MemberFunction("getCursorStack", this::getCursorStack),
 				new MemberFunction("setCursorStack", "itemStack", this::setCursorStack),
+				new MemberFunction("getClientRenderDistance", this::getClientRenderDistance),
+				new MemberFunction("setClientRenderDistance", "distance", this::setClientRenderDistance),
 
 				new MemberFunction("importUtils", "util", this::importUtils, "No replacement as of yet")
 			);
@@ -318,7 +320,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return StringValue.of(clientRule.getValue().toString());
 		}
 
-		private Value<?> getModList(Context context, MemberFunction function) throws CodeError {
+		private Value<?> getModList(Context context, MemberFunction function) {
 			ArucasList modList = new ArucasList();
 			for (ModContainer modContainer : FabricLoader.getInstance().getAllMods()) {
 				modList.add(StringValue.of(modContainer.getMetadata().getId()));
@@ -430,6 +432,19 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				return BooleanValue.of(InventoryUtils.setCursorStack(client, itemStack));
 			}
 			return BooleanValue.FALSE;
+		}
+
+		private Value<?> getClientRenderDistance(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			return NumberValue.of(client.options.viewDistance);
+		}
+
+		private Value<?> setClientRenderDistance(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
+			client.options.viewDistance = numberValue.value.intValue();
+			client.worldRenderer.scheduleTerrainUpdate();
+			return NullValue.NULL;
 		}
 
 		@Deprecated

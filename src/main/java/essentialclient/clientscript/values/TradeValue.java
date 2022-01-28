@@ -10,89 +10,10 @@ import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.TradeOffer;
 
-public class TradeOfferValue extends Value<TradeOffer> {
+public class TradeValue extends Value<TradeOffer> {
 
-	public TradeOfferValue(TradeOffer value) {
+	public TradeValue(TradeOffer value) {
 		super(value);
-	}
-	@Override
-	public Value<TradeOffer> copy(Context context) throws CodeError {
-		return new TradeOfferValue(new TradeOffer(this.value.toNbt()));
-	}
-
-	@Override
-	public String getAsString(Context context) throws CodeError {
-		return "TradeOffer@" + this.getHashCode(context);
-	}
-
-	@Override
-	public int getHashCode(Context context) throws CodeError {
-		return this.value.hashCode();
-	}
-
-	@Override
-	public boolean isEquals(Context context, Value<?> value) throws CodeError {
-		return value instanceof TradeOfferValue && this.allMatch((TradeOffer) value.value);
-	}
-
-	public static class ArucasTradeOfferClass extends ArucasClassExtension{
-
-		public ArucasTradeOfferClass() {
-			super("TradeOffer");
-		}
-
-		@Override
-		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
-			return ArucasFunctionMap.of(
-				new MemberFunction("getSellItem", this::getSellItem),
-				new MemberFunction("getOriginalFirstBuyItem", this::getOriginalFirstBuyItem),
-				new MemberFunction("getAdjustedFirstBuyItem", this::getAdjustedFirstBuyItem),
-				new MemberFunction("getSecondBuyItem", this::getSecondBuyItem),
-				new MemberFunction("getMaxUses", this::getMaxUses),
-				new MemberFunction("getUses", this::getUses),
-				new MemberFunction("getSpecialPrice", this::getSpecialPrice)
-			);
-		}
-
-		public Value<?> getSellItem(Context context, MemberFunction function) throws CodeError {
-			TradeOfferValue thisValue = function.getThis(context, TradeOfferValue.class);
-			return new ItemStackValue(thisValue.value.getSellItem());
-		}
-
-		public Value<?> getOriginalFirstBuyItem(Context context, MemberFunction function) throws CodeError {
-			TradeOfferValue thisValue = function.getThis(context, TradeOfferValue.class);
-			return new ItemStackValue(thisValue.value.getOriginalFirstBuyItem());
-		}
-
-		public Value<?> getAdjustedFirstBuyItem(Context context, MemberFunction function) throws CodeError {
-			TradeOfferValue thisValue = function.getThis(context, TradeOfferValue.class);
-			return new ItemStackValue(thisValue.value.getAdjustedFirstBuyItem());
-		}
-
-		public Value<?> getSecondBuyItem(Context context, MemberFunction function) throws CodeError {
-			TradeOfferValue thisValue = function.getThis(context, TradeOfferValue.class);
-			return new ItemStackValue(thisValue.value.getSecondBuyItem());
-		}
-
-		public Value<?> getMaxUses(Context context, MemberFunction function) throws CodeError {
-			TradeOfferValue thisValue = function.getThis(context, TradeOfferValue.class);
-			return NumberValue.of(thisValue.value.getMaxUses());
-		}
-
-		public Value<?> getUses(Context context, MemberFunction function) throws CodeError {
-			TradeOfferValue thisValue = function.getThis(context, TradeOfferValue.class);
-			return NumberValue.of(thisValue.value.getUses());
-		}
-
-		public Value<?> getSpecialPrice(Context context, MemberFunction function) throws CodeError {
-			TradeOfferValue thisValue = function.getThis(context, TradeOfferValue.class);
-			return NumberValue.of(thisValue.value.getSpecialPrice());
-		}
-
-		@Override
-		public Class<?> getValueClass() {
-			return TradeOfferValue.class;
-		}
 	}
 
 	private boolean allMatch(TradeOffer otherTrade){
@@ -108,5 +29,91 @@ public class TradeOfferValue extends Value<TradeOffer> {
 		return itemStack.getCount() == otherStack.getCount()
 			&& ItemStack.areItemsEqual(itemStack, otherStack)
 			&& ItemStack.areTagsEqual(itemStack, otherStack);
+	}
+
+	@Override
+	public Value<TradeOffer> copy(Context context) throws CodeError {
+		return new TradeValue(new TradeOffer(this.value.toNbt()));
+	}
+
+	@Override
+	public String getAsString(Context context) throws CodeError {
+		return "Trade@" + this.getHashCode(context);
+	}
+
+	@Override
+	public int getHashCode(Context context) throws CodeError {
+		return this.value.hashCode();
+	}
+
+	@Override
+	public boolean isEquals(Context context, Value<?> value) throws CodeError {
+		return value instanceof TradeValue && this.allMatch((TradeOffer) value.value);
+	}
+
+	public static class ArucasTradeOfferClass extends ArucasClassExtension{
+
+		public ArucasTradeOfferClass() {
+			super("Trade");
+		}
+
+		@Override
+		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
+			return ArucasFunctionMap.of(
+				new MemberFunction("getSellItem", this::getSellItem),
+				new MemberFunction("getFirstBuyItem", this::getFirstBuyItem),
+				new MemberFunction("getAdjustedFirstBuyItem", this::getAdjustedFirstBuyItem),
+				new MemberFunction("getSecondBuyItem", this::getSecondBuyItem),
+				new MemberFunction("getMaxUses", this::getMaxUses),
+				new MemberFunction("getUses", this::getUses),
+				new MemberFunction("getSpecialPrice", this::getSpecialPrice),
+				new MemberFunction("getPriceMultiplier", this::getPriceMultiplier)
+			);
+		}
+
+		public Value<?> getSellItem(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return new ItemStackValue(thisValue.value.getSellItem());
+		}
+
+		public Value<?> getFirstBuyItem(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return new ItemStackValue(thisValue.value.getOriginalFirstBuyItem());
+		}
+
+		public Value<?> getAdjustedFirstBuyItem(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return new ItemStackValue(thisValue.value.getAdjustedFirstBuyItem());
+		}
+
+		public Value<?> getSecondBuyItem(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return new ItemStackValue(thisValue.value.getSecondBuyItem());
+		}
+
+		public Value<?> getMaxUses(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return NumberValue.of(thisValue.value.getMaxUses());
+		}
+
+		public Value<?> getUses(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return NumberValue.of(thisValue.value.getUses());
+		}
+
+		public Value<?> getSpecialPrice(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return NumberValue.of(thisValue.value.getSpecialPrice());
+		}
+
+		public Value<?> getPriceMultiplier(Context context, MemberFunction function) throws CodeError {
+			TradeValue thisValue = function.getThis(context, TradeValue.class);
+			return NumberValue.of(thisValue.value.getPriceMultiplier());
+		}
+
+		@Override
+		public Class<?> getValueClass() {
+			return TradeValue.class;
+		}
 	}
 }

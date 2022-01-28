@@ -8,15 +8,12 @@ import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
@@ -54,38 +51,26 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				new MemberFunction("tradeSelectedAndThrow", this::tradeSelectedAndThrow)
 			);
 		}
+
 		private Value<?> getTradeListSize(Context context, MemberFunction function) throws CodeError {
-			this.checkIsCurrentScreen(context, function);
-			Screen screen = ArucasMinecraftExtension.getClient().currentScreen;
-			if (screen instanceof MerchantScreen){
-				TradeOfferList tradeOfferList = ((MerchantScreen)screen).getScreenHandler().getRecipes();
-				return NumberValue.of(tradeOfferList.size());
-			}
-			return NumberValue.of(-1);
+			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
+			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
+			return NumberValue.of(tradeOfferList.size());
 		}
+		
 		private Value<?> getTradeList(Context context, MemberFunction function) throws CodeError {
-			this.checkIsCurrentScreen(context, function);
-			Screen screen = ArucasMinecraftExtension.getClient().currentScreen;
+			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
 			ArucasList valueList = new ArucasList();
-			if (screen instanceof MerchantScreen){
-				TradeOfferList tradeOfferList = ((MerchantScreen)screen).getScreenHandler().getRecipes();
-				for (TradeOffer tradeOffers : tradeOfferList){
-					valueList.add(new TradeOfferValue(tradeOffers));
-				}
-				return new ListValue(valueList);
+			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
+			for (TradeOffer tradeOffers : tradeOfferList){
+				valueList.add(new TradeValue(tradeOffers));
 			}
-			else {
-				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
-			}
+			return new ListValue(valueList);
 		}
 		
 		private Value<?> getVillagerJobLevel(Context context, MemberFunction function) throws CodeError {
-			this.checkIsCurrentScreen(context, function);
-			Screen screen = ArucasMinecraftExtension.getClient().currentScreen;
-			if (screen instanceof MerchantScreen){
-				return NumberValue.of(((MerchantScreen)screen).getScreenHandler().getLevelProgress());
-			}
-			throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
+			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
+			return NumberValue.of(merchantScreen.getScreenHandler().getLevelProgress());
 		}
 		
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
@@ -183,12 +168,13 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			return NumberValue.of(price);
 		}
 
-		public void checkIsCurrentScreen(Context context, MemberFunction function) throws CodeError {
+		public MerchantScreen checkIsCurrentScreen(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
-			ScreenValue<?> screenValue = function.getThis(context, ScreenValue.class);
+			MerchantScreenValue screenValue = function.getThis(context, MerchantScreenValue.class);
 			if (client.currentScreen != screenValue.value) {
 				throw new RuntimeError("Currently not in %s".formatted(screenValue.getAsString(context)), function.syntaxPosition, context);
 			}
+			return screenValue.value;
 		}
 
 		public boolean checkVillagerValid(int code, AbstractBuiltInFunction<?> function, Context context) throws RuntimeError {

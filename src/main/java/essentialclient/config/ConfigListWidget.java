@@ -31,7 +31,13 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
 		Collection<ClientRule<?>> clientRules = null;
 		if (gui instanceof ServerRulesScreen) {
-			clientRules = EssentialCarpetClient.carpetRules.values();
+			if (client.isInSingleplayer()) {
+				clientRules = EssentialCarpetClient.getSinglePlayerRules();
+			}
+			else {
+				clientRules = EssentialCarpetClient.carpetRules.values();
+			}
+			clientRules = ClientRules.sortAlphabetically(clientRules);
 		}
 		else if (gui instanceof ClientRulesScreen) {
 			clientRules = switch (ClientRules.DISPLAY_RULE_TYPE.getValue()) {
