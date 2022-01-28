@@ -143,8 +143,7 @@ public class InventoryUtils {
 		}
 		client.execute(() -> {
 			if (drop) {
-				client.interactionManager.clickSlot(screenHandler.syncId, 2, 0, SlotActionType.PICKUP, client.player);
-				client.interactionManager.clickSlot(screenHandler.syncId, -999, 0, SlotActionType.PICKUP, client.player);
+				client.interactionManager.clickSlot(merchantScreen.getScreenHandler().syncId, 2, 1, SlotActionType.THROW, client.player);
 				return;
 			}
 			InventoryUtils.shiftClickSlot(client, merchantScreen, 2);
@@ -154,13 +153,40 @@ public class InventoryUtils {
 
 	public static void clearTradeInputSlot(MinecraftClient client, MerchantScreen merchantScreen) {
 		Slot slot = merchantScreen.getScreenHandler().getSlot(0);
+		assert client.player!= null;
 		if (slot.hasStack()) {
-			shiftClickSlot(client, merchantScreen, slot.id);
+			if (canMergeIntoMain(client.player.inventory, slot.getStack())){
+				shiftClickSlot(client, merchantScreen, slot.id);
+			}
+			else {
+				dropStack(client ,merchantScreen, slot.id);
+			}
 		}
 		slot = merchantScreen.getScreenHandler().getSlot(1);
 		if (slot.hasStack()) {
-			shiftClickSlot(client, merchantScreen, slot.id);
+			if (canMergeIntoMain(client.player.inventory, slot.getStack())){
+				shiftClickSlot(client, merchantScreen, slot.id);
+			}
+			else {
+				dropStack(client ,merchantScreen, slot.id);
+			}
 		}
+	}
+	private static boolean canMergeIntoMain(PlayerInventory inventory, ItemStack stack){
+		int count = stack.getCount();
+		for(int i = 0; i< inventory.main.size(); ++i){
+			ItemStack itemStack = inventory.main.get(i);
+			if(itemStack.isEmpty()) {
+				return true;
+			}
+			if(itemStack.isItemEqual(stack)){
+				count = count - (itemStack.getMaxCount() - itemStack.getCount());
+				if(count <= 0) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static int checkTradeDisabled(MinecraftClient client, int index) {
@@ -209,7 +235,7 @@ public class InventoryUtils {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
 			return false;
 		}
-		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(0);
+		Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
 		return tradeSlot.getStack().getCount() != 0;
 	}
 
