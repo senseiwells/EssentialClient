@@ -133,7 +133,8 @@ public class ClientScript {
 				MaterialValue.ArucasMaterialClass::new,
 				PosValue.ArucasPosClass::new,
 				RecipeValue.ArucasRecipeClass::new,
-				MerchantScreenValue.ArucasMerchantScreenClass::new
+				MerchantScreenValue.ArucasMerchantScreenClass::new,
+				TradeOfferValue.ArucasTradeOfferClass::new
 			)
 			.addExtensions(
 				ArucasMinecraftExtension::new
