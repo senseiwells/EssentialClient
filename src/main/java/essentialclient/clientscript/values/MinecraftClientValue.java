@@ -107,7 +107,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("holdKey", List.of("key", "ms"), this::holdKey),
 				new MemberFunction("clearChat", this::clearChat),
 				new MemberFunction("getLatestChatMessage", this::getLatestChatMessage),
-				new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand),
+				new MemberFunction("addCommand", "commandNode", this::addCommand1),
+				new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand2),
 				new MemberFunction("isInSinglePlayer", (context, function) -> BooleanValue.of(this.getClient(context, function).isInSingleplayer())),
 				new MemberFunction("getServerName", this::getServerName),
 				new MemberFunction("getPing", this::getPing),
@@ -196,10 +197,15 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			context.getThreadHandler().runAsyncFunctionInContext(null, ctx -> {
 				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 1, 0));
 				int ms = milliseconds;
-				while (ms > 50) {
-					client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 2, 0));
-					Thread.sleep(50);
-					ms -= 50;
+				try {
+					while (ms > 50) {
+						client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 2, 0));
+						Thread.sleep(50);
+						ms -= 50;
+					}
+				}
+				catch (InterruptedException interruptedException) {
+					throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
 				}
 				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 0, 0));
 			}, "Holding Key Thread");
@@ -219,7 +225,19 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return StringValue.of(((Text) chat[0].getText()).getString());
 		}
 
-		private Value<?> addCommand(Context context, MemberFunction function) throws CodeError {
+		private Value<?> addCommand1(Context context, MemberFunction function) throws CodeError {
+			CommandNodeValue commandNodeValue = function.getParameterValueOfType(context, CommandNodeValue.class, 1);
+			if (!(commandNodeValue.value instanceof LiteralCommandNode<ServerCommandSource> literalCommandNode)) {
+				throw new RuntimeError("Expected a literal command node", function.syntaxPosition, context);
+			}
+			CommandHelper.functionCommandNodes.add(literalCommandNode);
+			MinecraftClient client = this.getClient(context, function);
+			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
+			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
+//			return NullValue.NULL;
+		}
+
+		private Value<?> addCommand2(Context context, MemberFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 			ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 2);
 
