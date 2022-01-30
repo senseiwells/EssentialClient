@@ -1,5 +1,6 @@
 package essentialclient.clientscript.values;
 
+import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.utils.clientscript.ScreenRemapper;
 import essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.ArucasClassExtension;
@@ -7,14 +8,20 @@ import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.values.NullValue;
-import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.arucas.values.Value;
+import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.screen.ScreenHandler;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ScreenValue<T extends Screen> extends Value<T> {
 	protected ScreenValue(T screen) {
@@ -60,7 +67,9 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getName", (context, function) -> StringValue.of(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()))),
-				new MemberFunction("getTitle", this::getTitle)
+				new MemberFunction("getTitle", this::getTitle),
+				new MemberFunction("getOrderedSlotList", this::getOrderedSlotList),
+				new MemberFunction("getOrderedSlot","index", this::getOrderedSlot)
 			);
 		}
 
@@ -81,7 +90,43 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 			}
 			return screen.value;
 		}
-
+		private Value<?> getOrderedSlotList(Context context, MemberFunction function) throws CodeError {
+			final MinecraftClient client = ArucasMinecraftExtension.getClient();
+			ScreenHandler abstractScreenHandler = client.currentScreen != null ? ((HandledScreen<?>) client.currentScreen).getScreenHandler() : null;
+			if (abstractScreenHandler == null){
+				final ClientPlayerEntity player = ArucasMinecraftExtension.getClient().player;
+				if (player == null){
+					throw new RuntimeError("Screen was null", function.syntaxPosition, context);
+				}
+				abstractScreenHandler = player.currentScreenHandler;
+			}
+			ArucasList valueList = abstractScreenHandler.slots.stream().sorted((slot1, slot2) -> {
+				if (slot1.x == slot2.x && slot1.y == slot2.y) {
+					return 0;
+				}
+				return slot1.y > slot2.y ? 1 : (slot1.x > slot2.x ? 1 : -1);
+			}).map(a -> a.id).map(NumberValue::of).collect(Collectors.toCollection(ArucasList::new));
+			return new ListValue(valueList);
+		}
+		private Value<?> getOrderedSlot(Context context, MemberFunction function) throws CodeError {
+			final MinecraftClient client = ArucasMinecraftExtension.getClient();
+			int numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
+			ScreenHandler abstractScreenHandler = client.currentScreen != null ? ((HandledScreen<?>) client.currentScreen).getScreenHandler() : null;
+			if (abstractScreenHandler == null){
+				final ClientPlayerEntity player = ArucasMinecraftExtension.getClient().player;
+				if (player == null){
+					throw new RuntimeError("Screen was null", function.syntaxPosition, context);
+				}
+				abstractScreenHandler = player.currentScreenHandler;
+			}
+			List<Integer> valueList = abstractScreenHandler.slots.stream().sorted((slot1, slot2) -> {
+				if (slot1.x == slot2.x && slot1.y == slot2.y) {
+					return 0;
+				}
+				return slot1.y > slot2.y ? 1 : (slot1.x > slot2.x ? 1 : -1);
+			}).map(a -> a.id).collect(Collectors.toList());
+			return NumberValue.of(valueList.get(numberValue1));
+		}
 		@Override
 		public Class<?> getValueClass() {
 			return ScreenValue.class;
