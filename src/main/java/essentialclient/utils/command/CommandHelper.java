@@ -15,7 +15,6 @@ import essentialclient.utils.render.ChatColour;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.arucas.values.Value;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
@@ -126,8 +125,7 @@ public class CommandHelper {
 		}
 		StringValue command = (StringValue) arguments.remove(0);
 		if (functionCommands.contains(command.value)) {
-			List<Value<?>> parameters = List.of(command, new ListValue(arguments));
-			MinecraftScriptEvents.ON_COMMAND.run(parameters);
+			MinecraftScriptEvents.ON_COMMAND.run(command, new ListValue(arguments));
 			return true;
 		}
 		return false;
@@ -137,7 +135,7 @@ public class CommandHelper {
 		if (packet == null) {
 			return;
 		}
-		Collection<CommandNode<CommandSource>> commandNodes =  packet.getCommandTree().getChildren();
+		Collection<CommandNode<CommandSource>> commandNodes = packet.getCommandTree().getChildren();
 		RootCommandNode<CommandSource> newRootCommandNode = new RootCommandNode<>();
 		for (CommandNode<CommandSource> commandNode : commandNodes) {
 			newRootCommandNode.addChild(commandNode);

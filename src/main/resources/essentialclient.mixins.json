@@ -66,8 +66,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "clientScript.CommandContextMixin"
-  ]
+  }
 }

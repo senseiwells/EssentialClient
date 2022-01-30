@@ -2,7 +2,8 @@ package essentialclient.clientscript;
 
 import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
-import essentialclient.clientscript.extensions.*;
+import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import essentialclient.clientscript.extensions.GameEventWrapper;
 import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.ClientKeybinds;
@@ -47,7 +48,7 @@ public class ClientScript {
 	public boolean isScriptRunning() {
 		return this.mainScriptThread != null;
 	}
-	
+
 	public void toggleScript() {
 		boolean running = this.isScriptRunning();
 		if (running) {
@@ -56,17 +57,17 @@ public class ClientScript {
 		else {
 			this.startScript();
 		}
-		
+
 		EssentialUtils.sendMessageToActionBar("§6Script is now " + (running ? "§cOFF" : "§aON"));
 	}
-	
+
 	public synchronized void startScript() {
-		if (isScriptRunning()) {
+		if (this.isScriptRunning()) {
 			this.stopScript();
 		}
 		this.executeScript();
 	}
-	
+
 	public synchronized void stopScript() {
 		if (!this.isScriptRunning()) {
 			return;
@@ -88,15 +89,15 @@ public class ClientScript {
 
 		EssentialUtils.sendMessageToActionBar("§6Script is now §cOFF");
 	}
-	
+
 	public static Path getFile() {
 		return getDir().resolve(ClientRules.CLIENT_SCRIPT_FILENAME.getValue() + ".arucas");
 	}
-	
+
 	public static Path getDir() {
 		return EssentialUtils.getEssentialConfigFile().resolve("Scripts");
 	}
-	
+
 	private synchronized void executeScript() {
 		final String fileName = ClientRules.CLIENT_SCRIPT_FILENAME.getValue();
 		final String fileContent;
@@ -125,7 +126,7 @@ public class ClientScript {
 				OtherPlayerValue.ArucasAbstractPlayerClass::new,
 				LivingEntityValue.ArucasLivingEntityClass::new,
 				BlockValue.ArucasBlockClass::new,
-			 	ItemStackValue.ArucasItemStackClass::new,
+				ItemStackValue.ArucasItemStackClass::new,
 				WorldValue.ArucasWorldClass::new,
 				ScreenValue.ArucasScreenClass::new,
 				FakeInventoryScreenValue.ArucasFakeInventoryScreenClass::new,
@@ -135,6 +136,9 @@ public class ClientScript {
 				RecipeValue.ArucasRecipeClass::new,
 				MerchantScreenValue.ArucasMerchantScreenClass::new,
 				TradeValue.ArucasTradeOfferClass::new
+			)
+			.addWrapper(
+				GameEventWrapper::new
 			)
 			.addExtensions(
 				ArucasMinecraftExtension::new
@@ -168,7 +172,7 @@ public class ClientScript {
 	}
 
 	private void sendReportMessage(Throwable t, String content) {
-		String gitReport = getGithubLink(t, content);
+		String gitReport = this.getGithubLink(t, content);
 		EssentialUtils.sendMessage("§cAn error occurred while running the script");
 		EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
 		EssentialUtils.sendMessage(
@@ -177,7 +181,7 @@ public class ClientScript {
 				.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
 					gitReport))
 				)
-			.append("\n")
+				.append("\n")
 		);
 	}
 
@@ -185,18 +189,18 @@ public class ClientScript {
 		String stacktrace = ExceptionUtils.getStackTrace(t);
 		int charsLeft = 1400 - stacktrace.length();
 		String report = """
-		### Minecraft Version: `%s`
-		### Essential Client Version: `%s`
-		### Arucas Version: `%s`
-		### Script:
-		```kotlin
-		%s
-		```
-		### Crash:
-		```
-		%s
-		```
-		""".formatted(
+			### Minecraft Version: `%s`
+			### Essential Client Version: `%s`
+			### Arucas Version: `%s`
+			### Script:
+			```kotlin
+			%s
+			```
+			### Crash:
+			```
+			%s
+			```
+			""".formatted(
 			EssentialUtils.getMinecraftVersion(),
 			EssentialClient.VERSION,
 			EssentialUtils.getArucasVersion(),

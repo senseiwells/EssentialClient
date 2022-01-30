@@ -79,5 +79,5 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 		};
 	}
 
-	private static final record ContextFunction(Context context, FunctionValue functionValue) { }
+	private record ContextFunction(Context context, FunctionValue functionValue) { }
 }

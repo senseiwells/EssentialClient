@@ -50,14 +50,12 @@ public class ItemStackValue extends Value<ItemStack> {
 		if (this.value == otherValue.value) {
 			return true;
 		}
-		else {
-			return this.value != null && otherValue.value != null && this.value.isItemEqual(otherValue.value);
-		}
+		return this.value != null && otherValue.value != null && this.value.isItemEqual(otherValue.value);
 	}
 
 	@Override
 	public String getAsString(Context context) {
-		return "ItemStack{id=" + this.value.getItem().toString() +", count=" + this.value.getCount() + "}";
+		return "ItemStack{id=" + this.value.getItem().toString() + ", count=" + this.value.getCount() + "}";
 	}
 
 	@Override

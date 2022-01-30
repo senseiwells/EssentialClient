@@ -1,13 +1,12 @@
 package essentialclient.clientscript.values;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.ParsedArgument;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import essentialclient.utils.clientscript.ClientScriptUtils;
 import essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ArucasClassExtension;
@@ -22,8 +21,9 @@ import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.command.argument.ItemStackArgumentType;
+import net.minecraft.command.argument.EntitySummonArgumentType;
+import net.minecraft.command.argument.IdentifierArgumentType;
+import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -80,14 +80,14 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 		private Value<?> argument2(Context context, BuiltInFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
 			StringValue argumentTypeString = function.getParameterValueOfType(context, StringValue.class, 1);
-			return argument(context, function.syntaxPosition, stringValue.value, argumentTypeString.value, NullValue.NULL);
+			return this.argument(context, function.syntaxPosition, stringValue.value, argumentTypeString.value, NullValue.NULL);
 		}
 
 		private Value<?> argument3(Context context, BuiltInFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
 			StringValue argumentTypeString = function.getParameterValueOfType(context, StringValue.class, 1);
 			Value<?> suggestions = function.getParameterValue(context, 2);
-			return argument(context, function.syntaxPosition, stringValue.value, argumentTypeString.value, suggestions);
+			return this.argument(context, function.syntaxPosition, stringValue.value, argumentTypeString.value, suggestions);
 		}
 
 		private Value<?> fromMap(Context context, BuiltInFunction function) throws CodeError {
@@ -96,23 +96,25 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 		}
 
 		private Value<?> argument(Context context, ISyntax syntaxPosition, String name, String stringArgType, Value<?> suggestions) throws CodeError {
-			boolean shouldSuggestPlayers = false;
+			SuggestionProvider<ServerCommandSource> extraSuggestion = null;
 			ArgumentType<?> argumentType = switch (stringArgType) {
 				case "PlayerName" -> {
-					shouldSuggestPlayers = true;
+					extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
 					yield StringArgumentType.word();
 				}
-				case "ItemStack" -> ItemStackArgumentType.itemStack();
-				case "Block" -> BlockStateArgumentType.blockState();
-				case "Word" -> StringArgumentType.word();
-				case "GreedyString" -> StringArgumentType.greedyString();
-				case "Integer" -> IntegerArgumentType.integer();
-				case "Double" -> DoubleArgumentType.doubleArg();
-				default -> throw new RuntimeError("Invalid argument type", syntaxPosition, context);
+				case "RecipeId" -> {
+					extraSuggestion = SuggestionProviders.ALL_RECIPES;
+					yield IdentifierArgumentType.identifier();
+				}
+				case "EntityId" -> {
+					extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
+					yield EntitySummonArgumentType.entitySummon();
+				}
+				default -> ClientScriptUtils.parseArgumentType(stringArgType, context, syntaxPosition);
 			};
 			RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = CommandManager.argument(name, argumentType);
-			if (shouldSuggestPlayers) {
-				argumentBuilder.suggests((c, b) -> CommandHelper.suggestOnlinePlayers(b));
+			if (extraSuggestion != null) {
+				argumentBuilder.suggests(extraSuggestion);
 			}
 			if (suggestions != NullValue.NULL) {
 				if (suggestions instanceof ListValue listValue) {
@@ -155,7 +157,7 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 					}
 					ArucasList arucasList = new ArucasList();
 					for (ParsedArgument<?, ?> argument : arguments) {
-						arucasList.add(ClientScriptUtils.commandArgumentToValue(argument.getResult()));
+						arucasList.add(ClientScriptUtils.commandArgumentToValue(argument.getResult(), c));
 					}
 					functionValue.call(ctx, arucasList);
 				});

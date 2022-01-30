@@ -28,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import java.util.UUID;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -64,7 +63,7 @@ public class ClientPlayNetworkHandlerMixin {
 		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getValue()) {
 			ClientScript.getInstance().startScript();
 		}
-		MinecraftScriptEvents.ON_CONNECT.run(List.of(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld())));
+		MinecraftScriptEvents.ON_CONNECT.run(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld()));
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)

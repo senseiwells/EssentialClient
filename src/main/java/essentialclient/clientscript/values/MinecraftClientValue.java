@@ -349,6 +349,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return new ListValue(modList);
 		}
 
+		@Deprecated
 		private Value<?> addGameEvent(Context context, MemberFunction function) throws CodeError {
 			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 2);
@@ -359,6 +360,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NumberValue.of(event.addFunction(context, functionValue));
 		}
 
+		@Deprecated
 		private Value<?> removeGameEvent(Context context, MemberFunction function) throws CodeError {
 			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			int eventId = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
@@ -372,6 +374,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
+		@Deprecated
 		private Value<?> removeAllGameEvents(Context context, MemberFunction function) {
 			MinecraftScriptEvents.clearEventFunctions();
 			return NullValue.NULL;
@@ -469,7 +472,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		}
 
 		@Deprecated
-		private Value<?> importUtils(Context context, MemberFunction function) throws CodeError{
+		private Value<?> importUtils(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
 			String util = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			ResourceManager resourceManager = client.getResourceManager();
