@@ -1,4 +1,4 @@
-package essentialclient.mixins.functions;
+package essentialclient.mixins.clientScript;
 
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.ScreenValue;

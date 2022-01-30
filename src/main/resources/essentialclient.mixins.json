@@ -15,6 +15,16 @@
     "clientNick.InGameHudMixin",
     "clientNick.PlayerEntityRendererMixin",
     "clientNick.PlayerListHudMixin",
+    "clientScript.ChatHudMixin",
+    "clientScript.ClientPlayerEntityMixin",
+    "clientScript.ClientPlayerInteractionManagerMixin",
+    "clientScript.ClientPlayNetworkHandlerMixin",
+    "clientScript.FishingBobberEntityMixin",
+    "clientScript.KeyboardMixin",
+    "clientScript.LivingEntityMixin",
+    "clientScript.MinecraftClientMixin",
+    "clientScript.NbtListMixin",
+    "clientScript.PlayerEntityMixin",
     "commandSuggestorIgnoresSpaces.CommandSuggestorMixin",
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
@@ -32,16 +42,6 @@
     "disableRecipeNotifications.RecipeToastMixin",
     "disableTutorialNotifications.TutorialToastMixin",
     "displayTimePlayed.GameMenuScreenMixin",
-    "functions.ChatHudMixin",
-    "functions.ClientPlayerEntityMixin",
-    "functions.ClientPlayerInteractionManagerMixin",
-    "functions.ClientPlayNetworkHandlerMixin",
-    "functions.FishingBobberEntityMixin",
-    "functions.KeyboardMixin",
-    "functions.LivingEntityMixin",
-    "functions.MinecraftClientMixin",
-    "functions.NbtListMixin",
-    "functions.PlayerEntityMixin",
     "keyboardRebinds.KeyboardMixin",
     "mouseScrollRules.MouseMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
@@ -66,5 +66,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "clientScript.CommandContextMixin"
+  ]
 }

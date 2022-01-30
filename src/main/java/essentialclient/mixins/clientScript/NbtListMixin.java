@@ -1,4 +1,4 @@
-package essentialclient.mixins.functions;
+package essentialclient.mixins.clientScript;
 
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;

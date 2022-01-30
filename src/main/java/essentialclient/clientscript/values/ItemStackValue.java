@@ -1,6 +1,6 @@
 package essentialclient.clientscript.values;
 
-import essentialclient.mixins.functions.NbtListMixin;
+import essentialclient.mixins.clientScript.NbtListMixin;
 import essentialclient.utils.clientscript.NbtUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;

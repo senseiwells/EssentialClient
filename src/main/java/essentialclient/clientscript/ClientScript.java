@@ -73,8 +73,7 @@ public class ClientScript {
 		}
 		this.mainScriptThread.interrupt();
 		this.mainScriptThread = null;
-		CommandHelper.functionCommands.clear();
-		CommandHelper.functionCommandNodes.clear();
+		CommandHelper.clearFunctionCommands();
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
 			client.execute(() -> {
@@ -120,6 +119,7 @@ public class ClientScript {
 			.addClasses(
 				JsonValue.ArucasJsonClass::new,
 				MinecraftClientValue.ArucasMinecraftClientMembers::new,
+				CommandBuilderValue.CommandBuilderClass::new,
 				PlayerValue.ArucasPlayerClass::new,
 				EntityValue.ArucasEntityClass::new,
 				OtherPlayerValue.ArucasAbstractPlayerClass::new,
