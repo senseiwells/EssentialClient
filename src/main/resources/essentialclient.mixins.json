@@ -25,6 +25,7 @@
     "clientScript.MinecraftClientMixin",
     "clientScript.NbtListMixin",
     "clientScript.PlayerEntityMixin",
+    "clientScript.WorldRendererMixin",
     "commandSuggestorIgnoresSpaces.CommandSuggestorMixin",
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",

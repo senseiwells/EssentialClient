@@ -81,7 +81,7 @@ public class RenderHelper {
 		matrices.pop();
 	}
 
-	public static void drawBoxWithOutline(MatrixStack matrices, BlockPos pos1, BlockPos pos2, float red, float green, float blue, float alpha, float outlineRed, float outlineGreen, float outlineBlue) {
+	public static void drawBoxWithOutline(MatrixStack matrices, BlockPos pos1, BlockPos pos2, float red, float green, float blue, float alpha, float outlineRed, float outlineGreen, float outlineBlue, int outlineWidth, boolean throughBlocks) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
@@ -103,7 +103,12 @@ public class RenderHelper {
 		RenderSystem.disableLighting();
 		RenderSystem.disableCull();
 
+		if (throughBlocks) {
+			RenderSystem.disableDepthTest();
+		}
+
 		bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
+		RenderSystem.lineWidth(outlineWidth);
 		drawBox(bufferBuilder, model, pos1, pos2, outlineRed, outlineGreen, outlineBlue, 1, true);
 		tessellator.draw();
 
@@ -113,11 +118,13 @@ public class RenderHelper {
 
 		matrices.pop();
 
+		RenderSystem.lineWidth(1);
 		RenderSystem.enableCull();
 		RenderSystem.enableLighting();
 		RenderSystem.depthMask(true);
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
+		RenderSystem.enableDepthTest();
 	}
 
 	public static void drawBox(BufferBuilder bufferBuilder, Matrix4f model, BlockPos pos1, BlockPos pos2, float red, float green, float blue, float alpha, boolean outline) {
@@ -126,60 +133,60 @@ public class RenderHelper {
 		float z1 = Math.abs(pos1.getZ() - pos2.getZ()) + 1.002F;
 
 		float c0 = -0.002F;
-		// is slightly outside to avoid z-fighting
+		// Is slightly outside to avoid z-fighting
 
-		// west Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).next();
+		// West Face
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		if (outline) {
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).next();
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
 
-		// east Face
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).next();
-		if(outline) {
-			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).next();
+		// East Face
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		if (outline) {
+			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
 
-		// north Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).next();
+		// North Face
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		if (outline) {
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).next();
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
 
-		// south Face
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).next();
+		// South Face
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		if (outline) {
-			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).next();
+			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
 
-		// down Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).next();
+		// Down Face
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		if (outline) {
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).next();
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
 
-		// up Face
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).next();
+		// Up Face
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		if (outline) {
-			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).next();
+			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
 	}
 

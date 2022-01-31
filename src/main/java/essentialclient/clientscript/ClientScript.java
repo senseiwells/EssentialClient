@@ -3,6 +3,7 @@ package essentialclient.clientscript;
 import essentialclient.EssentialClient;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import essentialclient.clientscript.extensions.BoxShapeWrapper;
 import essentialclient.clientscript.extensions.GameEventWrapper;
 import essentialclient.clientscript.values.*;
 import essentialclient.config.clientrule.ClientRules;
@@ -75,6 +76,7 @@ public class ClientScript {
 		this.mainScriptThread.interrupt();
 		this.mainScriptThread = null;
 		CommandHelper.clearFunctionCommands();
+		BoxShapeWrapper.clearBoxesToRender();
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
 			client.execute(() -> {
@@ -139,6 +141,9 @@ public class ClientScript {
 			)
 			.addWrapper(
 				GameEventWrapper::new
+			)
+			.addWrapper(
+				BoxShapeWrapper::new
 			)
 			.addExtensions(
 				ArucasMinecraftExtension::new
