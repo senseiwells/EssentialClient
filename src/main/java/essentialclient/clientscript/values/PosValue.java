@@ -39,6 +39,10 @@ public class PosValue extends Value<Vec3d> {
 		return NumberValue.of(this.value.getZ());
 	}
 
+	public BlockPos toBlockPos() {
+		return new BlockPos(this.value);
+	}
+
 	@Override
 	public Value<Vec3d> copy(Context context) throws CodeError {
 		return new PosValue(new Vec3d(this.value.x, this.value.y, this.value.z));

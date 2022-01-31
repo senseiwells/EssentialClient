@@ -17,6 +17,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,6 +79,9 @@ public class WorldValue extends Value<ClientWorld> {
 				new MemberFunction("getTimeOfDay", (context, function) -> NumberValue.of(this.getWorld(context, function).getTimeOfDay())),
 				new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
 				new MemberFunction("renderParticle", List.of("particleName", "pos"), this::renderParticlePos),
+				// new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z", "xVelocity", "yVelocity", "zVelocity"), this::renderParticleVel),
+				new MemberFunction("renderBox", List.of("pos"), this::renderBox),
+//				new MemberFunction("renderBox", List.of("pos", "pos"), this::renderBox2),
 				new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, "This function is dangerous, be careful!"),
 				new MemberFunction("setGhostBlock", List.of("block", "pos"), this::setGhostBlockPos, "This function is dangerous, be careful!"),
 				new MemberFunction("spawnGhostEntity", List.of("entity", "x", "y", "z", "yaw", "pitch", "bodyYaw"), this::spawnGhostEntity),
@@ -186,6 +190,15 @@ public class WorldValue extends Value<ClientWorld> {
 				0,
 				0
 			));
+			return NullValue.NULL;
+		}
+
+		private Value<?> renderBox(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			BlockPos blockPos = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
+			client.execute(() -> {
+				RenderHelper.drawBoxWithOutline(new MatrixStack(), blockPos, blockPos, 1, 1, 1, 1, 1, 1, 1);
+			});
 			return NullValue.NULL;
 		}
 

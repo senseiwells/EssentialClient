@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
@@ -39,6 +40,13 @@ public class ClientPlayerInteractionManagerMixin {
 		}
 		if (MinecraftScriptEvents.ON_ATTACK_BLOCK.run(new BlockValue(this.client.world.getBlockState(pos), pos))) {
 			cir.setReturnValue(false);
+		}
+	}
+
+	@Inject(method = "attackEntity", at = @At("HEAD"), cancellable = true)
+	private void onAttackEntity(PlayerEntity player, Entity target, CallbackInfo ci) {
+		if (MinecraftScriptEvents.ON_ATTACK_ENTITY.run(EntityValue.of(target))) {
+			ci.cancel();
 		}
 	}
 

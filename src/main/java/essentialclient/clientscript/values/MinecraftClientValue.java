@@ -137,6 +137,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("setCursorStack", "itemStack", this::setCursorStack),
 				new MemberFunction("getClientRenderDistance", this::getClientRenderDistance),
 				new MemberFunction("setClientRenderDistance", "distance", this::setClientRenderDistance),
+				new MemberFunction("runOnMainThread", "function", this::runOnMainThread),
+				new MemberFunction("tick", this::tick),
 
 				new MemberFunction("importUtils", "util", this::importUtils, "No replacement as of yet")
 			);
@@ -144,7 +146,6 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 
 		private Value<?> screenshot(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
-			client.tick();
 			ScreenshotUtils.saveScreenshot(
 				client.runDirectory,
 				client.getWindow().getWidth(),
@@ -468,6 +469,27 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
 			client.options.viewDistance = numberValue.value.intValue();
 			client.worldRenderer.scheduleTerrainUpdate();
+			return NullValue.NULL;
+		}
+
+		private Value<?> runOnMainThread(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
+			client.execute(() -> {
+				Context branchedContext = context.createBranch();
+				try {
+					functionValue.call(branchedContext, new ArucasList());
+				}
+				catch (CodeError codeError) {
+					branchedContext.getThreadHandler().tryError(branchedContext, codeError);
+				}
+			});
+			return NullValue.NULL;
+		}
+
+		private Value<?> tick(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = this.getClient(context, function);
+			client.execute(client::tick);
 			return NullValue.NULL;
 		}
 

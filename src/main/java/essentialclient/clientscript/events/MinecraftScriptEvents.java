@@ -37,7 +37,8 @@ public class MinecraftScriptEvents {
 		ON_SEND_MESSAGE = new MinecraftScriptEvent("onSendMessage", true),
 		ON_RECEIVE_MESSAGE = new MinecraftScriptEvent("onReceiveMessage", true),
 		ON_CLICK_SLOT = new MinecraftScriptEvent("onClickSlot", true),
-		ON_ATTACK_BLOCK = new MinecraftScriptEvent("onAttackBlock", true);
+		ON_ATTACK_BLOCK = new MinecraftScriptEvent("onAttackBlock", true),
+		ON_ATTACK_ENTITY = new MinecraftScriptEvent("onAttackEntity", true);
 
 	protected static void addEventToMap(String name, MinecraftScriptEvent minecraftScriptEvent) {
 		eventMap.put(name, minecraftScriptEvent);

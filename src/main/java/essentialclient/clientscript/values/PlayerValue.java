@@ -118,6 +118,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("interactBlock", List.of("pos", "face", "pos", "insideBlock"), this::interactBlockFullPos),
 				new MemberFunction("getBlockBreakingSpeed", "blockState", this::getBlockBreakingSpeed),
 				new MemberFunction("swapHands", this::swapHands),
+				new MemberFunction("swingHand", "isOffHand", this::swingHand),
 				new MemberFunction("clickSlot",List.of("slot", "clickData", "slotActionType"), this::clickSlot),
 				new MemberFunction("getSwappableHotbarSlot", this::getSwappableHotbarSlot),
 
@@ -316,14 +317,23 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		
 		private Value<?> swapHands(Context context, MemberFunction function) throws CodeError {
 			final ClientPlayerEntity player = this.getPlayer(context, function);
-			final MinecraftClient client = ArucasMinecraftExtension.getClient();
-			if (client.interactionManager == null || client.getNetworkHandler() == null){
-				throw new RuntimeError("Network/interactionManager was null", function.syntaxPosition, context);
-			}
+			final ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
 			if (player.isSpectator()){
-				return NullValue.NULL;
+				return BooleanValue.FALSE;
 			}
-			client.execute (() -> client.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN)));
+			networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
+			return BooleanValue.TRUE;
+		}
+
+		private Value<?> swingHand(Context context, MemberFunction function) throws CodeError {
+			final ClientPlayerEntity player = this.getPlayer(context, function);
+			StringValue handAsString = function.getParameterValueOfType(context, StringValue.class, 1);
+			Hand hand = switch (handAsString.value.toLowerCase()) {
+				case "main", "main_hand" -> Hand.MAIN_HAND;
+				case "off", "off_hand" -> Hand.OFF_HAND;
+				default -> throw new RuntimeError("Invalid hand '%s'".formatted(handAsString.value), function.syntaxPosition, context);
+			};
+			player.swingHand(hand);
 			return NullValue.NULL;
 		}
 
