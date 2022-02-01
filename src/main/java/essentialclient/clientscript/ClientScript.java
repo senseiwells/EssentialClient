@@ -22,11 +22,14 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ClientScript {
 	private static final ClientScript instance = new ClientScript();
@@ -69,6 +72,13 @@ public class ClientScript {
 		this.executeScript();
 	}
 
+	public synchronized void startScript(String name, String content) {
+		if (this.isScriptRunning()) {
+			this.stopScript();
+		}
+		this.executeScript(name, content);
+	}
+
 	public synchronized void stopScript() {
 		if (!this.isScriptRunning()) {
 			return;
@@ -100,11 +110,30 @@ public class ClientScript {
 		return EssentialUtils.getEssentialConfigFile().resolve("Scripts");
 	}
 
+	public static Set<String> getScriptNames() {
+		Path scriptPath = getDir();
+		File[] files = scriptPath.toFile().listFiles();
+		if (files == null) {
+			return Set.of();
+		}
+		Set<String> scripts = new HashSet<>();
+		for (File file : files) {
+			String fileName = file.getName();
+			if (fileName.endsWith(".arucas")) {
+				scripts.add(fileName.substring(0, fileName.length() - 7));
+			}
+		}
+		return scripts;
+	}
+
 	private synchronized void executeScript() {
-		final String fileName = ClientRules.CLIENT_SCRIPT_FILENAME.getValue();
-		final String fileContent;
+		this.executeScript(null, null);
+	}
+
+	private synchronized void executeScript(String fileName, String fileContent) {
+		fileName = fileName != null ? fileName : ClientRules.CLIENT_SCRIPT_FILENAME.getValue();
 		try {
-			fileContent = Files.readString(getFile());
+			fileContent = fileContent != null ? fileContent : Files.readString(getFile());
 		}
 		catch (IOException e) {
 			EssentialUtils.sendMessage("§cAn error occurred while trying to read the script");

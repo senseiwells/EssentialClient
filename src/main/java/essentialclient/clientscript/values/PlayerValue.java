@@ -14,6 +14,7 @@ import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
+import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
@@ -30,10 +31,7 @@ import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -73,6 +71,17 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		@Override
+		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
+			return ArucasFunctionMap.of(
+				new BuiltInFunction("get", this::get)
+			);
+		}
+
+		private Value<?> get(Context context, BuiltInFunction function) throws CodeError {
+			return new PlayerValue(ArucasMinecraftExtension.getPlayer());
+		}
+
+		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("use", "type", this::use),
@@ -107,7 +116,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("anvilRename", List.of("name", "predicate"), this::anvilRename),
 				new MemberFunction("stonecutter", List.of("itemInput", "itemOutput"), this::stonecutter),
 				new MemberFunction("fakeLook", List.of("yaw", "pitch", "direction", "duration"), this::fakeLook),
-				new MemberFunction("swapPlayerSlotWithHotbar","slot1", this::swapPlayerSlotWithHotbar),
+				new MemberFunction("swapPlayerSlotWithHotbar", "slot1", this::swapPlayerSlotWithHotbar),
 				new MemberFunction("updateBreakingBlock", List.of("x", "y", "z"), this::updateBreakingBlock),
 				new MemberFunction("updateBreakingBlock", "pos", this::updateBreakingBlockPos),
 				new MemberFunction("attackBlock", List.of("x", "y", "z", "direction"), this::attackBlock),
@@ -119,8 +128,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("getBlockBreakingSpeed", "blockState", this::getBlockBreakingSpeed),
 				new MemberFunction("swapHands", this::swapHands),
 				new MemberFunction("swingHand", "isOffHand", this::swingHand),
-				new MemberFunction("clickSlot",List.of("slot", "clickData", "slotActionType"), this::clickSlot),
+				new MemberFunction("clickSlot", List.of("slot", "clickData", "slotActionType"), this::clickSlot),
 				new MemberFunction("getSwappableHotbarSlot", this::getSwappableHotbarSlot),
+				new MemberFunction("spectatorTeleport", "entity", this::spectatorTeleport),
 
 				// Villager Stuff
 				new MemberFunction("tradeIndex", "index", this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
@@ -314,11 +324,22 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(context, function);
 			return NumberValue.of(player.inventory.getSwappableHotbarSlot());
 		}
-		
+
+		private Value<?> spectatorTeleport(Context context, MemberFunction function) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			if (!player.isSpectator()) {
+				return BooleanValue.FALSE;
+			}
+			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
+			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
+			networkHandler.sendPacket(new SpectatorTeleportC2SPacket(entityValue.value.getUuid()));
+			return BooleanValue.TRUE;
+		}
+
 		private Value<?> swapHands(Context context, MemberFunction function) throws CodeError {
 			final ClientPlayerEntity player = this.getPlayer(context, function);
 			final ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
-			if (player.isSpectator()){
+			if (player.isSpectator()) {
 				return BooleanValue.FALSE;
 			}
 			networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
@@ -366,7 +387,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, slot, clickData, slotActionType, player));
 			return NullValue.NULL;
 		}
-		
+
 		private Value<?> shiftClickSlot(Context context, MemberFunction function) throws CodeError {
 			NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
@@ -444,8 +465,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value<?> interactWithEntity(Context context, MemberFunction function) throws CodeError {
-			ClientPlayerEntity player =  this.getPlayer(context, function);
-			EntityValue<?> entity  = function.getParameterValueOfType(context, EntityValue.class, 1);
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			EntityValue<?> entity = function.getParameterValueOfType(context, EntityValue.class, 1);
 			ArucasMinecraftExtension.getInteractionManager().interactEntity(player, entity.value, Hand.MAIN_HAND);
 			return NullValue.NULL;
 		}
@@ -455,7 +476,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (interactionManager == null) {
 				return BooleanValue.FALSE;
 			}
-			ClientPlayerEntity player =  this.getPlayer(context, function);
+			ClientPlayerEntity player = this.getPlayer(context, function);
 			ScreenHandler handler = player.currentScreenHandler;
 			if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
 				throw new RuntimeError("Not in anvil gui", function.syntaxPosition, context);
@@ -505,7 +526,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (interactionManager == null) {
 				return NullValue.NULL;
 			}
-			ClientPlayerEntity player =  this.getPlayer(context, function);
+			ClientPlayerEntity player = this.getPlayer(context, function);
 			ScreenHandler handler = player.currentScreenHandler;
 			if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
 				throw new RuntimeError("Not in anvil gui", function.syntaxPosition, context);
@@ -540,7 +561,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (interactionManager == null) {
 				return BooleanValue.FALSE;
 			}
-			ClientPlayerEntity player =  this.getPlayer(context, function);
+			ClientPlayerEntity player = this.getPlayer(context, function);
 			ScreenHandler handler = player.currentScreenHandler;
 			if (!(handler instanceof StonecutterScreenHandler cutterHandler)) {
 				throw new RuntimeError("Not in stonecutter gui", function.syntaxPosition, context);
@@ -564,8 +585,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				if (stonecuttingRecipes.get(i).getOutput().getItem() == itemOutput) {
 					int iFinal = i;
 					client.execute(() -> {
-					interactionManager.clickButton(cutterHandler.syncId, iFinal);
-					interactionManager.clickSlot(cutterHandler.syncId, 1, 0, SlotActionType.QUICK_MOVE, player);
+						interactionManager.clickButton(cutterHandler.syncId, iFinal);
+						interactionManager.clickSlot(cutterHandler.syncId, 1, 0, SlotActionType.QUICK_MOVE, player);
 					});
 					return BooleanValue.TRUE;
 				}
@@ -596,7 +617,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
 			int prepareSlot = player.inventory.getSwappableHotbarSlot();
-			ArucasMinecraftExtension.getClient().execute(()->{
+			ArucasMinecraftExtension.getClient().execute(() -> {
 				networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(prepareSlot));
 				player.inventory.swapSlotWithHotbar(slotToSwap.value.intValue());
 				networkHandler.sendPacket(new PickFromInventoryC2SPacket(slotToSwap.value.intValue()));
@@ -604,7 +625,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
-		private Value<?> updateBreakingBlock(Context context, MemberFunction function) throws CodeError{
+		private Value<?> updateBreakingBlock(Context context, MemberFunction function) throws CodeError {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			double x = function.getParameterValueOfType(context, NumberValue.class, 1).value;
 			double y = function.getParameterValueOfType(context, NumberValue.class, 2).value;
@@ -618,7 +639,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
-		private Value<?> updateBreakingBlockPos(Context context, MemberFunction function) throws CodeError{
+		private Value<?> updateBreakingBlockPos(Context context, MemberFunction function) throws CodeError {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			PosValue posValue = function.getParameterValueOfType(context, PosValue.class, 1);
 			BlockPos blockPos = new BlockPos(posValue.value);
@@ -776,7 +797,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private NullValue setKey(Context context, MemberFunction function, KeyBinding keyBinding) throws CodeError {
-			
+
 			BooleanValue booleanValue = function.getParameterValueOfType(context, BooleanValue.class, 1);
 			keyBinding.setPressed(booleanValue.value);
 			return NullValue.NULL;

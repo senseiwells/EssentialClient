@@ -7,9 +7,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import essentialclient.clientscript.events.CancelEvent;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.clientscript.ClientScriptUtils;
 import essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -135,7 +138,8 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("then", "commandNode", this::then),
-				new MemberFunction("executes", "function", this::executes)
+				new MemberFunction("executes", "function", this::executes),
+				new MemberFunction("requires", "predicate", this::requires)
 			);
 		}
 
@@ -162,6 +166,29 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 					functionValue.call(ctx, arucasList);
 				});
 				return 1;
+			});
+			return commandBuilderValue;
+		}
+
+		private Value<?> requires(Context context, MemberFunction function) throws CodeError {
+			CommandBuilderValue commandBuilderValue = function.getThis(context, CommandBuilderValue.class);
+			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
+			commandBuilderValue.value.requires(s -> {
+				ArucasThreadHandler threadHandler = context.getThreadHandler();
+				try {
+					ArucasList arguments = new ArucasList();
+					arguments.add(new PlayerValue(EssentialUtils.getPlayer()));
+					Value<?> returnValue = functionValue.call(context, arguments);
+					if (returnValue instanceof BooleanValue booleanValue) {
+						return booleanValue.value;
+					}
+					throw new RuntimeError("Command requirement didn't return a boolean", function.syntaxPosition, context);
+				}
+				catch (CodeError codeError) {
+					threadHandler.tryError(context, codeError);
+				}
+				threadHandler.stop();
+				return false;
 			});
 			return commandBuilderValue;
 		}
