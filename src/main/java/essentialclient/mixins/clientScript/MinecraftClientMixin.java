@@ -1,4 +1,4 @@
-package essentialclient.mixins.functions;
+package essentialclient.mixins.clientScript;
 
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.ItemStackValue;
@@ -30,17 +30,21 @@ public class MinecraftClientMixin {
 		MinecraftScriptEvents.ON_CLIENT_TICK.run();
 	}
 
-	@Inject(method = "doAttack", at = @At("HEAD"))
+	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
 	private void onAttack(CallbackInfo ci) {
-		MinecraftScriptEvents.ON_ATTACK.run();
+		if (MinecraftScriptEvents.ON_ATTACK.run()) {
+			ci.cancel();
+		}
 	}
 
-	@Inject(method = "doItemUse", at = @At("HEAD"))
+	@Inject(method = "doItemUse", at = @At("HEAD"), cancellable = true)
 	private void onUse(CallbackInfo ci) {
-		MinecraftScriptEvents.ON_USE.run();
+		if (MinecraftScriptEvents.ON_USE.run()) {
+			ci.cancel();
+		}
 	}
 
-	@Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD )
+	@Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void onPickBlock(CallbackInfo ci, boolean bl, BlockEntity blockEntity, ItemStack itemStack12) {
 		MinecraftScriptEvents.ON_PICK_BLOCK.run(new ItemStackValue(itemStack12));
 	}

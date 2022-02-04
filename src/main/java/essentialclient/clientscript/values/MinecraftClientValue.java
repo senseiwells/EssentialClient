@@ -2,6 +2,7 @@ package essentialclient.clientscript.values;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
+import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import essentialclient.clientscript.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvent;
@@ -136,6 +137,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("setCursorStack", "itemStack", this::setCursorStack),
 				new MemberFunction("getClientRenderDistance", this::getClientRenderDistance),
 				new MemberFunction("setClientRenderDistance", "distance", this::setClientRenderDistance),
+				new MemberFunction("runOnMainThread", "function", this::runOnMainThread),
+				new MemberFunction("tick", this::tick),
 
 				new MemberFunction("importUtils", "util", this::importUtils, "No replacement as of yet")
 			);
@@ -143,7 +146,6 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 
 		private Value<?> screenshot(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
-			client.tick();
 			ScreenshotUtils.saveScreenshot(
 				client.runDirectory,
 				client.getWindow().getWidth(),
@@ -226,15 +228,17 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		}
 
 		private Value<?> addCommand1(Context context, MemberFunction function) throws CodeError {
-			CommandNodeValue commandNodeValue = function.getParameterValueOfType(context, CommandNodeValue.class, 1);
-			if (!(commandNodeValue.value instanceof LiteralCommandNode<ServerCommandSource> literalCommandNode)) {
-				throw new RuntimeError("Expected a literal command node", function.syntaxPosition, context);
+			CommandBuilderValue commandBuilder = function.getParameterValueOfType(context, CommandBuilderValue.class, 1);
+			CommandNode<ServerCommandSource> commandNode = commandBuilder.value.build();
+			if (!(commandNode instanceof LiteralCommandNode<ServerCommandSource> literalCommandNode)) {
+				throw new RuntimeError("Expected a literal command builder as root", function.syntaxPosition, context);
 			}
 			CommandHelper.functionCommandNodes.add(literalCommandNode);
+			CommandHelper.complexFunctionCommands.add(literalCommandNode.getLiteral());
 			MinecraftClient client = this.getClient(context, function);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
-//			return NullValue.NULL;
+			return NullValue.NULL;
 		}
 
 		private Value<?> addCommand2(Context context, MemberFunction function) throws CodeError {
@@ -346,6 +350,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return new ListValue(modList);
 		}
 
+		@Deprecated
 		private Value<?> addGameEvent(Context context, MemberFunction function) throws CodeError {
 			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 2);
@@ -356,6 +361,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NumberValue.of(event.addFunction(context, functionValue));
 		}
 
+		@Deprecated
 		private Value<?> removeGameEvent(Context context, MemberFunction function) throws CodeError {
 			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			int eventId = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
@@ -369,6 +375,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
+		@Deprecated
 		private Value<?> removeAllGameEvents(Context context, MemberFunction function) {
 			MinecraftScriptEvents.clearEventFunctions();
 			return NullValue.NULL;
@@ -465,8 +472,29 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
+		private Value<?> runOnMainThread(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
+			client.execute(() -> {
+				Context branchedContext = context.createBranch();
+				try {
+					functionValue.call(branchedContext, new ArucasList());
+				}
+				catch (CodeError codeError) {
+					branchedContext.getThreadHandler().tryError(branchedContext, codeError);
+				}
+			});
+			return NullValue.NULL;
+		}
+
+		private Value<?> tick(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = this.getClient(context, function);
+			client.execute(client::tick);
+			return NullValue.NULL;
+		}
+
 		@Deprecated
-		private Value<?> importUtils(Context context, MemberFunction function) throws CodeError{
+		private Value<?> importUtils(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
 			String util = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			ResourceManager resourceManager = client.getResourceManager();

@@ -1,8 +1,10 @@
 package essentialclient.clientscript.values;
 
+import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
@@ -10,6 +12,7 @@ import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
+import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
@@ -21,6 +24,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 public class RecipeValue extends Value<Recipe<?>> {
 	public RecipeValue(Recipe<?> value) {
@@ -34,7 +38,7 @@ public class RecipeValue extends Value<Recipe<?>> {
 
 	@Override
 	public String getAsString(Context context) throws CodeError {
-		return "Recipe{" + this.value.getId() + "}";
+		return "Recipe{" + this.value.getId().getPath() + "}";
 	}
 
 	@Override
@@ -70,6 +74,24 @@ public class RecipeValue extends Value<Recipe<?>> {
 		}
 
 		@Override
+		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
+			return ArucasFunctionMap.of(
+				new BuiltInFunction("of", "recipeId", this::newRecipe)
+			);
+		}
+
+		private Value<?> newRecipe(Context context, BuiltInFunction function) throws CodeError {
+			String id = function.getParameterValueOfType(context, StringValue.class, 0).value;
+			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
+			Identifier identifier = ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, id);
+			Optional<? extends Recipe<?>> recipe = networkHandler.getRecipeManager().get(identifier);
+			if (recipe.isEmpty()) {
+				throw new RuntimeError("Recipe with id '%s' doesn't exist".formatted(id), function.syntaxPosition, context);
+			}
+			return new RecipeValue(recipe.get());
+		}
+
+		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getId", this::getId),
@@ -87,7 +109,7 @@ public class RecipeValue extends Value<Recipe<?>> {
 		private Value<?> getCraftingType(Context context, MemberFunction function) throws CodeError {
 			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
 			Identifier identifier = Registry.RECIPE_TYPE.getId(thisValue.value.getType());
-			return identifier == null ? NullValue.NULL :StringValue.of(identifier.getPath());
+			return identifier == null ? NullValue.NULL : StringValue.of(identifier.getPath());
 		}
 
 		private Value<?> getOutput(Context context, MemberFunction function) throws CodeError {

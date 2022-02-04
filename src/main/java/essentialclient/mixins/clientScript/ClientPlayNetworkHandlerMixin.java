@@ -1,4 +1,4 @@
-package essentialclient.mixins.functions;
+package essentialclient.mixins.clientScript;
 
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.ItemStackValue;
@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.List;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
@@ -41,7 +39,7 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameStateChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;setGameMode(Lnet/minecraft/world/GameMode;)V"))
 	private void onGamemodeChange(GameStateChangeS2CPacket packet, CallbackInfo ci) {
-		MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(List.of(StringValue.of(GameMode.byId((int) packet.getValue()).getName())));
+		MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(StringValue.of(GameMode.byId((int) packet.getValue()).getName()));
 	}
 
 	@Inject(method = "onItemPickupAnimation", at = @At("HEAD"))
@@ -55,12 +53,14 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onPlayerRespawn", at = @At("TAIL"))
 	private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-		MinecraftScriptEvents.ON_RESPAWN.run(List.of(new PlayerValue(this.client.player)));
+		MinecraftScriptEvents.ON_RESPAWN.run(new PlayerValue(this.client.player));
 	}
 
-	@Inject(method = "onGameMessage", at = @At("HEAD"))
+	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"), cancellable = true)
 	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-		MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(StringValue.of(packet.getMessage().getString()));
+		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(StringValue.of(packet.getMessage().getString()))) {
+			ci.cancel();
+		}
 	}
 
 	@Inject(method = "onPlayerList", at = @At("HEAD"))

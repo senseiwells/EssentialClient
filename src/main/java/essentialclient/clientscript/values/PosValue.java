@@ -15,8 +15,11 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 
 public class PosValue extends Value<Vec3d> {
+	private final BlockPos blockPos;
+
 	public PosValue(Vec3d value) {
 		super(value);
+		this.blockPos = new BlockPos(value);
 	}
 
 	public PosValue(BlockPos blockPos) {
@@ -37,6 +40,10 @@ public class PosValue extends Value<Vec3d> {
 
 	public NumberValue getZ() {
 		return NumberValue.of(this.value.getZ());
+	}
+
+	public BlockPos toBlockPos() {
+		return this.blockPos;
 	}
 
 	@Override

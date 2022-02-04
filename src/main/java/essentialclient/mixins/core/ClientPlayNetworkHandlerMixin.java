@@ -28,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import java.util.UUID;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -41,7 +40,7 @@ public class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onCommandTree", at = @At("TAIL"))
 	public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
 		CommandHelper.setCommandPacket(packet);
-		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) commandDispatcher);
+		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher);
 	}
 
 	@Redirect(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"))
@@ -64,7 +63,7 @@ public class ClientPlayNetworkHandlerMixin {
 		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getValue()) {
 			ClientScript.getInstance().startScript();
 		}
-		MinecraftScriptEvents.ON_CONNECT.run(List.of(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld())));
+		MinecraftScriptEvents.ON_CONNECT.run(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld()));
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
