@@ -28,6 +28,8 @@ import java.util.Optional;
 
 public class EssentialUtils {
 
+	private static final Path ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
+
 	public static void sendMessageToActionBar(String message) {
 		MinecraftClient client = getClient();
 		ClientPlayerEntity playerEntity = getPlayer();
@@ -35,7 +37,7 @@ public class EssentialUtils {
 			client.execute(() -> playerEntity.sendMessage(new LiteralText(message), true));
 		}
 	}
-	
+
 	public static void sendMessage(String message) {
 		MinecraftClient client = getClient();
 		ClientPlayerEntity playerEntity = getPlayer();
@@ -43,7 +45,7 @@ public class EssentialUtils {
 			client.execute(() -> playerEntity.sendMessage(new LiteralText(message), false));
 		}
 	}
-	
+
 	public static void sendMessage(Text text) {
 		MinecraftClient client = getClient();
 		ClientPlayerEntity playerEntity = getPlayer();
@@ -53,7 +55,7 @@ public class EssentialUtils {
 	}
 
 	public static Path getEssentialConfigFile() {
-		return FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
+		return ESSENTIAL_CLIENT_PATH;
 	}
 
 	public static MinecraftClient getClient() {
@@ -181,7 +183,7 @@ public class EssentialUtils {
 		}
 	}
 
-	private static String getLatestVersionUrl() throws IOException{
+	private static String getLatestVersionUrl() throws IOException {
 		int versionIndex = 0;
 		String lastWorkingVersion = EssentialClient.VERSION;
 		String essentialClientVersion = incrementVersion(lastWorkingVersion, versionIndex);
@@ -206,8 +208,10 @@ public class EssentialUtils {
 		try {
 			delimitedInput[versionIndex] = String.valueOf(Integer.parseInt(delimitedInput[versionIndex]) + 1);
 			switch (versionIndex) {
-				case 0: delimitedInput[1] = "0";
-				case 1: delimitedInput[2] = "0";
+				case 0:
+					delimitedInput[1] = "0";
+				case 1:
+					delimitedInput[2] = "0";
 			}
 		}
 		catch (NumberFormatException e) {

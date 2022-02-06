@@ -48,7 +48,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				new MemberFunction("getGamemode", this::getGamemode),
 				new MemberFunction("getTotalSlots", this::getTotalSlots),
 				new MemberFunction("getItemForSlot", "slot", this::getItemForSlot),
-				new MemberFunction("getItemForPlayerSlot","slot", this::getItemForPlayerSlot),
+				new MemberFunction("getItemForPlayerSlot", "slot", this::getItemForPlayerSlot),
 				new MemberFunction("getSlotFor", "itemStack", this::getSlotFor),
 				new MemberFunction("getAllSlotsFor", "itemStack", this::getAllSlotsFor),
 				new MemberFunction("getAbilities", this::getAbilities),
@@ -88,7 +88,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			AbstractClientPlayerEntity player = this.getOtherPlayer(context, function);
 			int slot = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
 			if (slot < 0 || slot > player.inventory.main.size()) {
-				throw new RuntimeError("slot number is not valid", function.syntaxPosition, context);
+				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
 			ItemStack itemStack = player.inventory.main.get(slot);
 			return new ItemStackValue(itemStack);
@@ -121,12 +121,12 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
 			PlayerAbilities playerAbilities = playerEntity.abilities;
 			ArucasMap map = new ArucasMap() {{
-				put(context, StringValue.of("invulnerable"), BooleanValue.of(playerAbilities.invulnerable));
-				put(context, StringValue.of("canFly"), BooleanValue.of(playerAbilities.allowFlying));
-				put(context, StringValue.of("canBreakBlocks"), BooleanValue.of(playerAbilities.allowModifyWorld));
-				put(context, StringValue.of("isCreative"), BooleanValue.of(playerAbilities.creativeMode));
-				put(context, StringValue.of("walkSpeed"), NumberValue.of(playerAbilities.getWalkSpeed()));
-				put(context, StringValue.of("flySpeed"), NumberValue.of(playerAbilities.getFlySpeed()));
+				this.put(context, StringValue.of("invulnerable"), BooleanValue.of(playerAbilities.invulnerable));
+				this.put(context, StringValue.of("canFly"), BooleanValue.of(playerAbilities.allowFlying));
+				this.put(context, StringValue.of("canBreakBlocks"), BooleanValue.of(playerAbilities.allowModifyWorld));
+				this.put(context, StringValue.of("isCreative"), BooleanValue.of(playerAbilities.creativeMode));
+				this.put(context, StringValue.of("walkSpeed"), NumberValue.of(playerAbilities.getWalkSpeed()));
+				this.put(context, StringValue.of("flySpeed"), NumberValue.of(playerAbilities.getFlySpeed()));
 			}};
 			return new MapValue(map);
 		}

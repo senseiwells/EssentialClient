@@ -22,6 +22,7 @@
     "clientScript.FishingBobberEntityMixin",
     "clientScript.KeyboardMixin",
     "clientScript.LivingEntityMixin",
+    "clientScript.MerchantScreenHandlerMixin",
     "clientScript.MinecraftClientMixin",
     "clientScript.NbtListMixin",
     "clientScript.PlayerEntityMixin",
