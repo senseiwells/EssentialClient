@@ -7,6 +7,7 @@ import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
@@ -23,11 +24,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
+import java.util.List;
 import java.util.Optional;
 
 public class EntityValue<T extends Entity> extends Value<T> {
@@ -124,7 +127,9 @@ public class EntityValue<T extends Entity> extends Value<T> {
 				new MemberFunction("getDistanceTo", "otherEntity", this::getDistanceTo),
 				new MemberFunction("getSquaredDistanceTo", "otherEntity", this::getSquaredDistanceTo),
 				new MemberFunction("getNbt", this::getNbt),
-				new MemberFunction("getTranslatedName", this::getTranslatedName)
+				new MemberFunction("getTranslatedName", this::getTranslatedName),
+				new MemberFunction("getHitbox", this::getHitbox),
+				new MemberFunction("collidesWith", List.of("pos","block"), this::collidesWithBlockAtPos)
 			);
 		}
 
@@ -204,7 +209,27 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			Entity entity = this.getEntity(context, function);
 			return StringValue.of(I18n.translate(entity.getType().getTranslationKey()));
 		}
-
+		private Value<?> getHitbox(Context context, MemberFunction function) throws CodeError {
+			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 0);
+			if (entityValue.value == null) {
+				throw new RuntimeError("Entity was null", function.syntaxPosition, context);
+			}
+			Box box = entityValue.value.getBoundingBox();
+			ArucasList boxList = new ArucasList();
+			boxList.add(new PosValue(box.minX,box.minY,box.minZ));
+			boxList.add(new PosValue(box.maxX,box.maxY,box.maxZ));
+			return new ListValue(boxList);
+		}
+		private Value<?> collidesWithBlockAtPos(Context context, MemberFunction function) throws CodeError {
+			//if block is placed at position, will entity collide with it? then it can't be placed.
+			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 0);
+			PosValue posValue = function.getParameterValueOfType(context, PosValue.class, 1);
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 2);
+			if (entityValue.value == null) {
+				throw new RuntimeError("Entity was null", function.syntaxPosition, context);
+			}
+			return BooleanValue.of(entityValue.value.method_30632(posValue.toBlockPos(), blockStateValue.value));
+		}
 		private Entity getEntity(Context context, MemberFunction function) throws CodeError {
 			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 0);
 			if (entityValue.value == null) {
