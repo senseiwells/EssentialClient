@@ -129,7 +129,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 				new MemberFunction("getNbt", this::getNbt),
 				new MemberFunction("getTranslatedName", this::getTranslatedName),
 				new MemberFunction("getHitbox", this::getHitbox),
-				new MemberFunction("collidesWith", List.of("pos","block"), this::collidesWithBlockAtPos)
+				new MemberFunction("collidesWith", List.of("pos", "block"), this::collidesWithBlockAtPos)
 			);
 		}
 
@@ -209,27 +209,24 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			Entity entity = this.getEntity(context, function);
 			return StringValue.of(I18n.translate(entity.getType().getTranslationKey()));
 		}
+
 		private Value<?> getHitbox(Context context, MemberFunction function) throws CodeError {
-			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 0);
-			if (entityValue.value == null) {
-				throw new RuntimeError("Entity was null", function.syntaxPosition, context);
-			}
-			Box box = entityValue.value.getBoundingBox();
+			Entity entity = this.getEntity(context, function);
+			Box box = entity.getBoundingBox();
 			ArucasList boxList = new ArucasList();
-			boxList.add(new PosValue(box.minX,box.minY,box.minZ));
-			boxList.add(new PosValue(box.maxX,box.maxY,box.maxZ));
+			boxList.add(new PosValue(box.minX, box.minY, box.minZ));
+			boxList.add(new PosValue(box.maxX, box.maxY, box.maxZ));
 			return new ListValue(boxList);
 		}
+
 		private Value<?> collidesWithBlockAtPos(Context context, MemberFunction function) throws CodeError {
-			//if block is placed at position, will entity collide with it? then it can't be placed.
-			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 0);
+			// If block is placed at position, will entity collide with it? Then it can't be placed.
+			Entity entity = this.getEntity(context, function);
 			PosValue posValue = function.getParameterValueOfType(context, PosValue.class, 1);
 			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 2);
-			if (entityValue.value == null) {
-				throw new RuntimeError("Entity was null", function.syntaxPosition, context);
-			}
-			return BooleanValue.of(entityValue.value.method_30632(posValue.toBlockPos(), blockStateValue.value));
+			return BooleanValue.of(entity.method_30632(posValue.toBlockPos(), blockStateValue.value));
 		}
+
 		private Entity getEntity(Context context, MemberFunction function) throws CodeError {
 			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 0);
 			if (entityValue.value == null) {

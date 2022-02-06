@@ -1,6 +1,7 @@
 package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import essentialclient.mixins.clientScript.MerchantScreenHandlerMixin;
 import essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
@@ -13,7 +14,9 @@ import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
+import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.village.Merchant;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
@@ -37,7 +40,8 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getTradeList", this::getTradeList),
 				new MemberFunction("getTradeListSize", this::getTradeListSize),
-				new MemberFunction("getVillagerJobLevel", this::getVillagerJobLevel),
+				new MemberFunction("getVillagerLevel", this::getVillagerLevel),
+				new MemberFunction("getVillagerProfession", this::getVillagerProfession),
 				new MemberFunction("tradeIndex", "index", this::tradeIndex),
 				new MemberFunction("getIndexOfTradeItem", "itemStack", this::getIndexOfTrade),
 				new MemberFunction("getTradeItemForIndex", "index", this::getTradeItemForIndex),
@@ -57,22 +61,35 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
 			return NumberValue.of(tradeOfferList.size());
 		}
-		
+
 		private Value<?> getTradeList(Context context, MemberFunction function) throws CodeError {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
 			ArucasList valueList = new ArucasList();
 			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
-			for (TradeOffer tradeOffers : tradeOfferList){
+			for (TradeOffer tradeOffers : tradeOfferList) {
 				valueList.add(new TradeValue(tradeOffers));
 			}
 			return new ListValue(valueList);
 		}
-		
-		private Value<?> getVillagerJobLevel(Context context, MemberFunction function) throws CodeError {
+
+		private Value<?> getVillagerLevel(Context context, MemberFunction function) throws CodeError {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
-			return NumberValue.of(merchantScreen.getScreenHandler().getLevelProgress());
+			Merchant merchant = ((MerchantScreenHandlerMixin) merchantScreen.getScreenHandler()).getMerchant();
+			if (merchant instanceof VillagerEntity villagerEntity) {
+				return NumberValue.of(villagerEntity.getVillagerData().getLevel());
+			}
+			throw new RuntimeError("Merchant isn't a villager", function.syntaxPosition, context);
 		}
-		
+
+		private Value<?> getVillagerProfession(Context context, MemberFunction function) throws CodeError {
+			MerchantScreen merchantScreen = this.checkIsCurrentScreen(context, function);
+			Merchant merchant = ((MerchantScreenHandlerMixin) merchantScreen.getScreenHandler()).getMerchant();
+			if (merchant instanceof VillagerEntity villagerEntity) {
+				return StringValue.of(villagerEntity.getVillagerData().getProfession().toString());
+			}
+			throw new RuntimeError("Merchant isn't a villager", function.syntaxPosition, context);
+		}
+
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);

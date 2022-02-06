@@ -81,6 +81,12 @@ public class BoxShapeWrapper implements IArucasWrappedClass {
 	}
 
 	@ArucasFunction
+	public NullValue setColur(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
+		return this.setColour(context, redValue, greenValue, blueValue);
+	}
+
+
+	@ArucasFunction
 	public NullValue setOpacity(Context context, NumberValue opacityValue) {
 		int opacity = opacityValue.value.intValue();
 		this.throwIfColourInvalid(opacity);
@@ -98,6 +104,11 @@ public class BoxShapeWrapper implements IArucasWrappedClass {
 		this.outlineGreen = green;
 		this.outlineBlue = blue;
 		return NullValue.NULL;
+	}
+
+	@ArucasFunction
+	public NullValue setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
+		return this.setOutlineColour(context, redValue, greenValue, blueValue);
 	}
 
 	@ArucasFunction
