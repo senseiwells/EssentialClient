@@ -2,7 +2,7 @@ package essentialclient.mixins.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import essentialclient.EssentialClient;
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.PlayerValue;
 import essentialclient.clientscript.values.WorldValue;
@@ -60,8 +60,8 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameJoin", at = @At("TAIL"))
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getValue()) {
-			ClientScript.getInstance().startScript();
+		if (ClientRules.START_SELECTED_SCRIPTS_ON_JOIN.getValue()) {
+			ClientScript.INSTANCE.startAllInstances();
 		}
 		MinecraftScriptEvents.ON_CONNECT.run(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld()));
 	}

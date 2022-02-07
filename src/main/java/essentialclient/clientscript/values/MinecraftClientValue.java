@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvent;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
@@ -233,8 +233,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			if (!(commandNode instanceof LiteralCommandNode<ServerCommandSource> literalCommandNode)) {
 				throw new RuntimeError("Expected a literal command builder as root", function.syntaxPosition, context);
 			}
-			CommandHelper.functionCommandNodes.add(literalCommandNode);
-			CommandHelper.complexFunctionCommands.add(literalCommandNode.getLiteral());
+			CommandHelper.addComplexCommand(context.getThreadHandler(), literalCommandNode);
 			MinecraftClient client = this.getClient(context, function);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
@@ -278,7 +277,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				command.addChild(finalArguments);
 			}
 
-			CommandHelper.functionCommandNodes.add(command);
+			CommandHelper.addComplexCommand(context.getThreadHandler(), command);
 			MinecraftClient client = this.getClient(context, function);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));

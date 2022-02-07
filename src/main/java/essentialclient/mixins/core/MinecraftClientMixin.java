@@ -1,6 +1,6 @@
 package essentialclient.mixins.core;
 
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.feature.EssentialCarpetClient;
 import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
@@ -45,9 +45,14 @@ public abstract class MinecraftClientMixin extends ReentrantThreadExecutor<Runna
 		ChunkDebugScreen.chunkGrid = null;
 	}
 
+	@Inject(method = "close", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/TextureManager;close()V"))
+	private void onClose(CallbackInfo ci) {
+		ClientScript.INSTANCE.saveScriptConfig();
+	}
+
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
 	private void onDisconnect(Screen screen, CallbackInfo ci) {
-		ClientScript.getInstance().stopScript();
+		ClientScript.INSTANCE.stopAllInstances();
 	}
 
 	@Override

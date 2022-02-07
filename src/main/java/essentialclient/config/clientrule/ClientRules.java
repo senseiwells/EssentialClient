@@ -1,6 +1,6 @@
 package essentialclient.config.clientrule;
 
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import essentialclient.commands.TravelCommand;
 import essentialclient.feature.AFKRules;
 import essentialclient.feature.BetterAccurateBlockPlacement;
@@ -22,6 +22,7 @@ public class ClientRules {
 		BETTER_PING_DISPLAY = new BooleanClientRule("betterPingDisplay", "This displays the real ping in the tab list"),
 		CHUNK_DEBUG_MINIMAP_BACKGROUND = new BooleanClientRule("chunkDebugMinimapBackground", "This renders a box showing the bounds of the chunk debug minimap", true),
 		CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS = new BooleanClientRule("chunkDebugShowUnloadedChunks", "This shows you unloaded chunks in ChunkDebug"),
+		CLIENT_SCRIPT_ANNOUNCEMENTS = new BooleanClientRule("clientScriptAnnouncements", "This messages in chat when a script starts and finishes", true),
 		COMMAND_ALTERNATE_DIMENSION = new BooleanClientRule("commandAlternateDimension", "This command calculates the coordinates of the alternate dimension", ClientRuleHelper::refreshCommand),
 		COMMAND_CLIENT_NICK = new BooleanClientRule("commandClientNick", "This allows you to rename player names on the client", ClientRuleHelper::refreshCommand),
 		COMMAND_MUSIC = new BooleanClientRule("commandMusic", "This command allows you to manipulate the current music", ClientRuleHelper::refreshCommand),
@@ -41,7 +42,7 @@ public class ClientRules {
 		DISABLE_RECIPE_NOTIFICATIONS = new BooleanClientRule("disableRecipeNotifications", "Disables the recipe toast from showing"),
 		DISABLE_TUTORIAL_NOTIFICATIONS = new BooleanClientRule("disableTutorialNotifications", "Disables the tutorial toast from showing"),
 		DISPLAY_TIME_PLAYED = new BooleanClientRule("displayTimePlayed", "This will display how long you have had your current client open for in the corner of the pause menu"),
-		ENABLE_SCRIPT_ON_JOIN = new BooleanClientRule("enableScriptOnJoin", "This will enable your selected script when you join a world automatically"),
+		START_SELECTED_SCRIPTS_ON_JOIN = new BooleanClientRule("startSelectedScriptsOnJoin", "This will enable your selected scripts when you join a world automatically"),
 		ESSENTIAL_CLIENT_BUTTON = new BooleanClientRule("essentialClientButton", "This renders the Essential Client Menu on the main menu screen, and pause screen", true),
 		HIGHLIGHT_LAVA_SOURCES = new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", ClientRuleHelper::refreshWorld),
 		INCREASE_SPECTATOR_SCROLL_SPEED = new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator"),
@@ -62,14 +63,13 @@ public class ClientRules {
 		MUSIC_INTERVAL = new IntegerClientRule("musicInterval", "The amount of ticks between each soundtrack that is played, 0 = random"),
 		SWITCH_TO_TOTEM = new IntegerClientRule("switchToTotem", "This will switch to a totem (if you have one), under a set amount of health"),
 		SOUL_SPEED_FOV_MULTIPLIER = new IntegerClientRule("soulSpeedFovMultiplier", "Determines the percentage of Fov scaling when walking on soil soul or soul sand"),
-		WATER_FOV_MULTIPLIER = new IntegerClientRule("waterFovMultiplier","Determines the percentage of Fov scaling when fully submerged in water");
+		WATER_FOV_MULTIPLIER = new IntegerClientRule("waterFovMultiplier", "Determines the percentage of Fov scaling when fully submerged in water");
 
 	public static final DoubleClientRule
 		OVERRIDE_CREATIVE_WALK_SPEED = new DoubleClientRule("overrideCreativeWalkSpeed", "This allows you to override the vanilla walk speed in creative mode", 0.0D);
 
 	public static StringClientRule
-		ANNOUNCE_AFK_MESSAGE = new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK"),
-		CLIENT_SCRIPT_FILENAME = new StringClientRule("clientScriptFilename", "This allows you to choose a specific script file name", "clientscript", EssentialUtils::checkifScriptFileExists);
+		ANNOUNCE_AFK_MESSAGE = new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK");
 
 	public static final CycleClientRule
 		CUSTOM_CLIENT_CAPE = new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CapeHelper.capeNames, ClientRuleHelper::refreshCape),
@@ -83,13 +83,13 @@ public class ClientRules {
 		PlayerClientCommandHelper.readSaveFile();
 		PlayerListCommandHelper.readSaveFile();
 		ClientNickHelper.readSaveFile();
-		EssentialUtils.checkifScriptFileExists();
+		EssentialUtils.checkIfScriptFileExists();
 
 		// Registering ticking methods
 		AFKRules.INSTANCE.register();
 		TravelCommand.register();
 		BetterAccurateBlockPlacement.register();
-		ClientScript.getInstance().register();
+		ClientScript.INSTANCE.load();
 
 		// Init anything else
 		HighlightLavaSources.init();

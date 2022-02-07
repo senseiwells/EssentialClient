@@ -45,7 +45,7 @@ public class ChunkDebugScreen extends Screen {
 			chunkGrid = new ChunkGrid(client, width, height);
 		}
 		EssentialClient.chunkNetHandler.requestChunkData(chunkGrid.getDimension());
-		int buttonWidth = (width - FOOTER_ROW_PADDING * 4) / 3 ;
+		int buttonWidth = (width - FOOTER_ROW_PADDING * 4) / 3;
 		int buttonHeight = height - FOOTER_ROW_HEIGHT * 3 + FOOTER_ROW_PADDING * 2;
 		Text dimensionText = new LiteralText(chunkGrid.getPrettyDimension());
 		ButtonWidget dimensionButton = this.addButton(new ButtonWidget(FOOTER_ROW_PADDING, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, dimensionText, button -> {
@@ -142,7 +142,7 @@ public class ChunkDebugScreen extends Screen {
 
 		int textHeight = this.height - 20;
 		int xOffset = FOOTER_ROW_PADDING + 10;
-		int zOffset = xPositionBox.getWidth() + 50;
+		int zOffset = this.xPositionBox.getWidth() + 50;
 
 		this.drawText(matrices, "X", xOffset, textHeight, 1.5F, false);
 		this.drawText(matrices, "Z", zOffset, textHeight, 1.5F, false);
@@ -156,7 +156,8 @@ public class ChunkDebugScreen extends Screen {
 		matrices.scale(scale, scale, 0.0F);
 		if (center) {
 			DrawableHelper.drawCenteredText(matrices, this.textRenderer, new LiteralText(text), 0, 0, 0xFFFFFF);
-		} else {
+		}
+		else {
 			DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, new LiteralText(text), 0, 0, 0xFFFFFF);
 		}
 		matrices.pop();
@@ -178,10 +179,10 @@ public class ChunkDebugScreen extends Screen {
 		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).color(0, 0, 0, 255).next();
 
 		// Footer gradient
-		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0, 0).next();
 		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
 		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0, 0).next();
 
 		tessellator.draw();
 	}
@@ -196,8 +197,8 @@ public class ChunkDebugScreen extends Screen {
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
 
 		// Header
-		bufferBuilder.vertex(0, 0, 0).color(64, 64, 64, 255).texture( 0, 0).next();
-		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture( 0, HEADER_HEIGHT / 32f).next();
+		bufferBuilder.vertex(0, 0, 0).color(64, 64, 64, 255).texture(0, 0).next();
+		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(0, HEADER_HEIGHT / 32f).next();
 		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f, HEADER_HEIGHT / 32f).next();
 		bufferBuilder.vertex(this.width, 0, 0).color(64, 64, 64, 255).texture(this.width / 32f, 0).next();
 

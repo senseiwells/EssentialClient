@@ -16,6 +16,6 @@ public class CommandRegister {
 		UpdateClientCommand.register(dispatcher);
 		AlternateDimensionCommand.register(dispatcher);
 		ClientScriptCommand.register(dispatcher);
-		CommandHelper.functionCommandNodes.forEach(command -> dispatcher.getRoot().addChild(command));
+		CommandHelper.registerFunctionCommands(dispatcher);
 	}
 }

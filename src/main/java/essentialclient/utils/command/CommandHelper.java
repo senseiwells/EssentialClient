@@ -1,5 +1,6 @@
 package essentialclient.utils.command;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
@@ -12,6 +13,7 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
+import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
@@ -37,8 +39,7 @@ public class CommandHelper {
 
 	public static final Set<String> clientCommands = new HashSet<>();
 	public static final Set<String> functionCommands = new HashSet<>();
-	public static final Set<String> complexFunctionCommands = new HashSet<>();
-	public static final Set<LiteralCommandNode<ServerCommandSource>> functionCommandNodes = new HashSet<>();
+	private static final Map<ArucasThreadHandler, Set<LiteralCommandNode<ServerCommandSource>>> functionCommandNodes = new HashMap<>();
 	public static final DecimalFormat decimalFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
 	public static MethodHandle argumentHandle;
 
@@ -69,17 +70,40 @@ public class CommandHelper {
 	}
 
 	public static boolean isClientCommand(String command) {
-		return clientCommands.contains(command) || complexFunctionCommands.contains(command);
+		if (clientCommands.contains(command)) {
+			return true;
+		}
+		for (Set<LiteralCommandNode<ServerCommandSource>> commandNodes : functionCommandNodes.values()) {
+			for (LiteralCommandNode<ServerCommandSource> commandNode : commandNodes) {
+				if (commandNode.getLiteral().equals(command)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static void addComplexCommand(ArucasThreadHandler handler, LiteralCommandNode<ServerCommandSource> commandNode) {
+		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = functionCommandNodes.get(handler);
+		commandNodeSet = commandNodeSet != null ? commandNodeSet : new HashSet<>();
+		commandNodeSet.add(commandNode);
+		functionCommandNodes.put(handler, commandNodeSet);
+	}
+
+	public static void registerFunctionCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+		for (Set<LiteralCommandNode<ServerCommandSource>> commandNodes : functionCommandNodes.values()) {
+			for (LiteralCommandNode<ServerCommandSource> commandNode : commandNodes) {
+				dispatcher.getRoot().addChild(commandNode);
+			}
+		}
 	}
 
 	public static void clearClientCommands() {
 		clientCommands.clear();
 	}
 
-	public static void clearFunctionCommands() {
-		functionCommands.clear();
-		complexFunctionCommands.clear();
-		functionCommandNodes.clear();
+	public static void removeComplexCommand(ArucasThreadHandler handler) {
+		functionCommandNodes.remove(handler);
 	}
 
 	public static void executeCommand(StringReader reader, String command) {

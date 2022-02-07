@@ -1,7 +1,7 @@
 package essentialclient.utils;
 
 import essentialclient.EssentialClient;
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModDependency;
@@ -121,20 +121,11 @@ public class EssentialUtils {
 		}
 	}
 
-	public static void checkifScriptFileExists() {
+	public static void checkIfScriptFileExists() {
 		Path macroDir = ClientScript.getDir();
-		Path macroFile = ClientScript.getFile();
 		if (!Files.exists(macroDir)) {
 			try {
 				Files.createDirectory(macroDir);
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if (!Files.exists(macroFile)) {
-			try {
-				Files.createFile(macroFile);
 			}
 			catch (IOException e) {
 				e.printStackTrace();

@@ -3,7 +3,7 @@ package essentialclient.utils.clientscript;
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import net.minecraft.command.CommandException;
 import net.minecraft.text.LiteralText;
 

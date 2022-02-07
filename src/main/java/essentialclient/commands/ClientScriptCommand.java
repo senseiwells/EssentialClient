@@ -4,14 +4,16 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import essentialclient.clientscript.ClientScript;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientscript.core.ClientScript;
+import essentialclient.clientscript.core.ClientScriptInstance;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.clientscript.ScriptRepositoryManager;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.render.ChatColour;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+
+import java.util.List;
 
 import static essentialclient.utils.clientscript.ScriptRepositoryManager.Category;
 import static net.minecraft.server.command.CommandManager.argument;
@@ -24,30 +26,25 @@ public class ClientScriptCommand {
 		LiteralArgumentBuilder<ServerCommandSource>
 			root = literal("clientscript"),
 			download = literal("download"),
-			setScript = literal("setscript"),
 			runFromWeb = literal("runfromweb");
 
 		root.then(literal("run")
-			.executes(context -> {
-				ClientScript.getInstance().startScript();
-				return 1;
-			})
-			.then(argument("script", StringArgumentType.greedyString())
-				.executes(context -> {
-					String scriptContent = StringArgumentType.getString(context, "script");
-					ClientScript.getInstance().startScript("fromCommand", scriptContent);
-					return 1;
-				})
+			.then(argument("scriptName", StringArgumentType.string())
+				.suggests((c, b) -> CommandSource.suggestMatching(List.of("exampleName", "scriptFromCommand"), b))
+				.then(argument("script", StringArgumentType.greedyString())
+					.executes(context -> {
+						String scriptName = StringArgumentType.getString(context, "scriptName");
+						String scriptContent = StringArgumentType.getString(context, "script");
+						ClientScriptInstance.runFromContent(scriptName, scriptContent);
+						return 1;
+					})
+				)
 			)
 		);
 
-		setScript.then(argument("scriptname", StringArgumentType.string())
-			.suggests((c, b) -> CommandSource.suggestMatching(ClientScript.getScriptNames(), b))
+		root.then(literal("stopall")
 			.executes(context -> {
-				String scriptName = StringArgumentType.getString(context, "scriptname");
-				ClientRules.CLIENT_SCRIPT_FILENAME.setValue(scriptName);
-				ClientRules.CLIENT_SCRIPT_FILENAME.run();
-				EssentialUtils.sendMessage(ChatColour.GOLD + "Set current script to: " + ChatColour.GREEN + scriptName);
+				ClientScript.INSTANCE.stopAllInstances();
 				return 1;
 			})
 		);
@@ -80,7 +77,7 @@ public class ClientScriptCommand {
 					.executes(context -> {
 						String scriptName = StringArgumentType.getString(context, "scriptname");
 						String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, true);
-						ClientScript.getInstance().startScript(scriptName, scriptContent);
+						ClientScriptInstance.runFromContent(scriptName, scriptContent);
 						return 1;
 					})
 					.then(argument("fromcache", BoolArgumentType.bool())
@@ -88,7 +85,7 @@ public class ClientScriptCommand {
 							String scriptName = StringArgumentType.getString(context, "scriptname");
 							boolean fromCache = BoolArgumentType.getBool(context, "fromcache");
 							String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, fromCache);
-							ClientScript.getInstance().startScript(scriptName, scriptContent);
+							ClientScriptInstance.runFromContent(scriptName, scriptContent);
 							return 1;
 						})
 					)
@@ -96,6 +93,6 @@ public class ClientScriptCommand {
 			);
 		}
 
-		dispatcher.register(root.then(download).then(setScript).then(runFromWeb));
+		dispatcher.register(root.then(download).then(runFromWeb));
 	}
 }
