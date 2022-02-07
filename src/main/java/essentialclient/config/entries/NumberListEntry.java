@@ -91,8 +91,8 @@ public class NumberListEntry extends BaseListEntry {
 			DiffuseLighting.disable();
 		}
 
-		this.numberField.render(new MatrixStack(), mouseX, mouseY, delta);
-		this.resetButton.render(new MatrixStack(), mouseX, mouseY, delta);
+		this.numberField.render(matrices, mouseX, mouseY, delta);
+		this.resetButton.render(matrices, mouseX, mouseY, delta);
 	}
 	
 	private void setInvalid(boolean invalid) {

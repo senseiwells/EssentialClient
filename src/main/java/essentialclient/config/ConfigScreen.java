@@ -15,22 +15,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Util;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class ConfigScreen extends Screen {
-	private static final URL WIKI_URL;
-
-	static {
-		URL url = null;
-		try {
-			url = new URL("https://github.com/senseiwells/EssentialClient/wiki");
-		}
-		catch (MalformedURLException ignored) {
-		}
-		WIKI_URL = url;
-	}
-
 	private final Screen parent;
 
 	public ConfigScreen(Screen parent) {
@@ -70,8 +55,8 @@ public class ConfigScreen extends Screen {
 			chunkDebugButton.active = false;
 		}
 		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.openScreen(this.parent)));
-		this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Wiki"), (button) -> {
-			Util.getOperatingSystem().open(WIKI_URL);
+		this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Wiki Page"), (button) -> {
+			Util.getOperatingSystem().open(EssentialUtils.WIKI_URL);
 		}));
 		this.addButton(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
 	}
@@ -87,9 +72,8 @@ public class ConfigScreen extends Screen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 		drawCenteredText(matrices, this.textRenderer, "Essential Client", this.width / 2, 8, 0xFFFFFF);
-		if (this.client != null && this.client.getCurrentServerEntry() != null) {
-			drawCenteredText(matrices, this.textRenderer, String.format("You are currently connected to: %s", this.client.getCurrentServerEntry().name), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0xFFFFFF);
-		}
+		drawCenteredText(matrices, this.textRenderer, "Version: %s".formatted(EssentialUtils.getVersion()), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0x949494);
+
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 }

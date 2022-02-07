@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +29,22 @@ import java.util.Optional;
 
 public class EssentialUtils {
 
+	public static final URL WIKI_URL;
+	public static final URL SCRIPT_WIKI_URL;
+	
 	private static final Path ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
+
+	static {
+		URL wiki = null, scriptWiki = null;
+		try {
+			wiki = new URL("https://github.com/senseiwells/EssentialClient/wiki");
+			scriptWiki = new URL("https://github.com/senseiwells/EssentialClient/wiki/ClientScript");
+		}
+		catch (MalformedURLException ignored) {
+		}
+		WIKI_URL = wiki;
+		SCRIPT_WIKI_URL = scriptWiki;
+	}
 
 	public static void sendMessageToActionBar(String message) {
 		MinecraftClient client = getClient();

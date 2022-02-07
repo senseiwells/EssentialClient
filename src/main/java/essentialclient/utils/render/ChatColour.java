@@ -1,7 +1,7 @@
 package essentialclient.utils.render;
 
 public class ChatColour {
-	public static String DARK_RED = "§4";
+	public static String DARK_RED = "4";
 	public static String RED = "§c";
 	public static String GOLD = "§6";
 	public static String YELLOW = "§e";

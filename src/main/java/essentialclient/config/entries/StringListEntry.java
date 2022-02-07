@@ -91,8 +91,8 @@ public class StringListEntry extends BaseListEntry {
 			DiffuseLighting.disable();
 		}
 
-		this.textField.render(new MatrixStack(), mouseX, mouseY, delta);
-		this.resetButton.render(new MatrixStack(), mouseX, mouseY, delta);
+		this.textField.render(matrices, mouseX, mouseY, delta);
+		this.resetButton.render(matrices, mouseX, mouseY, delta);
 	}
 	
 	private void setInvalid(boolean invalid) {
