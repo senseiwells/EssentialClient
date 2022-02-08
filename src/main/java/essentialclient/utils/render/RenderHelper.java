@@ -107,10 +107,12 @@ public class RenderHelper {
 			RenderSystem.disableDepthTest();
 		}
 
-		bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
-		RenderSystem.lineWidth(outlineWidth);
-		drawBox(bufferBuilder, model, pos1, pos2, outlineRed, outlineGreen, outlineBlue, 1, true);
-		tessellator.draw();
+		if (outlineWidth >= 1) {
+			bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
+			RenderSystem.lineWidth(outlineWidth);
+			drawBox(bufferBuilder, model, pos1, pos2, outlineRed, outlineGreen, outlineBlue, 1, true);
+			tessellator.draw();
+		}
 
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
 		drawBox(bufferBuilder, model, pos1, pos2, red, green, blue, alpha, false);
