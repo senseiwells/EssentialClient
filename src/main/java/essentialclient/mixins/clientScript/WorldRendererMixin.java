@@ -1,6 +1,6 @@
 package essentialclient.mixins.clientScript;
 
-import essentialclient.clientscript.extensions.BoxShapeWrapper;
+import essentialclient.utils.render.RenderHelper;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -16,6 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class WorldRendererMixin {
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;method_23792()V", shift = At.Shift.BEFORE))
 	private void preRenderParticles(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
-		BoxShapeWrapper.foreachBox(boxShapeWrapper -> boxShapeWrapper.render(matrices));
+		RenderHelper.render(matrices);
 	}
 }

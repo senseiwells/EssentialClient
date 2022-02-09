@@ -1,35 +1,33 @@
 package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.PosValue;
-import essentialclient.utils.render.RenderHelper;
 import me.senseiwells.arucas.api.wrappers.*;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
-import net.minecraft.client.util.math.MatrixStack;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 @ArucasWrapper(name = "BoxShape")
 public class BoxShapeWrapper implements IArucasWrappedClass {
-	private static final Set<BoxShapeWrapper> boxesToRender = new HashSet<>();
+	private static final Set<BoxShapeWrapper> boxesToRender = new LinkedHashSet<>(0);
 
 	@ArucasMember(assignable = false)
 	public PosValue pos1;
 	@ArucasMember(assignable = false)
 	public PosValue pos2;
-	private int red;
-	private int green;
-	private int blue;
-	private int opacity;
-	private int outlineRed;
-	private int outlineGreen;
-	private int outlineBlue;
-	private int outlineWidth;
-	private boolean renderThroughBlocks;
+	public int red;
+	public int green;
+	public int blue;
+	public int opacity;
+	public int outlineRed;
+	public int outlineGreen;
+	public int outlineBlue;
+	public int outlineWidth;
+	public boolean renderThroughBlocks;
 
 	@ArucasConstructor
 	public void constructor(Context context, PosValue pos1, PosValue pos2) {
@@ -179,23 +177,6 @@ public class BoxShapeWrapper implements IArucasWrappedClass {
 		return BooleanValue.of(removeBoxToRender(this));
 	}
 
-	public void render(MatrixStack matrices) {
-		RenderHelper.drawBoxWithOutline(
-			matrices,
-			this.pos1.toBlockPos(),
-			this.pos2.toBlockPos(),
-			(float) this.red / 255,
-			(float) this.green / 255,
-			(float) this.blue / 255,
-			(float) this.opacity / 255,
-			(float) this.outlineRed / 255,
-			(float) this.outlineGreen / 255,
-			(float) this.outlineBlue / 255,
-			this.outlineWidth,
-			this.renderThroughBlocks
-		);
-	}
-
 	private void throwIfColoursInvalid(int red, int green, int blue) {
 		this.throwIfColourInvalid(red);
 		this.throwIfColourInvalid(green);
@@ -208,21 +189,20 @@ public class BoxShapeWrapper implements IArucasWrappedClass {
 		}
 	}
 
-	public synchronized static void addBoxToRender(BoxShapeWrapper boxShapeWrapper) {
-		boxesToRender.add(boxShapeWrapper);
+	@SuppressWarnings("UnusedReturnValue")
+	public synchronized static boolean addBoxToRender(BoxShapeWrapper boxShapeWrapper) {
+		return boxesToRender.add(boxShapeWrapper);
 	}
 
 	public synchronized static boolean removeBoxToRender(BoxShapeWrapper boxShapeWrapper) {
 		return boxesToRender.remove(boxShapeWrapper);
 	}
 
-	public synchronized static void foreachBox(Consumer<BoxShapeWrapper> consumer) {
-		for (BoxShapeWrapper boxShape : boxesToRender) {
-			consumer.accept(boxShape);
-		}
-	}
-
 	public synchronized static void clearBoxesToRender() {
 		boxesToRender.clear();
+	}
+
+	public synchronized static List<BoxShapeWrapper> getBoxesToRender() {
+		return List.copyOf(boxesToRender);
 	}
 }
