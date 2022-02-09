@@ -11,6 +11,7 @@ import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.config.clientrule.ClientRule;
 import essentialclient.config.clientrule.ClientRuleHelper;
 import essentialclient.config.clientrule.ClientRules;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -121,6 +122,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 
 				new MemberFunction("getPlayer", this::getPlayer),
 				new MemberFunction("getWorld", this::getWorld),
+				new MemberFunction("getVersion", this::getVersion),
 
 				new MemberFunction("addGameEvent", List.of("eventName", "function"), this::addGameEvent),
 				new MemberFunction("removeGameEvent", List.of("eventName", "id"), this::removeGameEvent),
@@ -522,6 +524,10 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		private Value<?> getWorld(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
 			return new WorldValue(ArucasMinecraftExtension.getWorld(client));
+		}
+
+		private Value<?> getVersion(Context context, MemberFunction function) {
+			return StringValue.of(EssentialUtils.getMinecraftVersion());
 		}
 
 		private MinecraftClient getClient(Context context, MemberFunction function) throws CodeError {

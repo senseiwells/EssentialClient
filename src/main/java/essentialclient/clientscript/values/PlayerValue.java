@@ -304,16 +304,18 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (slot1 > size || slot1 < 0 || slot2 > size || slot2 < 0) {
 				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
-			boolean isFirstEmpty = screenHandler.getSlot(slot1).getStack().isEmpty();
-			// If first slot was air, we try to swap second first
-			int number1 = isFirstEmpty ? slot2 : slot1;
-			int number2 = isFirstEmpty ? slot1 : slot2;
+			if (slot1 >= 36 && slot1 < 45) {
+				slot2 -= 36;
+			}
+			else if (slot2 >= 36 && slot2 < 45) {
+				slot1 -= 36;
+			}
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			int finalSlot1 = slot1 >= 45 ? 40 : slot1;
+			int finalSlot2 = slot2 >= 45 ? 40 : slot2;
 			client.execute(() -> {
-				interactionManager.clickSlot(screenHandler.syncId, number1, 0, SlotActionType.SWAP, player);
-				interactionManager.clickSlot(screenHandler.syncId, number2, 0, SlotActionType.SWAP, player);
-				interactionManager.clickSlot(screenHandler.syncId, number1, 0, SlotActionType.SWAP, player);
+				interactionManager.clickSlot(screenHandler.syncId, finalSlot1, finalSlot2, SlotActionType.SWAP, player);
 				player.inventory.updateItems();
 			});
 			return NullValue.NULL;
@@ -360,12 +362,21 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 
 		private Value<?> clickSlot(Context context, MemberFunction function) throws CodeError {
 			int slot = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
-			String clickDataString = function.getParameterValueOfType(context, StringValue.class, 2).value.toLowerCase();
-			int clickData = switch (clickDataString) {
-				case "right" -> 1;
-				case "left" -> 0;
-				default -> throw new RuntimeError("Invalid clickData must be \"left\" or \"right\"", function.syntaxPosition, context);
-			};
+			Value<?> clickDataValue = function.getParameterValue(context, 2);
+			int clickData;
+			if (clickDataValue instanceof StringValue clickDataString) {
+				clickData = switch (clickDataString.value) {
+					case "right" -> 1;
+					case "left" -> 0;
+					default -> throw new RuntimeError("Invalid clickData must be \"left\" or \"right\" or a number", function.syntaxPosition, context);
+				};
+			}
+			else if (clickDataValue instanceof NumberValue clickDataNumber) {
+				clickData = clickDataNumber.value.intValue();
+			}
+			else {
+				throw new RuntimeError("Invalid clickData must be \"left\" or \"right\" or a number", function.syntaxPosition, context);
+			}
 			String stringValue = function.getParameterValueOfType(context, StringValue.class, 3).value.toLowerCase();
 			SlotActionType slotActionType = switch (stringValue) {
 				case "click", "pickup" -> SlotActionType.PICKUP;
@@ -384,7 +395,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			}
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ClientPlayerEntity player = this.getPlayer(context, function);
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, slot, clickData, slotActionType, player));
+			int finalClickData = clickData;
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, slot, finalClickData, slotActionType, player));
 			return NullValue.NULL;
 		}
 
