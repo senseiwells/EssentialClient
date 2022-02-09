@@ -100,7 +100,7 @@ public class RenderHelper {
 		RenderSystem.disableBlend();
 	}
 
-	public static void render(MatrixStack matrices) {
+	public static void renderBoxes(MatrixStack matrices) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
@@ -125,22 +125,18 @@ public class RenderHelper {
 
 	private static void drawOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, List<BoxShapeWrapper> boxes) {
 		bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
-		boxes
-			.stream()
-			.filter(box -> box.outlineWidth >= 1)
-			.forEach(box -> {
-				RenderSystem.lineWidth(box.outlineWidth);
-				addBoxToBuffer(bufferBuilder, matrices, camera, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.outlineRed, box.outlineGreen, box.outlineBlue, 255, true);
-			});
+		boxes.stream().filter(box -> box.outlineWidth >= 1).forEach(box -> {
+			RenderSystem.lineWidth(box.outlineWidth);
+			addBoxToBuffer(bufferBuilder, matrices, camera, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.outlineRed, box.outlineGreen, box.outlineBlue, 255, true);
+		});
 		tessellator.draw();
 	}
 
 	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, List<BoxShapeWrapper> boxes) {
 		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-		boxes
-			.forEach(box -> {
-				addBoxToBuffer(bufferBuilder, matrices, cameraPos, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.red, box.green, box.blue, box.opacity, false);
-			});
+		boxes.forEach(box -> {
+			addBoxToBuffer(bufferBuilder, matrices, cameraPos, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.red, box.green, box.blue, box.opacity, false);
+		});
 		tessellator.draw();
 	}
 

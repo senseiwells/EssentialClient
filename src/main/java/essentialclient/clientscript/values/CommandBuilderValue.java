@@ -154,7 +154,7 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 			CommandBuilderValue commandBuilderValue = function.getThis(context, CommandBuilderValue.class);
 			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
 			commandBuilderValue.value.executes(c -> {
-				context.getThreadHandler().runAsyncFunctionInContext(context, ctx -> {
+				context.getThreadHandler().runAsyncFunctionInContext(context.createBranch(), ctx -> {
 					Collection<ParsedArgument<?, ?>> arguments = CommandHelper.getArguments(c);
 					if (arguments == null) {
 						throw new RuntimeError("Couldn't get arguments", function.syntaxPosition, ctx);

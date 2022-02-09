@@ -68,7 +68,7 @@ public class ClientScriptUtils {
 					throw new RuntimeError("Expected function value", syntaxPosition, context);
 				}
 				parent.executes(c -> {
-					context.getThreadHandler().runAsyncFunctionInContext(context, ctx -> {
+					context.getThreadHandler().runAsyncFunctionInContext(context.createBranch(), ctx -> {
 						Collection<ParsedArgument<?, ?>> arguments = CommandHelper.getArguments(c);
 						if (arguments == null) {
 							throw new RuntimeError("Couldn't get arguments for '%s'".formatted(stringValue.value), syntaxPosition, ctx);
