@@ -1,6 +1,7 @@
 package essentialclient.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import essentialclient.clientscript.extensions.BoxShapeWrapper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
@@ -17,8 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 public class RenderHelper {
-	private static int backwardsEntityId = Integer.MAX_VALUE;
 	private static final Set<Integer> fakeEntityId = new HashSet<>();
+	private static int backwardsEntityId = Integer.MAX_VALUE;
 
 	// Taken from Screen Class
 	public static void drawGuiInfoBox(TextRenderer font, String text, int x, int y) {
@@ -81,61 +82,86 @@ public class RenderHelper {
 		matrices.pop();
 	}
 
-	public static void drawBoxWithOutline(MatrixStack matrices, BlockPos pos1, BlockPos pos2, float red, float green, float blue, float alpha, float outlineRed, float outlineGreen, float outlineBlue, int outlineWidth, boolean throughBlocks) {
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-
-		BlockPos posOrigin = new BlockPos(Math.min(pos1.getX(), pos2.getX()), Math.min(pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
-
-		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-
-		Vec3d cameraPos = camera.getPos();
-
-		matrices.push();
-		matrices.translate(posOrigin.getX() - cameraPos.getX(), posOrigin.getY() - cameraPos.getY(), posOrigin.getZ() - cameraPos.getZ());
-
-		Matrix4f model = matrices.peek().getModel();
-
+	public static void setupArucasBoxRendering() {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableTexture();
 		RenderSystem.depthMask(false);
 		RenderSystem.disableLighting();
 		RenderSystem.disableCull();
+	}
 
-		if (throughBlocks) {
-			RenderSystem.disableDepthTest();
-		}
-
-		if (outlineWidth >= 1) {
-			bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
-			RenderSystem.lineWidth(outlineWidth);
-			drawBox(bufferBuilder, model, pos1, pos2, outlineRed, outlineGreen, outlineBlue, 1, true);
-			tessellator.draw();
-		}
-
-		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
-		drawBox(bufferBuilder, model, pos1, pos2, red, green, blue, alpha, false);
-		tessellator.draw();
-
-		matrices.pop();
-
+	public static void resetArucasBoxRendering() {
 		RenderSystem.lineWidth(1);
 		RenderSystem.enableCull();
 		RenderSystem.enableLighting();
 		RenderSystem.depthMask(true);
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
-		RenderSystem.enableDepthTest();
 	}
 
-	public static void drawBox(BufferBuilder bufferBuilder, Matrix4f model, BlockPos pos1, BlockPos pos2, float red, float green, float blue, float alpha, boolean outline) {
-		float x1 = Math.abs(pos1.getX() - pos2.getX()) + 1.002F;
-		float y1 = Math.abs(pos1.getY() - pos2.getY()) + 1.002F;
-		float z1 = Math.abs(pos1.getZ() - pos2.getZ()) + 1.002F;
+	public static void render(MatrixStack matrices) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
+		Vec3d cameraPos = camera.getPos();
 
+		setupArucasBoxRendering();
+
+		List<BoxShapeWrapper> boxesToRender = BoxShapeWrapper.getBoxesToRender();
+		List<BoxShapeWrapper> normalBoxes = boxesToRender.stream().filter(box -> !box.renderThroughBlocks).toList();
+		List<BoxShapeWrapper> renderThrough = boxesToRender.stream().filter(box -> box.renderThroughBlocks).toList();
+
+		drawOutlines(tessellator, bufferBuilder, matrices, cameraPos, normalBoxes);
+		drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, normalBoxes);
+
+		RenderSystem.disableDepthTest();
+		drawOutlines(tessellator, bufferBuilder, matrices, cameraPos, renderThrough);
+		drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, renderThrough);
+		RenderSystem.enableDepthTest();
+
+		resetArucasBoxRendering();
+	}
+
+	private static void drawOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, List<BoxShapeWrapper> boxes) {
+		bufferBuilder.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
+		boxes
+			.stream()
+			.filter(box -> box.outlineWidth >= 1)
+			.forEach(box -> {
+				RenderSystem.lineWidth(box.outlineWidth);
+				addBoxToBuffer(bufferBuilder, matrices, camera, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.outlineRed, box.outlineGreen, box.outlineBlue, 255, true);
+			});
+		tessellator.draw();
+	}
+
+	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, List<BoxShapeWrapper> boxes) {
+		bufferBuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+		boxes
+			.forEach(box -> {
+				addBoxToBuffer(bufferBuilder, matrices, cameraPos, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.red, box.green, box.blue, box.opacity, false);
+			});
+		tessellator.draw();
+	}
+
+	private static BlockPos getMinimumBlockPos(BlockPos pos1, BlockPos pos2) {
+		return new BlockPos(Math.min(pos1.getX(), pos2.getX()), Math.min(pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
+	}
+
+	private static void addBoxToBuffer(BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, BlockPos pos1, BlockPos pos2, int red, int green, int blue, int opacity, boolean outline) {
+		BlockPos posOrigin = getMinimumBlockPos(pos1, pos2);
+		matrices.push();
+		matrices.translate(posOrigin.getX() - cameraPos.getX(), posOrigin.getY() - cameraPos.getY(), posOrigin.getZ() - cameraPos.getZ());
+		Matrix4f model = matrices.peek().getModel();
+		addBoxVertices(bufferBuilder, model, pos1, pos2, red / 255.0F, green / 255.0F, blue / 255.0F, opacity / 255.0F, outline);
+		matrices.pop();
+	}
+
+	private static void addBoxVertices(BufferBuilder bufferBuilder, Matrix4f model, BlockPos pos1, BlockPos pos2, float red, float green, float blue, float alpha, boolean outline) {
 		float c0 = -0.002F;
-		// Is slightly outside to avoid z-fighting
+		float x1 = Math.abs(pos1.getX() - pos2.getX()) - c0 + 1;
+		float y1 = Math.abs(pos1.getY() - pos2.getY()) - c0 + 1;
+		float z1 = Math.abs(pos1.getZ() - pos2.getZ()) - c0 + 1;
 
 		// West Face
 		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
