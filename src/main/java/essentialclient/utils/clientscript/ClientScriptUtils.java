@@ -7,7 +7,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import essentialclient.clientscript.values.BlockValue;
 import essentialclient.clientscript.values.EntityValue;
@@ -29,7 +28,6 @@ import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
 
@@ -42,8 +40,6 @@ public class ClientScriptUtils {
 		MIN = StringValue.of("min"),
 		MAX = StringValue.of("max"),
 		SUGGESTS = StringValue.of("suggests");
-
-	public static DynamicCommandExceptionType NO_SUCH_RECIPE = new DynamicCommandExceptionType((object) -> new TranslatableText("recipe.notFound", object));
 
 	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Context context, ISyntax syntaxPosition) throws CodeError {
 		Value<?> nameValue = arucasMap.get(context, NAME);

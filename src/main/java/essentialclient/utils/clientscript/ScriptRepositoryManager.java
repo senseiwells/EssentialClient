@@ -4,12 +4,11 @@ import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import essentialclient.clientscript.core.ClientScript;
-import net.minecraft.command.CommandException;
+import essentialclient.utils.misc.NetworkUtils;
 import net.minecraft.text.LiteralText;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -33,12 +32,11 @@ public class ScriptRepositoryManager {
 		if (fromCache && scriptFile.content != null) {
 			return scriptFile.content;
 		}
-		try {
-			return scriptFile.content = getStringFromUrl(scriptFile.downloadUrl);
-		}
-		catch (IOException ioException) {
+		String content = NetworkUtils.getStringFromUrl(scriptFile.downloadUrl);
+		if (content == null) {
 			throw this.NO_SUCH_SCRIPT.create(name);
 		}
+		return scriptFile.content = content;
 	}
 
 	public void downloadScript(Category category, String name, boolean overwrite) throws CommandSyntaxException {
@@ -74,19 +72,17 @@ public class ScriptRepositoryManager {
 	}
 
 	private Set<ScriptFile> getChildren(Category category) {
-		if (!this.children.containsKey(category)) {
-			try {
-				this.loadChildren(category);
-			}
-			catch (IOException ioException) {
-				throw new CommandException(new LiteralText("Could not load script names"));
-			}
+		if (!this.children.containsKey(category) && !this.loadChildren(category)) {
+			return Set.of();
 		}
 		return this.children.get(category);
 	}
 
-	private void loadChildren(Category category) throws IOException {
-		String response = getStringFromUrl(this.REPOSITORY_URL + "/" + category.toString());
+	private boolean loadChildren(Category category) {
+		String response = NetworkUtils.getStringFromUrl(this.REPOSITORY_URL + "/" + category.toString());
+		if (response == null) {
+			return false;
+		}
 		JsonArray childrenFiles = this.GSON.fromJson(response, JsonArray.class);
 		Set<ScriptFile> scriptFileSet = new HashSet<>();
 		for (JsonElement element : childrenFiles) {
@@ -100,25 +96,7 @@ public class ScriptRepositoryManager {
 			scriptFileSet.add(new ScriptFile(childName, childDownload));
 		}
 		this.children.put(category, scriptFileSet);
-	}
-
-	private static String getStringFromUrl(String url) throws IOException {
-		InputStream inputStream = new URL(url).openStream();
-		if (inputStream == null) {
-			throw new IOException("Script doesn't exist");
-		}
-		Writer stringWriter = new StringWriter();
-		char[] charBuffer = new char[2048];
-		try (Reader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-			int counter;
-			while ((counter = reader.read(charBuffer)) != -1) {
-				stringWriter.write(charBuffer, 0, counter);
-			}
-		}
-		finally {
-			inputStream.close();
-		}
-		return stringWriter.toString();
+		return true;
 	}
 
 	private static class ScriptFile {

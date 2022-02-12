@@ -19,6 +19,6 @@ public class ChatHudMixin implements ChatHudAccessor {
 
 	@Override
 	public List<ChatHudLine<Text>> getMessages() {
-		return messages;
+		return this.messages;
 	}
 }

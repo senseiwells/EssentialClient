@@ -1,4 +1,5 @@
 package essentialclient.feature;
+
 import essentialclient.config.clientrule.ClientRules;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -19,7 +20,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Function;
 
-//Original code by plusls slightly modified by Sensei
+// Original code by plusls slightly modified by Sensei
 public class HighlightLavaSources implements SimpleSynchronousResourceReloadListener {
 
 	public static Sprite lavaSourceFlowSprite;
@@ -48,8 +49,9 @@ public class HighlightLavaSources implements SimpleSynchronousResourceReloadList
 		FluidRenderHandler lavaSourceRenderHandler = (view, pos, state) -> {
 			if (view != null && pos != null && ClientRules.HIGHLIGHT_LAVA_SOURCES.getValue()) {
 				BlockState blockState = view.getBlockState(pos);
-				if (blockState.contains(FluidBlock.LEVEL) && blockState.get(FluidBlock.LEVEL) == 0)
+				if (blockState.contains(FluidBlock.LEVEL) && blockState.get(FluidBlock.LEVEL) == 0) {
 					return new Sprite[]{lavaSourceStillSprite, lavaSourceFlowSprite};
+				}
 			}
 			return new Sprite[]{defaultLavaSourceStillSprite, defaultLavaSourceFlowSprite};
 		};

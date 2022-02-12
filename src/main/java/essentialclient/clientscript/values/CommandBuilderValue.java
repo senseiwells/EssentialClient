@@ -7,7 +7,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import essentialclient.clientscript.events.CancelEvent;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.clientscript.ClientScriptUtils;
 import essentialclient.utils.command.CommandHelper;

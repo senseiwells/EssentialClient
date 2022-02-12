@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RecipeBookWidget.class)
 public class RecipeBookWidgetMixin {
-
 	@Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickRecipe(ILnet/minecraft/recipe/Recipe;Z)V"))
 	public void onClick(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
 		RecipeBookTracker.IS_VANILLA_CLICK.set(true);

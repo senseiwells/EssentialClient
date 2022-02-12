@@ -64,7 +64,6 @@ public class InventoryUtils {
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
 			}
 			else if (slotType == EquipmentSlot.OFFHAND) {
-				int tempSlot = (playerEntity.inventory.selectedSlot + 1) % 9;
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, 40, SlotActionType.SWAP, client.player);
 			}
 		}
