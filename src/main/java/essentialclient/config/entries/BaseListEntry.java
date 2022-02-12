@@ -1,6 +1,5 @@
 package essentialclient.config.entries;
 
-import com.google.common.collect.ImmutableList;
 import essentialclient.config.ConfigListWidget;
 import essentialclient.config.clientrule.ClientRule;
 import essentialclient.config.rulescreen.RulesScreen;
@@ -10,8 +9,8 @@ import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.List;
@@ -65,12 +64,12 @@ public abstract class BaseListEntry extends ConfigListWidget.Entry implements IT
 
 	@Override
 	public List<? extends Element> children() {
-		return ImmutableList.of(this.editButton, this.resetButton);
+		return this.selectableChildren();
 	}
 
 	@Override
-	public List<? extends Selectable> selectableChildren() {
-		return ImmutableList.of(this.editButton, this.resetButton);
+	public List<ClickableWidget> selectableChildren() {
+		return List.of(this.editButton, this.resetButton);
 	}
 
 	@Override

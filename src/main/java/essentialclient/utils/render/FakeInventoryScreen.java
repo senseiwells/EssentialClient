@@ -1,6 +1,5 @@
 package essentialclient.utils.render;
 
-import essentialclient.clientscript.ClientScript;
 import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.utils.Context;
@@ -38,7 +37,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	}
 
 	public void fakeTick() {
-		if (!ClientScript.getInstance().isScriptRunning()) {
+		if (this.contextFunction == null || !this.contextFunction.context.getThreadHandler().isRunning()) {
 			this.onClose();
 		}
 	}
@@ -52,7 +51,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
 		final int slotNumber = slot == null ? slotId : slot.id;
 		final String action = actionType.toString();
-		if (this.contextFunction != null && ClientScript.getInstance().isScriptRunning()) {
+		if (this.contextFunction != null && this.contextFunction.context.getThreadHandler().isRunning()) {
 			List<Slot> slots = this.handler.slots;
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
 			Context context = this.contextFunction.context.createBranch();
@@ -78,5 +77,5 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 		};
 	}
 
-	private static final record ContextFunction(Context context, FunctionValue functionValue) { }
+	private record ContextFunction(Context context, FunctionValue functionValue) { }
 }

@@ -15,8 +15,7 @@ public class EssentialClient implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("EssentialClient");
 	public static final String VERSION = EssentialUtils.getVersion();
 	public static final ChunkClientNetworkHandler chunkNetHandler = new ChunkClientNetworkHandler();
-
-	public static LocalDateTime startTime = LocalDateTime.now();
+	public static final LocalDateTime startTime = LocalDateTime.now();
 
 	@Override
 	public void onInitialize() {

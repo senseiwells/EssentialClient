@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class MusicSounds {
 
-	private static final MusicSound[] NETHER_MUSICTYPE = new MusicSound[] {
+	private static final MusicSound[] NETHER_MUSICTYPE = {
 		MusicType.createIngameMusic(SoundEvents.MUSIC_NETHER_BASALT_DELTAS),
 		MusicType.createIngameMusic(SoundEvents.MUSIC_NETHER_NETHER_WASTES),
 		MusicType.createIngameMusic(SoundEvents.MUSIC_NETHER_CRIMSON_FOREST),
@@ -16,12 +16,12 @@ public class MusicSounds {
 		MusicType.createIngameMusic(SoundEvents.MUSIC_NETHER_SOUL_SAND_VALLEY)
 	};
 
-	private static final MusicSound[] OVERWORLD_AND_NETHERTYPE = new MusicSound[] {
+	private static final MusicSound[] OVERWORLD_AND_NETHERTYPE = {
 		NETHER_MUSICTYPE[new Random().nextInt(NETHER_MUSICTYPE.length)],
 		MusicType.GAME
 	};
 
-	private static final MusicSound[] ALL_TYPE = new MusicSound[] {
+	private static final MusicSound[] ALL_TYPE = {
 		MusicType.GAME,
 		MusicType.GAME,
 		MusicType.GAME,

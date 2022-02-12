@@ -7,56 +7,56 @@ import java.util.Map;
 
 public class KeyboardHelper {
 
-	private static final Map<String, Integer> stringToKeyMap = new HashMap<>(){{
-		put("a", GLFW.GLFW_KEY_A);
-		put("b", GLFW.GLFW_KEY_B);
-		put("c", GLFW.GLFW_KEY_C);
-		put("d", GLFW.GLFW_KEY_D);
-		put("e", GLFW.GLFW_KEY_E);
-		put("f", GLFW.GLFW_KEY_F);
-		put("g", GLFW.GLFW_KEY_G);
-		put("h", GLFW.GLFW_KEY_H);
-		put("i", GLFW.GLFW_KEY_I);
-		put("j", GLFW.GLFW_KEY_J);
-		put("k", GLFW.GLFW_KEY_K);
-		put("l", GLFW.GLFW_KEY_L);
-		put("m", GLFW.GLFW_KEY_M);
-		put("n", GLFW.GLFW_KEY_N);
-		put("o", GLFW.GLFW_KEY_O);
-		put("p", GLFW.GLFW_KEY_P);
-		put("q", GLFW.GLFW_KEY_Q);
-		put("r", GLFW.GLFW_KEY_R);
-		put("s", GLFW.GLFW_KEY_S);
-		put("t", GLFW.GLFW_KEY_T);
-		put("u", GLFW.GLFW_KEY_U);
-		put("v", GLFW.GLFW_KEY_V);
-		put("w", GLFW.GLFW_KEY_W);
-		put("x", GLFW.GLFW_KEY_X);
-		put("y", GLFW.GLFW_KEY_Y);
-		put("z", GLFW.GLFW_KEY_Z);
-		put("`", GLFW.GLFW_KEY_GRAVE_ACCENT);
-		put("1", GLFW.GLFW_KEY_1);
-		put("2", GLFW.GLFW_KEY_2);
-		put("3", GLFW.GLFW_KEY_3);
-		put("4", GLFW.GLFW_KEY_4);
-		put("5", GLFW.GLFW_KEY_5);
-		put("6", GLFW.GLFW_KEY_6);
-		put("7", GLFW.GLFW_KEY_7);
-		put("8", GLFW.GLFW_KEY_8);
-		put("9", GLFW.GLFW_KEY_9);
-		put("0", GLFW.GLFW_KEY_0);
-		put("-", GLFW.GLFW_KEY_MINUS);
-		put("=", GLFW.GLFW_KEY_EQUAL);
-		put("[", GLFW.GLFW_KEY_LEFT_BRACKET);
-		put("]", GLFW.GLFW_KEY_RIGHT_BRACKET);
-		put("\\", GLFW.GLFW_KEY_WORLD_2);
-		put(",", GLFW.GLFW_KEY_COMMA);
-		put(".", GLFW.GLFW_KEY_PERIOD);
-		put("/", GLFW.GLFW_KEY_SLASH);
-		put(";", GLFW.GLFW_KEY_SEMICOLON);
-		put("'", GLFW.GLFW_KEY_APOSTROPHE);
-		put("#", GLFW.GLFW_KEY_BACKSLASH);
-		put("backslash", GLFW.GLFW_KEY_BACKSLASH);
+	private static final Map<String, Integer> stringToKeyMap = new HashMap<>() {{
+		this.put("a", GLFW.GLFW_KEY_A);
+		this.put("b", GLFW.GLFW_KEY_B);
+		this.put("c", GLFW.GLFW_KEY_C);
+		this.put("d", GLFW.GLFW_KEY_D);
+		this.put("e", GLFW.GLFW_KEY_E);
+		this.put("f", GLFW.GLFW_KEY_F);
+		this.put("g", GLFW.GLFW_KEY_G);
+		this.put("h", GLFW.GLFW_KEY_H);
+		this.put("i", GLFW.GLFW_KEY_I);
+		this.put("j", GLFW.GLFW_KEY_J);
+		this.put("k", GLFW.GLFW_KEY_K);
+		this.put("l", GLFW.GLFW_KEY_L);
+		this.put("m", GLFW.GLFW_KEY_M);
+		this.put("n", GLFW.GLFW_KEY_N);
+		this.put("o", GLFW.GLFW_KEY_O);
+		this.put("p", GLFW.GLFW_KEY_P);
+		this.put("q", GLFW.GLFW_KEY_Q);
+		this.put("r", GLFW.GLFW_KEY_R);
+		this.put("s", GLFW.GLFW_KEY_S);
+		this.put("t", GLFW.GLFW_KEY_T);
+		this.put("u", GLFW.GLFW_KEY_U);
+		this.put("v", GLFW.GLFW_KEY_V);
+		this.put("w", GLFW.GLFW_KEY_W);
+		this.put("x", GLFW.GLFW_KEY_X);
+		this.put("y", GLFW.GLFW_KEY_Y);
+		this.put("z", GLFW.GLFW_KEY_Z);
+		this.put("`", GLFW.GLFW_KEY_GRAVE_ACCENT);
+		this.put("1", GLFW.GLFW_KEY_1);
+		this.put("2", GLFW.GLFW_KEY_2);
+		this.put("3", GLFW.GLFW_KEY_3);
+		this.put("4", GLFW.GLFW_KEY_4);
+		this.put("5", GLFW.GLFW_KEY_5);
+		this.put("6", GLFW.GLFW_KEY_6);
+		this.put("7", GLFW.GLFW_KEY_7);
+		this.put("8", GLFW.GLFW_KEY_8);
+		this.put("9", GLFW.GLFW_KEY_9);
+		this.put("0", GLFW.GLFW_KEY_0);
+		this.put("-", GLFW.GLFW_KEY_MINUS);
+		this.put("=", GLFW.GLFW_KEY_EQUAL);
+		this.put("[", GLFW.GLFW_KEY_LEFT_BRACKET);
+		this.put("]", GLFW.GLFW_KEY_RIGHT_BRACKET);
+		this.put("\\", GLFW.GLFW_KEY_WORLD_2);
+		this.put(",", GLFW.GLFW_KEY_COMMA);
+		this.put(".", GLFW.GLFW_KEY_PERIOD);
+		this.put("/", GLFW.GLFW_KEY_SLASH);
+		this.put(";", GLFW.GLFW_KEY_SEMICOLON);
+		this.put("'", GLFW.GLFW_KEY_APOSTROPHE);
+		this.put("#", GLFW.GLFW_KEY_BACKSLASH);
+		this.put("backslash", GLFW.GLFW_KEY_BACKSLASH);
 	}};
 
 	private static final Map<Integer, String> keyToStringMap = Map.<Integer, String>ofEntries(
@@ -128,7 +128,7 @@ public class KeyboardHelper {
 			stringToKeyMap.put(entry.getValue(), entry.getKey());
 		}
 	}
-	
+
 	public static String translateKeyToString(int code) {
 		String keyName = keyToStringMap.get(code);
 		return keyName == null ? GLFW.glfwGetKeyName(code, 0) : keyName;

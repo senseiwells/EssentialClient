@@ -1,8 +1,8 @@
 package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
+import essentialclient.utils.misc.ClientUpdater;
 import net.minecraft.server.command.ServerCommandSource;
 
 import static net.minecraft.server.command.CommandManager.literal;
@@ -13,7 +13,7 @@ public class UpdateClientCommand {
 
 		dispatcher.register(literal("updateclient")
 			.executes(context -> {
-				EssentialUtils.tryUpdateClient();
+				ClientUpdater.INSTANCE.tryUpdate();
 				return 0;
 			})
 		);

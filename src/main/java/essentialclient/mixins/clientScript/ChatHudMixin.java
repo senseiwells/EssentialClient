@@ -1,4 +1,4 @@
-package essentialclient.mixins.functions;
+package essentialclient.mixins.clientScript;
 
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -19,6 +19,6 @@ public class ChatHudMixin implements ChatHudAccessor {
 
 	@Override
 	public List<ChatHudLine<Text>> getMessages() {
-		return messages;
+		return this.messages;
 	}
 }

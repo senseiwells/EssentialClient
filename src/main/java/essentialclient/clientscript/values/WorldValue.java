@@ -78,6 +78,7 @@ public class WorldValue extends Value<ClientWorld> {
 				new MemberFunction("getTimeOfDay", (context, function) -> NumberValue.of(this.getWorld(context, function).getTimeOfDay())),
 				new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
 				new MemberFunction("renderParticle", List.of("particleName", "pos"), this::renderParticlePos),
+				new MemberFunction("renderParticle", List.of("particleName", "pos", "xVelocity", "yVelocity", "zVelocity"), this::renderParticleVel),
 				new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, "This function is dangerous, be careful!"),
 				new MemberFunction("setGhostBlock", List.of("block", "pos"), this::setGhostBlockPos, "This function is dangerous, be careful!"),
 				new MemberFunction("spawnGhostEntity", List.of("entity", "x", "y", "z", "yaw", "pitch", "bodyYaw"), this::spawnGhostEntity),
@@ -185,6 +186,30 @@ public class WorldValue extends Value<ClientWorld> {
 				0,
 				0,
 				0
+			));
+			return NullValue.NULL;
+		}
+
+		private Value<?> renderParticleVel(Context context, MemberFunction function) throws CodeError {
+			ClientWorld world = this.getWorld(context, function);
+			String particleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
+			double xVelocity = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+			double yVelocity = function.getParameterValueOfType(context, NumberValue.class, 3).value;
+			double zVelocity = function.getParameterValueOfType(context, NumberValue.class, 4).value;
+			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, particleName));
+			if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
+				throw new RuntimeError("Particle Invalid", function.syntaxPosition, context);
+			}
+			PosValue posValue = function.getParameterValueOfType(context, PosValue.class, 2, IN_RANGE_ERROR);
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			client.execute(() -> world.addParticle(
+				defaultParticleType,
+				posValue.value.getX(),
+				posValue.value.getY(),
+				posValue.value.getZ(),
+				xVelocity,
+				yVelocity,
+				zVelocity
 			));
 			return NullValue.NULL;
 		}

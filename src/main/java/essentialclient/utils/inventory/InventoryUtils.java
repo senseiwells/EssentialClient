@@ -23,6 +23,7 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.screen.MerchantScreenHandler;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -63,10 +64,7 @@ public class InventoryUtils {
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
 			}
 			else if (slotType == EquipmentSlot.OFFHAND) {
-				int tempSlot = (playerEntity.getInventory().selectedSlot + 1) % 9;
-				client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
-				client.interactionManager.clickSlot(container.syncId, 45, tempSlot, SlotActionType.SWAP, client.player);
-				client.interactionManager.clickSlot(container.syncId, sourceSlot, tempSlot, SlotActionType.SWAP, client.player);
+				client.interactionManager.clickSlot(container.syncId, sourceSlot, 40, SlotActionType.SWAP, client.player);
 			}
 		}
 	}
@@ -174,6 +172,15 @@ public class InventoryUtils {
 		}
 		dropStack(client, merchantScreen, slot.id);
 	}
+
+	public static int isSlotInHotbar(ScreenHandler screenHandler, int slotNum) {
+		int totalSize = screenHandler.slots.size();
+		if (screenHandler instanceof PlayerScreenHandler) {
+			return slotNum == 45 ? 40 : slotNum >= 36 ? slotNum - 36 : -1;
+		}
+		return slotNum >= totalSize - 10 ? slotNum - (totalSize - 9) : -1;
+	}
+
 	private static boolean canMergeIntoMain(PlayerInventory inventory, ItemStack stack) {
 		int count = stack.getCount();
 		for (int i = 0; i < inventory.main.size(); i++) {
@@ -293,7 +300,8 @@ public class InventoryUtils {
 			try {
 				Thread.sleep(0, 1);
 			}
-			catch (InterruptedException ignored) { }
+			catch (InterruptedException ignored) {
+			}
 			Slot slotTmp = gui.getScreenHandler().getSlot(slotNum);
 			if (slotTmp != null && slotTmp.hasStack() && (!areStacksEqual(recipe[i], slotTmp.getStack()))) {
 				shiftClickSlot(client, gui, slotNum);
@@ -422,32 +430,40 @@ public class InventoryUtils {
 		return mapSlots;
 	}
 
+	public static boolean swapSlot(MinecraftClient client, ScreenHandler screenHandler, int index, int secondIndex) {
+		if (client.interactionManager == null) {
+			return false;
+		}
+		client.execute(() -> client.interactionManager.clickSlot(screenHandler.syncId, index, secondIndex, SlotActionType.SWAP, client.player));
+		return true;
+	}
+
 	public static void shiftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int index) {
 		if (client.interactionManager == null) {
 			return;
 		}
-		client.interactionManager.clickSlot(screen.getScreenHandler().syncId, index, 0, SlotActionType.QUICK_MOVE, client.player);
+		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, index, 0, SlotActionType.QUICK_MOVE, client.player));
 	}
 
 	public static void leftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
 		if (client.interactionManager == null) {
 			return;
 		}
-		client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.PICKUP, client.player);
+		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.PICKUP, client.player));
 	}
 
 	public static void craftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum, int mouseButton) {
 		if (client.interactionManager == null) {
 			return;
 		}
-		client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, mouseButton, SlotActionType.QUICK_CRAFT, client.player);
+		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, mouseButton, SlotActionType.QUICK_CRAFT, client.player));
 	}
 
 	public static void dropStack(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
 		if (client.interactionManager == null) {
 			return;
 		}
-		client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 1, SlotActionType.THROW, client.player);
+		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 1, SlotActionType.THROW, client.player));
 	}
 
 	public static ItemStack getCursorStack(MinecraftClient client) {
@@ -507,7 +523,8 @@ public class InventoryUtils {
 			try {
 				Thread.sleep(0, 1);
 			}
-			catch (InterruptedException ignored) { }
+			catch (InterruptedException ignored) {
+			}
 		}
 	}
 
@@ -592,13 +609,14 @@ public class InventoryUtils {
 		}
 
 		for (Slot slot : slots) {
-			if (!(slot.inventory instanceof PlayerInventory))
+			if (!(slot.inventory instanceof PlayerInventory)) {
 				continue;
+			}
 			Item slotItem = slot.getStack().getItem();
 			if (cache.containsKey(slotItem)) {
 				cache.get(slotItem)
-						.getRight()
-						.add(slot.id);
+					.getRight()
+					.add(slot.id);
 			}
 		}
 
@@ -609,7 +627,9 @@ public class InventoryUtils {
 		for (Item item : cache.keySet()) {
 			Pair<List<Integer>, List<Integer>> itemCache = cache.get(item);
 
-			if (itemCache.getRight().isEmpty()) continue;
+			if (itemCache.getRight().isEmpty()) {
+				continue;
+			}
 
 			int recipeRequiredAmount = itemCache.getLeft().size();
 

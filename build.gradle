@@ -1,5 +1,6 @@
 plugins {
 	id 'fabric-loom' version '0.9-SNAPSHOT'
+	id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
 	id 'maven-publish'
 }
 
@@ -8,31 +9,31 @@ repositories {
 		url 'https://masa.dy.fi/maven'
 	}
 	maven {
-		url  "https://maven.terraformersmc.com/releases/"
+		url "https://maven.terraformersmc.com/releases/"
 	}
 	mavenCentral()
-    maven {
-        url 'https://jitpack.io'
-    }
+	maven {
+		url 'https://jitpack.io'
+	}
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
-version = project.minecraft_version+'-'+project.mod_version
+version = project.minecraft_version + '-' + project.mod_version
 group = project.maven_group
 
 minecraft {
 }
 
 configurations {
-    // implementations that should be included in the jar file
-    packImplementation {
-        transitive false
-    }
+	// implementations that should be included in the jar file
+	packImplementation {
+		transitive false
+	}
 
-    implementation.extendsFrom(packImplementation)
+	implementation.extendsFrom(packImplementation)
 }
 
 dependencies {
@@ -50,7 +51,7 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
 
-    packImplementation "com.github.senseiwells:Arucas:${project.arucas_version}"
+	packImplementation "com.github.senseiwells:Arucas:v${project.arucas_version}"
 }
 
 processResources {
@@ -80,9 +81,9 @@ java {
 jar {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	from "LICENSE"
-    from {
-        configurations.packImplementation.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+	from {
+		configurations.packImplementation.collect { it.isDirectory() ? it : zipTree(it) }
+	}
 }
 
 // configure the maven publication

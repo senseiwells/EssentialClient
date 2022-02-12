@@ -88,7 +88,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	@Override
 	protected int getScrollbarPositionX() {
-		return this.width / 2 + getRowWidth() / 2 + 4;
+		return this.width / 2 + this.getRowWidth() / 2 + 4;
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		for (int i = 0; i < this.getSize(); i++) {
 			int k = insideTop + i * this.itemHeight + this.headerHeight;
 
-			ParentElement entry = getListEntry(i);
+			ParentElement entry = this.getListEntry(i);
 			if (entry instanceof ITooltipEntry) {
 				((ITooltipEntry) entry).drawTooltip(i, insideLeft, k, mouseX, mouseY, this.getRowWidth(), this.height, this.width, l, delta);
 			}
