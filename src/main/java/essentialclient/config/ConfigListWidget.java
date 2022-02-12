@@ -25,7 +25,7 @@ import java.util.Locale;
 @Environment(EnvType.CLIENT)
 public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> {
 	public static int length;
-	private final List<Entry> entries = new ArrayList<>();
+	private final List<ConfigListWidget.Entry> entries = new ArrayList<>();
 
 	public ConfigListWidget(RulesScreen gui, MinecraftClient client, String filter) {
 		super(client, gui.width + 45, gui.height, 43, gui.height - 32, 20);
@@ -88,7 +88,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	@Override
 	protected int getScrollbarPositionX() {
-		return this.width / 2 + getRowWidth() / 2 + 4;
+		return this.width / 2 + this.getRowWidth() / 2 + 4;
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		for (int i = 0; i < this.getSize(); i++) {
 			int k = insideTop + i * this.itemHeight + this.headerHeight;
 
-			ParentElement entry = getListEntry(i);
+			ParentElement entry = this.getListEntry(i);
 			if (entry instanceof ITooltipEntry) {
 				((ITooltipEntry) entry).drawTooltip(i, insideLeft, k, mouseX, mouseY, this.getRowWidth(), this.height, this.width, l, delta);
 			}
@@ -124,7 +124,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	}
 
 	@Environment(EnvType.CLIENT)
-	public abstract static class Entry extends ElementListWidget.Entry<Entry> {
+	public abstract static class Entry extends ElementListWidget.Entry<ConfigListWidget.Entry> {
 		public abstract void updateEntryOnClose();
 	}
 }

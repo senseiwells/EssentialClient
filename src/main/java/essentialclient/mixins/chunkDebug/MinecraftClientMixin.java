@@ -25,7 +25,7 @@ public class MinecraftClientMixin {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;render(FJZ)V", shift = At.Shift.AFTER))
 	private void onPostRenderGame(boolean tick, CallbackInfo ci) {
-		if (ChunkDebugScreen.chunkGrid != null &&  (this.currentScreen == null || this.currentScreen instanceof ChatScreen)) {
+		if (ChunkDebugScreen.chunkGrid != null && (this.currentScreen == null || this.currentScreen instanceof ChatScreen)) {
 			ChunkDebugScreen.chunkGrid.renderMinimap(this.window.getScaledWidth(), this.window.getScaledHeight());
 		}
 	}

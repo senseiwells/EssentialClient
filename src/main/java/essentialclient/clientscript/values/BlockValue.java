@@ -51,7 +51,7 @@ public class BlockValue extends Value<BlockState> {
 	}
 
 	public Value<?> getBlockX() {
-		return this.hasPos ? this.blockPos.getX() :  NullValue.NULL;
+		return this.hasPos ? this.blockPos.getX() : NullValue.NULL;
 	}
 
 	public Value<?> getBlockY() {
@@ -100,7 +100,7 @@ public class BlockValue extends Value<BlockState> {
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
 			MaterialValue materialValue = function.getParameterValueOfType(context, MaterialValue.class, 0);
 			if (!(materialValue.value instanceof BlockItem blockItem)) {
-				throw new RuntimeError("Item cannot be converted to block", function.syntaxPosition, context);
+				throw new RuntimeError("Material cannot be converted to block", function.syntaxPosition, context);
 			}
 			return new BlockValue(blockItem.getBlock().getDefaultState());
 		}
@@ -130,11 +130,11 @@ public class BlockValue extends Value<BlockState> {
 				new MemberFunction("isFluidSource", this::isFluidSource),
 				new MemberFunction("isReplaceable", this::isReplaceable),
 				new MemberFunction("getHardness", this::getHardness),
-				new MemberFunction("sideCoversSmallSquare","direction", this::sideCoversSmallSquare),
-				new MemberFunction("isSideSolidFullSquare","direction", this::isSideSolidFullSquare)
+				new MemberFunction("sideCoversSmallSquare", "direction", this::sideCoversSmallSquare),
+				new MemberFunction("isSideSolidFullSquare", "direction", this::isSideSolidFullSquare)
 			);
 		}
-		
+
 		private Value<?> getBlockProperties(Context context, MemberFunction function) throws CodeError {
 			BlockState blockState = this.getBlockState(context, function);
 			ArucasMap propertyMap = new ArucasMap();

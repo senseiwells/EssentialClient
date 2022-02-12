@@ -2,7 +2,7 @@ package essentialclient.mixins.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import essentialclient.EssentialClient;
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.PlayerValue;
 import essentialclient.clientscript.values.WorldValue;
@@ -28,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import java.util.UUID;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -41,7 +40,7 @@ public class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onCommandTree", at = @At("TAIL"))
 	public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
 		CommandHelper.setCommandPacket(packet);
-		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) commandDispatcher);
+		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher);
 	}
 
 	@Redirect(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"))
@@ -61,10 +60,10 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameJoin", at = @At("TAIL"))
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-		if (ClientRules.ENABLE_SCRIPT_ON_JOIN.getValue()) {
-			ClientScript.getInstance().startScript();
+		if (ClientRules.START_SELECTED_SCRIPTS_ON_JOIN.getValue()) {
+			ClientScript.INSTANCE.startAllInstances();
 		}
-		MinecraftScriptEvents.ON_CONNECT.run(List.of(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld())));
+		MinecraftScriptEvents.ON_CONNECT.run(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld()));
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)

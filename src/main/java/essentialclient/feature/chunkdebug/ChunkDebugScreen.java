@@ -139,7 +139,7 @@ public class ChunkDebugScreen extends Screen {
 
 		int textHeight = this.height - 20;
 		int xOffset = FOOTER_ROW_PADDING + 10;
-		int zOffset = xPositionBox.getWidth() + 50;
+		int zOffset = this.xPositionBox.getWidth() + 50;
 
 		this.drawText(matrices, "X", xOffset, textHeight, 1.5F, false);
 		this.drawText(matrices, "Z", zOffset, textHeight, 1.5F, false);
@@ -153,7 +153,8 @@ public class ChunkDebugScreen extends Screen {
 		matrices.scale(scale, scale, 0.0F);
 		if (center) {
 			DrawableHelper.drawCenteredText(matrices, this.textRenderer, new LiteralText(text), 0, 0, 0xFFFFFF);
-		} else {
+		}
+		else {
 			DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, new LiteralText(text), 0, 0, 0xFFFFFF);
 		}
 		matrices.pop();
@@ -173,10 +174,10 @@ public class ChunkDebugScreen extends Screen {
 		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).color(0, 0, 0, 255).next();
 
 		// Footer gradient
-		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0, 0).next();
 		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
 		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0,   0).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT - 4, 0).color(0, 0, 0, 0).next();
 
 		tessellator.draw();
 	}
@@ -197,10 +198,10 @@ public class ChunkDebugScreen extends Screen {
 		bufferBuilder.vertex(this.width, 0, 0).texture(this.width / 32f, 0).color(64, 64, 64, 255).next();
 
 		// Footer
-		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(0, (this.height - FOOTER_HEIGHT) / 32f).next();
-		bufferBuilder.vertex(0, this.height, 0).color(64, 64, 64, 255).texture(0, this.height / 32f).next();
-		bufferBuilder.vertex(this.width, this.height, 0).color(64, 64, 64, 255).texture(this.width / 32f, this.height / 32f).next();
-		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).color(64, 64, 64, 255).texture(this.width / 32f, (this.height - FOOTER_HEIGHT) / 32f).next();
+		bufferBuilder.vertex(0, this.height - FOOTER_HEIGHT, 0).texture(0, (this.height - FOOTER_HEIGHT) / 32f).color(64, 64, 64, 255).next();
+		bufferBuilder.vertex(0, this.height, 0).texture(0, this.height / 32f).color(64, 64, 64, 255).next();
+		bufferBuilder.vertex(this.width, this.height, 0).texture(this.width / 32f, this.height / 32f).color(64, 64, 64, 255).next();
+		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).texture(this.width / 32f, (this.height - FOOTER_HEIGHT) / 32f).color(64, 64, 64, 255).next();
 
 		tessellator.draw();
 	}

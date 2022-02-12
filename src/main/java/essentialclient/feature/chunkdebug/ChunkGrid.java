@@ -31,9 +31,9 @@ public class ChunkGrid {
 	private final Point mouseDown = new Point();
 	private final List<String> dimensions;
 	private final Map<String, DraggablePoint> dimensionPoints = new LinkedHashMap<>() {{
-		put("overworld", null);
-		put("the_nether", null);
-		put("the_end", null);
+		this.put("overworld", null);
+		this.put("the_nether", null);
+		this.put("the_end", null);
 	}};
 
 	private boolean panning = false;
@@ -55,7 +55,7 @@ public class ChunkGrid {
 			this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
 		}
 		else {
-			this.cornerPoint = new DraggablePoint(getCornerOfCentre(0, 0));
+			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(0, 0));
 		}
 		this.cornerPoint.mainPoint.y += 5;
 	}

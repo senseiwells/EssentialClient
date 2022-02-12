@@ -55,8 +55,8 @@ public class RulesScreen extends Screen {
 		if (this.invalid) {
 			String text = this.isEmpty ? "You can't leave the field empty!" : "Invalid value! Type a number!";
 			this.fillGradient(matrices, 8, 9, 20 + this.textRenderer.getWidth(text), 14 + this.textRenderer.fontHeight, 0x68000000, 0x68000000);
-			drawTexture(matrices, 10, 10, 0, 54, 3, 11);
-			this.textRenderer.draw(matrices,  text, 18, 12, 16733525);
+			this.drawTexture(matrices, 10, 10, 0, 54, 3, 11);
+			this.textRenderer.draw(matrices, text, 18, 12, 16733525);
 		}
 		super.render(matrices, mouseX, mouseY, delta);
 	}

@@ -1,6 +1,5 @@
 package essentialclient.config.entries;
 
-import com.google.common.collect.ImmutableList;
 import essentialclient.config.ConfigListWidget;
 import essentialclient.config.clientrule.ClientRuleHelper;
 import essentialclient.config.clientrule.StringClientRule;
@@ -10,9 +9,8 @@ import essentialclient.feature.EssentialCarpetClient;
 import essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.resource.language.I18n;
@@ -48,8 +46,8 @@ public class StringListEntry extends BaseListEntry {
 	}
 
 	@Override
-	public List<? extends Element> children() {
-		return ImmutableList.of(this.resetButton, this.textField);
+	public List<ClickableWidget> selectableChildren() {
+		return List.of(this.resetButton, this.textField);
 	}
 	
 	@Override
@@ -92,8 +90,8 @@ public class StringListEntry extends BaseListEntry {
 			DiffuseLighting.disableGuiDepthLighting();
 		}
 
-		this.textField.render(new MatrixStack(), mouseX, mouseY, delta);
-		this.resetButton.render(new MatrixStack(), mouseX, mouseY, delta);
+		this.textField.render(matrices, mouseX, mouseY, delta);
+		this.resetButton.render(matrices, mouseX, mouseY, delta);
 	}
 	
 	private void setInvalid(boolean invalid) {
@@ -115,11 +113,6 @@ public class StringListEntry extends BaseListEntry {
 				ClientRuleHelper.writeSaveFile();
 			}
 		}
-	}
-
-	@Override
-	public List<? extends Selectable> selectableChildren() {
-		return ImmutableList.of(this.editButton, this.resetButton, this.textField);
 	}
 
 	@Override

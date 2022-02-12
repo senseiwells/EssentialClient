@@ -1,4 +1,4 @@
-package essentialclient.mixins.functions;
+package essentialclient.mixins.clientScript;
 
 import essentialclient.utils.render.RenderHelper;
 import net.minecraft.entity.LivingEntity;

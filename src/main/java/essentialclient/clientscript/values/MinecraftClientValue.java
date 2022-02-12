@@ -2,14 +2,16 @@ package essentialclient.clientscript.values;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
+import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvent;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.config.clientrule.ClientRule;
 import essentialclient.config.clientrule.ClientRuleHelper;
 import essentialclient.config.clientrule.ClientRules;
+import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -107,7 +109,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("holdKey", List.of("key", "ms"), this::holdKey),
 				new MemberFunction("clearChat", this::clearChat),
 				new MemberFunction("getLatestChatMessage", this::getLatestChatMessage),
-				new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand),
+				new MemberFunction("addCommand", "commandNode", this::addCommand1),
+				new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand2),
 				new MemberFunction("isInSinglePlayer", (context, function) -> BooleanValue.of(this.getClient(context, function).isInSingleplayer())),
 				new MemberFunction("getServerName", this::getServerName),
 				new MemberFunction("getPing", this::getPing),
@@ -119,12 +122,13 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 
 				new MemberFunction("getPlayer", this::getPlayer),
 				new MemberFunction("getWorld", this::getWorld),
+				new MemberFunction("getVersion", this::getVersion),
 
 				new MemberFunction("addGameEvent", List.of("eventName", "function"), this::addGameEvent),
 				new MemberFunction("removeGameEvent", List.of("eventName", "id"), this::removeGameEvent),
 				new MemberFunction("removeAllGameEvents", this::removeAllGameEvents),
-				new MemberFunction("itemFromString", "name", this::itemFromString, "Use 'ItemStack.of(str)'"),
-				new MemberFunction("blockFromString", "name", this::blockFromString, "Use 'Block.of(str)'"),
+				new MemberFunction("itemFromString", "name", this::itemFromString, "Use 'ItemStack.of(material)'"),
+				new MemberFunction("blockFromString", "name", this::blockFromString, "Use 'Block.of(material)'"),
 				new MemberFunction("entityFromString", "name", this::entityFromString, "Use 'Entity.of(str)'"),
 				new MemberFunction("textFromString", "text", this::textFromString, "Use 'Text.of(str)'"),
 				new MemberFunction("createFakeScreen", List.of("screenTitle", "rows"), this::createFakeScreen, "Use 'new FakeScreen(str, int)'"),
@@ -135,6 +139,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("setCursorStack", "itemStack", this::setCursorStack),
 				new MemberFunction("getClientRenderDistance", this::getClientRenderDistance),
 				new MemberFunction("setClientRenderDistance", "distance", this::setClientRenderDistance),
+				new MemberFunction("runOnMainThread", "function", this::runOnMainThread),
+				new MemberFunction("tick", this::tick),
 
 				new MemberFunction("importUtils", "util", this::importUtils, "No replacement as of yet")
 			);
@@ -194,10 +200,15 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			context.getThreadHandler().runAsyncFunctionInContext(null, ctx -> {
 				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 1, 0));
 				int ms = milliseconds;
-				while (ms > 50) {
-					client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 2, 0));
-					Thread.sleep(50);
-					ms -= 50;
+				try {
+					while (ms > 50) {
+						client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 2, 0));
+						Thread.sleep(50);
+						ms -= 50;
+					}
+				}
+				catch (InterruptedException interruptedException) {
+					throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
 				}
 				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 0, 0));
 			}, "Holding Key Thread");
@@ -217,7 +228,20 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return StringValue.of(((Text) chat[0].getText()).getString());
 		}
 
-		private Value<?> addCommand(Context context, MemberFunction function) throws CodeError {
+		private Value<?> addCommand1(Context context, MemberFunction function) throws CodeError {
+			CommandBuilderValue commandBuilder = function.getParameterValueOfType(context, CommandBuilderValue.class, 1);
+			CommandNode<ServerCommandSource> commandNode = commandBuilder.value.build();
+			if (!(commandNode instanceof LiteralCommandNode<ServerCommandSource> literalCommandNode)) {
+				throw new RuntimeError("Expected a literal command builder as root", function.syntaxPosition, context);
+			}
+			CommandHelper.addComplexCommand(context.getThreadHandler(), literalCommandNode);
+			MinecraftClient client = this.getClient(context, function);
+			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
+			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
+			return NullValue.NULL;
+		}
+
+		private Value<?> addCommand2(Context context, MemberFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 			ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 2);
 
@@ -254,7 +278,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				command.addChild(finalArguments);
 			}
 
-			CommandHelper.functionCommandNodes.add(command);
+			CommandHelper.addComplexCommand(context.getThreadHandler(), command);
 			MinecraftClient client = this.getClient(context, function);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
@@ -326,6 +350,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return new ListValue(modList);
 		}
 
+		@Deprecated
 		private Value<?> addGameEvent(Context context, MemberFunction function) throws CodeError {
 			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 2);
@@ -336,6 +361,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NumberValue.of(event.addFunction(context, functionValue));
 		}
 
+		@Deprecated
 		private Value<?> removeGameEvent(Context context, MemberFunction function) throws CodeError {
 			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			int eventId = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
@@ -349,6 +375,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
+		@Deprecated
 		private Value<?> removeAllGameEvents(Context context, MemberFunction function) {
 			MinecraftScriptEvents.clearEventFunctions();
 			return NullValue.NULL;
@@ -445,8 +472,29 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
+		private Value<?> runOnMainThread(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
+			client.execute(() -> {
+				Context branchedContext = context.createBranch();
+				try {
+					functionValue.call(branchedContext, new ArucasList());
+				}
+				catch (CodeError codeError) {
+					branchedContext.getThreadHandler().tryError(branchedContext, codeError);
+				}
+			});
+			return NullValue.NULL;
+		}
+
+		private Value<?> tick(Context context, MemberFunction function) throws CodeError {
+			MinecraftClient client = this.getClient(context, function);
+			client.execute(client::tick);
+			return NullValue.NULL;
+		}
+
 		@Deprecated
-		private Value<?> importUtils(Context context, MemberFunction function) throws CodeError{
+		private Value<?> importUtils(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
 			String util = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			ResourceManager resourceManager = client.getResourceManager();
@@ -475,6 +523,10 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		private Value<?> getWorld(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = this.getClient(context, function);
 			return new WorldValue(ArucasMinecraftExtension.getWorld(client));
+		}
+
+		private Value<?> getVersion(Context context, MemberFunction function) {
+			return StringValue.of(EssentialUtils.getMinecraftVersion());
 		}
 
 		private MinecraftClient getClient(Context context, MemberFunction function) throws CodeError {

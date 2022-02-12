@@ -1,6 +1,6 @@
 package essentialclient.config;
 
-import essentialclient.clientscript.ClientScript;
+import essentialclient.clientscript.core.ClientScriptScreen;
 import essentialclient.config.rulescreen.ClientRulesScreen;
 import essentialclient.config.rulescreen.ServerRulesScreen;
 import essentialclient.feature.EssentialCarpetClient;
@@ -17,12 +17,12 @@ import net.minecraft.util.Util;
 
 public class ConfigScreen extends Screen {
 	private final Screen parent;
-	
+
 	public ConfigScreen(Screen parent) {
 		super(new LiteralText("Essential Client Options"));
 		this.parent = parent;
 	}
-	
+
 	@Override
 	protected void init() {
 		if (this.client == null) {
@@ -30,10 +30,13 @@ public class ConfigScreen extends Screen {
 		}
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6, 200, 20, new LiteralText("Essential Client Options"), (button) -> this.client.setScreen(new ClientRulesScreen(this))));
 		ButtonWidget serverRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 24, 200, 20, new LiteralText("Carpet Server Options"), button -> this.client.setScreen(new ServerRulesScreen(this))));
-		ButtonWidget chunkDebugButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Chunk Debug Map"), button -> {
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 48, 200, 20, new LiteralText("Client Script Options"), button -> {
+			this.client.setScreen(new ClientScriptScreen(this));
+		}));
+		ButtonWidget chunkDebugButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 72, 200, 20, new LiteralText("Chunk Debug Map"), button -> {
 			this.client.setScreen(new ChunkDebugScreen(this));
 		}));
-		ButtonWidget gameRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 72, 200, 20, new LiteralText("Gamerule Options"), button -> {
+		ButtonWidget gameRuleButton = this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 6 + 96, 200, 20, new LiteralText("Gamerule Options"), button -> {
 			if (this.client.getServer() == null) {
 				return;
 			}
@@ -42,7 +45,7 @@ public class ConfigScreen extends Screen {
 				rules.ifPresent((gameRules -> this.client.getServer().getGameRules().setAllValues(gameRules, this.client.getServer())));
 			}));
 		}));
-		if (!client.isInSingleplayer()) {
+		if (!this.client.isInSingleplayer()) {
 			if (!EssentialCarpetClient.serverIsCarpet) {
 				serverRuleButton.active = false;
 			}
@@ -52,9 +55,8 @@ public class ConfigScreen extends Screen {
 			chunkDebugButton.active = false;
 		}
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), (button) -> this.client.setScreen(this.parent)));
-		this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Open Script File"), (button) -> {
-			EssentialUtils.checkifScriptFileExists();
-			Util.getOperatingSystem().open(ClientScript.getFile().toFile());
+		this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText("Wiki Page"), (button) -> {
+			Util.getOperatingSystem().open(EssentialUtils.WIKI_URL);
 		}));
 		this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, new LiteralText("Open Config File"), (button) -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
 	}
@@ -70,9 +72,8 @@ public class ConfigScreen extends Screen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 		drawCenteredText(matrices, this.textRenderer, "Essential Client", this.width / 2, 8, 0xFFFFFF);
-		if (this.client != null && this.client.getCurrentServerEntry() != null) {
-			drawCenteredText(matrices, this.textRenderer, String.format("You are currently connected to: %s", this.client.getCurrentServerEntry().name), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0xFFFFFF);
-		}
+		drawCenteredText(matrices, this.textRenderer, "Version: %s".formatted(EssentialUtils.getVersion()), this.width / 2, 8 + this.textRenderer.fontHeight + 8, 0x949494);
+
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 }
