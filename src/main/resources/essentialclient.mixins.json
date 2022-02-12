@@ -36,6 +36,7 @@
     "customClientCape.AbstractClientPlayerEntityMixin",
     "daylightCycleSlowdownMutliplier.ClientPlayNetworkHandlerMixin",
     "daylightCycleSlowdownMutliplier.ClientWorldMixin",
+    "disableArmourRendering.ArmorFeatureRendererMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",

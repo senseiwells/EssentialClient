@@ -73,6 +73,7 @@ public class ClientRules {
 
 	public static final CycleClientRule
 		CUSTOM_CLIENT_CAPE = new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CapeHelper.capeNames, ClientRuleHelper::refreshCape),
+		DISABLE_ARMOUR_RENDERING = new CycleClientRule("disableArmourRendering", "This allows you to disable armour rendering for entities", List.of("None", "You", "Players", "Entities"), null),
 		DISPLAY_RULE_TYPE = new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRuleHelper::refreshScreen),
 		MUSIC_TYPES = new CycleClientRule("musicTypes", "This allows you to select what music types play", List.of("Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"), ClientRuleHelper::refreshMusic);
 

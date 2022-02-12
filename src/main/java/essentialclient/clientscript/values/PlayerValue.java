@@ -301,23 +301,29 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(context, function);
 			ScreenHandler screenHandler = player.currentScreenHandler;
 			int size = screenHandler.slots.size();
-			if (slot1 > size || slot1 < 0 || slot2 > size || slot2 < 0) {
+			if (slot1 >= size || slot1 < 0 || slot2 >= size || slot2 < 0) {
 				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
-			if (slot1 >= 36 && slot1 < 45) {
-				slot2 -= 36;
-			}
-			else if (slot2 >= 36 && slot2 < 45) {
-				slot1 -= 36;
-			}
+			int firstMapped = InventoryUtils.isSlotInHotbar(screenHandler, slot1);
+			int secondMapped = InventoryUtils.isSlotInHotbar(screenHandler, slot2);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
-			int finalSlot1 = slot1 >= 45 ? 40 : slot1;
-			int finalSlot2 = slot2 >= 45 ? 40 : slot2;
-			client.execute(() -> {
-				interactionManager.clickSlot(screenHandler.syncId, finalSlot1, finalSlot2, SlotActionType.SWAP, player);
-				player.inventory.updateItems();
-			});
+			if (firstMapped == -1) {
+				if (secondMapped == -1) {
+					client.execute(() -> {
+						interactionManager.clickSlot(screenHandler.syncId, slot1, 0, SlotActionType.SWAP, player);
+						interactionManager.clickSlot(screenHandler.syncId, slot2, 0, SlotActionType.SWAP, player);
+						interactionManager.clickSlot(screenHandler.syncId, slot1, 0, SlotActionType.SWAP, player);
+						player.inventory.updateItems();
+					});
+				}
+				else {
+					InventoryUtils.swapSlot(client, screenHandler, slot1, secondMapped);
+				}
+			}
+			else {
+				InventoryUtils.swapSlot(client, screenHandler, slot2, firstMapped);
+			}
 			return NullValue.NULL;
 		}
 
@@ -390,7 +396,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
 			int size = screenHandler.slots.size();
-			if (slot != -999 && slot > size || slot < 0) {
+			if (slot != -999 && slot >= size || slot < 0) {
 				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -404,7 +410,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			NumberValue numberValue1 = function.getParameterValueOfType(context, NumberValue.class, 1);
 			ScreenHandler screenHandler = this.getPlayer(context, function).currentScreenHandler;
 			int size = screenHandler.slots.size();
-			if (numberValue1.value > size || numberValue1.value < 0) {
+			if (numberValue1.value >= size || numberValue1.value < 0) {
 				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
 			}
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
