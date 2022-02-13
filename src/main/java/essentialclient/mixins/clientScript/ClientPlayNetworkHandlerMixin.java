@@ -1,8 +1,10 @@
 package essentialclient.mixins.clientScript;
 
 import essentialclient.clientscript.events.MinecraftScriptEvents;
+import essentialclient.clientscript.values.EntityValue;
 import essentialclient.clientscript.values.ItemStackValue;
 import essentialclient.clientscript.values.PlayerValue;
+import essentialclient.clientscript.values.TextValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import net.minecraft.client.MinecraftClient;
@@ -29,7 +31,7 @@ public class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private MinecraftClient client;
 
-	@Inject(method = "onHealthUpdate", at = @At("HEAD"))
+	@Inject(method = "onHealthUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
 		MinecraftScriptEvents.ON_HEALTH_UPDATE.run(NumberValue.of(packet.getHealth()));
 	}
@@ -44,11 +46,11 @@ public class ClientPlayNetworkHandlerMixin {
 		MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(StringValue.of(GameMode.byId((int) packet.getValue()).getName()));
 	}
 
-	@Inject(method = "onItemPickupAnimation", at = @At("HEAD"))
+	@Inject(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void onPickUp(ItemPickupAnimationS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getEntityId());
 		LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
-		if (entity != null && this.client.player != null && this.client.player.equals(livingEntity) && entity instanceof ItemEntity itemEntity) {
+		if (entity instanceof ItemEntity itemEntity && this.client.player != null && this.client.player.equals(livingEntity)) {
 			MinecraftScriptEvents.ON_PICK_UP_ITEM.run(new ItemStackValue(itemEntity.getStack()));
 		}
 	}
@@ -65,11 +67,19 @@ public class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
-	@Inject(method = "onPlayerList", at = @At("HEAD"))
+	@Inject(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	public void onPlayerList(PlayerListS2CPacket packet, CallbackInfo info) {
 		switch (packet.getAction()) {
 			case ADD_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(StringValue.of(entry.getProfile().getName())));
 			case REMOVE_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_LEAVE.run(StringValue.of(entry.getProfile().getName())));
+		}
+	}
+
+	@Inject(method = "onDeathMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;getEntityById(I)Lnet/minecraft/entity/Entity;", shift = At.Shift.BEFORE))
+	private void onDeath(DeathMessageS2CPacket packet, CallbackInfo ci) {
+		Entity entity = this.world.getEntityById(packet.getEntityId());
+		if (entity == this.client.player) {
+			MinecraftScriptEvents.ON_DEATH.run(EntityValue.of(this.world.getEntityById(packet.getKillerId())), new TextValue(packet.getMessage().copy()));
 		}
 	}
 }

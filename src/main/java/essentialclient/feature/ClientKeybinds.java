@@ -10,13 +10,13 @@ import org.lwjgl.glfw.GLFW;
 
 public enum ClientKeybinds {
 	DEBUG_MENU(new KeyBinding("Toggle Debug Menu", GLFW.GLFW_KEY_F3, "Essential Client")),
-	CLIENT_SCRIPT_START_ALL(new KeyBinding("Client Script Start Selected", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
-	CLIENT_SCRIPT_STOP_ALL(new KeyBinding("Client Script Stop Selected", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
+	CLIENT_SCRIPT_TOGGLE_ALL(new KeyBinding("Toggle Selected Scripts", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
+	CLIENT_SCRIPT_STOP_ALL(new KeyBinding("Stop Selected Scripts", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
 	ACCURATE_REVERSE(new KeyBinding("Accurate Reverse", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
 	ACCURATE_INTO(new KeyBinding("Accurate Into", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
 	OPEN_ESSENTIAL_CLIENT_MENU(new KeyBinding("Open Essential Client Menu", GLFW.GLFW_KEY_UNKNOWN, "Essential Client")),
 	OPEN_CHUNK_DEBUG(new KeyBinding("Open Chunk Debug", GLFW.GLFW_KEY_F6, "Essential Client")),
-	OPEN_CLIENT_SCRIPT(new KeyBinding("Open Client Script", GLFW.GLFW_KEY_UNKNOWN, "EssentialClient"));
+	OPEN_CLIENT_SCRIPT(new KeyBinding("Open Client Script", GLFW.GLFW_KEY_UNKNOWN, "Essential Client"));
 
 	private final KeyBinding key;
 

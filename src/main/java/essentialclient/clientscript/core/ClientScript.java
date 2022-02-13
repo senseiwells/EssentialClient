@@ -30,7 +30,7 @@ public class ClientScript {
 		this.scriptInstances = new HashSet<>();
 		this.selectedScriptNames = new HashSet<>();
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (ClientKeybinds.CLIENT_SCRIPT_START_ALL.getKeyBinding().wasPressed()) {
+			if (ClientKeybinds.CLIENT_SCRIPT_TOGGLE_ALL.getKeyBinding().wasPressed()) {
 				this.startAllInstances();
 			}
 			if (ClientKeybinds.CLIENT_SCRIPT_STOP_ALL.getKeyBinding().wasPressed()) {

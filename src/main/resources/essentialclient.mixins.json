@@ -8,7 +8,6 @@
     "betterAccurateBlockPlacement.ItemPlacementContextMixin",
     "betterAccurateBlockPlacement.ItemUsageContextMixin",
     "betterMusic.MusicTrackerMixin",
-    "betterPingDisplay.PlayerListHudMixin",
     "carpet.ClientNetworkHandlerMixin",
     "chunkDebug.MinecraftClientMixin",
     "cleanConfirmScreen.ConfirmScreenMixin",

@@ -19,7 +19,6 @@ public class ClientRules {
 
 	public static final BooleanClientRule
 		BETTER_ACCURATE_BLOCK_PLACEMENT = new BooleanClientRule("betterAccurateBlockPlacement", "This is the same as accurate block placement for tweakeroo but handled all client side, see controls..."),
-		BETTER_PING_DISPLAY = new BooleanClientRule("betterPingDisplay", "This displays the real ping in the tab list"),
 		CHUNK_DEBUG_MINIMAP_BACKGROUND = new BooleanClientRule("chunkDebugMinimapBackground", "This renders a box showing the bounds of the chunk debug minimap", true),
 		CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS = new BooleanClientRule("chunkDebugShowUnloadedChunks", "This shows you unloaded chunks in ChunkDebug"),
 		CLIENT_SCRIPT_ANNOUNCEMENTS = new BooleanClientRule("clientScriptAnnouncements", "This messages in chat when a script starts and finishes", true),
