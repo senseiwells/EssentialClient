@@ -98,11 +98,9 @@ public class ClientScriptInstance {
 
 	@SuppressWarnings("UnusedReturnValue")
 	public synchronized boolean startScript() {
-		if (EssentialUtils.getClient().player == null) {
-			return false;
-		}
-		if (this.isScriptRunning()) {
+		if (EssentialUtils.getClient().player == null || this.isScriptRunning()) {
 			this.stopScript();
+			return false;
 		}
 		this.executeScript();
 		return true;
