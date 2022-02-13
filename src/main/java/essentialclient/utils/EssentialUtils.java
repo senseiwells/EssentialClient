@@ -103,7 +103,7 @@ public class EssentialUtils {
 	public static String getArucasVersion() {
 		ModContainer modContainer = getModContainer();
 		if (modContainer != null) {
-			for (ModDependency modDependency : modContainer.getMetadata().getSuggests()) {
+			for (ModDependency modDependency : modContainer.getMetadata().getDependencies().stream().filter(d -> d.getKind() == ModDependency.Kind.SUGGESTS).toList()) {
 				if (modDependency.getModId().equals("arucas")) {
 					return modDependency.getVersionRequirements().toString()
 						.replaceAll("\\[=", "")
