@@ -47,18 +47,6 @@ public class CommandHelper {
 		decimalFormat.setGroupingUsed(false);
 	}
 
-	public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {
-		return switch (type) {
-			case "x" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getX()))), builder);
-			case "y" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getY()))), builder);
-			case "z" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getZ()))), builder);
-			case "yaw" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().yaw))), builder);
-			case "pitch" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().pitch))), builder);
-			case "dimension" -> CommandSource.suggestMatching(List.of("overworld", "the_nether", "the_end"), builder);
-			default -> null;
-		};
-	}
-
 	public static CompletableFuture<Suggestions> suggestOnlinePlayers(SuggestionsBuilder builder) {
 		ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
 		if (networkHandler == null || networkHandler.getPlayerList() == null) {

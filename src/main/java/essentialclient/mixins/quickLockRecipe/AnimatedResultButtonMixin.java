@@ -1,6 +1,6 @@
 package essentialclient.mixins.quickLockRecipe;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

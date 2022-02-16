@@ -1,6 +1,6 @@
 package essentialclient.feature;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
@@ -22,7 +22,6 @@ import java.util.function.Function;
 
 // Original code by plusls slightly modified by Sensei
 public class HighlightLavaSources implements SimpleSynchronousResourceReloadListener {
-
 	public static Sprite lavaSourceFlowSprite;
 	public static Sprite lavaSourceStillSprite;
 	public static Sprite defaultLavaSourceFlowSprite;
@@ -31,7 +30,7 @@ public class HighlightLavaSources implements SimpleSynchronousResourceReloadList
 	private static final Identifier FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/lava_flow");
 	private static final Identifier STILL_SPRITE_ID = new Identifier("essentialclient", "block/lava_still");
 
-	public static void init() {
+	public static void load() {
 		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
 			registry.register(FLOWING_SPRITE_ID);
 			registry.register(STILL_SPRITE_ID);

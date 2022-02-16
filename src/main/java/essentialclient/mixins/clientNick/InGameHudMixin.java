@@ -1,8 +1,8 @@
 package essentialclient.mixins.clientNick;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
-import essentialclient.utils.command.ClientNickHelper;
+import essentialclient.utils.config.ConfigClientNick;
 import net.minecraft.client.font.TextVisitFactory;
 import net.minecraft.client.gui.ClientChatListener;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -24,7 +24,7 @@ public class InGameHudMixin {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(sender);
 			if (playerListEntry != null) {
-				String newName = ClientNickHelper.getRename(playerListEntry.getProfile().getName());
+				String newName = ConfigClientNick.INSTANCE.get(playerListEntry.getProfile().getName());
 				String message = TextVisitFactory.method_31402(text);
 				String oldName = StringUtils.substringBetween(message, "<", ">");
 				text = newName != null && oldName != null ? new LiteralText(message.replaceAll(oldName, newName)) : text;

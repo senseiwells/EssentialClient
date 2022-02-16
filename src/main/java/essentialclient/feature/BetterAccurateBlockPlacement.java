@@ -1,6 +1,6 @@
 package essentialclient.feature;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -11,6 +11,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 
 public class BetterAccurateBlockPlacement {
+	public static final BetterAccurateBlockPlacement INSTANCE = new BetterAccurateBlockPlacement();
 
 	public static Direction fakeDirection = null;
 	public static int requestedTicks = 0;
@@ -21,7 +22,7 @@ public class BetterAccurateBlockPlacement {
 	public static boolean wasReversePressed = false;
 	public static boolean wasIntoPressed = false;
 
-	public static void register() {
+	public void load() {
 		ClientTickEvents.END_CLIENT_TICK.register(BetterAccurateBlockPlacement::accurateBlockPlacementOnPress);
 	}
 

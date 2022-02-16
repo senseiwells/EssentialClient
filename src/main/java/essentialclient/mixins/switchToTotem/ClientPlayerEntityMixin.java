@@ -1,6 +1,6 @@
 package essentialclient.mixins.switchToTotem;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;

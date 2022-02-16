@@ -1,12 +1,12 @@
 package essentialclient.clientscript.core;
 
 import essentialclient.EssentialClient;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.clientscript.extensions.BoxShapeWrapper;
 import essentialclient.clientscript.extensions.GameEventWrapper;
 import essentialclient.clientscript.values.*;
-import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ContextBuilder;
@@ -210,7 +210,7 @@ public class ClientScriptInstance {
 			""".formatted(
 			EssentialUtils.getMinecraftVersion(),
 			EssentialClient.VERSION,
-			EssentialUtils.getArucasVersion(),
+			EssentialClient.ARUCAS_VERSION,
 			this.scriptName,
 			content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
 			stacktrace

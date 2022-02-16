@@ -1,6 +1,6 @@
 package essentialclient.mixins.unlockAllRecipes;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.feature.RecipeBookCache;
 import essentialclient.feature.RecipeBookTracker;
 import essentialclient.utils.EssentialUtils;

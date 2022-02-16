@@ -17,6 +17,8 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static essentialclient.utils.render.Texts.*;
+
 public class ClientScriptScreen extends Screen {
 	private final Screen parent;
 	private ClientScriptWidget scriptWidget;
@@ -31,13 +33,13 @@ public class ClientScriptScreen extends Screen {
 		if (this.client == null) {
 			return;
 		}
+		int height = this.height - 27;
 		this.scriptWidget = new ClientScriptWidget(EssentialUtils.getClient(), this);
 		this.children.add(this.scriptWidget);
-		this.addButton(new ButtonWidget(10, this.height - 27, 100, 20, new LiteralText("Refresh"), button -> this.refresh()));
-		this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, new LiteralText(I18n.translate("gui.done")), button -> this.client.openScreen(this.parent)));
-		this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, new LiteralText(I18n.translate("Documentation")), button -> Util.getOperatingSystem().open(EssentialUtils.SCRIPT_WIKI_URL)));
-		this.addButton(new ButtonWidget(10, 10, 50, 20, new LiteralText("New"), button -> this.createNewScript()));
-		super.init();
+		this.addButton(new ButtonWidget(10, height, 100, 20, REFRESH, button -> this.refresh()));
+		this.addButton(new ButtonWidget(this.width / 2 - 100, height, 200, 20, DONE, button -> this.client.openScreen(this.parent)));
+		this.addButton(new ButtonWidget(this.width - 110, height, 100, 20, DOCUMENTATION, button -> Util.getOperatingSystem().open(EssentialUtils.SCRIPT_WIKI_URL)));
+		this.addButton(new ButtonWidget(10, 10, 50, 20, NEW, button -> this.createNewScript()));
 	}
 
 	@Override
@@ -45,7 +47,7 @@ public class ClientScriptScreen extends Screen {
 		this.renderBackground(matrices);
 		this.scriptWidget.render(matrices, mouseX, mouseY, delta);
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		drawCenteredText(matrices, this.textRenderer, "Arucas Version: %s".formatted(EssentialUtils.getArucasVersion()), this.width / 2, 24, 0x949494);
+		drawCenteredText(matrices, this.textRenderer, "Arucas Version: %s".formatted(EssentialClient.ARUCAS_VERSION), this.width / 2, 24, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
@@ -58,10 +60,7 @@ public class ClientScriptScreen extends Screen {
 
 	public void refresh() {
 		ClientScript.INSTANCE.refreshAllInstances();
-		this.children.remove(this.scriptWidget);
-		this.scriptWidget.clear();
-		this.scriptWidget = new ClientScriptWidget(this.client, this);
-		this.children.add(this.scriptWidget);
+		this.scriptWidget.load(this.client);
 	}
 
 	public void openScriptConfigScreen(ClientScriptInstance scriptInstance) {
@@ -70,7 +69,7 @@ public class ClientScriptScreen extends Screen {
 	}
 
 	private void createNewScript() {
-		Path scriptPath = ClientScript.getDir();
+		Path scriptPath = ClientScript.INSTANCE.getScriptDirectory();
 		String newScriptName = "New Script";
 		Path newScript = scriptPath.resolve(newScriptName + ".arucas");
 		if (Files.exists(newScript)) {

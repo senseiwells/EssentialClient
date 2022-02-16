@@ -1,16 +1,13 @@
 package essentialclient.clientscript.core;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonWriter;
-import essentialclient.EssentialClient;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import essentialclient.feature.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
+import essentialclient.utils.config.Config;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -19,10 +16,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ClientScript {
+public class ClientScript implements Config {
 	public static ClientScript INSTANCE = new ClientScript();
 
-	private final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 	private final Set<ClientScriptInstance> scriptInstances;
 	private final Set<String> selectedScriptNames;
 
@@ -37,11 +33,6 @@ public class ClientScript {
 				this.stopAllInstances();
 			}
 		});
-	}
-
-	public void load() {
-		this.readScriptConfig();
-		this.refreshAllInstances();
 	}
 
 	public Set<ClientScriptInstance> getScriptInstances() {
@@ -96,7 +87,7 @@ public class ClientScript {
 			instance.stopScript();
 		}
 		this.scriptInstances.clear();
-		File[] files = getScriptFiles();
+		File[] files = this.getScriptFiles();
 		for (File file : files) {
 			String fileName = file.getName();
 			if (fileName.endsWith(".arucas")) {
@@ -106,56 +97,53 @@ public class ClientScript {
 		}
 	}
 
-	private void readScriptConfig() {
-		Path file = getScriptConfig();
-		if (!Files.isRegularFile(file)) {
-			return;
+	public Path getScriptDirectory() {
+		Path scriptDir = this.getConfigRootPath().resolve("Scripts");
+		if (!Files.exists(scriptDir)) {
+			EssentialUtils.throwAsRuntime(() -> Files.createDirectory(scriptDir));
 		}
-		try (BufferedReader reader = Files.newBufferedReader(file)) {
-			JsonArray jsonArray = this.GSON.fromJson(reader, JsonArray.class);
-			for (JsonElement element : jsonArray) {
-				JsonObject object = element.getAsJsonObject();
-				this.selectedScriptNames.add(object.get("name").getAsString());
-			}
-		}
-		catch (IOException e) {
-			EssentialClient.LOGGER.error("Could not read Script Config");
-		}
+		return scriptDir;
 	}
 
-	public void saveScriptConfig() {
-		Path file = getScriptConfig();
-		try (BufferedWriter writer = Files.newBufferedWriter(file)) {
-			JsonWriter jsonWriter = this.GSON.newJsonWriter(writer);
-			jsonWriter.beginArray();
-			for (ClientScriptInstance instance : this.scriptInstances) {
-				if (this.selectedScriptNames.contains(instance.toString())) {
-					jsonWriter.beginObject().name("name").value(instance.toString()).endObject();
-				}
-			}
-			jsonWriter.endArray();
-			jsonWriter.flush();
-			jsonWriter.close();
-		}
-		catch (IOException e) {
-			EssentialClient.LOGGER.error("Could not save Script Config");
-		}
-	}
-
-	public static Path getDir() {
-		return EssentialUtils.getEssentialConfigFile().resolve("Scripts");
-	}
-
-	private static Path getScriptConfig() {
-		return EssentialUtils.getEssentialConfigFile().resolve("EssentialClientScriptConfig.json");
-	}
-
-	private static File[] getScriptFiles() {
-		Path scriptPath = getDir();
+	private File[] getScriptFiles() {
+		Path scriptPath = this.getScriptDirectory();
 		File[] files = scriptPath.toFile().listFiles();
 		if (files == null) {
 			return new File[0];
 		}
 		return files;
+	}
+
+	@Override
+	public String getConfigName() {
+		return "ClientScript";
+	}
+
+	@Override
+	public Path getConfigPath() {
+		return this.getConfigRootPath().resolve("ScriptConfig.json");
+	}
+
+	@Override
+	public JsonArray getSaveData() {
+		JsonArray scriptData = new JsonArray();
+		this.scriptInstances.forEach(instance -> {
+			if (this.selectedScriptNames.contains(instance.toString())) {
+				JsonObject scriptObject = new JsonObject();
+				scriptObject.addProperty("name", instance.toString());
+				scriptObject.addProperty("selected", true);
+				scriptData.add(scriptObject);
+			}
+		});
+		return scriptData;
+	}
+
+	@Override
+	public void readConfig(JsonArray jsonArray) {
+		jsonArray.forEach(jsonElement -> {
+			JsonObject scriptObject = jsonElement.getAsJsonObject();
+			this.selectedScriptNames.add(scriptObject.get("name").getAsString());
+		});
+		this.refreshAllInstances();
 	}
 }

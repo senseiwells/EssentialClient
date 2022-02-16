@@ -9,6 +9,7 @@ import essentialclient.clientscript.core.ClientScriptInstance;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.clientscript.ScriptRepositoryManager;
 import essentialclient.utils.command.CommandHelper;
+import essentialclient.utils.command.EnumArgumentType;
 import essentialclient.utils.render.ChatColour;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
@@ -49,49 +50,55 @@ public class ClientScriptCommand {
 			})
 		);
 
-		for (Category category : Category.values()) {
-			String categoryName = category.toString();
-			download.then(literal(categoryName)
-				.then(argument("scriptname", StringArgumentType.string())
-					.suggests(((c, b) -> CommandSource.suggestMatching(ScriptRepositoryManager.INSTANCE.getChildrenNames(category), b)))
+		download.then(argument("category", EnumArgumentType.enumeration(Category.class))
+			.then(argument("scriptname", StringArgumentType.string())
+				.suggests(((c, b) -> CommandSource.suggestMatching(
+					ScriptRepositoryManager.INSTANCE.getChildrenNames(EnumArgumentType.getEnumeration(c, "category", Category.class)), b))
+				)
+				.executes(context -> {
+					Category category = EnumArgumentType.getEnumeration(context, "category", Category.class);
+					String scriptName = StringArgumentType.getString(context, "scriptname");
+					ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, false);
+					EssentialUtils.sendMessage(ChatColour.GOLD + "Successfully downloaded: " + ChatColour.GREEN + scriptName);
+					return 1;
+				})
+				.then(argument("shouldoverwrite", BoolArgumentType.bool())
 					.executes(context -> {
+						Category category = EnumArgumentType.getEnumeration(context, "category", Category.class);
 						String scriptName = StringArgumentType.getString(context, "scriptname");
-						ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, false);
+						boolean shouldOverwrite = BoolArgumentType.getBool(context, "shouldoverwrite");
+						ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, shouldOverwrite);
 						EssentialUtils.sendMessage(ChatColour.GOLD + "Successfully downloaded: " + ChatColour.GREEN + scriptName);
 						return 1;
 					})
-					.then(argument("shouldoverwrite", BoolArgumentType.bool())
-						.executes(context -> {
-							String scriptName = StringArgumentType.getString(context, "scriptname");
-							boolean shouldOverwrite = BoolArgumentType.getBool(context, "shouldoverwrite");
-							ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, shouldOverwrite);
-							EssentialUtils.sendMessage(ChatColour.GOLD + "Successfully downloaded: " + ChatColour.GREEN + scriptName);
-							return 1;
-						})
-					)
 				)
-			);
-			runFromWeb.then(literal(categoryName)
-				.then(argument("scriptname", StringArgumentType.string())
-					.suggests(((c, b) -> CommandSource.suggestMatching(ScriptRepositoryManager.INSTANCE.getChildrenNames(category), b)))
+			)
+		);
+
+		runFromWeb.then(argument("category", EnumArgumentType.enumeration(Category.class))
+			.then(argument("scriptname", StringArgumentType.string())
+				.suggests(((c, b) -> CommandSource.suggestMatching(
+					ScriptRepositoryManager.INSTANCE.getChildrenNames(EnumArgumentType.getEnumeration(c, "category", Category.class)), b))
+				)
+				.executes(context -> {
+					Category category = EnumArgumentType.getEnumeration(context, "category", Category.class);
+					String scriptName = StringArgumentType.getString(context, "scriptname");
+					String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, true);
+					ClientScriptInstance.runFromContent(scriptName, scriptContent);
+					return 1;
+				})
+				.then(argument("fromcache", BoolArgumentType.bool())
 					.executes(context -> {
+						Category category = EnumArgumentType.getEnumeration(context, "category", Category.class);
 						String scriptName = StringArgumentType.getString(context, "scriptname");
-						String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, true);
+						boolean fromCache = BoolArgumentType.getBool(context, "fromcache");
+						String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, fromCache);
 						ClientScriptInstance.runFromContent(scriptName, scriptContent);
 						return 1;
 					})
-					.then(argument("fromcache", BoolArgumentType.bool())
-						.executes(context -> {
-							String scriptName = StringArgumentType.getString(context, "scriptname");
-							boolean fromCache = BoolArgumentType.getBool(context, "fromcache");
-							String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, fromCache);
-							ClientScriptInstance.runFromContent(scriptName, scriptContent);
-							return 1;
-						})
-					)
 				)
-			);
-		}
+			)
+		);
 
 		dispatcher.register(root.then(download).then(runFromWeb));
 	}

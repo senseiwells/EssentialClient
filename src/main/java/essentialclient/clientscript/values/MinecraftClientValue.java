@@ -4,13 +4,12 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import essentialclient.clientrule.ClientRules;
+import essentialclient.clientrule.entries.ClientRule;
 import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvent;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import essentialclient.config.clientrule.ClientRule;
-import essentialclient.config.clientrule.ClientRuleHelper;
-import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import essentialclient.utils.interfaces.ChatHudAccessor;
@@ -114,7 +113,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("isInSinglePlayer", (context, function) -> BooleanValue.of(this.getClient(context, function).isInSingleplayer())),
 				new MemberFunction("getServerName", this::getServerName),
 				new MemberFunction("getPing", this::getPing),
-				new MemberFunction("getScriptsPath", (context, function) -> StringValue.of(ClientScript.getDir().toString())),
+				new MemberFunction("getScriptsPath", (context, function) -> StringValue.of(ClientScript.INSTANCE.getScriptDirectory().toString())),
 				new MemberFunction("setEssentialClientRule", List.of("ruleName", "value"), this::setEssentialClientRule),
 				new MemberFunction("resetEssentialClientRule", "ruleName", this::resetEssentialClientRule),
 				new MemberFunction("getEssentialClientValue", "ruleName", this::getEssentialClientRuleValue),
@@ -313,10 +312,9 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			}
 			try {
 				clientRule.setValueFromString(clientRuleValue);
-				ClientRuleHelper.writeSaveFile();
 				this.getClient(context, function).execute(clientRule::run);
 			}
-			catch (Exception e) {
+			catch (RuntimeException e) {
 				throw new RuntimeError("Cannot set that value", function.syntaxPosition, context);
 			}
 			return NullValue.NULL;
@@ -329,7 +327,6 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				throw new RuntimeError("Invalid ClientRule name", function.syntaxPosition, context);
 			}
 			clientRule.resetToDefault();
-			ClientRuleHelper.writeSaveFile();
 			this.getClient(context, function).execute(clientRule::run);
 			return NullValue.NULL;
 		}

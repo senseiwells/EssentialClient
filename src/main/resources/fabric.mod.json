@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "essential-client",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "name": "Essential Client",
   "description": "A client mod that provides utilities and client support for carpet rules",
   "authors": [
@@ -32,11 +32,8 @@
     "essentialclient.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.1",
-    "carpet": "*",
+    "fabricloader": ">=0.11.6",
+    "carpet": ">=1.4.44",
     "minecraft": "1.16.x"
-  },
-  "suggests": {
-    "arucas": "1.1.3"
   }
 }
