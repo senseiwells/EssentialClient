@@ -1,6 +1,7 @@
 package essentialclient.clientrule.entries;
 
 import com.google.gson.JsonElement;
+import essentialclient.EssentialClient;
 
 import java.util.Set;
 import java.util.function.Consumer;
@@ -85,6 +86,10 @@ public abstract class ClientRule<T> {
 		if (this.consumer != null) {
 			this.consumer.accept(this.value);
 		}
+	}
+
+	protected void cannotSetValue(Object value) {
+		EssentialClient.LOGGER.error("Could not set the value '{}' for {}", value, this.getName());
 	}
 
 	public abstract ClientRule<T> copy();

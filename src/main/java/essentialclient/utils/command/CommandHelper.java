@@ -14,6 +14,7 @@ import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
 import me.senseiwells.arucas.api.ArucasThreadHandler;
+import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
@@ -90,8 +91,8 @@ public class CommandHelper {
 		clientCommands.clear();
 	}
 
-	public static void removeComplexCommand(ArucasThreadHandler handler) {
-		functionCommandNodes.remove(handler);
+	public static void removeComplexCommand(Context context) {
+		functionCommandNodes.remove(context.getThreadHandler());
 	}
 
 	public static void executeCommand(StringReader reader, String command) {

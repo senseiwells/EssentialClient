@@ -7,7 +7,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import essentialclient.clientrule.ClientRules;
 import essentialclient.clientrule.entries.ClientRule;
 import essentialclient.clientscript.core.ClientScript;
-import essentialclient.clientscript.events.MinecraftScriptEvent;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.utils.EssentialUtils;
@@ -123,8 +122,6 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("getWorld", this::getWorld),
 				new MemberFunction("getVersion", this::getVersion),
 
-				new MemberFunction("addGameEvent", List.of("eventName", "function"), this::addGameEvent),
-				new MemberFunction("removeGameEvent", List.of("eventName", "id"), this::removeGameEvent),
 				new MemberFunction("removeAllGameEvents", this::removeAllGameEvents),
 				new MemberFunction("itemFromString", "name", this::itemFromString, "Use 'ItemStack.of(material)'"),
 				new MemberFunction("blockFromString", "name", this::blockFromString, "Use 'Block.of(material)'"),
@@ -349,33 +346,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		}
 
 		@Deprecated
-		private Value<?> addGameEvent(Context context, MemberFunction function) throws CodeError {
-			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
-			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 2);
-			MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
-			if (event == null) {
-				throw new RuntimeError("The event name must be a predefined event", function.syntaxPosition, context);
-			}
-			return NumberValue.of(event.addFunction(context, functionValue));
-		}
-
-		@Deprecated
-		private Value<?> removeGameEvent(Context context, MemberFunction function) throws CodeError {
-			String eventName = function.getParameterValueOfType(context, StringValue.class, 1).value;
-			int eventId = function.getParameterValueOfType(context, NumberValue.class, 2).value.intValue();
-			MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
-			if (event == null) {
-				throw new RuntimeError("The event name must be a predefined event", function.syntaxPosition, context);
-			}
-			if (!event.removeFunction(eventId)) {
-				throw new RuntimeError("Invalid eventId", function.syntaxPosition, context);
-			}
-			return NullValue.NULL;
-		}
-
-		@Deprecated
 		private Value<?> removeAllGameEvents(Context context, MemberFunction function) {
-			MinecraftScriptEvents.clearEventFunctions();
+			MinecraftScriptEvents.clearEventFunctions(context);
 			return NullValue.NULL;
 		}
 

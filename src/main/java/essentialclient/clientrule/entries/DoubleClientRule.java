@@ -21,7 +21,12 @@ public class DoubleClientRule extends NumberClientRule<Double> {
 
 	@Override
 	public void setValueFromString(String value) {
-		EssentialUtils.throwAsRuntime(() -> this.setValue(Double.parseDouble(value)));
+		Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(value));
+		if (doubleValue == null) {
+			this.cannotSetValue(value);
+			return;
+		}
+		this.setValue(doubleValue);
 	}
 
 	@Override

@@ -25,7 +25,12 @@ public class IntegerClientRule extends NumberClientRule<Integer> {
 
 	@Override
 	public void setValueFromString(String value) {
-		EssentialUtils.throwAsRuntime(() -> this.setValue(Integer.parseInt(value)));
+		Integer intValue = EssentialUtils.catchAsNull(() -> Integer.parseInt(value));
+		if (intValue == null) {
+			this.cannotSetValue(value);
+			return;
+		}
+		this.setValue(intValue);
 	}
 
 	@Override

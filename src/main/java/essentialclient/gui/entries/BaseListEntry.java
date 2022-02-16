@@ -66,7 +66,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	}
 
 	protected boolean cannotEdit() {
-		return this.rulesScreen.isServerScreen() && !(CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
+		return this.rulesScreen.isServerScreen() && !EssentialUtils.getClient().isInSingleplayer() && !(CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
 	}
 
 	@Override

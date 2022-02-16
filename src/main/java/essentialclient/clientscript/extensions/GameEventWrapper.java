@@ -77,18 +77,18 @@ public class GameEventWrapper implements IArucasWrappedClass {
 
 	@ArucasFunction
 	public BooleanValue isRegistered(Context context) {
-		return BooleanValue.of(this.minecraftEvent.isEventRegistered(this));
+		return BooleanValue.of(this.minecraftEvent.isEventRegistered(context, this));
 	}
 
 	@ArucasFunction
 	public NullValue register(Context context) {
-		this.minecraftEvent.registerEvent(this);
+		this.minecraftEvent.registerEvent(context, this);
 		return NullValue.NULL;
 	}
 
 	@ArucasFunction
 	public BooleanValue unregister(Context context) {
-		return BooleanValue.of(this.minecraftEvent.unregisterEvent(this));
+		return BooleanValue.of(this.minecraftEvent.unregisterEvent(context, this));
 	}
 
 	@ArucasFunction
@@ -98,7 +98,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 
 	@ArucasFunction
 	public static NullValue unregisterAll(Context context) {
-		MinecraftScriptEvents.clearEventFunctions();
+		MinecraftScriptEvents.clearEventFunctions(context);
 		return NullValue.NULL;
 	}
 }

@@ -58,7 +58,8 @@ public class CycleClientRule extends ClientRule<String> {
 	public void setValue(String value) {
 		int index = this.indexOfValue(value);
 		if (index == -1) {
-			throw new IllegalArgumentException("Invalid cycle value");
+			this.cannotSetValue(value);
+			return;
 		}
 		this.index = index;
 		super.setValue(value);

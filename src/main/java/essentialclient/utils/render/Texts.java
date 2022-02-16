@@ -17,6 +17,6 @@ public class Texts {
 		NEW = new LiteralText("New"),
 		TRUE = new LiteralText("true").formatted(Formatting.DARK_GREEN),
 		FALSE = new LiteralText("false").formatted(Formatting.DARK_RED),
-		START = new LiteralText("start").formatted(Formatting.DARK_GREEN),
-		STOP = new LiteralText("stop").formatted(Formatting.DARK_RED);
+		START = new LiteralText("Start").formatted(Formatting.DARK_GREEN),
+		STOP = new LiteralText("Stop").formatted(Formatting.DARK_RED);
 }

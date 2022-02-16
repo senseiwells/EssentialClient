@@ -13,15 +13,9 @@ import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class RenderHelper {
-	// TODO: redo fake entity stuff, this is jank
-	private static final Set<Integer> fakeEntityId = new HashSet<>();
-	private static int backwardsEntityId = Integer.MAX_VALUE;
-
 	public static void setupArucasBoxRendering() {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -152,19 +146,5 @@ public class RenderHelper {
 		if (outline) {
 			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
-	}
-
-	public static int getNextEntityId() {
-		int nextId = backwardsEntityId--;
-		fakeEntityId.add(nextId);
-		return nextId;
-	}
-
-	public static boolean removeFakeEntity(int id) {
-		return fakeEntityId.remove(id);
-	}
-
-	public static boolean isFakeEntity(int id) {
-		return fakeEntityId.contains(id);
 	}
 }

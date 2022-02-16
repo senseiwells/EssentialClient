@@ -1,19 +1,18 @@
 package essentialclient.clientscript.extensions;
 
 import essentialclient.clientscript.values.PosValue;
+import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.api.wrappers.*;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @ArucasWrapper(name = "BoxShape")
 public class BoxShapeWrapper implements IArucasWrappedClass {
-	private static final Set<BoxShapeWrapper> boxesToRender = new LinkedHashSet<>(0);
+	private static final Map<ArucasThreadHandler, Set<BoxShapeWrapper>> BOXES_TO_RENDER = new LinkedHashMap<>(0);
 
 	@ArucasMember(assignable = false)
 	public PosValue pos1;
@@ -168,13 +167,13 @@ public class BoxShapeWrapper implements IArucasWrappedClass {
 
 	@ArucasFunction
 	public NullValue render(Context context) {
-		addBoxToRender(this);
+		addBoxToRender(context, this);
 		return NullValue.NULL;
 	}
 
 	@ArucasFunction
 	public BooleanValue stopRendering(Context context) {
-		return BooleanValue.of(removeBoxToRender(this));
+		return BooleanValue.of(removeBoxToRender(context, this));
 	}
 
 	private void throwIfColoursInvalid(int red, int green, int blue) {
@@ -190,19 +189,22 @@ public class BoxShapeWrapper implements IArucasWrappedClass {
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
-	public synchronized static boolean addBoxToRender(BoxShapeWrapper boxShapeWrapper) {
-		return boxesToRender.add(boxShapeWrapper);
+	public synchronized static boolean addBoxToRender(Context context, BoxShapeWrapper boxShapeWrapper) {
+		Set<BoxShapeWrapper> boxShapeWrapperSet = BOXES_TO_RENDER.getOrDefault(context.getThreadHandler(), new LinkedHashSet<>());
+		BOXES_TO_RENDER.putIfAbsent(context.getThreadHandler(), boxShapeWrapperSet);
+		return boxShapeWrapperSet.add(boxShapeWrapper);
 	}
 
-	public synchronized static boolean removeBoxToRender(BoxShapeWrapper boxShapeWrapper) {
-		return boxesToRender.remove(boxShapeWrapper);
+	public synchronized static boolean removeBoxToRender(Context context, BoxShapeWrapper boxShapeWrapper) {
+		Set<BoxShapeWrapper> boxShapeWrapperSet = BOXES_TO_RENDER.get(context.getThreadHandler());
+		return boxShapeWrapperSet != null && boxShapeWrapperSet.remove(boxShapeWrapper);
 	}
 
-	public synchronized static void clearBoxesToRender() {
-		boxesToRender.clear();
+	public synchronized static void clearBoxesToRender(Context context) {
+		BOXES_TO_RENDER.remove(context.getThreadHandler());
 	}
 
 	public synchronized static List<BoxShapeWrapper> getBoxesToRender() {
-		return List.copyOf(boxesToRender);
+		return BOXES_TO_RENDER.values().stream().flatMap(Collection::stream).toList();
 	}
 }
