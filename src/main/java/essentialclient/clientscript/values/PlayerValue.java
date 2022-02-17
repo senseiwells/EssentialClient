@@ -2,7 +2,7 @@ package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.feature.BetterAccurateBlockPlacement;
-import essentialclient.feature.RecipeBookTracker;
+import essentialclient.feature.CraftingSharedConstants;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -469,7 +469,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			RecipeValue recipeValue = function.getParameterValueOfType(context, RecipeValue.class, 1);
 			client.execute(() -> {
-				RecipeBookTracker.IS_SCRIPT_CLICK.set(true);
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
 				InventoryUtils.shiftClickSlot(client, handledScreen, 0);
 			});

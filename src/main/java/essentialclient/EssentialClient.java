@@ -4,6 +4,7 @@ import essentialclient.clientrule.ClientRules;
 import essentialclient.clientscript.core.ClientScript;
 import essentialclient.feature.CarpetClient;
 import essentialclient.feature.ClientKeybinds;
+import essentialclient.feature.CraftingSharedConstants;
 import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import essentialclient.utils.config.Config;
 import essentialclient.utils.config.ConfigClientNick;
@@ -40,6 +41,7 @@ public class EssentialClient implements ModInitializer {
 		CONFIG_SET.forEach(Config::readConfig);
 		ClientRules.load();
 		ClientKeybinds.loadKeybinds();
+		CraftingSharedConstants.registerHandlers();
 	}
 
 	public static void registerConfigs() {

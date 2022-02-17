@@ -1,6 +1,6 @@
 package essentialclient.mixins.craftingHax;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.feature.CraftingSharedConstants;
 import essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;

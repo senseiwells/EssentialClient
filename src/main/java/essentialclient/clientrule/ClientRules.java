@@ -36,6 +36,7 @@ public class ClientRules implements Config {
 		COMMAND_PLAYER_LIST = register(new BooleanClientRule("commandPlayerList", "This command allows you to execute /player... commands in one command (requires commandPlayerClient)", ClientRules::refreshCommand)),
 		COMMAND_REGION = register(new BooleanClientRule("commandRegion", "This command allows you to determine the region you are in or the region at set coords", ClientRules::refreshCommand)),
 		COMMAND_SUGGESTOR_IGNORES_SPACES = register(new BooleanClientRule("commandSuggestorIgnoresSpaces", "This makes the command suggestor ignore spaces")),
+		CRAFTING_HAX = register(new BooleanClientRule("craftingHax", "This allows you to craft items with the mouse")),
 		DISABLE_BOB_VIEW_WHEN_HURT = register(new BooleanClientRule("disableBobViewWhenHurt", "Disables the camera bobbing when you get hurt")),
 		DISABLE_BOSS_BAR = register(new BooleanClientRule("disableBossBar", "This will disable the boss bar from rendering")),
 		DISABLE_HOTBAR_SCROLLING = register(new BooleanClientRule("disableHotbarScrolling", "This will prevent you from scrolling in your hotbar, learn to use hotkeys :)")),
