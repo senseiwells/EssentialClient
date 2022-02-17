@@ -1,6 +1,7 @@
 package essentialclient.clientscript.core;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import essentialclient.feature.ClientKeybinds;
 import essentialclient.utils.EssentialUtils;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ClientScript implements Config {
+public class ClientScript implements Config.CList {
 	public static ClientScript INSTANCE = new ClientScript();
 
 	private final Set<ClientScriptInstance> scriptInstances;
@@ -125,7 +126,7 @@ public class ClientScript implements Config {
 	}
 
 	@Override
-	public JsonArray getSaveData() {
+	public JsonElement getSaveData() {
 		JsonArray scriptData = new JsonArray();
 		this.scriptInstances.forEach(instance -> {
 			if (this.selectedScriptNames.contains(instance.toString())) {
@@ -140,8 +141,8 @@ public class ClientScript implements Config {
 
 	@Override
 	public void readConfig(JsonArray jsonArray) {
-		jsonArray.forEach(jsonElement -> {
-			JsonObject scriptObject = jsonElement.getAsJsonObject();
+		jsonArray.forEach(element -> {
+			JsonObject scriptObject = element.getAsJsonObject();
 			this.selectedScriptNames.add(scriptObject.get("name").getAsString());
 		});
 		this.refreshAllInstances();

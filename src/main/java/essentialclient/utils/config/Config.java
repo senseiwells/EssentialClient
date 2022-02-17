@@ -1,8 +1,6 @@
 package essentialclient.utils.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
+import com.google.gson.*;
 import essentialclient.EssentialClient;
 import essentialclient.utils.EssentialUtils;
 
@@ -12,8 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public interface Config {
-	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+public interface Config<T extends JsonElement> {
+	Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
 
 	/**
 	 * This is used when displaying
@@ -24,12 +22,12 @@ public interface Config {
 	String getConfigName();
 
 	/**
-	 * This is the path of the config, it's
-	 * used to read and write the file
+	 * This gets the type of Json, we cannot cast
+	 * to T as it will throw outside the catch
 	 *
-	 * @return the path of the config
+	 * @return the JsonElement type
 	 */
-	Path getConfigPath();
+	Class<T> getJsonType();
 
 	/**
 	 * This gets the data that will
@@ -37,22 +35,35 @@ public interface Config {
 	 *
 	 * @return the data that should be saved
 	 */
-	JsonArray getSaveData();
+	JsonElement getSaveData();
 
 	/**
 	 * This passes in the config
 	 * data to be processed
 	 *
-	 * @param jsonArray the config data
+	 * @param element the config data
 	 */
-	void readConfig(JsonArray jsonArray);
+	void readConfig(T element);
+
+	/**
+	 * This is the path of the config, it's
+	 * used to read and write the file
+	 *
+	 * @return the path of the config
+	 */
+	default Path getConfigPath() {
+		return this.getConfigRootPath().resolve(this.getConfigName() + ".json");
+	}
 
 	/**
 	 * This should be called when
 	 * you want to read a config file
 	 */
 	default void readConfig() {
-		this.readConfig(this.getConfigData());
+		T element = this.getConfigData();
+		if (element != null) {
+			this.readConfig(element);
+		}
 	}
 
 	/**
@@ -76,17 +87,17 @@ public interface Config {
 	 *
 	 * @return the config data
 	 */
-	default JsonArray getConfigData() {
+	default T getConfigData() {
 		Path configPath = this.getConfigPath();
 		if (Files.isRegularFile(configPath)) {
 			try (BufferedReader reader = Files.newBufferedReader(configPath)) {
-				return this.GSON.fromJson(reader, JsonArray.class);
+				return this.GSON.fromJson(reader, this.getJsonType());
 			}
-			catch (IOException e) {
+			catch (IOException | JsonParseException e) {
 				EssentialClient.LOGGER.error("Failed to read '{}': {}", this.getConfigName(), e);
 			}
 		}
-		return new JsonArray();
+		return null;
 	}
 
 	/**
@@ -100,6 +111,20 @@ public interface Config {
 		}
 		catch (IOException e) {
 			EssentialClient.LOGGER.error("Failed to save '{}': {}", this.getConfigName(), e);
+		}
+	}
+
+	interface CList extends Config<JsonArray> {
+		@Override
+		default Class<JsonArray> getJsonType() {
+			return JsonArray.class;
+		}
+	}
+
+	interface CMap extends Config<JsonObject> {
+		@Override
+		default Class<JsonObject> getJsonType() {
+			return JsonObject.class;
 		}
 	}
 }

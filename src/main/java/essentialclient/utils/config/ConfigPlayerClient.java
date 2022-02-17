@@ -2,7 +2,6 @@ package essentialclient.utils.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import essentialclient.utils.command.PlayerData;
@@ -12,10 +11,9 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
-import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public class ConfigPlayerClient extends MappedConfig<String, PlayerData> {
+public class ConfigPlayerClient extends MappedStringConfig<PlayerData> {
 	public static final ConfigPlayerClient INSTANCE = new ConfigPlayerClient();
 
 	private ConfigPlayerClient() { }
@@ -27,16 +25,6 @@ public class ConfigPlayerClient extends MappedConfig<String, PlayerData> {
 	@Override
 	public String getConfigName() {
 		return "PlayerClient";
-	}
-
-	@Override
-	public Path getConfigPath() {
-		return this.getConfigRootPath().resolve("PlayerClient.json");
-	}
-
-	@Override
-	protected JsonElement keyToJson(String key) {
-		return new JsonPrimitive(key);
 	}
 
 	@Override
@@ -53,12 +41,7 @@ public class ConfigPlayerClient extends MappedConfig<String, PlayerData> {
 	}
 
 	@Override
-	protected String jsonToKey(JsonElement keyElement) {
-		return keyElement.getAsString();
-	}
-
-	@Override
-	protected PlayerData jsonToValue(JsonElement valueElement) {
+	protected PlayerData jsonToValue(String key, JsonElement valueElement) {
 		JsonObject playerData = valueElement.getAsJsonObject();
 		double x = playerData.get("x").getAsDouble();
 		double y = playerData.get("y").getAsDouble();
@@ -66,17 +49,7 @@ public class ConfigPlayerClient extends MappedConfig<String, PlayerData> {
 		float yaw = playerData.get("yaw").getAsFloat();
 		float pitch = playerData.get("pitch").getAsFloat();
 		WorldEnum world = WorldEnum.valueOf(playerData.get("dimension").getAsString().toUpperCase());
-		GameMode gameMode = GameMode.byName(playerData.get("gamemode").getAsString());
+		GameMode gameMode = GameMode.byName(playerData.get("gamemode").getAsString(), GameMode.NOT_SET);
 		return new PlayerData(new Vec3d(x, y, z), new Vec2f(yaw, pitch), world, gameMode);
-	}
-
-	@Override
-	public String getKeyName() {
-		return "name";
-	}
-
-	@Override
-	public String getValueName() {
-		return "playerdata";
 	}
 }

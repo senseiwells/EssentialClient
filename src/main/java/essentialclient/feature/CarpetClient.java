@@ -16,10 +16,11 @@ import essentialclient.utils.misc.NetworkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 
-import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
-public class CarpetClient implements Config {
+public class CarpetClient implements Config.CList {
 	public static final CarpetClient INSTANCE = new CarpetClient();
 
 	private final Map<String, ClientRule<?>> completeRuleMap;
@@ -27,6 +28,7 @@ public class CarpetClient implements Config {
 	private final String LOADNT;
 	private final String DATA_URL;
 	private final JsonElement COMMAND;
+	private final AtomicBoolean HANDLING_DATA;
 
 	private boolean isServerCarpet;
 
@@ -36,6 +38,7 @@ public class CarpetClient implements Config {
 		this.LOADNT = "Could not load rule data";
 		this.DATA_URL = "https://raw.githubusercontent.com/Crec0/carpet-rules-database/main/data/parsed_data.json";
 		this.COMMAND = new JsonPrimitive("COMMAND");
+		this.HANDLING_DATA = new AtomicBoolean(false);
 		this.isServerCarpet = false;
 	}
 
@@ -68,24 +71,23 @@ public class CarpetClient implements Config {
 			String value = compound.getString("Value");
 			ClientRule<?> clientRule = this.currentRuleMap.get(name);
 			if (clientRule == null) {
+				// We prioritise ParsedRule, but ClientRule's description
+				ParsedRule<?> parsedRule = CarpetServer.settingsManager.getRule(name);
 				clientRule = this.completeRuleMap.get(name);
-				if (clientRule == null) {
-					ParsedRule<?> parsedRule = CarpetServer.settingsManager.getRule(name);
-					clientRule = parsedRule != null ? this.parseRuleToClientRule(parsedRule) : new StringClientRule(name, this.LOADNT, value, v -> {
-						this.handleChangeRule(name, v);
-					});
+				if (parsedRule != null) {
+					clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule) : this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo());
 				}
 				else {
 					// We must copy otherwise we will be modifying the global CarpetRule
-					clientRule = clientRule.copy();
+					clientRule = clientRule != null ? clientRule.copy() : new StringClientRule(name, this.LOADNT, value, this.handleRuleChange(name));
 				}
 				this.currentRuleMap.put(name, clientRule);
 				return;
 			}
 
-			if (!clientRule.getValue().toString().equals(value)) {
-				clientRule.setValueFromString(value);
-			}
+			this.HANDLING_DATA.set(true);
+			clientRule.setValueFromString(value);
+			this.HANDLING_DATA.set(false);
 		});
 	}
 
@@ -96,20 +98,17 @@ public class CarpetClient implements Config {
 	}
 
 	private Collection<ClientRule<?>> getSinglePlayerRules() {
-		List<ClientRule<?>> clientRules = new ArrayList<>();
-		for (ParsedRule<?> parsedRule : CarpetServer.settingsManager.getRules()) {
-			ClientRule<?> clientRule = this.completeRuleMap.get(parsedRule.name);
-			if (clientRule == null) {
-				clientRule = this.parseRuleToClientRule(parsedRule);
+		if (this.currentRuleMap.isEmpty()) {
+			this.HANDLING_DATA.set(true);
+			for (ParsedRule<?> parsedRule : CarpetServer.settingsManager.getRules()) {
+				ClientRule<?> clientRule = this.completeRuleMap.get(parsedRule.name);
+				clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule) : this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo());
+				clientRule.setValueFromString(parsedRule.getAsString());
+				this.currentRuleMap.put(clientRule.getName(), clientRule);
 			}
-			else {
-				// We must copy otherwise we will be modifying the global CarpetRule
-				clientRule = clientRule.copy();
-			}
-			clientRule.setValueFromString(parsedRule.getAsString());
-			clientRules.add(clientRule);
+			this.HANDLING_DATA.set(false);
 		}
-		return clientRules;
+		return this.currentRuleMap.values();
 	}
 
 	private ClientRule<?> jsonToClientRule(JsonElement jsonElement) {
@@ -121,6 +120,22 @@ public class CarpetClient implements Config {
 		if (repo != null) {
 			description += "\n§3From: " + repo.getAsString();
 		}
+		String optionalInfo = null;
+		JsonElement extraInfo = ruleObject.get("extras");
+		if (extraInfo != null) {
+			if (extraInfo.isJsonArray()) {
+				StringBuilder builder = new StringBuilder();
+				extraInfo.getAsJsonArray().forEach(element -> {
+					if (element.isJsonPrimitive()) {
+						builder.append(element.getAsString()).append(" ");
+					}
+				});
+				optionalInfo = builder.toString();
+			}
+			if (extraInfo.isJsonPrimitive()) {
+				optionalInfo = extraInfo.getAsString();
+			}
+		}
 		JsonElement defaultValue = ruleObject.get("default");
 		if (defaultValue == null) {
 			defaultValue = ruleObject.get("value");
@@ -129,7 +144,7 @@ public class CarpetClient implements Config {
 		if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Type.BOOLEAN) {
 			return new CommandClientRule(name, description, defaultValue.getAsString(), value -> {
 				this.handleChangeRule(name, value);
-			});
+			}).setOptionalInfo(optionalInfo);
 		}
 		JsonElement strictElement = ruleObject.get("strict");
 		if (strictElement != null && strictElement.getAsBoolean() && type != Type.BOOLEAN) {
@@ -140,79 +155,79 @@ public class CarpetClient implements Config {
 				values.forEach(element -> validValues.add(element.getAsString()));
 				return new CycleClientRule(name, description, validValues, defaultValue.getAsString(), value -> {
 					this.handleChangeRule(name, value);
-				});
+				}).setOptionalInfo(optionalInfo);
 			}
 		}
-		return switch (type) {
+		ClientRule<?> clientRule = switch (type) {
 			case CYCLE -> {
 				JsonArray validCycles = ruleObject.get("cycles").getAsJsonArray();
 				List<String> cycles = new ArrayList<>();
 				validCycles.forEach(element -> cycles.add(element.getAsString()));
-				yield new CycleClientRule(name, description, cycles, defaultValue.getAsString(), value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield new CycleClientRule(name, description, cycles, defaultValue.getAsString(), this.handleRuleChange(name));
 			}
 			case BOOLEAN -> {
-				yield new BooleanClientRule(name, description, defaultValue.getAsBoolean(), value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield new BooleanClientRule(name, description, defaultValue.getAsBoolean(), this.handleRuleChange(name));
 			}
 			case INTEGER -> {
-				yield new IntegerClientRule(name, description, defaultValue.getAsInt(), value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield new IntegerClientRule(name, description, defaultValue.getAsInt(), this.handleRuleChange(name));
 			}
 			case DOUBLE -> {
-				yield new DoubleClientRule(name, description, defaultValue.getAsDouble(), value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield new DoubleClientRule(name, description, defaultValue.getAsDouble(), this.handleRuleChange(name));
 			}
 			default -> {
-				yield new StringClientRule(name, description, defaultValue.getAsString(), value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield new StringClientRule(name, description, defaultValue.getAsString(), this.handleRuleChange(name));
 			}
 		};
+		return clientRule.setOptionalInfo(optionalInfo);
 	}
 
 	private ClientRule<?> parseRuleToClientRule(ParsedRule<?> parsedRule) {
+		return this.parseRuleToClientRule(parsedRule, null, null);
+	}
+
+	private ClientRule<?> parseRuleToClientRule(ParsedRule<?> parsedRule, String description, String optionalInfo) {
 		String name = parsedRule.name;
 		Type type = Type.fromClass(parsedRule.type);
-		String description = parsedRule.description;
 		String defaultValue = parsedRule.defaultAsString;
+		if (description == null) {
+			description = parsedRule.description;
+		}
+		if (optionalInfo == null && !parsedRule.extraInfo.isEmpty()) {
+			StringBuilder builder = new StringBuilder();
+			for (String info : parsedRule.extraInfo) {
+				builder.append(info).append(" ");
+			}
+			optionalInfo = builder.toString();
+		}
 		if (parsedRule.categories.contains(RuleCategory.COMMAND)) {
-			return new CommandClientRule(name, description, defaultValue, value -> {
-				this.handleChangeRule(name, value);
-			});
+			return new CommandClientRule(name, description, defaultValue, this.handleRuleChange(name)).setOptionalInfo(optionalInfo);
 		}
 		if (parsedRule.isStrict && type != Type.BOOLEAN) {
-			return new CycleClientRule(name, description, parsedRule.options, defaultValue, value -> {
-				this.handleChangeRule(name, value);
-			});
+			return new CycleClientRule(name, description, parsedRule.options, defaultValue, this.handleRuleChange(name)).setOptionalInfo(optionalInfo);
 		}
 		ClientRule<?> rule = switch (type) {
 			case BOOLEAN -> {
-				yield new BooleanClientRule(name, description, defaultValue.equals("true"), value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield new BooleanClientRule(name, description, defaultValue.equals("true"), this.handleRuleChange(name));
 			}
 			case INTEGER -> {
 				Integer intValue = EssentialUtils.catchAsNull(() -> Integer.parseInt(defaultValue));
-				yield intValue == null ? null : new IntegerClientRule(name, description, intValue, value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield intValue == null ? null : new IntegerClientRule(name, description, intValue, this.handleRuleChange(name));
 			}
 			case DOUBLE -> {
 				Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(defaultValue));
-				yield doubleValue == null ? null : new DoubleClientRule(name, description, doubleValue, value -> {
-					this.handleChangeRule(name, value);
-				});
+				yield doubleValue == null ? null : new DoubleClientRule(name, description, doubleValue, this.handleRuleChange(name));
 			}
 			default -> null;
 		};
-		return rule != null ? rule : new StringClientRule(name, description, defaultValue, value -> {
-			this.handleChangeRule(name, value);
-		});
+		return (rule != null ? rule : new StringClientRule(name, description, defaultValue, this.handleRuleChange(name))).setOptionalInfo(optionalInfo);
+	}
+
+	private <T> Consumer<T> handleRuleChange(String name) {
+		return o -> {
+			if (!this.HANDLING_DATA.get()) {
+				this.handleChangeRule(name, o);
+			}
+		};
 	}
 
 	private JsonArray getData(JsonArray fallback) {
@@ -230,18 +245,14 @@ public class CarpetClient implements Config {
 	}
 
 	@Override
-	public Path getConfigPath() {
-		return this.getConfigRootPath().resolve("CarpetClient.json");
-	}
-
-	@Override
-	public JsonArray getSaveData() {
+	public JsonElement getSaveData() {
 		JsonArray ruleData = new JsonArray();
 		this.completeRuleMap.forEach((name, rule) -> {
 			JsonObject ruleObject = new JsonObject();
 			ruleObject.addProperty("name", name);
 			ruleObject.addProperty("type", rule.getType().name());
 			ruleObject.addProperty("description", rule.getDescription());
+			ruleObject.addProperty("extras", rule.getOptionalInfo());
 			ruleObject.add("default", rule.getDefaultAsJson());
 			if (rule instanceof CycleClientRule cycleRule) {
 				JsonArray validCycles = new JsonArray();
@@ -254,10 +265,10 @@ public class CarpetClient implements Config {
 	}
 
 	@Override
-	public void readConfig(JsonArray jsonArray) {
-		jsonArray = this.getData(jsonArray);
-		jsonArray.forEach(jsonElement -> {
-			ClientRule<?> rule = this.jsonToClientRule(jsonElement);
+	public void readConfig(JsonArray jsonElement) {
+		JsonArray jsonArray = this.getData(jsonElement.getAsJsonArray());
+		jsonArray.forEach(element -> {
+			ClientRule<?> rule = this.jsonToClientRule(element);
 			this.completeRuleMap.put(rule.getName(), rule);
 		});
 	}

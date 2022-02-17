@@ -63,7 +63,8 @@ public class InventoryUtils {
 			if (slotType == EquipmentSlot.MAINHAND) {
 				int currentHotbarSlot = playerEntity.inventory.selectedSlot;
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
-			} else if (slotType == EquipmentSlot.OFFHAND) {
+			}
+			else if (slotType == EquipmentSlot.OFFHAND) {
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, 40, SlotActionType.SWAP, client.player);
 			}
 		}
@@ -144,7 +145,7 @@ public class InventoryUtils {
 				client.interactionManager.clickSlot(merchantScreen.getScreenHandler().syncId, 2, 1, SlotActionType.THROW, client.player);
 				return;
 			}
-			InventoryUtils.shiftClickSlot(client, merchantScreen, 2);
+			shiftClickSlot(client, merchantScreen, 2);
 		});
 		return true;
 	}
@@ -157,7 +158,8 @@ public class InventoryUtils {
 		if (slot.hasStack()) {
 			if (canMergeIntoMain(client.player.inventory, slot.getStack())) {
 				shiftClickSlot(client, merchantScreen, slot.id);
-			} else {
+			}
+			else {
 				dropStack(client, merchantScreen, slot.id);
 			}
 		}
@@ -298,7 +300,8 @@ public class InventoryUtils {
 		for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
 			try {
 				Thread.sleep(0, 1);
-			} catch (InterruptedException ignored) {
+			}
+			catch (InterruptedException ignored) {
 			}
 			Slot slotTmp = gui.getScreenHandler().getSlot(slotNum);
 			if (slotTmp != null && slotTmp.hasStack() && (!areStacksEqual(recipe[i], slotTmp.getStack()))) {
@@ -347,7 +350,8 @@ public class InventoryUtils {
 						leftClickSlot(client, gui, slotReturn);
 					}
 				}
-			} else {
+			}
+			else {
 				break;
 			}
 			if (!getCursorStack(client).isEmpty()) {
@@ -416,7 +420,8 @@ public class InventoryUtils {
 			if (item != Items.AIR) {
 				if (mapSlots.containsKey(item)) {
 					mapSlots.get(item).add(i);
-				} else {
+				}
+				else {
 					List<Integer> integerList = new ArrayList<>();
 					integerList.add(i);
 					mapSlots.put(item, integerList);
@@ -525,7 +530,9 @@ public class InventoryUtils {
 			}
 			try {
 				Thread.sleep(0, 1);
-			} catch (InterruptedException ignored) {}
+			}
+			catch (InterruptedException ignored) {
+			}
 		}
 	}
 
@@ -536,7 +543,9 @@ public class InventoryUtils {
 				InventoryUtils.dropStack(client, handledScreen, 0);
 				try {
 					Thread.sleep(2L);
-				} catch (InterruptedException ignored) {}
+				}
+				catch (InterruptedException ignored) {
+				}
 			}
 		}, 40L, TimeUnit.MILLISECONDS);
 	}
@@ -550,9 +559,11 @@ public class InventoryUtils {
 		RecipeBookWidget widget;
 		if (handledScreen instanceof InventoryScreen playerScreen) {
 			widget = playerScreen.getRecipeBookWidget();
-		} else if (handledScreen instanceof CraftingScreen craftingScreen) {
+		}
+		else if (handledScreen instanceof CraftingScreen craftingScreen) {
 			widget = craftingScreen.getRecipeBookWidget();
-		} else {
+		}
+		else {
 			// We not in correct screen. Should never happen really but just for the edge case
 			return;
 		}
@@ -562,29 +573,24 @@ public class InventoryUtils {
 
 		int gridLength = InventoryUtils.getCraftingSlotLength(handledScreen);
 
-		// if chosen recipe is different or crafting grid has invalid recipe
+		// If chosen recipe is different or crafting grid has invalid recipe
 		if (!InventoryUtils.areRecipesEqual(recipe, lastRecipe) || (!isGridEmpty(handledScreen, gridLength) && getStackAtSlot(handledScreen, 0).isEmpty())) {
 			InventoryUtils.emptyCraftingGrid(mc, handledScreen, player, gridLength);
 		}
 
 		RecipeMatcher matcher = new RecipeMatcher();
-		// populating the matcher
-		// starting 1 to skip output slot.
-		handledScreen
-			.getScreenHandler()
-			.slots
-			.stream()
-			.skip(1)
-			.map(Slot::getStack)
-			.forEachOrdered(matcher::addUnenchantedInput);
+		// Populating the matcher
+		// Starting 1 to skip output slot.
+		handledScreen.getScreenHandler().slots.stream().skip(1).map(Slot::getStack).forEachOrdered(matcher::addUnenchantedInput);
 
 		IntList craftInputIds = new IntArrayList();
 		int totalCraftOps = matcher.countCrafts(recipe, craftInputIds);
 
 		if (totalCraftOps == 0 && isGridEmpty(handledScreen, gridLength)) {
 			widget.showGhostRecipe(recipe, player.currentScreenHandler.slots);
-		} else {
-			((IGhostRecipeBookWidget) widget).clearGhostSlots();;
+		}
+		else {
+			((IGhostRecipeBookWidget) widget).clearGhostSlots();
 			parseRecipeAndCacheInventory(mc, handledScreen, gridLength, recipe, craftInputIds, craftAll ? totalCraftOps : 1);
 		}
 		matcher.clear();
@@ -596,7 +602,7 @@ public class InventoryUtils {
 			int recipeWidth = shapedRecipe.getWidth();
 			int recipeHeight = shapedRecipe.getHeight();
 
-			// filling the recipe with AIR to convert 2x2 into 3x3 if player using 3x3 grid. otherwise, it does nothing
+			// Filling the recipe with AIR to convert 2x2 into 3x3 if player using 3x3 grid. otherwise, it does nothing
 			for (int i = 0; i < recipeHeight - 1; i++) {
 				for (int j = recipeWidth; j < gridSide; j++) {
 					craftInputIds.add(i * gridSide + j, 0);
@@ -650,7 +656,8 @@ public class InventoryUtils {
 						leftClickSlot(client, handledScreen, slotId);
 					}
 					startAt = endAt;
-				} while (startAt < recipeRequiredAmount && slotCounter++ < slotsPerItem.size());
+				}
+				while (startAt < recipeRequiredAmount && slotCounter++ < slotsPerItem.size());
 			}
 		}
 	}
@@ -658,7 +665,7 @@ public class InventoryUtils {
 	public static void dragSplitItemsIntoGrid(MinecraftClient client, HandledScreen<?> handledScreen, IntList craftingSlotIds, int startAt, int endAt) {
 		craftClickSlot(client, handledScreen, -999, 4);
 		for (int i = startAt; i < craftingSlotIds.size() && i < endAt; i++) {
-			int slotId = craftingSlotIds.get(i);
+			int slotId = craftingSlotIds.getInt(i);
 			craftClickSlot(client, handledScreen, slotId, 5);
 		}
 		craftClickSlot(client, handledScreen, -999, 6);

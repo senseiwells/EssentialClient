@@ -3,6 +3,7 @@ package essentialclient.clientrule.entries;
 import com.google.gson.JsonElement;
 import essentialclient.EssentialClient;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -12,6 +13,7 @@ public abstract class ClientRule<T> {
 	private final String description;
 	private final T defaultValue;
 	private final Consumer<T> consumer;
+	private String optionalInfo;
 	private T value;
 
 	public ClientRule(String name, Type type, String description, T defaultValue, Consumer<T> consumer) {
@@ -33,6 +35,10 @@ public abstract class ClientRule<T> {
 
 	public final String getDescription() {
 		return this.description;
+	}
+
+	public final String getOptionalInfo() {
+		return this.optionalInfo;
 	}
 
 	public final T getDefaultValue() {
@@ -58,8 +64,15 @@ public abstract class ClientRule<T> {
 	}
 
 	public void setValue(T value) {
-		this.value = value;
-		this.onValueChange();
+		if (!Objects.equals(this.value, value)) {
+			this.value = value;
+			this.onValueChange();
+		}
+	}
+
+	public ClientRule<T> setOptionalInfo(String optionalInfo) {
+		this.optionalInfo = optionalInfo;
+		return this;
 	}
 
 	public abstract T fromJson(JsonElement value);

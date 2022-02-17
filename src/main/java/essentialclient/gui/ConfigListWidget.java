@@ -25,8 +25,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	public void reloadEntries(RulesScreen rulesScreen, String filter) {
 		this.clearEntries();
 		Collection<ClientRule<?>> clientRules = rulesScreen.isServerScreen() ?
-			ClientRules.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()) :
-			ClientRules.DISPLAY_RULE_TYPE.getValue().equals("Rule Type") ? ClientRules.getMapInType() : ClientRules.getMapAlphabetically();
+			ClientRules.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()) : ClientRules.getCurrentClientRules();
 
 		clientRules.forEach(rule -> {
 			String ruleName = rule.getName();

@@ -1,8 +1,8 @@
 package essentialclient.clientrule;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import essentialclient.clientrule.entries.*;
 import essentialclient.feature.AFKRules;
 import essentialclient.feature.BetterAccurateBlockPlacement;
@@ -11,21 +11,22 @@ import essentialclient.feature.HighlightLavaSources;
 import essentialclient.gui.rulescreen.RulesScreen;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
-import essentialclient.utils.config.Config;
+import essentialclient.utils.config.MappedStringConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.MusicTracker;
 
-import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-public class ClientRules implements Config {
+public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 	public static final ClientRules INSTANCE = new ClientRules();
-
-	private static final Map<String, ClientRule<?>> clientRuleMap = new HashMap<>();
 
 	public static final BooleanClientRule
 		BETTER_ACCURATE_BLOCK_PLACEMENT = register(new BooleanClientRule("betterAccurateBlockPlacement", "This is the same as accurate block placement for tweakeroo but handled all client side, see controls...")),
+		CARPET_ALWAYS_SET_DEFAULT = register(new BooleanClientRule("carpetAlwaysSetDefault", "This makes it so whenever you set a carpet rule it automatically sets it to default")),
 		CHUNK_DEBUG_MINIMAP_BACKGROUND = register(new BooleanClientRule("chunkDebugMinimapBackground", "This renders a box showing the bounds of the chunk debug minimap", true)),
 		CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS = register(new BooleanClientRule("chunkDebugShowUnloadedChunks", "This shows you unloaded chunks in ChunkDebug")),
 		CLIENT_SCRIPT_ANNOUNCEMENTS = register(new BooleanClientRule("clientScriptAnnouncements", "This messages in chat when a script starts and finishes", true)),
@@ -99,19 +100,15 @@ public class ClientRules implements Config {
 	}
 
 	public static void addRule(String name, ClientRule<?> rule) {
-		clientRuleMap.put(name, rule);
+		INSTANCE.set(name, rule);
 	}
 
 	public static ClientRule<?> ruleFromString(String name) {
-		return clientRuleMap.get(name);
+		return INSTANCE.get(name);
 	}
 
 	public static Collection<ClientRule<?>> getAllClientRules() {
-		return clientRuleMap.values();
-	}
-
-	public static Collection<ClientRule<?>> getMapAlphabetically() {
-		return sortRulesAlphabetically(getAllClientRules());
+		return INSTANCE.map.values();
 	}
 
 	public static Collection<ClientRule<?>> sortRulesAlphabetically(Collection<ClientRule<?>> clientRules) {
@@ -122,7 +119,15 @@ public class ClientRules implements Config {
 		return sortedMap.values();
 	}
 
-	public static Collection<ClientRule<?>> getMapInType() {
+	public static Collection<ClientRule<?>> getCurrentClientRules() {
+		return ClientRules.DISPLAY_RULE_TYPE.getValue().equals("Rule Type") ? getMapInType() : getMapAlphabetically();
+	}
+
+	private static Collection<ClientRule<?>> getMapAlphabetically() {
+		return sortRulesAlphabetically(getAllClientRules());
+	}
+
+	private static Collection<ClientRule<?>> getMapInType() {
 		SortedMap<String, ClientRule<?>> sortedMap = new TreeMap<>();
 		for (ClientRule.Type type : ClientRule.Type.values()) {
 			for (ClientRule<?> rule : getAllClientRules()) {
@@ -173,32 +178,25 @@ public class ClientRules implements Config {
 	}
 
 	@Override
-	public Path getConfigPath() {
-		return this.getConfigRootPath().resolve("ClientRules.json");
+	protected JsonElement valueToJson(ClientRule<?> value) {
+		JsonObject clientRuleObject = new JsonObject();
+		clientRuleObject.add("value", value.getValueAsJson());
+		clientRuleObject.addProperty("extras", value.getOptionalInfo());
+		return clientRuleObject;
 	}
 
 	@Override
-	public JsonArray getSaveData() {
-		JsonArray clientRules = new JsonArray();
-		getAllClientRules().forEach(clientRule -> {
-			JsonObject clientRuleObject = new JsonObject();
-			clientRuleObject.addProperty("name", clientRule.getName());
-			clientRuleObject.add("value", clientRule.getValueAsJson());
-			clientRules.add(clientRuleObject);
-		});
-		return clientRules;
-	}
-
-	@Override
-	public void readConfig(JsonArray jsonArray) {
-		jsonArray.forEach(jsonElement -> {
-			JsonObject clientRuleObject = jsonElement.getAsJsonObject();
-			String name = clientRuleObject.get("name").getAsString();
-			JsonElement value = clientRuleObject.get("value");
-			ClientRule<?> clientRule = ruleFromString(name);
-			if (clientRule != null) {
-				clientRule.setValueFromJson(value);
+	protected ClientRule<?> jsonToValue(String key, JsonElement valueElement) {
+		JsonObject clientRuleObject = valueElement.getAsJsonObject();
+		JsonElement value = clientRuleObject.get("value");
+		JsonElement info = clientRuleObject.get("extras");
+		ClientRule<?> clientRule = this.get(key);
+		if (clientRule != null) {
+			clientRule.setValueFromJson(value);
+			if (info instanceof JsonPrimitive) {
+				clientRule.setOptionalInfo(info.getAsString());
 			}
-		});
+		}
+		return clientRule;
 	}
 }

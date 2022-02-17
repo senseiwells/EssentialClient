@@ -6,10 +6,9 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 
-import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public class ConfigClientNick extends MappedConfig<String, String> {
+public class ConfigClientNick extends MappedStringConfig<String> {
 	public static final ConfigClientNick INSTANCE = new ConfigClientNick();
 
 	private ConfigClientNick() { }
@@ -24,37 +23,12 @@ public class ConfigClientNick extends MappedConfig<String, String> {
 	}
 
 	@Override
-	public Path getConfigPath() {
-		return this.getConfigRootPath().resolve("ClientNick.json");
-	}
-
-	@Override
-	protected JsonElement keyToJson(String key) {
-		return new JsonPrimitive(key);
-	}
-
-	@Override
 	protected JsonElement valueToJson(String value) {
 		return new JsonPrimitive(value);
 	}
 
 	@Override
-	protected String jsonToKey(JsonElement keyElement) {
-		return keyElement.getAsString();
-	}
-
-	@Override
-	protected String jsonToValue(JsonElement valueElement) {
+	protected String jsonToValue(String key, JsonElement valueElement) {
 		return valueElement.getAsString();
-	}
-
-	@Override
-	public String getKeyName() {
-		return "name";
-	}
-
-	@Override
-	public String getValueName() {
-		return "rename";
 	}
 }

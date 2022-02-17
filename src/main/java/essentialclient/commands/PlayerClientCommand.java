@@ -88,7 +88,7 @@ public class PlayerClientCommand {
 					.executes(context -> constructPlayer(context, true, false))
 					.then(literal("in")
 						.then(argument("gamemode", EnumArgumentType.enumeration(GameMode.class))
-							.executes(context -> constructPlayer(context, false, true))
+							.executes(context -> constructPlayer(context, true, true))
 						)
 					)
 				)

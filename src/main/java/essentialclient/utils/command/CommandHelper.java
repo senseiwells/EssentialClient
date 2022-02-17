@@ -51,7 +51,7 @@ public class CommandHelper {
 	public static CompletableFuture<Suggestions> suggestOnlinePlayers(SuggestionsBuilder builder) {
 		ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
 		if (networkHandler == null || networkHandler.getPlayerList() == null) {
-			return CommandSource.suggestMatching(new String[0], builder);
+			return CommandSource.suggestMatching(List.of(), builder);
 		}
 		List<String> playerList = new ArrayList<>();
 		networkHandler.getPlayerList().forEach(p -> playerList.add(p.getProfile().getName()));
@@ -119,7 +119,7 @@ public class CommandHelper {
 				}
 
 				text.append(new TranslatableText("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
-				EssentialUtils.getPlayer().sendMessage(text, false);
+				EssentialUtils.sendMessage(text);
 			}
 		}
 		catch (Exception e) {
