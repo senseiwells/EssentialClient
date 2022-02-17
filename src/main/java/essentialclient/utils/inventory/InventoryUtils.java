@@ -525,8 +525,7 @@ public class InventoryUtils {
 			}
 			try {
 				Thread.sleep(0, 1);
-			} catch (InterruptedException ignored) {
-			}
+			} catch (InterruptedException ignored) {}
 		}
 	}
 
@@ -535,12 +534,11 @@ public class InventoryUtils {
 			int count = craftAll ? 64 : 1;
 			for (int i = 0; i < count; i++) {
 				InventoryUtils.dropStack(client, handledScreen, 0);
+				try {
+					Thread.sleep(2L);
+				} catch (InterruptedException ignored) {}
 			}
-			try {
-				Thread.sleep(5L);
-			} catch (InterruptedException ignored) {
-			}
-		}, 50L, TimeUnit.MILLISECONDS);
+		}, 40L, TimeUnit.MILLISECONDS);
 	}
 
 	@SuppressWarnings("unused")
