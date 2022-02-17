@@ -1,8 +1,8 @@
 package essentialclient.mixins.unlockAllRecipes;
 
 import essentialclient.clientrule.ClientRules;
+import essentialclient.feature.CraftingSharedConstants;
 import essentialclient.feature.RecipeBookCache;
-import essentialclient.feature.RecipeBookTracker;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
@@ -24,18 +24,15 @@ public class ClientPlayerInteractionManagerMixin {
 	public void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.currentScreen instanceof HandledScreen<?> handledScreen && RecipeBookCache.isCached(recipe)) {
-			if (RecipeBookTracker.IS_SCRIPT_CLICK.get()) {
+			if (CraftingSharedConstants.IS_SCRIPT_CLICK.get()) {
 				InventoryUtils.doCraftingSlotsFillAction(recipe, this.lastRecipeCache, handledScreen, craftAll);
-				RecipeBookTracker.IS_SCRIPT_CLICK.set(false);
-				this.lastRecipeCache = recipe;
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(false);
 				ci.cancel();
 			}
-			if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && RecipeBookTracker.IS_VANILLA_CLICK.get()) {
+			if (ClientRules.UNLOCK_ALL_RECIPES_ON_JOIN.getValue() && CraftingSharedConstants.IS_VANILLA_CLICK.get()) {
 				InventoryUtils.doCraftingSlotsFillAction(recipe, this.lastRecipeCache, handledScreen, craftAll);
-				RecipeBookTracker.IS_VANILLA_CLICK.set(false);
-				this.lastRecipeCache = recipe;
-				ci.cancel();
 			}
+			this.lastRecipeCache = recipe;
 		}
 	}
 }

@@ -32,6 +32,7 @@
     "core.GameMenuScreenMixin",
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
+    "craftingHax.ClientPlayerInteractionManagerMixin",
     "customClientCape.AbstractClientPlayerEntityMixin",
     "daylightCycleSlowdownMutliplier.ClientPlayNetworkHandlerMixin",
     "daylightCycleSlowdownMutliplier.ClientWorldMixin",

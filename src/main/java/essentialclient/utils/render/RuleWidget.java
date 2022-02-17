@@ -7,6 +7,7 @@ public class RuleWidget {
 	private final String name;
 	private final int width;
 	private final int height;
+	private boolean isToggled;
 	private int x;
 	private int y;
 
@@ -14,6 +15,11 @@ public class RuleWidget {
 		this.name = name;
 		this.width = width;
 		this.height = height;
+		this.isToggled = false;
+	}
+
+	public void toggle() {
+		this.isToggled = !this.isToggled;
 	}
 
 	public void setPos(int x, int y) {
@@ -27,6 +33,10 @@ public class RuleWidget {
 
 	public boolean isHovered(int mouseX, int mouseY) {
 		return mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+	}
+
+	public boolean isToggled() {
+		return this.isToggled;
 	}
 
 	public static String getShortName(String string) {

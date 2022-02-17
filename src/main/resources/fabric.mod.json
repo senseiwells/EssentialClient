@@ -25,7 +25,7 @@
       "essentialclient.EssentialClient"
     ],
     "modmenu": [
-      "essentialclient.config.modmenu.ModMenuImpl"
+      "essentialclient.gui.modmenu.ModMenuImpl"
     ]
   },
   "mixins": [

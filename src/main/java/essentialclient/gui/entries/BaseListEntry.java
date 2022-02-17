@@ -69,6 +69,18 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		return this.rulesScreen.isServerScreen() && !EssentialUtils.getClient().isInSingleplayer() && !(CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
 	}
 
+	protected boolean isRuleWidgetHovered(double mouseX, double mouseY) {
+		return this.ruleWidget.isHovered((int) mouseX, (int) mouseY) && mouseY > 32 && mouseY < this.rulesScreen.height - 32;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (button == 0 && this.isRuleWidgetHovered(mouseX, mouseY)) {
+			this.ruleWidget.toggle();
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
 	@Override
 	public final void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
 		TextRenderer font = this.client.textRenderer;
@@ -76,12 +88,18 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		float fontY = (float) (y + height / 2 - 9 / 2);
 		this.ruleWidget.setPos(x - 50, y + 2);
 		this.ruleWidget.drawRule(matrices, font, fontX, fontY, 16777215);
-		if (this.ruleWidget.isHovered(mouseX, mouseY) && mouseY > 32 && mouseY < this.rulesScreen.height - 32) {
+		if (this.isRuleWidgetHovered(mouseX, mouseY)) {
 			List<OrderedText> lines = new ArrayList<>();
 			Text nameText = new LiteralText(this.ruleName).formatted(Formatting.GOLD);
 			lines.add(nameText.asOrderedText());
-			String info = this.clientRule.getDescription().replace("\r", "");
-			lines.addAll(this.client.textRenderer.wrapLines(StringVisitable.plain(info), 220));
+			String info;
+			if (this.ruleWidget.isToggled() && this.clientRule.getOptionalInfo() != null) {
+				info = "§3Extra Info:§r\n" + this.clientRule.getOptionalInfo();
+			}
+			else {
+				info = this.clientRule.getDescription();
+			}
+			lines.addAll(this.client.textRenderer.wrapLines(StringVisitable.plain(info.replace("\r", "")), 220));
 			this.rulesScreen.setTooltip(lines);
 		}
 		this.resetButton.x = x + 290;
