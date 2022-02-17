@@ -1,7 +1,7 @@
 package essentialclient.mixins.displayTimePlayed;
 
 import essentialclient.EssentialClient;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,19 +18,19 @@ import java.time.LocalDateTime;
 @Mixin(GameMenuScreen.class)
 public class GameMenuScreenMixin extends Screen {
 
-    protected GameMenuScreenMixin(Text title) {
-        super(title);
-    }
+	protected GameMenuScreenMixin(Text title) {
+		super(title);
+	}
 
-    @Inject(method = "render", at = @At("TAIL"))
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta, CallbackInfo callbackInfo) {
+	@Inject(method = "render", at = @At("TAIL"))
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta, CallbackInfo callbackInfo) {
 
-        LocalDateTime currentTime = LocalDateTime.now();
-        Duration duration = Duration.between(EssentialClient.startTime, currentTime);
+		LocalDateTime currentTime = LocalDateTime.now();
+		Duration duration = Duration.between(EssentialClient.START_TIME, currentTime);
 
-        String draw = DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
-        if (ClientRules.DISPLAY_TIME_PLAYED.getValue()) {
-            drawStringWithShadow(matrixStack, this.textRenderer, draw, 8, 8, 16777215);
-        }
-    }
+		String draw = DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
+		if (ClientRules.DISPLAY_TIME_PLAYED.getValue()) {
+			drawStringWithShadow(matrixStack, this.textRenderer, draw, 8, 8, 16777215);
+		}
+	}
 }

@@ -1,7 +1,7 @@
 package essentialclient.mixins.clientNick;
 
-import essentialclient.config.clientrule.ClientRules;
-import essentialclient.utils.command.ClientNickHelper;
+import essentialclient.clientrule.ClientRules;
+import essentialclient.utils.config.ConfigClientNick;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -26,7 +26,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 	private void onRenderLabel(LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> livingEntityRenderer, Entity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			String playerName = entity.getEntityName();
-			String newPlayerName = ClientNickHelper.getRename(playerName);
+			String newPlayerName = ConfigClientNick.INSTANCE.get(playerName);
 			text = newPlayerName != null ? new LiteralText(newPlayerName) : text;
 		}
 		super.renderLabelIfPresent((AbstractClientPlayerEntity) entity, text, matrices, vertexConsumers, light);

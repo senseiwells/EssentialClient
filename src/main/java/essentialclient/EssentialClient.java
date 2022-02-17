@@ -1,77 +1,57 @@
 package essentialclient;
 
-import carpet.CarpetExtension;
-import carpet.CarpetServer;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
+import essentialclient.clientscript.core.ClientScript;
+import essentialclient.feature.CarpetClient;
 import essentialclient.feature.ClientKeybinds;
-import essentialclient.feature.CraftingSharedConstants;
-import essentialclient.utils.carpet.CarpetSettingsClientNetworkHandler;
-import essentialclient.utils.carpet.CarpetSettingsServerNetworkHandler;
-import essentialclient.utils.carpet.Reference;
+import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import essentialclient.utils.config.Config;
+import essentialclient.utils.config.ConfigClientNick;
+import essentialclient.utils.config.ConfigPlayerClient;
+import essentialclient.utils.config.ConfigPlayerList;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-public class EssentialClient implements CarpetExtension, ModInitializer {
+public class EssentialClient implements ModInitializer {
+	public static final Logger LOGGER;
+	public static final ChunkClientNetworkHandler CHUNK_NET_HANDLER;
+	public static final LocalDateTime START_TIME;
+	public static final Set<Config> CONFIG_SET;
+	public static final String ARUCAS_VERSION;
+	public static final String VERSION;
 
-    public static final Logger LOGGER = LogManager.getLogger("EssentialClient");
+	static {
+		LOGGER = LogManager.getLogger("EssentialClient");
+		CHUNK_NET_HANDLER = new ChunkClientNetworkHandler();
+		START_TIME = LocalDateTime.now();
+		ARUCAS_VERSION = "1.1.3";
+		VERSION = "1.1.5";
+		CONFIG_SET = new HashSet<>();
+		registerConfigs();
+	}
 
-    public static LocalDateTime startTime = LocalDateTime.now();
+	@Override
+	public void onInitialize() {
+		CONFIG_SET.forEach(Config::readConfig);
+		ClientRules.load();
+		ClientKeybinds.loadKeybinds();
+	}
 
-    @Override
-    public void onInitialize() {
-        ClientRules.init();
-        ClientKeybinds.loadKeybinds();
-        CraftingSharedConstants.registerHandlers();
-    }
+	public static void registerConfigs() {
+		CONFIG_SET.add(ConfigClientNick.INSTANCE);
+		CONFIG_SET.add(ConfigPlayerClient.INSTANCE);
+		CONFIG_SET.add(ConfigPlayerList.INSTANCE);
+		CONFIG_SET.add(ClientRules.INSTANCE);
+		CONFIG_SET.add(ClientScript.INSTANCE);
+		CONFIG_SET.add(CarpetClient.INSTANCE);
+	}
 
-    static {
-        CarpetServer.manageExtension(new EssentialClient());
-    }
-
-    @Override
-    public String version() {
-        return "essential-client";
-    }
-
-    @Override
-    public void onGameStarted() {
-        CarpetServer.settingsManager.addRuleObserver((source, parsedRule, s) -> {
-            try {
-                CarpetSettingsServerNetworkHandler.updateCarpetClientRules(parsedRule.name, parsedRule.getAsString(), source.getPlayer());
-            }
-            catch (CommandSyntaxException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Override
-    public void onServerLoaded(MinecraftServer server) {
-        // reloading of /carpet settings is handled by carpet
-        // reloading of own settings is handled as an extension, since we claim own settings manager
-        Reference.isCarpetClientPresent = true;
-        CarpetSettingsClientNetworkHandler.attachServer(server);
-    }
-
-    @Override
-    public void onTick(MinecraftServer server) { }
-
-    @Override
-    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) { }
-
-    @Override
-    public void onPlayerLoggedIn(ServerPlayerEntity player) {
-        CarpetSettingsServerNetworkHandler.sendGUIInfo(player);
-    }
-
-    @Override
-    public void onPlayerLoggedOut(ServerPlayerEntity player) { }
+	public static void saveConfigs() {
+		CONFIG_SET.forEach(Config::saveConfig);
+	}
 }

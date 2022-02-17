@@ -1,6 +1,6 @@
 package essentialclient.mixins.waterFovMultiplier;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.client.render.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;

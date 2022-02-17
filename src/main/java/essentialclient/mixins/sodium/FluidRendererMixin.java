@@ -1,6 +1,6 @@
 package essentialclient.mixins.sodium;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.feature.HighlightLavaSources;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.client.texture.Sprite;
@@ -20,24 +20,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Pseudo
 @Mixin(targets = "me.jellysquid.mods.sodium.client.render.pipeline.FluidRenderer", remap = false)
 public class FluidRendererMixin {
-    @Shadow
-    @Final
-    private Sprite[] lavaSprites;
+	@Shadow
+	@Final
+	private Sprite[] lavaSprites;
 
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = "render", at = @At("HEAD"), require = 0)
-    public void modifyLavaSprites(BlockRenderView world, FluidState fluidState, BlockPos pos, @Coerce Object buffers, CallbackInfoReturnable<Boolean> info) {
-        if (ClientRules.HIGHLIGHT_LAVA_SOURCES.getValue() && fluidState.isIn(FluidTags.LAVA) &&
-                world.getBlockState(pos).get(FluidBlock.LEVEL) == 0) {
-            this.lavaSprites[0] = HighlightLavaSources.lavaSourceStillSprite;
-            this.lavaSprites[1] = HighlightLavaSources.lavaSourceFlowSprite;
-        }
-    }
+	@SuppressWarnings("UnresolvedMixinReference")
+	@Inject(method = "render", at = @At("HEAD"), require = 0)
+	public void modifyLavaSprites(BlockRenderView world, FluidState fluidState, BlockPos pos, @Coerce Object buffers, CallbackInfoReturnable<Boolean> info) {
+		if (ClientRules.HIGHLIGHT_LAVA_SOURCES.getValue() && fluidState.isIn(FluidTags.LAVA) &&
+			world.getBlockState(pos).get(FluidBlock.LEVEL) == 0) {
+			this.lavaSprites[0] = HighlightLavaSources.lavaSourceStillSprite;
+			this.lavaSprites[1] = HighlightLavaSources.lavaSourceFlowSprite;
+		}
+	}
 
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Inject(method = "render", at = @At("RETURN"), require = 0)
-    public void restoreLavaSprites(BlockRenderView world, FluidState fluidState, BlockPos pos, @Coerce Object buffers, CallbackInfoReturnable<Boolean> info) {
-        this.lavaSprites[0] = HighlightLavaSources.defaultLavaSourceStillSprite;
-        this.lavaSprites[1] = HighlightLavaSources.defaultLavaSourceFlowSprite;
-    }
+	@SuppressWarnings("UnresolvedMixinReference")
+	@Inject(method = "render", at = @At("RETURN"), require = 0)
+	public void restoreLavaSprites(BlockRenderView world, FluidState fluidState, BlockPos pos, @Coerce Object buffers, CallbackInfoReturnable<Boolean> info) {
+		this.lavaSprites[0] = HighlightLavaSources.defaultLavaSourceStillSprite;
+		this.lavaSprites[1] = HighlightLavaSources.defaultLavaSourceFlowSprite;
+	}
 }

@@ -15,23 +15,23 @@ import java.util.List;
 
 @Mixin(RecipeBookResults.class)
 public class RecipeBookResultsMixin {
-    @Shadow
-    @Final
-    private List<AnimatedResultButton> resultButtons;
-    @Shadow
-    private Recipe<?> lastClickedRecipe;
-    @Shadow
-    private RecipeResultCollection resultCollection;
+	@Shadow
+	@Final
+	private List<AnimatedResultButton> resultButtons;
+	@Shadow
+	private Recipe<?> lastClickedRecipe;
+	@Shadow
+	private RecipeResultCollection resultCollection;
 
-    @Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", shift = At.Shift.BEFORE), cancellable = true)
-    private void checkMiddleMouse(double mouseX, double mouseY, int button, int areaLeft, int areaTop, int areaWidth, int areaHeight, CallbackInfoReturnable<Boolean> cir) {
-        for (AnimatedResultButton resultButton : this.resultButtons) {
-            if (resultButton.mouseClicked(mouseX, mouseY, button) && button == 2) {
-                this.lastClickedRecipe = resultButton.currentRecipe();
-                this.resultCollection = resultButton.getResultCollection();
-                cir.setReturnValue(true);
-                break;
-            }
-        }
-    }
+	@Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", shift = At.Shift.BEFORE), cancellable = true)
+	private void checkMiddleMouse(double mouseX, double mouseY, int button, int areaLeft, int areaTop, int areaWidth, int areaHeight, CallbackInfoReturnable<Boolean> cir) {
+		for (AnimatedResultButton resultButton : this.resultButtons) {
+			if (resultButton.mouseClicked(mouseX, mouseY, button) && button == 2) {
+				this.lastClickedRecipe = resultButton.currentRecipe();
+				this.resultCollection = resultButton.getResultCollection();
+				cir.setReturnValue(true);
+				break;
+			}
+		}
+	}
 }

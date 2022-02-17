@@ -1,7 +1,7 @@
 package essentialclient.mixins.clientNick;
 
-import essentialclient.config.clientrule.ClientRules;
-import essentialclient.utils.command.ClientNickHelper;
+import essentialclient.clientrule.ClientRules;
+import essentialclient.utils.config.ConfigClientNick;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Team;
@@ -22,7 +22,7 @@ public abstract class PlayerListHudMixin {
 	private Text onGetName(PlayerListHud playerListHud, PlayerListEntry entry) {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			String playerName = entry.getProfile().getName();
-			String newName = ClientNickHelper.getRename(playerName);
+			String newName = ConfigClientNick.INSTANCE.get(playerName);
 			if (newName != null) {
 				return this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), new LiteralText(newName)));
 			}
