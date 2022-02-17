@@ -18,19 +18,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
 
-    @Shadow
-    @Final
-    private MinecraftClient client;
+	@Shadow
+	@Final
+	private MinecraftClient client;
 
-    @Inject(method = "clickRecipe", at = @At("RETURN"))
-    public void onRecipeClick(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
-        if (ClientRules.CRAFTING_HAX.getValue()
-            && CraftingSharedConstants.IS_VANILLA_CLICK.get()
-            && Screen.hasControlDown()
-            && client.currentScreen instanceof HandledScreen<?> handledScreen
-        ) {
-            InventoryUtils.dropStackScheduled(client, handledScreen, craftAll);
-            CraftingSharedConstants.IS_VANILLA_CLICK.set(false);
-        }
-    }
+	@Inject(method = "clickRecipe", at = @At("RETURN"))
+	public void onRecipeClick(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
+		if (ClientRules.CRAFTING_HAX.getValue()
+			&& CraftingSharedConstants.IS_VANILLA_CLICK.get()
+			&& Screen.hasControlDown()
+			&& this.client.currentScreen instanceof HandledScreen<?> handledScreen
+		) {
+			InventoryUtils.dropStackScheduled(this.client, handledScreen, craftAll);
+			CraftingSharedConstants.IS_VANILLA_CLICK.set(false);
+		}
+	}
 }
