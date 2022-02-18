@@ -1,7 +1,7 @@
 package essentialclient.mixins.betterAccurateBlockPlacement;
 
 import com.mojang.authlib.GameProfile;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.feature.BetterAccurateBlockPlacement;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;

@@ -1,6 +1,6 @@
 package essentialclient.feature;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
@@ -15,7 +15,7 @@ public class AFKRules {
 	private double prevMouseX;
 	private double prevMouseY;
 
-	public void register() {
+	public void load() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientPlayerEntity playerEntity = client.player;
 			int announceAfk = ClientRules.ANNOUNCE_AFK.getValue();

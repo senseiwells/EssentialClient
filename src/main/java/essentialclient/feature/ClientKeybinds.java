@@ -1,8 +1,8 @@
 package essentialclient.feature;
 
 import essentialclient.clientscript.core.ClientScriptScreen;
-import essentialclient.config.ConfigScreen;
 import essentialclient.feature.chunkdebug.ChunkDebugScreen;
+import essentialclient.gui.ConfigScreen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
@@ -36,10 +36,10 @@ public enum ClientKeybinds {
 		for (ClientKeybinds clientKeybinds : ClientKeybinds.values()) {
 			KeyBindingHelper.registerKeyBinding(clientKeybinds.key);
 		}
-		register();
+		load();
 	}
 
-	public static void register() {
+	public static void load() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.currentScreen == null) {
 				while (OPEN_ESSENTIAL_CLIENT_MENU.getKeyBinding().wasPressed()) {

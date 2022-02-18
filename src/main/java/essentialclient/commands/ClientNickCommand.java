@@ -2,10 +2,10 @@ package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
-import essentialclient.utils.command.ClientNickHelper;
 import essentialclient.utils.command.CommandHelper;
+import essentialclient.utils.config.ConfigClientNick;
 import essentialclient.utils.render.ChatColour;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -30,9 +30,8 @@ public class ClientNickCommand {
 							String playerName1 = context.getArgument("playername1", String.class);
 							String playerName2 = context.getArgument("playername2", String.class);
 							playerName2 = playerName2.replaceAll("&", "§") + "§r";
-							ClientNickHelper.setRename(playerName1, playerName2);
+							ConfigClientNick.INSTANCE.set(playerName1, playerName2);
 							EssentialUtils.sendMessage("%s%s will now be displayed as %s".formatted(ChatColour.GREEN, playerName1, playerName2));
-							ClientNickHelper.writeSaveFile();
 							return 0;
 						})
 					)
@@ -40,16 +39,15 @@ public class ClientNickCommand {
 			)
 			.then(literal("delete")
 				.then(argument("playername", StringArgumentType.string())
-					.suggests((context, builder) -> ClientNickHelper.suggestPlayerRename(builder))
+					.suggests((context, builder) -> ConfigClientNick.INSTANCE.suggestPlayerRename(builder))
 					.executes(context -> {
 						String playerName = context.getArgument("playername", String.class);
-						String name = ClientNickHelper.deleteRename(playerName);
+						String name = ConfigClientNick.INSTANCE.remove(playerName);
 						if (name == null) {
 							EssentialUtils.sendMessage("%s%s was not renamed".formatted(ChatColour.RED, playerName));
 						}
 						else {
 							EssentialUtils.sendMessage("%s%s will no longer be renamed".formatted(ChatColour.GOLD, playerName));
-							ClientNickHelper.writeSaveFile();
 						}
 						return 0;
 					})
@@ -57,10 +55,10 @@ public class ClientNickCommand {
 			)
 			.then(literal("get")
 				.then(argument("playername", StringArgumentType.string())
-					.suggests((context, builder) -> ClientNickHelper.suggestPlayerRename(builder))
+					.suggests((context, builder) -> ConfigClientNick.INSTANCE.suggestPlayerRename(builder))
 					.executes(context -> {
 						String playerName = context.getArgument("playername", String.class);
-						String name = ClientNickHelper.getRename(playerName);
+						String name = ConfigClientNick.INSTANCE.get(playerName);
 						if (name == null) {
 							EssentialUtils.sendMessage("%s%s is not renamed".formatted(ChatColour.RED, playerName));
 						}

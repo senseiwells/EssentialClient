@@ -1,6 +1,6 @@
 package essentialclient.mixins.betterMusic;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.feature.MusicSounds;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MusicTracker;

@@ -26,8 +26,11 @@ import me.senseiwells.arucas.values.functions.FunctionValue;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
@@ -51,7 +54,7 @@ public class ClientScriptUtils {
 			ArucasMap argumentMap = (ArucasMap) argumentValues.value;
 			return mapToCommand(baseCommand, commandMap, argumentMap, context, syntaxPosition);
 		}
-		throw new RuntimeError("Command must include 'name' : <String>, 'subcommands' : <map>, and 'arguments' : <map>", syntaxPosition, context);
+		throw new RuntimeError("Command must include 'name' : <String>, 'subcommands' : <Map>, and 'arguments' : <Map>", syntaxPosition, context);
 	}
 
 	private static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArgumentBuilder<ServerCommandSource, ?> parent, ArucasMap arucasMap, ArucasMap argumentMap, Context context, ISyntax syntaxPosition) throws CodeError {
@@ -87,7 +90,7 @@ public class ClientScriptUtils {
 			if (arguments.length > 1) {
 				ArgumentBuilder<ServerCommandSource, ?> current = getSubCommand(arguments[arguments.length - 1], subMap, argumentMap, context, syntaxPosition);
 				for (int i = arguments.length - 2; i >= 0; i--) {
-					current = getSubCommand(arguments[i], subMap, argumentMap, context, syntaxPosition).then(current);
+					current = getConnectedSubCommand(arguments[i], argumentMap, context, syntaxPosition).then(current);
 				}
 				parent.then(current);
 				continue;
@@ -109,6 +112,18 @@ public class ClientScriptUtils {
 		throw new RuntimeError("Expected map value for argument '%s'".formatted(string), syntaxPosition, context);
 	}
 
+	private static ArgumentBuilder<ServerCommandSource, ?> getConnectedSubCommand(String string, ArucasMap argumentMap, Context context, ISyntax syntaxPosition) throws CodeError {
+		if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
+			return CommandManager.literal(string);
+		}
+		string = string.substring(1, string.length() - 1);
+		Value<?> value = argumentMap.get(context, StringValue.of(string));
+		if (value instanceof MapValue) {
+			return getArgument(string, (ArucasMap) value.value, context, syntaxPosition);
+		}
+		throw new RuntimeError("Expected map value for argument '%s'".formatted(string), syntaxPosition, context);
+	}
+
 	private static ArgumentBuilder<ServerCommandSource, ?> getArgument(String name, ArucasMap arguments, Context context, ISyntax syntaxPosition) throws CodeError {
 		Value<?> argumentValue = arguments.get(context, TYPE);
 		if (!(argumentValue instanceof StringValue)) {
@@ -124,7 +139,7 @@ public class ClientScriptUtils {
 			case "Double" -> {
 				if (arguments.get(context, MIN) instanceof NumberValue minValue) {
 					if (arguments.get(context, MAX) instanceof NumberValue maxValue) {
-						yield DoubleArgumentType.doubleArg(minValue.value.intValue(), maxValue.value);
+						yield DoubleArgumentType.doubleArg(minValue.value, maxValue.value);
 					}
 					yield DoubleArgumentType.doubleArg(minValue.value);
 				}
@@ -185,6 +200,7 @@ public class ClientScriptUtils {
 			case "Particle" -> ParticleEffectArgumentType.particleEffect();
 			case "RecipeId" -> IdentifierArgumentType.identifier();
 			case "EntityId" -> EntityArgumentType.entity();
+			case "EnchantmentId" -> EnchantmentArgumentType.enchantment();
 			default -> throw new RuntimeError("Invalid argument type", syntaxPosition, context);
 		};
 	}
@@ -210,6 +226,10 @@ public class ClientScriptUtils {
 		}
 		if (object instanceof PosArgument posArgument) {
 			return new PosValue(posArgument.toAbsolutePos(context.getSource()));
+		}
+		if (object instanceof Enchantment enchantment) {
+			Identifier identifier = Registry.ENCHANTMENT.getId(enchantment);
+			return identifier == null ? NullValue.NULL : StringValue.of(identifier.toString());
 		}
 		return StringValue.of(object.toString());
 	}

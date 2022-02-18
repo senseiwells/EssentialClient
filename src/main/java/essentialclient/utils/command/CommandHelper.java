@@ -14,6 +14,7 @@ import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.render.ChatColour;
 import me.senseiwells.arucas.api.ArucasThreadHandler;
+import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
@@ -47,22 +48,10 @@ public class CommandHelper {
 		decimalFormat.setGroupingUsed(false);
 	}
 
-	public static CompletableFuture<Suggestions> suggestLocation(SuggestionsBuilder builder, String type) {
-		return switch (type) {
-			case "x" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getX()))), builder);
-			case "y" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getY()))), builder);
-			case "z" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getZ()))), builder);
-			case "yaw" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getYaw()))), builder);
-			case "pitch" -> CommandSource.suggestMatching(List.of(String.valueOf(decimalFormat.format(EssentialUtils.getPlayer().getPitch()))), builder);
-			case "dimension" -> CommandSource.suggestMatching(List.of("overworld", "the_nether", "the_end"), builder);
-			default -> null;
-		};
-	}
-
 	public static CompletableFuture<Suggestions> suggestOnlinePlayers(SuggestionsBuilder builder) {
 		ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
 		if (networkHandler == null || networkHandler.getPlayerList() == null) {
-			return CommandSource.suggestMatching(new String[0], builder);
+			return CommandSource.suggestMatching(List.of(), builder);
 		}
 		List<String> playerList = new ArrayList<>();
 		networkHandler.getPlayerList().forEach(p -> playerList.add(p.getProfile().getName()));
@@ -102,8 +91,8 @@ public class CommandHelper {
 		clientCommands.clear();
 	}
 
-	public static void removeComplexCommand(ArucasThreadHandler handler) {
-		functionCommandNodes.remove(handler);
+	public static void removeComplexCommand(Context context) {
+		functionCommandNodes.remove(context.getThreadHandler());
 	}
 
 	public static void executeCommand(StringReader reader, String command) {
@@ -130,7 +119,7 @@ public class CommandHelper {
 				}
 
 				text.append(new TranslatableText("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
-				EssentialUtils.getPlayer().sendMessage(text, false);
+				EssentialUtils.sendMessage(text);
 			}
 		}
 		catch (Exception e) {

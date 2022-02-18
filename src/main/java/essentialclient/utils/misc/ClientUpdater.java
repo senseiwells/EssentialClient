@@ -1,6 +1,7 @@
 package essentialclient.utils.misc;
 
 import com.google.gson.*;
+import essentialclient.EssentialClient;
 import essentialclient.utils.EssentialUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.ClickEvent;
@@ -31,7 +32,7 @@ public class ClientUpdater {
 		}
 		JsonArray releases = this.GSON.fromJson(content, JsonArray.class);
 		String minecraftVersion = EssentialUtils.getMinecraftVersion();
-		String essentialClientVersion = EssentialUtils.getVersion();
+		String essentialClientVersion = EssentialClient.VERSION;
 		for (JsonElement element : releases) {
 			JsonObject object = element.getAsJsonObject();
 			String version = object.get("tag_name").getAsString().substring(1);

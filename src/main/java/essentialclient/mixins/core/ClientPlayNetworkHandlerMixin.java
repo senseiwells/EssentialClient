@@ -2,12 +2,12 @@ package essentialclient.mixins.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import essentialclient.EssentialClient;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.values.PlayerValue;
 import essentialclient.clientscript.values.WorldValue;
 import essentialclient.commands.CommandRegister;
-import essentialclient.config.clientrule.ClientRules;
 import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
@@ -69,7 +69,7 @@ public class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
 		if (ChunkClientNetworkHandler.ESSENTIAL_CHANNEL.equals(packet.getChannel())) {
-			EssentialClient.chunkNetHandler.handlePacket(packet.getData(), (ClientPlayNetworkHandler) (Object) this);
+			EssentialClient.CHUNK_NET_HANDLER.handlePacket(packet.getData(), (ClientPlayNetworkHandler) (Object) this);
 			ci.cancel();
 		}
 	}

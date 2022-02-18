@@ -2,7 +2,7 @@ package essentialclient.feature.chunkdebug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import essentialclient.EssentialClient;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -157,7 +157,7 @@ public class ChunkGrid {
 				ClientPlayerEntity player = this.client.player;
 				if (player != null) {
 					this.setDimension(player.world);
-					EssentialClient.chunkNetHandler.requestChunkData(this.getDimension());
+					EssentialClient.CHUNK_NET_HANDLER.requestChunkData(this.getDimension());
 					Point minimapCorner = this.getCornerOfCentre(player.getChunkPos().x, player.getChunkPos().z);
 					this.minimapCornerPoint.setLocation(minimapCorner);
 				}
@@ -171,9 +171,9 @@ public class ChunkGrid {
 			colour = brighten(colour, 0.14F);
 		}
 
-		int red   = (colour & 0xff0000) >> 16;
-		int green = (colour & 0xff00)   >> 8;
-		int blue  = (colour & 0xff);
+		int red = (colour & 0xff0000) >> 16;
+		int green = (colour & 0xff00) >> 8;
+		int blue = (colour & 0xff);
 
 		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();

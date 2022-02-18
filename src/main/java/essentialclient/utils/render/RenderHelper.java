@@ -3,85 +3,15 @@ package essentialclient.utils.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import essentialclient.clientscript.extensions.BoxShapeWrapper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.StringVisitable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class RenderHelper {
-	private static final Set<Integer> fakeEntityId = new HashSet<>();
-	private static int backwardsEntityId = Integer.MAX_VALUE;
-
-	// Taken from Screen Class
-	public static void drawGuiInfoBox(TextRenderer font, String text, int x, int y) {
-		if (text == null) {
-			return;
-		}
-		MatrixStack matrices = new MatrixStack();
-		List<OrderedText> lines = wordWrap(text, 220);
-		if (lines.isEmpty()) {
-			return;
-		}
-		int i = 0;
-		for (OrderedText orderedText : lines) {
-			int j = font.getWidth(orderedText);
-			if (j > i) {
-				i = j;
-			}
-		}
-		int mouseX = x + 12;
-		int mouseY = y - 12;
-		int k = 8;
-		if (lines.size() > 1) {
-			k += 2 + (lines.size() - 1) * 10;
-		}
-		matrices.push();
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-		fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY - 4, mouseX + i + 3, mouseY - 3, -267386864, -267386864);
-		fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY + k + 3, mouseX + i + 3, mouseY + k + 4, -267386864, -267386864);
-		fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY - 3, mouseX + i + 3, mouseY + k + 3, -267386864, -267386864);
-		fillGradient(matrix4f, bufferBuilder, mouseX - 4, mouseY - 3, mouseX - 3, mouseY + k + 3, -267386864, -267386864);
-		fillGradient(matrix4f, bufferBuilder, mouseX + i + 3, mouseY - 3, mouseX + i + 4, mouseY + k + 3, -267386864, -267386864);
-		fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY - 3 + 1, mouseX - 3 + 1, mouseY + k + 3 - 1, 1347420415, 1344798847);
-		fillGradient(matrix4f, bufferBuilder, mouseX + i + 2, mouseY - 3 + 1, mouseX + i + 3, mouseY + k + 3 - 1, 1347420415, 1344798847);
-		fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY - 3, mouseX + i + 3, mouseY - 3 + 1, 1347420415, 1347420415);
-		fillGradient(matrix4f, bufferBuilder, mouseX - 3, mouseY + k + 2, mouseX + i + 3, mouseY + k + 3, 1344798847, 1344798847);
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableTexture();
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
-		RenderSystem.disableBlend();
-		RenderSystem.enableTexture();
-		VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-		matrices.translate(0.0D, 0.0D, 400.0D);
-		for (int l1 = 0; l1 < lines.size(); ++l1) {
-			OrderedText orderedText = lines.get(l1);
-			if (orderedText != null) {
-				font.draw(orderedText, (float) mouseX, (float) mouseY, l1 == 0 ? 16760576 : -1, true, matrix4f, immediate, false, 0, 15728880);
-			}
-			if (l1 == 0) {
-				mouseY += 2;
-			}
-			mouseY += 10;
-		}
-		immediate.draw();
-		matrices.pop();
-	}
-
 	public static void setupArucasBoxRendering() {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -210,39 +140,5 @@ public class RenderHelper {
 		if (outline) {
 			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
-	}
-
-	public static List<OrderedText> wordWrap(String s, int width) {
-		s = s.replace("\r", "");
-		return MinecraftClient.getInstance().textRenderer.wrapLines(StringVisitable.plain(s), width);
-	}
-
-	protected static void fillGradient(Matrix4f matrix, BufferBuilder bufferBuilder, int startX, int startY, int endX, int endY, int colorStart, int colorEnd) {
-		float r = (float) (colorStart >> 24 & 255) / 255;
-		float g = (float) (colorStart >> 16 & 255) / 255;
-		float b = (float) (colorStart >> 8 & 255) / 255;
-		float a = (float) (colorStart & 255) / 255;
-		float j = (float) (colorEnd >> 24 & 255) / 255;
-		float k = (float) (colorEnd >> 16 & 255) / 255;
-		float l = (float) (colorEnd >> 8 & 255) / 255;
-		float m = (float) (colorEnd & 255) / 255;
-		bufferBuilder.vertex(matrix, (float) endX, (float) startY, 400.0F).color(g, b, a, r).next();
-		bufferBuilder.vertex(matrix, (float) startX, (float) startY, 400.0F).color(g, b, a, r).next();
-		bufferBuilder.vertex(matrix, (float) startX, (float) endY, 400.0F).color(k, l, m, j).next();
-		bufferBuilder.vertex(matrix, (float) endX, (float) endY, 400.0F).color(k, l, m, j).next();
-	}
-
-	public static int getNextEntityId() {
-		int nextId = backwardsEntityId--;
-		fakeEntityId.add(nextId);
-		return nextId;
-	}
-
-	public static boolean removeFakeEntity(int id) {
-		return fakeEntityId.remove(id);
-	}
-
-	public static boolean isFakeEntity(int id) {
-		return fakeEntityId.contains(id);
 	}
 }

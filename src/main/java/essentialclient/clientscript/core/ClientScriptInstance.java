@@ -1,12 +1,13 @@
 package essentialclient.clientscript.core;
 
 import essentialclient.EssentialClient;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.clientscript.extensions.BoxShapeWrapper;
+import essentialclient.clientscript.extensions.FakeEntityWrapper;
 import essentialclient.clientscript.extensions.GameEventWrapper;
 import essentialclient.clientscript.values.*;
-import essentialclient.config.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ContextBuilder;
@@ -42,6 +43,7 @@ public class ClientScriptInstance {
 				PlayerValue.ArucasPlayerClass::new,
 				EntityValue.ArucasEntityClass::new,
 				OtherPlayerValue.ArucasAbstractPlayerClass::new,
+				OtherPlayerValue.ArucasOtherPlayerClass::new,
 				LivingEntityValue.ArucasLivingEntityClass::new,
 				BlockValue.ArucasBlockClass::new,
 				ItemStackValue.ArucasItemStackClass::new,
@@ -55,12 +57,9 @@ public class ClientScriptInstance {
 				MerchantScreenValue.ArucasMerchantScreenClass::new,
 				TradeValue.ArucasTradeOfferClass::new
 			)
-			.addWrapper(
-				GameEventWrapper::new
-			)
-			.addWrapper(
-				BoxShapeWrapper::new
-			)
+			.addWrapper(GameEventWrapper::new)
+			.addWrapper(BoxShapeWrapper::new)
+			.addWrapper(FakeEntityWrapper::new)
 			.addExtensions(
 				ArucasMinecraftExtension::new
 			)
@@ -113,10 +112,12 @@ public class ClientScriptInstance {
 		this.mainScriptThread.interrupt();
 		this.mainScriptThread = null;
 		if (this.context != null) {
-			CommandHelper.removeComplexCommand(this.context.getThreadHandler());
+			FakeEntityWrapper.clearFakeEntities(this.context);
+			BoxShapeWrapper.clearBoxesToRender(this.context);
+			MinecraftScriptEvents.clearEventFunctions(this.context);
+			CommandHelper.removeComplexCommand(this.context);
 			this.context = null;
 		}
-		BoxShapeWrapper.clearBoxesToRender();
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
 			client.execute(() -> {
@@ -126,7 +127,6 @@ public class ClientScriptInstance {
 				}
 			});
 		}
-		MinecraftScriptEvents.clearEventFunctions();
 
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
 			EssentialUtils.sendMessage("§6Script '%s' has §cFINISHED".formatted(this.scriptName));
@@ -210,7 +210,7 @@ public class ClientScriptInstance {
 			""".formatted(
 			EssentialUtils.getMinecraftVersion(),
 			EssentialClient.VERSION,
-			EssentialUtils.getArucasVersion(),
+			EssentialClient.ARUCAS_VERSION,
 			this.scriptName,
 			content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
 			stacktrace

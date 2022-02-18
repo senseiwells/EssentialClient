@@ -1,7 +1,7 @@
 package essentialclient.feature.chunkdebug;
 
 import essentialclient.EssentialClient;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.util.math.ChunkPos;
 
 import java.util.HashMap;
