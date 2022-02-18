@@ -1,5 +1,6 @@
 package essentialclient.gui.entries;
 
+import com.google.common.collect.ImmutableList;
 import essentialclient.clientrule.entries.ClientRule;
 import essentialclient.feature.CarpetClient;
 import essentialclient.gui.ConfigListWidget;
@@ -117,7 +118,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 
 	@Override
 	public List<ClickableWidget> selectableChildren() {
-		return List.of(this.editButton, this.resetButton);
+		return ImmutableList.of(this.editButton, this.resetButton);
 	}
 
 	@Override

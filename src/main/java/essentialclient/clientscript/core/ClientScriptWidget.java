@@ -1,5 +1,6 @@
 package essentialclient.clientscript.core;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -86,7 +87,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 
 		@Override
 		public List<ClickableWidget> selectableChildren() {
-			return List.of(this.configButton, this.startButton, this.checkButton);
+			return ImmutableList.of(this.configButton, this.startButton, this.checkButton);
 		}
 
 		@Override
