@@ -31,7 +31,7 @@ public class EssentialClient implements ModInitializer {
 		CHUNK_NET_HANDLER = new ChunkClientNetworkHandler();
 		START_TIME = LocalDateTime.now();
 		ARUCAS_VERSION = "1.1.3";
-		VERSION = "1.1.5";
+		VERSION = "1.1.6";
 		CONFIG_SET = new HashSet<>();
 		registerConfigs();
 	}
