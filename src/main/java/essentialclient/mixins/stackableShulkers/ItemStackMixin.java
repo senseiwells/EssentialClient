@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//priority is to be able to be applied before tweakeroo (for compatibility)
+// Priority is to be able to be applied before tweakeroo (for compatibility)
 @Mixin(value = ItemStack.class, priority = 900)
 public abstract class ItemStackMixin {
 

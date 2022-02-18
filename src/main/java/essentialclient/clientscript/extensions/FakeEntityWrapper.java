@@ -119,7 +119,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	public Value<?> updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch, NumberValue interpolation) {
 		this.pos = posValue;
 		this.entity.value.setHeadYaw(yaw.value.floatValue());
-		this.entity.value.pitch = yaw.value.floatValue();
+		this.entity.value.pitch = pitch.value.floatValue();
 		this.updatePosition(interpolation);
 		return NullValue.NULL;
 	}

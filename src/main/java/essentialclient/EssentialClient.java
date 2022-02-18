@@ -22,7 +22,7 @@ public class EssentialClient implements ModInitializer {
 	public static final Logger LOGGER;
 	public static final ChunkClientNetworkHandler CHUNK_NET_HANDLER;
 	public static final LocalDateTime START_TIME;
-	public static final Set<Config> CONFIG_SET;
+	public static final Set<Config<?>> CONFIG_SET;
 	public static final String ARUCAS_VERSION;
 	public static final String VERSION;
 
