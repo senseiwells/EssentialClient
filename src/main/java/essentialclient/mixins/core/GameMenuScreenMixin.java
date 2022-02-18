@@ -1,7 +1,7 @@
 package essentialclient.mixins.core;
 
-import essentialclient.config.ConfigScreen;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
+import essentialclient.gui.ConfigScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -16,8 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends Screen {
-	protected GameMenuScreenMixin(Text title)
-	{
+	protected GameMenuScreenMixin(Text title) {
 		super(title);
 	}
 

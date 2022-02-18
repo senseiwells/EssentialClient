@@ -1,7 +1,7 @@
 package essentialclient.mixins.displayTimePlayed;
 
 import essentialclient.EssentialClient;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -26,7 +26,7 @@ public class GameMenuScreenMixin extends Screen {
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta, CallbackInfo callbackInfo) {
 
 		LocalDateTime currentTime = LocalDateTime.now();
-		Duration duration = Duration.between(EssentialClient.startTime, currentTime);
+		Duration duration = Duration.between(EssentialClient.START_TIME, currentTime);
 
 		String draw = DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
 		if (ClientRules.DISPLAY_TIME_PLAYED.getValue()) {

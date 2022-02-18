@@ -1,8 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "essential-client",
-  "version": "1.1.4",
-
+  "version": "1.1.5",
   "name": "Essential Client",
   "description": "A client mod that provides utilities and client support for carpet rules",
   "authors": [
@@ -18,30 +17,23 @@
   "contact": {
     "homepage": "https://github.com/senseiwells/EssentialClient"
   },
-
   "license": "MIT",
   "icon": "assets/essentialclient/icon.png",
-
   "environment": "client",
   "entrypoints": {
     "main": [
       "essentialclient.EssentialClient"
     ],
     "modmenu": [
-      "essentialclient.config.modmenu.ModMenuImpl"
+      "essentialclient.gui.modmenu.ModMenuImpl"
     ]
   },
   "mixins": [
     "essentialclient.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.13.1",
-    "carpet": "*",
+    "carpet": ">=1.4.56",
     "minecraft": "1.17.x"
-
-  },
-  "suggests": {
-    "arucas": "1.1.3"
   }
 }

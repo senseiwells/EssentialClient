@@ -12,6 +12,7 @@ import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.*;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
@@ -131,7 +132,10 @@ public class BlockValue extends Value<BlockState> {
 				new MemberFunction("isReplaceable", this::isReplaceable),
 				new MemberFunction("getHardness", this::getHardness),
 				new MemberFunction("sideCoversSmallSquare", "direction", this::sideCoversSmallSquare),
-				new MemberFunction("isSideSolidFullSquare", "direction", this::isSideSolidFullSquare)
+				new MemberFunction("isSideSolidFullSquare", "direction", this::isSideSolidFullSquare),
+				new MemberFunction("isSpawnable", this::isSpawnable),
+				new MemberFunction("isSpawnable", "entity", this::isSpawnableType),
+				new MemberFunction("getLuminance", this::getLuminance)
 			);
 		}
 
@@ -190,7 +194,7 @@ public class BlockValue extends Value<BlockState> {
 			if (!blockStateValue.hasPos) {
 				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
 			}
-			boolean isSolid = blockStateValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value));
+			boolean isSolid = blockStateValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos());
 			return BooleanValue.of(isSolid);
 		}
 
@@ -245,7 +249,7 @@ public class BlockValue extends Value<BlockState> {
 				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
 			}
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
-			return BooleanValue.of(Block.sideCoversSmallSquare(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value), direction));
+			return BooleanValue.of(Block.sideCoversSmallSquare(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), direction));
 		}
 
 		private Value<?> isSideSolidFullSquare(Context context, MemberFunction function) throws CodeError {
@@ -255,7 +259,31 @@ public class BlockValue extends Value<BlockState> {
 				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
 			}
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
-			return BooleanValue.of(blockStateValue.value.isSideSolidFullSquare(ArucasMinecraftExtension.getWorld(), new BlockPos(blockStateValue.blockPos.value), direction));
+			return BooleanValue.of(blockStateValue.value.isSideSolidFullSquare(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), direction));
+		}
+
+		private Value<?> isSpawnable(Context context, MemberFunction function) throws CodeError {
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
+			if (!blockStateValue.hasPos) {
+				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
+			}
+			boolean isSpawnable = blockStateValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), EntityType.ZOMBIE);
+			return BooleanValue.of(isSpawnable);
+		}
+
+		private Value<?> isSpawnableType(Context context, MemberFunction function) throws CodeError {
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
+			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
+			if (!blockStateValue.hasPos) {
+				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
+			}
+			boolean isSpawnable = blockStateValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), entityValue.value.getType());
+			return BooleanValue.of(isSpawnable);
+		}
+
+		private Value<?> getLuminance(Context context, MemberFunction function) throws CodeError {
+			BlockState blockState = this.getBlockState(context, function);
+			return NumberValue.of(blockState.getLuminance());
 		}
 
 		private BlockState getBlockState(Context context, MemberFunction function) throws CodeError {

@@ -1,6 +1,6 @@
 package essentialclient.mixins.waterFovMultiplier;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.util.math.MathHelper;

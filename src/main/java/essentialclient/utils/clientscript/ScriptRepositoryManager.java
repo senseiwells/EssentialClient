@@ -44,7 +44,7 @@ public class ScriptRepositoryManager {
 		if (!scriptFileSet.contains(new ScriptFile(name, null))) {
 			throw this.NO_SUCH_SCRIPT.create(name);
 		}
-		Path scriptDir = ClientScript.getDir();
+		Path scriptDir = ClientScript.INSTANCE.getScriptDirectory();
 		Path newScript = scriptDir.resolve(name + ".arucas");
 		if (!overwrite && Files.exists(newScript)) {
 			for (int i = 1; ; i++) {

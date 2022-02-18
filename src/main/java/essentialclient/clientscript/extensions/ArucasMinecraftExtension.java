@@ -8,7 +8,10 @@ import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
-import me.senseiwells.arucas.values.*;
+import me.senseiwells.arucas.values.ListValue;
+import me.senseiwells.arucas.values.NullValue;
+import me.senseiwells.arucas.values.ThreadValue;
+import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import net.minecraft.client.MinecraftClient;
@@ -44,7 +47,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	private Value<?> runThreaded(Context context, BuiltInFunction function) throws CodeError {
 		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 0);
 		List<Value<?>> list = function.getParameterValueOfType(context, ListValue.class, 1).value;
-		ArucasThread thread = context.getThreadHandler().runAsyncFunctionInContext(context.createBranch(), (branchContext) -> functionValue.call(branchContext, list));
+		ArucasThread thread = context.getThreadHandler().runAsyncFunctionInContext(context.createBranch(), branchContext -> functionValue.call(branchContext, list));
 		return ThreadValue.of(thread);
 	}
 

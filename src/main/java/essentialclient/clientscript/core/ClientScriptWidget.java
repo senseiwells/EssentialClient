@@ -2,15 +2,17 @@ package essentialclient.clientscript.core;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
 import java.util.List;
+
+import static essentialclient.utils.render.Texts.START;
+import static essentialclient.utils.render.Texts.STOP;
 
 public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.ClientListEntry> {
 	private final ClientScriptScreen parent;
@@ -22,6 +24,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 	}
 
 	public void load(MinecraftClient client) {
+		this.clear();
 		for (ClientScriptInstance instance : ClientScript.INSTANCE.getScriptInstancesInOrder()) {
 			this.addEntry(new ClientListEntry(client, instance));
 		}
@@ -53,7 +56,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 				ClientScriptWidget.this.clear();
 				ClientScriptWidget.this.load(this.client);
 			});
-			this.startButton = new ButtonWidget(0, 0, 45, 20, new LiteralText(instance.isScriptRunning() ? "§4Stop" : "§2Start"), buttonWidget -> {
+			this.startButton = new ButtonWidget(0, 0, 45, 20, instance.isScriptRunning() ? STOP : START, buttonWidget -> {
 				if (this.scriptInstance.isScriptRunning()) {
 					this.scriptInstance.stopScript();
 					return;
@@ -77,12 +80,12 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 		}
 
 		@Override
-		public List<? extends Element> children() {
+		public List<ClickableWidget> children() {
 			return this.selectableChildren();
 		}
 
 		@Override
-		public List<PressableWidget> selectableChildren() {
+		public List<ClickableWidget> selectableChildren() {
 			return List.of(this.configButton, this.startButton, this.checkButton);
 		}
 
@@ -96,7 +99,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 			this.configButton.x = x + width - 120;
 			this.configButton.y = this.startButton.y = this.checkButton.y = y;
 			this.startButton.active = this.client.player != null;
-			this.startButton.setMessage(new LiteralText(this.scriptInstance.isScriptRunning() ? "§4Stop" : "§2Start"));
+			this.startButton.setMessage(this.scriptInstance.isScriptRunning() ? STOP : START);
 			this.configButton.render(matrices, mouseX, mouseY, tickDelta);
 			this.startButton.render(matrices, mouseX, mouseY, tickDelta);
 			this.checkButton.render(matrices, mouseX, mouseY, tickDelta);

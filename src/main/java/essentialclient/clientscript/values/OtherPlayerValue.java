@@ -33,6 +33,22 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		return "OtherPlayer{name=%s}".formatted(this.value.getEntityName());
 	}
 
+	/**
+	 * This is a dummy class so OtherPlayer can be used as
+	 * a value otherwise Arucas will not register it.
+	 * This must be loaded after AbstractPlayerClass
+	 */
+	public static class ArucasOtherPlayerClass extends ArucasClassExtension {
+		public ArucasOtherPlayerClass() {
+			super("OtherPlayer");
+		}
+
+		@Override
+		public Class<?> getValueClass() {
+			return OtherPlayerValue.class;
+		}
+	}
+
 	public static class ArucasAbstractPlayerClass extends ArucasClassExtension {
 		public ArucasAbstractPlayerClass() {
 			super("OtherPlayer");

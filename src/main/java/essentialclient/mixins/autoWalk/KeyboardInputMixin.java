@@ -1,6 +1,6 @@
 package essentialclient.mixins.autoWalk;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.utils.EssentialUtils;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.KeyBinding;
@@ -16,7 +16,7 @@ public class KeyboardInputMixin {
 
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
 	private boolean onIsForwardPressed(KeyBinding keyBinding) {
-		if (keyBinding.isPressed()){
+		if (keyBinding.isPressed()) {
 			int autoWalk = ClientRules.AUTO_WALK.getValue();
 			this.shouldAutoHold = autoWalk > 0 && this.ticks++ > autoWalk;
 			if (this.shouldAutoHold) {

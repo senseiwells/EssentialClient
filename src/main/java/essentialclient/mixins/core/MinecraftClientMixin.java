@@ -1,8 +1,9 @@
 package essentialclient.mixins.core;
 
+import essentialclient.EssentialClient;
 import essentialclient.clientscript.core.ClientScript;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
-import essentialclient.feature.EssentialCarpetClient;
+import essentialclient.feature.CarpetClient;
 import essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import essentialclient.feature.chunkdebug.ChunkHandler;
@@ -37,8 +38,7 @@ public abstract class MinecraftClientMixin extends ReentrantThreadExecutor<Runna
 	private void onLeaveWorld(Screen screen, CallbackInfo ci) {
 		MinecraftScriptEvents.ON_DISCONNECT.run();
 
-		EssentialCarpetClient.serverIsCarpet = false;
-		EssentialCarpetClient.carpetRules.clear();
+		CarpetClient.INSTANCE.onDisconnect();
 
 		ChunkClientNetworkHandler.chunkDebugAvailable = false;
 		ChunkHandler.clearAllChunks();
@@ -47,12 +47,13 @@ public abstract class MinecraftClientMixin extends ReentrantThreadExecutor<Runna
 
 	@Inject(method = "close", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/TextureManager;close()V"))
 	private void onClose(CallbackInfo ci) {
-		ClientScript.INSTANCE.saveScriptConfig();
+		EssentialClient.saveConfigs();
 	}
 
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("RETURN"))
 	private void onDisconnect(Screen screen, CallbackInfo ci) {
 		ClientScript.INSTANCE.stopAllInstances();
+		EssentialClient.saveConfigs();
 	}
 
 	@Override

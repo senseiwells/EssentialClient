@@ -1,8 +1,6 @@
 package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import essentialclient.utils.EssentialUtils;
-import essentialclient.utils.render.RenderHelper;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -24,7 +22,6 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 
 import java.util.List;
@@ -81,13 +78,12 @@ public class WorldValue extends Value<ClientWorld> {
 				new MemberFunction("renderParticle", List.of("particleName", "pos", "xVelocity", "yVelocity", "zVelocity"), this::renderParticleVel),
 				new MemberFunction("setGhostBlock", List.of("block", "x", "y", "z"), this::setGhostBlock, "This function is dangerous, be careful!"),
 				new MemberFunction("setGhostBlock", List.of("block", "pos"), this::setGhostBlockPos, "This function is dangerous, be careful!"),
-				new MemberFunction("spawnGhostEntity", List.of("entity", "x", "y", "z", "yaw", "pitch", "bodyYaw"), this::spawnGhostEntity),
-				new MemberFunction("spawnGhostEntity", List.of("entity", "pos", "yaw", "pitch", "bodyYaw"), this::spawnGhostEntityPos),
-				new MemberFunction("removeGhostEntity", "entityId", this::removeFakeEntity),
 				new MemberFunction("isAir", List.of("x", "y", "z"), this::isAir),
 				new MemberFunction("isAir", "pos", this::isAirPos),
 				new MemberFunction("getEmittedRedstonePower", List.of("x", "y", "z", "direction"), this::getEmittedRedstonePower),
-				new MemberFunction("getEmittedRedstonePower", List.of("pos", "direction"), this::getEmittedRedstonePowerPos)
+				new MemberFunction("getEmittedRedstonePower", List.of("pos", "direction"), this::getEmittedRedstonePowerPos),
+				new MemberFunction("getLight", List.of("x", "y", "z"), this::getLight),
+				new MemberFunction("getLight", "pos", this::getLightPos)
 			);
 		}
 
@@ -238,68 +234,6 @@ public class WorldValue extends Value<ClientWorld> {
 			return NullValue.NULL;
 		}
 
-		private Value<?> spawnGhostEntity(Context context, MemberFunction function) throws CodeError {
-			ClientWorld world = this.getWorld(context, function);
-			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
-			double x = function.getParameterValueOfType(context, NumberValue.class, 2).value;
-			double y = function.getParameterValueOfType(context, NumberValue.class, 3).value;
-			double z = function.getParameterValueOfType(context, NumberValue.class, 4).value;
-			float yaw = function.getParameterValueOfType(context, NumberValue.class, 5).value.floatValue();
-			float pitch = function.getParameterValueOfType(context, NumberValue.class, 6).value.floatValue();
-			float bodyYaw = function.getParameterValueOfType(context, NumberValue.class, 7).value.floatValue();
-			Entity newEntity = entityValue.value.getType().create(world);
-			if (newEntity == null) {
-				return NullValue.NULL;
-			}
-			int nextId = RenderHelper.getNextEntityId();
-			newEntity.setId(nextId);
-			EssentialUtils.getClient().execute(() -> {
-				newEntity.setBodyYaw(bodyYaw);
-				newEntity.setHeadYaw(yaw);
-				newEntity.refreshPositionAndAngles(x, y, z, yaw, pitch);
-				newEntity.updatePositionAndAngles(x, y, z, yaw, pitch);
-				newEntity.updateTrackedPositionAndAngles(x, y, z, yaw, pitch, 3, true);
-				newEntity.refreshPositionAfterTeleport(x, y, z);
-				world.addEntity(nextId, newEntity);
-			});
-			return NumberValue.of(nextId);
-		}
-
-		private Value<?> spawnGhostEntityPos(Context context, MemberFunction function) throws CodeError {
-			ClientWorld world = this.getWorld(context, function);
-			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
-			Vec3d pos = function.getParameterValueOfType(context, PosValue.class, 2).value;
-			float yaw = function.getParameterValueOfType(context, NumberValue.class, 3).value.floatValue();
-			float pitch = function.getParameterValueOfType(context, NumberValue.class, 4).value.floatValue();
-			float bodyYaw = function.getParameterValueOfType(context, NumberValue.class, 5).value.floatValue();
-			Entity newEntity = entityValue.value.getType().create(world);
-			if (newEntity == null) {
-				return NullValue.NULL;
-			}
-			int nextId = RenderHelper.getNextEntityId();
-			newEntity.setId(nextId);
-			EssentialUtils.getClient().execute(() -> {
-				newEntity.setBodyYaw(bodyYaw);
-				newEntity.setHeadYaw(yaw);
-				newEntity.refreshPositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch);
-				newEntity.updatePositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch);
-				newEntity.updateTrackedPositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch, 3, true);
-				newEntity.refreshPositionAfterTeleport(pos.x, pos.y, pos.z);
-				world.addEntity(nextId, newEntity);
-			});
-			return NumberValue.of(nextId);
-		}
-
-		private Value<?> removeFakeEntity(Context context, MemberFunction function) throws CodeError {
-			ClientWorld world = this.getWorld(context, function);
-			int entityId = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
-			if (!RenderHelper.removeFakeEntity(entityId)) {
-				throw new RuntimeError("No such fake entity exists", function.syntaxPosition, context);
-			}
-			EssentialUtils.getClient().execute(() -> world.removeEntity(entityId, Entity.RemovalReason.DISCARDED));
-			return NullValue.NULL;
-		}
-
 		private Value<?> isAir(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			NumberValue x = function.getParameterValueOfType(context, NumberValue.class, 1, IN_RANGE_ERROR);
@@ -332,6 +266,20 @@ public class WorldValue extends Value<ClientWorld> {
 			BlockPos blockPos = new BlockPos(posValue.value);
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection), Direction.NORTH);
 			return NumberValue.of(world.getEmittedRedstonePower(blockPos, direction));
+		}
+
+		private Value<?> getLight(Context context, MemberFunction function) throws CodeError {
+			ClientWorld world = this.getWorld(context, function);
+			NumberValue x = function.getParameterValueOfType(context, NumberValue.class, 1, IN_RANGE_ERROR);
+			NumberValue y = function.getParameterValueOfType(context, NumberValue.class, 2, IN_RANGE_ERROR);
+			NumberValue z = function.getParameterValueOfType(context, NumberValue.class, 3, IN_RANGE_ERROR);
+			return NumberValue.of(world.getLightLevel(new BlockPos(x.value, y.value, z.value)));
+		}
+
+		private Value<?> getLightPos(Context context, MemberFunction function) throws CodeError {
+			ClientWorld world = this.getWorld(context, function);
+			BlockPos pos = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
+			return NumberValue.of(world.getLightLevel(pos));
 		}
 
 		private ClientWorld getWorld(Context context, MemberFunction function) throws CodeError {

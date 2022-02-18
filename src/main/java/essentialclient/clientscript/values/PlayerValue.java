@@ -2,7 +2,7 @@ package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import essentialclient.feature.BetterAccurateBlockPlacement;
-import essentialclient.feature.RecipeBookTracker;
+import essentialclient.feature.CraftingSharedConstants;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.interfaces.MinecraftClientInvoker;
 import essentialclient.utils.inventory.InventoryUtils;
@@ -111,6 +111,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("craft", "recipe", this::craft),
 				new MemberFunction("craftRecipe", List.of("recipe"), this::craftRecipe),
 				new MemberFunction("logout", "message", this::logout),
+				new MemberFunction("attackEntity", "entity", this::attackEntity),
 				new MemberFunction("interactWithEntity", "entity", this::interactWithEntity),
 				new MemberFunction("anvil", List.of("predicate1", "predicate2"), this::anvil),
 				new MemberFunction("anvilRename", List.of("name", "predicate"), this::anvilRename),
@@ -472,7 +473,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			RecipeValue recipeValue = function.getParameterValueOfType(context, RecipeValue.class, 1);
 			client.execute(() -> {
-				RecipeBookTracker.IS_SCRIPT_CLICK.set(true);
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
 				InventoryUtils.shiftClickSlot(client, handledScreen, 0);
 			});
@@ -485,10 +486,23 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
+		private Value<?> attackEntity(Context context, MemberFunction function) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(context, function);
+			EntityValue<?> entity = function.getParameterValueOfType(context, EntityValue.class, 1);
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ArucasMinecraftExtension.getClient().execute(() -> {
+				interactionManager.attackEntity(player, entity.value);
+			});
+			return NullValue.NULL;
+		}
+
 		private Value<?> interactWithEntity(Context context, MemberFunction function) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(context, function);
 			EntityValue<?> entity = function.getParameterValueOfType(context, EntityValue.class, 1);
-			ArucasMinecraftExtension.getInteractionManager().interactEntity(player, entity.value, Hand.MAIN_HAND);
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ArucasMinecraftExtension.getClient().execute(() -> {
+				interactionManager.interactEntity(player, entity.value, Hand.MAIN_HAND);
+			});
 			return NullValue.NULL;
 		}
 

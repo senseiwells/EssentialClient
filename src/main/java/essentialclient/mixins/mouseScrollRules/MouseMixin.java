@@ -1,6 +1,6 @@
 package essentialclient.mixins.mouseScrollRules;
 
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import net.minecraft.client.Mouse;
 import net.minecraft.entity.player.PlayerInventory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +24,9 @@ public class MouseMixin {
 
 	@Redirect(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;scrollInHotbar(D)V"))
 	private void onScrollHotbar(PlayerInventory playerInventory, double scrollAmount) {
-		if (ClientRules.DISABLE_HOTBAR_SCROLLING.getValue())
+		if (ClientRules.DISABLE_HOTBAR_SCROLLING.getValue()) {
 			return;
+		}
 		playerInventory.scrollInHotbar(scrollAmount);
 	}
 }

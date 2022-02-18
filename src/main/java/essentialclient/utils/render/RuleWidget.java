@@ -4,19 +4,27 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class RuleWidget {
+	private final String name;
+	private final int width;
+	private final int height;
+	private boolean isToggled;
+	private int x;
+	private int y;
 
-	String name;
-	int x;
-	int y;
-	int width;
-	int height;
-
-	public RuleWidget(String name, int x, int y, int width, int height) {
+	public RuleWidget(String name, int width, int height) {
 		this.name = name;
-		this.x = x;
-		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.isToggled = false;
+	}
+
+	public void toggle() {
+		this.isToggled = !this.isToggled;
+	}
+
+	public void setPos(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 
 	public void drawRule(MatrixStack matrices, TextRenderer font, float fontX, float fontY, int colour) {
@@ -25,6 +33,10 @@ public class RuleWidget {
 
 	public boolean isHovered(int mouseX, int mouseY) {
 		return mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+	}
+
+	public boolean isToggled() {
+		return this.isToggled;
 	}
 
 	public static String getShortName(String string) {

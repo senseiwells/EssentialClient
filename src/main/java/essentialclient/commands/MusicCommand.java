@@ -2,14 +2,13 @@ package essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import essentialclient.config.clientrule.ClientRules;
+import essentialclient.clientrule.ClientRules;
 import essentialclient.feature.MusicSounds;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
+import essentialclient.utils.command.EnumArgumentType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MusicType;
-import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundCategory;
@@ -29,8 +28,6 @@ public class MusicCommand {
 			.then(literal("skip")
 				.executes(context -> {
 					MinecraftClient client = MinecraftClient.getInstance();
-					if (client == null)
-						return 0;
 					client.getMusicTracker().stop();
 					EssentialUtils.sendMessageToActionBar("§aMusic skipped!");
 					return 0;
@@ -41,47 +38,42 @@ public class MusicCommand {
 					.executes(context -> {
 						MinecraftClient client = MinecraftClient.getInstance();
 						int percent = context.getArgument("percent", Integer.class);
-						if (client == null)
-							return 0;
 						client.options.setSoundVolume(SoundCategory.MUSIC, (float) percent / 100);
 						if (percent == 0) {
 							client.getMusicTracker().stop();
 						}
 						EssentialUtils.sendMessageToActionBar("§aMusic volume set to " + percent + "%");
-
-						//client.getSoundManager().updateSoundVolume(SoundCategory.MUSIC, context.getArgument("volume", Integer.class));
 						return 0;
 					})
 				)
 			)
 			.then(literal("play")
-				.then(argument("musictype", StringArgumentType.word())
-					.suggests((context, builder) -> CommandSource.suggestMatching(new String[]{"overworld", "nether", "end", "creative", "menu", "credits"}, builder))
+				.then(argument("musictype", EnumArgumentType.enumeration(EnumMusicType.class))
 					.executes(context -> {
-						String arg = context.getArgument("musictype", String.class);
+						EnumMusicType musicType = EnumArgumentType.getEnumeration(context, "musictype", EnumMusicType.class);
 						MinecraftClient client = MinecraftClient.getInstance();
-						if (client == null)
-							return 0;
-						MusicSound musicSound;
-						switch (arg) {
-							case "overworld" -> musicSound = MusicType.GAME;
-							case "nether" -> musicSound = MusicSounds.getRandomNetherMusic();
-							case "end" -> musicSound = MusicType.END;
-							case "creative" -> musicSound = MusicType.CREATIVE;
-							case "menu" -> musicSound = MusicType.MENU;
-							case "credits" -> musicSound = MusicType.CREDITS;
-							default -> {
-								EssentialUtils.sendMessage("§cThat is not a valid music type");
-								return 0;
-							}
-						}
 						client.getMusicTracker().stop();
-						client.getMusicTracker().play(musicSound);
-						EssentialUtils.sendMessageToActionBar("§aYou will now hear a piece from: " + arg);
+						client.getMusicTracker().play(musicType.musicSound);
+						EssentialUtils.sendMessageToActionBar("§aYou will now hear a piece from: " + musicType);
 						return 0;
 					})
 				)
 			)
 		);
+	}
+
+	enum EnumMusicType {
+		OVERWORLD(MusicType.GAME),
+		NETHER(MusicSounds.getRandomNetherMusic()),
+		END(MusicType.END),
+		CREATIVE(MusicType.CREATIVE),
+		MENU(MusicType.MENU),
+		CREDITS(MusicType.CREDITS);
+
+		private final MusicSound musicSound;
+
+		EnumMusicType(MusicSound musicSound) {
+			this.musicSound = musicSound;
+		}
 	}
 }
