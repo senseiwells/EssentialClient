@@ -42,10 +42,7 @@ public class ConfigScreen extends Screen {
 		this.addButton(new ButtonWidget(width, height, 200, 20, CLIENT_SCREEN, button -> this.client.openScreen(new RulesScreen(this, false))));
 		this.addButton(new ButtonWidget(width, height + 24, 200, 20, SERVER_SCREEN, button -> this.client.openScreen(new RulesScreen(this, true))));
 		this.addButton(new ButtonWidget(width, height + 48, 200, 20, SCRIPT_SCREEN, button -> this.client.openScreen(new ClientScriptScreen(this))));
-		this.addButton(new ButtonWidget(width, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.client.openScreen(this.parent)));
-		this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, WIKI, button -> Util.getOperatingSystem().open(EssentialUtils.WIKI_URL)));
 		this.addButton(new ButtonWidget(width, height + 72, 200, 20, CHUNK_SCREEN, button -> this.client.openScreen(new ChunkDebugScreen(this)))).active = ChunkClientNetworkHandler.chunkDebugAvailable;
-		this.addButton(new ButtonWidget(9, this.height - 27, 100, 20, CONFIG, button -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
 		this.addButton(new ButtonWidget(width, height + 96, 200, 20, GAMERULE, button -> {
 			IntegratedServer server = this.client.getServer();
 			if (server != null) {
@@ -55,6 +52,9 @@ public class ConfigScreen extends Screen {
 				}));
 			}
 		})).active = this.client.isInSingleplayer();
+		this.addButton(new ButtonWidget(width, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.client.openScreen(this.parent)));
+		this.addButton(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, WIKI, button -> Util.getOperatingSystem().open(EssentialUtils.WIKI_URL)));
+		this.addButton(new ButtonWidget(9, this.height - 27, 100, 20, CONFIG, button -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
 	}
 
 	@Override

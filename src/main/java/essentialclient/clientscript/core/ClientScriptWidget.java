@@ -1,5 +1,6 @@
 package essentialclient.clientscript.core;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
@@ -81,7 +82,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 
 		@Override
 		public List<? extends Element> children() {
-			return List.of(this.configButton, this.startButton, this.checkButton);
+			return ImmutableList.of(this.configButton, this.startButton, this.checkButton);
 		}
 
 		@Override
