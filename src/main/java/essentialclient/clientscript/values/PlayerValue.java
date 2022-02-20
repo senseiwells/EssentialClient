@@ -174,8 +174,13 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				throw function.throwInvalidParameterError(error, context);
 			}
 			int selectedSlot = numberValue.value.intValue();
-			ArucasMinecraftExtension.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(selectedSlot));
-			this.getPlayer(context, function).getInventory().selectedSlot = selectedSlot;
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			ClientPlayNetworkHandler networkhandler = ArucasMinecraftExtension.getNetworkHandler();
+			final ClientPlayerEntity player = this.getPlayer(context, function);
+			client.execute(() -> {
+				networkhandler.sendPacket(new UpdateSelectedSlotC2SPacket(selectedSlot));
+				player.getInventory().selectedSlot = selectedSlot;
+			});
 			return NullValue.NULL;
 		}
 
@@ -354,7 +359,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (player.isSpectator()) {
 				return BooleanValue.FALSE;
 			}
-			networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
+			ArucasMinecraftExtension.getClient().execute(() -> networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN)));
 			return BooleanValue.TRUE;
 		}
 
