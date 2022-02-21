@@ -642,10 +642,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Direction direction = Objects.requireNonNullElse(Direction.byName(directionValue.value), Direction.DOWN);
 			int duration = MathHelper.ceil(durationValue.value);
 			duration = duration > 0 ? duration : 20;
-			BetterAccurateBlockPlacement.fakeYaw = yaw.value.floatValue();
-			BetterAccurateBlockPlacement.fakePitch = pitch.value.floatValue();
-			BetterAccurateBlockPlacement.fakeDirection = direction;
-			BetterAccurateBlockPlacement.requestedTicks = duration;
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			int finalDuration = duration;
+			client.execute(() -> {
+				BetterAccurateBlockPlacement.fakeYaw = yaw.value.floatValue();
+				BetterAccurateBlockPlacement.fakePitch = pitch.value.floatValue();
+				BetterAccurateBlockPlacement.fakeDirection = direction;
+				BetterAccurateBlockPlacement.requestedTicks = finalDuration;
+			});
 			return NullValue.NULL;
 		}
 
