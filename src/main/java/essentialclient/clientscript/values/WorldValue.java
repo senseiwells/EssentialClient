@@ -8,6 +8,7 @@ import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
+import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -26,6 +27,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class WorldValue extends Value<ClientWorld> {
 	public WorldValue(ClientWorld world) {
@@ -83,7 +85,10 @@ public class WorldValue extends Value<ClientWorld> {
 				new MemberFunction("getEmittedRedstonePower", List.of("x", "y", "z", "direction"), this::getEmittedRedstonePower),
 				new MemberFunction("getEmittedRedstonePower", List.of("pos", "direction"), this::getEmittedRedstonePowerPos),
 				new MemberFunction("getLight", List.of("x", "y", "z"), this::getLight),
-				new MemberFunction("getLight", "pos", this::getLightPos)
+				new MemberFunction("getLight", "pos", this::getLightPos),
+				new MemberFunction("getArea", List.of("posA", "posB"), this::getArea),
+				new MemberFunction("getAreaMatch", List.of("posA", "posB", "containsString"), this::getAreaMatch),
+				new MemberFunction("getAreaPredicate", List.of("posA", "posB", "function"), this::getAreaPredicate)
 			);
 		}
 
@@ -280,6 +285,52 @@ public class WorldValue extends Value<ClientWorld> {
 			ClientWorld world = this.getWorld(context, function);
 			BlockPos pos = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
 			return NumberValue.of(world.getLightLevel(pos));
+		}
+
+		private Value<?> getArea(Context context, MemberFunction function) throws CodeError {
+			BlockPos posA = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
+			BlockPos posB = function.getParameterValueOfType(context, PosValue.class, 2).toBlockPos();
+			ArucasList arucasList = new ArucasList();
+			arucasList.addAll(BlockPos.stream(posA,posB).map(PosValue::new).collect(Collectors.toList()));
+			return new ListValue(arucasList);
+		}
+		private Value<?> getAreaMatch(Context context, MemberFunction function) throws CodeError {
+			ClientWorld world = this.getWorld(context, function);
+			BlockPos posA = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
+			BlockPos posB = function.getParameterValueOfType(context, PosValue.class, 2).toBlockPos();
+			String match = function.getParameterValueOfType(context, StringValue.class, 3).value;
+			ArucasList arucasList = new ArucasList();
+			arucasList.addAll(BlockPos.stream(posA,posB).
+				filter(a-> world.getBlockState(a).getBlock().getName().toString().contains(match)).
+				map(PosValue::new).
+				collect(Collectors.toList()));
+			return new ListValue(arucasList);
+		}
+		private Value<?> getAreaPredicate(Context context, MemberFunction function) throws CodeError {
+			BlockPos posA = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
+			BlockPos posB = function.getParameterValueOfType(context, PosValue.class, 2).toBlockPos();
+			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 3);
+			ArucasList arucasList = new ArucasList();
+			Context branchContext = context.createBranch();
+			//try once by dummy pos
+			try {
+				functionValue.call(branchContext, List.of(new PosValue(BlockPos.ORIGIN)));
+			}
+			catch (CodeError e){
+				throw new RuntimeError("Predicate function must accept PosValue as parameter and return Boolean", function.syntaxPosition, branchContext);
+			}
+			arucasList.addAll(BlockPos.stream(posA,posB).
+				map(PosValue::new).
+				filter(a-> {
+					try {
+						Value<?> value = functionValue.call(branchContext, List.of(a));
+						return value instanceof BooleanValue booleanValue && booleanValue.value;
+					} catch (CodeError e) {
+						return false;
+					}
+				}).
+				collect(Collectors.toList()));
+			return new ListValue(arucasList);
 		}
 
 		private ClientWorld getWorld(Context context, MemberFunction function) throws CodeError {
