@@ -1,6 +1,7 @@
 package essentialclient.clientscript.values;
 
 import essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import essentialclient.utils.clientscript.NbtUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -11,9 +12,11 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.block.*;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.BlockMirror;
@@ -118,6 +121,7 @@ public class BlockValue extends Value<BlockState> {
 				new MemberFunction("getBlockProperties", this::getBlockProperties),
 				new MemberFunction("hasBlockPosition", this::hasBlockPosition),
 				new MemberFunction("getPos", this::getPos),
+				new MemberFunction("getBlockEntityData", this::getBlockEntityData),
 				new MemberFunction("getX", this::getBlockX),
 				new MemberFunction("getZ", this::getBlockZ),
 				new MemberFunction("getY", this::getBlockY),
@@ -158,7 +162,21 @@ public class BlockValue extends Value<BlockState> {
 			}
 			return new MapValue(propertyMap);
 		}
-
+		private Value<?> getBlockEntityData(Context context, MemberFunction function) throws CodeError {
+			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
+			if(!blockStateValue.hasBlockPos()){
+				return NullValue.NULL;
+			}
+			BlockEntity blockEntity = ArucasMinecraftExtension.getWorld().getBlockEntity(((PosValue)blockStateValue.getPos()).toBlockPos());
+			if (blockEntity == null){
+				return NullValue.NULL;
+			}
+			else {
+				NbtCompound nbtCompound = blockEntity.createNbt();
+				ArucasMap mappedNbt = NbtUtils.mapNbt(context, nbtCompound, 0);
+				return new MapValue(mappedNbt);
+			}
+		}
 		private Value<?> hasBlockPosition(Context context, MemberFunction function) throws CodeError {
 			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
 			return BooleanValue.of(blockStateValue.hasBlockPos());
