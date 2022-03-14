@@ -9,6 +9,10 @@ import net.minecraft.nbt.AbstractNbtNumber;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtByteArray;
+import net.minecraft.nbt.NbtByte;
+
+import java.util.stream.Collectors;
 
 public class NbtUtils {
 	public static ArucasMap mapNbt(Context context, NbtCompound compound, int depth) throws CodeError {
@@ -48,6 +52,9 @@ public class NbtUtils {
 		}
 		if (element instanceof AbstractNbtNumber nbtNumber) {
 			return NumberValue.of(nbtNumber.doubleValue());
+		}
+		if (element instanceof NbtByteArray byteArray){
+			return new ListValue(byteArray.stream().map(a->NumberValue.of(a.byteValue())).collect(Collectors.toCollection(ArucasList::new)));
 		}
 		return StringValue.of(element.asString());
 	}
