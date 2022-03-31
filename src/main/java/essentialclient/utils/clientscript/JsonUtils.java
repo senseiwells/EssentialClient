@@ -5,6 +5,7 @@ import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.ValuePair;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
@@ -85,8 +86,8 @@ public class JsonUtils {
 
 	private static JsonObject fromMap(Context context, MapValue map, int depth) throws CodeError {
 		JsonObject object = new JsonObject();
-		for (ArucasMap.Node node : map.value.entrySet(context)) {
-			object.add(node.getKey().getAsString(context), fromValue(context, node.getValue(), depth));
+		for (ValuePair pair : map.value.pairSet()) {
+			object.add(pair.getKey().getAsString(context), fromValue(context, pair.getValue(), depth));
 		}
 		return object;
 	}

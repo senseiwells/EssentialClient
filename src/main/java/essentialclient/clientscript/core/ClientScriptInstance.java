@@ -11,6 +11,7 @@ import essentialclient.clientscript.values.*;
 import essentialclient.utils.EssentialUtils;
 import essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ContextBuilder;
+import me.senseiwells.arucas.discord.DiscordAPI;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
@@ -31,12 +32,11 @@ public class ClientScriptInstance {
 
 	static {
 		BUILDER = new ContextBuilder()
-			.setDisplayName("Arucas client")
-			.setOutputHandler(s -> {
-				s = !s.endsWith("\n") ? s : s.substring(0, s.length() - 1);
-				EssentialUtils.sendMessage(s);
-			})
+			.setDisplayName("Arucas Client")
+			.setOutputHandler(ArucasMinecraftOutput.INSTANCE)
+			.setImportPath(ClientScript.INSTANCE.getScriptDirectory().resolve("libs"))
 			.addClasses(
+				"Minecraft",
 				JsonValue.ArucasJsonClass::new,
 				MinecraftClientValue.ArucasMinecraftClientMembers::new,
 				CommandBuilderValue.CommandBuilderClass::new,
@@ -57,13 +57,18 @@ public class ClientScriptInstance {
 				MerchantScreenValue.ArucasMerchantScreenClass::new,
 				TradeValue.ArucasTradeOfferClass::new
 			)
-			.addWrapper(GameEventWrapper::new)
-			.addWrapper(BoxShapeWrapper::new)
-			.addWrapper(FakeEntityWrapper::new)
+			.addWrappers(
+				"Minecraft",
+				GameEventWrapper::new,
+				BoxShapeWrapper::new,
+				FakeEntityWrapper::new
+			)
 			.addExtensions(
 				ArucasMinecraftExtension::new
 			)
 			.addDefault();
+		DiscordAPI.addDiscordAPI(BUILDER);
+		ExceptionUtils.runSafe(BUILDER::generateArucasFiles);
 	}
 
 	private final String scriptName;
@@ -140,6 +145,12 @@ public class ClientScriptInstance {
 			if (fileContent == null) {
 				throw new IOException("File content was null!");
 			}
+			// This is super hacky...
+			// Will be removed in future
+			if (!fileContent.contains("import * from Minecraft;")) {
+				EssentialUtils.sendMessage("You should add 'import * from Minecraft;' to the top of '%s'".formatted(this.scriptName));
+				fileContent = "import * from Minecraft;" + fileContent;
+			}
 		}
 		catch (IOException e) {
 			EssentialUtils.sendMessage("§cAn error occurred while trying to read '%s'".formatted(this.scriptName));
@@ -151,26 +162,18 @@ public class ClientScriptInstance {
 		Context context = BUILDER.build();
 		this.context = context;
 
-		context.getThreadHandler()
-			.setErrorHandler(this::messageError)
-			.setFinalHandler(this::stopScript)
-			.setFatalErrorHandler((c, t, s) -> {
-				if (s.isEmpty()) {
-					this.sendReportMessage(t);
-					return;
-				}
-				this.sendReportMessage(t, s);
-			});
+		context.getThreadHandler().setFatalErrorHandler((c, t, s) -> {
+			if (s.isEmpty()) {
+				this.sendReportMessage(t);
+				return;
+			}
+			this.sendReportMessage(t, s);
+		}).addShutdownEvent(this::stopScript);
 
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
 			EssentialUtils.sendMessage("§6Script '%s' has §aSTARTED".formatted(this.scriptName));
 		}
 		this.mainScriptThread = context.getThreadHandler().runOnThread(context, this.scriptName, fileContent, null);
-	}
-
-	private void messageError(String error) {
-		EssentialUtils.sendMessage("§cAn error occurred while running '%s".formatted(this.scriptName));
-		EssentialUtils.sendMessage("§c--------------------------------------------\n" + error);
 	}
 
 	private void sendReportMessage(Throwable t) {

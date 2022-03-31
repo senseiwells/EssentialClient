@@ -7,6 +7,7 @@ import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.values.BaseValue;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
@@ -39,6 +40,11 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 	@Override
 	public boolean isEquals(Context context, Value<?> value) {
 		return this.value == value.value;
+	}
+
+	@Override
+	public String getTypeName() {
+		return "Screen";
 	}
 
 	public static Value<?> of(Screen screen) {
@@ -83,7 +89,7 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<? extends BaseValue> getValueClass() {
 			return ScreenValue.class;
 		}
 	}

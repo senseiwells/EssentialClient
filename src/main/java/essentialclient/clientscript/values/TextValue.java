@@ -42,6 +42,11 @@ public class TextValue extends Value<MutableText> {
 		return this.value == value.value;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "Text";
+	}
+
 	public static class ArucasTextClass extends ArucasClassExtension {
 
 		public ArucasTextClass() {
@@ -114,7 +119,7 @@ public class TextValue extends Value<MutableText> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<TextValue> getValueClass() {
 			return TextValue.class;
 		}
 	}

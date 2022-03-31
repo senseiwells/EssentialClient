@@ -82,6 +82,11 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		return this.value == value.value;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "MinecraftClient";
+	}
+
 	public static class ArucasMinecraftClientMembers extends ArucasClassExtension {
 		public ArucasMinecraftClientMembers() {
 			super("MinecraftClient");
@@ -506,7 +511,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<MinecraftClientValue> getValueClass() {
 			return MinecraftClientValue.class;
 		}
 	}

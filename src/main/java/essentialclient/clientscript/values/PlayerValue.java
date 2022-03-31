@@ -65,6 +65,11 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		return "Player{name=%s}".formatted(this.value.getEntityName());
 	}
 
+	@Override
+	public String getTypeName() {
+		return "Player";
+	}
+
 	public static class ArucasPlayerClass extends ArucasClassExtension {
 		public ArucasPlayerClass() {
 			super("Player");
@@ -125,7 +130,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("interactBlock", List.of("x", "y", "z", "face"), this::interactBlock),
 				new MemberFunction("interactBlock", List.of("pos", "face"), this::interactBlockPos),
 				new MemberFunction("interactBlock", List.of("px", "py", "pz", "face", "bx", "by", "bz", "insideBlock"), this::interactBlockFull),
-				new MemberFunction("interactBlock", List.of("pos", "face", "pos", "insideBlock"), this::interactBlockFullPos),
+				new MemberFunction("interactBlock", List.of("pos", "face", "blockPos", "insideBlock"), this::interactBlockFullPos),
 				new MemberFunction("getBlockBreakingSpeed", "blockState", this::getBlockBreakingSpeed),
 				new MemberFunction("swapHands", this::swapHands),
 				new MemberFunction("swingHand", "isOffHand", this::swingHand),
@@ -174,8 +179,13 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				throw function.throwInvalidParameterError(error, context);
 			}
 			int selectedSlot = numberValue.value.intValue();
-			ArucasMinecraftExtension.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(selectedSlot));
-			this.getPlayer(context, function).getInventory().selectedSlot = selectedSlot;
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
+			final ClientPlayerEntity player = this.getPlayer(context, function);
+			client.execute(() -> {
+				networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(selectedSlot));
+				player.getInventory().selectedSlot = selectedSlot;
+			});
 			return NullValue.NULL;
 		}
 
@@ -354,7 +364,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (player.isSpectator()) {
 				return BooleanValue.FALSE;
 			}
-			networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
+			ArucasMinecraftExtension.getClient().execute(() ->
+				networkHandler.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN))
+			);
 			return BooleanValue.TRUE;
 		}
 
@@ -637,10 +649,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Direction direction = Objects.requireNonNullElse(Direction.byName(directionValue.value), Direction.DOWN);
 			int duration = MathHelper.ceil(durationValue.value);
 			duration = duration > 0 ? duration : 20;
-			BetterAccurateBlockPlacement.fakeYaw = yaw.value.floatValue();
-			BetterAccurateBlockPlacement.fakePitch = pitch.value.floatValue();
-			BetterAccurateBlockPlacement.fakeDirection = direction;
-			BetterAccurateBlockPlacement.requestedTicks = duration;
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			int finalDuration = duration;
+			client.execute(() -> {
+				BetterAccurateBlockPlacement.fakeYaw = yaw.value.floatValue();
+				BetterAccurateBlockPlacement.fakePitch = pitch.value.floatValue();
+				BetterAccurateBlockPlacement.fakeDirection = direction;
+				BetterAccurateBlockPlacement.requestedTicks = finalDuration;
+			});
 			return NullValue.NULL;
 		}
 
@@ -847,7 +863,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<PlayerValue> getValueClass() {
 			return PlayerValue.class;
 		}
 	}

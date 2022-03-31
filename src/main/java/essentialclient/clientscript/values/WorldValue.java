@@ -52,6 +52,11 @@ public class WorldValue extends Value<ClientWorld> {
 		return this.value == value.value;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "World";
+	}
+
 	public static class ArucasWorldClass extends ArucasClassExtension {
 		private final static String IN_RANGE_ERROR = "Position must be in range of player";
 
@@ -83,7 +88,9 @@ public class WorldValue extends Value<ClientWorld> {
 				new MemberFunction("getEmittedRedstonePower", List.of("x", "y", "z", "direction"), this::getEmittedRedstonePower),
 				new MemberFunction("getEmittedRedstonePower", List.of("pos", "direction"), this::getEmittedRedstonePowerPos),
 				new MemberFunction("getLight", List.of("x", "y", "z"), this::getLight),
-				new MemberFunction("getLight", "pos", this::getLightPos)
+				new MemberFunction("getLight", "pos", this::getLightPos),
+				new MemberFunction("getArea", List.of("pos1", "pos2"), this::getArea),
+				new MemberFunction("getAreaOfBlocks", List.of("pos1", "pos2"), this::getAreaOfBlocks)
 			);
 		}
 
@@ -282,6 +289,29 @@ public class WorldValue extends Value<ClientWorld> {
 			return NumberValue.of(world.getLightLevel(pos));
 		}
 
+		private Value<?> getArea(Context context, MemberFunction function) throws CodeError {
+			BlockPos posA = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
+			BlockPos posB = function.getParameterValueOfType(context, PosValue.class, 2).toBlockPos();
+			ArucasList list = new ArucasList();
+			for (BlockPos pos : BlockPos.iterate(posA, posB)) {
+				list.add(new PosValue(pos));
+			}
+			return new ListValue(list);
+		}
+
+		private Value<?> getAreaOfBlocks(Context context, MemberFunction function) throws CodeError {
+			ClientWorld world = this.getWorld(context, function);
+			BlockPos posA = function.getParameterValueOfType(context, PosValue.class, 1).toBlockPos();
+			BlockPos posB = function.getParameterValueOfType(context, PosValue.class, 2).toBlockPos();
+
+			ArucasList list = new ArucasList();
+			for (BlockPos pos : BlockPos.iterate(posA, posB)) {
+				BlockState state = world.getBlockState(pos);
+				list.add(new BlockValue(state, pos));
+			}
+			return new ListValue(list);
+		}
+
 		private ClientWorld getWorld(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = function.getParameterValueOfType(context, WorldValue.class, 0).value;
 			if (world == null) {
@@ -291,7 +321,7 @@ public class WorldValue extends Value<ClientWorld> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<WorldValue> getValueClass() {
 			return WorldValue.class;
 		}
 	}

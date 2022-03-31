@@ -46,6 +46,11 @@ public class MaterialValue extends Value<Item> {
 		return this.value == value.value;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "Material";
+	}
+
 	public static class ArucasMaterialClass extends ArucasClassExtension {
 
 		public ArucasMaterialClass() {
@@ -110,7 +115,7 @@ public class MaterialValue extends Value<Item> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<MaterialValue> getValueClass() {
 			return MaterialValue.class;
 		}
 	}

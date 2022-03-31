@@ -34,6 +34,11 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
         return this;
     }
 
+	@Override
+	public String getTypeName() {
+		return "FakeScreen";
+	}
+
 	public static class ArucasFakeInventoryScreenClass extends ArucasClassExtension {
 		public ArucasFakeInventoryScreenClass() {
 			super("FakeScreen");
@@ -93,7 +98,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<FakeInventoryScreenValue> getValueClass() {
 			return FakeInventoryScreenValue.class;
 		}
 	}

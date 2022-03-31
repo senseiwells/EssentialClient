@@ -61,6 +61,11 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		return false;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "Entity";
+	}
+
 	public static Value<?> of(Entity entity) {
 		if (entity != null) {
 			if (entity instanceof ClientPlayerEntity clientPlayerEntity) {
@@ -236,7 +241,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<? extends BaseValue> getValueClass() {
 			return EntityValue.class;
 		}
 	}

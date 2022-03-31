@@ -27,6 +27,11 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 		return "LivingEntity{id=%s}".formatted(Registry.ENTITY_TYPE.getId(this.value.getType()).getPath());
 	}
 
+	@Override
+	public String getTypeName() {
+		return "LivingEntity";
+	}
+
 	public static class ArucasLivingEntityClass extends ArucasClassExtension {
 		public ArucasLivingEntityClass() {
 			super("LivingEntity");
@@ -60,7 +65,7 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<? extends BaseValue> getValueClass() {
 			return LivingEntityValue.class;
 		}
 	}

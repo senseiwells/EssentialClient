@@ -10,7 +10,7 @@ import me.senseiwells.arucas.values.NumberValue;
 
 import java.util.*;
 
-@ArucasWrapper(name = "BoxShape")
+@ArucasClass(name = "BoxShape")
 public class BoxShapeWrapper implements IArucasWrappedClass {
 	private static final Map<ArucasThreadHandler, Set<BoxShapeWrapper>> BOXES_TO_RENDER = new LinkedHashMap<>(0);
 

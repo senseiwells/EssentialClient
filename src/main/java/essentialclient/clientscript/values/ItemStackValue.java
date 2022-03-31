@@ -54,6 +54,11 @@ public class ItemStackValue extends Value<ItemStack> {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "ItemStack";
+	}
+
+	@Override
 	public String getAsString(Context context) {
 		return "ItemStack{id=" + this.value.getItem().toString() + ", count=" + this.value.getCount() + "}";
 	}
@@ -184,7 +189,7 @@ public class ItemStackValue extends Value<ItemStack> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<ItemStackValue> getValueClass() {
 			return ItemStackValue.class;
 		}
 	}

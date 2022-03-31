@@ -51,6 +51,11 @@ public class RecipeValue extends Value<Recipe<?>> {
 		return this.value == value.value;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "Recipe";
+	}
+
 	public static class ArucasRecipeClass extends ArucasClassExtension {
 		public ArucasRecipeClass() {
 			super("Recipe");
@@ -131,7 +136,7 @@ public class RecipeValue extends Value<Recipe<?>> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<RecipeValue> getValueClass() {
 			return RecipeValue.class;
 		}
 	}

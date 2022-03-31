@@ -23,7 +23,8 @@ public class PosValue extends Value<Vec3d> {
 	}
 
 	public PosValue(BlockPos blockPos) {
-		this(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+		super(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+		this.blockPos = blockPos;
 	}
 
 	public PosValue(double x, double y, double z) {
@@ -64,6 +65,11 @@ public class PosValue extends Value<Vec3d> {
 	@Override
 	public boolean isEquals(Context context, Value<?> value) throws CodeError {
 		return this.value.equals(value.value);
+	}
+
+	@Override
+	public String getTypeName() {
+		return "Pos";
 	}
 
 	public static class ArucasPosClass extends ArucasClassExtension {
@@ -110,7 +116,7 @@ public class PosValue extends Value<Vec3d> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<PosValue> getValueClass() {
 			return PosValue.class;
 		}
 	}

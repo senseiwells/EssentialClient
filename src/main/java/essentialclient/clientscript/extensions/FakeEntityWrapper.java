@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@ArucasWrapper(name = "FakeEntity")
+@ArucasClass(name = "FakeEntity")
 public class FakeEntityWrapper implements IArucasWrappedClass {
 	private static final Map<ArucasThreadHandler, Set<Integer>> FAKE_IDS = new HashMap<>();
 	private static final AtomicInteger ID_COUNTER = new AtomicInteger(Integer.MAX_VALUE);

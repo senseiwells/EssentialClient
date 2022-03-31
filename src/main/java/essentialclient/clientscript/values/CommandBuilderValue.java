@@ -58,6 +58,11 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 		return this == other;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "CommandBuilder";
+	}
+
 	public static class CommandBuilderClass extends ArucasClassExtension {
 		public CommandBuilderClass() {
 			super("CommandBuilder");
@@ -193,7 +198,7 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<CommandBuilderValue> getValueClass() {
 			return CommandBuilderValue.class;
 		}
 	}

@@ -19,6 +19,7 @@ import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.ValuePair;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
@@ -58,12 +59,12 @@ public class ClientScriptUtils {
 	}
 
 	private static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArgumentBuilder<ServerCommandSource, ?> parent, ArucasMap arucasMap, ArucasMap argumentMap, Context context, ISyntax syntaxPosition) throws CodeError {
-		for (ArucasMap.Node node : arucasMap.entrySet(context)) {
-			if (!(node.getKey() instanceof StringValue stringValue)) {
+		for (ValuePair pair : arucasMap.pairSet()) {
+			if (!(pair.getKey() instanceof StringValue stringValue)) {
 				throw new RuntimeError("Expected string value in subcommand map", syntaxPosition, context);
 			}
 			if (stringValue.value.isBlank()) {
-				if (!(node.getValue() instanceof FunctionValue functionValue)) {
+				if (!(pair.getValue() instanceof FunctionValue functionValue)) {
 					throw new RuntimeError("Expected function value", syntaxPosition, context);
 				}
 				parent.executes(c -> {
@@ -82,10 +83,10 @@ public class ClientScriptUtils {
 				});
 				continue;
 			}
-			if (!(node.getValue() instanceof MapValue)) {
+			if (!(pair.getValue() instanceof MapValue)) {
 				throw new RuntimeError("Expected map value for '%s'".formatted(stringValue.value), syntaxPosition, context);
 			}
-			ArucasMap subMap = (ArucasMap) node.getValue().value;
+			ArucasMap subMap = (ArucasMap) pair.getValue().value;
 			String[] arguments = stringValue.value.split(" ");
 			if (arguments.length > 1) {
 				ArgumentBuilder<ServerCommandSource, ?> current = getSubCommand(arguments[arguments.length - 1], subMap, argumentMap, context, syntaxPosition);

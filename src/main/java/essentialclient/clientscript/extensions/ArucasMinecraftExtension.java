@@ -36,7 +36,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			new BuiltInFunction("getMinecraftClient", this::getMinecraftClient, "Use 'MinecraftClient.getClient()'"),
 			new BuiltInFunction("runThreaded", List.of("function", "parameters"), this::runThreaded, "Use 'Thread.runThreaded(function)'"),
 			new BuiltInFunction("throwUncatchableError", (context, function) -> { throw new NullPointerException(); }),
-			new BuiltInFunction("hold", this::hold)
+			new BuiltInFunction("hold", this::hold, "Use 'Thread.freeze()'")
 		);
 	}
 

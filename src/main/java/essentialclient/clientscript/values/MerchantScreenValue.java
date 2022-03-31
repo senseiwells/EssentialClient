@@ -30,6 +30,11 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		return "MerchantScreen@" + this.getHashCode(context);
 	}
 
+	@Override
+	public String getTypeName() {
+		return "MerchantScreen";
+	}
+
 	public static class ArucasMerchantScreenClass extends ArucasClassExtension {
 		public ArucasMerchantScreenClass() {
 			super("MerchantScreen");
@@ -205,7 +210,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<MerchantScreenValue> getValueClass() {
 			return MerchantScreenValue.class;
 		}
 	}

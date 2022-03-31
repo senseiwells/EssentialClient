@@ -45,6 +45,11 @@ public class JsonValue extends Value<JsonElement> {
 		return false;
 	}
 
+	@Override
+	public String getTypeName() {
+		return "Json";
+	}
+
 	public static class ArucasJsonClass extends ArucasClassExtension {
 		public ArucasJsonClass() {
 			super("Json");

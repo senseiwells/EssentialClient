@@ -5,10 +5,10 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
+import net.minecraft.nbt.AbstractNbtList;
 import net.minecraft.nbt.AbstractNbtNumber;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 
 public class NbtUtils {
 	public static ArucasMap mapNbt(Context context, NbtCompound compound, int depth) throws CodeError {
@@ -27,7 +27,7 @@ public class NbtUtils {
 		return nbtMap;
 	}
 
-	private static ArucasList listNbt(Context context, NbtList list, int depth) throws CodeError {
+	private static ArucasList listNbt(Context context, AbstractNbtList<?> list, int depth) throws CodeError {
 		ArucasList nbtList = new ArucasList();
 		depth++;
 		if (list == null || depth > 10) {
@@ -43,7 +43,7 @@ public class NbtUtils {
 		if (element instanceof NbtCompound inCompound) {
 			return new MapValue(mapNbt(context, inCompound, depth));
 		}
-		if (element instanceof NbtList nbtList) {
+		if (element instanceof AbstractNbtList<?> nbtList) {
 			return new ListValue(listNbt(context, nbtList, depth));
 		}
 		if (element instanceof AbstractNbtNumber nbtNumber) {

@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.village.TradeOffer;
 
 public class TradeValue extends Value<TradeOffer> {
-
 	public TradeValue(TradeOffer value) {
 		super(value);
 	}
@@ -49,6 +48,11 @@ public class TradeValue extends Value<TradeOffer> {
 	@Override
 	public boolean isEquals(Context context, Value<?> value) throws CodeError {
 		return value instanceof TradeValue && this.allMatch((TradeOffer) value.value);
+	}
+
+	@Override
+	public String getTypeName() {
+		return "Trade";
 	}
 
 	public static class ArucasTradeOfferClass extends ArucasClassExtension{
@@ -112,7 +116,7 @@ public class TradeValue extends Value<TradeOffer> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<TradeValue> getValueClass() {
 			return TradeValue.class;
 		}
 	}

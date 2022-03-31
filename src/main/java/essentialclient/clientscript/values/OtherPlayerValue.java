@@ -33,6 +33,11 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		return "OtherPlayer{name=%s}".formatted(this.value.getEntityName());
 	}
 
+	@Override
+	public String getTypeName() {
+		return "OtherPlayer";
+	}
+
 	/**
 	 * This is a dummy class so OtherPlayer can be used as
 	 * a value otherwise Arucas will not register it.
@@ -44,7 +49,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<OtherPlayerValue> getValueClass() {
 			return OtherPlayerValue.class;
 		}
 	}
@@ -171,7 +176,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<AbstractPlayerValue> getValueClass() {
 			return AbstractPlayerValue.class;
 		}
 	}

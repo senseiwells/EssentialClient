@@ -5,9 +5,9 @@ import essentialclient.clientscript.events.MinecraftScriptEvent;
 import essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.api.ISyntax;
+import me.senseiwells.arucas.api.wrappers.ArucasClass;
 import me.senseiwells.arucas.api.wrappers.ArucasConstructor;
 import me.senseiwells.arucas.api.wrappers.ArucasFunction;
-import me.senseiwells.arucas.api.wrappers.ArucasWrapper;
 import me.senseiwells.arucas.api.wrappers.IArucasWrappedClass;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -20,7 +20,7 @@ import me.senseiwells.arucas.values.functions.FunctionValue;
 
 import java.util.List;
 
-@ArucasWrapper(name = "GameEvent")
+@ArucasClass(name = "GameEvent")
 public class GameEventWrapper implements IArucasWrappedClass {
 	private Context eventContext;
 	private MinecraftScriptEvent minecraftEvent;

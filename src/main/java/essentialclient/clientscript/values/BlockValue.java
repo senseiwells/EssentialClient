@@ -82,6 +82,11 @@ public class BlockValue extends Value<BlockState> {
 	}
 
 	@Override
+	public String getTypeName() {
+		return "Block";
+	}
+
+	@Override
 	public String getAsString(Context context) {
 		return "Block{id=%s}".formatted(Registry.BLOCK.getId(this.value.getBlock()).getPath());
 	}
@@ -295,7 +300,7 @@ public class BlockValue extends Value<BlockState> {
 		}
 
 		@Override
-		public Class<?> getValueClass() {
+		public Class<BlockValue> getValueClass() {
 			return BlockValue.class;
 		}
 	}
