@@ -22,10 +22,10 @@
   "environment": "client",
   "entrypoints": {
     "main": [
-      "essentialclient.EssentialClient"
+      "me.senseiwells.essentialclient.EssentialClient"
     ],
     "modmenu": [
-      "essentialclient.gui.modmenu.ModMenuImpl"
+      "me.senseiwells.essentialclient.gui.modmenu.ModMenuImpl"
     ]
   },
   "mixins": [
