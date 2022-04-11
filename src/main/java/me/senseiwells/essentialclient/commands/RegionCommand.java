@@ -20,7 +20,7 @@ public class RegionCommand {
 			return;
 		}
 
-		CommandHelper.clientCommands.add("region");
+		CommandHelper.CLIENT_COMMANDS.add("region");
 
 		dispatcher.register(literal("region")
 			.then(literal("get")

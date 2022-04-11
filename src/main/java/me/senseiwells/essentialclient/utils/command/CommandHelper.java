@@ -10,14 +10,13 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.render.ChatColour;
-import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
+import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.ChatColour;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
@@ -36,12 +35,13 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandHelper {
-	private static CommandTreeS2CPacket fakeCommandPacket;
 
-	public static final Set<String> clientCommands = new HashSet<>();
-	public static final Set<String> functionCommands = new HashSet<>();
-	private static final Map<ArucasThreadHandler, Set<LiteralCommandNode<ServerCommandSource>>> functionCommandNodes = new HashMap<>();
+	private static final Map<UUID, Set<LiteralCommandNode<ServerCommandSource>>> FUNCTION_COMMAND_NODES = new HashMap<>();
+	public static final Set<String> CLIENT_COMMANDS = new HashSet<>();
+	public static final Set<String> FUNCTION_COMMANDS = new HashSet<>();
 	public static final DecimalFormat decimalFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
+
+	private static CommandTreeS2CPacket fakeCommandPacket;
 	public static MethodHandle argumentHandle;
 
 	static {
@@ -59,10 +59,10 @@ public class CommandHelper {
 	}
 
 	public static boolean isClientCommand(String command) {
-		if (clientCommands.contains(command)) {
+		if (CLIENT_COMMANDS.contains(command)) {
 			return true;
 		}
-		for (Set<LiteralCommandNode<ServerCommandSource>> commandNodes : functionCommandNodes.values()) {
+		for (Set<LiteralCommandNode<ServerCommandSource>> commandNodes : FUNCTION_COMMAND_NODES.values()) {
 			for (LiteralCommandNode<ServerCommandSource> commandNode : commandNodes) {
 				if (commandNode.getLiteral().equals(command)) {
 					return true;
@@ -72,15 +72,15 @@ public class CommandHelper {
 		return false;
 	}
 
-	public static void addComplexCommand(ArucasThreadHandler handler, LiteralCommandNode<ServerCommandSource> commandNode) {
-		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = functionCommandNodes.get(handler);
+	public static void addComplexCommand(UUID uuid, LiteralCommandNode<ServerCommandSource> commandNode) {
+		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.get(uuid);
 		commandNodeSet = commandNodeSet != null ? commandNodeSet : new HashSet<>();
 		commandNodeSet.add(commandNode);
-		functionCommandNodes.put(handler, commandNodeSet);
+		FUNCTION_COMMAND_NODES.put(uuid, commandNodeSet);
 	}
 
 	public static void registerFunctionCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
-		for (Set<LiteralCommandNode<ServerCommandSource>> commandNodes : functionCommandNodes.values()) {
+		for (Set<LiteralCommandNode<ServerCommandSource>> commandNodes : FUNCTION_COMMAND_NODES.values()) {
 			for (LiteralCommandNode<ServerCommandSource> commandNode : commandNodes) {
 				dispatcher.getRoot().addChild(commandNode);
 			}
@@ -88,11 +88,11 @@ public class CommandHelper {
 	}
 
 	public static void clearClientCommands() {
-		clientCommands.clear();
+		CLIENT_COMMANDS.clear();
 	}
 
 	public static void removeComplexCommand(Context context) {
-		functionCommandNodes.remove(context.getThreadHandler());
+		FUNCTION_COMMAND_NODES.remove(context.getContextId());
 	}
 
 	public static void executeCommand(StringReader reader, String command) {
@@ -137,7 +137,7 @@ public class CommandHelper {
 			arguments.add(StringValue.of(argument));
 		}
 		StringValue command = (StringValue) arguments.remove(0);
-		if (functionCommands.contains(command.value)) {
+		if (FUNCTION_COMMANDS.contains(command.value)) {
 			MinecraftScriptEvents.ON_COMMAND.run(command, new ListValue(arguments));
 			return true;
 		}
@@ -160,7 +160,6 @@ public class CommandHelper {
 		return fakeCommandPacket;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static Collection<ParsedArgument<?, ?>> getArguments(CommandContext<ServerCommandSource> context) {
 		try {
 			if (argumentHandle == null) {
@@ -169,7 +168,9 @@ public class CommandHelper {
 				MethodHandles.Lookup lookup = MethodHandles.lookup();
 				argumentHandle = lookup.unreflectGetter(field);
 			}
-			return ((Map<String, ParsedArgument<?, ?>>) argumentHandle.invokeExact(context)).values();
+			@SuppressWarnings("unchecked")
+			Map<String, ParsedArgument<?, ?>> parsedArgumentMap = (Map<String, ParsedArgument<?, ?>>) argumentHandle.invokeExact(context);
+			return parsedArgumentMap.values();
 		}
 		catch (Throwable throwable) {
 			throwable.printStackTrace();

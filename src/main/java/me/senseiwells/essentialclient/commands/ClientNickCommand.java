@@ -19,7 +19,7 @@ public class ClientNickCommand {
 			return;
 		}
 
-		CommandHelper.clientCommands.add("clientnick");
+		CommandHelper.CLIENT_COMMANDS.add("clientnick");
 
 		dispatcher.register(literal("clientnick")
 			.then(literal("set")

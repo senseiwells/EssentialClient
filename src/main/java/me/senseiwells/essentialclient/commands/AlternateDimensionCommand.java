@@ -23,7 +23,7 @@ public class AlternateDimensionCommand {
 			return;
 		}
 
-		CommandHelper.clientCommands.add("alternatedimension");
+		CommandHelper.CLIENT_COMMANDS.add("alternatedimension");
 
 		LiteralArgumentBuilder<ServerCommandSource> commandBuilder = literal("alternatedimension");
 		commandBuilder.executes(context -> {

@@ -1,10 +1,10 @@
 package me.senseiwells.essentialclient.utils.inventory;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.interfaces.IGhostRecipeBookWidget;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -432,46 +432,41 @@ public class InventoryUtils {
 	}
 
 	public static boolean swapSlot(MinecraftClient client, ScreenHandler screenHandler, int index, int secondIndex) {
-		if (client.interactionManager == null) {
-			return false;
+		if (client.interactionManager != null) {
+			client.execute(() -> client.interactionManager.clickSlot(screenHandler.syncId, index, secondIndex, SlotActionType.SWAP, client.player));
+			return true;
 		}
-		client.execute(() -> client.interactionManager.clickSlot(screenHandler.syncId, index, secondIndex, SlotActionType.SWAP, client.player));
-		return true;
+		return false;
 	}
 
 	public static void shiftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int index) {
-		if (client.interactionManager == null) {
-			return;
+		if (client.interactionManager != null) {
+			client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, index, 0, SlotActionType.QUICK_MOVE, client.player));
 		}
-		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, index, 0, SlotActionType.QUICK_MOVE, client.player));
 	}
 
 	public static void leftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
-		if (client.interactionManager == null) {
-			return;
+		if (client.interactionManager != null) {
+			client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.PICKUP, client.player));
 		}
-		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.PICKUP, client.player));
 	}
 
 	public static void craftClickSlot(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum, int mouseButton) {
-		if (client.interactionManager == null) {
-			return;
+		if (client.interactionManager != null) {
+			client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, mouseButton, SlotActionType.QUICK_CRAFT, client.player));
 		}
-		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, mouseButton, SlotActionType.QUICK_CRAFT, client.player));
 	}
 
 	public static void dropStack(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
-		if (client.interactionManager == null) {
-			return;
+		if (client.interactionManager != null) {
+			client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 1, SlotActionType.THROW, client.player));
 		}
-		client.execute(() -> client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 1, SlotActionType.THROW, client.player));
 	}
 
 	public static void dropSingle(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
-		if (client.interactionManager == null) {
-			return;
+		if (client.interactionManager != null) {
+			client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.THROW, client.player);
 		}
-		client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.THROW, client.player);
 	}
 
 	public static ItemStack getCursorStack(MinecraftClient client) {

@@ -260,7 +260,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			if (!(commandNode instanceof LiteralCommandNode<ServerCommandSource> literalCommandNode)) {
 				throw new RuntimeError("Expected a literal command builder as root", function.syntaxPosition, context);
 			}
-			CommandHelper.addComplexCommand(context.getThreadHandler(), literalCommandNode);
+			CommandHelper.addComplexCommand(context.getContextId(), literalCommandNode);
 			MinecraftClient client = this.getClient(context, function);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
@@ -271,7 +271,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 			ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 2);
 
-			CommandHelper.functionCommands.add(stringValue.value);
+			CommandHelper.FUNCTION_COMMANDS.add(stringValue.value);
 			LiteralCommandNode<ServerCommandSource> command = CommandManager.literal(stringValue.value).build();
 			List<ArgumentCommandNode<ServerCommandSource, String>> arguments = new ArrayList<>();
 
@@ -304,7 +304,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				command.addChild(finalArguments);
 			}
 
-			CommandHelper.addComplexCommand(context.getThreadHandler(), command);
+			CommandHelper.addComplexCommand(context.getContextId(), command);
 			MinecraftClient client = this.getClient(context, function);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));

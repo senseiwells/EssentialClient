@@ -1,28 +1,24 @@
 package me.senseiwells.essentialclient.clientscript.extensions;
 
-import me.senseiwells.essentialclient.clientscript.values.EntityValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
-import me.senseiwells.essentialclient.clientscript.values.WorldValue;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.api.wrappers.*;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
+import me.senseiwells.essentialclient.clientscript.values.EntityValue;
+import me.senseiwells.essentialclient.clientscript.values.PosValue;
+import me.senseiwells.essentialclient.clientscript.values.WorldValue;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ArucasClass(name = "FakeEntity")
 public class FakeEntityWrapper implements IArucasWrappedClass {
-	private static final Map<ArucasThreadHandler, Set<Integer>> FAKE_IDS = new HashMap<>();
+	private static final Map<UUID, Set<Integer>> FAKE_IDS = new HashMap<>();
 	private static final AtomicInteger ID_COUNTER = new AtomicInteger(Integer.MAX_VALUE);
 	private static final NumberValue ZERO = NumberValue.of(0);
 
@@ -172,7 +168,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	}
 
 	public synchronized static void clearFakeEntities(Context context) {
-		Set<Integer> fakeIds = FAKE_IDS.remove(context.getThreadHandler());
+		Set<Integer> fakeIds = FAKE_IDS.remove(context.getContextId());
 		ClientWorld world = EssentialUtils.getWorld();
 		if (fakeIds != null && world != null) {
 			EssentialUtils.getClient().execute(() -> fakeIds.forEach(id -> world.removeEntity(id, Entity.RemovalReason.DISCARDED)));
@@ -181,8 +177,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 
 	private synchronized static int getNextFakeId(Context context) {
 		int id = ID_COUNTER.getAndDecrement();
-		Set<Integer> fakeIdSet = FAKE_IDS.getOrDefault(context.getThreadHandler(), new HashSet<>());
-		FAKE_IDS.putIfAbsent(context.getThreadHandler(), fakeIdSet);
+		Set<Integer> fakeIdSet = FAKE_IDS.computeIfAbsent(context.getContextId(), uuid -> new HashSet<>());
 		fakeIdSet.add(id);
 		return id;
 	}

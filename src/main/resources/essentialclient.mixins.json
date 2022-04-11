@@ -19,6 +19,7 @@
     "clientScript.ClientPlayerInteractionManagerMixin",
     "clientScript.ClientPlayNetworkHandlerMixin",
     "clientScript.FishingBobberEntityMixin",
+    "clientScript.HandledScreenMixin",
     "clientScript.KeyboardMixin",
     "clientScript.LivingEntityMixin",
     "clientScript.MerchantScreenHandlerMixin",

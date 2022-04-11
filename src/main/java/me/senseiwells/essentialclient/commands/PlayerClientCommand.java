@@ -40,8 +40,8 @@ public class PlayerClientCommand {
 			return;
 		}
 
-		CommandHelper.clientCommands.add("playerclient");
-		CommandHelper.clientCommands.add("pc");
+		CommandHelper.CLIENT_COMMANDS.add("playerclient");
+		CommandHelper.CLIENT_COMMANDS.add("pc");
 
 		LiteralCommandNode<ServerCommandSource> playerclientNode = CommandManager.literal("playerclient").build();
 		LiteralCommandNode<ServerCommandSource> pcNode = CommandManager.literal("pc").build();

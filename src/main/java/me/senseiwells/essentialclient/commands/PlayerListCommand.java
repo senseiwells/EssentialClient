@@ -35,8 +35,8 @@ public class PlayerListCommand {
 			return;
 		}
 
-		CommandHelper.clientCommands.add("pl");
-		CommandHelper.clientCommands.add("playerlist");
+		CommandHelper.CLIENT_COMMANDS.add("pl");
+		CommandHelper.CLIENT_COMMANDS.add("playerlist");
 
 		LiteralCommandNode<ServerCommandSource> playerlistNode = literal("playerlist").build();
 		LiteralCommandNode<ServerCommandSource> plNode = literal("pl").build();

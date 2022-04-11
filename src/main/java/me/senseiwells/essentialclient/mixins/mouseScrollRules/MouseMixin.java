@@ -24,9 +24,8 @@ public class MouseMixin {
 
 	@Redirect(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;scrollInHotbar(D)V"))
 	private void onScrollHotbar(PlayerInventory playerInventory, double scrollAmount) {
-		if (ClientRules.DISABLE_HOTBAR_SCROLLING.getValue()) {
-			return;
+		if (!ClientRules.DISABLE_HOTBAR_SCROLLING.getValue()) {
+			playerInventory.scrollInHotbar(scrollAmount);
 		}
-		playerInventory.scrollInHotbar(scrollAmount);
 	}
 }

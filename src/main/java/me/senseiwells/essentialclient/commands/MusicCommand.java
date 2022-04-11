@@ -22,7 +22,7 @@ public class MusicCommand {
 			return;
 		}
 
-		CommandHelper.clientCommands.add("music");
+		CommandHelper.CLIENT_COMMANDS.add("music");
 
 		dispatcher.register(literal("music")
 			.then(literal("skip")

@@ -20,7 +20,6 @@ import java.util.UUID;
 
 @Mixin(AbstractClientPlayerEntity.class)
 public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
-
 	@Unique
 	private final UUID SOUL_SPEED_BOOST_ID = UUID.fromString("87f46a96-686f-4796-b035-22e16ee9e038");
 

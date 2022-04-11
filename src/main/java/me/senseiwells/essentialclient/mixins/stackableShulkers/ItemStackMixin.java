@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 // Priority is to be able to be applied before tweakeroo (for compatibility)
 @Mixin(value = ItemStack.class, priority = 900)
 public abstract class ItemStackMixin {
-
 	@Shadow
 	public abstract Item getItem();
 

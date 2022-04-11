@@ -22,7 +22,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class ClientScriptCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-		CommandHelper.clientCommands.add("clientscript");
+		CommandHelper.CLIENT_COMMANDS.add("clientscript");
 
 		LiteralArgumentBuilder<ServerCommandSource>
 			root = literal("clientscript"),
