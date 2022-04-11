@@ -1,7 +1,7 @@
 # EssentialClient
 
 [![Discord](https://badgen.net/discord/online-members/7R9SfktZxH?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
-[![GitHub downloads](https://img.shields.io/github/downloads/senseiwells/me.senseiwells.essentialclient/total?label=Github%20downloads&logo=github)](https://github.com/senseiwells/me.senseiwells.essentialclient/releases)
+[![GitHub downloads](https://img.shields.io/github/downloads/senseiwells/essentialclient/total?label=Github%20downloads&logo=github)](https://github.com/senseiwells/essentialclient/releases)
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
