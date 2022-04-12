@@ -1,7 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.utils.clientscript.ScreenRemapper;
-import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -12,14 +10,16 @@ import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.utils.clientscript.ScreenRemapper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.item.ItemGroup;
+
+import java.util.Objects;
 
 public class ScreenValue<T extends Screen> extends Value<T> {
 	protected ScreenValue(T screen) {
-		super(screen);
+		super(Objects.requireNonNull(screen));
 	}
 
 	@Override
@@ -47,14 +47,14 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 		return "Screen";
 	}
 
+	/**
+	 * This method should not be called directly,
+	 * if you want to convert a Screen to an ScreenValue
+	 * you should use {@link Context#convertValue(Object)}
+	 */
+	@Deprecated
 	public static Value<?> of(Screen screen) {
-		if (screen instanceof MerchantScreen merchantScreen) {
-			return new MerchantScreenValue(merchantScreen);
-		}
-		if (screen instanceof FakeInventoryScreen fakeInventoryScreen) {
-			return new FakeInventoryScreenValue(fakeInventoryScreen);
-		}
-		return screen == null ? NullValue.NULL : new ScreenValue<>(screen);
+		return new ScreenValue<>(screen);
 	}
 
 	public static class ArucasScreenClass extends ArucasClassExtension {

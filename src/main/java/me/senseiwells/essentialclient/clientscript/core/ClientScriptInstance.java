@@ -9,11 +9,8 @@ import me.senseiwells.arucas.utils.impl.ArucasThread;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientrule.ClientRules;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.FakeEntityWrapper;
-import me.senseiwells.essentialclient.clientscript.extensions.GameEventWrapper;
-import me.senseiwells.essentialclient.clientscript.values.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.MinecraftClient;
@@ -36,38 +33,8 @@ public class ClientScriptInstance {
 			.setDisplayName("Arucas Client")
 			.setOutputHandler(ArucasMinecraftOutput.INSTANCE)
 			.setImportPath(ClientScript.INSTANCE.getScriptDirectory().resolve("libs"))
-			.addClasses(
-				"Minecraft",
-				JsonValue.ArucasJsonClass::new,
-				MinecraftClientValue.ArucasMinecraftClientMembers::new,
-				CommandBuilderValue.CommandBuilderClass::new,
-				PlayerValue.ArucasPlayerClass::new,
-				EntityValue.ArucasEntityClass::new,
-				OtherPlayerValue.ArucasAbstractPlayerClass::new,
-				OtherPlayerValue.ArucasOtherPlayerClass::new,
-				LivingEntityValue.ArucasLivingEntityClass::new,
-				BlockValue.ArucasBlockClass::new,
-				ItemStackValue.ArucasItemStackClass::new,
-				WorldValue.ArucasWorldClass::new,
-				ScreenValue.ArucasScreenClass::new,
-				FakeInventoryScreenValue.ArucasFakeInventoryScreenClass::new,
-				TextValue.ArucasTextClass::new,
-				MaterialValue.ArucasMaterialClass::new,
-				PosValue.ArucasPosClass::new,
-				RecipeValue.ArucasRecipeClass::new,
-				MerchantScreenValue.ArucasMerchantScreenClass::new,
-				TradeValue.ArucasTradeOfferClass::new
-			)
-			.addWrappers(
-				"Minecraft",
-				GameEventWrapper::new,
-				BoxShapeWrapper::new,
-				FakeEntityWrapper::new
-			)
-			.addExtensions(
-				ArucasMinecraftExtension::new
-			)
 			.addDefault();
+		MinecraftAPI.addMinecraftAPI(BUILDER);
 		DiscordAPI.addDiscordAPI(BUILDER);
 		ExceptionUtils.runSafe(BUILDER::generateArucasFiles);
 	}

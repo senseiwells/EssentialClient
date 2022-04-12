@@ -1,7 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -12,13 +10,12 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
@@ -31,11 +28,12 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class EntityValue<T extends Entity> extends Value<T> {
 	protected EntityValue(T value) {
-		super(value);
+		super(Objects.requireNonNull(value));
 	}
 
 	@Override
@@ -66,20 +64,14 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		return "Entity";
 	}
 
-	public static Value<?> of(Entity entity) {
-		if (entity != null) {
-			if (entity instanceof ClientPlayerEntity clientPlayerEntity) {
-				return new PlayerValue(clientPlayerEntity);
-			}
-			if (entity instanceof OtherClientPlayerEntity otherClientPlayerEntity) {
-				return new OtherPlayerValue(otherClientPlayerEntity);
-			}
-			if (entity instanceof LivingEntity livingEntity) {
-				return new LivingEntityValue<>(livingEntity);
-			}
-			return new EntityValue<>(entity);
-		}
-		return NullValue.NULL;
+	/**
+	 * This method should not be called directly,
+	 * if you want to convert an Entity to an EntityValue
+	 * you should use {@link Context#convertValue(Object)}
+	 */
+	@Deprecated
+	public static EntityValue<?> of(Entity entity) {
+		return new EntityValue<>(entity);
 	}
 
 	public static class ArucasEntityClass extends ArucasClassExtension {
@@ -97,7 +89,9 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
 			ClientWorld world = ArucasMinecraftExtension.getWorld();
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
-			return EntityValue.of(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
+			return context.convertValue(
+				Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world)
+			);
 		}
 
 		@Override

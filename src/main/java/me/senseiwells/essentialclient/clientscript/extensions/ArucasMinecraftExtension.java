@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.extensions;
 
-import me.senseiwells.essentialclient.clientscript.values.MinecraftClientValue;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
@@ -14,6 +13,8 @@ import me.senseiwells.arucas.values.ThreadValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
+import me.senseiwells.essentialclient.clientscript.values.MinecraftClientValue;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -62,7 +63,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	}
 
 	public static MinecraftClient getClient() throws CodeError {
-		MinecraftClient client = MinecraftClient.getInstance();
+		MinecraftClient client = EssentialUtils.getClient();
 		if (client == null) {
 			throw new RuntimeError("MinecraftClient was null", ISyntax.empty());
 		}

@@ -14,7 +14,6 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.config.MappedStringConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.sound.MusicTracker;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +31,6 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		CLIENT_SCRIPT_ANNOUNCEMENTS = register(new BooleanClientRule("clientScriptAnnouncements", "This messages in chat when a script starts and finishes", true)),
 		COMMAND_ALTERNATE_DIMENSION = register(new BooleanClientRule("commandAlternateDimension", "This command calculates the coordinates of the alternate dimension", ClientRules::refreshCommand)),
 		COMMAND_CLIENT_NICK = register(new BooleanClientRule("commandClientNick", "This allows you to rename player names on the client", ClientRules::refreshCommand)),
-		COMMAND_MUSIC = register(new BooleanClientRule("commandMusic", "This command allows you to manipulate the current music", ClientRules::refreshCommand)),
 		COMMAND_PLAYER_CLIENT = register(new BooleanClientRule("commandPlayerClient", "This command allows you to save /player... commands and execute them", ClientRules::refreshCommand)),
 		COMMAND_PLAYER_LIST = register(new BooleanClientRule("commandPlayerList", "This command allows you to execute /player... commands in one command (requires commandPlayerClient)", ClientRules::refreshCommand)),
 		COMMAND_REGION = register(new BooleanClientRule("commandRegion", "This command allows you to determine the region you are in or the region at set coords", ClientRules::refreshCommand)),
@@ -81,8 +79,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 	public static final CycleClientRule
 		CUSTOM_CLIENT_CAPE = register(new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CustomClientCape.capeNames, ClientRules::refreshCape)),
 		DISABLE_ARMOUR_RENDERING = register(new CycleClientRule("disableArmourRendering", "This allows you to disable armour rendering for entities", List.of("None", "You", "Players", "Entities"))),
-		DISPLAY_RULE_TYPE = register(new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRules::refreshScreen)),
-		MUSIC_TYPES = register(new CycleClientRule("musicTypes", "This allows you to select what music types play", List.of("Default", "Overworld", "Nether", "Overwrld + Nethr", "End", "Creative", "Menu", "Credits", "Any"), ClientRules::refreshMusic));
+		DISPLAY_RULE_TYPE = register(new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRules::refreshScreen));
 
 	private static <T extends ClientRule<?>> T register(T clientRule) {
 		addRule(clientRule.getName(), clientRule);
@@ -162,13 +159,6 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.worldRenderer != null) {
 			client.worldRenderer.reload();
-		}
-	}
-
-	private static void refreshMusic(String value) {
-		MusicTracker musicTracker = EssentialUtils.getClient().getMusicTracker();
-		if (musicTracker != null) {
-			musicTracker.stop();
 		}
 	}
 

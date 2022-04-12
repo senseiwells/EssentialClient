@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.extensions;
 
 import me.senseiwells.arucas.api.wrappers.*;
+import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
@@ -36,8 +37,8 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	public NumberValue pitch;
 
 	@ArucasConstructor
-	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) {
-		Value<?> value = EntityValue.of(entityValue.value.getType().create(worldValue.value));
+	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) throws CodeError {
+		Value<?> value = context.convertValue(entityValue.value.getType().create(worldValue.value));
 		if (!(value instanceof EntityValue<?> entity)) {
 			throw new RuntimeException("Entity could not be created");
 		}
