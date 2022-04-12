@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.*;
 
 public class ChunkGrid {
-
 	private int width;
 	private int height;
 	private int columns;

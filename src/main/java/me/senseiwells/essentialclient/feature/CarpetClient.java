@@ -1,8 +1,10 @@
 package me.senseiwells.essentialclient.feature;
 
+import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import carpet.settings.ParsedRule;
 import carpet.settings.RuleCategory;
+import carpet.settings.SettingsManager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,6 +27,7 @@ public class CarpetClient implements Config.CList {
 
 	private final Map<String, ClientRule<?>> completeRuleMap;
 	private final Map<String, ClientRule<?>> currentRuleMap;
+	private final Set<String> carpetFixes;
 	private final String LOADNT;
 	private final String DATA_URL;
 	private final JsonElement COMMAND;
@@ -35,6 +38,7 @@ public class CarpetClient implements Config.CList {
 	private CarpetClient() {
 		this.completeRuleMap = new HashMap<>();
 		this.currentRuleMap = new HashMap<>();
+		this.carpetFixes = new HashSet<>();
 		this.LOADNT = "Could not load rule data";
 		this.DATA_URL = "https://raw.githubusercontent.com/Crec0/carpet-rules-database/main/data/parsed_data.json";
 		this.COMMAND = new JsonPrimitive("COMMAND");
@@ -93,19 +97,33 @@ public class CarpetClient implements Config.CList {
 
 	private void handleChangeRule(String ruleName, Object value) {
 		if (EssentialUtils.playerHasOp()) {
-			EssentialUtils.sendChatMessage("/carpet %s %s".formatted(ruleName, value));
+			String command = this.carpetFixes.contains(ruleName) ? "/carpet-fixes" : "/carpet";
+			EssentialUtils.sendChatMessage(command + " %s %s".formatted(ruleName, value));
 		}
 	}
 
 	private Collection<ClientRule<?>> getSinglePlayerRules() {
 		if (this.currentRuleMap.isEmpty()) {
 			this.HANDLING_DATA.set(true);
-			for (ParsedRule<?> parsedRule : CarpetServer.settingsManager.getRules()) {
-				ClientRule<?> clientRule = this.completeRuleMap.get(parsedRule.name);
-				clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule) : this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo());
-				clientRule.setValueFromString(parsedRule.getAsString());
-				this.currentRuleMap.put(clientRule.getName(), clientRule);
+
+			Consumer<SettingsManager> managerProcessor = settings -> {
+				for (ParsedRule<?> parsedRule : settings.getRules()) {
+					ClientRule<?> clientRule = this.completeRuleMap.get(parsedRule.name);
+					clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule) :
+						this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo());
+					clientRule.setValueFromString(parsedRule.getAsString());
+					this.currentRuleMap.put(clientRule.getName(), clientRule);
+				}
+			};
+
+			managerProcessor.accept(CarpetServer.settingsManager);
+			for (CarpetExtension extension : CarpetServer.extensions) {
+				SettingsManager manager = extension.customSettingsManager();
+				if (manager != null) {
+					managerProcessor.accept(manager);
+				}
 			}
+
 			this.HANDLING_DATA.set(false);
 		}
 		return this.currentRuleMap.values();
@@ -118,7 +136,11 @@ public class CarpetClient implements Config.CList {
 		String description = ruleObject.get("description").getAsString();
 		JsonElement repo = ruleObject.get("repo");
 		if (repo != null) {
-			description += "\n§3From: " + repo.getAsString();
+			String repoString = repo.getAsString();
+			description += "\n§3From: " + repoString;
+			if (repoString.equals("fxmorin/carpet-fixes")) {
+				this.carpetFixes.add(name);
+			}
 		}
 		String optionalInfo = null;
 		JsonElement extraInfo = ruleObject.get("extras");
@@ -254,6 +276,9 @@ public class CarpetClient implements Config.CList {
 			ruleObject.addProperty("description", rule.getDescription());
 			ruleObject.addProperty("extras", rule.getOptionalInfo());
 			ruleObject.add("default", rule.getDefaultAsJson());
+			if (this.carpetFixes.contains(name)) {
+				ruleObject.addProperty("repo", "fxmorin/carpet-fixes");
+			}
 			if (rule instanceof CycleClientRule cycleRule) {
 				JsonArray validCycles = new JsonArray();
 				cycleRule.getCycleValues().forEach(validCycles::add);

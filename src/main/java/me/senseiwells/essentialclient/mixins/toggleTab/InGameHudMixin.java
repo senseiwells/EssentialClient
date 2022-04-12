@@ -30,7 +30,7 @@ public class InGameHudMixin {
 	@Unique
 	private boolean tabVisible = false;
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(I)Lnet/minecraft/scoreboard/ScoreboardObjective;", shift = At.Shift.BEFORE), cancellable = true)
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(I)Lnet/minecraft/scoreboard/ScoreboardObjective;", shift = At.Shift.BEFORE, ordinal = 2), cancellable = true)
 	private void onRenderTab(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
 		if (this.client.world == null || this.client.player == null) {
 			return;

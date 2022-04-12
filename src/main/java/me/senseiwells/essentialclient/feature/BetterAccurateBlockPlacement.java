@@ -91,7 +91,7 @@ public class BetterAccurateBlockPlacement {
 		}
 	}
 
-	private static void sendLookPacket(ClientPlayNetworkHandler networkHandler, ClientPlayerEntity playerEntity) {
+	public static void sendLookPacket(ClientPlayNetworkHandler networkHandler, ClientPlayerEntity playerEntity) {
 		networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
 			fakeYaw,
 			fakePitch,

@@ -29,9 +29,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		}
 		Vec3d vec3d = this.getVelocity();
 		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.Full(
-			vec3d.x,
-			-999,
-			vec3d.y,
+			vec3d.x, -999, vec3d.y,
 			BetterAccurateBlockPlacement.fakeYaw,
 			BetterAccurateBlockPlacement.fakePitch,
 			this.isOnGround()
@@ -45,9 +43,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 			return;
 		}
 		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.Full(
-			this.getX(),
-			this.getY(),
-			this.getZ(),
+			this.getX(), this.getY(), this.getZ(),
 			BetterAccurateBlockPlacement.fakeYaw,
 			BetterAccurateBlockPlacement.fakePitch,
 			this.isOnGround()
@@ -60,10 +56,6 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 			clientPlayNetworkHandler.sendPacket(packet);
 			return;
 		}
-		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
-			BetterAccurateBlockPlacement.fakeYaw,
-			BetterAccurateBlockPlacement.fakePitch,
-			this.isOnGround()
-		));
+		BetterAccurateBlockPlacement.sendLookPacket(clientPlayNetworkHandler, (ClientPlayerEntity) (Object) this);
 	}
 }

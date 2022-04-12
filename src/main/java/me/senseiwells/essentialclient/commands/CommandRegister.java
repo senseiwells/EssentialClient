@@ -10,7 +10,6 @@ public class CommandRegister {
 		PlayerClientCommand.register(dispatcher);
 		PlayerListCommand.register(dispatcher);
 		RegionCommand.register(dispatcher);
-		MusicCommand.register(dispatcher);
 		ClientNickCommand.register(dispatcher);
 		UpdateClientCommand.register(dispatcher);
 		AlternateDimensionCommand.register(dispatcher);
