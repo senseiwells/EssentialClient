@@ -7,6 +7,7 @@ import me.senseiwells.essentialclient.feature.ClientKeybinds;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.feature.MultiConnectSupport;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
 import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
@@ -42,6 +43,7 @@ public class EssentialClient implements ModInitializer {
 		ClientKeybinds.loadKeybinds();
 		CraftingSharedConstants.registerHandlers();
 		MultiConnectSupport.setupMultiConnectAPI();
+		MinecraftDeobfuscator.init();
 	}
 
 	public static void registerConfigs() {

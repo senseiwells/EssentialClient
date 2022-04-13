@@ -31,8 +31,7 @@ public class ClientScriptInstance {
 	static {
 		BUILDER = new ContextBuilder()
 			.setDisplayName("Arucas Client")
-			.setOutputHandler(ArucasMinecraftOutput.INSTANCE)
-			.setImportPath(ClientScript.INSTANCE.getScriptDirectory().resolve("libs"))
+			.setArucasAPI(new ImplArucasAPI())
 			.addDefault();
 		MinecraftAPI.addMinecraftAPI(BUILDER);
 		DiscordAPI.addDiscordAPI(BUILDER);

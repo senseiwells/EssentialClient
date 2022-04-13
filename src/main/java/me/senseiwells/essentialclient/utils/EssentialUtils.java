@@ -12,18 +12,22 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class EssentialUtils {
+	private static final Path ESSENTIAL_CLIENT_PATH;
+
 	public static URL WIKI_URL;
 	public static URL SCRIPT_WIKI_URL;
 
-	private static final Path ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
-
 	static {
+		ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
+
 		throwAsRuntime(() -> {
 			WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki");
 			SCRIPT_WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki/ClientScript");
+			Files.createDirectories(ESSENTIAL_CLIENT_PATH);
 		});
 	}
 
