@@ -24,31 +24,29 @@ import java.util.Map;
 
 /**
  * Taken mostly from NotEnoughCrashes
- * <p>
- * Need to figure out a way to map Yarn -> Intermediary,
- * so you can call Yarn methods in Arucas, and they would map to
- * Intermediary to be called internally.
- * <br>
- * I think I need to make my own parser for the .tiny file,
- * sounds like pain.
- * </p>
  *
+ * Modified to map Yarn -> Intermediary
  */
 public final class MinecraftDeobfuscator {
-	private static final Map<String, String> OFUSCATION_MAPPINGS;
-	private static final Map<String, String> DEOFUSCATION_MAPPINGS;
+	/**
+	 * This map will only contain class deobfuscation mappings since
+	 * we don't care about methods, fields, etc. We only deobfuscate
+	 * when obfuscating method names, and we need the deobfuscated class
+	 * name to do so (to ensure we have the correct method + declaring class)
+	 */
+	private static final Map<String, String> CLASS_DEOBFUSCATION_MAPPINGS;
+	private static final Map<String, String> OBFUSCATION_MAPPINGS;
 	private static final String MAPPINGS_JAR_LOCATION;
-	private static final String NAMESPACE_FROM;
-	private static final String NAMESPACE_TO;
 	private static final Path MAPPINGS_DIRECTORY;
 	private static final Path CACHED_MAPPINGS;
 
+	private static boolean triedLoadingMappings;
+
 	static {
-		OFUSCATION_MAPPINGS = new HashMap<>();
-		DEOFUSCATION_MAPPINGS = new HashMap<>();
+		OBFUSCATION_MAPPINGS = new HashMap<>();
+		CLASS_DEOBFUSCATION_MAPPINGS = new HashMap<>();
 		MAPPINGS_JAR_LOCATION = "mappings/mappings.tiny";
-		NAMESPACE_FROM = "intermediary";
-		NAMESPACE_TO = "named";
+		triedLoadingMappings = false;
 
 		MAPPINGS_DIRECTORY = EssentialUtils.getEssentialConfigFile().resolve("Mappings");
 		if (!Files.exists(MAPPINGS_DIRECTORY) && !ExceptionUtils.runSafe(() -> Files.createDirectory(MAPPINGS_DIRECTORY))) {
@@ -69,27 +67,22 @@ public final class MinecraftDeobfuscator {
 
 	public static void init() { }
 
-	public static String deobfuscate(String name) {
-		if (DEOFUSCATION_MAPPINGS.isEmpty()) {
+	public static String obfuscate(String name) {
+		if (!triedLoadingMappings) {
 			loadMappings();
-			if (DEOFUSCATION_MAPPINGS.isEmpty()) {
-				return name;
-			}
 		}
 
-		String mapped = DEOFUSCATION_MAPPINGS.get(name);
+		String mapped = OBFUSCATION_MAPPINGS.get(name);
 		return mapped == null ? name : mapped;
 	}
 
-	public static String obfuscate(String name) {
-		if (OFUSCATION_MAPPINGS.isEmpty()) {
-			// loadMappings();
-			if (OFUSCATION_MAPPINGS.isEmpty()) {
-				return name;
-			}
+	public static String deobfuscateClass(String name) {
+		if (!triedLoadingMappings) {
+			loadMappings();
 		}
 
-		return name;
+		String mapped = CLASS_DEOBFUSCATION_MAPPINGS.get(name);
+		return mapped == null ? name : mapped;
 	}
 
 	private static void downloadAndCacheMappings() {
@@ -125,10 +118,11 @@ public final class MinecraftDeobfuscator {
 
 	private static void loadMappings() {
 		if (!Files.exists(CACHED_MAPPINGS)) {
-			EssentialClient.LOGGER.warn("Could not download mappings, stack trace won't be deobfuscated");
+			EssentialClient.LOGGER.warn("Could not download mappings");
 			return;
 		}
 
+		triedLoadingMappings = true;
 		try (BufferedReader mappingReader = Files.newBufferedReader(CACHED_MAPPINGS)) {
 			TinyV2Factory.visit(mappingReader, new TinyVisitorImpl());
 		}
@@ -138,35 +132,56 @@ public final class MinecraftDeobfuscator {
 	}
 
 	/**
-	 * This maps Intermediary -> Yarn
+	 * This maps Intermediary -> Yarn (For classes only),
+	 * and also maps Yarn -> Intermediary
 	 */
 	private static class TinyVisitorImpl implements TinyVisitor {
-		private final Map<String, Integer> namespaceStringToColumn = new HashMap<>();
-
-		private void addMappings(MappingGetter name) {
-			DEOFUSCATION_MAPPINGS.put(name.get(this.namespaceStringToColumn.get(NAMESPACE_FROM)).replace('/', '.'),
-				name.get(this.namespaceStringToColumn.get(NAMESPACE_TO)).replace('/', '.'));
-		}
+		private String fromClass;
+		private String toClass;
+		private int fromIndex;
+		private int toIndex;
 
 		@Override
 		public void start(TinyMetadata metadata) {
-			this.namespaceStringToColumn.put(NAMESPACE_FROM, metadata.index(NAMESPACE_FROM));
-			this.namespaceStringToColumn.put(NAMESPACE_TO, metadata.index(NAMESPACE_TO));
+			this.fromIndex = metadata.index("intermediary");
+			this.toIndex = metadata.index("named");
 		}
 
+		/**
+		 * Whenever we push into a class we need to remember the class name
+		 * since we need them for field and method names, unlike Intermediary
+		 * Yarn can have clashing method names and fields between classes, so
+		 * we need to know the declaring class too.
+		 */
 		@Override
 		public void pushClass(MappingGetter name) {
-			this.addMappings(name);
+			this.fromClass = name.get(this.fromIndex).replace('/', '.');
+			this.toClass = name.get(this.toIndex).replace('/', '.');
+
+			CLASS_DEOBFUSCATION_MAPPINGS.put(this.fromClass, this.toClass);
+			OBFUSCATION_MAPPINGS.put(this.toClass, this.fromClass);
 		}
 
+		/**
+		 * Methods are mapped: abc#def() -> net.package.ClassName#MethodName()
+		 */
 		@Override
 		public void pushMethod(MappingGetter name, String descriptor) {
-			this.addMappings(name);
+			String from = this.fromClass + "#" + name.get(this.fromIndex) + "()";
+			String to = this.toClass + "#" + name.get(this.toIndex) + "()";
+
+			OBFUSCATION_MAPPINGS.put(to, from);
 		}
 
+		/**
+		 * Fields are mapped: abc#def -> net.package.ClassName#FieldName
+		 */
 		@Override
 		public void pushField(MappingGetter name, String descriptor) {
-			this.addMappings(name);
+			String from = this.fromClass + "#" + name.get(this.fromIndex);
+			String to = this.toClass + "#" + name.get(this.toIndex);
+
+			OBFUSCATION_MAPPINGS.put(to, from);
 		}
 	}
 
@@ -203,7 +218,8 @@ public final class MinecraftDeobfuscator {
 					String version = Arrays.stream(versions).max(Comparator.comparingInt(v -> v.build)).get().version;
 					Files.write(YARN_VERSION, version.getBytes());
 					VERSION_CACHE = version;
-				} else {
+				}
+				else {
 					VERSION_CACHE = new String(Files.readAllBytes(YARN_VERSION));
 				}
 			}

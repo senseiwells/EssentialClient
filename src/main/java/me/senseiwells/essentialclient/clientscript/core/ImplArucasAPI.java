@@ -2,6 +2,8 @@ package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.IArucasAPI;
 import me.senseiwells.arucas.api.IArucasOutput;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
 
 import java.nio.file.Path;
 
@@ -20,29 +22,16 @@ public class ImplArucasAPI implements IArucasAPI {
 
 	@Override
 	public boolean shouldObfuscate() {
-		return true;
+		return !EssentialUtils.isDev();
 	}
 
-	// Obviously this is just for testing, don't have a re-mapper yet...
 	@Override
 	public String obfuscate(String name) {
-		if (name.equals("net.minecraft.client.MinecraftClient")) {
-			return "net.minecraft.class_310";
-		}
-		if (name.equals("net.minecraft.client.MinecraftClient#getInstance()")) {
-			return "net.minecraft.class_310#method_1551()";
-		}
-		if (name.equals("net.minecraft.client.MinecraftClient#IS_SYSTEM_MAC")) {
-			return "net.minecraft.class_310#field_1703";
-		}
-		return name;
+		return MinecraftDeobfuscator.obfuscate(name);
 	}
 
 	@Override
 	public String deobfuscate(String name) {
-		if (name.equals("net.minecraft.class_310")) {
-			return "net.minecraft.client.MinecraftClient";
-		}
-		return name;
+		return MinecraftDeobfuscator.deobfuscateClass(name);
 	}
 }

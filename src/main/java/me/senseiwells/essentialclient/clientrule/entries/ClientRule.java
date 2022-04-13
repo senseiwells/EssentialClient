@@ -83,6 +83,8 @@ public abstract class ClientRule<T> {
 
 	public abstract void setValueFromString(String value);
 
+	public abstract ClientRule<T> copy();
+
 	public void resetToDefault() {
 		this.setValue(this.defaultValue);
 	}
@@ -105,7 +107,6 @@ public abstract class ClientRule<T> {
 		EssentialClient.LOGGER.error("Could not set the value '{}' for {}", value, this.getName());
 	}
 
-	public abstract ClientRule<T> copy();
 
 	public enum Type {
 		BOOLEAN("Boolean", "boolean", Set.of(boolean.class, Boolean.class)),

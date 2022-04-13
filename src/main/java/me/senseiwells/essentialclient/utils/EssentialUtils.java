@@ -17,12 +17,14 @@ import java.nio.file.Path;
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
+	private static final boolean DEV;
 
 	public static URL WIKI_URL;
 	public static URL SCRIPT_WIKI_URL;
 
 	static {
 		ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
+		DEV = FabricLoader.getInstance().isDevelopmentEnvironment();
 
 		throwAsRuntime(() -> {
 			WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki");
@@ -59,7 +61,6 @@ public class EssentialUtils {
 		}
 	}
 
-
 	public static Path getEssentialConfigFile() {
 		return ESSENTIAL_CLIENT_PATH;
 	}
@@ -95,6 +96,10 @@ public class EssentialUtils {
 
 	public static String getMinecraftVersion() {
 		return MinecraftVersion.GAME_VERSION.getName();
+	}
+
+	public static boolean isDev() {
+		return DEV;
 	}
 
 	public static void throwAsRuntime(ThrowableRunnable runnable) {
