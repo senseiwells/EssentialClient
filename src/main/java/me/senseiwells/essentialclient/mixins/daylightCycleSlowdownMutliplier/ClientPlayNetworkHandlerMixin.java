@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.daylightCycleSlowdownMutliplier;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;

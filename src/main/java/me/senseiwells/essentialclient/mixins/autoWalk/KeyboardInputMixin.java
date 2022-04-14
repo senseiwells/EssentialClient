@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.autoWalk;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.KeyBinding;

@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.disableRecipeNotifications;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.toast.RecipeToast;
 import net.minecraft.client.toast.Toast;
 import org.spongepowered.asm.mixin.Mixin;

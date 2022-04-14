@@ -10,10 +10,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.clientrule.entries.*;
-import me.senseiwells.essentialclient.clientrule.entries.ClientRule.Type;
+import me.senseiwells.essentialclient.rule.carpet.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.Config;
+import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.misc.NetworkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
@@ -25,9 +25,9 @@ import java.util.function.Consumer;
 public class CarpetClient implements Config.CList {
 	public static final CarpetClient INSTANCE = new CarpetClient();
 
-	private final Map<String, ClientRule<?>> completeRuleMap;
-	private final Map<String, ClientRule<?>> currentRuleMap;
-	private final Set<String> carpetFixes;
+	private final Map<String, CarpetClientRule<?>> ALL_RULES;
+	private final Map<String, CarpetClientRule<?>> CURRENT_RULES;
+	private final Set<String> MANAGERS;
 	private final String LOADNT;
 	private final String DATA_URL;
 	private final JsonElement COMMAND;
@@ -36,9 +36,9 @@ public class CarpetClient implements Config.CList {
 	private boolean isServerCarpet;
 
 	private CarpetClient() {
-		this.completeRuleMap = new HashMap<>();
-		this.currentRuleMap = new HashMap<>();
-		this.carpetFixes = new HashSet<>();
+		this.ALL_RULES = new HashMap<>();
+		this.CURRENT_RULES = new HashMap<>();
+		this.MANAGERS = new HashSet<>();
 		this.LOADNT = "Could not load rule data";
 		this.DATA_URL = "https://raw.githubusercontent.com/Crec0/carpet-rules-database/main/data/parsed_data.json";
 		this.COMMAND = new JsonPrimitive("COMMAND");
@@ -50,20 +50,25 @@ public class CarpetClient implements Config.CList {
 		return this.isServerCarpet;
 	}
 
-	public void onDisconnect() {
-		this.isServerCarpet = false;
-		this.currentRuleMap.clear();
+	public boolean isCarpetManager(String name) {
+		return this.MANAGERS.contains(name);
 	}
 
-	public Collection<ClientRule<?>> getCurrentCarpetRules() {
+	public void onDisconnect() {
+		this.isServerCarpet = false;
+		this.CURRENT_RULES.clear();
+		this.MANAGERS.clear();
+	}
+
+	public Collection<Rule<?>> getCurrentCarpetRules() {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.isInSingleplayer()) {
 			return this.getSinglePlayerRules();
 		}
 		if (client.getCurrentServerEntry() != null && this.isServerCarpet) {
-			return this.currentRuleMap.values();
+			return List.copyOf(this.CURRENT_RULES.values());
 		}
-		return this.completeRuleMap.values();
+		return List.copyOf(this.ALL_RULES.values());
 	}
 
 	public void syncCarpetRule(NbtCompound compound) {
@@ -73,46 +78,40 @@ public class CarpetClient implements Config.CList {
 		EssentialUtils.getClient().execute(() -> {
 			String name = compound.getString("Rule");
 			String value = compound.getString("Value");
-			ClientRule<?> clientRule = this.currentRuleMap.get(name);
-			if (clientRule == null) {
+			String manager = compound.getString("Manager");
+			CarpetClientRule<?> rule = this.CURRENT_RULES.get(name);
+			if (rule == null) {
 				// We prioritise ParsedRule, but ClientRule's description
 				ParsedRule<?> parsedRule = CarpetServer.settingsManager.getRule(name);
-				clientRule = this.completeRuleMap.get(name);
+				rule = this.ALL_RULES.get(name);
 				if (parsedRule != null) {
-					clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule) : this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo());
+					rule = rule == null ? this.parseRuleToClientRule(parsedRule, manager) : this.parseRuleToClientRule(parsedRule, rule.getDescription(), rule.getOptionalInfo(), manager);
 				}
 				else {
 					// We must copy otherwise we will be modifying the global CarpetRule
-					clientRule = clientRule != null ? clientRule.copy() : new StringClientRule(name, this.LOADNT, value, this.handleRuleChange(name));
+					rule = rule != null ? rule.shallowCopy() : new StringCarpetRule(name, this.LOADNT, value);
 				}
-				this.currentRuleMap.put(name, clientRule);
+				this.CURRENT_RULES.put(name, rule);
 				return;
 			}
 
 			this.HANDLING_DATA.set(true);
-			clientRule.setValueFromString(value);
+			rule.setValueFromString(value);
 			this.HANDLING_DATA.set(false);
 		});
 	}
 
-	private void handleChangeRule(String ruleName, Object value) {
-		if (EssentialUtils.playerHasOp()) {
-			String command = this.carpetFixes.contains(ruleName) ? "/carpet-fixes" : "/carpet";
-			EssentialUtils.sendChatMessage(command + " %s %s".formatted(ruleName, value));
-		}
-	}
-
-	private Collection<ClientRule<?>> getSinglePlayerRules() {
-		if (this.currentRuleMap.isEmpty()) {
+	private Collection<Rule<?>> getSinglePlayerRules() {
+		if (this.CURRENT_RULES.isEmpty()) {
 			this.HANDLING_DATA.set(true);
 
 			Consumer<SettingsManager> managerProcessor = settings -> {
 				for (ParsedRule<?> parsedRule : settings.getRules()) {
-					ClientRule<?> clientRule = this.completeRuleMap.get(parsedRule.name);
-					clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule) :
-						this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo());
+					CarpetClientRule<?> clientRule = this.ALL_RULES.get(parsedRule.name);
+					clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule, settings.getIdentifier()) :
+						this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo(), settings.getIdentifier());
 					clientRule.setValueFromString(parsedRule.getAsString());
-					this.currentRuleMap.put(clientRule.getName(), clientRule);
+					this.CURRENT_RULES.put(clientRule.getName(), clientRule);
 				}
 			};
 
@@ -126,21 +125,18 @@ public class CarpetClient implements Config.CList {
 
 			this.HANDLING_DATA.set(false);
 		}
-		return this.currentRuleMap.values();
+		return List.copyOf(this.CURRENT_RULES.values());
 	}
 
-	private ClientRule<?> jsonToClientRule(JsonElement jsonElement) {
+	private CarpetClientRule<?> jsonToClientRule(JsonElement jsonElement) {
 		JsonObject ruleObject = jsonElement.getAsJsonObject();
 		String name = ruleObject.get("name").getAsString();
-		Type type = Type.fromString(ruleObject.get("type").getAsString());
+		Rule.Type type = Rule.Type.fromString(ruleObject.get("type").getAsString());
 		String description = ruleObject.get("description").getAsString();
 		JsonElement repo = ruleObject.get("repo");
 		if (repo != null) {
 			String repoString = repo.getAsString();
 			description += "\n§3From: " + repoString;
-			if (repoString.equals("fxmorin/carpet-fixes")) {
-				this.carpetFixes.add(name);
-			}
 		}
 		String optionalInfo = null;
 		JsonElement extraInfo = ruleObject.get("extras");
@@ -163,53 +159,54 @@ public class CarpetClient implements Config.CList {
 			defaultValue = ruleObject.get("value");
 		}
 		JsonElement categories = ruleObject.get("categories");
-		if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Type.BOOLEAN) {
-			return new CommandClientRule(name, description, defaultValue.getAsString(), value -> {
-				this.handleChangeRule(name, value);
-			}).setOptionalInfo(optionalInfo);
+		if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Rule.Type.BOOLEAN) {
+			CycleCarpetRule rule = CycleCarpetRule.commandOf(name, description, defaultValue.getAsString());
+			rule.setOptionalInfo(optionalInfo);
+			return rule;
 		}
 		JsonElement strictElement = ruleObject.get("strict");
-		if (strictElement != null && strictElement.getAsBoolean() && type != Type.BOOLEAN) {
+		if (strictElement != null && strictElement.getAsBoolean() && type != Rule.Type.BOOLEAN) {
 			List<String> validValues = new ArrayList<>();
 			JsonElement options = ruleObject.get("options");
 			if (options.isJsonArray()) {
 				JsonArray values = options.getAsJsonArray();
 				values.forEach(element -> validValues.add(element.getAsString()));
-				return new CycleClientRule(name, description, validValues, defaultValue.getAsString(), value -> {
-					this.handleChangeRule(name, value);
-				}).setOptionalInfo(optionalInfo);
+				CycleCarpetRule rule = new CycleCarpetRule(name, description, validValues, defaultValue.getAsString());
+				rule.setOptionalInfo(optionalInfo);
+				return rule;
 			}
 		}
-		ClientRule<?> clientRule = switch (type) {
+		CarpetClientRule<?> rule = switch (type) {
 			case CYCLE -> {
 				JsonArray validCycles = ruleObject.get("cycles").getAsJsonArray();
 				List<String> cycles = new ArrayList<>();
 				validCycles.forEach(element -> cycles.add(element.getAsString()));
-				yield new CycleClientRule(name, description, cycles, defaultValue.getAsString(), this.handleRuleChange(name));
+				yield new CycleCarpetRule(name, description, cycles, defaultValue.getAsString());
 			}
 			case BOOLEAN -> {
-				yield new BooleanClientRule(name, description, defaultValue.getAsBoolean(), this.handleRuleChange(name));
+				yield new BooleanCarpetRule(name, description, defaultValue.getAsBoolean());
 			}
 			case INTEGER -> {
-				yield new IntegerClientRule(name, description, defaultValue.getAsInt(), this.handleRuleChange(name));
+				yield new IntegerCarpetRule(name, description, defaultValue.getAsInt());
 			}
 			case DOUBLE -> {
-				yield new DoubleClientRule(name, description, defaultValue.getAsDouble(), this.handleRuleChange(name));
+				yield new DoubleCarpetRule(name, description, defaultValue.getAsDouble());
 			}
 			default -> {
-				yield new StringClientRule(name, description, defaultValue.getAsString(), this.handleRuleChange(name));
+				yield new StringCarpetRule(name, description, defaultValue.getAsString());
 			}
 		};
-		return clientRule.setOptionalInfo(optionalInfo);
+		rule.setOptionalInfo(optionalInfo);
+		return rule;
 	}
 
-	private ClientRule<?> parseRuleToClientRule(ParsedRule<?> parsedRule) {
-		return this.parseRuleToClientRule(parsedRule, null, null);
+	private CarpetClientRule<?> parseRuleToClientRule(ParsedRule<?> parsedRule, String manager) {
+		return this.parseRuleToClientRule(parsedRule, null, null, manager);
 	}
 
-	private ClientRule<?> parseRuleToClientRule(ParsedRule<?> parsedRule, String description, String optionalInfo) {
+	private CarpetClientRule<?> parseRuleToClientRule(ParsedRule<?> parsedRule, String description, String optionalInfo, String manager) {
 		String name = parsedRule.name;
-		Type type = Type.fromClass(parsedRule.type);
+		Rule.Type type = Rule.Type.fromClass(parsedRule.type);
 		String defaultValue = parsedRule.defaultAsString;
 		if (description == null) {
 			description = parsedRule.description;
@@ -222,34 +219,39 @@ public class CarpetClient implements Config.CList {
 			optionalInfo = builder.toString();
 		}
 		if (parsedRule.categories.contains(RuleCategory.COMMAND)) {
-			return new CommandClientRule(name, description, defaultValue, this.handleRuleChange(name)).setOptionalInfo(optionalInfo);
+			CycleCarpetRule rule = CycleCarpetRule.commandOf(name, description, defaultValue);
+			rule.setOptionalInfo(optionalInfo);
+			return rule;
 		}
-		if (parsedRule.isStrict && type != Type.BOOLEAN) {
-			return new CycleClientRule(name, description, parsedRule.options, defaultValue, this.handleRuleChange(name)).setOptionalInfo(optionalInfo);
+		if (parsedRule.isStrict && type != Rule.Type.BOOLEAN) {
+			CycleCarpetRule rule = new CycleCarpetRule(name, description, parsedRule.options, defaultValue);
+			rule.setOptionalInfo(optionalInfo);
+			return rule;
 		}
-		ClientRule<?> rule = switch (type) {
+
+		CarpetClientRule<?> rule = switch (type) {
 			case BOOLEAN -> {
-				yield new BooleanClientRule(name, description, defaultValue.equals("true"), this.handleRuleChange(name));
+				yield new BooleanCarpetRule(name, description, defaultValue.equals("true"));
 			}
 			case INTEGER -> {
 				Integer intValue = EssentialUtils.catchAsNull(() -> Integer.parseInt(defaultValue));
-				yield intValue == null ? null : new IntegerClientRule(name, description, intValue, this.handleRuleChange(name));
+				yield intValue == null ? null : new IntegerCarpetRule(name, description, intValue);
 			}
 			case DOUBLE -> {
 				Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(defaultValue));
-				yield doubleValue == null ? null : new DoubleClientRule(name, description, doubleValue, this.handleRuleChange(name));
+				yield doubleValue == null ? null : new DoubleCarpetRule(name, description, doubleValue);
 			}
 			default -> null;
 		};
-		return (rule != null ? rule : new StringClientRule(name, description, defaultValue, this.handleRuleChange(name))).setOptionalInfo(optionalInfo);
-	}
 
-	private <T> Consumer<T> handleRuleChange(String name) {
-		return o -> {
-			if (!this.HANDLING_DATA.get()) {
-				this.handleChangeRule(name, o);
-			}
-		};
+		if (rule == null) {
+			rule = new StringCarpetRule(name, description, defaultValue);
+		}
+
+		this.MANAGERS.add(manager);
+		rule.setCustomManager(manager);
+		rule.setOptionalInfo(optionalInfo);
+		return rule;
 	}
 
 	private JsonArray getData(JsonArray fallback) {
@@ -269,17 +271,14 @@ public class CarpetClient implements Config.CList {
 	@Override
 	public JsonElement getSaveData() {
 		JsonArray ruleData = new JsonArray();
-		this.completeRuleMap.forEach((name, rule) -> {
+		this.ALL_RULES.forEach((name, rule) -> {
 			JsonObject ruleObject = new JsonObject();
 			ruleObject.addProperty("name", name);
 			ruleObject.addProperty("type", rule.getType().name());
 			ruleObject.addProperty("description", rule.getDescription());
 			ruleObject.addProperty("extras", rule.getOptionalInfo());
-			ruleObject.add("default", rule.getDefaultAsJson());
-			if (this.carpetFixes.contains(name)) {
-				ruleObject.addProperty("repo", "fxmorin/carpet-fixes");
-			}
-			if (rule instanceof CycleClientRule cycleRule) {
+			ruleObject.add("default", rule.getDefaultValueAsJson());
+			if (rule instanceof CycleCarpetRule cycleRule) {
 				JsonArray validCycles = new JsonArray();
 				cycleRule.getCycleValues().forEach(validCycles::add);
 				ruleObject.add("cycles", validCycles);
@@ -293,8 +292,8 @@ public class CarpetClient implements Config.CList {
 	public void readConfig(JsonArray jsonElement) {
 		JsonArray jsonArray = this.getData(jsonElement.getAsJsonArray());
 		jsonArray.forEach(element -> {
-			ClientRule<?> rule = this.jsonToClientRule(element);
-			this.completeRuleMap.put(rule.getName(), rule);
+			CarpetClientRule<?> rule = this.jsonToClientRule(element);
+			this.ALL_RULES.put(rule.getName(), rule);
 		});
 	}
 }

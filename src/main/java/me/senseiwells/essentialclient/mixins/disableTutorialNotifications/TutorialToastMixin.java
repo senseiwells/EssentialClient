@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.disableTutorialNotifications;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.TutorialToast;
 import org.spongepowered.asm.mixin.Mixin;

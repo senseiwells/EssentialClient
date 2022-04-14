@@ -7,7 +7,7 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.FakeEntityWrapper;

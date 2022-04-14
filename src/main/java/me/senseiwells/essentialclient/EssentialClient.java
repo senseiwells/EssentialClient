@@ -1,11 +1,11 @@
 package me.senseiwells.essentialclient;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
-import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.ClientKeybinds;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.feature.MultiConnectSupport;
+import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
 import me.senseiwells.essentialclient.utils.config.Config;

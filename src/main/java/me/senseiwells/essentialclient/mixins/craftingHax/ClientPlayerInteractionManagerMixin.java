@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.craftingHax;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;

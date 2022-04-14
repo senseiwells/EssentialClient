@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.util.math.ChunkPos;
 
 import java.util.HashMap;

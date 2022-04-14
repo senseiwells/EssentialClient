@@ -1,7 +1,8 @@
 package me.senseiwells.essentialclient.mixins.core;
 
 import com.mojang.brigadier.StringReader;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.feature.CarpetClient;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,11 +23,11 @@ public abstract class ClientPlayerEntityMixin {
 			reader.skip();
 			int cursor = reader.getCursor();
 			String commandName = reader.canRead() ? reader.readUnquotedString() : "";
-			if (commandName.equals("carpet") && ClientRules.CARPET_ALWAYS_SET_DEFAULT.getValue()) {
+			if (CarpetClient.INSTANCE.isCarpetManager(commandName) && ClientRules.CARPET_ALWAYS_SET_DEFAULT.getValue()) {
 				reader.skip();
 				String subCommand = reader.readUnquotedString();
 				if (reader.canRead() && !subCommand.equals("setDefault")) {
-					this.sendChatMessage("/carpet setDefault " + subCommand + reader.getRemaining());
+					this.sendChatMessage("/%s setDefault %s%s".formatted(commandName, subCommand, reader.getRemaining()));
 				}
 			}
 			reader.setCursor(cursor);

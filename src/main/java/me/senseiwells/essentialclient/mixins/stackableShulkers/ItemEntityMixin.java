@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.mixins.stackableShulkers;
 
 import carpet.helpers.InventoryHelper;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.BlockItem;

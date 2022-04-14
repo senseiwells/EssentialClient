@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.mixins.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.PlayerValue;

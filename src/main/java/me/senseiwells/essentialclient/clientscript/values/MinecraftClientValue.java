@@ -15,11 +15,11 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
-import me.senseiwells.essentialclient.clientrule.entries.ClientRule;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientTickSyncer;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
@@ -223,7 +223,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			}
 			final long handler = client.getWindow().getHandle();
 			final int scanCode = GLFW.glfwGetKeyScancode(keyCode);
-			context.getThreadHandler().runAsyncFunctionInContext(null, ctx -> {
+			context.getThreadHandler().runAsyncFunctionInContext(context.createBranch(), ctx -> {
 				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 1, 0));
 				int ms = milliseconds;
 				try {
@@ -337,8 +337,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				throw new RuntimeError("Invalid ClientRule name", function.syntaxPosition, context);
 			}
 			try {
-				clientRule.setValueFromString(clientRuleValue);
-				this.getClient(context, function).execute(clientRule::run);
+				this.getClient(context, function).execute(() -> clientRule.setValueFromString(clientRuleValue));
 			}
 			catch (RuntimeException e) {
 				throw new RuntimeError("Cannot set that value", function.syntaxPosition, context);
@@ -352,8 +351,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			if (clientRule == null) {
 				throw new RuntimeError("Invalid ClientRule name", function.syntaxPosition, context);
 			}
-			clientRule.resetToDefault();
-			this.getClient(context, function).execute(clientRule::run);
+			this.getClient(context, function).execute(clientRule::resetToDefault);
 			return NullValue.NULL;
 		}
 

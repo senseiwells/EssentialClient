@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.mixins.betterAccurateBlockPlacement;
 
 import com.mojang.authlib.GameProfile;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;

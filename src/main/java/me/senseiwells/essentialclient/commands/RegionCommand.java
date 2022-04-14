@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.render.ChatColour;

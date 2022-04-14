@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.unlockAllRecipes;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.feature.RecipeBookCache;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

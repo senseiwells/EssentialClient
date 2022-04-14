@@ -1,11 +1,11 @@
 package me.senseiwells.essentialclient.gui.entries;
 
 import com.google.common.collect.ImmutableList;
-import me.senseiwells.essentialclient.clientrule.entries.ClientRule;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.gui.ConfigListWidget;
 import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigListWidget.Entry {
-	protected final ClientRule<?> clientRule;
+	protected final Rule<?> rule;
 	protected final RulesScreen rulesScreen;
 	protected final MinecraftClient client;
 	protected final String ruleName;
@@ -31,19 +31,19 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	private Consumer<ButtonWidget> resetConsumer;
 
 
-	public BaseListEntry(ClientRule<?> clientRule, MinecraftClient client, RulesScreen rulesScreen, Supplier<T> editButton) {
-		this.clientRule = clientRule;
+	public BaseListEntry(Rule<?> rule, MinecraftClient client, RulesScreen rulesScreen, Supplier<T> editButton) {
+		this.rule = rule;
 		this.client = client;
 		this.rulesScreen = rulesScreen;
-		this.ruleName = clientRule.getName();
+		this.ruleName = rule.getName();
 		this.ruleWidget = new RuleWidget(this.ruleName, 190, 15);
 		this.editButton = editButton.get();
 		this.resetButton = new ButtonWidget(0, 0, 50, 20, new TranslatableText("controls.reset"), button -> {
 			this.resetConsumer.accept(button);
 		});
 		this.resetConsumer = buttonWidget -> {
-			this.clientRule.resetToDefault();
-			this.editButton.setMessage(new LiteralText(this.clientRule.getDefaultValue().toString()));
+			this.rule.resetToDefault();
+			this.editButton.setMessage(new LiteralText(this.rule.getDefaultValue().toString()));
 		};
 		this.checkDisabled();
 	}
@@ -94,18 +94,18 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 			Text nameText = new LiteralText(this.ruleName).formatted(Formatting.GOLD);
 			lines.add(nameText.asOrderedText());
 			String info;
-			if (this.ruleWidget.isToggled() && this.clientRule.getOptionalInfo() != null) {
-				info = "§3Extra Info:§r\n" + this.clientRule.getOptionalInfo();
+			if (this.ruleWidget.isToggled() && this.rule.getOptionalInfo() != null) {
+				info = "§3Extra Info:§r\n" + this.rule.getOptionalInfo();
 			}
 			else {
-				info = this.clientRule.getDescription();
+				info = this.rule.getDescription();
 			}
 			lines.addAll(this.client.textRenderer.wrapLines(StringVisitable.plain(info.replace("\r", "")), 220));
 			this.rulesScreen.setTooltip(lines);
 		}
 		this.resetButton.x = x + 290;
 		this.resetButton.y = y;
-		this.resetButton.active = this.clientRule.isNotDefault();
+		this.resetButton.active = this.rule.isNotDefault();
 		this.resetButton.render(matrices, mouseX, mouseY, delta);
 
 		this.renderEditButton(matrices, x, y, mouseX, mouseY, delta);

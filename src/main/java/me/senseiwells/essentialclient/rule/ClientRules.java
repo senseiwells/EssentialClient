@@ -1,9 +1,9 @@
-package me.senseiwells.essentialclient.clientrule;
+package me.senseiwells.essentialclient.rule;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.senseiwells.essentialclient.clientrule.entries.*;
+import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.feature.AFKRules;
 import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
 import me.senseiwells.essentialclient.feature.CustomClientCape;
@@ -12,6 +12,7 @@ import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.config.MappedStringConfig;
+import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
@@ -65,7 +66,6 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		AUTO_WALK = register(new IntegerClientRule("autoWalk", "This will auto walk after you have held your key for set amount of ticks")),
 		PERMANENT_TIME = register(new IntegerClientRule("permanentTime", "This forces your client to set a time of day", -1)),
 		INCREASE_SPECTATOR_SCROLL_SENSITIVITY = register(new IntegerClientRule("increaseSpectatorScrollSensitivity", "Increases the sensitivity at which you can scroll to go faster in spectator")),
-		MUSIC_INTERVAL = register(new IntegerClientRule("musicInterval", "The amount of ticks between each soundtrack that is played, 0 = random")),
 		SWITCH_TO_TOTEM = register(new IntegerClientRule("switchToTotem", "This will switch to a totem (if you have one), under a set amount of health")),
 		SOUL_SPEED_FOV_MULTIPLIER = register(new IntegerClientRule("soulSpeedFovMultiplier", "Determines the percentage of Fov scaling when walking on soil soul or soul sand")),
 		WATER_FOV_MULTIPLIER = register(new IntegerClientRule("waterFovMultiplier", "Determines the percentage of Fov scaling when fully submerged in water"));
@@ -93,7 +93,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		BetterAccurateBlockPlacement.INSTANCE.load();
 		HighlightLavaSources.load();
 
-		getAllClientRules().forEach(ClientRule::run);
+		INSTANCE.map.values().forEach(Rule::onValueChange);
 	}
 
 	public static void addRule(String name, ClientRule<?> rule) {
@@ -104,30 +104,17 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		return INSTANCE.get(name);
 	}
 
-	public static Collection<ClientRule<?>> getAllClientRules() {
-		return INSTANCE.map.values();
+	public static Collection<Rule<?>> getClientRulesCopy() {
+		return List.copyOf(INSTANCE.map.values());
 	}
 
-	public static Collection<ClientRule<?>> sortRulesAlphabetically(Collection<ClientRule<?>> clientRules) {
-		SortedMap<String, ClientRule<?>> sortedMap = new TreeMap<>();
-		for (ClientRule<?> rule : clientRules) {
-			sortedMap.put(rule.getName().toLowerCase(), rule);
+	public static Collection<Rule<?>> getCurrentClientRules() {
+		if (!ClientRules.DISPLAY_RULE_TYPE.getValue().equals("Rule Type")) {
+			return Rule.sortRulesAlphabetically(getClientRulesCopy());
 		}
-		return sortedMap.values();
-	}
-
-	public static Collection<ClientRule<?>> getCurrentClientRules() {
-		return ClientRules.DISPLAY_RULE_TYPE.getValue().equals("Rule Type") ? getMapInType() : getMapAlphabetically();
-	}
-
-	private static Collection<ClientRule<?>> getMapAlphabetically() {
-		return sortRulesAlphabetically(getAllClientRules());
-	}
-
-	private static Collection<ClientRule<?>> getMapInType() {
-		SortedMap<String, ClientRule<?>> sortedMap = new TreeMap<>();
+		SortedMap<String, Rule<?>> sortedMap = new TreeMap<>();
 		for (ClientRule.Type type : ClientRule.Type.values()) {
-			for (ClientRule<?> rule : getAllClientRules()) {
+			for (Rule<?> rule : getClientRulesCopy()) {
 				if (rule.getType() == type) {
 					// This is a jank way of doing it, but it works lol
 					sortedMap.put(type.toString() + rule.getName(), rule);
@@ -137,25 +124,25 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		return sortedMap.values();
 	}
 
-	private static void refreshCommand(boolean value) {
+	private static void refreshCommand(Rule<Boolean> value) {
 		ClientPlayerEntity playerEntity = EssentialUtils.getPlayer();
 		if (playerEntity != null) {
 			playerEntity.networkHandler.onCommandTree(CommandHelper.getCommandPacket());
 		}
 	}
 
-	private static void refreshCape(String value) {
-		CustomClientCape.setCapeTexture(value);
+	private static void refreshCape(Rule<String> value) {
+		CustomClientCape.setCapeTexture(value.getValue());
 	}
 
-	private static void refreshScreen(String value) {
+	private static void refreshScreen(Rule<String> value) {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.currentScreen instanceof RulesScreen rulesScreen) {
 			rulesScreen.refreshRules(rulesScreen.getSearchBoxText());
 		}
 	}
 
-	private static void refreshWorld(boolean value) {
+	private static void refreshWorld(Rule<Boolean> value) {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.worldRenderer != null) {
 			client.worldRenderer.reload();

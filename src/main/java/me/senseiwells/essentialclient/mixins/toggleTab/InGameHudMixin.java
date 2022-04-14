@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.mixins.toggleTab;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.senseiwells.essentialclient.clientrule.ClientRules;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.PlayerListHud;

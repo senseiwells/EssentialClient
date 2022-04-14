@@ -1,12 +1,10 @@
 package me.senseiwells.essentialclient.gui;
 
-import me.senseiwells.essentialclient.clientrule.ClientRules;
-import me.senseiwells.essentialclient.clientrule.entries.BooleanClientRule;
-import me.senseiwells.essentialclient.clientrule.entries.ClientRule;
-import me.senseiwells.essentialclient.clientrule.entries.CycleClientRule;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.gui.entries.*;
 import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
+import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ElementListWidget;
@@ -24,10 +22,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	public void reloadEntries(RulesScreen rulesScreen, String filter) {
 		this.clearEntries();
-		Collection<ClientRule<?>> clientRules = rulesScreen.isServerScreen() ?
-			ClientRules.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()) : ClientRules.getCurrentClientRules();
+		Collection<Rule<?>> rules = rulesScreen.isServerScreen() ?
+			Rule.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()) : ClientRules.getCurrentClientRules();
 
-		clientRules.forEach(rule -> {
+		rules.forEach(rule -> {
 			String ruleName = rule.getName();
 			if (filter != null && !ruleName.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
 				return;
@@ -37,10 +35,10 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 				length = i;
 			}
 			BaseListEntry<?> entry = switch (rule.getType()) {
-				case BOOLEAN -> new BooleanListEntry((BooleanClientRule) rule, this.client, rulesScreen);
+				case BOOLEAN -> new BooleanListEntry((Rule.Bool) rule, this.client, rulesScreen);
+				case CYCLE -> new CycleListEntry((Rule.Cycle) rule, this.client, rulesScreen);
 				case INTEGER, DOUBLE -> new NumberListEntry(rule, this.client, rulesScreen);
 				case STRING -> new StringListEntry(rule, this.client, rulesScreen);
-				case CYCLE -> new CycleListEntry((CycleClientRule) rule, this.client, rulesScreen);
 				default -> throw new IllegalStateException("Unexpected value: " + rule.getType());
 			};
 			this.addEntry(entry);

@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.gui.entries;
 
-import me.senseiwells.essentialclient.clientrule.entries.ClientRule;
 import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
+import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -14,17 +14,17 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 	private boolean invalid;
 	private boolean changed;
 
-	public StringListEntry(ClientRule<?> clientRule, MinecraftClient client, RulesScreen rulesScreen) {
-		super(clientRule, client, rulesScreen, () -> {
+	public StringListEntry(Rule<?> rule, MinecraftClient client, RulesScreen rulesScreen) {
+		super(rule, client, rulesScreen, () -> {
 			return new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, LiteralText.EMPTY);
 		});
 		this.setResetButton(buttonWidget -> {
-			this.clientRule.resetToDefault();
-			this.editButton.setText(this.clientRule.getDefaultValue().toString());
+			this.rule.resetToDefault();
+			this.editButton.setText(this.rule.getDefaultValue().toString());
 		});
 		this.invalid = false;
 		this.changed = false;
-		this.editButton.setText(clientRule.getValue().toString());
+		this.editButton.setText(rule.getValue().toString());
 		this.editButton.setChangedListener(this::checkForInvalid);
 		rulesScreen.addTextField(this.editButton);
 	}
@@ -53,7 +53,7 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 			this.editButton.changeFocus(false);
 			if (!this.invalid) {
 				this.changed = false;
-				this.clientRule.setValueFromString(this.editButton.getText());
+				this.rule.setValueFromString(this.editButton.getText());
 			}
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers) || this.editButton.keyPressed(keyCode, scanCode, modifiers);
@@ -86,11 +86,11 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 	@Override
 	public void updateEntryOnClose() {
 		if (this.invalid) {
-			this.clientRule.resetToDefault();
+			this.rule.resetToDefault();
 			return;
 		}
 		if (this.changed) {
-			this.clientRule.setValueFromString(this.editButton.getText());
+			this.rule.setValueFromString(this.editButton.getText());
 		}
 	}
 }
