@@ -14,7 +14,7 @@ public class ChunkClientNetworkHandler {
 		HELLO = 0,
 		RELOAD = 15,
 		DATA = 16,
-		VERSION = 1_0_1;
+		VERSION = 1_0_3;
 
 	private ClientPlayNetworkHandler networkHandler;
 
@@ -53,10 +53,11 @@ public class ChunkClientNetworkHandler {
 		int size = packetByteBuf.readVarInt();
 		long[] chunkPositions = packetByteBuf.readLongArray(new long[size]);
 		byte[] levelTypes = packetByteBuf.readByteArray(size);
+		byte[] statusTypes = packetByteBuf.readByteArray(size);
 		byte[] ticketTypes = packetByteBuf.readByteArray(size);
 		String world = packetByteBuf.readString();
 
-		ChunkHandler.deserializeAndProcess(world, chunkPositions, levelTypes, ticketTypes);
+		ChunkHandler.deserializeAndProcess(world, chunkPositions, levelTypes, statusTypes, ticketTypes);
 	}
 
 	public void requestChunkData() {

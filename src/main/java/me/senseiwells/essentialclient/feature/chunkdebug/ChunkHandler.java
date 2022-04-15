@@ -25,9 +25,9 @@ public class ChunkHandler {
 		chunkDataMap.forEach((s, chunkData) -> chunkData.clear());
 	}
 
-	public synchronized static void deserializeAndProcess(String world, long[] chunkPositions, byte[] levelTypes, byte[] ticketTypes) {
+	public synchronized static void deserializeAndProcess(String world, long[] chunkPositions, byte[] levelTypes, byte[] statusTypes, byte[] ticketTypes) {
 		int size = chunkPositions.length;
-		if (size != levelTypes.length || size != ticketTypes.length) {
+		if (size != levelTypes.length || size != ticketTypes.length || size != statusTypes.length) {
 			EssentialClient.LOGGER.error("Chunk debug received bad packet!");
 			return;
 		}
@@ -39,7 +39,8 @@ public class ChunkHandler {
 			ChunkPos chunkPos = new ChunkPos(chunkPositions[i]);
 			ChunkType chunkType = ChunkType.decodeChunkType(levelTypes[i]);
 			TicketType ticketType = TicketType.decodeTicketType(ticketTypes[i]);
-			ChunkData chunkData = new ChunkData(chunkPos, chunkType, ticketType);
+			ChunkStatus status = ChunkStatus.decodeChunkStatus(statusTypes[i]);
+			ChunkData chunkData = new ChunkData(chunkPos, chunkType, status, ticketType);
 			chunkDataSet.remove(chunkData);
 			if (chunkType != ChunkType.UNLOADED || ClientRules.CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS.getValue()) {
 				chunkDataSet.add(chunkData);
@@ -50,16 +51,18 @@ public class ChunkHandler {
 	public static class ChunkData {
 		private final ChunkPos chunkPos;
 		private final ChunkType chunkType;
+		private final ChunkStatus chunkStatus;
 		private final TicketType ticketType;
 
-		public ChunkData(ChunkPos chunkPos, ChunkType chunkType, TicketType ticketType) {
+		public ChunkData(ChunkPos chunkPos, ChunkType chunkType, ChunkStatus chunkStatus, TicketType ticketType) {
 			this.chunkPos = chunkPos;
 			this.chunkType = chunkType;
+			this.chunkStatus = chunkStatus;
 			this.ticketType = ticketType;
 		}
 
-		public ChunkData(int posX, int posZ, ChunkType chunkType, TicketType ticketType) {
-			this(new ChunkPos(posX, posZ), chunkType, ticketType);
+		public ChunkData(int posX, int posZ, ChunkType chunkType, ChunkStatus chunkStatus, TicketType ticketType) {
+			this(new ChunkPos(posX, posZ), chunkType, chunkStatus, ticketType);
 		}
 
 		public int getPosX() {
@@ -74,12 +77,20 @@ public class ChunkHandler {
 			return this.chunkType;
 		}
 
+		public ChunkStatus getChunkStatus() {
+			return this.chunkStatus;
+		}
+
 		public boolean hasTicketType() {
 			return this.ticketType != null;
 		}
 
 		public TicketType getTicketType() {
 			return this.ticketType;
+		}
+
+		public int getProminentColour() {
+			return Colourable.getHighestPriority(this.chunkType, this.chunkStatus, this.ticketType).getColour();
 		}
 
 		@Override

@@ -109,9 +109,7 @@ public class ChunkGrid {
 			}
 			int cellX = thisX + x * this.scale;
 			int cellY = thisY + z * this.scale;
-			boolean shouldRenderTicket = chunkData.hasTicketType() && chunkData.getTicketType().hasColour();
-			int colour = shouldRenderTicket ? chunkData.getTicketType().colour : chunkData.getChunkType().getColour();
-			this.drawBox(bufferBuilder, cellX, cellY, x, z, colour);
+			this.drawBox(bufferBuilder, cellX, cellY, x, z, chunkData.getProminentColour());
 		}
 		tessellator.draw();
 
@@ -316,17 +314,21 @@ public class ChunkGrid {
 		DraggablePoint selectionPoint = this.getSelectionPoint();
 		if (selectionPoint != null) {
 			ChunkPos chunkPos = new ChunkPos(this.cornerPoint.getX() + selectionPoint.getX(), this.cornerPoint.getY() + selectionPoint.getY());
-			ChunkHandler.ChunkData filterData = new ChunkHandler.ChunkData(chunkPos.x, chunkPos.z, ChunkType.UNLOADED, TicketType.UNKNOWN);
+			ChunkHandler.ChunkData filterData = new ChunkHandler.ChunkData(chunkPos.x, chunkPos.z, ChunkType.UNLOADED, ChunkStatus.EMPTY, TicketType.UNKNOWN);
 			Optional<ChunkHandler.ChunkData> chunkData = Arrays.stream(ChunkHandler.getChunks(this.getDimension()))
 				.filter(c -> c.equals(filterData)).findFirst();
 			boolean isEmpty = chunkData.isEmpty();
 			String selectionText = "Selected Chunk: X: %d, Z: %s || Status: %s".formatted(
 				chunkPos.x,
 				chunkPos.z,
-				isEmpty ? "Unloaded" : chunkData.get().getChunkType().prettyName
+				isEmpty ? "Unloaded" : chunkData.get().getChunkType().getName()
 			);
-			if (chunkData.isPresent() && chunkData.get().hasTicketType()) {
-				selectionText += " || Type: %s".formatted(chunkData.get().getTicketType().prettyName);
+			if (!isEmpty) {
+				ChunkHandler.ChunkData data = chunkData.get();
+				if (data.hasTicketType()) {
+					selectionText += " || Type: %s".formatted(data.getTicketType().getName());
+				}
+				selectionText += " || Stage: %s".formatted(data.getChunkStatus().getName());
 			}
 			this.selectionText = selectionText;
 		}
