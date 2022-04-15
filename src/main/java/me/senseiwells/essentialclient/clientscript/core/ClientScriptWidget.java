@@ -15,7 +15,7 @@ import java.util.List;
 import static me.senseiwells.essentialclient.utils.render.Texts.START;
 import static me.senseiwells.essentialclient.utils.render.Texts.STOP;
 
-public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.ClientListEntry> {
+public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.ScriptListEntry> {
 	private final ClientScriptScreen parent;
 
 	public ClientScriptWidget(MinecraftClient minecraftClient, ClientScriptScreen scriptScreen) {
@@ -27,7 +27,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 	public void load(MinecraftClient client) {
 		this.clear();
 		for (ClientScriptInstance instance : ClientScript.INSTANCE.getScriptInstancesInOrder()) {
-			this.addEntry(new ClientListEntry(client, instance));
+			this.addEntry(new ScriptListEntry(client, instance));
 		}
 	}
 
@@ -35,7 +35,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 		this.clearEntries();
 	}
 
-	class ClientListEntry extends ElementListWidget.Entry<ClientScriptWidget.ClientListEntry> {
+	class ScriptListEntry extends ElementListWidget.Entry<ScriptListEntry> {
 		private final MinecraftClient client;
 		private final String name;
 		private final ClientScriptInstance scriptInstance;
@@ -43,7 +43,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 		private final ButtonWidget startButton;
 		private final CheckboxWidget checkButton;
 
-		ClientListEntry(MinecraftClient client, ClientScriptInstance instance) {
+		ScriptListEntry(MinecraftClient client, ClientScriptInstance instance) {
 			this.client = client;
 			this.name = instance.toString();
 			this.scriptInstance = instance;
@@ -62,12 +62,12 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Cli
 					this.scriptInstance.stopScript();
 					return;
 				}
-				this.scriptInstance.startScript();
+				this.scriptInstance.toggleScript();
 			});
 			this.checkButton = new CheckboxWidget(0, 0, 20, 20, new LiteralText(""), ClientScript.INSTANCE.isSelected(this.name)) {
 				@Override
 				public void onPress() {
-					String instanceName = ClientListEntry.this.name;
+					String instanceName = ScriptListEntry.this.name;
 					if (this.isChecked()) {
 						ClientScript.INSTANCE.removeSelectedInstance(instanceName);
 					}

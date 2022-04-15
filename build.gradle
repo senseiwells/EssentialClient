@@ -37,7 +37,7 @@ configurations {
 }
 
 dependencies {
-	//to change the versions see the gradle.properties file
+	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -49,7 +49,9 @@ dependencies {
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// compileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
+	modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
 
 	modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") { transitive = false }
 	include("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") { transitive = false }

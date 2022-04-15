@@ -1,18 +1,20 @@
 package me.senseiwells.essentialclient.gui.entries;
 
 import com.google.common.collect.ImmutableList;
-import me.senseiwells.essentialclient.feature.CarpetClient;
-import me.senseiwells.essentialclient.gui.ConfigListWidget;
-import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.gui.RulesScreen;
+import me.senseiwells.essentialclient.gui.config.ConfigListWidget;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.RuleWidget;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.*;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		this.ruleName = rule.getName();
 		this.ruleWidget = new RuleWidget(this.ruleName, 190, 15);
 		this.editButton = editButton.get();
-		this.resetButton = new ButtonWidget(0, 0, 50, 20, new TranslatableText("controls.reset"), button -> {
+		this.resetButton = new ButtonWidget(0, 0, 50, 20, Texts.RESET, button -> {
 			this.resetConsumer.accept(button);
 		});
 		this.resetConsumer = buttonWidget -> {
@@ -67,7 +69,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	}
 
 	protected boolean cannotEdit() {
-		return this.rulesScreen.isServerScreen() && !EssentialUtils.getClient().isInSingleplayer() && !(CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
+		return !this.rulesScreen.canModify();
 	}
 
 	protected boolean isRuleWidgetHovered(double mouseX, double mouseY) {

@@ -1,18 +1,18 @@
 package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import me.senseiwells.essentialclient.utils.misc.Events;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 
-public class BetterAccurateBlockPlacement {
-	public static final BetterAccurateBlockPlacement INSTANCE = new BetterAccurateBlockPlacement();
+import static me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds.ACCURATE_INTO;
+import static me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds.ACCURATE_REVERSE;
 
+public class BetterAccurateBlockPlacement {
 	public static Direction fakeDirection = null;
 	public static int requestedTicks = 0;
 	public static float fakeYaw = 0;
@@ -22,9 +22,11 @@ public class BetterAccurateBlockPlacement {
 	public static boolean wasReversePressed = false;
 	public static boolean wasIntoPressed = false;
 
-	public void load() {
-		ClientTickEvents.END_CLIENT_TICK.register(BetterAccurateBlockPlacement::accurateBlockPlacementOnPress);
+	static {
+		Events.ON_TICK_POST.register(BetterAccurateBlockPlacement::accurateBlockPlacementOnPress);
 	}
+
+	public static void load() { }
 
 	private static void accurateBlockPlacementOnPress(MinecraftClient client) {
 		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
@@ -45,9 +47,7 @@ public class BetterAccurateBlockPlacement {
 			fakeYaw = playerEntity.getYaw();
 			fakePitch = playerEntity.getPitch();
 			Direction facing = Direction.getEntityFacingOrder(playerEntity)[0];
-			KeyBinding reverseKeyBinding = ClientKeybinds.ACCURATE_REVERSE.getKeyBinding();
-			KeyBinding intoKeyBinding = ClientKeybinds.ACCURATE_INTO.getKeyBinding();
-			if (intoKeyBinding.isPressed() && client.crosshairTarget instanceof BlockHitResult blockHitResult) {
+			if (ACCURATE_INTO.isPressed() && client.crosshairTarget instanceof BlockHitResult blockHitResult) {
 				fakeYaw = 0;
 				fakePitch = 0;
 				facing = blockHitResult.getSide();
@@ -69,7 +69,7 @@ public class BetterAccurateBlockPlacement {
 				sendLookPacket(networkHandler, playerEntity);
 				wasIntoPressed = false;
 			}
-			if (reverseKeyBinding.isPressed()) {
+			if (ACCURATE_REVERSE.isPressed()) {
 				switch (facing) {
 					case NORTH, SOUTH, EAST, WEST -> fakeYaw = fakeYaw < 0 ? fakeYaw + 180 : fakeYaw - 180;
 					case UP, DOWN -> fakePitch = fakePitch < 0 ? fakePitch + 180 : fakePitch - 180;

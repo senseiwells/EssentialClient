@@ -3,10 +3,9 @@ package me.senseiwells.essentialclient.clientscript.core;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.senseiwells.essentialclient.feature.ClientKeybinds;
+import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.Config;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -15,7 +14,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ClientScript implements Config.CList {
 	public static ClientScript INSTANCE = new ClientScript();
@@ -26,14 +24,6 @@ public class ClientScript implements Config.CList {
 	private ClientScript() {
 		this.scriptInstances = new HashSet<>();
 		this.selectedScriptNames = new HashSet<>();
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (ClientKeybinds.CLIENT_SCRIPT_TOGGLE_ALL.getKeyBinding().wasPressed()) {
-				this.startAllInstances();
-			}
-			if (ClientKeybinds.CLIENT_SCRIPT_STOP_ALL.getKeyBinding().wasPressed()) {
-				this.stopAllInstances();
-			}
-		});
 	}
 
 	public Set<ClientScriptInstance> getScriptInstances() {
@@ -41,7 +31,7 @@ public class ClientScript implements Config.CList {
 	}
 
 	public List<ClientScriptInstance> getScriptInstancesInOrder() {
-		return this.getScriptInstances().stream().sorted(Comparator.comparing(ClientScriptInstance::toString)).collect(Collectors.toList());
+		return this.getScriptInstances().stream().sorted(Comparator.comparing(ClientScriptInstance::toString)).toList();
 	}
 
 	public boolean isSelected(String name) {
@@ -55,7 +45,7 @@ public class ClientScript implements Config.CList {
 		}
 		for (ClientScriptInstance instance : this.scriptInstances) {
 			if (this.selectedScriptNames.contains(instance.toString())) {
-				instance.startScript();
+				instance.toggleScript();
 			}
 		}
 		return true;
@@ -77,6 +67,7 @@ public class ClientScript implements Config.CList {
 
 	public void removeInstance(ClientScriptInstance clientScriptInstance) {
 		this.scriptInstances.remove(clientScriptInstance);
+		ClientKeyBinds.INSTANCE.remove(clientScriptInstance.toString());
 	}
 
 	public void removeSelectedInstance(String name) {
@@ -93,7 +84,7 @@ public class ClientScript implements Config.CList {
 			String fileName = file.getName();
 			if (fileName.endsWith(".arucas")) {
 				fileName = fileName.substring(0, fileName.length() - 7);
-				this.addInstance(new ClientScriptInstance(fileName, file.toPath()));
+				new ClientScriptInstance(fileName, file.toPath());
 			}
 		}
 	}

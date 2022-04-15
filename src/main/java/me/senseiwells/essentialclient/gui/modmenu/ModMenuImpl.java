@@ -2,11 +2,11 @@ package me.senseiwells.essentialclient.gui.modmenu;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
+import me.senseiwells.essentialclient.gui.config.ConfigScreen;
 
 public class ModMenuImpl implements ModMenuApi {
 	@Override
-	public ConfigScreenFactory<RulesScreen> getModConfigScreenFactory() {
-		return (screen) -> new RulesScreen(screen, false);
+	public ConfigScreenFactory<ConfigScreen> getModConfigScreenFactory() {
+		return ConfigScreen::new;
 	}
 }

@@ -1,17 +1,18 @@
 package me.senseiwells.essentialclient;
 
-import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
-import me.senseiwells.essentialclient.feature.ClientKeybinds;
+import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.feature.MultiConnectSupport;
-import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
 import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerList;
+import me.senseiwells.essentialclient.utils.misc.Events;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,16 +35,19 @@ public class EssentialClient implements ModInitializer {
 		VERSION = "1.1.7";
 		CONFIG_SET = new HashSet<>();
 		registerConfigs();
+
+		Events.ON_CLOSE.register(client -> EssentialClient.saveConfigs());
+		Events.ON_DISCONNECT_POST.register(v -> EssentialClient.saveConfigs());
 	}
 
 	@Override
 	public void onInitialize() {
 		CONFIG_SET.forEach(Config::readConfig);
 		ClientRules.load();
-		ClientKeybinds.loadKeybinds();
-		CraftingSharedConstants.registerHandlers();
-		MultiConnectSupport.setupMultiConnectAPI();
-		MinecraftDeobfuscator.init();
+		ClientKeyBinds.load();
+		MinecraftDeobfuscator.load();
+		CraftingSharedConstants.load();
+		MultiConnectSupport.load();
 	}
 
 	public static void registerConfigs() {
@@ -53,6 +57,7 @@ public class EssentialClient implements ModInitializer {
 		CONFIG_SET.add(ClientRules.INSTANCE);
 		CONFIG_SET.add(ClientScript.INSTANCE);
 		CONFIG_SET.add(CarpetClient.INSTANCE);
+		CONFIG_SET.add(ClientKeyBinds.INSTANCE);
 	}
 
 	public static void saveConfigs() {

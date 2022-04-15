@@ -11,6 +11,8 @@ public class Texts {
 		SERVER_SCREEN = new LiteralText("Carpet Server Options"),
 		SCRIPT_SCREEN = new LiteralText("Client Script Options"),
 		CHUNK_SCREEN = new LiteralText("Chunk Debug Map"),
+		CONTROLS_SCREEN = new LiteralText("Client KeyBinds"),
+		RESET = new TranslatableText("controls.reset"),
 		REFRESH = new LiteralText("Refresh"),
 		DONE = new TranslatableText("gui.done"),
 		DOCUMENTATION = new LiteralText("Documentation"),

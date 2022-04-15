@@ -68,9 +68,9 @@ public interface Rule<T> {
 		EssentialClient.LOGGER.error("Cannot set the value '{}' for rule {}", value, this.getName());
 	}
 
-	static Collection<Rule<?>> sortRulesAlphabetically(Collection<Rule<?>> rules) {
-		SortedMap<String, Rule<?>> sortedMap = new TreeMap<>();
-		for (Rule<?> rule : rules) {
+	static <T extends Rule<?>> Collection<T> sortRulesAlphabetically(Collection<T> rules) {
+		SortedMap<String, T> sortedMap = new TreeMap<>();
+		for (T rule : rules) {
 			sortedMap.put(rule.getName().toLowerCase(), rule);
 		}
 		return sortedMap.values();

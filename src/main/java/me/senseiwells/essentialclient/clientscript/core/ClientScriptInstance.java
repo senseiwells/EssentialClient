@@ -7,10 +7,12 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.FakeEntityWrapper;
+import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
+import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.MinecraftClient;
@@ -18,6 +20,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -41,6 +44,7 @@ public class ClientScriptInstance {
 	private final String scriptName;
 	private final String content;
 	private final Path fileLocation;
+	private final ClientKeyBind keyBind;
 	private ArucasThread mainScriptThread;
 	private Context context;
 
@@ -48,6 +52,7 @@ public class ClientScriptInstance {
 		this.scriptName = scriptName;
 		this.content = content;
 		this.fileLocation = fileLocation;
+		this.keyBind = ClientKeyBinds.register(scriptName, GLFW.GLFW_KEY_UNKNOWN, "Script Toggles", client -> this.toggleScript());
 		ClientScript.INSTANCE.addInstance(this);
 	}
 
@@ -59,6 +64,10 @@ public class ClientScriptInstance {
 		return this.fileLocation;
 	}
 
+	public ClientKeyBind getKeyBind() {
+		return this.keyBind;
+	}
+
 	public boolean isTemporary() {
 		return this.fileLocation == null;
 	}
@@ -68,7 +77,7 @@ public class ClientScriptInstance {
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
-	public synchronized boolean startScript() {
+	public synchronized boolean toggleScript() {
 		if (EssentialUtils.getClient().player == null || this.isScriptRunning()) {
 			this.stopScript();
 			return false;
@@ -169,7 +178,7 @@ public class ClientScriptInstance {
 			### Essential Client Version: `%s`
 			### Arucas Version: `%s`
 			### Script:
-			```kotlin
+			```kt
 			// %s
 			%s
 			```
@@ -195,6 +204,6 @@ public class ClientScriptInstance {
 
 	public static void runFromContent(String scriptName, String scriptContent) {
 		ClientScriptInstance instance = new ClientScriptInstance(scriptName, scriptContent, null);
-		instance.startScript();
+		instance.toggleScript();
 	}
 }

@@ -102,6 +102,10 @@ public class EssentialUtils {
 		return DEV;
 	}
 
+	public static boolean isModInstalled(String modId) {
+		return FabricLoader.getInstance().isModLoaded(modId);
+	}
+
 	public static void throwAsRuntime(ThrowableRunnable runnable) {
 		try {
 			runnable.run();

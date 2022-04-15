@@ -1,9 +1,7 @@
-package me.senseiwells.essentialclient.gui;
+package me.senseiwells.essentialclient.gui.config;
 
-import me.senseiwells.essentialclient.rule.ClientRules;
-import me.senseiwells.essentialclient.feature.CarpetClient;
+import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.gui.entries.*;
-import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.RuleWidget;
 import net.minecraft.client.MinecraftClient;
@@ -22,8 +20,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	public void reloadEntries(RulesScreen rulesScreen, String filter) {
 		this.clearEntries();
-		Collection<Rule<?>> rules = rulesScreen.isServerScreen() ?
-			Rule.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()) : ClientRules.getCurrentClientRules();
+		Collection<? extends Rule<?>> rules = rulesScreen.getRules();
 
 		rules.forEach(rule -> {
 			String ruleName = rule.getName();

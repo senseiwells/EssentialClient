@@ -3,12 +3,12 @@ package me.senseiwells.essentialclient.rule;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.feature.AFKRules;
 import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
 import me.senseiwells.essentialclient.feature.CustomClientCape;
 import me.senseiwells.essentialclient.feature.HighlightLavaSources;
-import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
+import me.senseiwells.essentialclient.gui.RulesScreen;
+import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.config.MappedStringConfig;
@@ -81,6 +81,14 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		DISABLE_ARMOUR_RENDERING = register(new CycleClientRule("disableArmourRendering", "This allows you to disable armour rendering for entities", List.of("None", "You", "Players", "Entities"))),
 		DISPLAY_RULE_TYPE = register(new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRules::refreshScreen));
 
+	static {
+		AFKRules.INSTANCE.load();
+		BetterAccurateBlockPlacement.load();
+		HighlightLavaSources.load();
+
+		getClientRules().forEach(Rule::onValueChange);
+	}
+
 	private static <T extends ClientRule<?>> T register(T clientRule) {
 		addRule(clientRule.getName(), clientRule);
 		return clientRule;
@@ -88,13 +96,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 
 	private ClientRules() { }
 
-	public static void load() {
-		AFKRules.INSTANCE.load();
-		BetterAccurateBlockPlacement.INSTANCE.load();
-		HighlightLavaSources.load();
-
-		INSTANCE.map.values().forEach(Rule::onValueChange);
-	}
+	public static void load() { }
 
 	public static void addRule(String name, ClientRule<?> rule) {
 		INSTANCE.set(name, rule);
@@ -104,22 +106,17 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		return INSTANCE.get(name);
 	}
 
-	public static Collection<Rule<?>> getClientRulesCopy() {
-		return List.copyOf(INSTANCE.map.values());
+	public static Collection<ClientRule<?>> getClientRules() {
+		return INSTANCE.map.values();
 	}
 
-	public static Collection<Rule<?>> getCurrentClientRules() {
+	public static Collection<ClientRule<?>> getCurrentClientRules() {
 		if (!ClientRules.DISPLAY_RULE_TYPE.getValue().equals("Rule Type")) {
-			return Rule.sortRulesAlphabetically(getClientRulesCopy());
+			return Rule.sortRulesAlphabetically(getClientRules());
 		}
-		SortedMap<String, Rule<?>> sortedMap = new TreeMap<>();
-		for (ClientRule.Type type : ClientRule.Type.values()) {
-			for (Rule<?> rule : getClientRulesCopy()) {
-				if (rule.getType() == type) {
-					// This is a jank way of doing it, but it works lol
-					sortedMap.put(type.toString() + rule.getName(), rule);
-				}
-			}
+		SortedMap<String, ClientRule<?>> sortedMap = new TreeMap<>();
+		for (ClientRule<?> rule : getClientRules()) {
+			sortedMap.put(rule.getType().toString() + rule.getName(), rule);
 		}
 		return sortedMap.values();
 	}

@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.gui.entries;
 
-import me.senseiwells.essentialclient.gui.rulescreen.RulesScreen;
+import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;

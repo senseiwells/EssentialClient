@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import me.senseiwells.essentialclient.utils.misc.Events;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Vec3d;
@@ -16,7 +16,7 @@ public class AFKRules {
 	private double prevMouseY;
 
 	public void load() {
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+		Events.ON_TICK_POST.register(client -> {
 			ClientPlayerEntity playerEntity = client.player;
 			int announceAfk = ClientRules.ANNOUNCE_AFK.getValue();
 			int logout = ClientRules.AFK_LOGOUT.getValue();

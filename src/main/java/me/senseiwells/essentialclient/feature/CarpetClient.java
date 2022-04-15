@@ -14,6 +14,7 @@ import me.senseiwells.essentialclient.rule.carpet.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import me.senseiwells.essentialclient.utils.misc.Events;
 import me.senseiwells.essentialclient.utils.misc.NetworkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
@@ -34,6 +35,12 @@ public class CarpetClient implements Config.CList {
 	private final AtomicBoolean HANDLING_DATA;
 
 	private boolean isServerCarpet;
+
+	static {
+		Events.ON_DISCONNECT.register(v -> {
+			INSTANCE.onDisconnect();
+		});
+	}
 
 	private CarpetClient() {
 		this.ALL_RULES = new HashMap<>();
@@ -60,15 +67,15 @@ public class CarpetClient implements Config.CList {
 		this.MANAGERS.clear();
 	}
 
-	public Collection<Rule<?>> getCurrentCarpetRules() {
+	public Collection<CarpetClientRule<?>> getCurrentCarpetRules() {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.isInSingleplayer()) {
 			return this.getSinglePlayerRules();
 		}
 		if (client.getCurrentServerEntry() != null && this.isServerCarpet) {
-			return List.copyOf(this.CURRENT_RULES.values());
+			return this.CURRENT_RULES.values();
 		}
-		return List.copyOf(this.ALL_RULES.values());
+		return this.ALL_RULES.values();
 	}
 
 	public void syncCarpetRule(NbtCompound compound) {
@@ -101,7 +108,7 @@ public class CarpetClient implements Config.CList {
 		});
 	}
 
-	private Collection<Rule<?>> getSinglePlayerRules() {
+	private Collection<CarpetClientRule<?>> getSinglePlayerRules() {
 		if (this.CURRENT_RULES.isEmpty()) {
 			this.HANDLING_DATA.set(true);
 
@@ -125,7 +132,7 @@ public class CarpetClient implements Config.CList {
 
 			this.HANDLING_DATA.set(false);
 		}
-		return List.copyOf(this.CURRENT_RULES.values());
+		return this.CURRENT_RULES.values();
 	}
 
 	private CarpetClientRule<?> jsonToClientRule(JsonElement jsonElement) {

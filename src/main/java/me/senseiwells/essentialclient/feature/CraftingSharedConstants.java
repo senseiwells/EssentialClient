@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.feature;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import me.senseiwells.essentialclient.utils.misc.Events;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -11,9 +11,11 @@ public final class CraftingSharedConstants {
 	public static final AtomicBoolean IS_SCRIPT_CLICK = new AtomicBoolean(false);
 	public static ScheduledExecutorService EXECUTOR = new ScheduledThreadPoolExecutor(2);
 
-	public static void registerHandlers() {
-		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+	static {
+		Events.ON_CLOSE.register(client -> {
 			EXECUTOR.shutdownNow();
 		});
 	}
+
+	public static void load() { }
 }

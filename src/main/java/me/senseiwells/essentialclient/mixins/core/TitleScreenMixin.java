@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.mixins.core;
 
+import me.senseiwells.essentialclient.gui.config.ConfigScreen;
 import me.senseiwells.essentialclient.rule.ClientRules;
-import me.senseiwells.essentialclient.gui.ConfigScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;

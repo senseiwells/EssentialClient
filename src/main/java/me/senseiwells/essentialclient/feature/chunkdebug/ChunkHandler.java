@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.misc.Events;
 import net.minecraft.util.math.ChunkPos;
 
 import java.util.HashMap;
@@ -10,8 +11,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class ChunkHandler {
-
 	private static final Map<String, Set<ChunkData>> chunkDataMap = new HashMap<>();
+
+	static {
+		Events.ON_DISCONNECT.register(v -> {
+			ChunkClientNetworkHandler.chunkDebugAvailable = false;
+			ChunkHandler.clearAllChunks();
+			ChunkGrid.instance = null;
+		});
+	}
 
 	public synchronized static ChunkData[] getChunks(String world) {
 		Set<ChunkData> chunkDataSet = chunkDataMap.get(world);

@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
@@ -31,11 +32,13 @@ public class HighlightLavaSources implements SimpleSynchronousResourceReloadList
 	private static final Identifier STILL_SPRITE_ID = new Identifier("essentialclient", "block/lava_still");
 
 	public static void load() {
-		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-			registry.register(FLOWING_SPRITE_ID);
-			registry.register(STILL_SPRITE_ID);
-		});
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new HighlightLavaSources());
+		if (EssentialUtils.isModInstalled("fabric-rendering-fluids-v1") && EssentialUtils.isModInstalled("fabric-textures-v0")) {
+			ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
+				registry.register(FLOWING_SPRITE_ID);
+				registry.register(STILL_SPRITE_ID);
+			});
+			ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new HighlightLavaSources());
+		}
 	}
 
 	@Override

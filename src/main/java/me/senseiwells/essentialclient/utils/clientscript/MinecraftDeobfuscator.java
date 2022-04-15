@@ -65,7 +65,7 @@ public final class MinecraftDeobfuscator {
 		}
 	}
 
-	public static void init() { }
+	public static void load() { }
 
 	public static String obfuscate(String name) {
 		if (!triedLoadingMappings) {

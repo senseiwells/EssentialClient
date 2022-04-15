@@ -1,6 +1,12 @@
-package me.senseiwells.essentialclient.gui.rulescreen;
+package me.senseiwells.essentialclient.gui;
 
-import me.senseiwells.essentialclient.gui.ConfigListWidget;
+import me.senseiwells.essentialclient.feature.CarpetClient;
+import me.senseiwells.essentialclient.gui.config.ConfigListWidget;
+import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -8,17 +14,17 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
-import static me.senseiwells.essentialclient.utils.render.Texts.CLIENT_SCREEN;
-import static me.senseiwells.essentialclient.utils.render.Texts.SERVER_SCREEN;
-
-public class RulesScreen extends Screen {
-	private final Screen parent;
+public class RulesScreen extends ChildScreen {
 	private final List<TextFieldWidget> textFields;
-	private final boolean isServerScreen;
+	private final Supplier<Boolean> canModify;
+	private final Supplier<Collection<? extends Rule<?>>> ruleGetter;
 	private List<OrderedText> tooltip;
 	private ConfigListWidget widget;
 	private TextFieldWidget searchBox;
@@ -26,19 +32,23 @@ public class RulesScreen extends Screen {
 	private boolean isEmpty;
 
 
-	public RulesScreen(Screen parent, boolean isServerScreen) {
-		super(isServerScreen ? SERVER_SCREEN : CLIENT_SCREEN);
-		this.parent = parent;
+	public RulesScreen(Text screenName, Screen parent, Supplier<Boolean> canModify, Supplier<Collection<? extends Rule<?>>> ruleGetter) {
+		super(screenName, parent);
 		this.textFields = new ArrayList<>();
-		this.isServerScreen = isServerScreen;
+		this.canModify = canModify;
+		this.ruleGetter = ruleGetter;
 	}
 
 	public String getSearchBoxText() {
 		return this.searchBox.getText();
 	}
 
-	public boolean isServerScreen() {
-		return this.isServerScreen;
+	public boolean canModify() {
+		return this.canModify.get();
+	}
+
+	public Collection<? extends Rule<?>> getRules() {
+		return this.ruleGetter.get();
 	}
 
 	public void setTooltip(List<OrderedText> tooltip) {
@@ -69,7 +79,7 @@ public class RulesScreen extends Screen {
 		this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, LiteralText.EMPTY);
 		this.searchBox.setChangedListener(this::refreshRules);
 		this.widget = new ConfigListWidget(this, this.client, this.searchBox.getText());
-		this.addDrawableChild(this.widget);
+		this.addSelectableChild(this.widget);
 		this.addDrawableChild(this.searchBox);
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.onClose()));
 		this.setInitialFocus(this.searchBox);
@@ -103,7 +113,18 @@ public class RulesScreen extends Screen {
 	public void onClose() {
 		if (this.client != null) {
 			this.widget.updateAllEntriesOnClose();
-			this.client.setScreen(this.parent);
 		}
+		super.onClose();
+	}
+
+	public static RulesScreen getClientRulesScreen(Screen parent) {
+		return new RulesScreen(Texts.CLIENT_SCREEN, parent, () -> true, ClientRules::getCurrentClientRules);
+	}
+
+	public static RulesScreen getCarpetRulesScreen(Screen parent) {
+		Supplier<Boolean> canModify = () -> {
+			return EssentialUtils.getClient().isInSingleplayer() || (CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
+		};
+		return new RulesScreen(Texts.SERVER_SCREEN, parent, canModify, () -> Rule.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()));
 	}
 }

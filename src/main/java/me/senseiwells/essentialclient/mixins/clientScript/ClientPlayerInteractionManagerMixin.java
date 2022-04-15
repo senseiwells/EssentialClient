@@ -1,10 +1,10 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.clientscript.values.EntityValue;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
-import me.senseiwells.arucas.values.NumberValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -35,11 +35,10 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "attackBlock", at = @At("HEAD"), cancellable = true)
 	private void onAttackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-		if (this.client.world == null) {
-			return;
-		}
-		if (MinecraftScriptEvents.ON_ATTACK_BLOCK.run(new BlockValue(this.client.world.getBlockState(pos), pos))) {
-			cir.setReturnValue(false);
+		if (this.client.world != null) {
+			if (MinecraftScriptEvents.ON_ATTACK_BLOCK.run(new BlockValue(this.client.world.getBlockState(pos), pos))) {
+				cir.setReturnValue(false);
+			}
 		}
 	}
 
