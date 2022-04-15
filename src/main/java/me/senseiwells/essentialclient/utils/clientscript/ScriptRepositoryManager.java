@@ -3,8 +3,8 @@ package me.senseiwells.essentialclient.utils.clientscript;
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
-import me.senseiwells.essentialclient.utils.misc.NetworkUtils;
 import net.minecraft.text.LiteralText;
 
 import java.io.BufferedWriter;

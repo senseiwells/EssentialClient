@@ -23,6 +23,7 @@ public class ClientEntitySelector {
 	private final Double originX;
 	private final Double originY;
 	private final Double originZ;
+	private boolean isSingleTarget;
 
 	public ClientEntitySelector(BiPredicate<Vec3d, Entity> filter, BiConsumer<Vec3d, List<Entity>> sorter, int limit, boolean senderOnly, Double originX, Double originY, Double originZ) {
 		this.filter = filter;
@@ -72,5 +73,13 @@ public class ClientEntitySelector {
 
 	public int getLimit() {
 		return this.limit;
+	}
+
+	public boolean isSingleTarget() {
+		return this.isSingleTarget;
+	}
+
+	public void setSingleTarget(boolean isSingleTarget) {
+		this.isSingleTarget = isSingleTarget;
 	}
 }

@@ -1,7 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -14,6 +12,8 @@ import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -99,11 +99,17 @@ public class RecipeValue extends Value<Recipe<?>> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
+				new MemberFunction("getFullId", this::getFullId),
 				new MemberFunction("getId", this::getId),
 				new MemberFunction("getCraftingType", this::getCraftingType),
 				new MemberFunction("getOutput", this::getOutput),
 				new MemberFunction("getIngredients", this::getIngredients)
 			);
+		}
+
+		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
+			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
+			return StringValue.of(thisValue.value.getId().toString());
 		}
 
 		private Value<?> getId(Context context, MemberFunction function) throws CodeError {

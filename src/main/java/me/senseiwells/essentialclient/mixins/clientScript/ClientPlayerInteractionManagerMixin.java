@@ -3,8 +3,8 @@ package me.senseiwells.essentialclient.mixins.clientScript;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
-import me.senseiwells.essentialclient.clientscript.values.EntityValue;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -44,7 +44,7 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "attackEntity", at = @At("HEAD"), cancellable = true)
 	private void onAttackEntity(PlayerEntity player, Entity target, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_ATTACK_ENTITY.run(EntityValue.of(target))) {
+		if (MinecraftScriptEvents.ON_ATTACK_ENTITY.run(c -> EssentialUtils.arrayListOf(c.convertValue(target)))) {
 			ci.cancel();
 		}
 	}
@@ -81,7 +81,7 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "interactEntity", at = @At("HEAD"), cancellable = true)
 	private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		if (MinecraftScriptEvents.ON_INTERACT_ENTITY.run(EntityValue.of(entity), new ItemStackValue(player.getStackInHand(hand)))) {
+		if (MinecraftScriptEvents.ON_INTERACT_ENTITY.run(c -> EssentialUtils.arrayListOf(c.convertValue(entity), new ItemStackValue(player.getStackInHand(hand))))) {
 			cir.setReturnValue(ActionResult.PASS);
 		}
 	}

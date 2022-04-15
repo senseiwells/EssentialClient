@@ -96,6 +96,7 @@ public class ItemStackValue extends Value<ItemStack> {
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getMaterial", (context, function) -> new MaterialValue(this.getItemStack(context, function).getItem())),
+				new MemberFunction("getFullId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).toString())),
 				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath())),
 				new MemberFunction("getCount", (context, function) -> NumberValue.of(this.getItemStack(context, function).getCount())),
 				new MemberFunction("getDurability", this::getDurability),

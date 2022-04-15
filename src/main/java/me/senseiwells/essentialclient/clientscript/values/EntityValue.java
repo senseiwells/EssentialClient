@@ -118,6 +118,8 @@ public class EntityValue<T extends Entity> extends Value<T> {
 				new MemberFunction("getPitch", (context, function) -> NumberValue.of(this.getEntity(context, function).getPitch())),
 				new MemberFunction("getDimension", (context, function) -> StringValue.of(this.getEntity(context, function).getEntityWorld().getRegistryKey().getValue().getPath())),
 				new MemberFunction("getBiome", this::getBiome),
+				new MemberFunction("getFullBiome", this::getFullBiome),
+				new MemberFunction("getFullId", this::getFullId),
 				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath())),
 				new MemberFunction("getAge", (context, function) -> NumberValue.of(this.getEntity(context, function).age)),
 				new MemberFunction("getCustomName", this::getCustomName),
@@ -170,6 +172,16 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			Entity entity = this.getEntity(context, function);
 			Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
 			return biomeKey.isPresent() ? StringValue.of(biomeKey.get().getValue().getPath()) : NullValue.NULL;
+		}
+
+		private Value<?> getFullBiome(Context context, MemberFunction function) throws CodeError {
+			Entity entity = this.getEntity(context, function);
+			Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
+			return biomeKey.isPresent() ? StringValue.of(biomeKey.get().getValue().toString()) : NullValue.NULL;
+		}
+
+		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).toString());
 		}
 
 		private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {

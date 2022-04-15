@@ -118,6 +118,7 @@ public class BlockValue extends Value<BlockState> {
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getMaterial", (context, function) -> new MaterialValue(this.getBlockState(context, function).getBlock().asItem())),
+				new MemberFunction("getFullId", (context, function) -> StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).toString())),
 				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath())),
 				new MemberFunction("isBlockEntity", (context, function) -> BooleanValue.of(this.getBlockState(context, function).getBlock() instanceof BlockEntityProvider)),
 				new MemberFunction("isTransparent", (context, function) -> BooleanValue.of(!this.getBlockState(context, function).isOpaque())),

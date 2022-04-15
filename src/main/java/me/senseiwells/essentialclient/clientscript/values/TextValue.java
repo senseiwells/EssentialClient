@@ -9,10 +9,9 @@ import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
@@ -75,46 +74,62 @@ public class TextValue extends Value<MutableText> {
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("withClickEvent", List.of("type", "value"), this::withClickEvent),
+				new MemberFunction("withHoverEvent", List.of("type", "value"), this::withHoverEvent),
 				new MemberFunction("format", "formatting", this::formatText),
 				new MemberFunction("append", "otherText", this::appendText)
 			);
 		}
 
 		private Value<?> withClickEvent(Context context, MemberFunction function) throws CodeError {
-			MutableText text = this.getText(context, function);
+			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
 			StringValue stringAction = function.getParameterValueOfType(context, StringValue.class, 1);
 			ClickEvent.Action action = ClickEvent.Action.byName(stringAction.value);
 			if (action == null) {
 				throw new RuntimeError("Invalid action: %s".formatted(stringAction.value), function.syntaxPosition, context);
 			}
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 2);
-			text.styled(style -> style.withClickEvent(new ClickEvent(action, stringValue.value)));
-			return new TextValue(text);
+			text.value.styled(style -> style.withClickEvent(new ClickEvent(action, stringValue.value)));
+			return text;
+		}
+
+		private Value<?> withHoverEvent(Context context, MemberFunction function) throws CodeError {
+			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
+			StringValue stringAction = function.getParameterValueOfType(context, StringValue.class, 1);
+			HoverEvent hoverEvent = switch (stringAction.value) {
+				case "show_text" -> {
+					MutableText mutableText = function.getParameterValueOfType(context, TextValue.class, 2).value;
+					yield new HoverEvent(HoverEvent.Action.SHOW_TEXT, mutableText);
+				}
+				case "show_item" -> {
+					ItemStack stack = function.getParameterValueOfType(context, ItemStackValue.class, 2).value;
+					yield new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackContent(stack));
+				}
+				case "show_entity" -> {
+					EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 2);
+					Entity entity = entityValue.value;
+					yield new HoverEvent(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.EntityContent(entity.getType(), entity.getUuid(), entity.getDisplayName()));
+				}
+				default -> throw new RuntimeError("Invalid action: %s".formatted(stringAction.value), function.syntaxPosition, context);
+			};
+			text.value.styled(style -> style.withHoverEvent(hoverEvent));
+			return text;
 		}
 
 		private Value<?> formatText(Context context, MemberFunction function) throws CodeError {
-			MutableText text = this.getText(context, function);
+			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
 			Formatting formatting = Formatting.byName(stringValue.value);
 			if (formatting == null) {
 				throw new RuntimeError("Invalid formatting: %s".formatted(stringValue.value), function.syntaxPosition, context);
 			}
-			text.formatted(formatting);
-			return new TextValue(text);
+			text.value.formatted(formatting);
+			return text;
 		}
 
 		private Value<?> appendText(Context context, MemberFunction function) throws CodeError {
-			MutableText text = this.getText(context, function);
+			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
 			TextValue textValue = function.getParameterValueOfType(context, TextValue.class, 1);
-			text.append(textValue.value);
-			return new TextValue(text);
-		}
-
-		private MutableText getText(Context context, MemberFunction function) throws CodeError {
-			MutableText text = function.getParameterValueOfType(context, TextValue.class, 0).value;
-			if (text == null) {
-				throw new RuntimeError("Text was null", function.syntaxPosition, context);
-			}
+			text.value.append(textValue.value);
 			return text;
 		}
 

@@ -8,13 +8,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import me.senseiwells.essentialclient.clientscript.values.BlockValue;
-import me.senseiwells.essentialclient.clientscript.values.EntityValue;
-import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
-import me.senseiwells.essentialclient.utils.command.ClientEntityArgumentType;
-import me.senseiwells.essentialclient.utils.command.ClientEntitySelector;
-import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -24,14 +17,15 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.FunctionValue;
+import me.senseiwells.essentialclient.clientscript.values.PosValue;
+import me.senseiwells.essentialclient.utils.command.ClientEntityArgumentType;
+import me.senseiwells.essentialclient.utils.command.ClientEntitySelector;
+import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
@@ -75,7 +69,7 @@ public class ClientScriptUtils {
 						}
 						ArucasList arucasList = new ArucasList();
 						for (ParsedArgument<?, ?> argument : arguments) {
-							arucasList.add(ClientScriptUtils.commandArgumentToValue(argument.getResult(), c));
+							arucasList.add(commandArgumentToValue(argument.getResult(), ctx, c));
 						}
 						functionValue.call(ctx, arucasList);
 					});
@@ -132,12 +126,12 @@ public class ClientScriptUtils {
 		}
 		SuggestionProvider<ServerCommandSource> extraSuggestion = null;
 		String argumentTypeName = (String) argumentValue.value;
-		ArgumentType<?> argumentType = switch (argumentTypeName) {
-			case "PlayerName" -> {
+		ArgumentType<?> argumentType = switch (argumentTypeName.toLowerCase()) {
+			case "playername" -> {
 				extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
 				yield StringArgumentType.word();
 			}
-			case "Double" -> {
+			case "double" -> {
 				if (arguments.get(context, MIN) instanceof NumberValue minValue) {
 					if (arguments.get(context, MAX) instanceof NumberValue maxValue) {
 						yield DoubleArgumentType.doubleArg(minValue.value, maxValue.value);
@@ -146,7 +140,7 @@ public class ClientScriptUtils {
 				}
 				yield DoubleArgumentType.doubleArg();
 			}
-			case "Integer" -> {
+			case "integer" -> {
 				if (arguments.get(context, MIN) instanceof NumberValue minValue) {
 					if (arguments.get(context, MAX) instanceof NumberValue maxValue) {
 						yield IntegerArgumentType.integer(minValue.value.intValue(), maxValue.value.intValue());
@@ -155,11 +149,11 @@ public class ClientScriptUtils {
 				}
 				yield IntegerArgumentType.integer();
 			}
-			case "RecipeId" -> {
+			case "recipeid" -> {
 				extraSuggestion = SuggestionProviders.ALL_RECIPES;
 				yield IdentifierArgumentType.identifier();
 			}
-			case "EntityId" -> {
+			case "entityid" -> {
 				extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
 				yield EntitySummonArgumentType.entitySummon();
 			}
@@ -186,52 +180,35 @@ public class ClientScriptUtils {
 	}
 
 	public static ArgumentType<?> parseArgumentType(String string, Context context, ISyntax syntaxPosition) throws RuntimeError {
-		return switch (string) {
-			case "PlayerName", "Word" -> StringArgumentType.word();
-			case "Double" -> DoubleArgumentType.doubleArg();
-			case "Integer" -> IntegerArgumentType.integer();
-			case "Boolean" -> BoolArgumentType.bool();
-			case "ItemStack" -> ItemStackArgumentType.itemStack();
-			case "Block" -> BlockStateArgumentType.blockState();
-			case "GreedyString" -> StringArgumentType.greedyString();
-			case "Entity" -> ClientEntityArgumentType.entity();
-			case "BlockPos" -> BlockPosArgumentType.blockPos();
-			case "Pos" -> Vec3ArgumentType.vec3();
-			case "Effect" -> StatusEffectArgumentType.statusEffect();
-			case "Particle" -> ParticleEffectArgumentType.particleEffect();
-			case "RecipeId" -> IdentifierArgumentType.identifier();
-			case "EntityId" -> EntityArgumentType.entity();
-			case "EnchantmentId" -> EnchantmentArgumentType.enchantment();
+		return switch (string.toLowerCase()) {
+			case "playername", "word" -> StringArgumentType.word();
+			case "double" -> DoubleArgumentType.doubleArg();
+			case "integer" -> IntegerArgumentType.integer();
+			case "boolean" -> BoolArgumentType.bool();
+			case "itemstack" -> ItemStackArgumentType.itemStack();
+			case "block" -> BlockStateArgumentType.blockState();
+			case "greedystring" -> StringArgumentType.greedyString();
+			case "entity" -> ClientEntityArgumentType.entity();
+			case "entities" -> ClientEntityArgumentType.entities();
+			case "blockpos" -> BlockPosArgumentType.blockPos();
+			case "pos" -> Vec3ArgumentType.vec3();
+			case "effect" -> StatusEffectArgumentType.statusEffect();
+			case "particle" -> ParticleEffectArgumentType.particleEffect();
+			case "recipeid" -> IdentifierArgumentType.identifier();
+			case "entityid" -> EntityArgumentType.entity();
+			case "enchantmentid" -> EnchantmentArgumentType.enchantment();
 			default -> throw new RuntimeError("Invalid argument type", syntaxPosition, context);
 		};
 	}
 
-	public static Value<?> commandArgumentToValue(Object object, CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		if (object == null) {
-			return NullValue.NULL;
-		}
-		if (object instanceof Number number) {
-			return NumberValue.of(number.doubleValue());
-		}
-		if (object instanceof Boolean bool) {
-			return BooleanValue.of(bool);
-		}
-		if (object instanceof ItemStackArgument itemStack) {
-			return new ItemStackValue(itemStack.createStack(1, false));
-		}
-		if (object instanceof BlockStateArgument blockState) {
-			return new BlockValue(blockState.getBlockState());
+	public static Value<?> commandArgumentToValue(Object object, Context context, CommandContext<ServerCommandSource> commandContext) throws CommandSyntaxException, CodeError {
+		// We check for these two here since they require CommandContext
+		if (object instanceof PosArgument posArgument) {
+			return new PosValue(posArgument.toAbsolutePos(commandContext.getSource()));
 		}
 		if (object instanceof ClientEntitySelector selector) {
-			return EntityValue.of(selector.getEntity(context.getSource()));
+			object = selector.isSingleTarget() ? selector.getEntity(commandContext.getSource()) : selector.getEntities(commandContext.getSource());
 		}
-		if (object instanceof PosArgument posArgument) {
-			return new PosValue(posArgument.toAbsolutePos(context.getSource()));
-		}
-		if (object instanceof Enchantment enchantment) {
-			Identifier identifier = Registry.ENCHANTMENT.getId(enchantment);
-			return identifier == null ? NullValue.NULL : StringValue.of(identifier.toString());
-		}
-		return StringValue.of(object.toString());
+		return context.convertValue(object);
 	}
 }

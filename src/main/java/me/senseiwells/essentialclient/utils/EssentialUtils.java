@@ -14,6 +14,9 @@ import net.minecraft.text.Text;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
@@ -59,6 +62,12 @@ public class EssentialUtils {
 		if (client.player != null) {
 			client.execute(() -> client.player.sendChatMessage(message));
 		}
+	}
+
+	public static <T> List<T> arrayListOf(T... values) {
+		List<T> list = new ArrayList<>(values.length);
+		list.addAll(Arrays.asList(values));
+		return list;
 	}
 
 	public static Path getEssentialConfigFile() {

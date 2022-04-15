@@ -38,26 +38,26 @@ public class PlayerListCommand {
 		CommandHelper.CLIENT_COMMANDS.add("pl");
 		CommandHelper.CLIENT_COMMANDS.add("playerlist");
 
-		LiteralCommandNode<ServerCommandSource> playerlistNode = literal("playerlist").build();
+		LiteralCommandNode<ServerCommandSource> playerListNode = literal("playerlist").build();
 		LiteralCommandNode<ServerCommandSource> plNode = literal("pl").build();
 
-		LiteralCommandNode<ServerCommandSource> createlistNode = literal("createlist").then(argument("listname", StringArgumentType.word())
+		LiteralCommandNode<ServerCommandSource> createListNode = literal("createlist").then(argument("listname", StringArgumentType.word())
 			.suggests((context, builder) -> CommandSource.suggestMatching(List.of("mobswitches", "allplayers"), builder))
 			.executes(PlayerListCommand::createList)
 		).build();
 
-		LiteralCommandNode<ServerCommandSource> deletelistNode = literal("deletelist").then(argument("listname", StringArgumentType.word())
+		LiteralCommandNode<ServerCommandSource> deleteListNode = literal("deletelist").then(argument("listname", StringArgumentType.word())
 				.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))
 				.executes(PlayerListCommand::deleteList)
 			)
 			.build();
 
-		LiteralCommandNode<ServerCommandSource> spawnlistNode = literal("spawnlist").then(argument("listname", StringArgumentType.word())
+		LiteralCommandNode<ServerCommandSource> spawnListNode = literal("spawnlist").then(argument("listname", StringArgumentType.word())
 			.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))
 			.executes(PlayerListCommand::spawnFromList)
 		).build();
 
-		LiteralCommandNode<ServerCommandSource> addplayerNode = literal("addplayer").then(argument("listname", StringArgumentType.word())
+		LiteralCommandNode<ServerCommandSource> playerNode = literal("addplayer").then(argument("listname", StringArgumentType.word())
 			.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))
 			.then(argument("playername", StringArgumentType.word())
 				.suggests((context, builder) -> ConfigPlayerClient.INSTANCE.suggestPlayer(builder))
@@ -66,16 +66,16 @@ public class PlayerListCommand {
 		).build();
 
 		// Stitching commands
-		dispatcher.getRoot().addChild(playerlistNode);
-		playerlistNode.addChild(createlistNode);
-		playerlistNode.addChild(deletelistNode);
-		playerlistNode.addChild(spawnlistNode);
-		playerlistNode.addChild(addplayerNode);
+		dispatcher.getRoot().addChild(playerListNode);
+		playerListNode.addChild(createListNode);
+		playerListNode.addChild(deleteListNode);
+		playerListNode.addChild(spawnListNode);
+		playerListNode.addChild(playerNode);
 		dispatcher.getRoot().addChild(plNode);
-		plNode.addChild(createlistNode);
-		plNode.addChild(deletelistNode);
-		plNode.addChild(spawnlistNode);
-		plNode.addChild(addplayerNode);
+		plNode.addChild(createListNode);
+		plNode.addChild(deleteListNode);
+		plNode.addChild(spawnListNode);
+		plNode.addChild(playerNode);
 	}
 
 	public static int createList(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

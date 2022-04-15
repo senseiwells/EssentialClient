@@ -1,12 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
-import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
-import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
-import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -17,6 +10,13 @@ import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
+import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
+import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
+import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
@@ -306,7 +306,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 
 		private Value<?> getLookingAtEntity(Context context, MemberFunction function) throws CodeError {
 			Entity targetedEntity = ArucasMinecraftExtension.getClient().targetedEntity;
-			return of(targetedEntity);
+			return context.convertValue(targetedEntity);
 		}
 
 		private Value<?> swapSlots(Context context, MemberFunction function) throws CodeError {
@@ -444,7 +444,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 
 		private Value<?> getCurrentScreen(Context context, MemberFunction function) throws CodeError {
 			Screen currentScreen = ArucasMinecraftExtension.getClient().currentScreen;
-			return ScreenValue.of(currentScreen);
+			return context.convertValue(currentScreen);
 		}
 
 		private Value<?> craft(Context context, MemberFunction function) throws CodeError {

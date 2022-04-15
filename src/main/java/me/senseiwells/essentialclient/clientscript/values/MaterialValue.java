@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -12,6 +11,7 @@ import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -85,6 +85,7 @@ public class MaterialValue extends Value<Item> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
+				new MemberFunction("getFullId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getMaterial(context, function)).toString())),
 				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getMaterial(context, function)).getPath())),
 				new MemberFunction("asItemStack", (context, function) -> new ItemStackValue(this.getMaterial(context, function).getDefaultStack())),
 				new MemberFunction("asBlock", this::asBlock),

@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.utils.misc;
 
 import com.google.gson.*;
+import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.fabricmc.loader.api.FabricLoader;

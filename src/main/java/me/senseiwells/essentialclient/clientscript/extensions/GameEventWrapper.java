@@ -1,8 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.extensions;
 
-import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
-import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
-import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.api.wrappers.ArucasClass;
@@ -17,6 +14,9 @@ import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.FunctionValue;
+import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
+import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
+import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 
 import java.util.List;
 
@@ -41,6 +41,10 @@ public class GameEventWrapper implements IArucasWrappedClass {
 	@ArucasConstructor
 	public void constructor(Context eventContext, StringValue eventName, FunctionValue function) {
 		this.constructor(eventContext, eventName, function, BooleanValue.FALSE);
+	}
+
+	public Context getEventContext() {
+		return this.eventContext;
 	}
 
 	public boolean callFunction(List<Value<?>> arguments) {

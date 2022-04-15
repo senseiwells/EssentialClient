@@ -3,11 +3,14 @@ package me.senseiwells.essentialclient.clientscript.core;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ContextBuilder;
+import me.senseiwells.arucas.values.NullValue;
+import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.FakeEntityWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.GameEventWrapper;
 import me.senseiwells.essentialclient.clientscript.values.*;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,6 +20,9 @@ import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.command.argument.BlockStateArgument;
+import net.minecraft.command.argument.ItemStackArgument;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -24,9 +30,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
 
 public class MinecraftAPI {
@@ -88,5 +96,13 @@ public class MinecraftAPI {
 		builder.addConversion(Recipe.class, (r, c) -> new RecipeValue(r));
 		builder.addConversion(TradeOffer.class, (t, c) -> new TradeValue(t));
 		builder.addConversion(ArgumentBuilder.class, (a, c) -> new CommandBuilderValue(a));
+
+		builder.addConversion(ItemStackArgument.class, (i, c) -> EssentialUtils.throwAsRuntime(() -> new ItemStackValue(i.createStack(1, false))));
+		builder.addConversion(BlockStateArgument.class, (b, c) -> new BlockValue(b.getBlockState()));
+		builder.addConversion(Identifier.class, (i, c) -> StringValue.of(i.toString()));
+		builder.addConversion(Enchantment.class, (e, c) -> {
+			Identifier identifier = Registry.ENCHANTMENT.getId(e);
+			return identifier == null ? NullValue.NULL : StringValue.of(identifier.toString());
+		});
 	}
 }

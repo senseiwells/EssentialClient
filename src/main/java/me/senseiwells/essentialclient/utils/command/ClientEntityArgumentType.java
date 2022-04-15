@@ -77,6 +77,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 	public ClientEntitySelector parse(StringReader reader) throws CommandSyntaxException {
 		final int start = reader.getCursor();
 		ClientEntitySelector ret = new Parser(reader).parse();
+		ret.setSingleTarget(this.singleTarget);
 
 		if (ret.getLimit() > 1 && this.singleTarget) {
 			reader.setCursor(start);

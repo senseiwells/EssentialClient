@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.EntityValue;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -28,7 +27,7 @@ public abstract class FishingBobberEntityMixin extends Entity {
 	private void onFishBite(TrackedData<?> data, CallbackInfo ci) {
 		PlayerEntity playerEntity = this.getPlayerOwner();
 		if (playerEntity != null && playerEntity == EssentialUtils.getPlayer()) {
-			MinecraftScriptEvents.ON_FISH_BITE.run(EntityValue.of(this));
+			MinecraftScriptEvents.ON_FISH_BITE.run(c -> EssentialUtils.arrayListOf(c.convertValue(this)));
 		}
 	}
 }

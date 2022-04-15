@@ -7,9 +7,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
-import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.ArucasThreadHandler;
 import me.senseiwells.arucas.api.ISyntax;
@@ -22,6 +19,9 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
+import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntitySummonArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
@@ -104,16 +104,16 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 
 		private Value<?> argument(Context context, ISyntax syntaxPosition, String name, String stringArgType, Value<?> suggestions) throws CodeError {
 			SuggestionProvider<ServerCommandSource> extraSuggestion = null;
-			ArgumentType<?> argumentType = switch (stringArgType) {
-				case "PlayerName" -> {
+			ArgumentType<?> argumentType = switch (stringArgType.toLowerCase()) {
+				case "playername" -> {
 					extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
 					yield StringArgumentType.word();
 				}
-				case "RecipeId" -> {
+				case "recipeid" -> {
 					extraSuggestion = SuggestionProviders.ALL_RECIPES;
 					yield IdentifierArgumentType.identifier();
 				}
-				case "EntityId" -> {
+				case "entityid" -> {
 					extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
 					yield EntitySummonArgumentType.entitySummon();
 				}
@@ -165,7 +165,7 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 					}
 					ArucasList arucasList = new ArucasList();
 					for (ParsedArgument<?, ?> argument : arguments) {
-						arucasList.add(ClientScriptUtils.commandArgumentToValue(argument.getResult(), c));
+						arucasList.add(ClientScriptUtils.commandArgumentToValue(argument.getResult(), ctx, c));
 					}
 					functionValue.call(ctx, arucasList);
 				});

@@ -1,5 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.events;
 
+import me.senseiwells.arucas.api.ArucasThreadHandler;
+import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.Value;
@@ -62,8 +64,44 @@ public class MinecraftScriptEvent {
 		return shouldCancel;
 	}
 
+	public synchronized boolean run(ArgumentSupplier argumentSupplier) {
+		List<Value<?>> values = null;
+		boolean shouldCancel = false;
+		for (Set<GameEventWrapper> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
+			for (GameEventWrapper gameEvent : gameEventWrappers) {
+				if (values == null) {
+					values = argumentSupplier.applySafe(gameEvent.getEventContext());
+					if (values == null) {
+						break;
+					}
+				}
+				if (gameEvent.callFunction(values)) {
+					shouldCancel = true;
+				}
+			}
+		}
+		return shouldCancel;
+	}
+
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	@FunctionalInterface
+	public interface ArgumentSupplier {
+		List<Value<?>> apply(Context context) throws CodeError;
+
+		default List<Value<?>> applySafe(Context context) {
+			try {
+				return this.apply(context);
+			}
+			catch (CodeError codeError) {
+				ArucasThreadHandler threadHandler = context.getThreadHandler();
+				threadHandler.tryError(context, codeError);
+				threadHandler.stop();
+				return null;
+			}
+		}
 	}
 }

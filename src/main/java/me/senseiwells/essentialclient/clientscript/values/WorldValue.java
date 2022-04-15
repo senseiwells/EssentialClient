@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -9,6 +8,7 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -74,6 +74,8 @@ public class WorldValue extends Value<ClientWorld> {
 				new MemberFunction("getClosestPlayer", List.of("entity", "maxDistance"), this::getClosestPlayer),
 				new MemberFunction("getAllEntities", this::getAllEntities),
 				new MemberFunction("getEntityFromId", "id", this::getEntityFromId),
+				new MemberFunction("getFullId", (context, function) -> StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().toString())),
+				new MemberFunction("getId", (context, function) -> StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
 				new MemberFunction("getDimensionName", (context, function) -> StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
 				new MemberFunction("isRaining", (context, function) -> BooleanValue.of(this.getWorld(context, function).isRaining())),
 				new MemberFunction("isThundering", (context, function) -> BooleanValue.of(this.getWorld(context, function).isThundering())),
@@ -139,14 +141,14 @@ public class WorldValue extends Value<ClientWorld> {
 			ClientWorld world = this.getWorld(context, function);
 			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 2);
-			return EntityValue.of(world.getClosestPlayer(entityValue.value, numberValue.value));
+			return context.convertValue(world.getClosestPlayer(entityValue.value, numberValue.value));
 		}
 
 		private Value<?> getAllEntities(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			ArucasList valueList = new ArucasList();
 			for (Entity entity : world.getEntities()) {
-				valueList.add(EntityValue.of(entity));
+				valueList.add(context.convertValue(entity));
 			}
 			return new ListValue(valueList);
 		}
@@ -154,7 +156,7 @@ public class WorldValue extends Value<ClientWorld> {
 		private Value<?> getEntityFromId(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			NumberValue id = function.getParameterValueOfType(context, NumberValue.class, 1);
-			return EntityValue.of(world.getEntityById(id.value.intValue()));
+			return context.convertValue(world.getEntityById(id.value.intValue()));
 		}
 
 		private Value<?> renderParticle(Context context, MemberFunction function) throws CodeError {

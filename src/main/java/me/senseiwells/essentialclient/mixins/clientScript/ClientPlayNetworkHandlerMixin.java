@@ -1,12 +1,12 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import me.senseiwells.arucas.values.NumberValue;
+import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.EntityValue;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
 import me.senseiwells.essentialclient.clientscript.values.TextValue;
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.StringValue;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
@@ -79,7 +79,8 @@ public class ClientPlayNetworkHandlerMixin {
 	private void onDeath(DeathMessageS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getEntityId());
 		if (entity == this.client.player) {
-			MinecraftScriptEvents.ON_DEATH.run(EntityValue.of(this.world.getEntityById(packet.getKillerId())), new TextValue(packet.getMessage().copy()));
+
+			MinecraftScriptEvents.ON_DEATH.run(c -> EssentialUtils.arrayListOf(c.convertValue(this.world.getEntityById(packet.getKillerId())), new TextValue(packet.getMessage().copy())));
 		}
 	}
 }
