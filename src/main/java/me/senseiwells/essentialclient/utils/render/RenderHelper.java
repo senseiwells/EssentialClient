@@ -2,12 +2,19 @@ package me.senseiwells.essentialclient.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
+import me.senseiwells.essentialclient.clientscript.extensions.FakeBlockWrapper;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.world.LightType;
 
 import java.util.List;
 
@@ -141,5 +148,75 @@ public class RenderHelper {
 		if (outline) {
 			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(0, 0, 0).next();
 		}
+	}
+
+	// Renders fake blocks
+	// Reference: https://github.com/ch-yx/fabric-carpet/blob/item_shape/src/main/java/carpet/script/utils/ShapesRenderer.java#L283-L403
+	public static void renderBlocks(MatrixStack matrices, float tickDelta) {
+		MinecraftClient client = EssentialUtils.getClient();
+		VertexConsumerProvider.Immediate immediate = client.getBufferBuilders().getEntityVertexConsumers();
+
+		FakeBlockWrapper.getAllBlocksToRender().forEach(fakeBlock -> {
+			renderFakeBlock(client, matrices, fakeBlock, immediate, tickDelta);
+		});
+		immediate.drawCurrentLayer();
+	}
+
+	private static void renderFakeBlock(MinecraftClient client, MatrixStack matrices, FakeBlockWrapper fakeBlock, VertexConsumerProvider.Immediate immediate, float tickDelta) {
+		if (client.world == null) {
+			return;
+		}
+
+		Vec3d cameraPos = client.gameRenderer.getCamera().getPos();
+
+		matrices.push();
+		matrices.translate(0.5D, 0.5D, 0.5D);
+		matrices.translate(
+			fakeBlock.blockPos.getX() - cameraPos.x,
+			fakeBlock.blockPos.getY() - cameraPos.y,
+			fakeBlock.blockPos.getZ() - cameraPos.z
+		);
+		if (fakeBlock.direction == null) {
+			matrices.multiply(client.gameRenderer.getCamera().getRotation());
+			matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+		}
+		else {
+			switch (fakeBlock.direction) {
+				case SOUTH -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+				case EAST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(270));
+				case WEST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90));
+				case UP -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+				case DOWN -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+			}
+		}
+		if (fakeBlock.xTilt != 0.0F) {
+			matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(fakeBlock.xTilt));
+		}
+		if (fakeBlock.yTilt != 0.0F) {
+			matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(fakeBlock.yTilt));
+		}
+		if (fakeBlock.zTilt != 0.0F) {
+			matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(fakeBlock.zTilt));
+		}
+
+		matrices.translate(-0.5, -0.5, -0.5);
+
+		int light = LightmapTextureManager.pack(
+			client.world.getLightLevel(LightType.BLOCK, fakeBlock.blockPos),
+			client.world.getLightLevel(LightType.SKY, fakeBlock.blockPos)
+		);
+
+		if (fakeBlock.blockState.getRenderType() == BlockRenderType.MODEL) {
+			client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
+		}
+
+		if (fakeBlock.blockEntity != null) {
+			BlockEntityRenderer<BlockEntity> renderer = client.getBlockEntityRenderDispatcher().get(fakeBlock.blockEntity);
+			if (renderer != null) {
+				renderer.render(fakeBlock.blockEntity, tickDelta, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
+			}
+		}
+
+		matrices.pop();
 	}
 }

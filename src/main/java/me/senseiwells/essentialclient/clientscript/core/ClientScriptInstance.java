@@ -7,9 +7,6 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
-import me.senseiwells.essentialclient.clientscript.extensions.FakeEntityWrapper;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.rule.ClientRules;
@@ -46,7 +43,6 @@ public class ClientScriptInstance {
 	private final Path fileLocation;
 	private final ClientKeyBind keyBind;
 	private ArucasThread mainScriptThread;
-	private Context context;
 
 	private ClientScriptInstance(String scriptName, String content, Path fileLocation) {
 		this.scriptName = scriptName;
@@ -92,13 +88,6 @@ public class ClientScriptInstance {
 		}
 		this.mainScriptThread.interrupt();
 		this.mainScriptThread = null;
-		if (this.context != null) {
-			FakeEntityWrapper.clearFakeEntities(this.context);
-			BoxShapeWrapper.clearBoxesToRender(this.context);
-			MinecraftScriptEvents.clearEventFunctions(this.context);
-			CommandHelper.removeComplexCommand(this.context);
-			this.context = null;
-		}
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
 			client.execute(() -> {
@@ -124,8 +113,14 @@ public class ClientScriptInstance {
 			// This is super hacky...
 			// Will be removed in future
 			if (!fileContent.contains("import * from Minecraft;")) {
-				EssentialUtils.sendMessage("You should add 'import * from Minecraft;' to the top of '%s'".formatted(this.scriptName));
-				fileContent = "import * from Minecraft;" + fileContent;
+				if (this.fileLocation != null) {
+					fileContent = "import * from Minecraft;\n\n" + fileContent;
+					Files.writeString(this.fileLocation, fileContent);
+				}
+				else {
+					EssentialUtils.sendMessage("You should add 'import * from Minecraft;' to the top of '%s'".formatted(this.scriptName));
+					fileContent = "import * from Minecraft;" + fileContent;
+				}
 			}
 		}
 		catch (IOException e) {
@@ -136,7 +131,6 @@ public class ClientScriptInstance {
 
 		// Create a new context for the file we should run.
 		Context context = BUILDER.build();
-		this.context = context;
 
 		context.getThreadHandler().setFatalErrorHandler((c, t, s) -> {
 			if (s.isEmpty()) {

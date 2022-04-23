@@ -48,6 +48,7 @@
     "keyboard.KeyBindingAccessor",
     "keyboard.KeyboardMixin",
     "mouseScrollRules.MouseMixin",
+    "openScreenshotDirectory.ScreenshotRecorderMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",
     "permanentChatHud.ChatHudMixin",
     "quickLockRecipe.AnimatedResultButtonMixin",

@@ -72,11 +72,12 @@ public class CommandHelper {
 		return false;
 	}
 
-	public static void addComplexCommand(UUID uuid, LiteralCommandNode<ServerCommandSource> commandNode) {
-		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.get(uuid);
-		commandNodeSet = commandNodeSet != null ? commandNodeSet : new HashSet<>();
+	public static void addComplexCommand(Context context, LiteralCommandNode<ServerCommandSource> commandNode) {
+		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(context.getContextId(), id -> {
+			context.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
+			return new LinkedHashSet<>();
+		});
 		commandNodeSet.add(commandNode);
-		FUNCTION_COMMAND_NODES.put(uuid, commandNodeSet);
 	}
 
 	public static void registerFunctionCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -89,10 +90,6 @@ public class CommandHelper {
 
 	public static void clearClientCommands() {
 		CLIENT_COMMANDS.clear();
-	}
-
-	public static void removeComplexCommand(Context context) {
-		FUNCTION_COMMAND_NODES.remove(context.getContextId());
 	}
 
 	public static void executeCommand(StringReader reader, String command) {

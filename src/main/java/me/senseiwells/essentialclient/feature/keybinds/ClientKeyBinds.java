@@ -93,6 +93,9 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 			String keyTranslation = valueElement.getAsString();
 			existingKeyBind.setBoundKey(InputUtil.fromTranslationKey(keyTranslation));
 		}
+		else {
+			EssentialClient.LOGGER.warn("Could not load keybind: {}", key);
+		}
 		return null;
 	}
 

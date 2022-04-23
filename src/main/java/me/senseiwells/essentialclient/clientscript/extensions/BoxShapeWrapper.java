@@ -1,11 +1,11 @@
 package me.senseiwells.essentialclient.clientscript.extensions;
 
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.arucas.api.wrappers.*;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
+import me.senseiwells.essentialclient.clientscript.values.PosValue;
 
 import java.util.*;
 
@@ -189,22 +189,16 @@ public class BoxShapeWrapper implements IArucasWrappedClass {
 
 	@SuppressWarnings("UnusedReturnValue")
 	public synchronized static boolean addBoxToRender(Context context, BoxShapeWrapper boxShapeWrapper) {
-		Set<BoxShapeWrapper> boxShapeWrapperSet = BOXES_TO_RENDER.getOrDefault(context.getContextId(), new LinkedHashSet<>());
-		BOXES_TO_RENDER.putIfAbsent(context.getContextId(), boxShapeWrapperSet);
+		Set<BoxShapeWrapper> boxShapeWrapperSet = BOXES_TO_RENDER.computeIfAbsent(context.getContextId(), id -> {
+			context.getThreadHandler().addShutdownEvent(() -> BOXES_TO_RENDER.remove(id));
+			return new LinkedHashSet<>();
+		});
 		return boxShapeWrapperSet.add(boxShapeWrapper);
 	}
 
 	public synchronized static boolean removeBoxToRender(Context context, BoxShapeWrapper boxShapeWrapper) {
 		Set<BoxShapeWrapper> boxShapeWrapperSet = BOXES_TO_RENDER.get(context.getContextId());
 		return boxShapeWrapperSet != null && boxShapeWrapperSet.remove(boxShapeWrapper);
-	}
-
-	public synchronized static void clearBoxesToRender(Context context) {
-		BOXES_TO_RENDER.remove(context.getContextId());
-	}
-
-	public synchronized static List<BoxShapeWrapper> getAllBoxesToRender() {
-		return BOXES_TO_RENDER.values().stream().flatMap(Collection::stream).toList();
 	}
 
 	public synchronized static List<BoxShapeWrapper> getThroughBoxesToRender() {

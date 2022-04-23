@@ -29,7 +29,10 @@ public class MinecraftScriptEvent {
 	}
 
 	public synchronized void registerEvent(Context context, GameEventWrapper gameEvent) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(context.getContextId(), id -> new LinkedHashSet<>());
+		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(context.getContextId(), id -> {
+			context.getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
+			return new LinkedHashSet<>();
+		});
 		gameEventWrappers.add(gameEvent);
 	}
 

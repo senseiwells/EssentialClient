@@ -52,6 +52,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		ESSENTIAL_CLIENT_BUTTON = register(new BooleanClientRule("essentialClientButton", "This renders the Essential Client Menu on the main menu screen, and pause screen", true)),
 		HIGHLIGHT_LAVA_SOURCES = register(new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", ClientRules::refreshWorld)),
 		INCREASE_SPECTATOR_SCROLL_SPEED = register(new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator")),
+		OPEN_SCREENSHOT_DIRECTORY = register(new BooleanClientRule("openScreenshotDirectory", "This opens the screenshot directory instead of directly opening the screenshot")),
 		PERMANENT_CHAT_HUD = register(new BooleanClientRule("permanentChatHud", "This prevents the chat from being cleared, also applies when chaning worlds/servers")),
 		QUICK_LOCK_RECIPE = register(new BooleanClientRule("quickLockRecipe", "If you middle click a recipe it will put the name of the item in the search bar stopping you from craftin the wrong recipe")),
 		REMOVE_WARN_RECEIVED_PASSENGERS = register(new BooleanClientRule("removeWarnReceivedPassengers", "This removes the 'Received passengers for unknown entity' warning on the client")),

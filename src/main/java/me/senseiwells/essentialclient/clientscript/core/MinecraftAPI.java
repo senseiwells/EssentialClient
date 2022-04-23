@@ -5,10 +5,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ContextBuilder;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
-import me.senseiwells.essentialclient.clientscript.extensions.FakeEntityWrapper;
-import me.senseiwells.essentialclient.clientscript.extensions.GameEventWrapper;
+import me.senseiwells.essentialclient.clientscript.extensions.*;
 import me.senseiwells.essentialclient.clientscript.values.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
@@ -68,7 +65,8 @@ public class MinecraftAPI {
 			IMPORT_NAME,
 			GameEventWrapper::new,
 			BoxShapeWrapper::new,
-			FakeEntityWrapper::new
+			FakeEntityWrapper::new,
+			FakeBlockWrapper::new
 		);
 		builder.addExtensions(
 			ArucasMinecraftExtension::new

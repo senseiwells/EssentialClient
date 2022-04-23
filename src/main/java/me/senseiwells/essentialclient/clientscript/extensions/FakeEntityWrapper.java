@@ -168,17 +168,18 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		return false;
 	}
 
-	public synchronized static void clearFakeEntities(Context context) {
-		Set<Integer> fakeIds = FAKE_IDS.remove(context.getContextId());
-		ClientWorld world = EssentialUtils.getWorld();
-		if (fakeIds != null && world != null) {
-			EssentialUtils.getClient().execute(() -> fakeIds.forEach(id -> world.removeEntity(id, Entity.RemovalReason.DISCARDED)));
-		}
-	}
-
 	private synchronized static int getNextFakeId(Context context) {
 		int id = ID_COUNTER.getAndDecrement();
-		Set<Integer> fakeIdSet = FAKE_IDS.computeIfAbsent(context.getContextId(), uuid -> new HashSet<>());
+		Set<Integer> fakeIdSet = FAKE_IDS.computeIfAbsent(context.getContextId(), uuid -> {
+			context.getThreadHandler().addShutdownEvent(() -> {
+				Set<Integer> fakeIds = FAKE_IDS.remove(context.getContextId());
+				ClientWorld world = EssentialUtils.getWorld();
+				if (fakeIds != null && world != null) {
+					EssentialUtils.getClient().execute(() -> fakeIds.forEach(fakeId -> world.removeEntity(fakeId, Entity.RemovalReason.DISCARDED)));
+				}
+			});
+			return new HashSet<>();
+		});
 		fakeIdSet.add(id);
 		return id;
 	}

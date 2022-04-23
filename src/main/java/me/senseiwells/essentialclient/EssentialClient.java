@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class EssentialClient implements ModInitializer {
@@ -33,7 +33,7 @@ public class EssentialClient implements ModInitializer {
 		CHUNK_NET_HANDLER = new ChunkClientNetworkHandler();
 		START_TIME = LocalDateTime.now();
 		VERSION = "1.1.7";
-		CONFIG_SET = new HashSet<>();
+		CONFIG_SET = new LinkedHashSet<>();
 		registerConfigs();
 
 		Events.ON_CLOSE.register(client -> EssentialClient.saveConfigs());
