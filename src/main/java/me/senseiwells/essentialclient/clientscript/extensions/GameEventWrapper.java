@@ -20,6 +20,7 @@ import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @ArucasClass(name = "GameEvent")
 public class GameEventWrapper implements IArucasWrappedClass {
 	private Context eventContext;
@@ -41,6 +42,33 @@ public class GameEventWrapper implements IArucasWrappedClass {
 	@ArucasConstructor
 	public void constructor(Context eventContext, StringValue eventName, FunctionValue function) {
 		this.constructor(eventContext, eventName, function, BooleanValue.FALSE);
+	}
+
+	@ArucasFunction
+	public BooleanValue isRegistered(Context context) {
+		return BooleanValue.of(this.minecraftEvent.isEventRegistered(context, this));
+	}
+
+	@ArucasFunction
+	public NullValue register(Context context) {
+		this.minecraftEvent.registerEvent(context, this);
+		return NullValue.NULL;
+	}
+
+	@ArucasFunction
+	public BooleanValue unregister(Context context) {
+		return BooleanValue.of(this.minecraftEvent.unregisterEvent(context, this));
+	}
+
+	@ArucasFunction
+	public static NullValue cancel(Context context) throws CancelEvent {
+		throw CancelEvent.INSTANCE;
+	}
+
+	@ArucasFunction
+	public static NullValue unregisterAll(Context context) {
+		MinecraftScriptEvents.clearEventFunctions(context);
+		return NullValue.NULL;
 	}
 
 	public Context getEventContext() {
@@ -77,32 +105,5 @@ public class GameEventWrapper implements IArucasWrappedClass {
 		}
 		threadHandler.stop();
 		return false;
-	}
-
-	@ArucasFunction
-	public BooleanValue isRegistered(Context context) {
-		return BooleanValue.of(this.minecraftEvent.isEventRegistered(context, this));
-	}
-
-	@ArucasFunction
-	public NullValue register(Context context) {
-		this.minecraftEvent.registerEvent(context, this);
-		return NullValue.NULL;
-	}
-
-	@ArucasFunction
-	public BooleanValue unregister(Context context) {
-		return BooleanValue.of(this.minecraftEvent.unregisterEvent(context, this));
-	}
-
-	@ArucasFunction
-	public static NullValue cancel(Context context) throws CancelEvent {
-		throw CancelEvent.INSTANCE;
-	}
-
-	@ArucasFunction
-	public static NullValue unregisterAll(Context context) {
-		MinecraftScriptEvents.clearEventFunctions(context);
-		return NullValue.NULL;
 	}
 }

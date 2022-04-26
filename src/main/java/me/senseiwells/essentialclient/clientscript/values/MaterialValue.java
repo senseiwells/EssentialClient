@@ -85,12 +85,24 @@ public class MaterialValue extends Value<Item> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getFullId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getMaterial(context, function)).toString())),
-				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getMaterial(context, function)).getPath())),
-				new MemberFunction("asItemStack", (context, function) -> new ItemStackValue(this.getMaterial(context, function).getDefaultStack())),
+				new MemberFunction("getFullId", this::getFullId),
+				new MemberFunction("getId", this::getId),
+				new MemberFunction("asItemStack", this::asItemStack),
 				new MemberFunction("asBlock", this::asBlock),
 				new MemberFunction("getTranslatedName", this::getTranslatedName)
 			);
+		}
+
+		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.ITEM.getId(this.getMaterial(context, function)).toString());
+		}
+
+		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.ITEM.getId(this.getMaterial(context, function)).getPath());
+		}
+
+		private Value<?> asItemStack(Context context, MemberFunction function) throws CodeError {
+			return new ItemStackValue(this.getMaterial(context, function).getDefaultStack());
 		}
 
 		private Value<?> asBlock(Context context, MemberFunction function) throws CodeError {

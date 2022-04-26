@@ -74,12 +74,12 @@ public class WorldValue extends Value<ClientWorld> {
 				new MemberFunction("getClosestPlayer", List.of("entity", "maxDistance"), this::getClosestPlayer),
 				new MemberFunction("getAllEntities", this::getAllEntities),
 				new MemberFunction("getEntityFromId", "id", this::getEntityFromId),
-				new MemberFunction("getFullId", (context, function) -> StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().toString())),
-				new MemberFunction("getId", (context, function) -> StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
-				new MemberFunction("getDimensionName", (context, function) -> StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().getPath())),
-				new MemberFunction("isRaining", (context, function) -> BooleanValue.of(this.getWorld(context, function).isRaining())),
-				new MemberFunction("isThundering", (context, function) -> BooleanValue.of(this.getWorld(context, function).isThundering())),
-				new MemberFunction("getTimeOfDay", (context, function) -> NumberValue.of(this.getWorld(context, function).getTimeOfDay())),
+				new MemberFunction("getFullId", this::getFullId),
+				new MemberFunction("getId", this::getId),
+				new MemberFunction("getDimensionName", this::getDimensionName),
+				new MemberFunction("isRaining", this::isRaining),
+				new MemberFunction("isThundering", this::isThunderin),
+				new MemberFunction("getTimeOfDay", this::getTimeOfDay),
 				new MemberFunction("renderParticle", List.of("particleName", "x", "y", "z"), this::renderParticle),
 				new MemberFunction("renderParticle", List.of("particleName", "pos"), this::renderParticlePos),
 				new MemberFunction("renderParticle", List.of("particleName", "pos", "xVelocity", "yVelocity", "zVelocity"), this::renderParticleVel),
@@ -157,6 +157,30 @@ public class WorldValue extends Value<ClientWorld> {
 			ClientWorld world = this.getWorld(context, function);
 			NumberValue id = function.getParameterValueOfType(context, NumberValue.class, 1);
 			return context.convertValue(world.getEntityById(id.value.intValue()));
+		}
+
+		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().toString());
+		}
+
+		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().getPath());
+		}
+
+		private Value<?> getDimensionName(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(this.getWorld(context, function).getRegistryKey().getValue().getPath());
+		}
+
+		private Value<?> isRaining(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getWorld(context, function).isRaining());
+		}
+
+		private Value<?> isThunderin(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getWorld(context, function).isThundering());
+		}
+
+		private Value<?> getTimeOfDay(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getWorld(context, function).getTimeOfDay());
 		}
 
 		private Value<?> renderParticle(Context context, MemberFunction function) throws CodeError {

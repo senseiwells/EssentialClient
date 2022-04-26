@@ -40,6 +40,7 @@
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
+    "disableMessages.InGameHudMixin",
     "disableNarrator.KeyboardMixin",
     "disableNightVisionFlash.GameRendererMixin",
     "disableRecipeNotifications.RecipeToastMixin",

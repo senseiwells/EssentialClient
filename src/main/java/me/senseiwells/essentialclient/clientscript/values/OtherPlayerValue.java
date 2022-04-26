@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -10,6 +9,7 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -62,10 +62,10 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getCurrentSlot", (context, function) -> NumberValue.of(this.getOtherPlayer(context, function).getInventory().selectedSlot)),
-				new MemberFunction("getHeldItem", (context, function) -> new ItemStackValue(this.getOtherPlayer(context, function).getInventory().getMainHandStack())),
-				new MemberFunction("isInventoryFull", (context, function) -> BooleanValue.of(this.getOtherPlayer(context, function).getInventory().getEmptySlot() == -1)),
-				new MemberFunction("getPlayerName", (context, function) -> StringValue.of(this.getOtherPlayer(context, function).getEntityName())),
+				new MemberFunction("getCurrentSlot", this::getCurrentSlot),
+				new MemberFunction("getHeldItem", this::getHeldItem),
+				new MemberFunction("isInventoryFull", this::isInventoryFull),
+				new MemberFunction("getPlayerName", this::getPlayerName),
 				new MemberFunction("getGamemode", this::getGamemode),
 				new MemberFunction("getTotalSlots", this::getTotalSlots),
 				new MemberFunction("getItemForSlot", "slot", this::getItemForSlot),
@@ -77,6 +77,22 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				new MemberFunction("getHunger", this::getHunger),
 				new MemberFunction("getSaturation", this::getSaturation)
 			);
+		}
+
+		private Value<?> getCurrentSlot(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getOtherPlayer(context, function).getInventory().selectedSlot);
+		}
+
+		private Value<?> getHeldItem(Context context, MemberFunction function) throws CodeError {
+			return new ItemStackValue(this.getOtherPlayer(context, function).getInventory().getMainHandStack());
+		}
+
+		private Value<?> isInventoryFull(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getOtherPlayer(context, function).getInventory().getEmptySlot() == -1);
+		}
+
+		private Value<?> getPlayerName(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(this.getOtherPlayer(context, function).getEntityName());
 		}
 
 		private Value<?> getGamemode(Context context, MemberFunction function) throws CodeError {
@@ -176,7 +192,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		}
 
 		@Override
-		public Class<AbstractPlayerValue> getValueClass() {
+		public Class<? extends BaseValue> getValueClass() {
 			return AbstractPlayerValue.class;
 		}
 	}

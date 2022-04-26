@@ -17,6 +17,7 @@ import net.minecraft.util.math.Direction;
 import java.util.*;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 @ArucasClass(name = "FakeBlock")
 public class FakeBlockWrapper implements IArucasWrappedClass {
 	private static final Map<UUID, Set<FakeBlockWrapper>> BLOCKS_TO_RENDER = new LinkedHashMap<>(0);

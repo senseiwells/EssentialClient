@@ -9,6 +9,7 @@ import me.senseiwells.essentialclient.clientscript.values.PosValue;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 @ArucasClass(name = "BoxShape")
 public class BoxShapeWrapper implements IArucasWrappedClass {
 	private static final Map<UUID, Set<BoxShapeWrapper>> BOXES_TO_RENDER = new LinkedHashMap<>(0);

@@ -46,9 +46,9 @@ public class AlternateDimensionCommand {
 			}
 			MutableText message = new LiteralText("Your %s coordinates are ".formatted(dimension)).formatted(Formatting.GREEN);
 			MutableText clickable = new LiteralText("[%s, %s, %s]".formatted(
-				CommandHelper.decimalFormat.format(newX),
-				CommandHelper.decimalFormat.format(playerEntity.getY()),
-				CommandHelper.decimalFormat.format(newZ)
+				CommandHelper.DECIMAL_FORMAT.format(newX),
+				CommandHelper.DECIMAL_FORMAT.format(playerEntity.getY()),
+				CommandHelper.DECIMAL_FORMAT.format(newZ)
 			)).styled(style -> style.withClickEvent(new ClickEvent(
 				ClickEvent.Action.RUN_COMMAND,
 				"/execute in %s run tp @s %f %f %f".formatted(dimension, newX, playerEntity.getY(), newZ)

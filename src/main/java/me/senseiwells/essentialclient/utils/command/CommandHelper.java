@@ -39,13 +39,13 @@ public class CommandHelper {
 	private static final Map<UUID, Set<LiteralCommandNode<ServerCommandSource>>> FUNCTION_COMMAND_NODES = new HashMap<>();
 	public static final Set<String> CLIENT_COMMANDS = new HashSet<>();
 	public static final Set<String> FUNCTION_COMMANDS = new HashSet<>();
-	public static final DecimalFormat decimalFormat = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
+	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
 
 	private static CommandTreeS2CPacket fakeCommandPacket;
 	public static MethodHandle argumentHandle;
 
 	static {
-		decimalFormat.setGroupingUsed(false);
+		DECIMAL_FORMAT.setGroupingUsed(false);
 	}
 
 	public static CompletableFuture<Suggestions> suggestOnlinePlayers(SuggestionsBuilder builder) {

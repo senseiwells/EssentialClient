@@ -41,8 +41,8 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getStatusEffects", this::getStatusEffects),
-				new MemberFunction("getHealth", (context, function) -> NumberValue.of(this.getLivingEntity(context, function).getHealth())),
-				new MemberFunction("isFlyFalling", (context, function) -> BooleanValue.of(this.getLivingEntity(context, function).isFallFlying()))
+				new MemberFunction("getHealth", this::getHealth),
+				new MemberFunction("isFlyFalling", this::isFlyFalling)
 			);
 		}
 
@@ -54,6 +54,14 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 				potionList.add(effectId == null ? NullValue.NULL : StringValue.of(effectId.getPath()));
 			});
 			return new ListValue(potionList);
+		}
+
+		private Value<?> getHealth(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getLivingEntity(context, function).getHealth());
+		}
+
+		private Value<?> isFlyFalling(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getLivingEntity(context, function).isFallFlying());
 		}
 
 		private LivingEntity getLivingEntity(Context context, MemberFunction function) throws CodeError {

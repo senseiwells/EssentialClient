@@ -65,9 +65,13 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getName", (context, function) -> StringValue.of(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()))),
+				new MemberFunction("getName", this::getName),
 				new MemberFunction("getTitle", this::getTitle)
 			);
+		}
+
+		private Value<?> getName(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()));
 		}
 
 		private Value<?> getTitle(Context context, MemberFunction function) throws CodeError {

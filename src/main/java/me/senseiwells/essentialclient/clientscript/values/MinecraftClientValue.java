@@ -1,7 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.senseiwells.arucas.api.ArucasClassExtension;
@@ -21,6 +19,7 @@ import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExt
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientTickSyncer;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
@@ -36,10 +35,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -54,9 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 public class MinecraftClientValue extends Value<MinecraftClient> {
@@ -117,12 +112,11 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("holdKey", List.of("key", "ms"), this::holdKey),
 				new MemberFunction("clearChat", this::clearChat),
 				new MemberFunction("getLatestChatMessage", this::getLatestChatMessage),
-				new MemberFunction("addCommand", "commandNode", this::addCommand1),
-				new MemberFunction("addCommand", List.of("commandName", "arguments"), this::addCommand2),
-				new MemberFunction("isInSinglePlayer", (context, function) -> BooleanValue.of(this.getClient(context, function).isInSingleplayer())),
+				new MemberFunction("addCommand", "commandNode", this::addCommand),
+				new MemberFunction("isInSinglePlayer", this::isInSinglePlayer),
 				new MemberFunction("getServerName", this::getServerName),
 				new MemberFunction("getPing", this::getPing),
-				new MemberFunction("getScriptsPath", (context, function) -> StringValue.of(ClientScript.INSTANCE.getScriptDirectory().toString())),
+				new MemberFunction("getScriptsPath", this::getScriptPath),
 				new MemberFunction("setEssentialClientRule", List.of("ruleName", "value"), this::setEssentialClientRule),
 				new MemberFunction("resetEssentialClientRule", "ruleName", this::resetEssentialClientRule),
 				new MemberFunction("getEssentialClientValue", "ruleName", this::getEssentialClientRuleValue),
@@ -254,9 +248,18 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return StringValue.of(((Text) chat[0].getText()).getString());
 		}
 
-		private Value<?> addCommand1(Context context, MemberFunction function) throws CodeError {
-			CommandBuilderValue commandBuilder = function.getParameterValueOfType(context, CommandBuilderValue.class, 1);
-			CommandNode<ServerCommandSource> commandNode = commandBuilder.value.build();
+		private Value<?> addCommand(Context context, MemberFunction function) throws CodeError {
+			Value<?> value = function.getParameterValue(context, 1);
+			CommandNode<ServerCommandSource> commandNode;
+			if (value instanceof CommandBuilderValue builderValue) {
+				commandNode = builderValue.value.build();
+			}
+			else if (value instanceof MapValue mapValue) {
+				commandNode = ClientScriptUtils.mapToCommand(mapValue.value, context, function.syntaxPosition).build();
+			}
+			else {
+				throw new RuntimeError("Expected CommandBuilder or map of a command", function.syntaxPosition, context);
+			}
 			if (!(commandNode instanceof LiteralCommandNode<ServerCommandSource> literalCommandNode)) {
 				throw new RuntimeError("Expected a literal command builder as root", function.syntaxPosition, context);
 			}
@@ -267,48 +270,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		private Value<?> addCommand2(Context context, MemberFunction function) throws CodeError {
-			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
-			ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 2);
-
-			CommandHelper.FUNCTION_COMMANDS.add(stringValue.value);
-			LiteralCommandNode<ServerCommandSource> command = CommandManager.literal(stringValue.value).build();
-			List<ArgumentCommandNode<ServerCommandSource, String>> arguments = new ArrayList<>();
-
-			int i = 1;
-			for (Value<?> value : listValue.value) {
-				if (!(value instanceof ListValue suggestionListValue)) {
-					throw new RuntimeError("You must pass in a list of lists as parameter 2 for addCommand()", function.syntaxPosition, context);
-				}
-				List<String> suggestionList = new ArrayList<>();
-				for (Value<?> suggestion : suggestionListValue.value) {
-					suggestionList.add(suggestion.getAsString(context));
-				}
-				arguments.add(CommandManager.argument("arg" + i, StringArgumentType.string()).suggests((c, b) -> CommandSource.suggestMatching(suggestionList.toArray(String[]::new), b)).build());
-				i++;
-			}
-
-			ListIterator<ArgumentCommandNode<ServerCommandSource, String>> listIterator = arguments.listIterator(arguments.size());
-
-			ArgumentCommandNode<ServerCommandSource, String> finalArguments = null;
-			while (listIterator.hasPrevious()) {
-				ArgumentCommandNode<ServerCommandSource, String> argument = listIterator.previous();
-				if (finalArguments == null) {
-					finalArguments = argument;
-					continue;
-				}
-				argument.addChild(finalArguments);
-				finalArguments = argument;
-			}
-			if (finalArguments != null) {
-				command.addChild(finalArguments);
-			}
-
-			CommandHelper.addComplexCommand(context, command);
-			MinecraftClient client = this.getClient(context, function);
-			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
-			client.execute(() -> player.networkHandler.onCommandTree(CommandHelper.getCommandPacket()));
-			return NullValue.NULL;
+		private Value<?> isInSinglePlayer(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getClient(context, function).isInSingleplayer());
 		}
 
 		private Value<?> getServerName(Context context, MemberFunction function) throws CodeError {
@@ -327,6 +290,10 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				throw new RuntimeError("Failed to get server ping", function.syntaxPosition, context);
 			}
 			return NumberValue.of(serverInfo.ping);
+		}
+
+		private Value<?> getScriptPath(Context context, MemberFunction function) {
+			return StringValue.of(ClientScript.INSTANCE.getScriptDirectory().toString());
 		}
 
 		private Value<?> setEssentialClientRule(Context context, MemberFunction function) throws CodeError {

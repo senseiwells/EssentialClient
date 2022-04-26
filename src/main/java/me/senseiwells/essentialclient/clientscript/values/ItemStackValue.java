@@ -95,18 +95,18 @@ public class ItemStackValue extends Value<ItemStack> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getMaterial", (context, function) -> new MaterialValue(this.getItemStack(context, function).getItem())),
-				new MemberFunction("getFullId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).toString())),
-				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath())),
-				new MemberFunction("getCount", (context, function) -> NumberValue.of(this.getItemStack(context, function).getCount())),
+				new MemberFunction("getMaterial", this::getMaterial),
+				new MemberFunction("getFullId", this::getFullId),
+				new MemberFunction("getId", this::getId),
+				new MemberFunction("getCount", this::getCount),
 				new MemberFunction("getDurability", this::getDurability),
-				new MemberFunction("getMaxDurability", (context, function) -> NumberValue.of(this.getItemStack(context, function).getMaxDamage())),
+				new MemberFunction("getMaxDurability", this::getMaxDurability),
 				new MemberFunction("getEnchantments", this::getEnchantments),
-				new MemberFunction("isBlockItem", (context, function) -> BooleanValue.of(this.getItemStack(context, function).getItem() instanceof BlockItem)),
-				new MemberFunction("isStackable", (context, function) -> BooleanValue.of(this.getItemStack(context, function).isStackable())),
-				new MemberFunction("getMaxCount", (context, function) -> NumberValue.of(this.getItemStack(context, function).getMaxCount())),
+				new MemberFunction("isBlockItem", this::isBlockItem),
+				new MemberFunction("isStackable", this::isStackable),
+				new MemberFunction("getMaxCount", this::getMaxCount),
 				new MemberFunction("asBlock", this::asBlock),
-				new MemberFunction("getCustomName", (context, function) -> StringValue.of(this.getItemStack(context, function).getName().asString())),
+				new MemberFunction("getCustomName", this::getCustomName),
 				new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual),
 				new MemberFunction("getNbt", this::getNbt),
 				new MemberFunction("getTranslatedName", this::getTranslatedName),
@@ -119,9 +119,29 @@ public class ItemStackValue extends Value<ItemStack> {
 			);
 		}
 
+		private Value<?> getMaterial(Context context, MemberFunction function) throws CodeError {
+			return new MaterialValue(this.getItemStack(context, function).getItem());
+		}
+
+		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).toString());
+		}
+
+		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath());
+		}
+
+		private Value<?> getCount(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getItemStack(context, function).getCount());
+		}
+
 		private Value<?> getDurability(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			return NumberValue.of(itemStack.getMaxDamage() - itemStack.getDamage());
+		}
+
+		private Value<?> getMaxDurability(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getItemStack(context, function).getMaxDamage());
 		}
 
 		private Value<?> getEnchantments(Context context, MemberFunction function) throws CodeError {
@@ -135,12 +155,28 @@ public class ItemStackValue extends Value<ItemStack> {
 			return new MapValue(enchantmentMap);
 		}
 
+		private Value<?> isBlockItem(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getItemStack(context, function).getItem() instanceof BlockItem);
+		}
+
+		private Value<?> isStackable(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getItemStack(context, function).isStackable());
+		}
+
+		private Value<?> getMaxCount(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getItemStack(context, function).getMaxCount());
+		}
+
 		private Value<?> asBlock(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			if (!(itemStack.getItem() instanceof BlockItem blockItem)) {
 				throw new RuntimeError("Item cannot be converted to block", function.syntaxPosition, context);
 			}
 			return new BlockValue(blockItem.getBlock().getDefaultState());
+		}
+
+		private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(this.getItemStack(context, function).getName().asString());
 		}
 
 		private Value<?> isNbtEqual(Context context, MemberFunction function) throws CodeError {

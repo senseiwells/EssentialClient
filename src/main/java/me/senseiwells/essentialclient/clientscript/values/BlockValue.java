@@ -117,13 +117,13 @@ public class BlockValue extends Value<BlockState> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getMaterial", (context, function) -> new MaterialValue(this.getBlockState(context, function).getBlock().asItem())),
-				new MemberFunction("getFullId", (context, function) -> StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).toString())),
-				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath())),
-				new MemberFunction("isBlockEntity", (context, function) -> BooleanValue.of(this.getBlockState(context, function).getBlock() instanceof BlockEntityProvider)),
-				new MemberFunction("isTransparent", (context, function) -> BooleanValue.of(!this.getBlockState(context, function).isOpaque())),
-				new MemberFunction("asItemStack", (context, function) -> new ItemStackValue(this.getBlockState(context, function).getBlock().asItem().getDefaultStack())),
-				new MemberFunction("getBlastResistance", (context, function) -> NumberValue.of(this.getBlockState(context, function).getBlock().getBlastResistance())),
+				new MemberFunction("getMaterial", this::getMaterial),
+				new MemberFunction("getFullId", this::getFullId),
+				new MemberFunction("getId", this::getId),
+				new MemberFunction("isBlockEntity", this::isBlockEntity),
+				new MemberFunction("isTransparent", this::isTransparent),
+				new MemberFunction("asItemStack", this::asItemStack),
+				new MemberFunction("getBlastResistance", this::getBlastResistance),
 				new MemberFunction("getBlockProperties", this::getBlockProperties),
 				new MemberFunction("hasBlockPosition", this::hasBlockPosition),
 				new MemberFunction("getPos", this::getPos),
@@ -147,6 +147,34 @@ public class BlockValue extends Value<BlockState> {
 				new MemberFunction("getLuminance", this::getLuminance),
 				new MemberFunction("getBlockEntityNbt", this::getBlockNbt)
 			);
+		}
+
+		private Value<?> getMaterial(Context context, MemberFunction function) throws CodeError {
+			return new MaterialValue(this.getBlockState(context, function).getBlock().asItem());
+		}
+
+		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).toString());
+		}
+
+		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath());
+		}
+
+		private Value<?> isBlockEntity(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getBlockState(context, function).getBlock() instanceof BlockEntityProvider);
+		}
+
+		private Value<?> isTransparent(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(!this.getBlockState(context, function).isOpaque());
+		}
+
+		private Value<?> asItemStack(Context context, MemberFunction function) throws CodeError {
+			return new ItemStackValue(this.getBlockState(context, function).getBlock().asItem().getDefaultStack());
+		}
+
+		private Value<?> getBlastResistance(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getBlockState(context, function).getBlock().getBlastResistance());
 		}
 
 		private Value<?> getBlockProperties(Context context, MemberFunction function) throws CodeError {

@@ -16,7 +16,6 @@ public class MinecraftScriptEvents {
 		ON_CLOSE_SCREEN = new MinecraftScriptEvent("onCloseScreen"),
 		ON_CONNECT = new MinecraftScriptEvent("onConnect"),
 		ON_DISCONNECT = new MinecraftScriptEvent("onDisconnect"),
-		ON_COMMAND = new MinecraftScriptEvent("onCommand"),
 		ON_OPEN_SCREEN = new MinecraftScriptEvent("onOpenScreen"),
 		ON_PICK_UP_ITEM = new MinecraftScriptEvent("onPickUpItem"),
 		ON_FISH_BITE = new MinecraftScriptEvent("onFishBite"),

@@ -99,8 +99,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("openInventory", this::openInventory),
 				new MemberFunction("openScreen", "screen", this::openScreen),
 				new MemberFunction("closeScreen", this::closeScreen),
-				new MemberFunction("setWalking", "boolean", (context, function) -> this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keyForward)),
-				new MemberFunction("setSneaking", "boolean", (context, function) -> this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keySneak)),
+				new MemberFunction("setWalking", "boolean", this::setWalking),
+				new MemberFunction("setSneaking", "boolean", this::setSneaking),
 				new MemberFunction("setSprinting", "boolean", this::setSprinting),
 				new MemberFunction("dropItemInHand", "boolean", this::dropItemInHand),
 				new MemberFunction("dropAll", "itemStack", this::dropAll),
@@ -245,6 +245,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(player::closeHandledScreen);
 			return NullValue.NULL;
+		}
+
+		private Value<?> setWalking(Context context, MemberFunction function) throws CodeError {
+			return this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keyForward);
+		}
+
+		private Value<?> setSneaking(Context context, MemberFunction function) throws CodeError {
+			return this.setKey(context, function, ArucasMinecraftExtension.getClient().options.keySneak);
 		}
 
 		private Value<?> setSprinting(Context context, MemberFunction function) throws CodeError {

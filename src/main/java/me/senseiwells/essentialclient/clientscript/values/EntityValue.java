@@ -97,33 +97,33 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("isSneaking", (context, function) -> BooleanValue.of(this.getEntity(context, function).isSneaking())),
-				new MemberFunction("isSprinting", (context, function) -> BooleanValue.of(this.getEntity(context, function).isSprinting())),
-				new MemberFunction("isFalling", (context, function) -> BooleanValue.of(this.getEntity(context, function).fallDistance > 0)),
-				new MemberFunction("isOnGround", (context, function) -> BooleanValue.of(this.getEntity(context, function).isOnGround())),
-				new MemberFunction("isTouchingWater", (context, function) -> BooleanValue.of(this.getEntity(context, function).isTouchingWater())),
-				new MemberFunction("isTouchingWaterOrRain", (context, function) -> BooleanValue.of(this.getEntity(context, function).isTouchingWaterOrRain())),
-				new MemberFunction("isSubmergedInWater", (context, function) -> BooleanValue.of(this.getEntity(context, function).isSubmergedInWater())),
-				new MemberFunction("isInLava", (context, function) -> BooleanValue.of(this.getEntity(context, function).isInLava())),
-				new MemberFunction("isOnFire", (context, function) -> BooleanValue.of(this.getEntity(context, function).isOnFire())),
+				new MemberFunction("isSneaking", this::isSneaking),
+				new MemberFunction("isSprinting", this::isSprinting),
+				new MemberFunction("isFalling", this::isFalling),
+				new MemberFunction("isOnGround", this::isOnGround),
+				new MemberFunction("isTouchingWater", this::isTouchingWater),
+				new MemberFunction("isTouchingWaterOrRain", this::isTouchingWaterOrRain),
+				new MemberFunction("isSubmergedInWater", this::isSubmergedInWater),
+				new MemberFunction("isInLava", this::isInLava),
+				new MemberFunction("isOnFire", this::isOnFire),
 				new MemberFunction("getLookingAtBlock", this::getLookingAtBlock),
 				new MemberFunction("getLookingAtBlock", "maxDistance", this::getLookingAtBlock1),
 				new MemberFunction("getLookingAtPos", "maxDistance", this::getLookingAtPos),
-				new MemberFunction("getEntityIdNumber", (context, function) -> NumberValue.of(this.getEntity(context, function).getId())),
-				new MemberFunction("getPos", (context, function) -> new PosValue(this.getEntity(context, function).getPos())),
-				new MemberFunction("getX", (context, function) -> NumberValue.of(this.getEntity(context, function).getX())),
-				new MemberFunction("getY", (context, function) -> NumberValue.of(this.getEntity(context, function).getY())),
-				new MemberFunction("getZ", (context, function) -> NumberValue.of(this.getEntity(context, function).getZ())),
+				new MemberFunction("getEntityIdNumber", this::getEntityIdNumber),
+				new MemberFunction("getPos", this::getPos),
+				new MemberFunction("getX", this::getX),
+				new MemberFunction("getY", this::getY),
+				new MemberFunction("getZ", this::getZ),
 				new MemberFunction("getYaw", this::getYaw),
-				new MemberFunction("getPitch", (context, function) -> NumberValue.of(this.getEntity(context, function).getPitch())),
-				new MemberFunction("getDimension", (context, function) -> StringValue.of(this.getEntity(context, function).getEntityWorld().getRegistryKey().getValue().getPath())),
+				new MemberFunction("getPitch", this::getPitch),
+				new MemberFunction("getDimension", this::getDimension),
 				new MemberFunction("getBiome", this::getBiome),
 				new MemberFunction("getFullBiome", this::getFullBiome),
 				new MemberFunction("getFullId", this::getFullId),
-				new MemberFunction("getId", (context, function) -> StringValue.of(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath())),
-				new MemberFunction("getAge", (context, function) -> NumberValue.of(this.getEntity(context, function).age)),
+				new MemberFunction("getId", this::getId),
+				new MemberFunction("getAge", this::getAge),
 				new MemberFunction("getCustomName", this::getCustomName),
-				new MemberFunction("getEntityUuid", (context, function) -> StringValue.of(this.getEntity(context, function).getUuidAsString())),
+				new MemberFunction("getEntityUuid", this::getEntityUuid),
 				new MemberFunction("setGlowing", "boolean", this::setGlowing),
 				new MemberFunction("getDistanceTo", "otherEntity", this::getDistanceTo),
 				new MemberFunction("getSquaredDistanceTo", "otherEntity", this::getSquaredDistanceTo),
@@ -132,6 +132,42 @@ public class EntityValue<T extends Entity> extends Value<T> {
 				new MemberFunction("getHitbox", this::getHitbox),
 				new MemberFunction("collidesWith", List.of("pos", "block"), this::collidesWithBlockAtPos)
 			);
+		}
+
+		private Value<?> isSneaking(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isSneaking());
+		}
+
+		private Value<?> isSprinting(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isSprinting());
+		}
+
+		private Value<?> isFalling(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).fallDistance > 0);
+		}
+
+		private Value<?> isOnGround(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isOnGround());
+		}
+
+		private Value<?> isTouchingWater(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isTouchingWater());
+		}
+
+		private Value<?> isTouchingWaterOrRain(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isTouchingWaterOrRain());
+		}
+
+		private Value<?> isSubmergedInWater(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isSubmergedInWater());
+		}
+
+		private Value<?> isInLava(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isInLava());
+		}
+
+		private Value<?> isOnFire(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isOnFire());
 		}
 
 		private Value<?> getLookingAtBlock(Context context, MemberFunction function) throws CodeError {
@@ -162,10 +198,38 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			return new PosValue(pos);
 		}
 
+		private Value<?> getEntityIdNumber(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getEntity(context, function).getId());
+		}
+
+		private Value<?> getPos(Context context, MemberFunction function) throws CodeError {
+			return new PosValue(this.getEntity(context, function).getPos());
+		}
+
+		private Value<?> getX(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getEntity(context, function).getX());
+		}
+
+		private Value<?> getY(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getEntity(context, function).getY());
+		}
+
+		private Value<?> getZ(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getEntity(context, function).getZ());
+		}
+
 		private Value<?> getYaw(Context context, MemberFunction function) throws CodeError {
 			Entity entity = this.getEntity(context, function);
 			float yaw = entity.getYaw() % 360;
 			return NumberValue.of(yaw < -180 ? 360 + yaw : yaw);
+		}
+
+		private Value<?> getPitch(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getEntity(context, function).getPitch());
+		}
+
+		private Value<?> getDimension(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(this.getEntity(context, function).getEntityWorld().getRegistryKey().getValue().getPath());
 		}
 
 		private Value<?> getBiome(Context context, MemberFunction function) throws CodeError {
@@ -184,10 +248,22 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			return StringValue.of(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).toString());
 		}
 
+		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath());
+		}
+
+		private Value<?> getAge(Context context, MemberFunction function) throws CodeError {
+			return NumberValue.of(this.getEntity(context, function).age);
+		}
+
 		private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {
 			Entity entity = this.getEntity(context, function);
 			Text customName = entity.getCustomName();
 			return customName == null ? NullValue.NULL : StringValue.of(customName.asString());
+		}
+
+		private Value<?> getEntityUuid(Context context, MemberFunction function) throws CodeError {
+			return StringValue.of(this.getEntity(context, function).getUuidAsString());
 		}
 
 		private Value<?> setGlowing(Context context, MemberFunction function) throws CodeError {

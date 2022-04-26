@@ -17,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@SuppressWarnings("unused")
 @ArucasClass(name = "FakeEntity")
 public class FakeEntityWrapper implements IArucasWrappedClass {
 	private static final Map<UUID, Set<Integer>> FAKE_IDS = new HashMap<>();
