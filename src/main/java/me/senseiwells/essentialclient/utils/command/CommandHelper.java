@@ -11,10 +11,6 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.arucas.values.ListValue;
-import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -38,7 +34,6 @@ public class CommandHelper {
 
 	private static final Map<UUID, Set<LiteralCommandNode<ServerCommandSource>>> FUNCTION_COMMAND_NODES = new HashMap<>();
 	public static final Set<String> CLIENT_COMMANDS = new HashSet<>();
-	public static final Set<String> FUNCTION_COMMANDS = new HashSet<>();
 	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
 
 	private static CommandTreeS2CPacket fakeCommandPacket;
@@ -125,20 +120,6 @@ public class CommandHelper {
 				.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
 			e.printStackTrace();
 		}
-	}
-
-	public static boolean tryRunFunctionCommand(String message) {
-		message = message.replaceFirst("/", "");
-		ArucasList arguments = new ArucasList();
-		for (String argument : message.split(" ")) {
-			arguments.add(StringValue.of(argument));
-		}
-		StringValue command = (StringValue) arguments.remove(0);
-		if (FUNCTION_COMMANDS.contains(command.value)) {
-			MinecraftScriptEvents.ON_COMMAND.run(command, new ListValue(arguments));
-			return true;
-		}
-		return false;
 	}
 
 	public static void setCommandPacket(CommandTreeS2CPacket packet) {

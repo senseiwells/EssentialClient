@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.feature.keybinds;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
@@ -16,6 +17,8 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -55,25 +58,11 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		});
 	}
 
-	public static ClientKeyBind register(String name, int key) {
-		return register(name, key, null);
-	}
+	private final Map<String, String> unregisteredKeyBinds;
 
-	public static ClientKeyBind register(String name, int key, Consumer<MinecraftClient> onPressed) {
-		return register(name, key, "Essential Client", onPressed);
+	private ClientKeyBinds() {
+		this.unregisteredKeyBinds = new HashMap<>();
 	}
-
-	public static ClientKeyBind register(String name, int key, String category, Consumer<MinecraftClient> onPressed) {
-		ClientKeyBind clientKeyBind = new ClientKeyBind(name, key, category, onPressed);
-		if (ClientKeyBinds.INSTANCE.map.containsKey(name)) {
-			EssentialClient.LOGGER.error("Tried to register KeyBind with duplicate name: {}", name);
-			return clientKeyBind;
-		}
-		ClientKeyBinds.INSTANCE.map.put(name, clientKeyBind);
-		return clientKeyBind;
-	}
-
-	private ClientKeyBinds() { }
 
 	public static void load() { }
 
@@ -89,19 +78,50 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 	@Override
 	protected ClientKeyBind jsonToValue(String key, JsonElement valueElement) {
 		ClientKeyBind existingKeyBind = this.map.get(key);
+		String keyTranslation = valueElement.getAsString();
 		if (existingKeyBind != null) {
-			String keyTranslation = valueElement.getAsString();
 			existingKeyBind.setBoundKey(InputUtil.fromTranslationKey(keyTranslation));
 		}
 		else {
+			this.unregisteredKeyBinds.put(key, keyTranslation);
 			EssentialClient.LOGGER.warn("Could not load keybind: {}", key);
 		}
 		return null;
 	}
 
 	@Override
+	public JsonObject getSaveData() {
+		JsonObject object = new JsonObject();
+		this.map.forEach((k ,v) -> object.add(k, this.valueToJson(v)));
+		this.unregisteredKeyBinds.forEach(object::addProperty);
+		return super.getSaveData();
+	}
+
+	@Override
 	public String getConfigName() {
 		return "ClientKeyBinds";
+	}
+
+	public static ClientKeyBind register(String name, int key) {
+		return register(name, key, null);
+	}
+
+	public static ClientKeyBind register(String name, int key, Consumer<MinecraftClient> onPressed) {
+		return register(name, key, "Essential Client", onPressed);
+	}
+
+	public static ClientKeyBind register(String name, int key, String category, Consumer<MinecraftClient> onPressed) {
+		ClientKeyBind clientKeyBind = ClientKeyBinds.INSTANCE.map.get(name);
+		if (clientKeyBind != null) {
+			return clientKeyBind;
+		}
+		clientKeyBind = new ClientKeyBind(name, key, category, onPressed);
+		String translatedKey = ClientKeyBinds.INSTANCE.unregisteredKeyBinds.remove(name);
+		if (translatedKey != null) {
+			clientKeyBind.setBoundKey(InputUtil.fromTranslationKey(translatedKey));
+		}
+		ClientKeyBinds.INSTANCE.map.put(name, clientKeyBind);
+		return clientKeyBind;
 	}
 
 	private static void setScreenIfNull(MinecraftClient client, Supplier<Screen> screenFactory) {

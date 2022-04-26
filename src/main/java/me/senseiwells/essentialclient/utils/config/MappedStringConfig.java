@@ -15,7 +15,7 @@ public abstract class MappedStringConfig<V> extends AbstractMappedConfig<JsonObj
 	}
 
 	@Override
-	public final JsonObject getSaveData() {
+	public JsonObject getSaveData() {
 		JsonObject jsonObject = new JsonObject();
 		this.map.forEach((s, v) -> jsonObject.add(s, this.valueToJson(v)));
 		return jsonObject;

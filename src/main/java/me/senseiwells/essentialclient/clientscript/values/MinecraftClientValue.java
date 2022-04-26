@@ -55,7 +55,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MinecraftClientValue extends Value<MinecraftClient> {
-	public MinecraftClientValue(MinecraftClient client) {
+	public static MinecraftClientValue INSTANCE = new MinecraftClientValue(EssentialUtils.getClient());
+
+	private MinecraftClientValue(MinecraftClient client) {
 		super(client);
 	}
 
@@ -96,8 +98,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			);
 		}
 
-		private Value<?> getClient(Context context, BuiltInFunction function) throws CodeError {
-			return new MinecraftClientValue(ArucasMinecraftExtension.getClient());
+		private Value<?> getClient(Context context, BuiltInFunction function) {
+			return MinecraftClientValue.INSTANCE;
 		}
 
 		@Override
@@ -126,8 +128,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("getWorld", this::getWorld),
 				new MemberFunction("getVersion", this::getVersion),
 
-				new MemberFunction("removeAllGameEvents", this::removeAllGameEvents),
 				new MemberFunction("parseStringToNbt", "string", this::stringToNbt),
+				new MemberFunction("removeAllGameEvents", this::removeAllGameEvents, "Use 'GameEvent.unregisterAll()'"),
 				new MemberFunction("itemFromString", "name", this::itemFromString, "Use 'ItemStack.of(material)'"),
 				new MemberFunction("blockFromString", "name", this::blockFromString, "Use 'Block.of(material)'"),
 				new MemberFunction("entityFromString", "name", this::entityFromString, "Use 'Entity.of(str)'"),

@@ -40,8 +40,8 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		);
 	}
 
-	private Value<?> getMinecraftClient(Context context, BuiltInFunction function) throws CodeError {
-		return new MinecraftClientValue(getClient());
+	private Value<?> getMinecraftClient(Context context, BuiltInFunction function) {
+		return MinecraftClientValue.INSTANCE;
 	}
 
 	private Value<?> runThreaded(Context context, BuiltInFunction function) throws CodeError {
