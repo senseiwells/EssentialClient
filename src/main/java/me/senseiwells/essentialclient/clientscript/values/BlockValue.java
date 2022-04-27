@@ -15,18 +15,21 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BlockValue extends Value<BlockState> {
 	private final PosValue blockPos;
@@ -107,11 +110,18 @@ public class BlockValue extends Value<BlockState> {
 		}
 
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
-			MaterialValue materialValue = function.getParameterValueOfType(context, MaterialValue.class, 0);
-			if (!(materialValue.value instanceof BlockItem blockItem)) {
-				throw new RuntimeError("Material cannot be converted to block", function.syntaxPosition, context);
+			Value<?> value = function.getParameterValue(context, 0);
+			if (value instanceof StringValue stringValue) {
+				Identifier id = ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value);
+				Optional<Block> block = Registry.BLOCK.getOrEmpty(id);
+				return new BlockValue(block.orElseThrow(() -> {
+					return new RuntimeError("'%s' is not a valid block".formatted(id), function.syntaxPosition, context);
+				}).getDefaultState());
 			}
-			return new BlockValue(blockItem.getBlock().getDefaultState());
+			if (!(value instanceof MaterialValue materialValue)) {
+				throw new RuntimeError("Parameter must be of type String or Material", function.syntaxPosition, context);
+			}
+			return new BlockValue(materialValue.asBlock(context, function.syntaxPosition).getDefaultState());
 		}
 
 		@Override
@@ -150,7 +160,12 @@ public class BlockValue extends Value<BlockState> {
 		}
 
 		private Value<?> getMaterial(Context context, MemberFunction function) throws CodeError {
-			return new MaterialValue(this.getBlockState(context, function).getBlock().asItem());
+			BlockState blockState = this.getBlockState(context, function);
+			Item blockItem = blockState.getBlock().asItem();
+			if (blockItem == Items.AIR && blockState.getBlock() != Blocks.AIR) {
+				return MaterialValue.blockMaterial(blockState.getBlock());
+			}
+			return new MaterialValue(blockItem);
 		}
 
 		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {

@@ -9,6 +9,7 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.mixins.clientScript.NbtListMixin;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.BlockState;
@@ -82,9 +83,17 @@ public class ItemStackValue extends Value<ItemStack> {
 			);
 		}
 
-		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
-			MaterialValue materialValue = function.getParameterValueOfType(context, MaterialValue.class, 0);
-			return new ItemStackValue(materialValue.value.getDefaultStack());
+		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {Value<?> value = function.getParameterValue(context, 0);
+			if (value instanceof StringValue stringValue) {
+				Identifier id = ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value);
+				return new ItemStackValue(Registry.ITEM.getOrEmpty(id).orElseThrow(() -> {
+					return new RuntimeError("'%s' is not a value item stack".formatted(id), function.syntaxPosition, context);
+				}).getDefaultStack());
+			}
+			if (!(value instanceof MaterialValue materialValue)) {
+				throw new RuntimeError("Parameter must be of type String or Material", function.syntaxPosition, context);
+			}
+			return new ItemStackValue(materialValue.asItemStack(context, function.syntaxPosition));
 		}
 
 		private Value<?> parse(Context context, BuiltInFunction function) throws CodeError {
