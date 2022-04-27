@@ -9,6 +9,8 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.mixins.clientScript.ClientWorldAccessor;
+import me.senseiwells.essentialclient.utils.interfaces.IEntityList;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -23,6 +25,7 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.EntityList;
 
 import java.util.List;
 import java.util.Objects;
@@ -147,7 +150,11 @@ public class WorldValue extends Value<ClientWorld> {
 		private Value<?> getAllEntities(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			ArucasList valueList = new ArucasList();
-			for (Entity entity : world.getEntities()) {
+
+			// This is super overcomplicated because we need to be thread safe
+			// world.getEntities() returns Iterator<Entity> which is NOT thread safe
+			EntityList entityList = ((ClientWorldAccessor) world).getEntityList();
+			for (Entity entity : ((IEntityList) entityList).getAllEntities()) {
 				valueList.add(context.convertValue(entity));
 			}
 			return new ListValue(valueList);
