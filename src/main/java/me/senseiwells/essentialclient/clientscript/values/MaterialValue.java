@@ -154,7 +154,7 @@ public class MaterialValue extends Value<Item> {
 
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
-			Optional<Item> item = Registry.ITEM.getOrEmpty(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value));
+			Optional<Item> item = Registry.ITEM.getOrEmpty(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value));
 			return new MaterialValue(item.orElseThrow(() -> {
 				return new RuntimeError("'%s' is not a valid Material".formatted(stringValue.value), function.syntaxPosition, context);
 			}));

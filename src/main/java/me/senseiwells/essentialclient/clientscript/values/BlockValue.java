@@ -112,7 +112,7 @@ public class BlockValue extends Value<BlockState> {
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
 			Value<?> value = function.getParameterValue(context, 0);
 			if (value instanceof StringValue stringValue) {
-				Identifier id = ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value);
+				Identifier id = ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value);
 				Optional<Block> block = Registry.BLOCK.getOrEmpty(id);
 				return new BlockValue(block.orElseThrow(() -> {
 					return new RuntimeError("'%s' is not a valid block".formatted(id), function.syntaxPosition, context);

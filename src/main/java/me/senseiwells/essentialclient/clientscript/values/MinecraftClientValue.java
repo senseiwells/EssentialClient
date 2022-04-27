@@ -355,13 +355,13 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		@Deprecated
 		private Value<?> itemFromString(Context context, MemberFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
-			return new ItemStackValue(Registry.ITEM.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).getDefaultStack());
+			return new ItemStackValue(Registry.ITEM.get(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value)).getDefaultStack());
 		}
 
 		@Deprecated
 		private Value<?> blockFromString(Context context, MemberFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
-			return new BlockValue(Registry.BLOCK.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).getDefaultState());
+			return new BlockValue(Registry.BLOCK.get(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value)).getDefaultState());
 		}
 
 		@Deprecated
@@ -369,7 +369,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			MinecraftClient client = this.getClient(context, function);
 			ClientWorld world = ArucasMinecraftExtension.getWorld(client);
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
-			return context.convertValue(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world));
+			return context.convertValue(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value)).create(world));
 		}
 
 		@Deprecated
@@ -469,7 +469,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			MinecraftClient client = this.getClient(context, function);
 			String util = function.getParameterValueOfType(context, StringValue.class, 1).value;
 			ResourceManager resourceManager = client.getResourceManager();
-			Identifier identifier = ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, "me.senseiwells.essentialclient:clientscript/%s.arucas".formatted(util));
+			Identifier identifier = ArucasMinecraftExtension.getId(context, function.syntaxPosition, "me.senseiwells.essentialclient:clientscript/%s.arucas".formatted(util));
 			if (!resourceManager.containsResource(identifier)) {
 				throw new RuntimeError("That util does not exist", function.syntaxPosition, context);
 			}

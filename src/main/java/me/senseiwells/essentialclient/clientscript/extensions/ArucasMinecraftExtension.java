@@ -117,7 +117,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		return interactionManager;
 	}
 
-	public static Identifier getIdentifier(Context context, ISyntax syntaxHandler, String name) throws RuntimeError {
+	public static Identifier getId(Context context, ISyntax syntaxHandler, String name) throws RuntimeError {
 		try {
 			return new Identifier(name);
 		}

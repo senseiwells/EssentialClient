@@ -186,7 +186,7 @@ public class WorldValue extends Value<ClientWorld> {
 		private Value<?> renderParticle(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			String particleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
-			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, particleName));
+			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getId(context, function.syntaxPosition, particleName));
 			if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
 				throw new RuntimeError("Particle Invalid", function.syntaxPosition, context);
 			}
@@ -201,7 +201,7 @@ public class WorldValue extends Value<ClientWorld> {
 		private Value<?> renderParticlePos(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			String particleName = function.getParameterValueOfType(context, StringValue.class, 1).value;
-			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, particleName));
+			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getId(context, function.syntaxPosition, particleName));
 			if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
 				throw new RuntimeError("Particle Invalid", function.syntaxPosition, context);
 			}
@@ -225,7 +225,7 @@ public class WorldValue extends Value<ClientWorld> {
 			double xVelocity = function.getParameterValueOfType(context, NumberValue.class, 2).value;
 			double yVelocity = function.getParameterValueOfType(context, NumberValue.class, 3).value;
 			double zVelocity = function.getParameterValueOfType(context, NumberValue.class, 4).value;
-			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, particleName));
+			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getId(context, function.syntaxPosition, particleName));
 			if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
 				throw new RuntimeError("Particle Invalid", function.syntaxPosition, context);
 			}

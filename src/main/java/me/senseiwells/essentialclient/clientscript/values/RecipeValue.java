@@ -88,7 +88,7 @@ public class RecipeValue extends Value<Recipe<?>> {
 		private Value<?> newRecipe(Context context, BuiltInFunction function) throws CodeError {
 			String id = function.getParameterValueOfType(context, StringValue.class, 0).value;
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
-			Identifier identifier = ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, id);
+			Identifier identifier = ArucasMinecraftExtension.getId(context, function.syntaxPosition, id);
 			Optional<? extends Recipe<?>> recipe = networkHandler.getRecipeManager().get(identifier);
 			if (recipe.isEmpty()) {
 				throw new RuntimeError("Recipe with id '%s' doesn't exist".formatted(id), function.syntaxPosition, context);

@@ -16,6 +16,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
@@ -90,7 +91,9 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			ClientWorld world = ArucasMinecraftExtension.getWorld();
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
 			return context.convertValue(
-				Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getIdentifier(context, function.syntaxPosition, stringValue.value)).create(world)
+				Registry.ENTITY_TYPE.getOrEmpty(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value)).orElseThrow(
+					() -> new RuntimeError("'%s' is not a valid entity", function.syntaxPosition, context)
+				).create(world)
 			);
 		}
 
@@ -106,6 +109,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 				new MemberFunction("isSubmergedInWater", this::isSubmergedInWater),
 				new MemberFunction("isInLava", this::isInLava),
 				new MemberFunction("isOnFire", this::isOnFire),
+				new MemberFunction("isGlowing", this::isGlowing),
 				new MemberFunction("getLookingAtBlock", this::getLookingAtBlock),
 				new MemberFunction("getLookingAtBlock", "maxDistance", this::getLookingAtBlock1),
 				new MemberFunction("getLookingAtPos", "maxDistance", this::getLookingAtPos),
@@ -121,6 +125,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 				new MemberFunction("getFullBiome", this::getFullBiome),
 				new MemberFunction("getFullId", this::getFullId),
 				new MemberFunction("getId", this::getId),
+				new MemberFunction("isOf", "id", this::isOf),
 				new MemberFunction("getAge", this::getAge),
 				new MemberFunction("getCustomName", this::getCustomName),
 				new MemberFunction("getEntityUuid", this::getEntityUuid),
@@ -168,6 +173,10 @@ public class EntityValue<T extends Entity> extends Value<T> {
 
 		private Value<?> isOnFire(Context context, MemberFunction function) throws CodeError {
 			return BooleanValue.of(this.getEntity(context, function).isOnFire());
+		}
+
+		private Value<?> isGlowing(Context context, MemberFunction function) throws CodeError {
+			return BooleanValue.of(this.getEntity(context, function).isGlowing());
 		}
 
 		private Value<?> getLookingAtBlock(Context context, MemberFunction function) throws CodeError {
@@ -250,6 +259,13 @@ public class EntityValue<T extends Entity> extends Value<T> {
 
 		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
 			return StringValue.of(Registry.ENTITY_TYPE.getId(this.getEntity(context, function).getType()).getPath());
+		}
+
+		private Value<?> isOf(Context context, MemberFunction function) throws CodeError {
+			Entity entity = this.getEntity(context, function);
+			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+			EntityType<?> type = Registry.ENTITY_TYPE.getOrEmpty(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value)).orElse(null);
+			return BooleanValue.of(entity.getType() == type);
 		}
 
 		private Value<?> getAge(Context context, MemberFunction function) throws CodeError {
