@@ -22,6 +22,7 @@ import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,6 +51,7 @@ public class MinecraftAPI {
 			OtherPlayerValue.ArucasAbstractPlayerClass::new,
 			OtherPlayerValue.ArucasOtherPlayerClass::new,
 			LivingEntityValue.ArucasLivingEntityClass::new,
+			ItemEntityValue.ArucasItemEntityClass::new,
 			BlockValue.ArucasBlockClass::new,
 			ItemStackValue.ArucasItemStackClass::new,
 			WorldValue.ArucasWorldClass::new,
@@ -79,6 +81,7 @@ public class MinecraftAPI {
 		builder.addConversion(ClientPlayerEntity.class, (p, c) -> new PlayerValue(p));
 		builder.addConversion(OtherClientPlayerEntity.class, (p, c) -> new OtherPlayerValue(p));
 		builder.addConversion(LivingEntity.class, (l, c) -> new LivingEntityValue<>(l));
+		builder.addConversion(ItemEntity.class, (i, c) -> new ItemEntityValue(i));
 		builder.addConversion(Entity.class, (e, c) -> EntityValue.of(e));
 		builder.addConversion(Block.class, (b, c) -> new BlockValue(b.getDefaultState()));
 		builder.addConversion(BlockState.class, (b, c) -> new BlockValue(b));

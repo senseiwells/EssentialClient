@@ -10,9 +10,10 @@ import me.senseiwells.essentialclient.clientscript.extensions.GameEventWrapper;
 import java.util.*;
 
 public class MinecraftScriptEvent {
-	private final Map<UUID, Set<GameEventWrapper>> REGISTERED_EVENTS = new HashMap<>();
 	private final String name;
 	private final boolean isCancellable;
+
+	protected final Map<UUID, Set<GameEventWrapper>> REGISTERED_EVENTS = new HashMap<>();
 
 	public MinecraftScriptEvent(String eventName, boolean isCancellable) {
 		this.name = eventName;
@@ -102,9 +103,42 @@ public class MinecraftScriptEvent {
 			catch (CodeError codeError) {
 				ArucasThreadHandler threadHandler = context.getThreadHandler();
 				threadHandler.tryError(context, codeError);
-				threadHandler.stop();
 				return null;
 			}
+		}
+	}
+
+	public static class Unique extends MinecraftScriptEvent {
+		public Unique(String eventName) {
+			super(eventName);
+		}
+
+		public synchronized boolean run(UUID uuid, Value<?>... arguments) {
+			ArucasList argumentList = new ArucasList();
+			argumentList.addAll(List.of(arguments));
+			boolean shouldCancel = false;
+			Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(uuid);
+			if (gameEventWrappers == null) {
+				return false;
+			}
+			for (GameEventWrapper gameEvent : gameEventWrappers) {
+				if (gameEvent.callFunction(argumentList)) {
+					shouldCancel = true;
+				}
+			}
+			return shouldCancel;
+		}
+
+		@Deprecated
+		@Override
+		public synchronized boolean run(Value<?>... arguments) {
+			return false;
+		}
+
+		@Deprecated
+		@Override
+		public synchronized boolean run(ArgumentSupplier argumentSupplier) {
+			return false;
 		}
 	}
 }

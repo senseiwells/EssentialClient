@@ -17,6 +17,7 @@ import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 	public boolean callFunction(List<Value<?>> arguments) {
 		Context branchContext = this.eventContext.createBranch();
 		ArucasThreadHandler threadHandler = this.eventContext.getThreadHandler();
-		if (!this.runOnMainThread) {
+		if (!this.runOnMainThread && EssentialUtils.getClient().isOnThread()) {
 			threadHandler.runAsyncFunctionInContext(
 				branchContext,
 				context -> this.function.call(context, arguments),
@@ -92,18 +93,22 @@ public class GameEventWrapper implements IArucasWrappedClass {
 		}
 		catch (CancelEvent cancelEvent) {
 			if (this.minecraftEvent.canCancel()) {
+				if (!EssentialUtils.getClient().isOnThread()) {
+					threadHandler.tryError(branchContext, new RuntimeError(
+						"Cannot cancel event, not on main thread",
+						ISyntax.empty(), branchContext
+					));
+				}
 				return true;
 			}
 			threadHandler.tryError(branchContext, new RuntimeError(
 				"Cannot cancel event '%s'".formatted(this.minecraftEvent),
-				ISyntax.empty(),
-				branchContext
+				ISyntax.empty(), branchContext
 			));
 		}
 		catch (CodeError codeError) {
 			threadHandler.tryError(branchContext, codeError);
 		}
-		threadHandler.stop();
 		return false;
 	}
 }

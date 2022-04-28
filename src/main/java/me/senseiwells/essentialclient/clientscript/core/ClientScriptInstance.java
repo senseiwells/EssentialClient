@@ -7,6 +7,7 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.rule.ClientRules;
@@ -24,6 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 
 public class ClientScriptInstance {
 	private static final ContextBuilder BUILDER;
@@ -43,6 +45,7 @@ public class ClientScriptInstance {
 	private final Path fileLocation;
 	private final ClientKeyBind keyBind;
 	private ArucasThread mainScriptThread;
+	private UUID instanceId;
 
 	private ClientScriptInstance(String scriptName, String content, Path fileLocation) {
 		this.scriptName = scriptName;
@@ -86,8 +89,12 @@ public class ClientScriptInstance {
 		if (!this.isScriptRunning()) {
 			return;
 		}
+
+		MinecraftScriptEvents.ON_SCRIPT_END.run(this.instanceId);
+
 		this.mainScriptThread.interrupt();
 		this.mainScriptThread = null;
+		this.instanceId = null;
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
 			client.execute(() -> {
@@ -143,7 +150,8 @@ public class ClientScriptInstance {
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
 			EssentialUtils.sendMessage("§6Script '%s' has §aSTARTED".formatted(this.scriptName));
 		}
-		this.mainScriptThread = context.getThreadHandler().runOnThread(context, this.scriptName, fileContent, null);
+		this.mainScriptThread = context.getThreadHandler().runOnMainThread(context, this.scriptName, fileContent);
+		this.instanceId = context.getContextId();
 	}
 
 	private void sendReportMessage(Throwable t) {

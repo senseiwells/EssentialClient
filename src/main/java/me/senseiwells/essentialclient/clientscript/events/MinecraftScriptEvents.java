@@ -41,6 +41,8 @@ public class MinecraftScriptEvents {
 		ON_ATTACK_BLOCK = new MinecraftScriptEvent("onAttackBlock", true),
 		ON_ATTACK_ENTITY = new MinecraftScriptEvent("onAttackEntity", true);
 
+	public static final MinecraftScriptEvent.Unique ON_SCRIPT_END = new MinecraftScriptEvent.Unique("onScriptEnd");
+
 	protected static void addEventToMap(String name, MinecraftScriptEvent minecraftScriptEvent) {
 		EVENT_MAP.put(name, minecraftScriptEvent);
 	}

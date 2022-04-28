@@ -191,7 +191,6 @@ public class CommandBuilderValue extends Value<ArgumentBuilder<ServerCommandSour
 				catch (CodeError codeError) {
 					threadHandler.tryError(context, codeError);
 				}
-				threadHandler.stop();
 				return false;
 			});
 			return commandBuilderValue;

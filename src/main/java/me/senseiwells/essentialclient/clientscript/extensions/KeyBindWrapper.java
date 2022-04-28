@@ -58,7 +58,6 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 			}
 			catch (CodeError e) {
 				this.callbackContext.getThreadHandler().tryError(this.callbackContext, e);
-				this.callbackContext.getThreadHandler().stop();
 			}
 		}
 	}
