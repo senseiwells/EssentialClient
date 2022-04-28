@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
+import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapperOLD;
 import me.senseiwells.essentialclient.clientscript.extensions.FakeBlockWrapper;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.block.BlockRenderType;
@@ -43,8 +43,8 @@ public class RenderHelper {
 
 		setupArucasBoxRendering();
 
-		List<BoxShapeWrapper> normalBoxes = BoxShapeWrapper.getNormalBoxesToRender();
-		List<BoxShapeWrapper> renderThrough = BoxShapeWrapper.getThroughBoxesToRender();
+		List<BoxShapeWrapperOLD> normalBoxes = BoxShapeWrapperOLD.getNormalBoxesToRender();
+		List<BoxShapeWrapperOLD> renderThrough = BoxShapeWrapperOLD.getThroughBoxesToRender();
 
 		drawOutlines(tessellator, bufferBuilder, matrices, cameraPos, normalBoxes);
 		drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, normalBoxes);
@@ -57,9 +57,9 @@ public class RenderHelper {
 		resetArucasBoxRendering();
 	}
 
-	private static void drawOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, List<BoxShapeWrapper> boxes) {
+	private static void drawOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, List<BoxShapeWrapperOLD> boxes) {
 		bufferBuilder.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
-		for (BoxShapeWrapper box : boxes) {
+		for (BoxShapeWrapperOLD box : boxes) {
 			if (box.outlineWidth >= 1) {
 				RenderSystem.lineWidth(box.outlineWidth);
 				addBoxToBuffer(bufferBuilder, matrices, camera, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.outlineRed, box.outlineGreen, box.outlineBlue, 255, true);
@@ -68,9 +68,9 @@ public class RenderHelper {
 		tessellator.draw();
 	}
 
-	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, List<BoxShapeWrapper> boxes) {
+	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, List<BoxShapeWrapperOLD> boxes) {
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		for (BoxShapeWrapper box : boxes) {
+		for (BoxShapeWrapperOLD box : boxes) {
 			addBoxToBuffer(bufferBuilder, matrices, cameraPos, box.pos1.toBlockPos(), box.pos2.toBlockPos(), box.red, box.green, box.blue, box.opacity, false);
 		}
 		tessellator.draw();

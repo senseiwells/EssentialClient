@@ -9,11 +9,9 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.mixins.clientScript.ClientWorldAccessor;
-import me.senseiwells.essentialclient.utils.interfaces.IEntityList;
+import me.senseiwells.essentialclient.utils.clientscript.ThreadSafeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -25,7 +23,6 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.EntityList;
 
 import java.util.List;
 import java.util.Objects;
@@ -121,7 +118,7 @@ public class WorldValue extends Value<ClientWorld> {
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
 			PlayerListEntry playerInfo = networkHandler.getPlayerListEntry(stringValue.value);
 			if (playerInfo != null) {
-				PlayerEntity player = world.getPlayerByUuid(playerInfo.getProfile().getId());
+				PlayerEntity player = ThreadSafeUtils.getPlayerByUuid(world, playerInfo.getProfile().getId());
 				if (player instanceof OtherClientPlayerEntity otherClientPlayerEntity) {
 					return new OtherPlayerValue(otherClientPlayerEntity);
 				}
@@ -132,7 +129,7 @@ public class WorldValue extends Value<ClientWorld> {
 		private Value<?> getAllOtherPlayers(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			ArucasList otherPlayerValueList = new ArucasList();
-			for (AbstractClientPlayerEntity playerEntity : world.getPlayers()) {
+			for (PlayerEntity playerEntity : ThreadSafeUtils.getPlayersSafe(world)) {
 				if (playerEntity instanceof OtherClientPlayerEntity otherClientPlayerEntity) {
 					otherPlayerValueList.add(new OtherPlayerValue(otherClientPlayerEntity));
 				}
@@ -144,17 +141,14 @@ public class WorldValue extends Value<ClientWorld> {
 			ClientWorld world = this.getWorld(context, function);
 			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 2);
-			return context.convertValue(world.getClosestPlayer(entityValue.value, numberValue.value));
+			return context.convertValue(ThreadSafeUtils.getClosestPlayer(world, entityValue.value, numberValue.value));
 		}
 
 		private Value<?> getAllEntities(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			ArucasList valueList = new ArucasList();
 
-			// This is super overcomplicated because we need to be thread safe
-			// world.getEntities() returns Iterator<Entity> which is NOT thread safe
-			EntityList entityList = ((ClientWorldAccessor) world).getEntityList();
-			for (Entity entity : ((IEntityList) entityList).getAllEntities()) {
+			for (Entity entity : ThreadSafeUtils.getEntitiesSafe(world)) {
 				valueList.add(context.convertValue(entity));
 			}
 			return new ListValue(valueList);
@@ -163,6 +157,7 @@ public class WorldValue extends Value<ClientWorld> {
 		private Value<?> getEntityFromId(Context context, MemberFunction function) throws CodeError {
 			ClientWorld world = this.getWorld(context, function);
 			NumberValue id = function.getParameterValueOfType(context, NumberValue.class, 1);
+			// This should be Thread Safe
 			return context.convertValue(world.getEntityById(id.value.intValue()));
 		}
 

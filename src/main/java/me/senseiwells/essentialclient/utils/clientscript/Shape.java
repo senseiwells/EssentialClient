@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
+import me.senseiwells.arucas.api.wrappers.ArucasFunction;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.BooleanValue;
@@ -23,83 +24,86 @@ public abstract class Shape {
 	private int outlineWidth;
 	private boolean renderThroughBlocks;
 
-	public final int getRed() {
+	// Mmmm, yes we love boilerplate
+
+	public int getRed() {
 		return this.red;
 	}
 
-	public final int getGreen() {
+	public int getGreen() {
 		return this.green;
 	}
 
-	public final int getBlue() {
+	public int getBlue() {
 		return this.blue;
 	}
 
-	public final int getAlpha() {
+	public int getAlpha() {
 		return this.alpha;
 	}
 
-	public final int getOutlineRed() {
+	public int getOutlineRed() {
 		return this.outlineRed;
 	}
 
-	public final int getOutlineGreen() {
+	public int getOutlineGreen() {
 		return this.outlineGreen;
 	}
 
-	public final int getOutlineBlue() {
+	public int getOutlineBlue() {
 		return this.outlineBlue;
 	}
 
-	public final int getOutlineWidth() {
+	public int getOutlineWidth() {
 		return this.outlineWidth;
 	}
 
-	public final boolean hasOutline() {
+	public boolean hasOutline() {
 		return this.outlineWidth > 0;
 	}
 
-	public final boolean shouldRenderThroughBlocks() {
+	public boolean shouldRenderThroughBlocks() {
 		return this.renderThroughBlocks;
 	}
 
-	public final void setRed(int red) {
+	public void setRed(int red) {
 		this.red = red;
 	}
 
-	public final void setGreen(int green) {
+	public void setGreen(int green) {
 		this.green = green;
 	}
 
-	public final void setBlue(int blue) {
+	public void setBlue(int blue) {
 		this.blue = blue;
 	}
 
-	public final void setAlpha(int alpha) {
+	public void setAlpha(int alpha) {
 		this.alpha = alpha;
 	}
 
-	public final void setOutlineRed(int outlineRed) {
+	public void setOutlineRed(int outlineRed) {
 		this.outlineRed = outlineRed;
 	}
 
-	public final void setOutlineGreen(int outlineGreen) {
+	public void setOutlineGreen(int outlineGreen) {
 		this.outlineGreen = outlineGreen;
 	}
 
-	public final void setOutlineBlue(int outlineBlue) {
+	public void setOutlineBlue(int outlineBlue) {
 		this.outlineBlue = outlineBlue;
 	}
 
-	public final void setOutlineWidth(int outline) {
+	public void setOutlineWidth(int outline) {
 		this.outlineWidth = outline;
 	}
 
-	public final void setRenderThroughBlocks(boolean renderThroughBlocks) {
+	public void setRenderThroughBlocks(boolean renderThroughBlocks) {
 		this.renderThroughBlocks = renderThroughBlocks;
 	}
 
-	protected void setColour(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setColour(Context context, NumberValue numberValue) {
 		int colour = numberValue.value.intValue();
 		this.setRed((colour >> 24) & 0xFF);
 		this.setGreen((colour >> 16) & 0xFF);
@@ -107,7 +111,8 @@ public abstract class Shape {
 		this.setAlpha(colour & 0xFF);
 	}
 
-	protected void setColour(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
+	@ArucasFunction
+	public final void setColour(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
 		int red = redValue.value.intValue();
 		int green = greenValue.value.intValue();
 		int blue = blueValue.value.intValue();
@@ -117,38 +122,44 @@ public abstract class Shape {
 		this.setBlue(blue);
 	}
 
-	protected void setRed(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setRed(Context context, NumberValue numberValue) {
 		int red = numberValue.value.intValue();
 		this.throwIfOutOfRange(red);
 		this.setRed(red);
 	}
 
-	protected void setGreen(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setGreen(Context context, NumberValue numberValue) {
 		int green = numberValue.value.intValue();
 		this.throwIfOutOfRange(green);
 		this.setGreen(green);
 	}
 
-	protected void setBlue(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setBlue(Context context, NumberValue numberValue) {
 		int blue = numberValue.value.intValue();
 		this.throwIfOutOfRange(blue);
 		this.setBlue(blue);
 	}
 
-	protected void setOpacity(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setOpacity(Context context, NumberValue numberValue) {
 		int alpha = numberValue.value.intValue();
 		this.throwIfOutOfRange(alpha);
 		this.setAlpha(alpha);
 	}
 
-	protected void setOutlineColour(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setOutlineColour(Context context, NumberValue numberValue) {
 		int colour = numberValue.value.intValue();
 		this.setOutlineRed((colour >> 16) & 0xFF);
 		this.setOutlineGreen((colour >> 8) & 0xFF);
 		this.setOutlineBlue(colour & 0xFF);
 	}
 
-	protected void setOutlineColour(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
+	@ArucasFunction
+	public final void setOutlineColour(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
 		int red = redValue.value.intValue();
 		int green = greenValue.value.intValue();
 		int blue = blueValue.value.intValue();
@@ -158,45 +169,54 @@ public abstract class Shape {
 		this.setOutlineBlue(blue);
 	}
 
-	protected void setOutlineRed(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setOutlineRed(Context context, NumberValue numberValue) {
 		int outlineRed = numberValue.value.intValue();
 		this.throwIfOutOfRange(outlineRed);
 		this.setOutlineRed(outlineRed);
 	}
 
-	protected void setOutlineGreen(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setOutlineGreen(Context context, NumberValue numberValue) {
 		int outlineGreen = numberValue.value.intValue();
 		this.throwIfOutOfRange(outlineGreen);
 		this.setOutlineGreen(outlineGreen);
 	}
 
-	protected void setOutlineBlue(Context context, NumberValue numberValue) {
+	@ArucasFunction
+	public final void setOutlineBlue(Context context, NumberValue numberValue) {
 		int outlineBlue = numberValue.value.intValue();
 		this.throwIfOutOfRange(outlineBlue);
 		this.setOutlineBlue(outlineBlue);
 	}
 
-	protected void setOutlinePixelWidth(Context context, NumberValue width) {
+	@ArucasFunction
+	public final void setOutlinePixelWidth(Context context, NumberValue width) {
 		this.setOutlineWidth(width.value.intValue());
 	}
 
-	protected void setRenderThroughBlocks(Context context, BooleanValue booleanValue) {
+	@ArucasFunction
+	public final void setRenderThroughBlocks(Context context, BooleanValue booleanValue) {
 		this.setRenderThroughBlocks(booleanValue.value);
 	}
-	
-	protected NumberValue getRed(Context context) {
+
+	@ArucasFunction
+	public final NumberValue getRed(Context context) {
 		return NumberValue.of(this.getRed());
 	}
 
-	protected NumberValue getGreen(Context context) {
+	@ArucasFunction
+	public final NumberValue getGreen(Context context) {
 		return NumberValue.of(this.getGreen());
 	}
 
-	protected NumberValue getBlue(Context context) {
+	@ArucasFunction
+	public final NumberValue getBlue(Context context) {
 		return NumberValue.of(this.getBlue());
 	}
 
-	protected ListValue getRGB(Context context) {
+	@ArucasFunction
+	public final ListValue getRGB(Context context) {
 		ArucasList list = new ArucasList();
 		list.add(this.getRed(context));
 		list.add(this.getGreen(context));
@@ -204,11 +224,13 @@ public abstract class Shape {
 		return new ListValue(list);
 	}
 
-	protected NumberValue getOpacity(Context context) {
+	@ArucasFunction
+	public final NumberValue getOpacity(Context context) {
 		return NumberValue.of(this.getAlpha());
 	}
 
-	protected ListValue getRGBA(Context context) {
+	@ArucasFunction
+	public final ListValue getRGBA(Context context) {
 		ArucasList list = new ArucasList();
 		list.add(this.getRed(context));
 		list.add(this.getGreen(context));
@@ -217,13 +239,16 @@ public abstract class Shape {
 		return new ListValue(list);
 	}
 
-	protected BooleanValue shouldRenderThroughBlocks(Context context) {
+	@ArucasFunction
+	public final BooleanValue shouldRenderThroughBlocks(Context context) {
 		return BooleanValue.of(this.shouldRenderThroughBlocks());
 	}
 
-	protected abstract void render(Context context);
+	@ArucasFunction
+	public abstract void render(Context context);
 
-	protected abstract void stopRendering(Context context);
+	@ArucasFunction
+	public abstract void stopRendering(Context context);
 
 	private void throwIfOutOfRange(int... colours) {
 		for (int colour : colours) {
