@@ -1,6 +1,8 @@
-package me.senseiwells.essentialclient.clientscript.core;
+package me.senseiwells.essentialclient.gui.clientscript;
 
 import com.google.common.collect.ImmutableList;
+import me.senseiwells.essentialclient.clientscript.core.ClientScript;
+import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;

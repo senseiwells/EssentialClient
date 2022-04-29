@@ -29,6 +29,10 @@ public class MinecraftScriptEvent {
 		return this.isCancellable;
 	}
 
+	public boolean isThreadDefinable() {
+		return true;
+	}
+
 	public synchronized void registerEvent(Context context, GameEventWrapper gameEvent) {
 		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(context.getContextId(), id -> {
 			context.getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
@@ -109,8 +113,20 @@ public class MinecraftScriptEvent {
 	}
 
 	public static class Unique extends MinecraftScriptEvent {
-		public Unique(String eventName) {
+		private final boolean isThreadDefinable;
+
+		public Unique(String eventName, boolean isThreadDefinable) {
 			super(eventName);
+			this.isThreadDefinable = isThreadDefinable;
+		}
+
+		public Unique(String eventName) {
+			this(eventName, false);
+		}
+
+		@Override
+		public boolean isThreadDefinable() {
+			return this.isThreadDefinable;
 		}
 
 		public synchronized boolean run(UUID uuid, Value<?>... arguments) {

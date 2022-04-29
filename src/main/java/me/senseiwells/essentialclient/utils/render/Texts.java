@@ -17,6 +17,7 @@ public class Texts {
 		DONE = new TranslatableText("gui.done"),
 		DOCUMENTATION = new LiteralText("Documentation"),
 		NEW = new LiteralText("New"),
+		DOWNLOAD = new LiteralText("Download"),
 		TRUE = new LiteralText("true").formatted(Formatting.DARK_GREEN),
 		FALSE = new LiteralText("false").formatted(Formatting.DARK_RED),
 		START = new LiteralText("Start").formatted(Formatting.DARK_GREEN),

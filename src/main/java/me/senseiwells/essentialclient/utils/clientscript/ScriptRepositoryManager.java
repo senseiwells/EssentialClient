@@ -1,11 +1,8 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import com.google.gson.*;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
-import net.minecraft.text.LiteralText;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,7 +15,6 @@ public class ScriptRepositoryManager {
 
 	private final String REPOSITORY_URL;
 	private final Gson GSON;
-	private final DynamicCommandExceptionType NO_SUCH_SCRIPT = new DynamicCommandExceptionType(o -> new LiteralText("Script with name '%s' doesn't exist".formatted(o)));
 	private final Map<Category, Set<ScriptFile>> children;
 
 	private ScriptRepositoryManager() {
@@ -27,22 +23,26 @@ public class ScriptRepositoryManager {
 		this.children = new HashMap<>();
 	}
 
-	public String getScriptFromWeb(Category category, String name, boolean fromCache) throws CommandSyntaxException {
+	public String getScriptFromWeb(Category category, String name, boolean fromCache) {
 		ScriptFile scriptFile = this.getScriptFromName(category, name);
+		if (scriptFile == null) {
+			return null;
+		}
 		if (fromCache && scriptFile.content != null) {
 			return scriptFile.content;
 		}
 		String content = NetworkUtils.getStringFromUrl(scriptFile.downloadUrl);
 		if (content == null) {
-			throw this.NO_SUCH_SCRIPT.create(name);
+			return null;
 		}
 		return scriptFile.content = content;
 	}
 
-	public void downloadScript(Category category, String name, boolean overwrite) throws CommandSyntaxException {
+	// Returns true if download failed
+	public boolean downloadScript(Category category, String name, boolean overwrite) {
 		Set<ScriptFile> scriptFileSet = this.getChildren(category);
-		if (!scriptFileSet.contains(new ScriptFile(name, null))) {
-			throw this.NO_SUCH_SCRIPT.create(name);
+		if (!scriptFileSet.contains(new ScriptFile(name, null, null))) {
+			return true;
 		}
 		Path scriptDir = ClientScript.INSTANCE.getScriptDirectory();
 		Path newScript = scriptDir.resolve(name + ".arucas");
@@ -54,21 +54,31 @@ public class ScriptRepositoryManager {
 				}
 			}
 		}
-		try (BufferedWriter writer = Files.newBufferedWriter(newScript)) {
-			String fileContent = this.getScriptFromWeb(category, name, false);
-			writer.write(fileContent);
+		String fileContent = this.getScriptFromWeb(category, name, false);
+		if (fileContent != null) {
+			try (BufferedWriter writer = Files.newBufferedWriter(newScript)) {
+				writer.write(fileContent);
+				return false;
+			}
+			catch (IOException ignored) { }
 		}
-		catch (IOException ioException) {
-			throw this.NO_SUCH_SCRIPT.create(name);
+		return true;
+	}
+
+	public String getViewableLink(Category category, String scriptName) {
+		ScriptFile scriptFile = this.getScriptFromName(category, scriptName);
+		if (scriptFile == null || scriptFile.viewableUrl == null) {
+			return "https://github.com/senseiwells/clientscript";
 		}
+		return scriptFile.viewableUrl;
 	}
 
 	public List<String> getChildrenNames(Category category) {
 		return this.getChildren(category).stream().map(scriptFile -> scriptFile.name).toList();
 	}
 
-	private ScriptFile getScriptFromName(Category category, String name) throws CommandSyntaxException {
-		return this.getChildren(category).stream().filter(s -> s.name.equals(name)).findAny().orElseThrow(() -> this.NO_SUCH_SCRIPT.create(name));
+	private ScriptFile getScriptFromName(Category category, String name) {
+		return this.getChildren(category).stream().filter(s -> s.name.equals(name)).findAny().orElse(null);
 	}
 
 	private Set<ScriptFile> getChildren(Category category) {
@@ -93,7 +103,9 @@ public class ScriptRepositoryManager {
 			}
 			childName = childName.substring(0, childName.length() - 7);
 			String childDownload = object.get("download_url").getAsString();
-			scriptFileSet.add(new ScriptFile(childName, childDownload));
+			JsonObject links = object.get("_links").getAsJsonObject();
+			String viewableUrl = links.get("html").getAsString();
+			scriptFileSet.add(new ScriptFile(childName, childDownload, viewableUrl));
 		}
 		this.children.put(category, scriptFileSet);
 		return true;
@@ -102,11 +114,13 @@ public class ScriptRepositoryManager {
 	private static class ScriptFile {
 		private final String name;
 		private final String downloadUrl;
+		private final String viewableUrl;
 		private String content;
 
-		ScriptFile(String name, String downloadUrl) {
+		ScriptFile(String name, String downloadUrl, String viewableUrl) {
 			this.name = name;
 			this.downloadUrl = downloadUrl;
+			this.viewableUrl = viewableUrl;
 			this.content = null;
 		}
 
@@ -125,19 +139,23 @@ public class ScriptRepositoryManager {
 	}
 
 	public enum Category {
-		AUTOMATION("automation"),
-		UTILITIES("utilities"),
-		MISCELLANEOUS("miscellaneous");
+		AUTOMATION("Automation"),
+		UTILITIES("Utilities"),
+		MISCELLANEOUS("Miscellaneous");
 
-		private final String name;
+		private final String prettyName;
 
 		Category(String prettyName) {
-			this.name = prettyName;
+			this.prettyName = prettyName;
+		}
+
+		public String getPrettyName() {
+			return this.prettyName;
 		}
 
 		@Override
 		public String toString() {
-			return this.name;
+			return this.prettyName.toLowerCase();
 		}
 	}
 }

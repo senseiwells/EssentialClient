@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -13,6 +14,7 @@ import me.senseiwells.essentialclient.utils.command.EnumArgumentType;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.LiteralText;
 
 import java.util.List;
 
@@ -21,6 +23,8 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class ClientScriptCommand {
+	private static final DynamicCommandExceptionType NO_SUCH_SCRIPT = new DynamicCommandExceptionType(o -> new LiteralText("Script with name '%s' doesn't exist".formatted(o)));
+
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		CommandHelper.CLIENT_COMMANDS.add("clientscript");
 
@@ -58,7 +62,9 @@ public class ClientScriptCommand {
 				.executes(context -> {
 					Category category = EnumArgumentType.getEnumeration(context, "category", Category.class);
 					String scriptName = StringArgumentType.getString(context, "scriptname");
-					ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, false);
+					if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, false)) {
+						throw NO_SUCH_SCRIPT.create(scriptName);
+					}
 					EssentialUtils.sendMessage(ChatColour.GOLD + "Successfully downloaded: " + ChatColour.GREEN + scriptName);
 					return 1;
 				})
@@ -67,7 +73,9 @@ public class ClientScriptCommand {
 						Category category = EnumArgumentType.getEnumeration(context, "category", Category.class);
 						String scriptName = StringArgumentType.getString(context, "scriptname");
 						boolean shouldOverwrite = BoolArgumentType.getBool(context, "shouldoverwrite");
-						ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, shouldOverwrite);
+						if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, shouldOverwrite)) {
+							throw NO_SUCH_SCRIPT.create(scriptName);
+						}
 						EssentialUtils.sendMessage(ChatColour.GOLD + "Successfully downloaded: " + ChatColour.GREEN + scriptName);
 						return 1;
 					})
@@ -84,6 +92,9 @@ public class ClientScriptCommand {
 					Category category = EnumArgumentType.getEnumeration(context, "category", Category.class);
 					String scriptName = StringArgumentType.getString(context, "scriptname");
 					String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, true);
+					if (scriptContent == null) {
+						throw NO_SUCH_SCRIPT.create(scriptName);
+					}
 					ClientScriptInstance.runFromContent(scriptName, scriptContent);
 					return 1;
 				})
@@ -93,6 +104,9 @@ public class ClientScriptCommand {
 						String scriptName = StringArgumentType.getString(context, "scriptname");
 						boolean fromCache = BoolArgumentType.getBool(context, "fromcache");
 						String scriptContent = ScriptRepositoryManager.INSTANCE.getScriptFromWeb(category, scriptName, fromCache);
+						if (scriptContent == null) {
+							throw NO_SUCH_SCRIPT.create(scriptName);
+						}
 						ClientScriptInstance.runFromContent(scriptName, scriptContent);
 						return 1;
 					})

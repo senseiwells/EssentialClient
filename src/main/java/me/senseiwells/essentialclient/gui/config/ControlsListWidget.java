@@ -60,12 +60,12 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 	abstract static class Entry extends ElementListWidget.Entry<ControlsListWidget.Entry> { }
 
 	class CategoryEntry extends Entry {
-		final Text text;
 		private final int textWidth;
+		final Text text;
 
-		public CategoryEntry(Text text) {
+		CategoryEntry(Text text) {
+			this.textWidth = ControlsListWidget.this.client.textRenderer.getWidth(text);
 			this.text = text;
-			this.textWidth = ControlsListWidget.this.client.textRenderer.getWidth(this.text);
 		}
 
 		@Override
@@ -132,6 +132,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 						this.editButton.setMessage(editMessage.formatted(Formatting.RED));
 					}
 				}
+
 			}
 			if (focused) {
 				this.editButton.setMessage(

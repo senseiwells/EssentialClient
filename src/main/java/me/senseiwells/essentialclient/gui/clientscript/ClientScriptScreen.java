@@ -1,8 +1,10 @@
-package me.senseiwells.essentialclient.clientscript.core;
+package me.senseiwells.essentialclient.gui.clientscript;
 
 import me.senseiwells.arucas.core.Arucas;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.clientscript.core.ClientScript;
+import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,7 +21,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,12 +40,13 @@ public class ClientScriptScreen extends ChildScreen {
 			return;
 		}
 		int height = this.height - 27;
-		this.scriptWidget = new ClientScriptWidget(EssentialUtils.getClient(), this);
+		this.scriptWidget = new ClientScriptWidget(this.client, this);
 		this.addSelectableChild(this.scriptWidget);
 		this.addDrawableChild(new ButtonWidget(10, height, 100, 20, REFRESH, button -> this.refresh()));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, height, 200, 20, DONE, button -> this.client.setScreen(this.parent)));
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, height, 200, 20, DONE, button -> this.onClose()));
 		this.addDrawableChild(new ButtonWidget(this.width - 110, height, 100, 20, DOCUMENTATION, button -> Util.getOperatingSystem().open(EssentialUtils.SCRIPT_WIKI_URL)));
-		this.addDrawableChild(new ButtonWidget(10, 10, 50, 20, NEW, button -> this.createNewScript()));
+		this.addDrawableChild(new ButtonWidget(10, 10, 80, 20, NEW, button -> this.client.setScreen(new CreateClientScriptScreen(this))));
+		this.addDrawableChild(new ButtonWidget(this.width - 90, 10, 80, 20, DOWNLOAD, button -> this.client.setScreen(new DownloadClientScriptScreen(this))));
 	}
 
 	@Override
@@ -66,34 +68,7 @@ public class ClientScriptScreen extends ChildScreen {
 		EssentialUtils.getClient().setScreen(configScreen);
 	}
 
-	private void createNewScript() {
-		Path scriptPath = ClientScript.INSTANCE.getScriptDirectory();
-		String newScriptName = "New Script";
-		Path newScript = scriptPath.resolve(newScriptName + ".arucas");
-		if (Files.exists(newScript)) {
-			for (int i = 1; ; i++) {
-				newScriptName = "New Script " + i;
-				newScript = scriptPath.resolve(newScriptName + ".arucas");
-				if (!Files.exists(newScript)) {
-					break;
-				}
-			}
-		}
-		try {
-			Files.createFile(newScript);
-		}
-		catch (IOException e) {
-			EssentialClient.LOGGER.error(e);
-			return;
-		}
-		ClientScriptInstance newScriptInstance = new ClientScriptInstance(newScriptName, newScript);
-		ClientScript.INSTANCE.addInstance(newScriptInstance);
-		this.refresh();
-		this.openScriptConfigScreen(newScriptInstance);
-	}
-
-	static class ScriptConfigScreen extends Screen {
-		private final ClientScriptScreen parent;
+	static class ScriptConfigScreen extends ChildScreen.Typed<ClientScriptScreen> {
 		private final ClientScriptInstance scriptInstance;
 		private final TextFieldWidget nameBox;
 		private final ButtonWidget openBox;
@@ -104,23 +79,20 @@ public class ClientScriptScreen extends ChildScreen {
 		private String newName;
 
 		ScriptConfigScreen(ClientScriptScreen parent, ClientScriptInstance scriptInstance) {
-			super(new LiteralText("Script Config for '%s'".formatted(scriptInstance.toString())));
-			this.parent = parent;
+			super(new LiteralText("Script Config for '%s'".formatted(scriptInstance.toString())), parent);
 			this.scriptInstance = scriptInstance;
 			String scriptName = scriptInstance.toString();
 			this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, new LiteralText("ScriptName"));
 			this.nameBox.setText(scriptName);
 			this.nameBox.setChangedListener(s -> this.newName = s);
 			this.openBox = new ButtonWidget(0, 0, 200, 20, new LiteralText("Open Script"), button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
-			this.deleteBox = new ButtonWidget(0, 0, 200, 20, new LiteralText("Delete Script"), button -> {
-				ExceptionUtils.runSafe(() -> {
-					Files.delete(this.scriptInstance.getFileLocation());
-					ClientScript.INSTANCE.removeInstance(this.scriptInstance);
-					this.parent.scriptWidget.clear();
-					this.parent.scriptWidget.load(this.client);
-					this.close();
-				});
-			});
+			this.deleteBox = new ButtonWidget(0, 0, 200, 20, new LiteralText("Delete Script"), button -> ExceptionUtils.runSafe(() -> {
+				Files.delete(this.scriptInstance.getFileLocation());
+				ClientScript.INSTANCE.removeInstance(this.scriptInstance);
+				this.getParent().scriptWidget.clear();
+				this.getParent().scriptWidget.load(this.client);
+				super.onClose();
+			}));
 			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, new TranslatableText(scriptInstance.getKeyBind().getTranslationKey()), button -> this.editingKeyBind = true);
 			this.selectedCheck = new CheckboxWidget(0, 0, 20, 20, new LiteralText("Selected"), ClientScript.INSTANCE.isSelected(scriptName)) {
 				@Override
@@ -165,10 +137,6 @@ public class ClientScriptScreen extends ChildScreen {
 			super.tick();
 		}
 
-		public void close() {
-			EssentialUtils.getClient().setScreen(this.parent);
-		}
-
 		@Override
 		public void onClose() {
 			if (!this.newName.isEmpty() && !this.newName.equals(this.scriptInstance.toString())) {
@@ -179,15 +147,20 @@ public class ClientScriptScreen extends ChildScreen {
 						throw new FileAlreadyExistsException("Tried to rename to an existing file");
 					}
 					Files.move(original, renamed);
+					String oldName = this.scriptInstance.toString();
+					if (ClientScript.INSTANCE.isSelected(oldName)) {
+						ClientScript.INSTANCE.removeSelectedInstance(oldName);
+						ClientScript.INSTANCE.addSelectedInstance(this.newName);
+					}
 					ClientScript.INSTANCE.removeInstance(this.scriptInstance);
 					ClientScript.INSTANCE.addInstance(new ClientScriptInstance(this.newName, renamed));
-					this.parent.refresh();
+					this.getParent().refresh();
 				}
 				catch (Exception exception) {
 					EssentialClient.LOGGER.error(exception);
 				}
 			}
-			this.close();
+			super.onClose();
 		}
 
 		@Override
@@ -214,7 +187,7 @@ public class ClientScriptScreen extends ChildScreen {
 				return true;
 			}
 			if (keyCode == GLFW.GLFW_KEY_ENTER && this.nameBox.isFocused()) {
-				this.nameBox.setText(this.newName = this.nameBox.getText());
+				this.newName = this.nameBox.getText();
 				this.nameBox.changeFocus(false);
 			}
 			return super.keyPressed(keyCode, scanCode, modifiers) || this.nameBox.keyPressed(keyCode, scanCode, modifiers);

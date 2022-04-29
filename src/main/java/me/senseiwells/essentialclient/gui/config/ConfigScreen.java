@@ -1,10 +1,10 @@
 package me.senseiwells.essentialclient.gui.config;
 
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.clientscript.core.ClientScriptScreen;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import me.senseiwells.essentialclient.gui.RulesScreen;
+import me.senseiwells.essentialclient.gui.clientscript.ClientScriptScreen;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import net.minecraft.client.font.TextRenderer;
