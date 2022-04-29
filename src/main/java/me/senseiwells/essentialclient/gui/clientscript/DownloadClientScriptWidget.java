@@ -77,14 +77,18 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 				Util.getOperatingSystem().open(ScriptRepositoryManager.INSTANCE.getViewableLink(category, scriptName));
 			});
 			this.downloadButton = new ButtonWidget(0, 0, 60, 20, new LiteralText("Download").formatted(Formatting.DARK_GREEN), button -> {
+				ToastManager toastManager = DownloadClientScriptWidget.this.client.getToastManager();
 				if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, true)) {
-					ToastManager toastManager = DownloadClientScriptWidget.this.client.getToastManager();
 					SystemToast.show(
 						toastManager, SystemToast.Type.PACK_COPY_FAILURE,
-						new LiteralText("Failed To Download Script"), null
+						new LiteralText("Download Failed"), null
 					);
 					return;
 				}
+				SystemToast.show(
+					toastManager, SystemToast.Type.WORLD_BACKUP,
+					new LiteralText("Download Successful"), null
+				);
 				DownloadClientScriptWidget.this.downloadScreen.getParent().refresh();
 			});
 		}
