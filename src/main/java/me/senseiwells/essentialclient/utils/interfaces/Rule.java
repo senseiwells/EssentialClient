@@ -23,6 +23,14 @@ public interface Rule<T> {
 	void setValueFromString(String value);
 	void setOptionalInfo(String optionalInfo);
 
+	default boolean changeable() {
+		return true;
+	}
+
+	default boolean isAvailable() {
+		return true;
+	}
+
 	default JsonElement getValueAsJson() {
 		return this.toJson(this.getValue());
 	}

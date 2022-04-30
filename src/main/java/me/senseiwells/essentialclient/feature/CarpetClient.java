@@ -11,11 +11,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.rule.carpet.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.misc.Events;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 
@@ -103,8 +105,11 @@ public class CarpetClient implements Config.CList {
 			}
 
 			this.HANDLING_DATA.set(true);
-			rule.setValueFromString(value);
+			rule.setFromServer(value);
 			this.HANDLING_DATA.set(false);
+			if (EssentialUtils.getClient().currentScreen instanceof RulesScreen rulesScreen && rulesScreen.getTitle() == Texts.SERVER_SCREEN) {
+				rulesScreen.refreshRules(rulesScreen.getSearchBoxText());
+			}
 		});
 	}
 
@@ -117,7 +122,7 @@ public class CarpetClient implements Config.CList {
 					CarpetClientRule<?> clientRule = this.ALL_RULES.get(parsedRule.name);
 					clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule, settings.getIdentifier()) :
 						this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo(), settings.getIdentifier());
-					clientRule.setValueFromString(parsedRule.getAsString());
+					clientRule.setFromServer(parsedRule.getAsString());
 					this.CURRENT_RULES.put(clientRule.getName(), clientRule);
 				}
 			};

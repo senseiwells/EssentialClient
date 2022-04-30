@@ -31,6 +31,11 @@ public class CycleCarpetRule extends CarpetClientRule<String> implements Rule.Cy
 	}
 
 	@Override
+	public String getValueFromString(String value) {
+		return value;
+	}
+
+	@Override
 	public List<String> getCycleValues() {
 		return this.cycleValues;
 	}

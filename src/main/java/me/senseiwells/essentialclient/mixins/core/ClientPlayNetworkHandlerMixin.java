@@ -7,16 +7,18 @@ import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
 import me.senseiwells.essentialclient.clientscript.values.WorldValue;
 import me.senseiwells.essentialclient.commands.CommandRegister;
-import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
+import me.senseiwells.essentialclient.utils.network.NetworkHandler;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,6 +29,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private CommandDispatcher<CommandSource> commandDispatcher;
+
+	@Shadow
+	@Final
+	private MinecraftClient client;
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "onCommandTree", at = @At("TAIL"))
@@ -41,12 +47,23 @@ public class ClientPlayNetworkHandlerMixin {
 			ClientScript.INSTANCE.startAllInstances();
 		}
 		MinecraftScriptEvents.ON_CONNECT.run(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld()));
+		if (this.client.getServer() != null) {
+			EssentialClient.GAME_RULE_NET_HANDLER.onHelloSinglePlayer();
+			EssentialClient.GAME_RULE_NET_HANDLER.processRawData(this.client.getServer().getGameRules().toNbt());
+		}
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
-		if (ChunkClientNetworkHandler.ESSENTIAL_CHANNEL.equals(packet.getChannel())) {
-			EssentialClient.CHUNK_NET_HANDLER.handlePacket(packet.getData(), (ClientPlayNetworkHandler) (Object) this);
+		boolean triggered = false;
+		for (NetworkHandler networkHandler : EssentialClient.NETWORK_HANDLERS) {
+			if (networkHandler.getNetworkChannel().equals(packet.getChannel())) {
+				networkHandler.handlePacket(packet.getData(), (ClientPlayNetworkHandler) (Object) this);
+				triggered = true;
+				break;
+			}
+		}
+		if (triggered) {
 			ci.cancel();
 		}
 	}

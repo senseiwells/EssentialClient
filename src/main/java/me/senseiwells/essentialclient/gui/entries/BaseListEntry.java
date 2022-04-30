@@ -61,7 +61,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	}
 
 	protected void checkDisabled() {
-		if (this.cannotEdit()) {
+		if (this.cannotEdit() || !this.rule.isAvailable() || !this.rule.changeable()) {
 			this.children().forEach(child -> {
 				child.active = false;
 			});
@@ -87,7 +87,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	@Override
 	public final void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
 		TextRenderer font = this.client.textRenderer;
-		float fontX = (float) (x + 90 - ConfigListWidget.length);
+		float fontX = (float) (x + 90 - ConfigListWidget.LENGTH);
 		float fontY = (float) (y + height / 2 - 9 / 2);
 		this.ruleWidget.setPos(x - 50, y + 2);
 		this.ruleWidget.drawRule(matrices, font, fontX, fontY, 16777215);
@@ -102,12 +102,14 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 			else {
 				info = this.rule.getDescription();
 			}
-			lines.addAll(this.client.textRenderer.wrapLines(StringVisitable.plain(info.replace("\r", "")), 220));
-			this.rulesScreen.setTooltip(lines);
+			if (info != null) {
+				lines.addAll(this.client.textRenderer.wrapLines(StringVisitable.plain(info.replace("\r", "")), 220));
+				this.rulesScreen.setTooltip(lines);
+			}
 		}
 		this.resetButton.x = x + 290;
 		this.resetButton.y = y;
-		this.resetButton.active = this.rule.isNotDefault();
+		this.resetButton.active = this.rule.isAvailable() && this.rule.changeable() && this.rule.isNotDefault();
 		this.resetButton.render(matrices, mouseX, mouseY, delta);
 
 		this.renderEditButton(matrices, x, y, mouseX, mouseY, delta);

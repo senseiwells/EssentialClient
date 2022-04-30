@@ -15,7 +15,7 @@ public class ChunkHandler {
 
 	static {
 		Events.ON_DISCONNECT.register(v -> {
-			ChunkClientNetworkHandler.chunkDebugAvailable = false;
+			EssentialClient.onDisconnect();
 			ChunkHandler.clearAllChunks();
 			ChunkGrid.instance = null;
 		});

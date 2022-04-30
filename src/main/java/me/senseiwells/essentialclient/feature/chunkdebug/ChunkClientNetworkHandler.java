@@ -3,53 +3,42 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import io.netty.buffer.Unpooled;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.feature.MultiConnectSupport;
+import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-public class ChunkClientNetworkHandler {
-	public static boolean chunkDebugAvailable = false;
-	public static Identifier ESSENTIAL_CHANNEL = new Identifier("essentialclient", "chunkdebug");
-	public static final int
-		HELLO = 0,
-		RELOAD = 15,
-		DATA = 16,
-		VERSION = 1_0_3;
+import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
+import static me.senseiwells.essentialclient.utils.network.NetworkUtils.RELOAD;
 
-	private ClientPlayNetworkHandler networkHandler;
+public class ChunkClientNetworkHandler extends NetworkHandler {
+	public static Identifier CHUNK_DEBUG_CHANNEL = new Identifier("essentialclient", "chunkdebug");
+	public static final int VERSION = 1_0_3;
 
 	public ChunkClientNetworkHandler() { }
 
-	public void onHello(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
-		if (packetByteBuf.readableBytes() == 0 || packetByteBuf.readVarInt() < VERSION) {
-			EssentialClient.LOGGER.info("Server has out of date Chunk Debug!");
-			return;
-		}
+	@Override
+	public Identifier getNetworkChannel() {
+		return CHUNK_DEBUG_CHANNEL;
+	}
+
+	@Override
+	public int getVersion() {
+		return VERSION;
+	}
+
+	@Override
+	protected void onHelloSuccess() {
 		EssentialClient.LOGGER.info("Chunk Debug is available");
-		this.networkHandler = networkHandler;
-		chunkDebugAvailable = true;
-		this.respondHello();
 	}
 
-	private void respondHello() {
-		if (this.networkHandler != null) {
-			MultiConnectSupport.sendCustomPacket(
-				this.networkHandler, ESSENTIAL_CHANNEL,
-				new PacketByteBuf(Unpooled.buffer()).writeVarInt(HELLO).writeString(EssentialClient.VERSION).writeVarInt(VERSION)
-			);
-		}
+	@Override
+	protected void onHelloFail() {
+		EssentialClient.LOGGER.info("Server has out of date Chunk Debug!");
 	}
 
-	public void handlePacket(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
-		if (packetByteBuf != null) {
-			switch (packetByteBuf.readVarInt()) {
-				case HELLO -> this.onHello(packetByteBuf, networkHandler);
-				case DATA -> this.processPacket(packetByteBuf);
-			}
-		}
-	}
-
-	private void processPacket(PacketByteBuf packetByteBuf) {
+	@Override
+	protected void processData(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
 		int size = packetByteBuf.readVarInt();
 		long[] chunkPositions = packetByteBuf.readLongArray(new long[size]);
 		byte[] levelTypes = packetByteBuf.readByteArray(size);
@@ -69,18 +58,18 @@ public class ChunkClientNetworkHandler {
 	}
 
 	private void requestChunkData(Identifier worldIdentifier) {
-		if (this.networkHandler != null) {
+		if (this.getNetworkHandler() != null) {
 			MultiConnectSupport.sendCustomPacket(
-				this.networkHandler, ESSENTIAL_CHANNEL,
+				this.getNetworkHandler(), CHUNK_DEBUG_CHANNEL,
 				new PacketByteBuf(Unpooled.buffer()).writeVarInt(DATA).writeIdentifier(worldIdentifier)
 			);
 		}
 	}
 
 	protected void requestServerRefresh() {
-		if (this.networkHandler != null) {
+		if (this.getNetworkHandler() != null) {
 			MultiConnectSupport.sendCustomPacket(
-				this.networkHandler, ESSENTIAL_CHANNEL,
+				this.getNetworkHandler(), CHUNK_DEBUG_CHANNEL,
 				new PacketByteBuf(Unpooled.buffer()).writeVarInt(RELOAD)
 			);
 		}

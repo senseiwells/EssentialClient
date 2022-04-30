@@ -11,4 +11,9 @@ public class BooleanCarpetRule extends CarpetClientRule<Boolean> implements Rule
 	public CarpetClientRule<Boolean> shallowCopy() {
 		return new BooleanCarpetRule(this.getName(), this.getDescription(), this.getDefaultValue());
 	}
+
+	@Override
+	public Boolean getValueFromString(String value) {
+		return value.equals("true");
+	}
 }

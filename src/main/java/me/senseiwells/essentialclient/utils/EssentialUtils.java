@@ -64,6 +64,7 @@ public class EssentialUtils {
 		}
 	}
 
+	@SafeVarargs
 	public static <T> List<T> arrayListOf(T... values) {
 		List<T> list = new ArrayList<>(values.length);
 		list.addAll(Arrays.asList(values));

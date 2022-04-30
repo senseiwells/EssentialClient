@@ -24,12 +24,12 @@ public class DoubleCarpetRule extends NumberCarpetRule<Double> {
 	}
 
 	@Override
-	public void setValueFromString(String value) {
+	public Double getValueFromString(String value) {
 		Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(value));
 		if (doubleValue == null) {
 			this.logCannotSet(value);
-			return;
+			return null;
 		}
-		this.setValue(doubleValue);
+		return doubleValue;
 	}
 }

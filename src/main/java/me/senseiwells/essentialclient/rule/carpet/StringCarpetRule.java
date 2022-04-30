@@ -11,4 +11,9 @@ public class StringCarpetRule extends CarpetClientRule<String> implements Rule.S
 	public CarpetClientRule<String> shallowCopy() {
 		return new StringCarpetRule(this.getName(), this.getDescription(), this.getDefaultValue());
 	}
+
+	@Override
+	public String getValueFromString(String value) {
+		return value;
+	}
 }

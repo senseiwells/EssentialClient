@@ -25,9 +25,11 @@ public abstract class ClientPlayerEntityMixin {
 			String commandName = reader.canRead() ? reader.readUnquotedString() : "";
 			if (CarpetClient.INSTANCE.isCarpetManager(commandName) && ClientRules.CARPET_ALWAYS_SET_DEFAULT.getValue()) {
 				reader.skip();
-				String subCommand = reader.readUnquotedString();
-				if (reader.canRead() && !subCommand.equals("setDefault")) {
-					this.sendChatMessage("/%s setDefault %s%s".formatted(commandName, subCommand, reader.getRemaining()));
+				if (reader.canRead()) {
+					String subCommand = reader.readUnquotedString();
+					if (reader.canRead() && !subCommand.equals("setDefault")) {
+						this.sendChatMessage("/%s setDefault %s%s".formatted(commandName, subCommand, reader.getRemaining()));
+					}
 				}
 			}
 			reader.setCursor(cursor);

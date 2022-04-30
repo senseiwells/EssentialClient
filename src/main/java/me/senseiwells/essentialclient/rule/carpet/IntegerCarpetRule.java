@@ -24,12 +24,12 @@ public class IntegerCarpetRule extends NumberCarpetRule<Integer> {
 	}
 
 	@Override
-	public void setValueFromString(String value) {
+	public Integer getValueFromString(String value) {
 		Integer intValue = EssentialUtils.catchAsNull(() -> Integer.parseInt(value));
 		if (intValue == null) {
 			this.logCannotSet(value);
-			return;
+			return null;
 		}
-		this.setValue(intValue);
+		return intValue;
 	}
 }

@@ -74,7 +74,7 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 
 	@Override
 	protected void checkDisabled() {
-		if (this.cannotEdit()) {
+		if (this.cannotEdit() || !this.rule.isAvailable() || !this.rule.changeable()) {
 			this.children().forEach(child -> {
 				child.active = false;
 			});

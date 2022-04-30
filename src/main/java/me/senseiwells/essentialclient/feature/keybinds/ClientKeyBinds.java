@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
-import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import me.senseiwells.essentialclient.gui.clientscript.ClientScriptScreen;
 import me.senseiwells.essentialclient.gui.config.ConfigScreen;
@@ -44,7 +43,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		OPEN_ESSENTIAL_CLIENT_MENU = register("Open Essential Client Menu", GLFW.GLFW_KEY_UNKNOWN, client -> setScreenIfNull(client, () -> new ConfigScreen(null)));
 		OPEN_CLIENT_SCRIPT = register("Open Client Script", GLFW.GLFW_KEY_UNKNOWN, client -> setScreenIfNull(client, () -> new ClientScriptScreen(null)));
 		OPEN_CHUNK_DEBUG = register("Open Chunk Debug", GLFW.GLFW_KEY_F6, client -> {
-			if (ChunkClientNetworkHandler.chunkDebugAvailable){
+			if (EssentialClient.CHUNK_NET_HANDLER.isAvailable()){
 				setScreenIfNull(client, () -> new ChunkDebugScreen(null));
 			}
 		});

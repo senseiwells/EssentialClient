@@ -1,8 +1,10 @@
 package me.senseiwells.essentialclient.gui;
 
+import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.gui.config.ConfigListWidget;
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.rule.game.VanillaGameRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
@@ -30,7 +32,6 @@ public class RulesScreen extends ChildScreen {
 	private TextFieldWidget searchBox;
 	private boolean invalid;
 	private boolean isEmpty;
-
 
 	public RulesScreen(Text screenName, Screen parent, Supplier<Boolean> canModify, Supplier<Collection<? extends Rule<?>>> ruleGetter) {
 		super(screenName, parent);
@@ -71,13 +72,20 @@ public class RulesScreen extends ChildScreen {
 		this.widget.reloadEntries(this, filter);
 	}
 
+	public void refreshScroll() {
+		this.widget.setScrollAmount(0);
+	}
+
 	@Override
 	protected void init() {
 		if (this.client == null) {
 			return;
 		}
 		this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, LiteralText.EMPTY);
-		this.searchBox.setChangedListener(this::refreshRules);
+		this.searchBox.setChangedListener(s -> {
+			this.refreshScroll();
+			this.refreshRules(s);
+		});
 		this.widget = new ConfigListWidget(this, this.client, this.searchBox.getText());
 		this.addSelectableChild(this.widget);
 		this.addDrawableChild(this.searchBox);
@@ -126,5 +134,10 @@ public class RulesScreen extends ChildScreen {
 			return EssentialUtils.getClient().isInSingleplayer() || (CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
 		};
 		return new RulesScreen(Texts.SERVER_SCREEN, parent, canModify, () -> Rule.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()));
+	}
+
+	public static RulesScreen getGameRulesScreen(Screen parent) {
+		Supplier<Boolean> canModify = EssentialClient.GAME_RULE_NET_HANDLER::canModifyRules;
+		return new RulesScreen(Texts.GAME_RULE_SCREEN, parent, canModify, () -> Rule.sortRulesAlphabetically(VanillaGameRules.getGameRules()));
 	}
 }

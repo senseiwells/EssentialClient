@@ -9,6 +9,7 @@ public class Texts {
 	public static final Text
 		CLIENT_SCREEN = new LiteralText("Essential Client Options"),
 		SERVER_SCREEN = new LiteralText("Carpet Server Options"),
+		GAME_RULE_SCREEN = new LiteralText("Game Rule Options"),
 		SCRIPT_SCREEN = new LiteralText("Client Script Options"),
 		CHUNK_SCREEN = new LiteralText("Chunk Debug Map"),
 		CONTROLS_SCREEN = new LiteralText("Client KeyBinds"),
