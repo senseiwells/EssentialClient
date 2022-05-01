@@ -67,7 +67,9 @@ public class MinecraftAPI {
 		builder.addWrappers(
 			IMPORT_NAME,
 			GameEventWrapper::new,
-			BoxShapeWrapperOLD::new,
+			BoxShapeWrapper::new,
+			SphereShapeWrapper::new,
+			LineShapeWrapper::new,
 			FakeEntityWrapper::new,
 			FakeBlockWrapper::new,
 			KeyBindWrapper::new

@@ -46,6 +46,7 @@ public class ClientScriptInstance {
 	private final ClientKeyBind keyBind;
 	private ArucasThread mainScriptThread;
 	private UUID instanceId;
+	private boolean isStopping;
 
 	private ClientScriptInstance(String scriptName, String content, Path fileLocation) {
 		this.scriptName = scriptName;
@@ -86,10 +87,10 @@ public class ClientScriptInstance {
 	}
 
 	public synchronized void stopScript() {
-		if (!this.isScriptRunning()) {
+		if (!this.isScriptRunning() || this.isStopping) {
 			return;
 		}
-
+		this.isStopping = true;
 		MinecraftScriptEvents.ON_SCRIPT_END.run(this.instanceId);
 
 		this.mainScriptThread.interrupt();
@@ -108,6 +109,7 @@ public class ClientScriptInstance {
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
 			EssentialUtils.sendMessage("§6Script '%s' has §cFINISHED".formatted(this.scriptName));
 		}
+		this.isStopping = false;
 	}
 
 	private synchronized void executeScript() {

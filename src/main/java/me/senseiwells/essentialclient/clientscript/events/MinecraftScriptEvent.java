@@ -112,6 +112,12 @@ public class MinecraftScriptEvent {
 		}
 	}
 
+	/**
+	 * This type of Event only gets called on a certain
+	 * scripting instance, for example when a script stops
+	 * the event only gets triggered for the script that
+	 * is currently stopping, not any others running concurrently
+	 */
 	public static class Unique extends MinecraftScriptEvent {
 		private final boolean isThreadDefinable;
 

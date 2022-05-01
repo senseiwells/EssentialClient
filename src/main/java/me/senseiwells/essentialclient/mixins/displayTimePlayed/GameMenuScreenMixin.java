@@ -17,14 +17,12 @@ import java.time.LocalDateTime;
 
 @Mixin(GameMenuScreen.class)
 public class GameMenuScreenMixin extends Screen {
-
 	protected GameMenuScreenMixin(Text title) {
 		super(title);
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta, CallbackInfo callbackInfo) {
-
 		LocalDateTime currentTime = LocalDateTime.now();
 		Duration duration = Duration.between(EssentialClient.START_TIME, currentTime);
 

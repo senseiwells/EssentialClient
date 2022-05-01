@@ -796,7 +796,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
-			if (!InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
+			if (InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
 				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			}
 			return NullValue.NULL;

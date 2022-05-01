@@ -13,7 +13,7 @@ import net.minecraft.client.realms.gui.screen.DisconnectedRealmsScreen;
 import java.util.Map;
 
 public class ScreenRemapper {
-	private static final Map<Class<? extends Screen>, String> SCREEN_REMAPPER = Map.<Class<? extends Screen>, String>ofEntries(
+	private static final Map<Class<? extends Screen>, String> SCREEN_REMAPPER = Map.ofEntries(
 		Map.entry(AccessibilityOptionsScreen.class, "AccessibilityOptions"),
 		Map.entry(AdvancementsScreen.class, "Advancement"),
 		Map.entry(AnvilScreen.class, "Anvil"),

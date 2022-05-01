@@ -1,74 +1,57 @@
 package me.senseiwells.essentialclient.feature;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CustomClientCape {
-	public static Identifier capeTexture;
+	private static Identifier currentCape;
 
-	private static final String NAMESPACE = "essentialclient";
+	private static final Map<String, Identifier> CAPE_MAP = Util.make(new LinkedHashMap<>(), map -> {
+		map.put("Old Mojang", id("mojangclassic"));
+		map.put("Mojang", id("mojangcape"));
+		map.put("Mojang Studios", id("mojangstudios"));
+		map.put("Minecon 2011", id("minecon2011"));
+		map.put("Minecon 2012", id("minecon2012"));
+		map.put("Minecon 2013", id("minecon2013"));
+		map.put("Minecon 2015", id("minecon2015"));
+		map.put("Minecon 2016", id("minecon2016"));
+		map.put("Bacon", id("bacon"));
+		map.put("Millionth", id("millionth"));
+		map.put("DannyB", id("dannyb"));
+		map.put("Julian", id("julian"));
+		map.put("Cheapsh0t", id("cheapsh0t"));
+		map.put("MrMessiah", id("mrmessiah"));
+		map.put("Prismarine", id("prismarine"));
+		map.put("Birthday", id("birthday"));
+		map.put("Translator", id("translator"));
+		map.put("Scrolls", id("scrolls"));
+		map.put("Cobalt", id("cobalt"));
+		map.put("Mojira", id("mojira"));
+		map.put("Turtle", id("turtle"));
+		map.put("Migrator", id("migrator"));
+		map.put("Christmas 2010", id("christmas2010"));
+		map.put("New Year 2011", id("newyear2011"));
+	});
 
-	private static final Map<String, Identifier> capeMap = Map.ofEntries(
-		Map.entry("Old Mojang", new Identifier(NAMESPACE, "textures/capes/mojangclassic.png")),
-		Map.entry("Mojang", new Identifier(NAMESPACE, "textures/capes/mojangcape.png")),
-		Map.entry("Mojang Studios", new Identifier(NAMESPACE, "textures/capes/mojangstudios.png")),
-		Map.entry("Minecon 2011", new Identifier(NAMESPACE, "textures/capes/minecon2011.png")),
-		Map.entry("Minecon 2012", new Identifier(NAMESPACE, "textures/capes/minecon2012.png")),
-		Map.entry("Minecon 2013", new Identifier(NAMESPACE, "textures/capes/minecon2013.png")),
-		Map.entry("Minecon 2015", new Identifier(NAMESPACE, "textures/capes/minecon2015.png")),
-		Map.entry("Minecon 2016", new Identifier(NAMESPACE, "textures/capes/minecon2016.png")),
-		Map.entry("Bacon", new Identifier(NAMESPACE, "textures/capes/bacon.png")),
-		Map.entry("Millionth", new Identifier(NAMESPACE, "textures/capes/millionth.png")),
-		Map.entry("DannyB", new Identifier(NAMESPACE, "textures/capes/dannyb.png")),
-		Map.entry("Julian", new Identifier(NAMESPACE, "textures/capes/julian.png")),
-		Map.entry("Cheapsh0t", new Identifier(NAMESPACE, "textures/capes/cheapsh0t.png")),
-		Map.entry("MrMessiah", new Identifier(NAMESPACE, "textures/capes/mrmessiah.png")),
-		Map.entry("Prismarine", new Identifier(NAMESPACE, "textures/capes/prismarine.png")),
-		Map.entry("Birthday", new Identifier(NAMESPACE, "textures/capes/birthday.png")),
-		Map.entry("Translator", new Identifier(NAMESPACE, "textures/capes/translator.png")),
-		Map.entry("Scrolls", new Identifier(NAMESPACE, "textures/capes/scrolls.png")),
-		Map.entry("Cobalt", new Identifier(NAMESPACE, "textures/capes/cobalt.png")),
-		Map.entry("Mojira", new Identifier(NAMESPACE, "textures/capes/mojira.png")),
-		Map.entry("Turtle", new Identifier(NAMESPACE, "textures/capes/turtle.png")),
-		Map.entry("Migrator", new Identifier(NAMESPACE, "textures/capes/migrator.png")),
-		Map.entry("Christmas 2010", new Identifier(NAMESPACE, "textures/capes/christmas2010.png")),
-		Map.entry("New Year 2011", new Identifier(NAMESPACE, "textures/capes/newyear2011.png"))
-	);
+	private static final List<String> CAPE_NAMES = CAPE_MAP.keySet().stream().toList();
 
-	/**
-	 * Cannot do map.keySet() as the order would not be preserved
-	 */
-	public static final List<String> capeNames = List.of(
-		"None",
-		"Old Mojang",
-		"Mojang",
-		"Mojang Studios",
-		"Minecon 2011",
-		"Minecon 2012",
-		"Minecon 2013",
-		"Minecon 2015",
-		"Minecon 2016",
-		"Bacon",
-		"Millionth",
-		"DannyB",
-		"Julian",
-		"Cheapsh0t",
-		"MrMessiah",
-		"Prismarine",
-		"Birthday",
-		"Translator",
-		"Scrolls",
-		"Cobalt",
-		"Mojira",
-		"Turtle",
-		"Migrator",
-		"Christmas 2010",
-		"New Year 2011"
-	);
+	public static List<String> getCapeNames() {
+		return CAPE_NAMES;
+	}
 
-	public static void setCapeTexture(String capeName) {
-		capeTexture = capeMap.get(capeName);
+	public static void setCurrentCape(String capeName) {
+		currentCape = CAPE_MAP.get(capeName);
+	}
+
+	public static Identifier getCurrentCape() {
+		return currentCape;
+	}
+
+	private static Identifier id(String name) {
+		return new Identifier("essentialclient", "textures/capes/" + name + ".png");
 	}
 }

@@ -44,8 +44,8 @@ dependencies {
 	modImplementation "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	packImplementation "com.github.senseiwells:Arucas:aecff8d8a09c453dae35a0e95d76ec2559ab4c9a"
-	packImplementation "com.github.senseiwells:ArucasDiscordAPI:9f2134c34e33096d528136b44e45f0d5c3865610"
+	packImplementation "com.github.senseiwells:Arucas:0516e33b4a5e5117d884cb3533e54fd3dbb8f505"
+	packImplementation "com.github.senseiwells:ArucasDiscordAPI:0e3891a97532a2ad039a6bc2d111fc43ba502a79"
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'

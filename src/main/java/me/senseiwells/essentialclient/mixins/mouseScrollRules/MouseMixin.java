@@ -17,7 +17,7 @@ public class MouseMixin {
 	}
 
 	@ModifyConstant(method = "onMouseScroll", constant = @Constant(floatValue = 0.005F))
-	private float newSensitivtyLimit(float originalFloat) {
+	private float newSensitivityLimit(float originalFloat) {
 		int newSensitivity = ClientRules.INCREASE_SPECTATOR_SCROLL_SENSITIVITY.getValue();
 		return newSensitivity > 0 ? originalFloat * newSensitivity : originalFloat;
 	}

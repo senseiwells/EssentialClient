@@ -14,15 +14,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class AbstractClientPlayerEntityMixin {
 	@Inject(method = "getCapeTexture", at = @At("RETURN"), cancellable = true)
 	private void onGetCapeTexture(CallbackInfoReturnable<Identifier> cir) {
-		if (CustomClientCape.capeTexture != null && (Object) this instanceof ClientPlayerEntity) {
-			cir.setReturnValue(CustomClientCape.capeTexture);
+		if (CustomClientCape.getCurrentCape() != null && (Object) this instanceof ClientPlayerEntity) {
+			cir.setReturnValue(CustomClientCape.getCurrentCape());
 		}
 	}
 
 	@Inject(method = "getElytraTexture", at = @At("RETURN"), cancellable = true)
 	private void onGetElytraTexture(CallbackInfoReturnable<Identifier> cir) {
-		if (CustomClientCape.capeTexture != null && (Object) this instanceof ClientPlayerEntity) {
-			cir.setReturnValue(CustomClientCape.capeTexture);
+		if (CustomClientCape.getCapeNames() != null && (Object) this instanceof ClientPlayerEntity) {
+			cir.setReturnValue(CustomClientCape.getCurrentCape());
 		}
 	}
 }

@@ -1,8 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.mixins.clientScript.MerchantScreenHandlerMixin;
-import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -12,6 +9,9 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.AbstractBuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.mixins.clientScript.MerchantScreenHandlerMixin;
+import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -98,7 +98,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		private Value<?> tradeIndex(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
-			if (!InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
+			if (InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
 				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			}
 			return NullValue.NULL;
@@ -156,7 +156,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 
 		private Value<?> tradeSelected(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
-			if (!InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), false)) {
+			if (InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), false)) {
 				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			}
 			return NullValue.NULL;
@@ -164,7 +164,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 
 		private Value<?> tradeSelectedAndThrow(Context context, MemberFunction function) throws CodeError {
 			this.checkIsCurrentScreen(context, function);
-			if (!InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), true)) {
+			if (InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), true)) {
 				throw new RuntimeError("Not in merchant gui", function.syntaxPosition, context);
 			}
 			return NullValue.NULL;

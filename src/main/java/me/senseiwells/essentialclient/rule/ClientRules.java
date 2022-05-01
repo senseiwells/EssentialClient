@@ -77,8 +77,9 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 	public static StringClientRule
 		ANNOUNCE_AFK_MESSAGE = register(new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK"));
 
+	@SuppressWarnings("unused")
 	public static final CycleClientRule
-		CUSTOM_CLIENT_CAPE = register(new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CustomClientCape.capeNames, ClientRules::refreshCape)),
+		CUSTOM_CLIENT_CAPE = register(new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CustomClientCape.getCapeNames(), ClientRules::refreshCape)),
 		DISABLE_ARMOUR_RENDERING = register(new CycleClientRule("disableArmourRendering", "This allows you to disable armour rendering for entities", List.of("None", "You", "Players", "Entities"))),
 		DISPLAY_RULE_TYPE = register(new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRules::refreshScreen));
 
@@ -130,7 +131,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 	}
 
 	private static void refreshCape(Rule<String> value) {
-		CustomClientCape.setCapeTexture(value.getValue());
+		CustomClientCape.setCurrentCape(value.getValue());
 	}
 
 	private static void refreshScreen(Rule<String> value) {

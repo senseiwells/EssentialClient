@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.mixins.craftingHax;
 
-import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -24,13 +24,11 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "clickRecipe", at = @At("RETURN"))
 	public void onRecipeClick(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
-		if (ClientRules.CRAFTING_HAX.getValue()
-			&& CraftingSharedConstants.IS_VANILLA_CLICK.get()
-			&& Screen.hasControlDown()
-			&& this.client.currentScreen instanceof HandledScreen<?> handledScreen
-		) {
-			InventoryUtils.dropStackScheduled(this.client, handledScreen, craftAll);
-			CraftingSharedConstants.IS_VANILLA_CLICK.set(false);
+		if (ClientRules.CRAFTING_HAX.getValue() && CraftingSharedConstants.IS_VANILLA_CLICK.get()) {
+			if (Screen.hasControlDown() && this.client.currentScreen instanceof HandledScreen<?> handledScreen) {
+				InventoryUtils.dropStackScheduled(this.client, handledScreen, craftAll);
+				CraftingSharedConstants.IS_VANILLA_CLICK.set(false);
+			}
 		}
 	}
 }

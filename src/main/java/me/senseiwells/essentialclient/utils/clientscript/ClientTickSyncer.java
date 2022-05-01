@@ -17,14 +17,14 @@ public class ClientTickSyncer {
 		Events.ON_TICK_POST.register(c -> ClientTickSyncer.triggerSync());
 	}
 
-	@SuppressWarnings("all")
 	public synchronized static void syncToTick() throws CodeError {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		OBJECTS_TO_SYNC.add(countDownLatch);
 
 		if (Thread.currentThread() instanceof ArucasThread) {
 			try {
-				countDownLatch.await(50, TimeUnit.MILLISECONDS);
+				@SuppressWarnings("unused")
+				boolean timeOut = countDownLatch.await(50, TimeUnit.MILLISECONDS);
 				return;
 			}
 			catch (InterruptedException e) {
@@ -35,9 +35,11 @@ public class ClientTickSyncer {
 	}
 
 	public synchronized static void triggerSync() {
-		for (CountDownLatch countDownLatch : OBJECTS_TO_SYNC) {
-			countDownLatch.countDown();
+		if (!OBJECTS_TO_SYNC.isEmpty()) {
+			for (CountDownLatch countDownLatch : OBJECTS_TO_SYNC.toArray(CountDownLatch[]::new)) {
+				countDownLatch.countDown();
+			}
+			OBJECTS_TO_SYNC.clear();
 		}
-		OBJECTS_TO_SYNC.clear();
 	}
 }

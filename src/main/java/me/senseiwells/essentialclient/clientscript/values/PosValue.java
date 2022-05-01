@@ -15,16 +15,15 @@ import net.minecraft.util.math.Vec3d;
 import java.util.List;
 
 public class PosValue extends Value<Vec3d> {
-	private final BlockPos blockPos;
+	private BlockPos blockPos;
 
 	public PosValue(Vec3d value) {
 		super(value);
-		this.blockPos = new BlockPos(value);
 	}
 
 	public PosValue(BlockPos blockPos) {
 		super(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-		this.blockPos = blockPos;
+		this.blockPos = blockPos.toImmutable();
 	}
 
 	public PosValue(double x, double y, double z) {
@@ -44,6 +43,9 @@ public class PosValue extends Value<Vec3d> {
 	}
 
 	public BlockPos toBlockPos() {
+		if (this.blockPos == null) {
+			this.blockPos = new BlockPos(this.value);
+		}
 		return this.blockPos;
 	}
 

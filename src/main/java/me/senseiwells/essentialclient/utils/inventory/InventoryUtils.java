@@ -85,9 +85,10 @@ public class InventoryUtils {
 		}
 	}
 
+	// Returns true if failed
 	public static boolean tradeAllItems(MinecraftClient client, int index, boolean dropItems) {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
-			return false;
+			return true;
 		}
 		client.execute(() -> {
 			Slot tradeSlot = merchantScreen.getScreenHandler().getSlot(2);
@@ -107,7 +108,7 @@ public class InventoryUtils {
 			}
 			clearTradeInputSlot(client, merchantScreen);
 		});
-		return true;
+		return false;
 	}
 
 	public static void selectTrade(MinecraftClient client, MerchantScreen merchantScreen, int index) {
@@ -131,14 +132,15 @@ public class InventoryUtils {
 		return true;
 	}
 
+	// Returns true if failed
 	public static boolean tradeSelectedRecipe(MinecraftClient client, boolean drop) {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
-			return false;
+			return true;
 		}
 		MerchantScreenHandler screenHandler = merchantScreen.getScreenHandler();
 		Slot tradeSlot = screenHandler.getSlot(2);
 		if (tradeSlot.getStack().getCount() == 0) {
-			return true;
+			return false;
 		}
 		client.execute(() -> {
 			if (drop) {
@@ -147,7 +149,7 @@ public class InventoryUtils {
 			}
 			shiftClickSlot(client, merchantScreen, 2);
 		});
-		return true;
+		return false;
 	}
 
 	public static void clearTradeInputSlot(MinecraftClient client, MerchantScreen merchantScreen) {
@@ -431,6 +433,7 @@ public class InventoryUtils {
 		return mapSlots;
 	}
 
+	@SuppressWarnings("UnusedReturnValue")
 	public static boolean swapSlot(MinecraftClient client, ScreenHandler screenHandler, int index, int secondIndex) {
 		if (client.interactionManager != null) {
 			client.execute(() -> client.interactionManager.clickSlot(screenHandler.syncId, index, secondIndex, SlotActionType.SWAP, client.player));
@@ -463,6 +466,7 @@ public class InventoryUtils {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static void dropSingle(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
 		if (client.interactionManager != null) {
 			client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.THROW, client.player);
