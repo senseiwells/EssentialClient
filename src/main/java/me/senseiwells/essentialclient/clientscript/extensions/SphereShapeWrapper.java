@@ -72,7 +72,7 @@ public class SphereShapeWrapper extends Shape.CentrePositioned implements Shape.
 	public void constructor(Context context, PosValue pos) {
 		this.setCreatedContext(context.createBranch());
 		this.setPos(context, pos);
-		this.steps = 50;
+		this.steps = 30;
 	}
 
 	@ArucasConstructor
