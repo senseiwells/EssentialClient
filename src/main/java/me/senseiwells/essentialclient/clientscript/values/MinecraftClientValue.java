@@ -26,6 +26,7 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.interfaces.ChatHudAccessor;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.keyboard.KeyboardHelper;
+import me.senseiwells.essentialclient.utils.network.MojangAPI;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -52,6 +53,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MinecraftClientValue extends Value<MinecraftClient> {
@@ -116,6 +118,8 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("getLatestChatMessage", this::getLatestChatMessage),
 				new MemberFunction("addCommand", "commandNode", this::addCommand),
 				new MemberFunction("isInSinglePlayer", this::isInSinglePlayer),
+				new MemberFunction("playerNameFromUuid", "uuid", this::playerNameFromUuid),
+				new MemberFunction("uuidFromPlayerName", "playerName", this::uuidFromPlayerName),
 				new MemberFunction("getServerName", this::getServerName),
 				new MemberFunction("getPing", this::getPing),
 				new MemberFunction("getScriptsPath", this::getScriptPath),
@@ -274,6 +278,24 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 
 		private Value<?> isInSinglePlayer(Context context, MemberFunction function) throws CodeError {
 			return BooleanValue.of(this.getClient(context, function).isInSingleplayer());
+		}
+
+		private Value<?> playerNameFromUuid(Context context, MemberFunction function) throws CodeError {
+			String uuidAsString = function.getParameterValueOfType(context, StringValue.class, 1).value;
+			String name = MojangAPI.getNameFromUuid(UUID.fromString(uuidAsString));
+			if (name == null) {
+				return NullValue.NULL;
+			}
+			return StringValue.of(name);
+		}
+
+		private Value<?> uuidFromPlayerName(Context context, MemberFunction function) throws CodeError {
+			String name = function.getParameterValueOfType(context, StringValue.class, 1).value;
+			UUID uuid = MojangAPI.getUuidFromName(name);
+			if (uuid == null) {
+				return NullValue.NULL;
+			}
+			return StringValue.of(uuid.toString());
 		}
 
 		private Value<?> getServerName(Context context, MemberFunction function) throws CodeError {
