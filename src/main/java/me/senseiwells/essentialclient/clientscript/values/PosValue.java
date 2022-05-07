@@ -4,6 +4,8 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
@@ -98,7 +100,8 @@ public class PosValue extends Value<Vec3d> {
 			return ArucasFunctionMap.of(
 				new MemberFunction("getX", this::getX),
 				new MemberFunction("getY", this::getY),
-				new MemberFunction("getZ", this::getZ)
+				new MemberFunction("getZ", this::getZ),
+				new MemberFunction("toList", this::toList)
 			);
 		}
 
@@ -115,6 +118,15 @@ public class PosValue extends Value<Vec3d> {
 		private Value<?> getZ(Context context, MemberFunction function) throws CodeError {
 			PosValue thisValue = function.getThis(context, PosValue.class);
 			return NumberValue.of(thisValue.value.getZ());
+		}
+
+		private Value<?> toList(Context context, MemberFunction function) throws CodeError {
+			PosValue thisValue = function.getThis(context, PosValue.class);
+			ArucasList arucasList = new ArucasList();
+			arucasList.add(thisValue.getX());
+			arucasList.add(thisValue.getY());
+			arucasList.add(thisValue.getZ());
+			return new ListValue(arucasList);
 		}
 
 		@Override

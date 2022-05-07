@@ -1,11 +1,11 @@
 package me.senseiwells.essentialclient.utils.render;
 
-import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.functions.FunctionValue;
+import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -55,7 +55,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 			List<Slot> slots = this.handler.slots;
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
 			Context context = this.contextFunction.context.createBranch();
-			context.getThreadHandler().runAsyncFunctionInContext(context,
+			context.getThreadHandler().runAsyncFunctionInThreadPool(context,
 				passedContext -> this.contextFunction.functionValue.call(passedContext, List.of(
 					new ItemStackValue(stack),
 					NumberValue.of(slotNumber),

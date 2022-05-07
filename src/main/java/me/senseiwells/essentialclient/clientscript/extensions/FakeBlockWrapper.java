@@ -9,9 +9,7 @@ import me.senseiwells.arucas.values.Value;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.essentialclient.utils.clientscript.Shape;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -25,7 +23,6 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 
 	public BlockPos blockPos;
 	public BlockState blockState;
-	public BlockEntity blockEntity;
 	public Direction direction;
 
 	private float xTilt;
@@ -34,16 +31,10 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 
 	private void setBlockState(BlockState state) {
 		this.blockState = state;
-		if (this.blockPos != null && state instanceof BlockEntityProvider provider) {
-			this.blockEntity = provider.createBlockEntity(this.blockPos, this.blockState);
-		}
 	}
 
 	private void setBlockPos(BlockPos pos) {
 		this.blockPos = pos;
-		if (pos != null && this.blockState instanceof BlockEntityProvider provider) {
-			this.blockEntity = provider.createBlockEntity(pos, this.blockState);
-		}
 	}
 
 	@Override
@@ -138,6 +129,6 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 	}
 
 	public synchronized static Stream<FakeBlockWrapper> getAllBlocksToRender() {
-		return BLOCKS_TO_RENDER.values().stream().flatMap(Collection::stream).filter(fake -> fake.blockState != null && fake.blockPos != null);
+		return BLOCKS_TO_RENDER.values().stream().flatMap(Collection::stream);
 	}
 }

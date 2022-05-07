@@ -75,7 +75,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				new MemberFunction("getAbilities", this::getAbilities),
 				new MemberFunction("getLevels", this::getLevels),
 				new MemberFunction("getHunger", this::getHunger),
-				new MemberFunction("getSaturation", this::getSaturation)
+				new MemberFunction("getSaturation", this::getSaturation),
+				new MemberFunction("getFishingBobber", this::getFishingBobber)
 			);
 		}
 
@@ -181,6 +182,11 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		private Value<?> getSaturation(Context context, MemberFunction function) throws CodeError {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
 			return NumberValue.of(playerEntity.getHungerManager().getSaturationLevel());
+		}
+
+		private Value<?> getFishingBobber(Context context, MemberFunction function) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+			return context.convertValue(playerEntity.fishHook);
 		}
 
 		private AbstractClientPlayerEntity getOtherPlayer(Context context, MemberFunction function) throws CodeError {

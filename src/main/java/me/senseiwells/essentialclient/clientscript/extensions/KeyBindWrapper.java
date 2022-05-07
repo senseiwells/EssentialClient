@@ -48,17 +48,14 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 	@ArucasFunction
 	public void setCallback(Context context, FunctionValue functionValue) {
 		this.callback = functionValue;
-		this.callbackContext = context.createBranch();
+		this.callbackContext = context;
 	}
 
 	private void onPressed(MinecraftClient client) {
 		if (this.callback != null) {
-			try {
-				this.callback.call(this.callbackContext, new ArrayList<>());
-			}
-			catch (CodeError e) {
-				this.callbackContext.getThreadHandler().tryError(this.callbackContext, e);
-			}
+			this.callbackContext.getThreadHandler().runAsyncFunctionInThreadPool(this.callbackContext.createBranch(), context -> {
+				this.callback.call(context, new ArrayList<>());
+			});
 		}
 	}
 

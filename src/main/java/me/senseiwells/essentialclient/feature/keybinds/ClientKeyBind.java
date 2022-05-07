@@ -8,7 +8,7 @@ import net.minecraft.client.util.InputUtil;
 import java.util.function.Consumer;
 
 public class ClientKeyBind extends KeyBinding {
-	private final Consumer<MinecraftClient> onPressed;
+	private Consumer<MinecraftClient> onPressed;
 
 	ClientKeyBind(String translation, int defaultKey, String category, Consumer<MinecraftClient> onPressed) {
 		super(translation, defaultKey, category);
@@ -24,6 +24,10 @@ public class ClientKeyBind extends KeyBinding {
 		if (this.onPressed != null) {
 			this.onPressed.accept(client);
 		}
+	}
+
+	public void setOnPressed(Consumer<MinecraftClient> onPressed) {
+		this.onPressed = onPressed;
 	}
 
 	@Override

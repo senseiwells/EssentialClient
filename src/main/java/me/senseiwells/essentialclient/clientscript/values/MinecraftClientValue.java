@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.senseiwells.arucas.api.ArucasClassExtension;
-import me.senseiwells.arucas.core.Run;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -37,7 +36,6 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -47,14 +45,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class MinecraftClientValue extends Value<MinecraftClient> {
 	public static MinecraftClientValue INSTANCE = new MinecraftClientValue(EssentialUtils.getClient());
@@ -223,7 +216,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			}
 			final long handler = client.getWindow().getHandle();
 			final int scanCode = GLFW.glfwGetKeyScancode(keyCode);
-			context.getThreadHandler().runAsyncFunctionInContext(context.createBranch(), ctx -> {
+			context.getThreadHandler().runAsyncFunctionInThreadPool(context.createBranch(), ctx -> {
 				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 1, 0));
 				int ms = milliseconds;
 				try {
@@ -237,7 +230,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 					throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
 				}
 				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 0, 0));
-			}, "Holding Key Thread");
+			});
 			return NullValue.NULL;
 		}
 
@@ -468,14 +461,9 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		private Value<?> runOnMainThread(Context context, MemberFunction function) throws CodeError {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
+			Context branchedContext = context.createBranch();
 			client.execute(() -> {
-				Context branchedContext = context.createBranch();
-				try {
-					functionValue.call(branchedContext, new ArucasList());
-				}
-				catch (CodeError codeError) {
-					branchedContext.getThreadHandler().tryError(branchedContext, codeError);
-				}
+				functionValue.safeCall(branchedContext, ArrayList::new);
 			});
 			return NullValue.NULL;
 		}
@@ -484,28 +472,6 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 			MinecraftClient client = this.getClient(context, function);
 			client.execute(client::tick);
 			return NullValue.NULL;
-		}
-
-		@Deprecated
-		private Value<?> importUtils(Context context, MemberFunction function) throws CodeError {
-			MinecraftClient client = this.getClient(context, function);
-			String util = function.getParameterValueOfType(context, StringValue.class, 1).value;
-			ResourceManager resourceManager = client.getResourceManager();
-			Identifier identifier = ArucasMinecraftExtension.getId(context, function.syntaxPosition, "me.senseiwells.essentialclient:clientscript/%s.arucas".formatted(util));
-			if (!resourceManager.containsResource(identifier)) {
-				throw new RuntimeError("That util does not exist", function.syntaxPosition, context);
-			}
-			try {
-				InputStream stream = resourceManager.getResource(identifier).getInputStream();
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-					String file = reader.lines().collect(Collectors.joining("\n", "", ""));
-					Context childContext = context.createChildContext("Util - %s".formatted(util));
-					return Run.run(childContext, util, file);
-				}
-			}
-			catch (IOException e) {
-				throw new RuntimeError("Failed to run Util file", function.syntaxPosition, context);
-			}
 		}
 
 		private Value<?> getPlayer(Context context, MemberFunction function) throws CodeError {

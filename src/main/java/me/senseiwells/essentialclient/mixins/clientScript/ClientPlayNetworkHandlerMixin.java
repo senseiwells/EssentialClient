@@ -79,8 +79,30 @@ public class ClientPlayNetworkHandlerMixin {
 	private void onDeath(DeathMessageS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getEntityId());
 		if (entity == this.client.player) {
-
-			MinecraftScriptEvents.ON_DEATH.run(c -> EssentialUtils.arrayListOf(c.convertValue(this.world.getEntityById(packet.getKillerId())), new TextValue(packet.getMessage().copy())));
+			Entity killer = this.world.getEntityById(packet.getKillerId());
+			MinecraftScriptEvents.ON_DEATH.run(c -> EssentialUtils.arrayListOf(c.convertValue(killer), new TextValue(packet.getMessage().copy())));
 		}
+	}
+
+	@Inject(method = "onEntitySpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;addEntity(ILnet/minecraft/entity/Entity;)V", shift = At.Shift.AFTER))
+	private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
+		Entity entity = this.world.getEntityById(packet.getId());
+		if (entity != null) {
+			MinecraftScriptEvents.ON_ENTITY_SPAWN.run(c -> EssentialUtils.arrayListOf(c.convertValue(entity)));
+		}
+	}
+
+	@Inject(method = "onMobSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;addEntity(ILnet/minecraft/entity/Entity;)V", shift = At.Shift.AFTER))
+	private void onMobSpawn(MobSpawnS2CPacket packet, CallbackInfo ci) {
+		Entity entity = this.world.getEntityById(packet.getId());
+		if (entity != null) {
+			MinecraftScriptEvents.ON_MOB_SPAWN.run(c -> EssentialUtils.arrayListOf(c.convertValue(entity)));
+		}
+	}
+
+	@Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", shift = At.Shift.BEFORE))
+	private void onEntityRemoved(int entityId, CallbackInfo ci) {
+		Entity entity = this.world.getEntityById(entityId);
+		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(c -> EssentialUtils.arrayListOf(c.convertValue(entity)));
 	}
 }

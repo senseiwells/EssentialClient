@@ -37,7 +37,7 @@ public class EssentialClient implements ModInitializer {
 		CHUNK_NET_HANDLER = new ChunkClientNetworkHandler();
 		GAME_RULE_NET_HANDLER = new GameRuleNetworkHandler();
 		START_TIME = LocalDateTime.now();
-		VERSION = "1.1.7";
+		VERSION = "1.2.0";
 		NETWORK_HANDLERS = new LinkedHashSet<>();
 		CONFIG_SET = new LinkedHashSet<>();
 		registerConfigs();

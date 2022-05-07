@@ -112,6 +112,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 	public static ClientKeyBind register(String name, int key, String category, Consumer<MinecraftClient> onPressed) {
 		ClientKeyBind clientKeyBind = ClientKeyBinds.INSTANCE.map.get(name);
 		if (clientKeyBind != null) {
+			clientKeyBind.setOnPressed(onPressed);
 			return clientKeyBind;
 		}
 		clientKeyBind = new ClientKeyBind(name, key, category, onPressed);

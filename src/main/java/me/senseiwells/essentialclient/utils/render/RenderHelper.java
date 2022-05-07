@@ -7,11 +7,8 @@ import me.senseiwells.essentialclient.clientscript.extensions.LineShapeWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.SphereShapeWrapper;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.Shape;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
@@ -421,16 +418,7 @@ public class RenderHelper {
 			client.world.getLightLevel(LightType.SKY, fakeBlock.blockPos)
 		);
 
-		if (fakeBlock.blockState.getRenderType() == BlockRenderType.MODEL) {
-			client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
-		}
-
-		if (fakeBlock.blockEntity != null) {
-			BlockEntityRenderer<BlockEntity> renderer = client.getBlockEntityRenderDispatcher().get(fakeBlock.blockEntity);
-			if (renderer != null) {
-				renderer.render(fakeBlock.blockEntity, tickDelta, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
-			}
-		}
+		client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
 
 		matrices.pop();
 	}
