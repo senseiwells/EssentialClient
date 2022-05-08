@@ -18,6 +18,7 @@
     "clientScript.ClientPlayerInteractionManagerMixin",
     "clientScript.ClientPlayNetworkHandlerMixin",
     "clientScript.ClientWorldAccessor",
+    "clientScript.DebugHudMixin",
     "clientScript.EntityListMixin",
     "clientScript.EntityMixin",
     "clientScript.FishingBobberEntityMixin",
@@ -66,6 +67,8 @@
     "stackableShulkers.ItemEntityMixin",
     "stackableShulkers.ItemStackMixin",
     "stackableShulkers.ScreenHandlerMixin",
+    "survivalInventoryInCreative.CreativeInventoryScreenMixin",
+    "survivalInventoryInCreative.InventoryScreenMixin",
     "switchToTotem.ClientPlayerEntityMixin",
     "toggleTab.InGameHudMixin",
     "unlockAllRecipes.ClientPlayerInteractionManagerMixin",
@@ -76,10 +79,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "clientScript.DebugHudMixin",
-    "openSurvivalInventoryInCreative.CreativeInventoryScreenMixin",
-    "openSurvivalInventoryInCreative.InventoryScreenMixin"
-  ]
+  }
 }

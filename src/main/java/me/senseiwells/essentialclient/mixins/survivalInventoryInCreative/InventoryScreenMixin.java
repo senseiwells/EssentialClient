@@ -1,4 +1,4 @@
-package me.senseiwells.essentialclient.mixins.openSurvivalInventoryInCreative;
+package me.senseiwells.essentialclient.mixins.survivalInventoryInCreative;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.interfaces.IScreenInventory;
@@ -16,12 +16,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(CreativeInventoryScreen.class)
-public class CreativeInventoryScreenMixin extends Screen implements IScreenInventory {
+@Mixin(InventoryScreen.class)
+public class InventoryScreenMixin extends Screen implements IScreenInventory {
 	@Unique
 	private boolean forced;
 
-	protected CreativeInventoryScreenMixin(Text title) {
+	protected InventoryScreenMixin(Text title) {
 		super(title);
 	}
 
@@ -35,11 +35,11 @@ public class CreativeInventoryScreenMixin extends Screen implements IScreenInven
 		return !this.forced && instance.hasCreativeInventory();
 	}
 
-	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;addSelectableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"))
+	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addSelectableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"))
 	private void onInit(CallbackInfo ci) {
-		if (ClientRules.SURVIVAL_INVENTORY_IN_CREATIVE.getValue() && this.client != null && this.client.player != null) {
+		if (ClientRules.SURVIVAL_INVENTORY_IN_CREATIVE.getValue() && this.client != null && this.client.interactionManager != null && this.client.player != null && this.client.interactionManager.hasCreativeInventory()) {
 			this.addDrawableChild(new ButtonWidget(5, 5, 100, 20, new LiteralText("Swap Inventory"), button -> {
-				InventoryScreen screen = new InventoryScreen(this.client.player);
+				CreativeInventoryScreen screen = new CreativeInventoryScreen(this.client.player);
 				((IScreenInventory) screen).setForced();
 				this.client.setScreen(screen);
 			}));
