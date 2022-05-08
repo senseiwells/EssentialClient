@@ -83,7 +83,8 @@ public class ItemStackValue extends Value<ItemStack> {
 			);
 		}
 
-		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {Value<?> value = function.getParameterValue(context, 0);
+		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
+			Value<?> value = function.getParameterValue(context, 0);
 			if (value instanceof StringValue stringValue) {
 				Identifier id = ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value);
 				return new ItemStackValue(Registry.ITEM.getOrEmpty(id).orElseThrow(() -> {
