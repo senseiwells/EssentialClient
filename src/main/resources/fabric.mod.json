@@ -21,6 +21,9 @@
   "icon": "assets/essentialclient/icon.png",
   "environment": "client",
   "entrypoints": {
+    "preLaunch": [
+      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
+    ],
     "main": [
       "me.senseiwells.essentialclient.EssentialClient"
     ],

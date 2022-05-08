@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.mixins.toggleTab;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -30,7 +31,17 @@ public class InGameHudMixin {
 	@Unique
 	private boolean tabVisible = false;
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(I)Lnet/minecraft/scoreboard/ScoreboardObjective;", shift = At.Shift.BEFORE, ordinal = 2), cancellable = true)
+	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
+	private boolean isPressed(boolean original) {
+		return false;
+	}
+
+	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setVisible(Z)V", ordinal = 0))
+	private boolean shouldSetVisible(PlayerListHud instance, boolean shouldBeVisible) {
+		return false;
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(I)Lnet/minecraft/scoreboard/ScoreboardObjective;", shift = At.Shift.BEFORE, ordinal = 2))
 	private void onRenderTab(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
 		if (this.client.world == null || this.client.player == null) {
 			return;
@@ -44,9 +55,6 @@ public class InGameHudMixin {
 		if (this.tabVisible) {
 			this.playerListHud.render(matrices, this.scaledWidth, scoreboard, objective);
 		}
-
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		ci.cancel();
 	}
 
 	@Unique

@@ -171,7 +171,7 @@ public interface Rule<T> {
 		default void cycleValues() {
 			int currentIndex = this.getCurrentIndex();
 			this.setCurrentIndex(currentIndex >= this.getMaxIndex() ? 0 : ++currentIndex);
-			this.setValue(this.getCycleValues().get(currentIndex));
+			this.setValue(this.getCycleValues().get(this.getCurrentIndex()));
 		}
 
 		@Override

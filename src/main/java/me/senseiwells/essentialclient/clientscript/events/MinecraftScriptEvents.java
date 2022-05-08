@@ -29,6 +29,7 @@ public class MinecraftScriptEvents {
 		ON_ENTITY_SPAWN = new MinecraftScriptEvent("onEntitySpawn"),
 		ON_MOB_SPAWN = new MinecraftScriptEvent("onMobSpawn"),
 		ON_ENTITY_REMOVED = new MinecraftScriptEvent("onEntityRemoved"),
+		ON_PLAYER_LOOK = new MinecraftScriptEvent("onPlayerLook"),
 		ON_PICK_BLOCK = new MinecraftScriptEvent("onPickBlock", true),
 		ON_ATTACK = new MinecraftScriptEvent("onAttack", true),
 		ON_USE = new MinecraftScriptEvent("onUse", true),

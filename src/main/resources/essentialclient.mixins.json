@@ -79,5 +79,9 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "disableNameTags.EntityRendererMixin",
+    "disableScreenshotMessage.ScreenshotRecorderMixin"
+  ]
 }

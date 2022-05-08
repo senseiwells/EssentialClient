@@ -35,7 +35,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 		if (this.minecraftEvent == null) {
 			throw new RuntimeException("No such event '%s'".formatted(eventName.value));
 		}
-		this.eventContext = eventContext;
+		this.eventContext = eventContext.createBranch();
 		this.function = function;
 		this.runOnMainThread = cancellable.value;
 	}
