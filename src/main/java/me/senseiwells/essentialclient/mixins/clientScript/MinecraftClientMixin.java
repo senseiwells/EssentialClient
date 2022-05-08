@@ -44,9 +44,11 @@ public class MinecraftClientMixin {
 		}
 	}
 
-	@Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void onPickBlock(CallbackInfo ci, boolean bl, BlockEntity blockEntity, ItemStack itemStack12) {
-		MinecraftScriptEvents.ON_PICK_BLOCK.run(new ItemStackValue(itemStack12));
+		if (MinecraftScriptEvents.ON_PICK_BLOCK.run(new ItemStackValue(itemStack12))) {
+			ci.cancel();
+		}
 	}
 
 	@Inject(method = "joinWorld", at = @At("TAIL"))

@@ -31,6 +31,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 				case CYCLE -> new CycleListEntry((Rule.Cycle) rule, this.client, rulesScreen);
 				case INTEGER, DOUBLE -> new NumberListEntry(rule, this.client, rulesScreen);
 				case STRING -> new StringListEntry(rule, this.client, rulesScreen);
+				case SLIDER -> new SliderListEntry((Rule.Slider<?>) rule, this.client, rulesScreen);
 				default -> throw new IllegalStateException("Unexpected value: " + rule.getType());
 			};
 			this.addEntry(entry);

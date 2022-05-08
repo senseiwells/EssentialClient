@@ -110,6 +110,55 @@ public interface Rule<T> {
 		}
 	}
 
+	interface Num<T extends Number> extends Rule<T> {
+		@Override
+		Type getType();
+
+		@Override
+		default JsonElement toJson(T value) {
+			return new JsonPrimitive(value);
+		}
+	}
+
+	interface Slider<T extends Number> extends Num<T> {
+		String getFormatted();
+		T getMin();
+		T getMax();
+		T getNewValue(double percent);
+		double getPercentage();
+
+		default void setFromPercentage(double percentage) {
+			this.setValue(this.getNewValue(percentage));
+		}
+
+		@Override
+		default Type getType() {
+			return Type.SLIDER;
+		}
+	}
+
+	interface Str extends Rule<String> {
+		@Override
+		default Type getType() {
+			return Type.STRING;
+		}
+
+		@Override
+		default String fromJson(JsonElement element) {
+			return element.getAsString();
+		}
+
+		@Override
+		default JsonElement toJson(String value) {
+			return new JsonPrimitive(value);
+		}
+
+		@Override
+		default void setValueFromString(String value) {
+			this.setValue(value);
+		}
+	}
+
 	interface Cycle extends Rule<String> {
 		List<String> getCycleValues();
 		int getCurrentIndex();
@@ -127,7 +176,7 @@ public interface Rule<T> {
 
 		@Override
 		default Type getType() {
-			return Type.STRING;
+			return Type.CYCLE;
 		}
 
 		@Override
@@ -160,38 +209,6 @@ public interface Rule<T> {
 		default void resetToDefault() {
 			Rule.super.resetToDefault();
 			this.setCurrentIndex(0);
-		}
-	}
-
-	interface Num<T extends Number> extends Rule<T> {
-		@Override
-		Type getType();
-
-		@Override
-		default JsonElement toJson(T value) {
-			return new JsonPrimitive(value);
-		}
-	}
-
-	interface Str extends Rule<String> {
-		@Override
-		default Type getType() {
-			return Type.STRING;
-		}
-
-		@Override
-		default String fromJson(JsonElement element) {
-			return element.getAsString();
-		}
-
-		@Override
-		default JsonElement toJson(String value) {
-			return new JsonPrimitive(value);
-		}
-
-		@Override
-		default void setValueFromString(String value) {
-			this.setValue(value);
 		}
 	}
 

@@ -58,6 +58,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		REMOVE_WARN_RECEIVED_PASSENGERS = register(new BooleanClientRule("removeWarnReceivedPassengers", "This removes the 'Received passengers for unknown entity' warning on the client")),
 		STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES = register(new BooleanClientRule("stackableShulkersInPlayerInventories", "This allows for shulkers to stack only in your inventory")),
 		STACKABLE_SHULKERS_WITH_ITEMS = register(new BooleanClientRule("stackableShulkersWithItems", "This allows for shulkers with items to stack only in your inventory")),
+		SURVIVAL_INVENTORY_IN_CREATIVE = register(new BooleanClientRule("survivalInventoryInCreative", "This lets you open the survival inventory in creative mode")),
 		TOGGLE_TAB = register(new BooleanClientRule("toggleTab", "This allows you to toggle tab instead of holding to see tab")),
 		UNLOCK_ALL_RECIPES_ON_JOIN = register(new BooleanClientRule("unlockAllRecipesOnJoin", "Unlocks every recipe when joining a world"));
 
@@ -65,14 +66,18 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		ANNOUNCE_AFK = register(new IntegerClientRule("announceAFK", "This announces when you become afk after a set amount of time (ticks)")),
 		AFK_LOGOUT = register(new IntegerClientRule("afkLogout", "Number of ticks until client will disconnect you from world (must be >= 200 to be active)")),
 		AUTO_WALK = register(new IntegerClientRule("autoWalk", "This will auto walk after you have held your key for set amount of ticks")),
-		PERMANENT_TIME = register(new IntegerClientRule("permanentTime", "This forces your client to set a time of day", -1)),
 		INCREASE_SPECTATOR_SCROLL_SENSITIVITY = register(new IntegerClientRule("increaseSpectatorScrollSensitivity", "Increases the sensitivity at which you can scroll to go faster in spectator")),
-		SWITCH_TO_TOTEM = register(new IntegerClientRule("switchToTotem", "This will switch to a totem (if you have one), under a set amount of health")),
-		SOUL_SPEED_FOV_MULTIPLIER = register(new IntegerClientRule("soulSpeedFovMultiplier", "Determines the percentage of Fov scaling when walking on soil soul or soul sand")),
-		WATER_FOV_MULTIPLIER = register(new IntegerClientRule("waterFovMultiplier", "Determines the percentage of Fov scaling when fully submerged in water"));
+		SWITCH_TO_TOTEM = register(new IntegerClientRule("switchToTotem", "This will switch to a totem (if you have one), under a set amount of health"));
+
+	public static final IntegerSliderClientRule
+		PERMANENT_TIME = register(new IntegerSliderClientRule("permanentTime", "This forces your client to set a time of day", -1, -1, 23999));
 
 	public static final DoubleClientRule
 		OVERRIDE_CREATIVE_WALK_SPEED = register(new DoubleClientRule("overrideCreativeWalkSpeed", "This allows you to override the vanilla walk speed in creative mode", 0.0D));
+
+	public static final DoubleSliderClientRule
+		SOUL_SPEED_FOV_MULTIPLIER = register(new DoubleSliderClientRule("soulSpeedFovMultiplier", "Determines the percentage of Fov scaling when walking on soil soul or soul sand", 0, 0, 1)),
+		WATER_FOV_MULTIPLIER = register(new DoubleSliderClientRule("waterFovMultiplier", "Determines the percentage of Fov scaling when fully submerged in water", 0, 0, 1));
 
 	public static StringClientRule
 		ANNOUNCE_AFK_MESSAGE = register(new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK"));

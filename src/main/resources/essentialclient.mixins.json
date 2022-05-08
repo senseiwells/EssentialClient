@@ -76,5 +76,10 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "clientScript.DebugHudMixin",
+    "openSurvivalInventoryInCreative.CreativeInventoryScreenMixin",
+    "openSurvivalInventoryInCreative.InventoryScreenMixin"
+  ]
 }
