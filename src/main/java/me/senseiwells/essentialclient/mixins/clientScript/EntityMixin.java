@@ -18,8 +18,8 @@ public abstract class EntityMixin {
 
 	@Inject(method = "isGlowing", at = @At("HEAD"), cancellable = true)
 	private void checkLocalGlowing(CallbackInfoReturnable<Boolean> cir) {
-		if (this.world.isClient()) {
-			cir.setReturnValue(this.isGlowingLocal());
+		if (this.world.isClient() && this.isGlowingLocal()) {
+			cir.setReturnValue(true);
 		}
 	}
 }

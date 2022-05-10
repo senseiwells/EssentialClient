@@ -50,8 +50,8 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		DISABLE_SCREENSHOT_MESSAGE = register(new BooleanClientRule("disableScreenshotMessage", "Disables the message that pops up when you take a screenshot")),
 		DISABLE_TUTORIAL_NOTIFICATIONS = register(new BooleanClientRule("disableTutorialNotifications", "Disables the tutorial toast from showing")),
 		DISPLAY_TIME_PLAYED = register(new BooleanClientRule("displayTimePlayed", "This will display how long you have had your current client open for in the corner of the pause menu")),
-		START_SELECTED_SCRIPTS_ON_JOIN = register(new BooleanClientRule("startSelectedScriptsOnJoin", "This will enable your selected scripts when you join a world automatically")),
 		ESSENTIAL_CLIENT_BUTTON = register(new BooleanClientRule("essentialClientButton", "This renders the Essential Client Menu on the main menu screen, and pause screen", true)),
+		FORCE_TITLE_TEXT_DOWN = register(new BooleanClientRule("forceTitleTextDown", "Forces the Minecraft version and Mojang text always to the bottom on the title screen")),
 		HIGHLIGHT_LAVA_SOURCES = register(new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", ClientRules::refreshWorld)),
 		INCREASE_SPECTATOR_SCROLL_SPEED = register(new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator")),
 		OPEN_SCREENSHOT_DIRECTORY = register(new BooleanClientRule("openScreenshotDirectory", "This opens the screenshot directory instead of directly opening the screenshot")),
@@ -60,6 +60,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		REMOVE_WARN_RECEIVED_PASSENGERS = register(new BooleanClientRule("removeWarnReceivedPassengers", "This removes the 'Received passengers for unknown entity' warning on the client")),
 		STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES = register(new BooleanClientRule("stackableShulkersInPlayerInventories", "This allows for shulkers to stack only in your inventory")),
 		STACKABLE_SHULKERS_WITH_ITEMS = register(new BooleanClientRule("stackableShulkersWithItems", "This allows for shulkers with items to stack only in your inventory")),
+		START_SELECTED_SCRIPTS_ON_JOIN = register(new BooleanClientRule("startSelectedScriptsOnJoin", "This will enable your selected scripts when you join a world automatically")),
 		SURVIVAL_INVENTORY_IN_CREATIVE = register(new BooleanClientRule("survivalInventoryInCreative", "This lets you open the survival inventory in creative mode")),
 		TOGGLE_TAB = register(new BooleanClientRule("toggleTab", "This allows you to toggle tab instead of holding to see tab")),
 		UNLOCK_ALL_RECIPES_ON_JOIN = register(new BooleanClientRule("unlockAllRecipesOnJoin", "Unlocks every recipe when joining a world"));

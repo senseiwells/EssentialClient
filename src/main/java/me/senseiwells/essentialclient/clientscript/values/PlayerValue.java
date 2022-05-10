@@ -477,12 +477,11 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				}
 				itemStacks[i] = itemStackValue.value;
 			}
-			client.execute(() -> InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen));
-			if (handledScreen.getScreenHandler().slots.get(0).getStack() == ItemStack.EMPTY) {
-				return BooleanValue.FALSE;
-			}
-			client.execute(() -> InventoryUtils.shiftClickSlot(client, handledScreen, 0));
-			return BooleanValue.TRUE;
+			client.execute(() -> {
+				InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen);
+				InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+			});
+			return NullValue.NULL;
 		}
 
 		private Value<?> craftRecipe(Context context, MemberFunction function) throws CodeError {

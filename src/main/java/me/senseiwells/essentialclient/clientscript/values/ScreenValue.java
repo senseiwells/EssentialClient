@@ -14,6 +14,8 @@ import me.senseiwells.essentialclient.utils.clientscript.ScreenRemapper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import java.util.Objects;
 
@@ -76,12 +78,12 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 
 		private Value<?> getTitle(Context context, MemberFunction function) throws CodeError {
 			Screen screen = this.getScreen(context, function);
-			String title = screen.getTitle().getString();
+			Text title = screen.getTitle();
 			if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
 				int tabIndex = creativeInventoryScreen.getSelectedTab();
-				title = ItemGroup.GROUPS[tabIndex].getName();
+				return new TextValue(new LiteralText(ItemGroup.GROUPS[tabIndex].getName()));
 			}
-			return title == null ? NullValue.NULL : StringValue.of(title);
+			return title == null ? NullValue.NULL : new TextValue(title.copy());
 		}
 
 		private Screen getScreen(Context context, MemberFunction function) throws CodeError {

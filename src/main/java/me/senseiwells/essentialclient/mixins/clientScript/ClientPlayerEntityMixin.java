@@ -45,6 +45,12 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	}
 
 	@Override
+	public ItemStack eatFood(World world, ItemStack stack) {
+		MinecraftScriptEvents.ON_EAT.run(new ItemStackValue(stack));
+		return super.eatFood(world, stack);
+	}
+
+	@Override
 	public void changeLookDirection(double cursorDeltaX, double cursorDeltaY) {
 		float deltaPitch = (float) cursorDeltaY * 0.15F;
 		float deltaYaw = (float) cursorDeltaX * 0.15F;
@@ -63,15 +69,6 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 			return;
 		}
 
-		this.setPitch(newPitch);
-		this.setYaw(newYaw);
-
-		this.setPitch(MathHelper.clamp(this.getPitch(), -90.0F, 90.0F));
-		this.prevPitch += deltaPitch;
-		this.prevYaw += deltaYaw;
-		this.prevPitch = MathHelper.clamp(this.prevPitch, -90.0F, 90.0F);
-		if (this.getVehicle() != null) {
-			this.getVehicle().onPassengerLookAround(this);
-		}
+		super.changeLookDirection(cursorDeltaX, cursorDeltaY);
 	}
 }

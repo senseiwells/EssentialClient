@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.utils.inventory;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.interfaces.IGhostRecipeBookWidget;
@@ -280,9 +281,8 @@ public class InventoryUtils {
 		ScreenHandler container = screen.getScreenHandler();
 		int numSlots = container.slots.size();
 		if (9 < numSlots) {
-			if (!clearCraftingGridOfItems(client, itemStacks, screen)) {
-				return;
-			}
+			clearCraftingGridOfItems(client, itemStacks, screen);
+
 			Slot slotGridFirst = container.getSlot(1);
 			Map<Item, List<Integer>> ingredientSlots = getSlotsPerItem(itemStacks);
 			for (Map.Entry<Item, List<Integer>> entry : ingredientSlots.entrySet()) {
@@ -297,14 +297,10 @@ public class InventoryUtils {
 		}
 	}
 
-	public static boolean clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
+	public static void clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
 		final int invSlots = gui.getScreenHandler().slots.size();
 		for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
-			try {
-				Thread.sleep(0, 1);
-			}
-			catch (InterruptedException ignored) {
-			}
+			ExceptionUtils.runSafe(() -> Thread.sleep(0, 1));
 			Slot slotTmp = gui.getScreenHandler().getSlot(slotNum);
 			if (slotTmp != null && slotTmp.hasStack() && (!areStacksEqual(recipe[i], slotTmp.getStack()))) {
 				shiftClickSlot(client, gui, slotNum);
@@ -313,7 +309,6 @@ public class InventoryUtils {
 				}
 			}
 		}
-		return true;
 	}
 
 	private static void fillCraftingGrid(MinecraftClient client, HandledScreen<? extends ScreenHandler> gui, Slot slotGridFirst, ItemStack ingredientReference, List<Integer> targetSlots) {
@@ -329,7 +324,7 @@ public class InventoryUtils {
 			return;
 		}
 		while (true) {
-			slotNum = getSlotNumberOfLargestMatchingStackFromDifferentInventory(container, slotGridFirst, ingredientReference);
+			slotNum = matchSlot(container, slotGridFirst, ingredientReference);
 			if (slotNum < 0) {
 				break;
 			}
@@ -396,7 +391,7 @@ public class InventoryUtils {
 		return !stack1.isEmpty() && stack1.isItemEqual(stack2) /*&& ItemStack.areTagsEqual(stack1, stack2)*/;
 	}
 
-	private static int getSlotNumberOfLargestMatchingStackFromDifferentInventory(ScreenHandler container, Slot slotReference, ItemStack stackReference) {
+	private static int matchSlot(ScreenHandler container, Slot slotReference, ItemStack stackReference) {
 		int slotNum = -1;
 		int largest = 0;
 		for (Slot slot : container.slots) {
