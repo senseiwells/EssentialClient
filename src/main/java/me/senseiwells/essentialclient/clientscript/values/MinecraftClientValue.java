@@ -82,7 +82,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 
 	/**
 	 * MinecraftClient class for Arucas. This allows for many core interactions with the MinecraftClient <br>
-	 * Import the class with <code>import MinecraftClient from Minecraft;</code>
+	 * Import the class with <code>import MinecraftClient from Minecraft;</code> <br>
 	 * Fully Documented.
 	 * @author senseiwells
 	 */

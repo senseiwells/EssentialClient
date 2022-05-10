@@ -76,6 +76,12 @@ public class PosValue extends Value<Vec3d> {
 		return "Pos";
 	}
 
+	/**
+	 * Pos class for Arucas. <br>
+	 * Import the class with <code>import Pos from Minecraft;</code> <br>
+	 * Fully Documented.
+	 * @author senseiwells
+	 */
 	public static class ArucasPosClass extends ArucasClassExtension {
 		public ArucasPosClass() {
 			super("Pos");
@@ -88,6 +94,13 @@ public class PosValue extends Value<Vec3d> {
 			);
 		}
 
+		/**
+		 * Name: <code>new Pos(x, y, z)</code> <br>
+		 * Description: This creates a new Pos with the given x, y, and z <br>
+		 * Parameter - Number, Number, Number: the x position, y position, and z position <br>
+		 * Returns - Pos: the new Pos object <br>
+		 * Example: <code>new Pos(100, 0, 96);</code>
+		 */
 		private Value<?> newPos(Context context, BuiltInFunction function) throws CodeError {
 			double x = function.getParameterValueOfType(context, NumberValue.class, 0).value;
 			double y = function.getParameterValueOfType(context, NumberValue.class, 1).value;
@@ -105,21 +118,45 @@ public class PosValue extends Value<Vec3d> {
 			);
 		}
 
+		/**
+		 * Name: <code>&lt;Pos>.getX()</code> <br>
+		 * Description: This returns the x position of the Pos <br>
+		 * Returns - Number: the x position <br>
+		 * Example: <code>pos.getX();</code>
+		 */
 		private Value<?> getX(Context context, MemberFunction function) throws CodeError {
 			PosValue thisValue = function.getThis(context, PosValue.class);
 			return NumberValue.of(thisValue.value.getX());
 		}
 
+		/**
+		 * Name: <code>&lt;Pos>.getY()</code> <br>
+		 * Description: This returns the y position of the Pos <br>
+		 * Returns - Number: the y position <br>
+		 * Example: <code>pos.getY();</code>
+		 */
 		private Value<?> getY(Context context, MemberFunction function) throws CodeError {
 			PosValue thisValue = function.getThis(context, PosValue.class);
 			return NumberValue.of(thisValue.value.getY());
 		}
 
+		/**
+		 * Name: <code>&lt;Pos>.getZ()</code> <br>
+		 * Description: This returns the z position of the Pos <br>
+		 * Returns - Number: the z position <br>
+		 * Example: <code>pos.getZ();</code>
+		 */
 		private Value<?> getZ(Context context, MemberFunction function) throws CodeError {
 			PosValue thisValue = function.getThis(context, PosValue.class);
 			return NumberValue.of(thisValue.value.getZ());
 		}
 
+		/**
+		 * Name: <code>&lt;Pos>.toList()</code> <br>
+		 * Description: This returns the Pos as a List containing the x, y, and z positions in order <br>
+		 * Returns - List: the Pos as a List <br>
+		 * Example: <code>x, y, z = pos.toList();</code>
+		 */
 		private Value<?> toList(Context context, MemberFunction function) throws CodeError {
 			PosValue thisValue = function.getThis(context, PosValue.class);
 			ArucasList arucasList = new ArucasList();

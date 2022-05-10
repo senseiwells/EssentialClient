@@ -59,6 +59,12 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 		return new ScreenValue<>(screen);
 	}
 
+	/**
+	 * Screen class for Arucas. <br>
+	 * Import the class with <code>import Screen from Minecraft;</code> <br>
+	 * Fully Documented.
+	 * @author senseiwells
+	 */
 	public static class ArucasScreenClass extends ArucasClassExtension {
 		public ArucasScreenClass() {
 			super("Screen");
@@ -72,10 +78,24 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 			);
 		}
 
+		/**
+		 * Name: <code>&lt;Screen>.getName()</code> <br>
+		 * Description: Gets the name of the specific screen <br>
+		 * Returns - String: the screen name, if you are in the creative menu
+		 * it will return the name of the tab you are on <br>
+		 * Example: <code>screen.getName()</code>
+		 */
 		private Value<?> getName(Context context, MemberFunction function) throws CodeError {
 			return StringValue.of(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()));
 		}
 
+		/**
+		 * Name: <code>&lt;Screen>.getTitle()</code> <br>
+		 * Description: Gets the title of the specific screen <br>
+		 * Returns - Text: the screen title as text, this may include formatting,
+		 * and custom names for the screen if applicable <br>
+		 * Example: <code>screen.getTitle()</code>
+		 */
 		private Value<?> getTitle(Context context, MemberFunction function) throws CodeError {
 			Screen screen = this.getScreen(context, function);
 			Text title = screen.getTitle();
