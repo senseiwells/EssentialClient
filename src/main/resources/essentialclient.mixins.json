@@ -26,6 +26,7 @@
     "clientScript.KeyboardMixin",
     "clientScript.LivingEntityMixin",
     "clientScript.MerchantScreenHandlerMixin",
+    "clientScript.MinecraftClientAccessor",
     "clientScript.MinecraftClientMixin",
     "clientScript.NbtListMixin",
     "clientScript.WorldRendererMixin",
@@ -37,16 +38,18 @@
     "core.TitleScreenMixin",
     "craftingHax.ClientPlayerInteractionManagerMixin",
     "customClientCape.AbstractClientPlayerEntityMixin",
-    "daylightCycleSlowdownMutliplier.ClientPlayNetworkHandlerMixin",
-    "daylightCycleSlowdownMutliplier.ClientWorldMixin",
+    "daylightCycleSlowdownMultiplier.ClientPlayNetworkHandlerMixin",
+    "daylightCycleSlowdownMultiplier.ClientWorldMixin",
     "disableArmourRendering.ArmorFeatureRendererMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
     "disableMessages.InGameHudMixin",
+    "disableNameTags.EntityRendererMixin",
     "disableNarrator.KeyboardMixin",
     "disableNightVisionFlash.GameRendererMixin",
     "disableRecipeNotifications.RecipeToastMixin",
+    "disableScreenshotMessage.ScreenshotRecorderMixin",
     "disableTutorialNotifications.TutorialToastMixin",
     "displayTimePlayed.GameMenuScreenMixin",
     "gameRuleSync.RuleInvoker",
@@ -78,9 +81,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "disableNameTags.EntityRendererMixin",
-    "disableScreenshotMessage.ScreenshotRecorderMixin"
-  ]
+  }
 }

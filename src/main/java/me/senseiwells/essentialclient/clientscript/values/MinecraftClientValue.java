@@ -15,6 +15,7 @@ import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.mixins.clientScript.MinecraftClientAccessor;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -131,6 +132,7 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				new MemberFunction("resetEssentialClientRule", "ruleName", this::resetEssentialClientRule),
 				new MemberFunction("getEssentialClientValue", "ruleName", this::getEssentialClientRuleValue),
 				new MemberFunction("getModList", this::getModList),
+				new MemberFunction("getFps", this::getFps),
 
 				new MemberFunction("getPlayer", this::getPlayer),
 				new MemberFunction("getWorld", this::getWorld),
@@ -497,6 +499,16 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 				modList.add(StringValue.of(modContainer.getMetadata().getId()));
 			}
 			return new ListValue(modList);
+		}
+
+		/**
+		 * Name: <code>&lt;MinecraftClient>.getFps()</code> <br>
+		 * Description: This gets the current fps <br>
+		 * Returns - Number: the fps <br>
+		 * Example: <code>client.getFps();</code>
+		 */
+		private Value<?> getFps(Context context, MemberFunction function) {
+			return NumberValue.of(MinecraftClientAccessor.getFps());
 		}
 
 		/**

@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.feature;
 
+import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -38,6 +39,9 @@ public class HighlightLavaSources implements SimpleSynchronousResourceReloadList
 				registry.register(STILL_SPRITE_ID);
 			});
 			ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new HighlightLavaSources());
+		}
+		else {
+			EssentialClient.LOGGER.info("HighlightLavaSources not functional - no Fabric API");
 		}
 	}
 

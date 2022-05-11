@@ -95,12 +95,12 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		AFKRules.INSTANCE.load();
 		BetterAccurateBlockPlacement.load();
 		HighlightLavaSources.load();
-
-		getClientRules().forEach(Rule::onValueChange);
 	}
 
 	private static <T extends ClientRule<?>> T register(T clientRule) {
 		addRule(clientRule.getName(), clientRule);
+		clientRule.onValueChange();
+		clientRule.addListener(rule -> INSTANCE.saveConfig());
 		return clientRule;
 	}
 

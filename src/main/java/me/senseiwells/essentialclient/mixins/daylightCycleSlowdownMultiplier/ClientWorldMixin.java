@@ -1,4 +1,4 @@
-package me.senseiwells.essentialclient.mixins.daylightCycleSlowdownMutliplier;
+package me.senseiwells.essentialclient.mixins.daylightCycleSlowdownMultiplier;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.world.ClientWorld;

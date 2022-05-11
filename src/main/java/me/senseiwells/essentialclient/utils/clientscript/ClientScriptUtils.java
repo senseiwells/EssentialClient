@@ -16,11 +16,13 @@ import me.senseiwells.arucas.utils.ValuePair;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
+import me.senseiwells.arucas.values.classes.ArucasEnumDefinition;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.essentialclient.utils.command.ClientEntityArgumentType;
 import me.senseiwells.essentialclient.utils.command.ClientEntitySelector;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
+import me.senseiwells.essentialclient.utils.command.DefinitionArgumentType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
@@ -37,146 +39,11 @@ public class ClientScriptUtils {
 		TYPE = StringValue.of("type"),
 		MIN = StringValue.of("min"),
 		MAX = StringValue.of("max"),
-		SUGGESTS = StringValue.of("suggests");
+		SUGGESTS = StringValue.of("suggests"),
+		ENUM = StringValue.of("enum");
 
 	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Context context, ISyntax syntaxPosition) throws CodeError {
-		Value<?> nameValue = arucasMap.get(context, NAME);
-		Value<?> subCommandValues = arucasMap.get(context, SUBCOMMANDS);
-		Value<?> argumentValues = arucasMap.get(context, ARGUMENTS);
-		if (nameValue instanceof StringValue && subCommandValues instanceof MapValue && argumentValues instanceof MapValue) {
-			LiteralArgumentBuilder<ServerCommandSource> baseCommand = CommandManager.literal((String) nameValue.value);
-			ArucasMap commandMap = (ArucasMap) subCommandValues.value;
-			ArucasMap argumentMap = (ArucasMap) argumentValues.value;
-			return mapToCommand(baseCommand, commandMap, argumentMap, context, syntaxPosition);
-		}
-		throw new RuntimeError("Command must include 'name' : <String>, 'subcommands' : <Map>, and 'arguments' : <Map>", syntaxPosition, context);
-	}
-
-	private static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArgumentBuilder<ServerCommandSource, ?> parent, ArucasMap arucasMap, ArucasMap argumentMap, Context context, ISyntax syntaxPosition) throws CodeError {
-		for (ValuePair pair : arucasMap.pairSet()) {
-			if (!(pair.getKey() instanceof StringValue stringValue)) {
-				throw new RuntimeError("Expected string value in subcommand map", syntaxPosition, context);
-			}
-			if (stringValue.value.isBlank()) {
-				if (!(pair.getValue() instanceof FunctionValue functionValue)) {
-					throw new RuntimeError("Expected function value", syntaxPosition, context);
-				}
-				parent.executes(c -> {
-					context.getThreadHandler().runAsyncFunctionInThreadPool(context.createBranch(), ctx -> {
-						Collection<ParsedArgument<?, ?>> arguments = CommandHelper.getArguments(c);
-						if (arguments == null) {
-							throw new RuntimeError("Couldn't get arguments for '%s'".formatted(stringValue.value), syntaxPosition, ctx);
-						}
-						ArucasList arucasList = new ArucasList();
-						for (ParsedArgument<?, ?> argument : arguments) {
-							arucasList.add(commandArgumentToValue(argument.getResult(), ctx, c));
-						}
-						functionValue.call(ctx, arucasList);
-					});
-					return 1;
-				});
-				continue;
-			}
-			if (!(pair.getValue() instanceof MapValue)) {
-				throw new RuntimeError("Expected map value for '%s'".formatted(stringValue.value), syntaxPosition, context);
-			}
-			ArucasMap subMap = (ArucasMap) pair.getValue().value;
-			String[] arguments = stringValue.value.split(" ");
-			if (arguments.length > 1) {
-				ArgumentBuilder<ServerCommandSource, ?> current = getSubCommand(arguments[arguments.length - 1], subMap, argumentMap, context, syntaxPosition);
-				for (int i = arguments.length - 2; i >= 0; i--) {
-					current = getConnectedSubCommand(arguments[i], argumentMap, context, syntaxPosition).then(current);
-				}
-				parent.then(current);
-				continue;
-			}
-			parent.then(getSubCommand(stringValue.value, subMap, argumentMap, context, syntaxPosition));
-		}
-		return parent;
-	}
-
-	private static ArgumentBuilder<ServerCommandSource, ?> getSubCommand(String string, ArucasMap subMap, ArucasMap argumentMap, Context context, ISyntax syntaxPosition) throws CodeError {
-		if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
-			return mapToCommand(CommandManager.literal(string), subMap, argumentMap, context, syntaxPosition);
-		}
-		string = string.substring(1, string.length() - 1);
-		Value<?> value = argumentMap.get(context, StringValue.of(string));
-		if (value instanceof MapValue) {
-			return mapToCommand(getArgument(string, (ArucasMap) value.value, context, syntaxPosition), subMap, argumentMap, context, syntaxPosition);
-		}
-		throw new RuntimeError("Expected map value for argument '%s'".formatted(string), syntaxPosition, context);
-	}
-
-	private static ArgumentBuilder<ServerCommandSource, ?> getConnectedSubCommand(String string, ArucasMap argumentMap, Context context, ISyntax syntaxPosition) throws CodeError {
-		if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
-			return CommandManager.literal(string);
-		}
-		string = string.substring(1, string.length() - 1);
-		Value<?> value = argumentMap.get(context, StringValue.of(string));
-		if (value instanceof MapValue) {
-			return getArgument(string, (ArucasMap) value.value, context, syntaxPosition);
-		}
-		throw new RuntimeError("Expected map value for argument '%s'".formatted(string), syntaxPosition, context);
-	}
-
-	private static ArgumentBuilder<ServerCommandSource, ?> getArgument(String name, ArucasMap arguments, Context context, ISyntax syntaxPosition) throws CodeError {
-		Value<?> argumentValue = arguments.get(context, TYPE);
-		if (!(argumentValue instanceof StringValue)) {
-			throw new RuntimeError("Expected string for 'type' for argument '%s'".formatted(name), syntaxPosition, context);
-		}
-		SuggestionProvider<ServerCommandSource> extraSuggestion = null;
-		String argumentTypeName = (String) argumentValue.value;
-		ArgumentType<?> argumentType = switch (argumentTypeName.toLowerCase()) {
-			case "playername" -> {
-				extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
-				yield StringArgumentType.word();
-			}
-			case "double" -> {
-				if (arguments.get(context, MIN) instanceof NumberValue minValue) {
-					if (arguments.get(context, MAX) instanceof NumberValue maxValue) {
-						yield DoubleArgumentType.doubleArg(minValue.value, maxValue.value);
-					}
-					yield DoubleArgumentType.doubleArg(minValue.value);
-				}
-				yield DoubleArgumentType.doubleArg();
-			}
-			case "integer" -> {
-				if (arguments.get(context, MIN) instanceof NumberValue minValue) {
-					if (arguments.get(context, MAX) instanceof NumberValue maxValue) {
-						yield IntegerArgumentType.integer(minValue.value.intValue(), maxValue.value.intValue());
-					}
-					yield IntegerArgumentType.integer(minValue.value.intValue());
-				}
-				yield IntegerArgumentType.integer();
-			}
-			case "recipeid" -> {
-				extraSuggestion = SuggestionProviders.ALL_RECIPES;
-				yield IdentifierArgumentType.identifier();
-			}
-			case "entityid" -> {
-				extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
-				yield EntitySummonArgumentType.entitySummon();
-			}
-			default -> parseArgumentType(argumentTypeName, context, syntaxPosition);
-		};
-		RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = CommandManager.argument(name, argumentType);
-		if (extraSuggestion != null) {
-			argumentBuilder.suggests(extraSuggestion);
-		}
-		Value<?> suggestion = arguments.get(context, SUGGESTS);
-		if (suggestion instanceof ListValue listValue) {
-			int size = listValue.value.size();
-			String[] suggestions = new String[size];
-			Value<?>[] values = listValue.value.toArray();
-			for (int i = 0; i < size; i++) {
-				suggestions[i] = values[i].getAsString(context);
-			}
-			argumentBuilder.suggests((c, b) -> CommandSource.suggestMatching(suggestions, b));
-		}
-		else if (suggestion != null) {
-			throw new RuntimeError("Suggestion should be a list", syntaxPosition, context);
-		}
-		return argumentBuilder;
+		return new CommandParser(arucasMap, context, syntaxPosition).parse();
 	}
 
 	public static ArgumentType<?> parseArgumentType(String string, Context context, ISyntax syntaxPosition) throws RuntimeError {
@@ -210,5 +77,166 @@ public class ClientScriptUtils {
 			object = selector.isSingleTarget() ? selector.getEntity(commandContext.getSource()) : selector.getEntities(commandContext.getSource());
 		}
 		return context.convertValue(object);
+	}
+
+	private static class CommandParser {
+		private final Context context;
+		private final ISyntax syntaxPosition;
+		private final String commandName;
+		private final ArucasMap subCommandMap;
+		private final ArucasMap argumentMap;
+
+		CommandParser(ArucasMap commandMap, Context context, ISyntax syntaxPosition) throws CodeError {
+			this.context = context.createBranch();
+			this.syntaxPosition = syntaxPosition;
+
+			if (!(commandMap.get(context, NAME) instanceof StringValue string)) {
+				throw new RuntimeError("Command map must contain 'name: <String>'", syntaxPosition, context);
+			}
+			this.commandName = string.value;
+
+			this.subCommandMap = commandMap.get(context, SUBCOMMANDS) instanceof MapValue map ? map.value : null;
+			this.argumentMap = commandMap.get(context, ARGUMENTS) instanceof MapValue map ? map.value : null;
+		}
+
+		ArgumentBuilder<ServerCommandSource, ?> parse() throws CodeError {
+			LiteralArgumentBuilder<ServerCommandSource> baseCommand = CommandManager.literal(this.commandName);
+			if (this.subCommandMap == null) {
+				return baseCommand;
+			}
+			return this.command(baseCommand, this.subCommandMap);
+		}
+
+		private ArgumentBuilder<ServerCommandSource, ?> command(ArgumentBuilder<ServerCommandSource, ?> parent, ArucasMap childMap) throws CodeError {
+			for (ValuePair pair : childMap.pairSet()) {
+				if (!(pair.getKey() instanceof StringValue stringValue)) {
+					throw new RuntimeError("Expected string value in subcommand map", this.syntaxPosition, this.context);
+				}
+				if (stringValue.value.isBlank()) {
+					if (!(pair.getValue() instanceof FunctionValue functionValue)) {
+						throw new RuntimeError("Expected function value", this.syntaxPosition, this.context);
+					}
+					parent.executes(c -> {
+						this.context.getThreadHandler().runAsyncFunctionInThreadPool(this.context.createBranch(), ctx -> {
+							Collection<ParsedArgument<?, ?>> arguments = CommandHelper.getArguments(c);
+							if (arguments == null) {
+								throw new RuntimeError("Couldn't get arguments for '%s'".formatted(stringValue.value), this.syntaxPosition, ctx);
+							}
+							ArucasList arucasList = new ArucasList();
+							for (ParsedArgument<?, ?> argument : arguments) {
+								arucasList.add(commandArgumentToValue(argument.getResult(), ctx, c));
+							}
+							functionValue.call(ctx, arucasList);
+						});
+						return 1;
+					});
+					continue;
+				}
+				if (!(pair.getValue() instanceof MapValue map)) {
+					throw new RuntimeError("Expected map value for '%s'".formatted(stringValue.value), this.syntaxPosition, this.context);
+				}
+				ArucasMap subMap = map.value;
+				String[] arguments = stringValue.value.split(" ");
+				if (arguments.length > 1) {
+					ArgumentBuilder<ServerCommandSource, ?> current = this.subCommand(arguments[arguments.length - 1], subMap);
+					for (int i = arguments.length - 2; i >= 0; i--) {
+						String name = arguments[i];
+						current = this.connectedCommand(name).then(current);
+					}
+					parent.then(current);
+					continue;
+				}
+				parent.then(this.subCommand(stringValue.value, subMap));
+			}
+			return parent;
+		}
+
+		private ArgumentBuilder<ServerCommandSource, ?> subCommand(String string, ArucasMap childMap) throws CodeError {
+			if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
+				return this.command(CommandManager.literal(string), childMap);
+			}
+			string = string.substring(1, string.length() - 1);
+			if (this.argumentMap != null && this.argumentMap.get(this.context, StringValue.of(string)) instanceof MapValue map) {
+				return this.command(this.getArgument(string, map.value), childMap);
+			}
+			throw new RuntimeError("Expected map value for argument '%s'".formatted(string), this.syntaxPosition, this.context);
+		}
+
+		private ArgumentBuilder<ServerCommandSource, ?> connectedCommand(String string) throws CodeError {
+			if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
+				return CommandManager.literal(string);
+			}
+			string = string.substring(1, string.length() - 1);
+			if (this.argumentMap != null && this.argumentMap.get(this.context, StringValue.of(string)) instanceof MapValue map) {
+				return this.getArgument(string, map.value);
+			}
+			throw new RuntimeError("Expected map value for argument '%s'".formatted(string), this.syntaxPosition, this.context);
+		}
+
+		private ArgumentBuilder<ServerCommandSource, ?> getArgument(String name, ArucasMap arguments) throws CodeError {
+			Value<?> argumentValue = arguments.get(this.context, TYPE);
+			if (!(argumentValue instanceof StringValue)) {
+				throw new RuntimeError("Expected string for 'type' for argument '%s'".formatted(name), this.syntaxPosition, this.context);
+			}
+			SuggestionProvider<ServerCommandSource> extraSuggestion = null;
+			String argumentTypeName = (String) argumentValue.value;
+			ArgumentType<?> argumentType = switch (argumentTypeName.toLowerCase()) {
+				case "playername" -> {
+					extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
+					yield StringArgumentType.word();
+				}
+				case "double" -> {
+					if (arguments.get(this.context, MIN) instanceof NumberValue minValue) {
+						if (arguments.get(this.context, MAX) instanceof NumberValue maxValue) {
+							yield DoubleArgumentType.doubleArg(minValue.value, maxValue.value);
+						}
+						yield DoubleArgumentType.doubleArg(minValue.value);
+					}
+					yield DoubleArgumentType.doubleArg();
+				}
+				case "integer" -> {
+					if (arguments.get(this.context, MIN) instanceof NumberValue minValue) {
+						if (arguments.get(this.context, MAX) instanceof NumberValue maxValue) {
+							yield IntegerArgumentType.integer(minValue.value.intValue(), maxValue.value.intValue());
+						}
+						yield IntegerArgumentType.integer(minValue.value.intValue());
+					}
+					yield IntegerArgumentType.integer();
+				}
+				case "recipeid" -> {
+					extraSuggestion = SuggestionProviders.ALL_RECIPES;
+					yield IdentifierArgumentType.identifier();
+				}
+				case "entityid" -> {
+					extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
+					yield EntitySummonArgumentType.entitySummon();
+				}
+				case "enum" -> {
+					if (arguments.get(this.context, ENUM) instanceof TypeValue type && type.value instanceof ArucasEnumDefinition definition) {
+						yield DefinitionArgumentType.enumeration(definition);
+					}
+					throw new RuntimeError("Enum argument type must contain 'enum: <Type>'", this.syntaxPosition, this.context);
+				}
+				default -> parseArgumentType(argumentTypeName, this.context, this.syntaxPosition);
+			};
+			RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = CommandManager.argument(name, argumentType);
+			if (extraSuggestion != null) {
+				argumentBuilder.suggests(extraSuggestion);
+			}
+			Value<?> suggestion = arguments.get(this.context, SUGGESTS);
+			if (suggestion instanceof ListValue listValue) {
+				int size = listValue.value.size();
+				String[] suggestions = new String[size];
+				Value<?>[] values = listValue.value.toArray();
+				for (int i = 0; i < size; i++) {
+					suggestions[i] = values[i].getAsString(this.context);
+				}
+				argumentBuilder.suggests((c, b) -> CommandSource.suggestMatching(suggestions, b));
+			}
+			else if (suggestion != null) {
+				throw new RuntimeError("Suggestion should be a list", this.syntaxPosition, this.context);
+			}
+			return argumentBuilder;
+		}
 	}
 }

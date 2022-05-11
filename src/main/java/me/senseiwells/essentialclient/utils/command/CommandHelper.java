@@ -31,7 +31,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class CommandHelper {
-
 	private static final Map<UUID, Set<LiteralCommandNode<ServerCommandSource>>> FUNCTION_COMMAND_NODES = new HashMap<>();
 	public static final Set<String> CLIENT_COMMANDS = new HashSet<>();
 	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
