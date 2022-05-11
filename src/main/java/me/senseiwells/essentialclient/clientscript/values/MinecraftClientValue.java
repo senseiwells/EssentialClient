@@ -303,15 +303,17 @@ public class MinecraftClientValue extends Value<MinecraftClient> {
 		/**
 		 * Name: <code>&lt;MinecraftClient>.getLatestChatMessage()</code> <br>
 		 * Description: This will return the latest chat message <br>
-		 * Returns - String/Null: the latest chat message, null if there is none <br>
+		 * Returns - Text/Null: the latest chat message, null if there is none <br>
 		 * Example: <code>client.getLatestChatMessage();</code>
 		 */
 		private Value<?> getLatestChatMessage(Context context, MemberFunction function) throws CodeError {
-			final ChatHudLine<?>[] chat = ((ChatHudAccessor) this.getClient(context, function).inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+			MinecraftClient client = this.getClient(context, function);
+			@SuppressWarnings("unchecked")
+			ChatHudLine<Text>[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
 			if (chat.length == 0) {
 				return NullValue.NULL;
 			}
-			return StringValue.of(((Text) chat[0].getText()).getString());
+			return new TextValue(chat[0].getText().shallowCopy());
 		}
 
 		/**
