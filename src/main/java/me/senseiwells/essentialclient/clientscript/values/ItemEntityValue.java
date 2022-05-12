@@ -37,6 +37,13 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 		return "ItemEntity";
 	}
 
+	/**
+	 * ItemEntity class for Arucas. This class extends Entity and so inherits all of
+	 * their methods too, ItemEntities are entities that are dropped items. <br>
+	 * Import the class with <code>import ItemEntity from Minecraft;</code> <br>
+	 * Fully Documented.
+	 * @author senseiwells
+	 */
 	public static class ArucasItemEntityClass extends ArucasClassExtension {
 		public ArucasItemEntityClass() {
 			super("ItemEntity");
@@ -52,21 +59,46 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			);
 		}
 
+		/**
+		 * Name: <code>&lt;ItemEntity>.getItemStack()</code> <br>
+		 * Description: This method returns the ItemStack that is held in the ItemEntity <br>
+		 * Returns - ItemStack: the ItemStack that the entity holds <br>
+		 * Example: <code>livingEntity.getItemStack();</code>
+		 */
 		private Value<?> getItemStack(Context context, MemberFunction function) throws CodeError {
 			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
 			return new ItemStackValue(itemEntityValue.value.getStack());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemEntity>.getCustomName()</code> <br>
+		 * Description: This method returns the custom name of the ItemEntity <br>
+		 * Returns - String: the custom name of the entity <br>
+		 * Example: <code>livingEntity.getCustomName();</code>
+		 */
 		private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {
 			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
 			return StringValue.of(itemEntityValue.value.getName().asString());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemEntity>.getItemAge()</code> <br>
+		 * Description: This method returns the age of the ItemEntity, this is increased
+		 * every tick and the item entity despawns after 6000 ticks <br>
+		 * Returns - Number: the age of the entity <br>
+		 * Example: <code>livingEntity.getItemAge();</code>
+		 */
 		private Value<?> getItemAge(Context context, MemberFunction function) throws CodeError {
 			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
 			return NumberValue.of(itemEntityValue.value.getItemAge());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemEntity>.getThrower()</code> <br>
+		 * Description: This method returns the player that threw the ItemEntity <br>
+		 * Returns - Player/Null: the player that threw the entity, null if not thrown by a player <br>
+		 * Example: <code>livingEntity.getThrower();</code>
+		 */
 		private Value<?> getThrower(Context context, MemberFunction function) throws CodeError {
 			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
 			UUID throwerUuid = itemEntityValue.value.getThrower();

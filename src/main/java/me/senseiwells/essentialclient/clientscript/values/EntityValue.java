@@ -110,14 +110,6 @@ public class EntityValue<T extends Entity> extends Value<T> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.releaseKey(key)</code> <br>
-		 * Description: This allows you to simulate a key release inside of Minecraft, this is useful for keys that only
-		 * work on release, for example <code>F3</code> <br>
-		 * Parameter - String: the key to release <br>
-		 * Throws - Error: <code>"Tried to press unknown key"</code> if the given key was unknown <br>
-		 * Example: <code>client.releaseKey("f");</code>
-		 */
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(

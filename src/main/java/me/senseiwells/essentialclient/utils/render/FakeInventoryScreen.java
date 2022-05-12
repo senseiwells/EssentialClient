@@ -56,7 +56,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
 			Context context = this.contextFunction.context.createBranch();
 			context.getThreadHandler().runAsyncFunctionInThreadPool(context,
-				passedContext -> this.contextFunction.functionValue.call(passedContext, List.of(
+				passedContext -> this.contextFunction.functionValue.call(passedContext, EssentialUtils.arrayListOf(
 					new ItemStackValue(stack),
 					NumberValue.of(slotNumber),
 					StringValue.of(action)

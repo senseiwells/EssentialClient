@@ -29,6 +29,7 @@
     "clientScript.MinecraftClientAccessor",
     "clientScript.MinecraftClientMixin",
     "clientScript.NbtListMixin",
+    "clientScript.ScreenMixin",
     "clientScript.WorldRendererMixin",
     "commandSuggestorIgnoresSpaces.CommandSuggestorMixin",
     "core.ClientPlayerEntityMixin",

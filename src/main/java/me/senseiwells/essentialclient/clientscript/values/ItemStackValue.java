@@ -14,8 +14,11 @@ import me.senseiwells.essentialclient.mixins.clientScript.NbtListMixin;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
@@ -69,8 +72,13 @@ public class ItemStackValue extends Value<ItemStack> {
 		return this.getAsString(context).hashCode();
 	}
 
+	/**
+	 * ItemStack class for Arucas. <br>
+	 * Import the class with <code>import ItemStack from Minecraft;</code> <br>
+	 * TODO: Fully Documented.
+	 * @author senseiwells
+	 */
 	public static class ArucasItemStackClass extends ArucasClassExtension {
-
 		public ArucasItemStackClass() {
 			super("ItemStack");
 		}
@@ -83,6 +91,12 @@ public class ItemStackValue extends Value<ItemStack> {
 			);
 		}
 
+		/**
+		 * Name: <code>ItemStack.of(material)</code> <br>
+		 * Description: This creates an ItemStack from a material or a string <br>
+		 * Returns - ItemStack: the new ItemStack instance <br>
+		 * Example: <code>ItemStack.of("dirt");</code>
+		 */
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
 			Value<?> value = function.getParameterValue(context, 0);
 			if (value instanceof StringValue stringValue) {
@@ -97,6 +111,12 @@ public class ItemStackValue extends Value<ItemStack> {
 			return new ItemStackValue(materialValue.asItemStack(context, function.syntaxPosition));
 		}
 
+		/**
+		 * Name: <code>ItemStack.parse(nbtString)</code> <br>
+		 * Description: This creates an ItemStack from a NBT string <br>
+		 * Returns - ItemStack: the new ItemStack instance <br>
+		 * Example: <code>ItemStack.parse("{id:\"minecraft:dirt\",Count:64}");</code>
+		 */
 		private Value<?> parse(Context context, BuiltInFunction function) throws CodeError {
 			MapValue mapValue = function.getFirstParameter(context, MapValue.class);
 			return new ItemStackValue(ItemStack.fromNbt(NbtUtils.mapToNbt(context, mapValue.value, 10)));
@@ -116,6 +136,7 @@ public class ItemStackValue extends Value<ItemStack> {
 				new MemberFunction("isStackable", this::isStackable),
 				new MemberFunction("getMaxCount", this::getMaxCount),
 				new MemberFunction("asBlock", this::asBlock),
+				new MemberFunction("asEntity", this::asEntity),
 				new MemberFunction("getCustomName", this::getCustomName),
 				new MemberFunction("isNbtEqual", "otherItem", this::isNbtEqual),
 				new MemberFunction("getNbt", this::getNbt),
@@ -129,18 +150,44 @@ public class ItemStackValue extends Value<ItemStack> {
 			);
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getMaterial()</code> <br>
+		 * Description: This gets the material of the ItemStack <br>
+		 * Returns - Material: the material of the ItemStack <br>
+		 * Example: <code>itemStack.getMaterial();</code>
+		 */
 		private Value<?> getMaterial(Context context, MemberFunction function) throws CodeError {
 			return new MaterialValue(this.getItemStack(context, function).getItem());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getFullId()</code> <br>
+		 * Description: This gets the full id of the ItemStack, for example:
+		 * <code>'diamond_sword'</code> <br>
+		 * Returns - String: the full id of the ItemStack <br>
+		 * Example: <code>itemStack.getFullId();</code>
+		 */
 		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
 			return StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).toString());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getId()</code> <br>
+		 * Description: This gets the full id of the ItemStack, for example:
+		 * <code>'minecraft:diamond_sword'</code> <br>
+		 * Returns - String: the id of the ItemStack <br>
+		 * Example: <code>itemStack.getId();</code>
+		 */
 		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
 			return StringValue.of(Registry.ITEM.getId(this.getItemStack(context, function).getItem()).getPath());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getCount()</code> <br>
+		 * Description: This gets the count of the ItemStack, the amount of items in the stack <br>
+		 * Returns - Number: the count of the ItemStack <br>
+		 * Example: <code>itemStack.getCount();</code>
+		 */
 		private Value<?> getCount(Context context, MemberFunction function) throws CodeError {
 			return NumberValue.of(this.getItemStack(context, function).getCount());
 		}
@@ -183,6 +230,20 @@ public class ItemStackValue extends Value<ItemStack> {
 				throw new RuntimeError("Item cannot be converted to block", function.syntaxPosition, context);
 			}
 			return new BlockValue(blockItem.getBlock().getDefaultState());
+		}
+
+		private Value<?> asEntity(Context context, MemberFunction function) throws CodeError {
+			ItemStack itemStack = this.getItemStack(context, function);
+			ClientWorld world = ArucasMinecraftExtension.getWorld();
+			ItemEntity itemEntity = EntityType.ITEM.create(world);
+			if (itemEntity == null) {
+				throw new RuntimeError(
+					"'%s' cannot be converted into ItemEntity".formatted(itemStack.toString()),
+					function.syntaxPosition, context
+				);
+			}
+			itemEntity.setStack(itemStack);
+			return new ItemEntityValue(itemEntity);
 		}
 
 		private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {
