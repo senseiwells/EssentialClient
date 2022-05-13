@@ -96,6 +96,7 @@ public class EntityValue<T extends Entity> extends Value<T> {
 		/**
 		 * Name: <code>Entity.of(entityId)</code> <br>
 		 * Description: This converts an entityId into an entity instance <br>
+		 * Parameter - String: the entityId to convert to an entity <br>
 		 * Returns - Entity: the entity instance from the id <br>
 		 * Throws - Error: <code>... is not a valid entity</code> if the id is not a valid entity id <br>
 		 * Example: <code>Entity.of("minecraft:pig");</code>

@@ -56,6 +56,12 @@ public class RecipeValue extends Value<Recipe<?>> {
 		return "Recipe";
 	}
 
+	/**
+	 * Recipe class for Arucas. This class represents recipes in Minecraft. <br>
+	 * Import the class with <code>import Recipe from Minecraft;</code> <br>
+	 * Fully Documented.
+	 * @author senseiwells
+	 */
 	public static class ArucasRecipeClass extends ArucasClassExtension {
 		public ArucasRecipeClass() {
 			super("Recipe");
@@ -85,6 +91,13 @@ public class RecipeValue extends Value<Recipe<?>> {
 			);
 		}
 
+		/**
+		 * Name: <code>Recipe.of(recipeId)</code> <br>
+		 * Description: This converts a recipe id into a Recipe if it's valid <br>
+		 * Returns - Recipe: the entity instance from the id <br>
+		 * Throws - Error: <code>Recipe with id ... doesn't exist</code> if the id is not a valid recipe id <br>
+		 * Example: <code>Recipe.of("redstone_block");</code>
+		 */
 		private Value<?> newRecipe(Context context, BuiltInFunction function) throws CodeError {
 			String id = function.getParameterValueOfType(context, StringValue.class, 0).value;
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
@@ -107,27 +120,58 @@ public class RecipeValue extends Value<Recipe<?>> {
 			);
 		}
 
+		/**
+		 * Name: <code>&lt;Recipe>.getFullId()</code> <br>
+		 * Description: This returns the full id of the recipe <br>
+		 * Returns - String: the full id of the recipe <br>
+		 * Example: <code>recipe.getFullId();</code>
+		 */
 		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
 			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().toString());
 		}
 
+		/**
+		 * Name: <code>&lt;Recipe>.getId()</code> <br>
+		 * Description: This returns the id of the recipe <br>
+		 * Returns - String: the id of the recipe <br>
+		 * Example: <code>recipe.getId();</code>
+		 */
 		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
 			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().getPath());
 		}
 
+		/**
+		 * Name: <code>&lt;Recipe>.getCraftingType()</code> <br>
+		 * Description: This returns the crafting type of the recipe <br>
+		 * Returns - String: the crafting type of the recipe, for example:
+		 * <code>"crafting", "smelting", "blasting"</code> <br>
+		 * Example: <code>recipe.getCraftingType();</code>
+		 */
 		private Value<?> getCraftingType(Context context, MemberFunction function) throws CodeError {
 			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
 			Identifier identifier = Registry.RECIPE_TYPE.getId(thisValue.value.getType());
 			return identifier == null ? NullValue.NULL : StringValue.of(identifier.getPath());
 		}
 
+		/**
+		 * Name: <code>&lt;Recipe>.getOutput()</code> <br>
+		 * Description: This returns the output of the recipe <br>
+		 * Returns - ItemStack: the output of the recipe <br>
+		 * Example: <code>recipe.getOutput();</code>
+		 */
 		private Value<?> getOutput(Context context, MemberFunction function) throws CodeError {
 			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
 			return new ItemStackValue(thisValue.value.getOutput());
 		}
 
+		/**
+		 * Name: <code>&lt;Recipe>.getIngredients()</code> <br>
+		 * Description: This returns all the possible ingredients of the recipe <br>
+		 * Returns - List: list of lists, each inner lists contains possible recipe items <br>
+		 * Example: <code>recipe.getIngredients();</code>
+		 */
 		private Value<?> getIngredients(Context context, MemberFunction function) throws CodeError {
 			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
 			ArucasList recipeIngredients = new ArucasList();

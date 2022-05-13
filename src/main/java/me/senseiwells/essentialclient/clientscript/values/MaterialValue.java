@@ -161,6 +161,7 @@ public class MaterialValue extends Value<Item> {
 		/**
 		 * Name: <code>Material.of(id)</code> <br>
 		 * Description: This converts a block or item id into a Material <br>
+		 * Parameter - String: the id of the block or item <br>
 		 * Returns - Material: the entity instance from the id <br>
 		 * Throws - Error: <code>... is not a valid Material</code> if the id is not a valid material id <br>
 		 * Example: <code>Material.of("diamond");</code>

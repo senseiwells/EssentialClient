@@ -94,6 +94,7 @@ public class ItemStackValue extends Value<ItemStack> {
 		/**
 		 * Name: <code>ItemStack.of(material)</code> <br>
 		 * Description: This creates an ItemStack from a material or a string <br>
+		 * Parameter - String: The material or string to create the ItemStack from <br>
 		 * Returns - ItemStack: the new ItemStack instance <br>
 		 * Example: <code>ItemStack.of("dirt");</code>
 		 */
@@ -114,6 +115,7 @@ public class ItemStackValue extends Value<ItemStack> {
 		/**
 		 * Name: <code>ItemStack.parse(nbtString)</code> <br>
 		 * Description: This creates an ItemStack from a NBT string <br>
+		 * Parameter - String: The NBT string to create the ItemStack from <br>
 		 * Returns - ItemStack: the new ItemStack instance <br>
 		 * Example: <code>ItemStack.parse("{id:\"minecraft:dirt\",Count:64}");</code>
 		 */
