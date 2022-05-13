@@ -75,7 +75,7 @@ public class ItemStackValue extends Value<ItemStack> {
 	/**
 	 * ItemStack class for Arucas. <br>
 	 * Import the class with <code>import ItemStack from Minecraft;</code> <br>
-	 * TODO: Fully Documented.
+	 * Fully Documented.
 	 * @author senseiwells
 	 */
 	public static class ArucasItemStackClass extends ArucasClassExtension {
@@ -101,9 +101,9 @@ public class ItemStackValue extends Value<ItemStack> {
 			Value<?> value = function.getParameterValue(context, 0);
 			if (value instanceof StringValue stringValue) {
 				Identifier id = ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value);
-				return new ItemStackValue(Registry.ITEM.getOrEmpty(id).orElseThrow(() -> {
-					return new RuntimeError("'%s' is not a value item stack".formatted(id), function.syntaxPosition, context);
-				}).getDefaultStack());
+				return new ItemStackValue(Registry.ITEM.getOrEmpty(id).orElseThrow(
+					() -> new RuntimeError("'%s' is not a value item stack".formatted(id), function.syntaxPosition, context)
+				).getDefaultStack());
 			}
 			if (!(value instanceof MaterialValue materialValue)) {
 				throw new RuntimeError("Parameter must be of type String or Material", function.syntaxPosition, context);
@@ -192,15 +192,34 @@ public class ItemStackValue extends Value<ItemStack> {
 			return NumberValue.of(this.getItemStack(context, function).getCount());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getDurability()</code> <br>
+		 * Description: This gets the durability of the item <br>
+		 * Returns - Number: the durability of the item <br>
+		 * Example: <code>itemStack.getDurability();</code>
+		 */
 		private Value<?> getDurability(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			return NumberValue.of(itemStack.getMaxDamage() - itemStack.getDamage());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getMaxDurability()</code> <br>
+		 * Description: This gets the max durability of the item <br>
+		 * Returns - Number: the max durability of the item <br>
+		 * Example: <code>itemStack.getMaxDurability();</code>
+		 */
 		private Value<?> getMaxDurability(Context context, MemberFunction function) throws CodeError {
 			return NumberValue.of(this.getItemStack(context, function).getMaxDamage());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getEnchantments()</code> <br>
+		 * Description: This gets the enchantments of the item, in a map containing the
+		 * id of the enchantment as the key and the level of the enchantment as the value <br>
+		 * Returns - Map: the enchantments of the item, map may be empty <br>
+		 * Example: <code>itemStack.getEnchantments();</code>
+		 */
 		private Value<?> getEnchantments(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			NbtList nbtList = itemStack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantmentNbt(itemStack) : itemStack.getEnchantments();
@@ -212,18 +231,43 @@ public class ItemStackValue extends Value<ItemStack> {
 			return new MapValue(enchantmentMap);
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.isBlockItem()</code> <br>
+		 * Description: This checks if the ItemStack can be placed as a block <br>
+		 * Returns - Boolean: true if the ItemStack can be placed as a block, false otherwise <br>
+		 * Example: <code>itemStack.isBlockItem();</code>
+		 */
 		private Value<?> isBlockItem(Context context, MemberFunction function) throws CodeError {
 			return BooleanValue.of(this.getItemStack(context, function).getItem() instanceof BlockItem);
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.isStackable()</code> <br>
+		 * Description: This checks if the ItemStack is stackable <br>
+		 * Returns - Boolean: true if the ItemStack is stackable, false otherwise <br>
+		 * Example: <code>itemStack.isStackable();</code>
+		 */
 		private Value<?> isStackable(Context context, MemberFunction function) throws CodeError {
 			return BooleanValue.of(this.getItemStack(context, function).isStackable());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getMaxCount()</code> <br>
+		 * Description: This gets the max stack size of the ItemStack <br>
+		 * Returns - Number: the max stack size of the ItemStack <br>
+		 * Example: <code>itemStack.getMaxCount();</code>
+		 */
 		private Value<?> getMaxCount(Context context, MemberFunction function) throws CodeError {
 			return NumberValue.of(this.getItemStack(context, function).getMaxCount());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.asBlock()</code> <br>
+		 * Description: This gets the block of the ItemStack <br>
+		 * Returns - Block: the block item of the ItemStack <br>
+		 * Throws - Error: <code>"Item cannot be converted to a block"</code> if the ItemStack cannot be placed as a block <br>
+		 * Example: <code>itemStack.asBlock();</code>
+		 */
 		private Value<?> asBlock(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			if (!(itemStack.getItem() instanceof BlockItem blockItem)) {
@@ -232,6 +276,13 @@ public class ItemStackValue extends Value<ItemStack> {
 			return new BlockValue(blockItem.getBlock().getDefaultState());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.asEntity()</code> <br>
+		 * Description: This creates an item entity with the item <br>
+		 * Returns - ItemEntity: the entity of the ItemStack <br>
+		 * Throws - Error: <code>"Item cannot be converted to an ItemEntity"</code> if the ItemStack cannot be converted to an entity <br>
+		 * Example: <code>itemStack.asEntity();</code>
+		 */
 		private Value<?> asEntity(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			ClientWorld world = ArucasMinecraftExtension.getWorld();
@@ -246,16 +297,35 @@ public class ItemStackValue extends Value<ItemStack> {
 			return new ItemEntityValue(itemEntity);
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getCustomName()</code> <br>
+		 * Description: This gets the custom name of the ItemStack <br>
+		 * Returns - String: the custom name of the ItemStack <br>
+		 * Example: <code>itemStack.getCustomName();</code>
+		 */
 		private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {
 			return StringValue.of(this.getItemStack(context, function).getName().asString());
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.isNbtEqual(itemStack)</code> <br>
+		 * Description: This checks if the ItemStack has the same NBT data as the other given ItemStack <br>
+		 * Parameter - ItemStack: the other ItemStack to compare to <br>
+		 * Returns - Boolean: true if the ItemStack has the same NBT data as the other given ItemStack <br>
+		 * Example: <code>itemStack.isNbtEqual(Material.GOLD_INGOT.asItemStack());</code>
+		 */
 		private Value<?> isNbtEqual(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			ItemStack otherItemStack = function.getParameterValueOfType(context, ItemStackValue.class, 1).value;
 			return BooleanValue.of(ItemStack.areNbtEqual(itemStack, otherItemStack));
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getNbt()</code> <br>
+		 * Description: This gets the NBT data of the ItemStack as a Map <br>
+		 * Returns - Map: the NBT data of the ItemStack <br>
+		 * Example: <code>itemStack.getNbt();</code>
+		 */
 		private Value<?> getNbt(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			NbtCompound nbtCompound = itemStack.getNbt();
@@ -263,17 +333,39 @@ public class ItemStackValue extends Value<ItemStack> {
 			return new MapValue(nbtMap);
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getTranslatedName()</code> <br>
+		 * Description: This gets the translated name of the ItemStack, for example
+		 * <code>'diamond_sword'</code> would return <code>'Diamond Sword'</code> if your language is English <br>
+		 * Returns - String: the translated name of the ItemStack <br>
+		 * Example: <code>itemStack.getTranslatedName();</code>
+		 */
 		private Value<?> getTranslatedName(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			return StringValue.of(I18n.translate(itemStack.getItem().getTranslationKey()));
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.getMiningSpeedMultiplier(block)</code> <br>
+		 * Description: This gets the mining speed multiplier of the ItemStack for the given Block,
+		 * for example a diamond pickaxe on stone would have a higher multiplier than air on stone <br>
+		 * Parameter - Block: the Block to get the mining speed multiplier for <br>
+		 * Returns - Number: the mining speed multiplier of the ItemStack for the given Block <br>
+		 * Example: <code>Material.DIAMOND_PICKAXE.asItemStack().getMiningSpeedMultiplier(Material.GOLD_BLOCK.asBlock());</code>
+		 */
 		private Value<?> getMiningSpeedMultiplier(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			BlockState blockState = function.getParameterValueOfType(context, BlockValue.class, 1).value;
 			return NumberValue.of(itemStack.getMiningSpeedMultiplier(blockState));
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.setCustomName(customName)</code> <br>
+		 * Description: This sets the custom name of the ItemStack <br>
+		 * Parameter - String/Text: the custom name of the ItemStack <br>
+		 * Returns - ItemStack: the ItemStack with the new custom name <br>
+		 * Example: <code>Material.DIAMOND_PICKAXE.asItemStack().setCustomName('My Pickaxe');</code>
+		 */
 		private Value<?> setCustomName(Context context, MemberFunction function) throws CodeError {
 			ItemStackValue itemStackValue = function.getThis(context, ItemStackValue.class);
 			Value<?> nameValue = function.getParameterValue(context, 1);
@@ -282,6 +374,13 @@ public class ItemStackValue extends Value<ItemStack> {
 			return itemStackValue;
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.setStackSize(customName)</code> <br>
+		 * Description: This sets the stack size of the ItemStack <br>
+		 * Parameter - Number: the stack size of the ItemStack <br>
+		 * Returns - ItemStack: the ItemStack with the new stack size <br>
+		 * Example: <code>Material.DIAMOND_PICKAXE.asItemStack().setStackSize(5);</code>
+		 */
 		private Value<?> setStackSize(Context context, MemberFunction function) throws CodeError {
 			ItemStackValue itemStackValue = function.getThis(context, ItemStackValue.class);
 			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
@@ -304,6 +403,12 @@ public class ItemStackValue extends Value<ItemStack> {
 			return itemStackValue;
 		}
 
+		/**
+		 * Name: <code>&lt;ItemStack>.setNbt(nbtMap)</code> <br>
+		 * Description: This sets the NBT data of the ItemStack <br>
+		 * Returns - ItemStack: the ItemStack with the new NBT data <br>
+		 * Example: <code>itemStack.setNbt({"Enchantments": []});</code>
+		 */
 		private Value<?> setNbt(Context context, MemberFunction function) throws CodeError {
 			ItemStack itemStack = this.getItemStack(context, function);
 			MapValue mapValue = function.getParameterValueOfType(context, MapValue.class, 1);

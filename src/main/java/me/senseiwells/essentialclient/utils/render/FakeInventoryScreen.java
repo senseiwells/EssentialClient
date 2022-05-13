@@ -36,6 +36,14 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 		}
 	}
 
+	public ItemStack getStack(int slot) {
+		Inventory handlerInventory = this.handler.getInventory();
+		if (slot < handlerInventory.size() && slot >= 0) {
+			return handlerInventory.getStack(slot);
+		}
+		return null;
+	}
+
 	public void fakeTick() {
 		if (this.contextFunction == null || !this.contextFunction.context.getThreadHandler().isRunning()) {
 			this.onClose();

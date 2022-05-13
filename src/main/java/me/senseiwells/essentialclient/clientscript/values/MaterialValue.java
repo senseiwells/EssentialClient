@@ -118,8 +118,14 @@ public class MaterialValue extends Value<Item> {
 		}
 	}
 
+	/**
+	 * Material class for Arucas. This class represents all possible item and block types
+	 * and allows you to convert them into instances of ItemStacks and Blocks <br>
+	 * Import the class with <code>import Material from Minecraft;</code> <br>
+	 * Fully Documented.
+	 * @author senseiwells
+	 */
 	public static class ArucasMaterialClass extends ArucasClassExtension {
-
 		public ArucasMaterialClass() {
 			super("Material");
 		}
@@ -152,12 +158,19 @@ public class MaterialValue extends Value<Item> {
 			);
 		}
 
+		/**
+		 * Name: <code>Material.of(id)</code> <br>
+		 * Description: This converts a block or item id into a Material <br>
+		 * Returns - Material: the entity instance from the id <br>
+		 * Throws - Error: <code>... is not a valid Material</code> if the id is not a valid material id <br>
+		 * Example: <code>Material.of("diamond");</code>
+		 */
 		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
 			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
 			Optional<Item> item = Registry.ITEM.getOrEmpty(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value));
-			return new MaterialValue(item.orElseThrow(() -> {
-				return new RuntimeError("'%s' is not a valid Material".formatted(stringValue.value), function.syntaxPosition, context);
-			}));
+			return new MaterialValue(item.orElseThrow(
+				() -> new RuntimeError("'%s' is not a valid Material".formatted(stringValue.value), function.syntaxPosition, context)
+			));
 		}
 
 		@Override
@@ -171,26 +184,59 @@ public class MaterialValue extends Value<Item> {
 			);
 		}
 
+		/**
+		 * Name: <code>&lt;Material>.getFullId()</code> <br>
+		 * Description: This returns the full id of the material <br>
+		 * Returns - String: the full id representation of the material <br>
+		 * Example: <code>material.getFullId();</code>
+		 */
 		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
 			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
 			return StringValue.of(materialValue.getId().toString());
 		}
 
+		/**
+		 * Name: <code>&lt;Material>.getId()</code> <br>
+		 * Description: This returns the id of the material <br>
+		 * Returns - String: the id representation of the material <br>
+		 * Example: <code>material.getId();</code>
+		 */
 		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
 			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
 			return StringValue.of(materialValue.getId().getPath());
 		}
 
+		/**
+		 * Name: <code>&lt;Material>.asItemStack()</code> <br>
+		 * Description: This converts the material into an ItemStack <br>
+		 * Returns - ItemStack: the ItemStack representation of the material <br>
+		 * Throws - Error: <code>"Material cannot be converted to an item stack"</code> if the material has no item stack form <br>
+		 * Example: <code>material.asItemStack();</code>
+		 */
 		private Value<?> asItemStack(Context context, MemberFunction function) throws CodeError {
 			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
 			return new ItemStackValue(materialValue.asItemStack(context, function.syntaxPosition));
 		}
 
+		/**
+		 * Name: <code>&lt;Material>.asBlock()</code> <br>
+		 * Description: This converts the material into a Block <br>
+		 * Returns - Block: the Block representation of the material <br>
+		 * Throws - Error: <code>"Material cannot be converted to a block"</code> if the material has no block form <br>
+		 * Example: <code>material.asBlock();</code>
+		 */
 		private Value<?> asBlock(Context context, MemberFunction function) throws CodeError {
 			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
 			return new BlockValue(materialValue.asBlock(context, function.syntaxPosition).getDefaultState());
 		}
 
+		/**
+		 * Name: <code>&lt;Material>.getTranslatedName()</code> <br>
+		 * Description: This gets the translated name of the ItemStack, for example
+		 * <code>Material.DIAMOND_SWORD</code> would return <code>'Diamond Sword'</code> if your language is English <br>
+		 * Returns - String: the translated name of the ItemStack <br>
+		 * Example: <code>material.getTranslatedName();</code>
+		 */
 		private Value<?> getTranslatedName(Context context, MemberFunction function) throws CodeError {
 			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
 			return StringValue.of(I18n.translate(materialValue.getTranslationKey()));
