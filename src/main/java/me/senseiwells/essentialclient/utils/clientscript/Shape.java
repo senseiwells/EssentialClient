@@ -356,6 +356,17 @@ public abstract class Shape implements IArucasWrappedClass {
 	}
 
 	/**
+	 * Name: <code>&lt;Shape>.setOutlineWidth(width)</code> <br>
+	 * Description: This sets the outline pixel width of the shape, using a single value <br>
+	 * Parameters - Number: the width of the outline in pixels <br>
+	 * Example: <code>shape.setOutlineWidth(5);</code>
+	 */
+	@ArucasFunction
+	public final void setOutlineWidth(Context context, NumberValue width) {
+		this.setOutlinePixelWidth(context, width);
+	}
+
+	/**
 	 * Name: <code>&lt;Shape>.setRenderThroughBlocks(boolean)</code> <br>
 	 * Description: This sets whether the shape should render through blocks <br>
 	 * Parameters - Boolean: whether the shape should render through blocks <br>

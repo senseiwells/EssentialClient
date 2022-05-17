@@ -54,6 +54,7 @@ public class LineShapeWrapper extends Shape.Positioned implements Shape.Tiltable
 		this.setCreatedContext(context.createBranch());
 		this.setPos1(context, pos1);
 		this.setPos2(context, pos2);
+		this.setOutlineWidth(5);
 	}
 
 	@ArucasConstructor

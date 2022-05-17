@@ -36,7 +36,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		return ArucasFunctionMap.of(
 			new BuiltInFunction("getMinecraftClient", this::getMinecraftClient, "Use 'MinecraftClient.getClient()'"),
 			new BuiltInFunction("runThreaded", List.of("function", "parameters"), this::runThreaded, "Use 'Thread.runThreaded(function)'"),
-			new BuiltInFunction("hold", this::hold, "Use 'Thread.freeze()'")
+			new BuiltInFunction("hold", this::hold)
 		);
 	}
 

@@ -95,7 +95,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				new MemberFunction("say", "text", this::say),
 				new MemberFunction("message", "text", this::message),
 				new MemberFunction("messageActionBar", "text", this::messageActionBar),
-				new MemberFunction("showTitle", "text", this::showTitle),
+				new MemberFunction("showTitle", List.of("text", "text2"), this::showTitle),
 				new MemberFunction("openInventory", this::openInventory),
 				new MemberFunction("openScreen", "screen", this::openScreen),
 				new MemberFunction("closeScreen", this::closeScreen),
