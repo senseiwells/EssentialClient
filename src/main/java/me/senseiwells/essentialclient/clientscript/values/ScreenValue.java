@@ -2,10 +2,10 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.values.BaseValue;
+import me.senseiwells.arucas.values.GenericValue;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
@@ -19,7 +19,9 @@ import net.minecraft.text.Text;
 
 import java.util.Objects;
 
-public class ScreenValue<T extends Screen> extends Value<T> {
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SCREEN;
+
+public class ScreenValue<T extends Screen> extends GenericValue<T> {
 	protected ScreenValue(T screen) {
 		super(Objects.requireNonNull(screen));
 	}
@@ -40,13 +42,13 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> value) {
-		return this.value == value.value;
+	public boolean isEquals(Context context, Value value) {
+		return this.value == value.getValue();
 	}
 
 	@Override
 	public String getTypeName() {
-		return "Screen";
+		return SCREEN;
 	}
 
 	/**
@@ -55,7 +57,7 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 	 * you should use {@link Context#convertValue(Object)}
 	 */
 	@Deprecated
-	public static Value<?> of(Screen screen) {
+	public static Value of(Screen screen) {
 		return new ScreenValue<>(screen);
 	}
 
@@ -63,18 +65,19 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 	 * Screen class for Arucas. <br>
 	 * Import the class with <code>import Screen from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasScreenClass extends ArucasClassExtension {
 		public ArucasScreenClass() {
-			super("Screen");
+			super(SCREEN);
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getName", this::getName),
-				new MemberFunction("getTitle", this::getTitle)
+				MemberFunction.of("getName", this::getName),
+				MemberFunction.of("getTitle", this::getTitle)
 			);
 		}
 
@@ -85,8 +88,8 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 		 * it will return the name of the tab you are on <br>
 		 * Example: <code>screen.getName()</code>
 		 */
-		private Value<?> getName(Context context, MemberFunction function) throws CodeError {
-			return StringValue.of(ScreenRemapper.getScreenName(this.getScreen(context, function).getClass()));
+		private Value getName(Arguments arguments) throws CodeError {
+			return StringValue.of(ScreenRemapper.getScreenName(this.getScreen(arguments).getClass()));
 		}
 
 		/**
@@ -96,8 +99,8 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 		 * and custom names for the screen if applicable <br>
 		 * Example: <code>screen.getTitle()</code>
 		 */
-		private Value<?> getTitle(Context context, MemberFunction function) throws CodeError {
-			Screen screen = this.getScreen(context, function);
+		private Value getTitle(Arguments arguments) throws CodeError {
+			Screen screen = this.getScreen(arguments);
 			Text title = screen.getTitle();
 			if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
 				int tabIndex = creativeInventoryScreen.getSelectedTab();
@@ -106,16 +109,16 @@ public class ScreenValue<T extends Screen> extends Value<T> {
 			return title == null ? NullValue.NULL : new TextValue(title.copy());
 		}
 
-		private Screen getScreen(Context context, MemberFunction function) throws CodeError {
-			ScreenValue<?> screen = function.getParameterValueOfType(context, ScreenValue.class, 0);
+		private Screen getScreen(Arguments arguments) throws CodeError {
+			ScreenValue<?> screen = arguments.getNext(ScreenValue.class);
 			if (screen.value == null) {
-				throw new RuntimeError("Screen was null", function.syntaxPosition, context);
+				throw arguments.getError("Screen was null");
 			}
 			return screen.value;
 		}
 
 		@Override
-		public Class<? extends BaseValue> getValueClass() {
+		public Class<? extends Value> getValueClass() {
 			return ScreenValue.class;
 		}
 	}

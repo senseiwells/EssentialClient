@@ -203,6 +203,12 @@ public abstract class Shape implements IArucasWrappedClass {
 		this.setBlue(blue);
 	}
 
+	// See above documentation
+	@ArucasFunction
+	public final void setColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
+		this.setColour(context, redValue, greenValue, blueValue);
+	}
+
 	/**
 	 * Name: <code>&lt;Shape>.setRed(red)</code> <br>
 	 * Description: This sets the red value of the shape, using a single value <br>
@@ -302,6 +308,12 @@ public abstract class Shape implements IArucasWrappedClass {
 		this.setOutlineBlue(blue);
 	}
 
+	// See above documentation
+	@ArucasFunction
+	public final void setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
+		this.setOutlineColour(context, redValue, greenValue, blueValue);
+	}
+
 	/**
 	 * Name: <code>&lt;Shape>.setOutlineRed(red)</code> <br>
 	 * Description: This sets the outline red value of the shape, using a single value <br>
@@ -353,17 +365,6 @@ public abstract class Shape implements IArucasWrappedClass {
 	@ArucasFunction
 	public final void setOutlinePixelWidth(Context context, NumberValue width) {
 		this.setOutlineWidth(width.value.intValue());
-	}
-
-	/**
-	 * Name: <code>&lt;Shape>.setOutlineWidth(width)</code> <br>
-	 * Description: This sets the outline pixel width of the shape, using a single value <br>
-	 * Parameters - Number: the width of the outline in pixels <br>
-	 * Example: <code>shape.setOutlineWidth(5);</code>
-	 */
-	@ArucasFunction
-	public final void setOutlineWidth(Context context, NumberValue width) {
-		this.setOutlinePixelWidth(context, width);
 	}
 
 	/**
@@ -766,7 +767,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		 * Example: <code>shape.getDirection();</code>
 		 */
 		@ArucasFunction
-		default Value<?> getDirection(Context context) {
+		default Value getDirection(Context context) {
 			Direction direction = this.getDirection();
 			return direction == null ? NullValue.NULL : StringValue.of(direction.getName());
 		}

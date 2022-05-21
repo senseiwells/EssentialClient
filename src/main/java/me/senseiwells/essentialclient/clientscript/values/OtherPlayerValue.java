@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
-import java.lang.reflect.Method;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.OTHER_PLAYER;
 
 public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntity> {
 	public OtherPlayerValue(OtherClientPlayerEntity player) {
@@ -26,7 +26,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 	}
 
 	@Override
-	public Value<OtherClientPlayerEntity> copy(Context context) {
+	public EntityValue<OtherClientPlayerEntity> copy(Context context) {
 		return this;
 	}
 
@@ -47,7 +47,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 	 */
 	public static class ArucasOtherPlayerClass extends ArucasClassExtension {
 		public ArucasOtherPlayerClass() {
-			super("OtherPlayer");
+			super(OTHER_PLAYER);
 		}
 
 		@Override
@@ -61,31 +61,32 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 	 * their methods too, OtherPlayer are any player entities, including the main player <br>
 	 * Import the class with <code>import OtherPlayer from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasAbstractPlayerClass extends ArucasClassExtension {
 		public ArucasAbstractPlayerClass() {
-			super("OtherPlayer");
+			super(OTHER_PLAYER);
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getCurrentSlot", this::getCurrentSlot),
-				new MemberFunction("getHeldItem", this::getHeldItem),
-				new MemberFunction("isInventoryFull", this::isInventoryFull),
-				new MemberFunction("getPlayerName", this::getPlayerName),
-				new MemberFunction("getGamemode", this::getGamemode),
-				new MemberFunction("getTotalSlots", this::getTotalSlots),
-				new MemberFunction("getItemForSlot", "slot", this::getItemForSlot),
-				new MemberFunction("getItemForPlayerSlot", "slot", this::getItemForPlayerSlot),
-				new MemberFunction("getSlotFor", "itemStack", this::getSlotFor),
-				new MemberFunction("getAllSlotsFor", "itemStack", this::getAllSlotsFor),
-				new MemberFunction("getAbilities", this::getAbilities),
-				new MemberFunction("getLevels", this::getLevels),
-				new MemberFunction("getHunger", this::getHunger),
-				new MemberFunction("getSaturation", this::getSaturation),
-				new MemberFunction("getFishingBobber", this::getFishingBobber)
+				MemberFunction.of("getCurrentSlot", this::getCurrentSlot),
+				MemberFunction.of("getHeldItem", this::getHeldItem),
+				MemberFunction.of("isInventoryFull", this::isInventoryFull),
+				MemberFunction.of("getPlayerName", this::getPlayerName),
+				MemberFunction.of("getGamemode", this::getGamemode),
+				MemberFunction.of("getTotalSlots", this::getTotalSlots),
+				MemberFunction.of("getItemForSlot", 1, this::getItemForSlot),
+				MemberFunction.of("getItemForPlayerSlot", 1, this::getItemForPlayerSlot),
+				MemberFunction.of("getSlotFor", 1, this::getSlotFor),
+				MemberFunction.of("getAllSlotsFor", 1, this::getAllSlotsFor),
+				MemberFunction.of("getAbilities", this::getAbilities),
+				MemberFunction.of("getLevels", this::getLevels),
+				MemberFunction.of("getHunger", this::getHunger),
+				MemberFunction.of("getSaturation", this::getSaturation),
+				MemberFunction.of("getFishingBobber", this::getFishingBobber)
 			);
 		}
 
@@ -95,8 +96,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Number: the currently selected slot number <br>
 		 * Example: <code>otherPlayer.getCurrentSlot();</code>
 		 */
-		private Value<?> getCurrentSlot(Context context, MemberFunction function) throws CodeError {
-			return NumberValue.of(this.getOtherPlayer(context, function).getInventory().selectedSlot);
+		private Value getCurrentSlot(Arguments arguments) throws CodeError {
+			return NumberValue.of(this.getOtherPlayer(arguments).getInventory().selectedSlot);
 		}
 
 		/**
@@ -105,8 +106,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - ItemStack: the currently selected item <br>
 		 * Example: <code>otherPlayer.getHeldItem();</code>
 		 */
-		private Value<?> getHeldItem(Context context, MemberFunction function) throws CodeError {
-			return new ItemStackValue(this.getOtherPlayer(context, function).getInventory().getMainHandStack());
+		private Value getHeldItem(Arguments arguments) throws CodeError {
+			return new ItemStackValue(this.getOtherPlayer(arguments).getInventory().getMainHandStack());
 		}
 
 		/**
@@ -115,8 +116,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Boolean: whether the inventory is full <br>
 		 * Example: <code>otherPlayer.isInventoryFull();</code>
 		 */
-		private Value<?> isInventoryFull(Context context, MemberFunction function) throws CodeError {
-			return BooleanValue.of(this.getOtherPlayer(context, function).getInventory().getEmptySlot() == -1);
+		private Value isInventoryFull(Arguments arguments) throws CodeError {
+			return BooleanValue.of(this.getOtherPlayer(arguments).getInventory().getEmptySlot() == -1);
 		}
 
 		/**
@@ -125,8 +126,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - String: the players name <br>
 		 * Example: <code>otherPlayer.getPlayerName();</code>
 		 */
-		private Value<?> getPlayerName(Context context, MemberFunction function) throws CodeError {
-			return StringValue.of(this.getOtherPlayer(context, function).getEntityName());
+		private Value getPlayerName(Arguments arguments) throws CodeError {
+			return StringValue.of(this.getOtherPlayer(arguments).getEntityName());
 		}
 
 		/**
@@ -136,8 +137,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * for example <code>'creative', 'survival', 'spectator'</code> <br>
 		 * Example: <code>otherPlayer.getGamemode();</code>
 		 */
-		private Value<?> getGamemode(Context context, MemberFunction function) throws CodeError {
-			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+		private Value getGamemode(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			PlayerListEntry playerInfo = ArucasMinecraftExtension.getNetworkHandler().getPlayerListEntry(playerEntity.getUuid());
 			if (playerInfo == null || playerInfo.getGameMode() == null) {
 				return NullValue.NULL;
@@ -151,8 +152,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Number: the players total inventory slots <br>
 		 * Example: <code>otherPlayer.getTotalSlots();</code>
 		 */
-		private Value<?> getTotalSlots(Context context, MemberFunction function) throws CodeError {
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		private Value getTotalSlots(Arguments arguments) throws CodeError {
+			ScreenHandler screenHandler = this.getOtherPlayer(arguments).currentScreenHandler;
 			return NumberValue.of(screenHandler.slots.size());
 		}
 
@@ -165,12 +166,13 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Throws - Error: <code>"That slot is out of bounds"</code> if the slot is out of bounds <br>
 		 * Example: <code>otherPlayer.getItemForSlot(0);</code>
 		 */
-		private Value<?> getItemForSlot(Context context, MemberFunction function) throws CodeError {
-			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		private Value getItemForSlot(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
+			NumberValue numberValue = arguments.getNextNumber();
+			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
 			int index = numberValue.value.intValue();
 			if (index > screenHandler.slots.size() || index < 0) {
-				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
+				throw arguments.getError("That slot is out of bounds");
 			}
 			ItemStack itemStack = screenHandler.slots.get(index).getStack();
 			return new ItemStackValue(itemStack);
@@ -185,12 +187,12 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Throws - Error: <code>"That slot is out of bounds"</code> if the slot is out of bounds <br>
 		 * Example: <code>otherPlayer.getItemForPlayerSlot(0);</code>
 		 */
-		private Value<?> getItemForPlayerSlot(Context context, MemberFunction function) throws CodeError {
+		private Value getItemForPlayerSlot(Arguments arguments) throws CodeError {
 			// This gets the item for a slot in the player's inventory (no screen inventories)
-			AbstractClientPlayerEntity player = this.getOtherPlayer(context, function);
-			int slot = function.getParameterValueOfType(context, NumberValue.class, 1).value.intValue();
+			AbstractClientPlayerEntity player = this.getOtherPlayer(arguments);
+			int slot = arguments.getNextGeneric(NumberValue.class).intValue();
 			if (slot < 0 || slot > player.getInventory().main.size()) {
-				throw new RuntimeError("That slot is out of bounds", function.syntaxPosition, context);
+				throw arguments.getError("That slot is out of bounds");
 			}
 			ItemStack itemStack = player.getInventory().main.get(slot);
 			return new ItemStackValue(itemStack);
@@ -203,9 +205,10 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Number/Null: the slot number of the item, null if not found <br>
 		 * Example: <code>otherPlayer.getSlotFor(Material.DIAMOND.asItemStack());</code>
 		 */
-		private Value<?> getSlotFor(Context context, MemberFunction function) throws CodeError {
-			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		private Value getSlotFor(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
+			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
+			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
 			for (Slot slot : screenHandler.slots) {
 				if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
 					return NumberValue.of(slot.id);
@@ -221,9 +224,10 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - List: the slot numbers of the item, empty list if not found <br>
 		 * Example: <code>otherPlayer.getAllSlotsFor(Material.DIAMOND.asItemStack());</code>
 		 */
-		private Value<?> getAllSlotsFor(Context context, MemberFunction function) throws CodeError {
-			ItemStackValue itemStackValue = function.getParameterValueOfType(context, ItemStackValue.class, 1);
-			ScreenHandler screenHandler = this.getOtherPlayer(context, function).currentScreenHandler;
+		private Value getAllSlotsFor(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
+			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
+			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
 			ArucasList slotList = new ArucasList();
 			for (Slot slot : screenHandler.slots) {
 				if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
@@ -240,9 +244,10 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * <code>{"invulnerable": false, "canFly": true, "canBreakBlocks": true, "isCreative": true, "walkSpeed": 1.0, "flySpeed": 1.2}</code> <br>
 		 * Example: <code>otherPlayer.getAbilities();</code>
 		 */
-		private Value<?> getAbilities(Context context, MemberFunction function) throws CodeError {
-			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+		private Value getAbilities(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			PlayerAbilities playerAbilities = playerEntity.getAbilities();
+			Context context = arguments.getContext();
 			ArucasMap map = new ArucasMap() {{
 				this.put(context, StringValue.of("invulnerable"), BooleanValue.of(playerAbilities.invulnerable));
 				this.put(context, StringValue.of("canFly"), BooleanValue.of(playerAbilities.allowFlying));
@@ -260,8 +265,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Number: the number of experience levels <br>
 		 * Example: <code>otherPlayer.getLevels();</code>
 		 */
-		private Value<?> getLevels(Context context, MemberFunction function) throws CodeError {
-			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+		private Value getLevels(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			return NumberValue.of(playerEntity.experienceLevel);
 		}
 
@@ -271,8 +276,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Number: the hunger level <br>
 		 * Example: <code>otherPlayer.getHunger();</code>
 		 */
-		private Value<?> getHunger(Context context, MemberFunction function) throws CodeError {
-			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+		private Value getHunger(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			return NumberValue.of(playerEntity.getHungerManager().getFoodLevel());
 		}
 
@@ -282,8 +287,8 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Number: the saturation level <br>
 		 * Example: <code>otherPlayer.getSaturation();</code>
 		 */
-		private Value<?> getSaturation(Context context, MemberFunction function) throws CodeError {
-			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
+		private Value getSaturation(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			return NumberValue.of(playerEntity.getHungerManager().getSaturationLevel());
 		}
 
@@ -293,21 +298,21 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		 * Returns - Entity/Null: the fishing bobber entity, null if the player isn't fishing <br>
 		 * Example: <code>otherPlayer.getFishingBobber();</code>
 		 */
-		private Value<?> getFishingBobber(Context context, MemberFunction function) throws CodeError {
-			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(context, function);
-			return context.convertValue(playerEntity.fishHook);
+		private Value getFishingBobber(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
+			return arguments.getContext().convertValue(playerEntity.fishHook);
 		}
 
-		private AbstractClientPlayerEntity getOtherPlayer(Context context, MemberFunction function) throws CodeError {
-			AbstractPlayerValue<?> player = function.getParameterValueOfType(context, AbstractPlayerValue.class, 0);
-			if (player == null) {
-				throw new RuntimeError("OtherPlayer was null", function.syntaxPosition, context);
+		private AbstractClientPlayerEntity getOtherPlayer(Arguments arguments) throws CodeError {
+			AbstractPlayerValue<?> player = arguments.getNext(AbstractPlayerValue.class);
+			if (player.value == null) {
+				throw arguments.getError("OtherPlayer was null");
 			}
 			return player.value;
 		}
 
 		@Override
-		public Class<? extends BaseValue> getValueClass() {
+		public Class<? extends Value> getValueClass() {
 			return AbstractPlayerValue.class;
 		}
 	}

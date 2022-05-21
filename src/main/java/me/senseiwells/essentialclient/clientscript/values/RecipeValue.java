@@ -2,14 +2,11 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.arucas.values.ListValue;
-import me.senseiwells.arucas.values.NullValue;
-import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.arucas.values.Value;
+import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
@@ -26,13 +23,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-public class RecipeValue extends Value<Recipe<?>> {
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.RECIPE;
+
+public class RecipeValue extends GenericValue<Recipe<?>> {
 	public RecipeValue(Recipe<?> value) {
 		super(value);
 	}
 
 	@Override
-	public Value<Recipe<?>> copy(Context context) throws CodeError {
+	public GenericValue<Recipe<?>> copy(Context context) throws CodeError {
 		return this;
 	}
 
@@ -47,33 +46,34 @@ public class RecipeValue extends Value<Recipe<?>> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> value) throws CodeError {
-		return this.value == value.value;
+	public boolean isEquals(Context context, Value value) throws CodeError {
+		return this.value == value.getValue();
 	}
 
 	@Override
 	public String getTypeName() {
-		return "Recipe";
+		return RECIPE;
 	}
 
 	/**
 	 * Recipe class for Arucas. This class represents recipes in Minecraft. <br>
 	 * Import the class with <code>import Recipe from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasRecipeClass extends ArucasClassExtension {
 		public ArucasRecipeClass() {
-			super("Recipe");
+			super(RECIPE);
 		}
 
 		@Override
-		public Map<String, Value<?>> getDefinedStaticVariables() {
+		public Map<String, Value> getDefinedStaticVariables() {
 			ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
 			if (networkHandler == null) {
 				return super.getDefinedStaticVariables();
 			}
-			Map<String, Value<?>> recipeMap = new HashMap<>();
+			Map<String, Value> recipeMap = new HashMap<>();
 			ArucasList recipeList = new ArucasList();
 			for (Recipe<?> recipe : networkHandler.getRecipeManager().values()) {
 				RecipeValue recipeValue = new RecipeValue(recipe);
@@ -87,7 +87,7 @@ public class RecipeValue extends Value<Recipe<?>> {
 		@Override
 		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
 			return ArucasFunctionMap.of(
-				new BuiltInFunction("of", "recipeId", this::newRecipe)
+				BuiltInFunction.of("of", 1, this::newRecipe)
 			);
 		}
 
@@ -98,13 +98,13 @@ public class RecipeValue extends Value<Recipe<?>> {
 		 * Throws - Error: <code>Recipe with id ... doesn't exist</code> if the id is not a valid recipe id <br>
 		 * Example: <code>Recipe.of("redstone_block");</code>
 		 */
-		private Value<?> newRecipe(Context context, BuiltInFunction function) throws CodeError {
-			String id = function.getParameterValueOfType(context, StringValue.class, 0).value;
+		private Value newRecipe(Arguments arguments) throws CodeError {
+			String id = arguments.getNextGeneric(StringValue.class);
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
-			Identifier identifier = ArucasMinecraftExtension.getId(context, function.syntaxPosition, id);
+			Identifier identifier = ArucasMinecraftExtension.getId(arguments, id);
 			Optional<? extends Recipe<?>> recipe = networkHandler.getRecipeManager().get(identifier);
 			if (recipe.isEmpty()) {
-				throw new RuntimeError("Recipe with id '%s' doesn't exist".formatted(id), function.syntaxPosition, context);
+				throw arguments.getError("Recipe with id '%s' doesn't exist", id);
 			}
 			return new RecipeValue(recipe.get());
 		}
@@ -112,11 +112,11 @@ public class RecipeValue extends Value<Recipe<?>> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getFullId", this::getFullId),
-				new MemberFunction("getId", this::getId),
-				new MemberFunction("getCraftingType", this::getCraftingType),
-				new MemberFunction("getOutput", this::getOutput),
-				new MemberFunction("getIngredients", this::getIngredients)
+				MemberFunction.of("getFullId", this::getFullId),
+				MemberFunction.of("getId", this::getId),
+				MemberFunction.of("getCraftingType", this::getCraftingType),
+				MemberFunction.of("getOutput", this::getOutput),
+				MemberFunction.of("getIngredients", this::getIngredients)
 			);
 		}
 
@@ -126,8 +126,8 @@ public class RecipeValue extends Value<Recipe<?>> {
 		 * Returns - String: the full id of the recipe <br>
 		 * Example: <code>recipe.getFullId();</code>
 		 */
-		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
-			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
+		private Value getFullId(Arguments arguments) throws CodeError {
+			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().toString());
 		}
 
@@ -137,8 +137,8 @@ public class RecipeValue extends Value<Recipe<?>> {
 		 * Returns - String: the id of the recipe <br>
 		 * Example: <code>recipe.getId();</code>
 		 */
-		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
-			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
+		private Value getId(Arguments arguments) throws CodeError {
+			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().getPath());
 		}
 
@@ -149,8 +149,8 @@ public class RecipeValue extends Value<Recipe<?>> {
 		 * <code>"crafting", "smelting", "blasting"</code> <br>
 		 * Example: <code>recipe.getCraftingType();</code>
 		 */
-		private Value<?> getCraftingType(Context context, MemberFunction function) throws CodeError {
-			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
+		private Value getCraftingType(Arguments arguments) throws CodeError {
+			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			Identifier identifier = Registry.RECIPE_TYPE.getId(thisValue.value.getType());
 			return identifier == null ? NullValue.NULL : StringValue.of(identifier.getPath());
 		}
@@ -161,8 +161,8 @@ public class RecipeValue extends Value<Recipe<?>> {
 		 * Returns - ItemStack: the output of the recipe <br>
 		 * Example: <code>recipe.getOutput();</code>
 		 */
-		private Value<?> getOutput(Context context, MemberFunction function) throws CodeError {
-			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
+		private Value getOutput(Arguments arguments) throws CodeError {
+			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return new ItemStackValue(thisValue.value.getOutput());
 		}
 
@@ -172,8 +172,8 @@ public class RecipeValue extends Value<Recipe<?>> {
 		 * Returns - List: list of lists, each inner lists contains possible recipe items <br>
 		 * Example: <code>recipe.getIngredients();</code>
 		 */
-		private Value<?> getIngredients(Context context, MemberFunction function) throws CodeError {
-			RecipeValue thisValue = function.getThis(context, RecipeValue.class);
+		private Value getIngredients(Arguments arguments) throws CodeError {
+			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			ArucasList recipeIngredients = new ArucasList();
 			for (Ingredient ingredient : thisValue.value.getIngredients()) {
 				ArucasList slotIngredients = new ArucasList();

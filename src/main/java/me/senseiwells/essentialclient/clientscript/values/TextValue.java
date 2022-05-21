@@ -2,9 +2,10 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.values.GenericValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
@@ -16,16 +17,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
-import java.util.List;
 import java.util.Locale;
 
-public class TextValue extends Value<MutableText> {
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TEXT;
+
+public class TextValue extends GenericValue<MutableText> {
 	public TextValue(MutableText value) {
 		super(value);
 	}
 
 	@Override
-	public Value<MutableText> copy(Context context) {
+	public GenericValue<MutableText> copy(Context context) {
 		return new TextValue(this.value.shallowCopy());
 	}
 
@@ -40,31 +42,32 @@ public class TextValue extends Value<MutableText> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> value) {
-		return this.value == value.value;
+	public boolean isEquals(Context context, Value value) {
+		return this.value == value.getValue();
 	}
 
 	@Override
 	public String getTypeName() {
-		return "Text";
+		return TEXT;
 	}
 
 	/**
 	 * Text class for Arucas. This allows for formatted strings used inside Minecraft. <br>
 	 * Import the class with <code>import Text from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasTextClass extends ArucasClassExtension {
 		public ArucasTextClass() {
-			super("Text");
+			super(TEXT);
 		}
 
 		@Override
 		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
 			return ArucasFunctionMap.of(
-				new BuiltInFunction("of", "text", this::of),
-				new BuiltInFunction("parse", "text", this::parse)
+				BuiltInFunction.of("of", 1, this::of),
+				BuiltInFunction.of("parse", 1, this::parse)
 			);
 		}
 
@@ -74,8 +77,8 @@ public class TextValue extends Value<MutableText> {
 		 * Returns - Text: the text instance from the string <br>
 		 * Example: <code>Text.of("Hello World!");</code>
 		 */
-		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
-			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
+		private Value of(Arguments arguments) throws CodeError {
+			StringValue stringValue = arguments.getNextString();
 			return new TextValue(new LiteralText(stringValue.value));
 		}
 
@@ -86,24 +89,24 @@ public class TextValue extends Value<MutableText> {
 		 * Returns - Text: the text instance from the json <br>
 		 * Example: <code>Text.parse("{\"text\":\"Hello World!\",\"color\":\"white\",\"italic\":\"true\"}");</code>
 		 */
-		private Value<?> parse(Context context, BuiltInFunction function) throws CodeError {
-			Value<?> value = function.getParameterValue(context, 0);
+		private Value parse(Arguments arguments) throws CodeError {
+			Value value = arguments.getNext();
 			if (value instanceof JsonValue json) {
 				return new TextValue(Text.Serializer.fromJson(json.value));
 			}
 			if (value instanceof StringValue string) {
 				return new TextValue(Text.Serializer.fromJson(string.value));
 			}
-			throw new RuntimeError("Must pass Json or String into parse()", function.syntaxPosition, context);
+			throw arguments.getError("Must pass Json or String into parse()");
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("withClickEvent", List.of("type", "value"), this::withClickEvent),
-				new MemberFunction("withHoverEvent", List.of("type", "value"), this::withHoverEvent),
-				new MemberFunction("format", "formatting", this::formatText),
-				new MemberFunction("append", "otherText", this::appendText)
+				MemberFunction.of("withClickEvent", 2, this::withClickEvent),
+				MemberFunction.of("withHoverEvent", 2, this::withHoverEvent),
+				MemberFunction.of("format", 1, this::formatText),
+				MemberFunction.of("append", 1, this::appendText)
 			);
 		}
 
@@ -117,22 +120,22 @@ public class TextValue extends Value<MutableText> {
 		 * Throws - Error: <code>"Invalid action: ..."</code> if the given action was invalid <br>
 		 * Example: <code>text.withClickEvent("open_url", "https://youtu.be/dQw4w9WgXcQ");</code>
 		 */
-		private Value<?> withClickEvent(Context context, MemberFunction function) throws CodeError {
-			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
-			String actionAsString = function.getParameterValueOfType(context, StringValue.class, 1).value.toLowerCase(Locale.ROOT);
+		private Value withClickEvent(Arguments arguments) throws CodeError {
+			TextValue text = arguments.getNext(TextValue.class);
+			String actionAsString = arguments.getNextGeneric(StringValue.class).toLowerCase(Locale.ROOT);
 			ClickEvent.Action action = ClickEvent.Action.byName(actionAsString);
 			ClickEvent clickEvent;
 			if (action == null) {
 				switch (actionAsString) {
 					case "function", "run_function" -> {
-						FunctionValue eventFunction = function.getParameterValueOfType(context, FunctionValue.class, 2);
-						clickEvent = new FunctionClickEvent(context, eventFunction);
+						FunctionValue eventFunction = arguments.getNextFunction();
+						clickEvent = new FunctionClickEvent(arguments.getContext(), eventFunction);
 					}
-					default -> throw new RuntimeError("Invalid action: %s".formatted(actionAsString), function.syntaxPosition, context);
+					default -> throw arguments.getError("Invalid action: %s", actionAsString);
 				}
 			}
 			else {
-				StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 2);
+				StringValue stringValue = arguments.getNextString();
 				clickEvent = new ClickEvent(action, stringValue.value);
 			}
 			text.value.styled(style -> style.withClickEvent(clickEvent));
@@ -148,24 +151,24 @@ public class TextValue extends Value<MutableText> {
 		 * Throws - Error: <code>"Invalid action: ..."</code> if the given action was invalid <br>
 		 * Example: <code>text.withHoverEvent("show_text", Text.of("Hello world!"));</code>
 		 */
-		private Value<?> withHoverEvent(Context context, MemberFunction function) throws CodeError {
-			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
-			StringValue stringAction = function.getParameterValueOfType(context, StringValue.class, 1);
+		private Value withHoverEvent(Arguments arguments) throws CodeError {
+			TextValue text = arguments.getNext(TextValue.class);
+			StringValue stringAction = arguments.getNextString();
 			HoverEvent hoverEvent = switch (stringAction.value) {
 				case "show_text" -> {
-					MutableText mutableText = function.getParameterValueOfType(context, TextValue.class, 2).value;
+					MutableText mutableText = arguments.getNextGeneric(TextValue.class);
 					yield new HoverEvent(HoverEvent.Action.SHOW_TEXT, mutableText);
 				}
 				case "show_item" -> {
-					ItemStack stack = function.getParameterValueOfType(context, ItemStackValue.class, 2).value;
+					ItemStack stack = arguments.getNextGeneric(ItemStackValue.class);
 					yield new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackContent(stack));
 				}
 				case "show_entity" -> {
-					EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 2);
+					EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
 					Entity entity = entityValue.value;
 					yield new HoverEvent(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.EntityContent(entity.getType(), entity.getUuid(), entity.getDisplayName()));
 				}
-				default -> throw new RuntimeError("Invalid action: %s".formatted(stringAction.value), function.syntaxPosition, context);
+				default -> throw arguments.getError("Invalid action: %s", stringAction);
 			};
 			text.value.styled(style -> style.withHoverEvent(hoverEvent));
 			return text;
@@ -179,12 +182,12 @@ public class TextValue extends Value<MutableText> {
 		 * Throws - Error: <code>"Invalid formatting: ..."</code> if the given formatting was invalid <br>
 		 * Example: <code>text.format("DARK_RED").format("BOLD");</code>
 		 */
-		private Value<?> formatText(Context context, MemberFunction function) throws CodeError {
-			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
-			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 1);
+		private Value formatText(Arguments arguments) throws CodeError {
+			TextValue text = arguments.getNext(TextValue.class);
+			StringValue stringValue = arguments.getNextString();
 			Formatting formatting = Formatting.byName(stringValue.value.toUpperCase(Locale.ROOT));
 			if (formatting == null) {
-				throw new RuntimeError("Invalid formatting: %s".formatted(stringValue.value), function.syntaxPosition, context);
+				throw arguments.getError("Invalid formatting: %s", stringValue);
 			}
 			text.value.formatted(formatting);
 			return text;
@@ -196,9 +199,9 @@ public class TextValue extends Value<MutableText> {
 		 * Parameter - Text: the text instance to append to <br>
 		 * Example: <code>Text.of("Hello").append(Text.of(" world!"));</code>
 		 */
-		private Value<?> appendText(Context context, MemberFunction function) throws CodeError {
-			TextValue text = function.getParameterValueOfType(context, TextValue.class, 0);
-			TextValue textValue = function.getParameterValueOfType(context, TextValue.class, 1);
+		private Value appendText(Arguments arguments) throws CodeError {
+			TextValue text = arguments.getNext(TextValue.class);
+			TextValue textValue = arguments.getNext(TextValue.class);
 			text.value.append(textValue.value);
 			return text;
 		}

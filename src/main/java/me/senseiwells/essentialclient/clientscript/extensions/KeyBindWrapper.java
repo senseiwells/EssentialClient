@@ -41,7 +41,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 	}
 
 	@ArucasFunction
-	public Value<?> getKey(Context context) {
+	public Value getKey(Context context) {
 		return StringValue.of(KeyboardHelper.translateKeyToString(this.keyBind.getKeyCode()));
 	}
 

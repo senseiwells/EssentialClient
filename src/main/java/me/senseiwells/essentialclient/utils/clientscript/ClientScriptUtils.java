@@ -4,10 +4,10 @@ import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.brigadier.suggestion.Suggestions;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
@@ -19,17 +19,17 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.classes.ArucasEnumDefinition;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.essentialclient.clientscript.values.PosValue;
-import me.senseiwells.essentialclient.utils.command.ClientEntityArgumentType;
-import me.senseiwells.essentialclient.utils.command.ClientEntitySelector;
-import me.senseiwells.essentialclient.utils.command.CommandHelper;
-import me.senseiwells.essentialclient.utils.command.DefinitionArgumentType;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.command.*;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ClientScriptUtils {
 	public static final StringValue
@@ -40,6 +40,7 @@ public class ClientScriptUtils {
 		MIN = StringValue.of("min"),
 		MAX = StringValue.of("max"),
 		SUGGESTS = StringValue.of("suggests"),
+		SUGGESTER = StringValue.of("suggester"),
 		ENUM = StringValue.of("enum");
 
 	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Context context, ISyntax syntaxPosition) throws CodeError {
@@ -68,13 +69,14 @@ public class ClientScriptUtils {
 		};
 	}
 
-	public static Value<?> commandArgumentToValue(Object object, Context context, CommandContext<ServerCommandSource> commandContext) throws CommandSyntaxException, CodeError {
-		// We check for these two here since they require CommandContext
+	public static Value commandArgumentToValue(Object object, Context context) throws CommandSyntaxException, CodeError {
+		// We check for these two here since they throw CommandSyntaxExceptions
 		if (object instanceof PosArgument posArgument) {
-			return new PosValue(posArgument.toAbsolutePos(commandContext.getSource()));
+			return new PosValue(posArgument.toAbsolutePos(new FakeCommandSource(EssentialUtils.getPlayer())));
 		}
 		if (object instanceof ClientEntitySelector selector) {
-			object = selector.isSingleTarget() ? selector.getEntity(commandContext.getSource()) : selector.getEntities(commandContext.getSource());
+			FakeCommandSource source = new FakeCommandSource(EssentialUtils.getPlayer());
+			object = selector.isSingleTarget() ? selector.getEntity(source) : selector.getEntities(source);
 		}
 		return context.convertValue(object);
 	}
@@ -124,7 +126,7 @@ public class ClientScriptUtils {
 							}
 							ArucasList arucasList = new ArucasList();
 							for (ParsedArgument<?, ?> argument : arguments) {
-								arucasList.add(commandArgumentToValue(argument.getResult(), ctx, c));
+								arucasList.add(commandArgumentToValue(argument.getResult(), ctx));
 							}
 							functionValue.call(ctx, arucasList);
 						});
@@ -174,12 +176,12 @@ public class ClientScriptUtils {
 		}
 
 		private ArgumentBuilder<ServerCommandSource, ?> getArgument(String name, ArucasMap arguments) throws CodeError {
-			Value<?> argumentValue = arguments.get(this.context, TYPE);
-			if (!(argumentValue instanceof StringValue)) {
+			Value argumentValue = arguments.get(this.context, TYPE);
+			if (!(argumentValue instanceof StringValue stringValue)) {
 				throw new RuntimeError("Expected string for 'type' for argument '%s'".formatted(name), this.syntaxPosition, this.context);
 			}
 			SuggestionProvider<ServerCommandSource> extraSuggestion = null;
-			String argumentTypeName = (String) argumentValue.value;
+			String argumentTypeName = stringValue.value;
 			ArgumentType<?> argumentType = switch (argumentTypeName.toLowerCase()) {
 				case "playername" -> {
 					extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
@@ -223,11 +225,11 @@ public class ClientScriptUtils {
 			if (extraSuggestion != null) {
 				argumentBuilder.suggests(extraSuggestion);
 			}
-			Value<?> suggestion = arguments.get(this.context, SUGGESTS);
+			Value suggestion = arguments.get(this.context, SUGGESTS);
 			if (suggestion instanceof ListValue listValue) {
 				int size = listValue.value.size();
 				String[] suggestions = new String[size];
-				Value<?>[] values = listValue.value.toArray();
+				Value[] values = listValue.value.toArray();
 				for (int i = 0; i < size; i++) {
 					suggestions[i] = values[i].getAsString(this.context);
 				}
@@ -235,6 +237,41 @@ public class ClientScriptUtils {
 			}
 			else if (suggestion != null) {
 				throw new RuntimeError("Suggestion should be a list", this.syntaxPosition, this.context);
+			}
+
+			Value suggester = arguments.get(this.context, SUGGESTER);
+			if (suggester instanceof FunctionValue function) {
+				argumentBuilder.suggests((c, b) -> {
+					try {
+						Context context = this.context.createBranch();
+						Collection<ParsedArgument<?, ?>> commandArguments = CommandHelper.getArguments(c);
+						if (commandArguments == null) {
+							throw new RuntimeError("Couldn't get arguments for suggester '%s'".formatted(function), this.syntaxPosition, context);
+						}
+						List<Value> arucasList = new ArrayList<>();
+						for (ParsedArgument<?, ?> argument : commandArguments) {
+							arucasList.add(commandArgumentToValue(argument.getResult(), context));
+						}
+						Value value = function.call(context, arucasList);
+						if (value instanceof ListValue listValue) {
+							int size = listValue.value.size();
+							String[] suggestions = new String[size];
+							Value[] values = listValue.value.toArray();
+							for (int i = 0; i < size; i++) {
+								suggestions[i] = values[i].getAsString(this.context);
+							}
+							return CommandSource.suggestMatching(suggestions, b);
+						}
+						throw new RuntimeError("Suggester did not return a list", this.syntaxPosition, context);
+					}
+					catch (Throwable throwable) {
+						this.context.getThreadHandler().tryError(this.context, throwable);
+					}
+					return Suggestions.empty();
+				});
+			}
+			else if (suggester != null) {
+				throw new RuntimeError("Suggester should be a function", this.syntaxPosition, this.context);
 			}
 			return argumentBuilder;
 		}

@@ -94,12 +94,12 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 	}
 
 	@ArucasFunction
-	public Value<?> getBlock(Context context) {
+	public Value getBlock(Context context) {
 		return new BlockValue(this.blockState, this.blockPos);
 	}
 
 	@ArucasFunction
-	public Value<?> getPos(Context context) {
+	public Value getPos(Context context) {
 		return new PosValue(this.blockPos);
 	}
 

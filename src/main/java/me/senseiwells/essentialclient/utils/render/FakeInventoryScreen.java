@@ -26,7 +26,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	}
 
 	public void setFunctionValue(Context context, FunctionValue functionValue) {
-		this.contextFunction = new ContextFunction(context, functionValue);
+		this.contextFunction = new ContextFunction(context.createBranch(), functionValue);
 	}
 
 	public void setStack(int slot, ItemStack stack) {

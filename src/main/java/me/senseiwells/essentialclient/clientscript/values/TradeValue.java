@@ -2,21 +2,25 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.values.GenericValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.TradeOffer;
 
-public class TradeValue extends Value<TradeOffer> {
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TRADE;
+
+public class TradeValue extends GenericValue<TradeOffer> {
 	public TradeValue(TradeOffer value) {
 		super(value);
 	}
 
-	private boolean allMatch(TradeOffer otherTrade){
-		if (otherTrade == null){
+	private boolean allMatch(TradeOffer otherTrade) {
+		if (otherTrade == null) {
 			return this.value == null;
 		}
 		return areItemStacksEqual(otherTrade.getOriginalFirstBuyItem(), this.value.getOriginalFirstBuyItem())
@@ -24,14 +28,14 @@ public class TradeValue extends Value<TradeOffer> {
 			&& areItemStacksEqual(otherTrade.getSecondBuyItem(), this.value.getSecondBuyItem());
 	}
 
-	private static boolean areItemStacksEqual(ItemStack itemStack, ItemStack otherStack){
+	private static boolean areItemStacksEqual(ItemStack itemStack, ItemStack otherStack) {
 		return itemStack.getCount() == otherStack.getCount()
 			&& ItemStack.areItemsEqual(itemStack, otherStack)
 			&& ItemStack.areNbtEqual(itemStack, otherStack);
 	}
 
 	@Override
-	public Value<TradeOffer> copy(Context context) throws CodeError {
+	public GenericValue<TradeOffer> copy(Context context) throws CodeError {
 		return new TradeValue(new TradeOffer(this.value.toNbt()));
 	}
 
@@ -46,72 +50,72 @@ public class TradeValue extends Value<TradeOffer> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> value) throws CodeError {
-		return value instanceof TradeValue && this.allMatch((TradeOffer) value.value);
+	public boolean isEquals(Context context, Value value) throws CodeError {
+		return value instanceof TradeValue tradeValue && this.allMatch(tradeValue.value);
 	}
 
 	@Override
 	public String getTypeName() {
-		return "Trade";
+		return TRADE;
 	}
 
-	public static class ArucasTradeOfferClass extends ArucasClassExtension{
+	public static class ArucasTradeOfferClass extends ArucasClassExtension {
 
 		public ArucasTradeOfferClass() {
-			super("Trade");
+			super(TRADE);
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getSellItem", this::getSellItem),
-				new MemberFunction("getFirstBuyItem", this::getFirstBuyItem),
-				new MemberFunction("getAdjustedFirstBuyItem", this::getAdjustedFirstBuyItem),
-				new MemberFunction("getSecondBuyItem", this::getSecondBuyItem),
-				new MemberFunction("getMaxUses", this::getMaxUses),
-				new MemberFunction("getUses", this::getUses),
-				new MemberFunction("getSpecialPrice", this::getSpecialPrice),
-				new MemberFunction("getPriceMultiplier", this::getPriceMultiplier)
+				MemberFunction.of("getSellItem", this::getSellItem),
+				MemberFunction.of("getFirstBuyItem", this::getFirstBuyItem),
+				MemberFunction.of("getAdjustedFirstBuyItem", this::getAdjustedFirstBuyItem),
+				MemberFunction.of("getSecondBuyItem", this::getSecondBuyItem),
+				MemberFunction.of("getMaxUses", this::getMaxUses),
+				MemberFunction.of("getUses", this::getUses),
+				MemberFunction.of("getSpecialPrice", this::getSpecialPrice),
+				MemberFunction.of("getPriceMultiplier", this::getPriceMultiplier)
 			);
 		}
 
-		public Value<?> getSellItem(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getSellItem(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getSellItem());
 		}
 
-		public Value<?> getFirstBuyItem(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getFirstBuyItem(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getOriginalFirstBuyItem());
 		}
 
-		public Value<?> getAdjustedFirstBuyItem(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getAdjustedFirstBuyItem(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getAdjustedFirstBuyItem());
 		}
 
-		public Value<?> getSecondBuyItem(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getSecondBuyItem(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getSecondBuyItem());
 		}
 
-		public Value<?> getMaxUses(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getMaxUses(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getMaxUses());
 		}
 
-		public Value<?> getUses(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getUses(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getUses());
 		}
 
-		public Value<?> getSpecialPrice(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getSpecialPrice(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getSpecialPrice());
 		}
 
-		public Value<?> getPriceMultiplier(Context context, MemberFunction function) throws CodeError {
-			TradeValue thisValue = function.getThis(context, TradeValue.class);
+		public Value getPriceMultiplier(Arguments arguments) throws CodeError {
+			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getPriceMultiplier());
 		}
 

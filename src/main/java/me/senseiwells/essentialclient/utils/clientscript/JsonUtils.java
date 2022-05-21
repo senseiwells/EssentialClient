@@ -13,7 +13,7 @@ import me.senseiwells.arucas.values.*;
 import java.util.Map;
 
 public class JsonUtils {
-	public static Value<?> toValue(Context context, JsonElement element) throws CodeError {
+	public static Value toValue(Context context, JsonElement element) throws CodeError {
 		if (element.isJsonPrimitive()) {
 			JsonPrimitive primitive = element.getAsJsonPrimitive();
 			if (primitive.isBoolean()) {
@@ -49,11 +49,11 @@ public class JsonUtils {
 		return new MapValue(map);
 	}
 
-	public static JsonElement fromValue(Context context, Value<?> value) throws CodeError {
+	public static JsonElement fromValue(Context context, Value value) throws CodeError {
 		return fromValue(context, value, 0);
 	}
 
-	private static JsonElement fromValue(Context context, Value<?> value, int depth) throws CodeError {
+	private static JsonElement fromValue(Context context, Value value, int depth) throws CodeError {
 		if (depth > 100) {
 			throw new RuntimeError("Json serialisation went too deep", ISyntax.empty(), context);
 		}
@@ -78,7 +78,7 @@ public class JsonUtils {
 
 	private static JsonArray fromList(Context context, ListValue list, int depth) throws CodeError {
 		JsonArray array = new JsonArray();
-		for (Value<?> value : list.value) {
+		for (Value value : list.value) {
 			array.add(fromValue(context, value, depth));
 		}
 		return array;

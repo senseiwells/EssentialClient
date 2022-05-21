@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.clientscript.core;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ContextBuilder;
+import me.senseiwells.arucas.utils.ValueTypes;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.extensions.*;
@@ -36,7 +37,34 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
 
-public class MinecraftAPI {
+public class MinecraftAPI extends ValueTypes {
+	public static final String
+		BOX_SHAPE = "BoxShape",
+		FAKE_BLOCK = "FakeBlock",
+		GAME_EVENT = "GameEvent",
+		KEY_BIND = "KeyBind",
+		LINE_SHAPE = "LineShape",
+		SPHERE_SHAPE = "SphereShape",
+		BLOCK = "Block",
+		COMMAND_BUILDER = "CommandBuilder",
+		ENTITY = "Entity",
+		FAKE_SCREEN = "FakeScreen",
+		ITEM_ENTITY = "ItemEntity",
+		ITEM_STACK = "ItemStack",
+		JSON = "Json",
+		LIVING_ENTITY = "LivingEntity",
+		MATERIAL = "Material",
+		MERCHANT_SCREEN = "MerchantScreen",
+		MINECRAFT_CLIENT = "MinecraftClient",
+		OTHER_PLAYER = "OtherPlayer",
+		PLAYER = "Player",
+		POS = "Pos",
+		RECIPE = "Recipe",
+		SCREEN = "Screen",
+		TEXT = "Text",
+		TRADE = "Trade",
+		WORLD = "World";
+
 	public static final String IMPORT_NAME = "Minecraft";
 
 	@SuppressWarnings({"deprecation", "unchecked"})

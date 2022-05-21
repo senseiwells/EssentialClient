@@ -1,24 +1,26 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
-import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.ConstructorDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.ConstructorFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 
-import java.util.List;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
     public FakeInventoryScreenValue(FakeInventoryScreen value) {
@@ -37,101 +39,109 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 
 	@Override
 	public String getTypeName() {
-		return "FakeScreen";
+		return FAKE_SCREEN;
 	}
 
-	/**
-	 * FakeScreen class for Arucas. This class extends Screen and so inherits all
-	 * of their methods too, this class is used to create client side inventory screens. <br>
-	 * Import the class with <code>import FakeScreen from Minecraft;</code> <br>
-	 * Fully Documented.
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = FAKE_SCREEN,
+		desc = {
+			"This class extends Screen and so inherits all of their methods too,",
+			"this class is used to create client side inventory screens."
+		},
+		importPath = "Minecraft"
+	)
 	public static class ArucasFakeInventoryScreenClass extends ArucasClassExtension {
 		public ArucasFakeInventoryScreenClass() {
-			super("FakeScreen");
+			super(FAKE_SCREEN);
 		}
 
 		@Override
 		public ArucasFunctionMap<ConstructorFunction> getDefinedConstructors() {
 			return ArucasFunctionMap.of(
-				new ConstructorFunction(List.of("name", "rows"), this::newFakeScreen)
+				ConstructorFunction.of(2, this::newFakeScreen)
 			);
 		}
 
-		/**
-		 * Name: <code>new FakeScreen(name, rows)</code> <br>
-		 * Description: Creates a FakeScreen instance with given name and given amount of rows <br>
-		 * Parameter - String, Number: the name of the screen, the number of rows between 1 - 6 <br>
-		 * Returns - FakeScreen: the new FakeScreen object <br>
-		 * Throws - Error: <code>"..."</code> if the parameters are invalid <br>
-		 * Example: <code>new FakeScreen("MyScreen", 6);</code>
-		 */
-		private Value<?> newFakeScreen(Context context, BuiltInFunction function) throws CodeError {
+		@ConstructorDoc(
+			desc = "Creates a FakeScreen instance with given name and given amount of rows",
+			params = {
+				STRING, "name", "the name of the screen",
+				NUMBER, "rows", "the number of rows between 1 - 6"
+			},
+			example = "new FakeScreen('MyScreen', 6);"
+		)
+		private Value newFakeScreen(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer();
-			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
-			NumberValue numberValue = function.getParameterValueOfType(context, NumberValue.class, 1);
+			StringValue stringValue = arguments.getNextString();
+			NumberValue numberValue = arguments.getNextNumber();
 			try {
 				return new FakeInventoryScreenValue(new FakeInventoryScreen(player.getInventory(), stringValue.value, numberValue.value.intValue()));
 			}
 			catch (IllegalArgumentException e) {
-				throw new RuntimeError(e.getMessage(), function.syntaxPosition, context);
+				throw arguments.getError(e.getMessage());
 			}
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("onClick", "function", this::onClick),
-				new MemberFunction("setStackForSlot", List.of("slotNum", "stack"), this::setStackForSlot),
-				new MemberFunction("getStackForSlot", "slotNum", this::getStackForSlot)
+				MemberFunction.of("onClick", 1, this::onClick),
+				MemberFunction.of("setStackForSlot", 2, this::setStackForSlot),
+				MemberFunction.of("getStackForSlot", 1, this::getStackForSlot)
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;FakeScreen>.onClick(function)</code> <br>
-		 * Description: This sets the callback for when a slot is clicked in the inventory <br>
-		 * Parameter - Function: the callback function which must have 3 parameters, which will be passed in
-		 * when it is called, item, slotNum, action, being ItemStack, Number, and String respectively <br>
-		 * Example: <code>fakeScreen.onClick(fun(i, s, a) { print(a); });</code>
-		 */
-		private Value<?> onClick(Context context, MemberFunction function) throws CodeError {
-			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
-			FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 1);
-			fakeScreen.value.setFunctionValue(context, functionValue);
+		@FunctionDoc(
+			name = "onClick",
+			desc = "This sets the callback for when a slot is clicked in the inventory",
+			params = {
+				FUNCTION, "function", "the callback function which must have 3 parameters, which will be passed " +
+				"in when it is called, item, slotNum, action, being ItemStack, Number, and String respectively"
+			},
+			example = """
+			fakeScreen.onClick(fun(item, slotNum, action) {
+			    // action can be any of the following:
+			    // 'PICKUP', 'QUICK_MOVE', 'SWAP', 'CLONE', 'THROW', 'QUICK_CRAFT', or 'PICKUP_ALL'
+			    print(action);
+			});
+			"""
+		)
+		private Value onClick(Arguments arguments) throws CodeError {
+			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
+			FunctionValue functionValue = arguments.getNextFunction();
+			fakeScreen.value.setFunctionValue(arguments.getContext(), functionValue);
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;FakeScreen>.setStackForSlot(slotNum, stack)</code> <br>
-		 * Description: Sets the stack for the given slot, if the slot is out of bounds it won't be set <br>
-		 * Parameter - Number, ItemStack: the slot number, the stack to set <br>
-		 * Example: <code>fakeScreen.setStackForSlot(0, Material.DIAMOND_BLOCK.asItemStack());</code>
-		 */
-		private Value<?> setStackForSlot(Context context, MemberFunction function) throws CodeError {
-			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
-			NumberValue slot = function.getParameterValueOfType(context, NumberValue.class, 1);
-			ItemStackValue stackValue = function.getParameterValueOfType(context, ItemStackValue.class, 2);
+		@FunctionDoc(
+			name = "setStackForSlot",
+			desc = "Sets the stack for the given slot, if the slot is out of bounds it won't be set",
+			params = {
+				NUMBER, "slotNum", "the slot number",
+				ITEM_STACK, "stack", "the stack to set"
+			},
+			example = "fakeScreen.setStackForSlot(0, Material.DIAMOND_BLOCK.asItemStack());"
+		)
+		private Value setStackForSlot(Arguments arguments) throws CodeError {
+			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
+			NumberValue slot = arguments.getNextNumber();
+			ItemStackValue stackValue = arguments.getNext(ItemStackValue.class);
 			fakeScreen.value.setStack(slot.value.intValue(), stackValue.value);
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;FakeScreen>.getStackForSlot(slotNum)</code> <br>
-		 * Description: Gets the stack for the given slot, if the slot is out of bounds it returns null <br>
-		 * Parameter - Number: the slot number <br>
-		 * Returns - ItemStack: the stack for the given slot <br>
-		 * Example: <code>fakeScreen.getStackForSlot(0);</code>
-		 */
-		private Value<?> getStackForSlot(Context context, MemberFunction function) throws CodeError {
-			FakeInventoryScreenValue fakeScreen = this.getFakeScreen(context, function);
-			NumberValue slot = function.getParameterValueOfType(context, NumberValue.class, 1);
+		@FunctionDoc(
+			name = "getStackForSlot",
+			desc = "Gets the stack for the given slot, if the slot is out of bounds it returns null",
+			params = {NUMBER, "slotNum", "the slot number"},
+			returns = {ITEM_STACK, "the stack for the given slot"},
+			example = "fakeScreen.getStackForSlot(0);"
+		)
+		private Value getStackForSlot(Arguments arguments) throws CodeError {
+			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
+			NumberValue slot = arguments.getNextNumber();
 			ItemStack stack = fakeScreen.value.getStack(slot.value.intValue());
 			return stack == null ? NullValue.NULL : new ItemStackValue(stack);
-		}
-
-		private FakeInventoryScreenValue getFakeScreen(Context context, MemberFunction function) throws CodeError {
-			return function.getParameterValueOfType(context, FakeInventoryScreenValue.class, 0);
 		}
 
 		@Override

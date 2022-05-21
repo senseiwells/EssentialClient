@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
@@ -18,7 +18,9 @@ import me.senseiwells.essentialclient.utils.clientscript.JsonUtils;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-public class JsonValue extends Value<JsonElement> {
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.JSON;
+
+public class JsonValue extends GenericValue<JsonElement> {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public JsonValue(JsonElement value) {
@@ -26,7 +28,7 @@ public class JsonValue extends Value<JsonElement> {
 	}
 
 	@Override
-	public Value<JsonElement> copy(Context context) {
+	public GenericValue<JsonElement> copy(Context context) {
 		return this;
 	}
 
@@ -41,32 +43,33 @@ public class JsonValue extends Value<JsonElement> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> other) throws CodeError {
+	public boolean isEquals(Context context, Value other) throws CodeError {
 		return false;
 	}
 
 	@Override
 	public String getTypeName() {
-		return "Json";
+		return JSON;
 	}
 
 	/**
 	 * Json class for Arucas. <br>
 	 * Import the class with <code>import Json from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasJsonClass extends ArucasClassExtension {
 		public ArucasJsonClass() {
-			super("Json");
+			super(JSON);
 		}
 
 		@Override
 		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
 			return ArucasFunctionMap.of(
-				new BuiltInFunction("fromString", "string", this::fromString),
-				new BuiltInFunction("fromList", "list", this::fromList),
-				new BuiltInFunction("fromMap", "map", this::fromMap)
+				BuiltInFunction.of("fromString", 1, this::fromString),
+				BuiltInFunction.of("fromList", 1, this::fromList),
+				BuiltInFunction.of("fromMap", 1, this::fromMap)
 			);
 		}
 
@@ -78,13 +81,13 @@ public class JsonValue extends Value<JsonElement> {
 		 * Throws - Error: <code>"Json could not be parsed"</code> if the string is not formatted correctly <br>
 		 * Example: <code>Json.fromString("{\"key\":\"value\"}")</code>
 		 */
-		private Value<?> fromString(Context context, BuiltInFunction function) throws CodeError {
-			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
+		private Value fromString(Arguments arguments) throws CodeError {
+			StringValue stringValue = arguments.getNextString();
 			try {
 				return new JsonValue(GSON.fromJson(stringValue.value, JsonElement.class));
 			}
 			catch (JsonSyntaxException e) {
-				throw new RuntimeError("Json could not be parsed", function.syntaxPosition, context);
+				throw arguments.getError("Json could not be parsed");
 			}
 		}
 
@@ -97,9 +100,9 @@ public class JsonValue extends Value<JsonElement> {
 		 * Returns - Json: the Json parsed from the list <br>
 		 * Example: <code>Json.fromList(["value", 1, true])</code>
 		 */
-		private Value<?> fromList(Context context, BuiltInFunction function) throws CodeError {
-			ListValue listValue = function.getParameterValueOfType(context, ListValue.class, 0);
-			return new JsonValue(JsonUtils.fromValue(context, listValue));
+		private Value fromList(Arguments arguments) throws CodeError {
+			ListValue listValue = arguments.getNextList();
+			return new JsonValue(JsonUtils.fromValue(arguments.getContext(), listValue));
 		}
 
 		/**
@@ -111,16 +114,16 @@ public class JsonValue extends Value<JsonElement> {
 		 * Returns - Json: the Json parsed from the map <br>
 		 * Example: <code>Json.fromMap({"key": ["value1", "value2"]})</code>
 		 */
-		private Value<?> fromMap(Context context, BuiltInFunction function) throws CodeError {
-			MapValue mapValue = function.getParameterValueOfType(context, MapValue.class, 0);
-			return new JsonValue(JsonUtils.fromValue(context, mapValue));
+		private Value fromMap(Arguments arguments) throws CodeError {
+			MapValue mapValue = arguments.getNextMap();
+			return new JsonValue(JsonUtils.fromValue(arguments.getContext(), mapValue));
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getValue", this::getValue),
-				new MemberFunction("writeToFile", "file", this::writeToFile)
+				MemberFunction.of("getValue", this::getValue),
+				MemberFunction.of("writeToFile", 1, this::writeToFile)
 			);
 		}
 
@@ -130,30 +133,31 @@ public class JsonValue extends Value<JsonElement> {
 		 * Returns - Value: the Value parsed from the Json <br>
 		 * Example: <code>json.getValue()</code>
 		 */
-		private Value<?> getValue(Context context, MemberFunction function) throws CodeError {
-			JsonValue thisValue = function.getThis(context, JsonValue.class);
-			return JsonUtils.toValue(context, thisValue.value);
+		private Value getValue(Arguments arguments) throws CodeError {
+			JsonValue thisValue = arguments.getNext(JsonValue.class);
+			return JsonUtils.toValue(arguments.getContext(), thisValue.value);
 		}
 
 		/**
 		 * Name: <code>&lt;Json>.writeToFile(file)</code> <br>
 		 * Description: This writes the Json to a file <br>
 		 * Parameter - File: the file that you want to write to <br>
-		 - Throws: <code>"There was an error writing the file: ..."</code> if there is an error writing to the file <br>
+		 * - Throws: <code>"There was an error writing the file: ..."</code> if there is an error writing to the file <br>
 		 * Example: <code>json.writeToFile(new File("D:/cool/realDirectory"))</code>
 		 */
-		private Value<?> writeToFile(Context context, MemberFunction function) throws CodeError {
-			JsonValue thisValue = function.getThis(context, JsonValue.class);
-			FileValue fileValue = function.getParameterValueOfType(context, FileValue.class, 1);
+		private Value writeToFile(Arguments arguments) throws CodeError {
+			JsonValue thisValue = arguments.getNext(JsonValue.class);
+			FileValue fileValue = arguments.getNext(FileValue.class);
+			Context context = arguments.getContext();
 			try (PrintWriter printWriter = new PrintWriter(fileValue.value)) {
 				printWriter.println(thisValue.getAsString(context));
 				return NullValue.NULL;
 			}
 			catch (FileNotFoundException | SecurityException e) {
-				throw new RuntimeError(
-					"There was an error writing the file: \"%s\"\n%s".formatted(fileValue.getAsString(context), ExceptionUtils.getStackTrace(e)),
-					function.syntaxPosition,
-					context
+				throw arguments.getError(
+					"There was an error writing the file: '%s'\n%s",
+					fileValue.getAsString(context),
+					ExceptionUtils.getStackTrace(e)
 				);
 			}
 		}

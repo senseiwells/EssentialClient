@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
@@ -31,7 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class BlockValue extends Value<BlockState> {
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BLOCK;
+
+public class BlockValue extends GenericValue<BlockState> {
 	private final PosValue blockPos;
 	private final boolean hasPos;
 
@@ -53,24 +56,24 @@ public class BlockValue extends Value<BlockState> {
 		return this.hasPos;
 	}
 
-	public Value<?> getPos() {
+	public Value getPos() {
 		return this.hasPos ? this.blockPos : NullValue.NULL;
 	}
 
-	public Value<?> getBlockX() {
+	public Value getBlockX() {
 		return this.hasPos ? this.blockPos.getX() : NullValue.NULL;
 	}
 
-	public Value<?> getBlockY() {
+	public Value getBlockY() {
 		return this.hasPos ? this.blockPos.getY() : NullValue.NULL;
 	}
 
-	public Value<?> getBlockZ() {
+	public Value getBlockZ() {
 		return this.hasPos ? this.blockPos.getZ() : NullValue.NULL;
 	}
 
 	@Override
-	public Value<BlockState> copy(Context context) {
+	public GenericValue<BlockState> copy(Context context) {
 		return this;
 	}
 
@@ -80,7 +83,7 @@ public class BlockValue extends Value<BlockState> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> value) {
+	public boolean isEquals(Context context, Value value) {
 		if (!(value instanceof BlockValue otherValue)) {
 			return false;
 		}
@@ -89,7 +92,7 @@ public class BlockValue extends Value<BlockState> {
 
 	@Override
 	public String getTypeName() {
-		return "Block";
+		return BLOCK;
 	}
 
 	@Override
@@ -99,68 +102,68 @@ public class BlockValue extends Value<BlockState> {
 
 	public static class ArucasBlockClass extends ArucasClassExtension {
 		public ArucasBlockClass() {
-			super("Block");
+			super(BLOCK);
 		}
 
 		@Override
 		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
 			return ArucasFunctionMap.of(
-				new BuiltInFunction("of", "material", this::of)
+				BuiltInFunction.of("of", 1, this::of)
 			);
 		}
 
-		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
-			Value<?> value = function.getParameterValue(context, 0);
+		private Value of(Arguments arguments) throws CodeError {
+			Value value = arguments.getNext();
 			if (value instanceof StringValue stringValue) {
-				Identifier id = ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value);
+				Identifier id = ArucasMinecraftExtension.getId(arguments, stringValue.value);
 				Optional<Block> block = Registry.BLOCK.getOrEmpty(id);
 				return new BlockValue(block.orElseThrow(() -> {
-					return new RuntimeError("'%s' is not a valid block".formatted(id), function.syntaxPosition, context);
+					return arguments.getError("'%s' is not a value block", id);
 				}).getDefaultState());
 			}
 			if (!(value instanceof MaterialValue materialValue)) {
-				throw new RuntimeError("Parameter must be of type String or Material", function.syntaxPosition, context);
+				throw arguments.getError("Parameter must be of type String or Material");
 			}
-			return new BlockValue(materialValue.asBlock(context, function.syntaxPosition).getDefaultState());
+			return new BlockValue(materialValue.asBlock(arguments).getDefaultState());
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getMaterial", this::getMaterial),
-				new MemberFunction("getFullId", this::getFullId),
-				new MemberFunction("getId", this::getId),
-				new MemberFunction("isBlockEntity", this::isBlockEntity),
-				new MemberFunction("isTransparent", this::isTransparent),
-				new MemberFunction("asItemStack", this::asItemStack),
-				new MemberFunction("getBlastResistance", this::getBlastResistance),
-				new MemberFunction("getBlockProperties", this::getBlockProperties),
-				new MemberFunction("hasBlockPosition", this::hasBlockPosition),
-				new MemberFunction("getPos", this::getPos),
-				new MemberFunction("getX", this::getBlockX),
-				new MemberFunction("getZ", this::getBlockZ),
-				new MemberFunction("getY", this::getBlockY),
-				new MemberFunction("getTranslatedName", this::getTranslatedName),
-				new MemberFunction("isSolidBlock", this::isSolidBlock),
-				new MemberFunction("rotateYClockwise", this::rotateYClockwise),
-				new MemberFunction("rotateYCounterClockwise", this::rotateYCounterClockwise),
-				new MemberFunction("mirrorFrontBack", this::mirrorFrontBack),
-				new MemberFunction("mirrorLeftRight", this::mirrorLeftRight),
-				new MemberFunction("isFluid", this::isFluid),
-				new MemberFunction("isFluidSource", this::isFluidSource),
-				new MemberFunction("isReplaceable", this::isReplaceable),
-				new MemberFunction("getHardness", this::getHardness),
-				new MemberFunction("sideCoversSmallSquare", "direction", this::sideCoversSmallSquare),
-				new MemberFunction("isSideSolidFullSquare", "direction", this::isSideSolidFullSquare),
-				new MemberFunction("isSpawnable", this::isSpawnable),
-				new MemberFunction("isSpawnable", "entity", this::isSpawnableType),
-				new MemberFunction("getLuminance", this::getLuminance),
-				new MemberFunction("getBlockEntityNbt", this::getBlockNbt)
+				MemberFunction.of("getMaterial", this::getMaterial),
+				MemberFunction.of("getFullId", this::getFullId),
+				MemberFunction.of("getId", this::getId),
+				MemberFunction.of("isBlockEntity", this::isBlockEntity),
+				MemberFunction.of("isTransparent", this::isTransparent),
+				MemberFunction.of("asItemStack", this::asItemStack),
+				MemberFunction.of("getBlastResistance", this::getBlastResistance),
+				MemberFunction.of("getBlockProperties", this::getBlockProperties),
+				MemberFunction.of("hasBlockPosition", this::hasBlockPosition),
+				MemberFunction.of("getPos", this::getPos),
+				MemberFunction.of("getX", this::getBlockX),
+				MemberFunction.of("getZ", this::getBlockZ),
+				MemberFunction.of("getY", this::getBlockY),
+				MemberFunction.of("getTranslatedName", this::getTranslatedName),
+				MemberFunction.of("isSolidBlock", this::isSolidBlock),
+				MemberFunction.of("rotateYClockwise", this::rotateYClockwise),
+				MemberFunction.of("rotateYCounterClockwise", this::rotateYCounterClockwise),
+				MemberFunction.of("mirrorFrontBack", this::mirrorFrontBack),
+				MemberFunction.of("mirrorLeftRight", this::mirrorLeftRight),
+				MemberFunction.of("isFluid", this::isFluid),
+				MemberFunction.of("isFluidSource", this::isFluidSource),
+				MemberFunction.of("isReplaceable", this::isReplaceable),
+				MemberFunction.of("getHardness", this::getHardness),
+				MemberFunction.of("sideCoversSmallSquare", 1, this::sideCoversSmallSquare),
+				MemberFunction.of("isSideSolidFullSquare", 1, this::isSideSolidFullSquare),
+				MemberFunction.of("isSpawnable", this::isSpawnable),
+				MemberFunction.of("isSpawnable", 1, this::isSpawnableType),
+				MemberFunction.of("getLuminance", this::getLuminance),
+				MemberFunction.of("getBlockEntityNbt", this::getBlockNbt)
 			);
 		}
 
-		private Value<?> getMaterial(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value getMaterial(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			Item blockItem = blockState.getBlock().asItem();
 			if (blockItem == Items.AIR && blockState.getBlock() != Blocks.AIR) {
 				return MaterialValue.blockMaterial(blockState.getBlock());
@@ -168,35 +171,35 @@ public class BlockValue extends Value<BlockState> {
 			return new MaterialValue(blockItem);
 		}
 
-		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
-			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).toString());
+		private Value getFullId(Arguments arguments) throws CodeError {
+			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(arguments).getBlock()).toString());
 		}
 
-		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
-			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(context, function).getBlock()).getPath());
+		private Value getId(Arguments arguments) throws CodeError {
+			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(arguments).getBlock()).getPath());
 		}
 
-		private Value<?> isBlockEntity(Context context, MemberFunction function) throws CodeError {
-			return BooleanValue.of(this.getBlockState(context, function).getBlock() instanceof BlockEntityProvider);
+		private Value isBlockEntity(Arguments arguments) throws CodeError {
+			return BooleanValue.of(this.getBlockState(arguments).getBlock() instanceof BlockEntityProvider);
 		}
 
-		private Value<?> isTransparent(Context context, MemberFunction function) throws CodeError {
-			return BooleanValue.of(!this.getBlockState(context, function).isOpaque());
+		private Value isTransparent(Arguments arguments) throws CodeError {
+			return BooleanValue.of(!this.getBlockState(arguments).isOpaque());
 		}
 
-		private Value<?> asItemStack(Context context, MemberFunction function) throws CodeError {
-			return new ItemStackValue(this.getBlockState(context, function).getBlock().asItem().getDefaultStack());
+		private Value asItemStack(Arguments arguments) throws CodeError {
+			return new ItemStackValue(this.getBlockState(arguments).getBlock().asItem().getDefaultStack());
 		}
 
-		private Value<?> getBlastResistance(Context context, MemberFunction function) throws CodeError {
-			return NumberValue.of(this.getBlockState(context, function).getBlock().getBlastResistance());
+		private Value getBlastResistance(Arguments arguments) throws CodeError {
+			return NumberValue.of(this.getBlockState(arguments).getBlock().getBlastResistance());
 		}
 
-		private Value<?> getBlockProperties(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value getBlockProperties(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			ArucasMap propertyMap = new ArucasMap();
 			for (Map.Entry<Property<?>, Comparable<?>> entry : blockState.getEntries().entrySet()) {
-				Value<?> mapValue;
+				Value mapValue;
 				Comparable<?> comparable = entry.getValue();
 				if (comparable instanceof Number value) {
 					mapValue = NumberValue.of(value.doubleValue());
@@ -207,77 +210,74 @@ public class BlockValue extends Value<BlockState> {
 				else {
 					mapValue = StringValue.of(comparable.toString());
 				}
-				propertyMap.put(context, StringValue.of(entry.getKey().getName()), mapValue);
+				propertyMap.put(arguments.getContext(), StringValue.of(entry.getKey().getName()), mapValue);
 			}
 			return new MapValue(propertyMap);
 		}
 
-		private Value<?> hasBlockPosition(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			return BooleanValue.of(blockStateValue.hasBlockPos());
+		private Value hasBlockPosition(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return BooleanValue.of(blockValue.hasBlockPos());
 		}
 
-		private Value<?> getPos(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			return blockStateValue.getPos();
+		private Value getPos(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return blockValue.getPos();
 		}
 
-		private Value<?> getBlockX(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			return blockStateValue.getBlockX();
+		private Value getBlockX(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return blockValue.getBlockX();
 		}
 
-		private Value<?> getBlockY(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			return blockStateValue.getBlockY();
+		private Value getBlockY(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return blockValue.getBlockY();
 		}
 
-		private Value<?> getBlockZ(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			return blockStateValue.getBlockZ();
+		private Value getBlockZ(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return blockValue.getBlockZ();
 		}
 
-		private Value<?> getTranslatedName(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value getTranslatedName(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return StringValue.of(I18n.translate(blockState.getBlock().getTranslationKey()));
 		}
 
-		private Value<?> isSolidBlock(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			if (!blockStateValue.hasPos) {
-				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
-			}
-			boolean isSolid = blockStateValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos());
+		private Value isSolidBlock(Arguments arguments) throws CodeError {
+			BlockValue blockValue = this.getBlockWithPos(arguments);
+			boolean isSolid = blockValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos());
 			return BooleanValue.of(isSolid);
 		}
 
-		private Value<?> rotateYClockwise(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value rotateYClockwise(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.rotate(BlockRotation.CLOCKWISE_90));
 		}
 
-		private Value<?> rotateYCounterClockwise(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value rotateYCounterClockwise(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.rotate(BlockRotation.COUNTERCLOCKWISE_90));
 		}
 
-		private Value<?> mirrorFrontBack(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value mirrorFrontBack(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.mirror(BlockMirror.FRONT_BACK));
 		}
 
-		private Value<?> mirrorLeftRight(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value mirrorLeftRight(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.mirror(BlockMirror.LEFT_RIGHT));
 		}
 
-		private Value<?> isFluid(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			return BooleanValue.of(blockStateValue.value.contains(FluidBlock.LEVEL));
+		private Value isFluid(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return BooleanValue.of(blockValue.value.contains(FluidBlock.LEVEL));
 		}
 
-		private Value<?> isFluidSource(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value isFluidSource(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			Block block = blockState.getBlock();
 			if ((block instanceof FluidBlock && blockState.get(FluidBlock.LEVEL) == 0) || block instanceof BubbleColumnBlock) {
 				return BooleanValue.TRUE;
@@ -285,73 +285,69 @@ public class BlockValue extends Value<BlockState> {
 			return BooleanValue.of(block instanceof Waterloggable && blockState.get(Properties.WATERLOGGED));
 		}
 
-		private Value<?> isReplaceable(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value isReplaceable(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return BooleanValue.of(blockState.getMaterial().isReplaceable());
 		}
 
-		private Value<?> getHardness(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value getHardness(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return NumberValue.of(blockState.getHardness(ArucasMinecraftExtension.getWorld(), BlockPos.ORIGIN));
 		}
 
-		private Value<?> sideCoversSmallSquare(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			StringValue stringDirection = function.getParameterValueOfType(context, StringValue.class, 1);
-			if (!blockStateValue.hasPos) {
-				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
-			}
+		private Value sideCoversSmallSquare(Arguments arguments) throws CodeError {
+			BlockValue blockValue = this.getBlockWithPos(arguments);
+			StringValue stringDirection = arguments.getNextString();
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
-			return BooleanValue.of(Block.sideCoversSmallSquare(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), direction));
+			return BooleanValue.of(Block.sideCoversSmallSquare(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), direction));
 		}
 
-		private Value<?> isSideSolidFullSquare(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			StringValue stringDirection = function.getParameterValueOfType(context, StringValue.class, 1);
-			if (!blockStateValue.hasPos) {
-				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
-			}
+		private Value isSideSolidFullSquare(Arguments arguments) throws CodeError {
+			BlockValue blockValue = this.getBlockWithPos(arguments);
+			StringValue stringDirection = arguments.getNextString();
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
-			return BooleanValue.of(blockStateValue.value.isSideSolidFullSquare(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), direction));
+			return BooleanValue.of(blockValue.value.isSideSolidFullSquare(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), direction));
 		}
 
-		private Value<?> isSpawnable(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			if (!blockStateValue.hasPos) {
-				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
-			}
-			boolean isSpawnable = blockStateValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), EntityType.ZOMBIE);
+		private Value isSpawnable(Arguments arguments) throws CodeError {
+			BlockValue blockValue = this.getBlockWithPos(arguments);
+			boolean isSpawnable = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), EntityType.ZOMBIE);
 			return BooleanValue.of(isSpawnable);
 		}
 
-		private Value<?> isSpawnableType(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockStateValue = function.getParameterValueOfType(context, BlockValue.class, 0);
-			EntityValue<?> entityValue = function.getParameterValueOfType(context, EntityValue.class, 1);
-			if (!blockStateValue.hasPos) {
-				throw new RuntimeError("Block does not have position", function.syntaxPosition, context);
-			}
-			boolean isSpawnable = blockStateValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockStateValue.blockPos.toBlockPos(), entityValue.value.getType());
+		private Value isSpawnableType(Arguments arguments) throws CodeError {
+			BlockValue blockValue = this.getBlockWithPos(arguments);
+			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
+			boolean isSpawnable = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), entityValue.value.getType());
 			return BooleanValue.of(isSpawnable);
 		}
 
-		private Value<?> getLuminance(Context context, MemberFunction function) throws CodeError {
-			BlockState blockState = this.getBlockState(context, function);
+		private Value getLuminance(Arguments arguments) throws CodeError {
+			BlockState blockState = this.getBlockState(arguments);
 			return NumberValue.of(blockState.getLuminance());
 		}
 
-		private Value<?> getBlockNbt(Context context, MemberFunction function) throws CodeError {
-			BlockValue blockValue = function.getThis(context, BlockValue.class);
+		private Value getBlockNbt(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			BlockEntity blockEntity;
 			if (blockValue.hasBlockPos() && (blockEntity = ArucasMinecraftExtension.getWorld().getBlockEntity(blockValue.blockPos.toBlockPos())) != null) {
-				return new MapValue(NbtUtils.nbtToMap(context, blockEntity.writeNbt(new NbtCompound()), 10));
+				return new MapValue(NbtUtils.nbtToMap(arguments.getContext(), blockEntity.writeNbt(new NbtCompound()), 10));
 			}
 			return NullValue.NULL;
 		}
 
-		private BlockState getBlockState(Context context, MemberFunction function) throws CodeError {
-			BlockState block = function.getParameterValueOfType(context, BlockValue.class, 0).value;
+		private BlockValue getBlockWithPos(Arguments arguments) throws RuntimeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			if (!blockValue.hasPos) {
+				throw arguments.getError("Block does not have position");
+			}
+			return blockValue;
+		}
+
+		private BlockState getBlockState(Arguments arguments) throws CodeError {
+			BlockState block = arguments.getNextGeneric(BlockValue.class);
 			if (block == null) {
-				throw new RuntimeError("Block was null", function.syntaxPosition, context);
+				throw arguments.getError("Block was null");
 			}
 			return block;
 		}

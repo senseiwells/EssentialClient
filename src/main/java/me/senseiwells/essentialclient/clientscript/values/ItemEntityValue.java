@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NullValue;
@@ -15,6 +16,8 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 
 import java.util.UUID;
+
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_ENTITY;
 
 public class ItemEntityValue extends EntityValue<ItemEntity> {
 	public ItemEntityValue(ItemEntity value) {
@@ -34,7 +37,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 
 	@Override
 	public String getTypeName() {
-		return "ItemEntity";
+		return ITEM_ENTITY;
 	}
 
 	/**
@@ -42,20 +45,21 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 	 * their methods too, ItemEntities are entities that are dropped items. <br>
 	 * Import the class with <code>import ItemEntity from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasItemEntityClass extends ArucasClassExtension {
 		public ArucasItemEntityClass() {
-			super("ItemEntity");
+			super(ITEM_ENTITY);
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getItemStack", this::getItemStack),
-				new MemberFunction("getCustomName", this::getCustomName),
-				new MemberFunction("getItemAge", this::getItemAge),
-				new MemberFunction("getThrower", this::getThrower)
+				MemberFunction.of("getItemStack", this::getItemStack),
+				MemberFunction.of("getCustomName", this::getCustomName),
+				MemberFunction.of("getItemAge", this::getItemAge),
+				MemberFunction.of("getThrower", this::getThrower)
 			);
 		}
 
@@ -65,8 +69,8 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 		 * Returns - ItemStack: the ItemStack that the entity holds <br>
 		 * Example: <code>livingEntity.getItemStack();</code>
 		 */
-		private Value<?> getItemStack(Context context, MemberFunction function) throws CodeError {
-			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
+		private Value getItemStack(Arguments arguments) throws CodeError {
+			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return new ItemStackValue(itemEntityValue.value.getStack());
 		}
 
@@ -76,8 +80,8 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 		 * Returns - String: the custom name of the entity <br>
 		 * Example: <code>livingEntity.getCustomName();</code>
 		 */
-		private Value<?> getCustomName(Context context, MemberFunction function) throws CodeError {
-			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
+		private Value getCustomName(Arguments arguments) throws CodeError {
+			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return StringValue.of(itemEntityValue.value.getName().asString());
 		}
 
@@ -88,8 +92,8 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 		 * Returns - Number: the age of the entity <br>
 		 * Example: <code>livingEntity.getItemAge();</code>
 		 */
-		private Value<?> getItemAge(Context context, MemberFunction function) throws CodeError {
-			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
+		private Value getItemAge(Arguments arguments) throws CodeError {
+			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return NumberValue.of(itemEntityValue.value.getItemAge());
 		}
 
@@ -99,13 +103,13 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 		 * Returns - Player/Null: the player that threw the entity, null if not thrown by a player <br>
 		 * Example: <code>livingEntity.getThrower();</code>
 		 */
-		private Value<?> getThrower(Context context, MemberFunction function) throws CodeError {
-			ItemEntityValue itemEntityValue = function.getThis(context, ItemEntityValue.class);
+		private Value getThrower(Arguments arguments) throws CodeError {
+			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			UUID throwerUuid = itemEntityValue.value.getThrower();
 			if (throwerUuid == null) {
 				return NullValue.NULL;
 			}
-			return context.convertValue(ThreadSafeUtils.getPlayerByUuid(ArucasMinecraftExtension.getWorld(), throwerUuid));
+			return arguments.getContext().convertValue(ThreadSafeUtils.getPlayerByUuid(ArucasMinecraftExtension.getWorld(), throwerUuid));
 		}
 
 		@Override

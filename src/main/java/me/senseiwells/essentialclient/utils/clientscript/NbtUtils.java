@@ -42,7 +42,7 @@ public class NbtUtils {
 		return nbtList;
 	}
 
-	public static Value<?> nbtToValue(Context context, NbtElement element, int depth) throws CodeError {
+	public static Value nbtToValue(Context context, NbtElement element, int depth) throws CodeError {
 		if (element instanceof NbtCompound inCompound) {
 			return new MapValue(nbtToMap(context, inCompound, depth));
 		}
@@ -69,12 +69,12 @@ public class NbtUtils {
 		return compound;
 	}
 
-	public static NbtList collectionToNbt(Context context, Collection<? extends Value<?>> collection, int depth) throws CodeError {
+	public static NbtList collectionToNbt(Context context, Collection<? extends Value> collection, int depth) throws CodeError {
 		NbtList list = new NbtList();
 		if (collection == null || depth < 0) {
 			return list;
 		}
-		for (Value<?> value : collection) {
+		for (Value value : collection) {
 			NbtElement element = valueToNbt(context, value, depth);
 			// Doing it like this avoids the throwing of an error
 			list.addElement(list.size(), element);
@@ -82,11 +82,11 @@ public class NbtUtils {
 		return list;
 	}
 
-	public static NbtElement valueToNbt(Context context, Value<?> value, int depth) throws CodeError {
-		if (value.value instanceof ArucasMap map) {
+	public static NbtElement valueToNbt(Context context, Value value, int depth) throws CodeError {
+		if (value.getValue() instanceof ArucasMap map) {
 			return mapToNbt(context, map, depth);
 		}
-		if (value.value instanceof IArucasCollection collection) {
+		if (value.getValue() instanceof IArucasCollection collection) {
 			return collectionToNbt(context, collection.asCollection(), depth);
 		}
 		if (value instanceof NumberValue numberValue) {

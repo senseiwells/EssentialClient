@@ -4,6 +4,7 @@ import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
@@ -34,29 +35,30 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	@Override
 	public ArucasFunctionMap<BuiltInFunction> getDefinedFunctions() {
 		return ArucasFunctionMap.of(
-			new BuiltInFunction("getMinecraftClient", this::getMinecraftClient, "Use 'MinecraftClient.getClient()'"),
-			new BuiltInFunction("runThreaded", List.of("function", "parameters"), this::runThreaded, "Use 'Thread.runThreaded(function)'"),
-			new BuiltInFunction("hold", this::hold)
+			BuiltInFunction.of("getMinecraftClient", this::getMinecraftClient, "Use 'MinecraftClient.getClient()'"),
+			BuiltInFunction.of("runThreaded", 2, this::runThreaded, "Use 'Thread.runThreaded(function)'"),
+			BuiltInFunction.of("hold", this::hold, "Use 'Thread.freeze()'")
 		);
 	}
 
-	private Value<?> getMinecraftClient(Context context, BuiltInFunction function) {
+	private Value getMinecraftClient(Arguments arguments) {
 		return MinecraftClientValue.INSTANCE;
 	}
 
-	private Value<?> runThreaded(Context context, BuiltInFunction function) throws CodeError {
-		FunctionValue functionValue = function.getParameterValueOfType(context, FunctionValue.class, 0);
-		List<Value<?>> list = function.getParameterValueOfType(context, ListValue.class, 1).value;
+	private Value runThreaded(Arguments arguments) throws CodeError {
+		Context context = arguments.getContext();
+		FunctionValue functionValue = arguments.getNextFunction();
+		List<Value> list = arguments.getNextGeneric(ListValue.class);
 		ArucasThread thread = context.getThreadHandler().runAsyncFunctionInContext(context.createBranch(), branchContext -> functionValue.call(branchContext, list));
 		return ThreadValue.of(thread);
 	}
 
-	private Value<?> hold(Context context, BuiltInFunction function) throws CodeError {
+	private Value hold(Arguments arguments) throws CodeError {
 		try {
 			Thread.sleep(Long.MAX_VALUE);
 		}
 		catch (InterruptedException e) {
-			throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", function.syntaxPosition);
+			throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", arguments.getPosition());
 		}
 		return NullValue.NULL;
 	}
@@ -115,6 +117,10 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 			throw new RuntimeError("MinecraftClient.interactionManager was null", ISyntax.empty());
 		}
 		return interactionManager;
+	}
+
+	public static Identifier getId(Arguments arguments, String name) throws RuntimeError {
+		return getId(arguments.getContext(), arguments.getPosition(), name);
 	}
 
 	public static Identifier getId(Context context, ISyntax syntaxHandler, String name) throws RuntimeError {

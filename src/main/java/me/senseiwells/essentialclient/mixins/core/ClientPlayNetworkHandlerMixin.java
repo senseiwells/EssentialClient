@@ -55,16 +55,12 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
-		boolean triggered = false;
 		for (NetworkHandler networkHandler : EssentialClient.NETWORK_HANDLERS) {
 			if (networkHandler.getNetworkChannel().equals(packet.getChannel())) {
 				networkHandler.handlePacket(packet.getData(), (ClientPlayNetworkHandler) (Object) this);
-				triggered = true;
+				ci.cancel();
 				break;
 			}
-		}
-		if (triggered) {
-			ci.cancel();
 		}
 	}
 }

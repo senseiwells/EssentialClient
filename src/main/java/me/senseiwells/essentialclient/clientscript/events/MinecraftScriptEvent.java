@@ -58,7 +58,7 @@ public class MinecraftScriptEvent {
 		}
 	}
 
-	public synchronized boolean run(Value<?>... arguments) {
+	public synchronized boolean run(Value... arguments) {
 		ArucasList argumentList = new ArucasList();
 		argumentList.addAll(List.of(arguments));
 		boolean shouldCancel = false;
@@ -73,7 +73,7 @@ public class MinecraftScriptEvent {
 	}
 
 	public synchronized boolean run(ArgumentSupplier argumentSupplier) {
-		List<Value<?>> values = null;
+		List<Value> values = null;
 		boolean shouldCancel = false;
 		for (Set<GameEventWrapper> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
 			for (GameEventWrapper gameEvent : gameEventWrappers) {
@@ -98,9 +98,9 @@ public class MinecraftScriptEvent {
 
 	@FunctionalInterface
 	public interface ArgumentSupplier {
-		List<Value<?>> apply(Context context) throws CodeError;
+		List<Value> apply(Context context) throws CodeError;
 
-		default List<Value<?>> applySafe(Context context) {
+		default List<Value> applySafe(Context context) {
 			try {
 				return this.apply(context);
 			}
@@ -135,7 +135,7 @@ public class MinecraftScriptEvent {
 			return this.isThreadDefinable;
 		}
 
-		public synchronized boolean run(UUID uuid, Value<?>... arguments) {
+		public synchronized boolean run(UUID uuid, Value... arguments) {
 			ArucasList argumentList = new ArucasList();
 			argumentList.addAll(List.of(arguments));
 			boolean shouldCancel = false;
@@ -153,7 +153,7 @@ public class MinecraftScriptEvent {
 
 		@Deprecated
 		@Override
-		public synchronized boolean run(Value<?>... arguments) {
+		public synchronized boolean run(Value... arguments) {
 			return false;
 		}
 

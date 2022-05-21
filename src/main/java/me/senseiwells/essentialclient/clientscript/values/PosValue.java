@@ -2,21 +2,22 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.values.GenericValue;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.ConstructorFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.List;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
-public class PosValue extends Value<Vec3d> {
+public class PosValue extends GenericValue<Vec3d> {
 	private BlockPos blockPos;
 
 	public PosValue(Vec3d value) {
@@ -52,7 +53,7 @@ public class PosValue extends Value<Vec3d> {
 	}
 
 	@Override
-	public Value<Vec3d> copy(Context context) throws CodeError {
+	public GenericValue<Vec3d> copy(Context context) throws CodeError {
 		return new PosValue(new Vec3d(this.value.x, this.value.y, this.value.z));
 	}
 
@@ -67,30 +68,31 @@ public class PosValue extends Value<Vec3d> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> value) throws CodeError {
-		return this.value.equals(value.value);
+	public boolean isEquals(Context context, Value value) throws CodeError {
+		return this.value.equals(value.getValue());
 	}
 
 	@Override
 	public String getTypeName() {
-		return "Pos";
+		return POS;
 	}
 
 	/**
 	 * Pos class for Arucas. <br>
 	 * Import the class with <code>import Pos from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasPosClass extends ArucasClassExtension {
 		public ArucasPosClass() {
-			super("Pos");
+			super(POS);
 		}
 
 		@Override
 		public ArucasFunctionMap<ConstructorFunction> getDefinedConstructors() {
 			return ArucasFunctionMap.of(
-				new ConstructorFunction(List.of("x", "y", "z"), this::newPos)
+				ConstructorFunction.of(3, this::newPos)
 			);
 		}
 
@@ -101,20 +103,20 @@ public class PosValue extends Value<Vec3d> {
 		 * Returns - Pos: the new Pos object <br>
 		 * Example: <code>new Pos(100, 0, 96);</code>
 		 */
-		private Value<?> newPos(Context context, BuiltInFunction function) throws CodeError {
-			double x = function.getParameterValueOfType(context, NumberValue.class, 0).value;
-			double y = function.getParameterValueOfType(context, NumberValue.class, 1).value;
-			double z = function.getParameterValueOfType(context, NumberValue.class, 2).value;
+		private Value newPos(Arguments arguments) throws CodeError {
+			double x = arguments.getNextGeneric(NumberValue.class);
+			double y = arguments.getNextGeneric(NumberValue.class);
+			double z = arguments.getNextGeneric(NumberValue.class);
 			return new PosValue(x, y, z);
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getX", this::getX),
-				new MemberFunction("getY", this::getY),
-				new MemberFunction("getZ", this::getZ),
-				new MemberFunction("toList", this::toList)
+				MemberFunction.of("getX", this::getX),
+				MemberFunction.of("getY", this::getY),
+				MemberFunction.of("getZ", this::getZ),
+				MemberFunction.of("toList", this::toList)
 			);
 		}
 
@@ -124,8 +126,8 @@ public class PosValue extends Value<Vec3d> {
 		 * Returns - Number: the x position <br>
 		 * Example: <code>pos.getX();</code>
 		 */
-		private Value<?> getX(Context context, MemberFunction function) throws CodeError {
-			PosValue thisValue = function.getThis(context, PosValue.class);
+		private Value getX(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
 			return NumberValue.of(thisValue.value.getX());
 		}
 
@@ -135,8 +137,8 @@ public class PosValue extends Value<Vec3d> {
 		 * Returns - Number: the y position <br>
 		 * Example: <code>pos.getY();</code>
 		 */
-		private Value<?> getY(Context context, MemberFunction function) throws CodeError {
-			PosValue thisValue = function.getThis(context, PosValue.class);
+		private Value getY(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
 			return NumberValue.of(thisValue.value.getY());
 		}
 
@@ -146,8 +148,8 @@ public class PosValue extends Value<Vec3d> {
 		 * Returns - Number: the z position <br>
 		 * Example: <code>pos.getZ();</code>
 		 */
-		private Value<?> getZ(Context context, MemberFunction function) throws CodeError {
-			PosValue thisValue = function.getThis(context, PosValue.class);
+		private Value getZ(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
 			return NumberValue.of(thisValue.value.getZ());
 		}
 
@@ -157,8 +159,8 @@ public class PosValue extends Value<Vec3d> {
 		 * Returns - List: the Pos as a List <br>
 		 * Example: <code>x, y, z = pos.toList();</code>
 		 */
-		private Value<?> toList(Context context, MemberFunction function) throws CodeError {
-			PosValue thisValue = function.getThis(context, PosValue.class);
+		private Value toList(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
 			ArucasList arucasList = new ArucasList();
 			arucasList.add(thisValue.getX());
 			arucasList.add(thisValue.getY());

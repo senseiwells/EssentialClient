@@ -1,8 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
@@ -12,13 +14,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+
 public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 	public LivingEntityValue(T value) {
 		super(value);
 	}
 
 	@Override
-	public Value<T> copy(Context context) {
+	public EntityValue<T> copy(Context context) {
 		return new LivingEntityValue<>(this.value);
 	}
 
@@ -29,40 +33,43 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 
 	@Override
 	public String getTypeName() {
-		return "LivingEntity";
+		return LIVING_ENTITY;
 	}
 
-	/**
-	 * LivingEntity class for Arucas. This class extends Entity and so inherits all of
-	 * their methods too, LivingEntities are any entities that are alive, so all mobs <br>
-	 * Import the class with <code>import LivingEntity from Minecraft;</code> <br>
-	 * Fully Documented.
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = LIVING_ENTITY,
+		desc = {
+			"This class extends Entity and so inherits all of their methods too,",
+			"LivingEntities are any entities that are alive, so all mobs"
+		},
+		importPath = "Minecraft"
+	)
 	public static class ArucasLivingEntityClass extends ArucasClassExtension {
 		public ArucasLivingEntityClass() {
-			super("LivingEntity");
+			super(LIVING_ENTITY);
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getStatusEffects", this::getStatusEffects),
-				new MemberFunction("getHealth", this::getHealth),
-				new MemberFunction("isFlyFalling", this::isFlyFalling)
+				MemberFunction.of("getStatusEffects", this::getStatusEffects),
+				MemberFunction.of("getHealth", this::getHealth),
+				MemberFunction.of("isFlyFalling", this::isFlyFalling)
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;LivingEntity>.getStatusEffects()</code> <br>
-		 * Description: This gets the LivingEntity's status effects, you can find
-		 * a list of all the ids of the status effects
-		 * [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects) <br>
-		 * Returns - List: a list of status effects, may be empty <br>
-		 * Example: <code>livingEntity.getStatusEffects();</code>
-		 */
-		private Value<?> getStatusEffects(Context context, MemberFunction function) throws CodeError {
-			LivingEntity livingEntity = this.getLivingEntity(context, function);
+		@FunctionDoc(
+			name = "getStatusEffects",
+			desc = {
+				"This gets the LivingEntity's status effects, you can find",
+				"a list of all the ids of the status effects",
+				"[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects)",
+			},
+			returns = {LIST, "a list of status effects, may be empty"},
+			example = "livingEntity.getStatusEffects();"
+		)
+		private Value getStatusEffects(Arguments arguments) throws CodeError {
+			LivingEntity livingEntity = this.getLivingEntity(arguments);
 			ArucasList potionList = new ArucasList();
 			livingEntity.getStatusEffects().forEach(s -> {
 				Identifier effectId = Registry.STATUS_EFFECT.getId(s.getEffectType());
@@ -71,36 +78,36 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 			return new ListValue(potionList);
 		}
 
-		/**
-		 * Name: <code>&lt;LivingEntity>.getHealth()</code> <br>
-		 * Description: This gets the LivingEntity's current health <br>
-		 * Returns - Number: the LivingEntity's health <br>
-		 * Example: <code>livingEntity.getHealth();</code>
-		 */
-		private Value<?> getHealth(Context context, MemberFunction function) throws CodeError {
-			return NumberValue.of(this.getLivingEntity(context, function).getHealth());
+		@FunctionDoc(
+			name = "getHealth",
+			desc = "This gets the LivingEntity's current health",
+			returns = {NUMBER, "the LivingEntity's health"},
+			example = "livingEntity.getHealth();"
+		)
+		private Value getHealth(Arguments arguments) throws CodeError {
+			return NumberValue.of(this.getLivingEntity(arguments).getHealth());
 		}
 
-		/**
-		 * Name: <code>&lt;LivingEntity>.isFlyFalling()</code> <br>
-		 * Description: This checks if the LivingEntity is fly falling (gliding with elytra) <br>
-		 * Returns - Boolean: true if the LivingEntity is fly falling <br>
-		 * Example: <code>livingEntity.isFlyFalling();</code>
-		 */
-		private Value<?> isFlyFalling(Context context, MemberFunction function) throws CodeError {
-			return BooleanValue.of(this.getLivingEntity(context, function).isFallFlying());
+		@FunctionDoc(
+			name = "isFlyFalling",
+			desc = "This checks if the LivingEntity is fly falling (gliding with elytra)",
+			returns = {BOOLEAN, "true if the LivingEntity is fly falling"},
+			example = "livingEntity.isFlyFalling();"
+		)
+		private Value isFlyFalling(Arguments arguments) throws CodeError {
+			return BooleanValue.of(this.getLivingEntity(arguments).isFallFlying());
 		}
 
-		private LivingEntity getLivingEntity(Context context, MemberFunction function) throws CodeError {
-			LivingEntityValue<?> livingEntity = function.getParameterValueOfType(context, LivingEntityValue.class, 0);
+		private LivingEntity getLivingEntity(Arguments arguments) throws CodeError {
+			LivingEntityValue<?> livingEntity = arguments.getNext(LivingEntityValue.class);
 			if (livingEntity.value == null) {
-				throw new RuntimeError("LivingEntity was null", function.syntaxPosition, context);
+				throw arguments.getError("LivingEntity was null");
 			}
 			return livingEntity.value;
 		}
 
 		@Override
-		public Class<? extends BaseValue> getValueClass() {
+		public Class<? extends Value> getValueClass() {
 			return LivingEntityValue.class;
 		}
 	}

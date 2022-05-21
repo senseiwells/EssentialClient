@@ -4,9 +4,11 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
+import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.values.GenericValue;
 import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
@@ -27,7 +29,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-public class MaterialValue extends Value<Item> {
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MATERIAL;
+
+public class MaterialValue extends GenericValue<Item> {
 	public MaterialValue(Item value) {
 		super(value);
 	}
@@ -40,8 +44,16 @@ public class MaterialValue extends Value<Item> {
 		return Registry.ITEM.getId(this.value);
 	}
 
+	public ItemStack asItemStack(Arguments arguments) throws CodeError {
+		return this.asItemStack(arguments.getContext(), arguments.getPosition());
+	}
+
 	public ItemStack asItemStack(Context context, ISyntax syntaxPosition) throws CodeError {
 		return this.value.getDefaultStack();
+	}
+
+	public Block asBlock(Arguments arguments) throws CodeError {
+		return this.asBlock(arguments.getContext(), arguments.getPosition());
 	}
 
 	public Block asBlock(Context context, ISyntax syntaxPosition) throws CodeError {
@@ -52,7 +64,7 @@ public class MaterialValue extends Value<Item> {
 	}
 
 	@Override
-	public Value<Item> copy(Context context) throws CodeError {
+	public GenericValue<Item> copy(Context context) throws CodeError {
 		return this;
 	}
 
@@ -67,13 +79,13 @@ public class MaterialValue extends Value<Item> {
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value<?> value) {
-		return this.value == value.value;
+	public boolean isEquals(Context context, Value value) {
+		return this.value == value.getValue();
 	}
 
 	@Override
 	public String getTypeName() {
-		return "Material";
+		return MATERIAL;
 	}
 
 	public static MaterialValue blockMaterial(Block block) {
@@ -123,16 +135,17 @@ public class MaterialValue extends Value<Item> {
 	 * and allows you to convert them into instances of ItemStacks and Blocks <br>
 	 * Import the class with <code>import Material from Minecraft;</code> <br>
 	 * Fully Documented.
+	 *
 	 * @author senseiwells
 	 */
 	public static class ArucasMaterialClass extends ArucasClassExtension {
 		public ArucasMaterialClass() {
-			super("Material");
+			super(MATERIAL);
 		}
 
 		@Override
-		public Map<String, Value<?>> getDefinedStaticVariables() {
-			Map<String, Value<?>> materialMap = new HashMap<>();
+		public Map<String, Value> getDefinedStaticVariables() {
+			Map<String, Value> materialMap = new HashMap<>();
 			ArucasList materialList = new ArucasList();
 			for (Item item : Registry.ITEM) {
 				MaterialValue materialValue = new MaterialValue(item);
@@ -154,7 +167,7 @@ public class MaterialValue extends Value<Item> {
 		@Override
 		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
 			return ArucasFunctionMap.of(
-				new BuiltInFunction("of", "string", this::of)
+				BuiltInFunction.of("of", 1, this::of)
 			);
 		}
 
@@ -166,22 +179,22 @@ public class MaterialValue extends Value<Item> {
 		 * Throws - Error: <code>... is not a valid Material</code> if the id is not a valid material id <br>
 		 * Example: <code>Material.of("diamond");</code>
 		 */
-		private Value<?> of(Context context, BuiltInFunction function) throws CodeError {
-			StringValue stringValue = function.getParameterValueOfType(context, StringValue.class, 0);
-			Optional<Item> item = Registry.ITEM.getOrEmpty(ArucasMinecraftExtension.getId(context, function.syntaxPosition, stringValue.value));
+		private Value of(Arguments arguments) throws CodeError {
+			StringValue stringValue = arguments.getNextString();
+			Optional<Item> item = Registry.ITEM.getOrEmpty(ArucasMinecraftExtension.getId(arguments, stringValue.value));
 			return new MaterialValue(item.orElseThrow(
-				() -> new RuntimeError("'%s' is not a valid Material".formatted(stringValue.value), function.syntaxPosition, context)
+				() -> arguments.getError("'%s' is not a valid Material", stringValue.value)
 			));
 		}
 
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				new MemberFunction("getFullId", this::getFullId),
-				new MemberFunction("getId", this::getId),
-				new MemberFunction("asItemStack", this::asItemStack),
-				new MemberFunction("asBlock", this::asBlock),
-				new MemberFunction("getTranslatedName", this::getTranslatedName)
+				MemberFunction.of("getFullId", this::getFullId),
+				MemberFunction.of("getId", this::getId),
+				MemberFunction.of("asItemStack", this::asItemStack),
+				MemberFunction.of("asBlock", this::asBlock),
+				MemberFunction.of("getTranslatedName", this::getTranslatedName)
 			);
 		}
 
@@ -191,8 +204,8 @@ public class MaterialValue extends Value<Item> {
 		 * Returns - String: the full id representation of the material <br>
 		 * Example: <code>material.getFullId();</code>
 		 */
-		private Value<?> getFullId(Context context, MemberFunction function) throws CodeError {
-			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
+		private Value getFullId(Arguments arguments) throws CodeError {
+			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(materialValue.getId().toString());
 		}
 
@@ -202,8 +215,8 @@ public class MaterialValue extends Value<Item> {
 		 * Returns - String: the id representation of the material <br>
 		 * Example: <code>material.getId();</code>
 		 */
-		private Value<?> getId(Context context, MemberFunction function) throws CodeError {
-			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
+		private Value getId(Arguments arguments) throws CodeError {
+			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(materialValue.getId().getPath());
 		}
 
@@ -214,9 +227,9 @@ public class MaterialValue extends Value<Item> {
 		 * Throws - Error: <code>"Material cannot be converted to an item stack"</code> if the material has no item stack form <br>
 		 * Example: <code>material.asItemStack();</code>
 		 */
-		private Value<?> asItemStack(Context context, MemberFunction function) throws CodeError {
-			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
-			return new ItemStackValue(materialValue.asItemStack(context, function.syntaxPosition));
+		private Value asItemStack(Arguments arguments) throws CodeError {
+			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
+			return new ItemStackValue(materialValue.asItemStack(arguments));
 		}
 
 		/**
@@ -226,9 +239,9 @@ public class MaterialValue extends Value<Item> {
 		 * Throws - Error: <code>"Material cannot be converted to a block"</code> if the material has no block form <br>
 		 * Example: <code>material.asBlock();</code>
 		 */
-		private Value<?> asBlock(Context context, MemberFunction function) throws CodeError {
-			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
-			return new BlockValue(materialValue.asBlock(context, function.syntaxPosition).getDefaultState());
+		private Value asBlock(Arguments arguments) throws CodeError {
+			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
+			return new BlockValue(materialValue.asBlock(arguments).getDefaultState());
 		}
 
 		/**
@@ -238,8 +251,8 @@ public class MaterialValue extends Value<Item> {
 		 * Returns - String: the translated name of the ItemStack <br>
 		 * Example: <code>material.getTranslatedName();</code>
 		 */
-		private Value<?> getTranslatedName(Context context, MemberFunction function) throws CodeError {
-			MaterialValue materialValue = function.getThis(context, MaterialValue.class);
+		private Value getTranslatedName(Arguments arguments) throws CodeError {
+			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(I18n.translate(materialValue.getTranslationKey()));
 		}
 

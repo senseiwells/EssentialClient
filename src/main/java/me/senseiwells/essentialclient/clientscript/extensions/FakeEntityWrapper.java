@@ -39,7 +39,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 
 	@ArucasConstructor
 	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) throws CodeError {
-		Value<?> value = context.convertValue(entityValue.value.getType().create(worldValue.value));
+		Value value = context.convertValue(entityValue.value.getType().create(worldValue.value));
 		if (!(value instanceof EntityValue<?> entity)) {
 			throw new RuntimeException("Entity could not be created");
 		}
@@ -51,71 +51,71 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	}
 
 	@ArucasFunction
-	public Value<?> setWorld(Context context, WorldValue worldValue) {
+	public Value setWorld(Context context, WorldValue worldValue) {
 		this.world = worldValue;
 		return NullValue.NULL;
 	}
 
 	@ArucasFunction
-	public Value<?> setPos(Context context, PosValue posValue, NumberValue interpolation) {
+	public Value setPos(Context context, PosValue posValue, NumberValue interpolation) {
 		this.pos = posValue;
 		this.updatePosition(interpolation);
 		return NullValue.NULL;
 	}
 
 	@ArucasFunction
-	public Value<?> setPos(Context context, NumberValue x, NumberValue y, NumberValue z, NumberValue interpolation) {
+	public Value setPos(Context context, NumberValue x, NumberValue y, NumberValue z, NumberValue interpolation) {
 		return this.setPos(context, new PosValue(x.value, y.value, z.value), interpolation);
 	}
 
 	@ArucasFunction
-	public Value<?> setPos(Context context, PosValue posValue) {
+	public Value setPos(Context context, PosValue posValue) {
 		return this.setPos(context, posValue, ZERO);
 	}
 
 	@ArucasFunction
-	public Value<?> setPos(Context context, NumberValue x, NumberValue y, NumberValue z) {
+	public Value setPos(Context context, NumberValue x, NumberValue y, NumberValue z) {
 		return this.setPos(context, new PosValue(x.value, y.value, z.value), ZERO);
 	}
 
 	@ArucasFunction
-	public Value<?> setYaw(Context context, NumberValue yaw, NumberValue interpolation) {
+	public Value setYaw(Context context, NumberValue yaw, NumberValue interpolation) {
 		this.yaw = yaw;
 		this.updatePosition(interpolation);
 		return NullValue.NULL;
 	}
 
 	@ArucasFunction
-	public Value<?> setYaw(Context context, NumberValue yaw) {
+	public Value setYaw(Context context, NumberValue yaw) {
 		return this.setYaw(context, yaw, ZERO);
 	}
 
 	@ArucasFunction
-	public Value<?> setBodyYaw(Context context, NumberValue yaw, NumberValue interpolation) {
+	public Value setBodyYaw(Context context, NumberValue yaw, NumberValue interpolation) {
 		this.bodyYaw = yaw;
 		this.updatePosition(interpolation);
 		return NullValue.NULL;
 	}
 
 	@ArucasFunction
-	public Value<?> setBodyYaw(Context context, NumberValue yaw) {
+	public Value setBodyYaw(Context context, NumberValue yaw) {
 		return this.setBodyYaw(context, yaw, ZERO);
 	}
 
 	@ArucasFunction
-	public Value<?> setPitch(Context context, NumberValue pitch, NumberValue interpolation) {
+	public Value setPitch(Context context, NumberValue pitch, NumberValue interpolation) {
 		this.pitch = pitch;
 		this.updatePosition(interpolation);
 		return NullValue.NULL;
 	}
 
 	@ArucasFunction
-	public Value<?> setPitch(Context context, NumberValue pitch) {
+	public Value setPitch(Context context, NumberValue pitch) {
 		return this.setPitch(context, pitch, ZERO);
 	}
 
 	@ArucasFunction
-	public Value<?> updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch, NumberValue interpolation) {
+	public Value updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch, NumberValue interpolation) {
 		this.pos = posValue;
 		this.entity.value.setHeadYaw(yaw.value.floatValue());
 		this.entity.value.setPitch(pitch.value.floatValue());
@@ -124,12 +124,12 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	}
 
 	@ArucasFunction
-	public Value<?> updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch) {
+	public Value updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch) {
 		return this.updatePosAndRotation(context, posValue, yaw, pitch, ZERO);
 	}
 
 	@ArucasFunction
-	public Value<?> spawn(Context context) {
+	public Value spawn(Context context) {
 		EssentialUtils.getClient().execute(() -> {
 			Vec3d pos = this.pos.value;
 			float yaw = this.yaw.value.floatValue();
@@ -142,7 +142,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	}
 
 	@ArucasFunction
-	public Value<?> despawn(Context context) {
+	public Value despawn(Context context) {
 		EssentialUtils.getClient().execute(() -> {
 			this.world.value.removeEntity(this.entity.value.getId(), Entity.RemovalReason.DISCARDED);
 		});
