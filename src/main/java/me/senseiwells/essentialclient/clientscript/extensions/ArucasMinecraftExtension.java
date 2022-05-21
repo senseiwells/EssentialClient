@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.clientscript.extensions;
 
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.api.ISyntax;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
@@ -26,6 +27,9 @@ import net.minecraft.util.InvalidIdentifierException;
 
 import java.util.List;
 
+import static me.senseiwells.arucas.utils.ValueTypes.THREAD;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINECRAFT_CLIENT;
+
 public class ArucasMinecraftExtension implements IArucasExtension {
 	@Override
 	public String getName() {
@@ -41,10 +45,28 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		);
 	}
 
+	@FunctionDoc(
+		deprecated = "Use 'MinecraftClient.getClient()'",
+		name = "getMinecraftClient",
+		desc = "This gets the MinecraftClient instance",
+		returns = {MINECRAFT_CLIENT, "The MinecraftClient instance"},
+		example = "getMinecraftClient();"
+	)
 	private Value getMinecraftClient(Arguments arguments) {
 		return MinecraftClientValue.INSTANCE;
 	}
 
+	@FunctionDoc(
+		deprecated = "Use 'Thread.runThreaded(function)'",
+		name = "runThreaded",
+		desc = "This runs a function in a new thread",
+		returns = {THREAD, "The new thread that your function is running on"},
+		example = """
+			runThreaded(fun(parameter) {
+			    print(parameter);
+			}, ['hi']);
+			"""
+	)
 	private Value runThreaded(Arguments arguments) throws CodeError {
 		Context context = arguments.getContext();
 		FunctionValue functionValue = arguments.getNextFunction();
@@ -53,6 +75,11 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		return ThreadValue.of(thread);
 	}
 
+	@FunctionDoc(
+		name = "hold",
+		desc = "This freezes the current thread and halts execution, same functionality as 'Thread.freeze()'",
+		example = "hold();"
+	)
 	private Value hold(Arguments arguments) throws CodeError {
 		try {
 			Thread.sleep(Long.MAX_VALUE);

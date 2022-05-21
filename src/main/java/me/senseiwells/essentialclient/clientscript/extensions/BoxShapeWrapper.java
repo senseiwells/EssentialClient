@@ -52,6 +52,18 @@ public class BoxShapeWrapper extends Shape.Positioned implements Shape.Tiltable 
 	}
 
 	@Override
+	public void render() {
+		super.render();
+		addBoxToRender(this);
+	}
+
+	@Override
+	public void stopRendering() {
+		super.stopRendering();
+		removeBoxToRender(this);
+	}
+
+	@Override
 	public void setRenderThroughBlocks(boolean renderThroughBlocks) {
 		if (this.shouldRenderThroughBlocks() ^ renderThroughBlocks) {
 			if (this.isRendering()) {
@@ -84,18 +96,6 @@ public class BoxShapeWrapper extends Shape.Positioned implements Shape.Tiltable 
 	@ArucasConstructor
 	public void constructor(Context context, NumberValue x, NumberValue y, NumberValue z) {
 		this.constructor(context, new PosValue(x.value, y.value, z.value));
-	}
-
-	@Override
-	public void render(Context context) {
-		super.render(context);
-		addBoxToRender(this);
-	}
-
-	@Override
-	public void stopRendering(Context context) {
-		super.stopRendering(context);
-		removeBoxToRender(this);
 	}
 
 	private Map<UUID, Set<BoxShapeWrapper>> getBoxMap() {

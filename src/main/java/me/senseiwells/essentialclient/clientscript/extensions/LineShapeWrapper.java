@@ -51,6 +51,18 @@ public class LineShapeWrapper extends Shape.Positioned implements Shape.Tiltable
 		this.zTilt = zTilt;
 	}
 
+	@Override
+	public void render() {
+		super.render();
+		addLineToRender(this);
+	}
+
+	@Override
+	public void stopRendering() {
+		super.stopRendering();
+		removeLineToRender(this);
+	}
+
 	@ArucasConstructor
 	public void constructor(Context context, PosValue pos1, PosValue pos2) {
 		this.setCreatedContext(context.createBranch());
@@ -75,18 +87,6 @@ public class LineShapeWrapper extends Shape.Positioned implements Shape.Tiltable
 			}
 			super.setRenderThroughBlocks(renderThroughBlocks);
 		}
-	}
-
-	@Override
-	public void render(Context context) {
-		super.render(context);
-		addLineToRender(this);
-	}
-
-	@Override
-	public void stopRendering(Context context) {
-		super.stopRendering(context);
-		removeLineToRender(this);
 	}
 
 	private Map<UUID, Set<LineShapeWrapper>> getLineMap() {

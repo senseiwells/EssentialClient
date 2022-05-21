@@ -58,12 +58,24 @@ public class SphereShapeWrapper extends Shape.CentrePositioned implements Shape.
 	}
 
 	@Override
+	public void render() {
+		super.render();
+		addSphereToRender(this);
+	}
+
+	@Override
+	public void stopRendering() {
+		super.stopRendering();
+		removeSphereToRender(this);
+	}
+
+	@Override
 	public void setRenderThroughBlocks(boolean renderThroughBlocks) {
 		if (this.shouldRenderThroughBlocks() ^ renderThroughBlocks) {
 			if (this.isRendering()) {
-				removeBoxToRender(this);
+				removeSphereToRender(this);
 				super.setRenderThroughBlocks(renderThroughBlocks);
-				addBoxToRender(this);
+				addSphereToRender(this);
 				return;
 			}
 			super.setRenderThroughBlocks(renderThroughBlocks);
@@ -82,18 +94,6 @@ public class SphereShapeWrapper extends Shape.CentrePositioned implements Shape.
 		this.constructor(context, new PosValue(x.value, y.value, z.value));
 	}
 
-	@Override
-	public void render(Context context) {
-		super.render(context);
-		addBoxToRender(this);
-	}
-
-	@Override
-	public void stopRendering(Context context) {
-		super.stopRendering(context);
-		removeBoxToRender(this);
-	}
-
 	@ArucasFunction
 	public void setSteps(Context context, NumberValue steps) {
 		this.steps = steps.value.floatValue();
@@ -108,7 +108,7 @@ public class SphereShapeWrapper extends Shape.CentrePositioned implements Shape.
 		return this.shouldRenderThroughBlocks() ? THROUGH_SPHERES : NORMAL_SPHERES;
 	}
 
-	public synchronized static void addBoxToRender(SphereShapeWrapper sphereShapeWrapper) {
+	public synchronized static void addSphereToRender(SphereShapeWrapper sphereShapeWrapper) {
 		Context context = sphereShapeWrapper.getCreatedContext();
 		Map<UUID, Set<SphereShapeWrapper>> boxMap = sphereShapeWrapper.getSphereMap();
 		Set<SphereShapeWrapper> sphereWrappers = boxMap.computeIfAbsent(context.getContextId(), id -> {
@@ -118,7 +118,7 @@ public class SphereShapeWrapper extends Shape.CentrePositioned implements Shape.
 		sphereWrappers.add(sphereShapeWrapper);
 	}
 
-	public synchronized static void removeBoxToRender(SphereShapeWrapper sphereShapeWrapper) {
+	public synchronized static void removeSphereToRender(SphereShapeWrapper sphereShapeWrapper) {
 		Context context = sphereShapeWrapper.getCreatedContext();
 		Map<UUID, Set<SphereShapeWrapper>> boxMap = sphereShapeWrapper.getSphereMap();
 		Set<SphereShapeWrapper> sphereShapeWrappers = boxMap.get(context.getContextId());
