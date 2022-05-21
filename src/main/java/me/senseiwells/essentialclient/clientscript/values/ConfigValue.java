@@ -78,7 +78,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			desc = {
 				"Creates a config from a map",
 				"The map must contain the following keys:",
-				"'type' which is the type of the config which can be 'boolean', 'cycle', 'double', 'double_slider', 'int', 'int_slider', or 'string'",
+				"'type' which is the type of the config which can be 'boolean', 'cycle', 'double', 'double_slider', 'integer', 'integer_slider', or 'string'",
 				"'name' which is the name of the config",
 				"And can optionally contain the following keys:",
 				"'description' which is a description of the config",
