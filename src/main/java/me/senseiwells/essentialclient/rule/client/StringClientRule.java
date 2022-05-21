@@ -13,6 +13,11 @@ public class StringClientRule extends ClientRule<String> implements Rule.Str {
 	}
 
 	@Override
+	public String getTypeAsString() {
+		return "string";
+	}
+
+	@Override
 	public StringClientRule shallowCopy() {
 		StringClientRule rule = new StringClientRule(this.getName(), this.getDescription(), this.getDefaultValue());
 		if (this.getListeners() != null) {

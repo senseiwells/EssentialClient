@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.rule.client;
 
+import com.google.gson.JsonObject;
 import me.senseiwells.essentialclient.rule.impl.SimpleRule;
 
 import java.util.ArrayList;
@@ -10,6 +11,19 @@ public abstract class ClientRule<T> extends SimpleRule<T> {
 
 	public ClientRule(String name, String description, T defaultValue) {
 		super(name, description, defaultValue);
+	}
+
+	public abstract String getTypeAsString();
+
+	public JsonObject serialise() {
+		JsonObject object = new JsonObject();
+		object.addProperty("type", this.getTypeAsString());
+		object.addProperty("name", this.getName());
+		object.addProperty("description", this.getDescription());
+		object.addProperty("optional_info", this.getOptionalInfo());
+		object.add("default_value", this.getDefaultValueAsJson());
+		object.add("value", this.getValueAsJson());
+		return object;
 	}
 
 	@Override

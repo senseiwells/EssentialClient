@@ -10,8 +10,10 @@ import me.senseiwells.essentialclient.utils.clientscript.Shape;
 
 import java.util.*;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SPHERE_SHAPE;
+
 @SuppressWarnings("unused")
-@ArucasClass(name = "SphereShape")
+@ArucasClass(name = SPHERE_SHAPE)
 public class SphereShapeWrapper extends Shape.CentrePositioned implements Shape.Tiltable {
 	private static final Map<UUID, Set<SphereShapeWrapper>> NORMAL_SPHERES = new LinkedHashMap<>(0);
 	private static final Map<UUID, Set<SphereShapeWrapper>> THROUGH_SPHERES = new LinkedHashMap<>(0);

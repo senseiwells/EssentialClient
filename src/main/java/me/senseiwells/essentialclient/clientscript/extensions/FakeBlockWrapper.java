@@ -16,8 +16,10 @@ import net.minecraft.util.math.Direction;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE_BLOCK;
+
 @SuppressWarnings("unused")
-@ArucasClass(name = "FakeBlock")
+@ArucasClass(name = FAKE_BLOCK)
 public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Shape.Directional {
 	private static final Map<UUID, Set<FakeBlockWrapper>> BLOCKS_TO_RENDER = new LinkedHashMap<>(0);
 

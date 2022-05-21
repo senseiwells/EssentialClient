@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.rule.client;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.util.math.MathHelper;
@@ -18,6 +19,19 @@ public class IntegerSliderClientRule extends ClientRule<Integer> implements Rule
 	@Override
 	public Integer fromJson(JsonElement element) {
 		return element.getAsInt();
+	}
+
+	@Override
+	public String getTypeAsString() {
+		return "integer_slider";
+	}
+
+	@Override
+	public JsonObject serialise() {
+		JsonObject object = super.serialise();
+		object.addProperty("min", this.minValue);
+		object.addProperty("max", this.maxValue);
+		return object;
 	}
 
 	@Override

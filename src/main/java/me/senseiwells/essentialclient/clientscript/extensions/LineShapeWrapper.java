@@ -9,8 +9,10 @@ import me.senseiwells.essentialclient.utils.clientscript.Shape;
 
 import java.util.*;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LINE_SHAPE;
+
 @SuppressWarnings("unused")
-@ArucasClass(name = "LineShape")
+@ArucasClass(name = LINE_SHAPE)
 public class LineShapeWrapper extends Shape.Positioned implements Shape.Tiltable {
 	private static final Map<UUID, Set<LineShapeWrapper>> NORMAL_LINES = new LinkedHashMap<>(0);
 	private static final Map<UUID, Set<LineShapeWrapper>> THROUGH_LINES = new LinkedHashMap<>(0);

@@ -17,8 +17,10 @@ import net.minecraft.util.math.Vec3d;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE_ENTITY;
+
 @SuppressWarnings("unused")
-@ArucasClass(name = "FakeEntity")
+@ArucasClass(name = FAKE_ENTITY)
 public class FakeEntityWrapper implements IArucasWrappedClass {
 	private static final Map<UUID, Set<Integer>> FAKE_IDS = new HashMap<>();
 	private static final AtomicInteger ID_COUNTER = new AtomicInteger(Integer.MAX_VALUE);

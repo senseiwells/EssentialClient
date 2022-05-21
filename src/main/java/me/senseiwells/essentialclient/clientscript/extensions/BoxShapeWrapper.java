@@ -9,8 +9,10 @@ import me.senseiwells.essentialclient.utils.clientscript.Shape;
 
 import java.util.*;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BOX_SHAPE;
+
 @SuppressWarnings("unused")
-@ArucasClass(name = "BoxShape")
+@ArucasClass(name = BOX_SHAPE)
 public class BoxShapeWrapper extends Shape.Positioned implements Shape.Tiltable {
 	private static final Map<UUID, Set<BoxShapeWrapper>> NORMAL_BOXES = new LinkedHashMap<>(0);
 	private static final Map<UUID, Set<BoxShapeWrapper>> THROUGH_BOXES = new LinkedHashMap<>(0);

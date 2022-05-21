@@ -21,8 +21,10 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 
 import java.util.List;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.GAME_EVENT;
+
 @SuppressWarnings("unused")
-@ArucasClass(name = "GameEvent")
+@ArucasClass(name = GAME_EVENT)
 public class GameEventWrapper implements IArucasWrappedClass {
 	private Context eventContext;
 	private MinecraftScriptEvent minecraftEvent;

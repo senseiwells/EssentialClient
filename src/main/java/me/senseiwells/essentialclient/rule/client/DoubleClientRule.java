@@ -13,6 +13,11 @@ public class DoubleClientRule extends NumberClientRule<Double> {
 	}
 
 	@Override
+	public String getTypeAsString() {
+		return "double";
+	}
+
+	@Override
 	public Type getType() {
 		return Type.DOUBLE;
 	}

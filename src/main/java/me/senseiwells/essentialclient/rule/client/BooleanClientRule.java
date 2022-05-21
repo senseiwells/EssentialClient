@@ -38,6 +38,11 @@ public class BooleanClientRule extends ClientRule<Boolean> implements Rule.Bool 
 	}
 
 	@Override
+	public String getTypeAsString() {
+		return "boolean";
+	}
+
+	@Override
 	public BooleanClientRule shallowCopy() {
 		BooleanClientRule rule = new BooleanClientRule(this.getName(), this.getDescription(), this.getDefaultValue());
 		if (this.getListeners() != null) {

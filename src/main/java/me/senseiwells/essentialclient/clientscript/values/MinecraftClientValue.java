@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.clientscript.values;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -48,6 +49,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static me.senseiwells.arucas.utils.ValueTypes.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINECRAFT_CLIENT;
 
 public class MinecraftClientValue extends GenericValue<MinecraftClient> {
@@ -127,6 +129,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				MemberFunction.of("isInSinglePlayer", this::isInSinglePlayer),
 				MemberFunction.of("playerNameFromUuid", 1, this::playerNameFromUuid),
 				MemberFunction.of("uuidFromPlayerName", 1, this::uuidFromPlayerName),
+				MemberFunction.of("getServerIp", this::getServerIp),
 				MemberFunction.of("getServerName", this::getServerName),
 				MemberFunction.of("getPing", this::getPing),
 				MemberFunction.of("getScriptsPath", this::getScriptPath),
@@ -389,6 +392,21 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				return NullValue.NULL;
 			}
 			return StringValue.of(uuid.toString());
+		}
+
+		@FunctionDoc(
+			name = "getServerIp",
+			desc = "This will return the server ip",
+			returns = {STRING, "The server ip, null if in single player"},
+			example = "client.getServerIp();"
+		)
+		private Value getServerIp(Arguments arguments) throws CodeError {
+			MinecraftClient client = this.getClient(arguments);
+			ServerInfo serverInfo = client.getCurrentServerEntry();
+			if (serverInfo == null) {
+				return NullValue.NULL;
+			}
+			return StringValue.of(serverInfo.address);
 		}
 
 		/**

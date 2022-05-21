@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.rule.client;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
@@ -19,6 +20,19 @@ public class DoubleSliderClientRule extends ClientRule<Double> implements Rule.S
 	@Override
 	public Double fromJson(JsonElement element) {
 		return element.getAsDouble();
+	}
+
+	@Override
+	public String getTypeAsString() {
+		return "double_slider";
+	}
+
+	@Override
+	public JsonObject serialise() {
+		JsonObject object = super.serialise();
+		object.addProperty("min", this.minValue);
+		object.addProperty("max", this.maxValue);
+		return object;
 	}
 
 	@Override

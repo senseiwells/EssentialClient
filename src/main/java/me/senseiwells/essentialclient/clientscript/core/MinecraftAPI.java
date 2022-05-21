@@ -40,13 +40,16 @@ import net.minecraft.village.TradeOffer;
 public class MinecraftAPI extends ValueTypes {
 	public static final String
 		BOX_SHAPE = "BoxShape",
+		CONFIG_HANDLER = "ConfigHandler",
 		FAKE_BLOCK = "FakeBlock",
+		FAKE_ENTITY = "FakeEntity",
 		GAME_EVENT = "GameEvent",
 		KEY_BIND = "KeyBind",
 		LINE_SHAPE = "LineShape",
 		SPHERE_SHAPE = "SphereShape",
 		BLOCK = "Block",
 		COMMAND_BUILDER = "CommandBuilder",
+		CONFIG = "Config",
 		ENTITY = "Entity",
 		FAKE_SCREEN = "FakeScreen",
 		ITEM_ENTITY = "ItemEntity",
@@ -90,7 +93,8 @@ public class MinecraftAPI extends ValueTypes {
 			MaterialValue.ArucasMaterialClass::new,
 			PosValue.ArucasPosClass::new,
 			RecipeValue.ArucasRecipeClass::new,
-			TradeValue.ArucasTradeOfferClass::new
+			TradeValue.ArucasTradeOfferClass::new,
+			ConfigValue.ArucasConfigValue::new
 		);
 		builder.addWrappers(
 			IMPORT_NAME,
@@ -100,7 +104,8 @@ public class MinecraftAPI extends ValueTypes {
 			LineShapeWrapper::new,
 			FakeEntityWrapper::new,
 			FakeBlockWrapper::new,
-			KeyBindWrapper::new
+			KeyBindWrapper::new,
+			ConfigHandlerWrapper::new
 		);
 		builder.addExtensions(
 			ArucasMinecraftExtension::new

@@ -18,8 +18,10 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.KEY_BIND;
+
 @SuppressWarnings("unused")
-@ArucasClass(name = "KeyBind")
+@ArucasClass(name = KEY_BIND)
 public class KeyBindWrapper implements IArucasWrappedClass {
 	@ArucasDefinition
 	public static WrapperClassDefinition DEFINITION;

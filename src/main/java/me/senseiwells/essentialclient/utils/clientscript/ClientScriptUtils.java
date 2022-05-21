@@ -18,7 +18,9 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.classes.ArucasEnumDefinition;
 import me.senseiwells.arucas.values.functions.FunctionValue;
+import me.senseiwells.essentialclient.clientscript.values.ConfigValue;
 import me.senseiwells.essentialclient.clientscript.values.PosValue;
+import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.*;
 import net.minecraft.command.CommandSource;
@@ -30,6 +32,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 public class ClientScriptUtils {
 	public static final StringValue
@@ -41,7 +44,124 @@ public class ClientScriptUtils {
 		MAX = StringValue.of("max"),
 		SUGGESTS = StringValue.of("suggests"),
 		SUGGESTER = StringValue.of("suggester"),
-		ENUM = StringValue.of("enum");
+		ENUM = StringValue.of("enum"),
+		DESCRIPTION = StringValue.of("description"),
+		OPTIONAL_INFO = StringValue.of("optional_info"),
+		DEFAULT_VALUE = StringValue.of("default_value"),
+		VALUE = StringValue.of("value"),
+		LISTENER = StringValue.of("listener"),
+		CYCLE_VALUES = StringValue.of("cycle_values");
+
+	public static ConfigValue mapToRule(ArucasMap map, Context context, ISyntax syntaxPosition) throws CodeError {
+		Value value = map.get(context, TYPE);
+		if (!(value instanceof StringValue type)) {
+			throw new RuntimeError("Config map must contain a type that is a string", syntaxPosition, context);
+		}
+		value = map.get(context, NAME);
+		if (!(value instanceof StringValue name)) {
+			throw new RuntimeError("Config map must contain a name that is a string", syntaxPosition, context);
+		}
+
+		value = map.get(context, DESCRIPTION);
+		String description = value instanceof StringValue s ? s.value : null;
+
+		value = map.get(context, OPTIONAL_INFO);
+		String optionalInfo = value instanceof StringValue s ? s.value : null;
+
+		value = map.get(context, VALUE);
+		String currentValue = value != null ? value.getAsString(context) : null;
+
+		value = map.get(context, LISTENER);
+		FunctionValue function = value instanceof FunctionValue f ? f : null;
+
+		Value defaultValue = map.get(context, DEFAULT_VALUE);
+		ClientRule<?> clientRule = switch (type.value.toLowerCase(Locale.ROOT)) {
+			case "boolean" -> {
+				if (defaultValue instanceof BooleanValue booleanValue) {
+					yield new BooleanClientRule(name.value, description, booleanValue.value);
+				}
+				yield new BooleanClientRule(name.value, description);
+			}
+			case "cycle" -> {
+				value = map.get(context, CYCLE_VALUES);
+				if (!(value instanceof ListValue list)) {
+					throw new RuntimeError("'cycle' type must have 'cycle_values' as a list", syntaxPosition, context);
+				}
+
+				List<String> cycles = new ArrayList<>();
+				for (int i = 0; i < list.value.size(); i++) {
+					cycles.add(list.value.get(i).getAsString(context));
+				}
+
+				if (defaultValue instanceof StringValue string) {
+					yield new CycleClientRule(name.value, description, cycles, string.value, null);
+				}
+				yield new CycleClientRule(name.value, description, cycles);
+			}
+			case "double" -> {
+				if (defaultValue instanceof NumberValue number) {
+					yield new DoubleClientRule(name.value, description, number.value);
+				}
+				yield new DoubleClientRule(name.value, description, 0.0D);
+			}
+			case "double_slider" -> {
+				value = map.get(context, MIN);
+				if (!(value instanceof NumberValue min)) {
+					throw new RuntimeError("'double_slider' type must have 'min' as a number", syntaxPosition, context);
+				}
+				value = map.get(context, MAX);
+				if (!(value instanceof NumberValue max)) {
+					throw new RuntimeError("'double_slider' type must have 'max' as a number", syntaxPosition, context);
+				}
+
+				if (defaultValue instanceof NumberValue number) {
+					yield new DoubleSliderClientRule(name.value, description, number.value, min.value, max.value);
+				}
+				yield new DoubleSliderClientRule(name.value, description, 0.0D, min.value, max.value);
+			}
+			case "integer" -> {
+				if (defaultValue instanceof NumberValue number) {
+					yield new IntegerClientRule(name.value, description, number.value.intValue());
+				}
+				yield new IntegerClientRule(name.value, description, 0);
+			}
+			case "integer_slider" -> {
+				value = map.get(context, MIN);
+				if (!(value instanceof NumberValue min)) {
+					throw new RuntimeError("'integer_slider' type must have 'min' as a number", syntaxPosition, context);
+				}
+				value = map.get(context, MAX);
+				if (!(value instanceof NumberValue max)) {
+					throw new RuntimeError("'integer_slider' type must have 'max' as a number", syntaxPosition, context);
+				}
+
+				if (defaultValue instanceof NumberValue number) {
+					yield new IntegerSliderClientRule(name.value, description, number.value.intValue(), min.value.intValue(), max.value.intValue());
+				}
+				yield new IntegerSliderClientRule(name.value, description, 0, min.value.intValue(), max.value.intValue());
+			}
+			case "string" -> {
+				yield new StringClientRule(name.value, description, defaultValue == null ? "" : defaultValue.getAsString(context));
+			}
+			default -> throw new RuntimeError("Invalid config type '%s'".formatted(type.value), syntaxPosition, context);
+		};
+
+		ConfigValue configValue = new ConfigValue(clientRule);
+
+		if (function != null) {
+			Context branch = context.createBranch();
+			clientRule.addListener(object -> {
+				Context branchContext = branch.createBranch();
+				function.callSafe(branchContext, () -> ArucasList.arrayListOf(configValue));
+			});
+		}
+		if (currentValue != null) {
+			clientRule.setValueFromString(currentValue);
+		}
+
+		clientRule.setOptionalInfo(optionalInfo);
+		return configValue;
+	}
 
 	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Context context, ISyntax syntaxPosition) throws CodeError {
 		return new CommandParser(arucasMap, context, syntaxPosition).parse();

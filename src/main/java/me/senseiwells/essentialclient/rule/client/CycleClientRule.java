@@ -1,5 +1,7 @@
 package me.senseiwells.essentialclient.rule.client;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 
 import java.util.List;
@@ -39,6 +41,24 @@ public class CycleClientRule extends ClientRule<String> implements Rule.Cycle {
 	@Override
 	public void setCurrentIndex(int index) {
 		this.index = index;
+	}
+
+	@Override
+	public String getTypeAsString() {
+		return "cycle";
+	}
+
+	@Override
+	public JsonObject serialise() {
+		JsonObject object = super.serialise();
+
+		JsonArray array = new JsonArray();
+		for (String string : this.cycleValues) {
+			array.add(string);
+		}
+		object.add("cycle_values", array);
+
+		return object;
 	}
 
 	@Override

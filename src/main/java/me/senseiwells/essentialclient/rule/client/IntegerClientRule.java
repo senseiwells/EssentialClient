@@ -27,6 +27,11 @@ public class IntegerClientRule extends NumberClientRule<Integer> {
 	}
 
 	@Override
+	public String getTypeAsString() {
+		return "integer";
+	}
+
+	@Override
 	public IntegerClientRule shallowCopy() {
 		IntegerClientRule rule = new IntegerClientRule(this.getName(), this.getDescription(), this.getDefaultValue());
 		if (this.getListeners() != null) {
