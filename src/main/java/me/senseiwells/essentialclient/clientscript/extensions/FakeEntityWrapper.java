@@ -1,9 +1,12 @@
 package me.senseiwells.essentialclient.clientscript.extensions;
 
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.ConstructorDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.MemberDoc;
 import me.senseiwells.arucas.api.wrappers.*;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.essentialclient.clientscript.values.EntityValue;
@@ -17,28 +20,82 @@ import net.minecraft.util.math.Vec3d;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE_ENTITY;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 @SuppressWarnings("unused")
+@ClassDoc(
+	name = FAKE_ENTITY,
+	desc = "This allows you to create a fake entity which can be rendered in the world.",
+	importPath = "Minecraft"
+)
 @ArucasClass(name = FAKE_ENTITY)
 public class FakeEntityWrapper implements IArucasWrappedClass {
 	private static final Map<UUID, Set<Integer>> FAKE_IDS = new HashMap<>();
 	private static final AtomicInteger ID_COUNTER = new AtomicInteger(Integer.MAX_VALUE);
 	private static final NumberValue ZERO = NumberValue.of(0);
 
+	@MemberDoc(
+		name = "entity",
+		desc = "The entity that is being rendered",
+		type = ENTITY,
+		examples = "fakeEntity.entity;"
+	)
 	@ArucasMember(assignable = false)
 	public EntityValue<?> entity;
+
+	@MemberDoc(
+		name = "world",
+		desc = "The world that the entity is being rendered in",
+		type = WORLD,
+		examples = "fakeEntity.world;"
+	)
 	@ArucasMember(assignable = false)
 	public WorldValue world;
+
+	@MemberDoc(
+		name = "pos",
+		desc = "The position of the entity",
+		type = POS,
+		examples = "fakeEntity.pos;"
+	)
 	@ArucasMember(assignable = false)
 	public PosValue pos;
+
+	@MemberDoc(
+		name = "bodyYaw",
+		desc = "The yaw of the entity",
+		type = NUMBER,
+		examples = "fakeEntity.bodyYaw;"
+	)
 	@ArucasMember(assignable = false)
 	public NumberValue bodyYaw;
+
+	@MemberDoc(
+		name = "yaw",
+		desc = "The yaw of the entity",
+		type = NUMBER,
+		examples = "fakeEntity.yaw;"
+	)
 	@ArucasMember(assignable = false)
 	public NumberValue yaw;
+
+	@MemberDoc(
+		name = "pitch",
+		desc = "The pitch of the entity",
+		type = NUMBER,
+		examples = "fakeEntity.pitch;"
+	)
 	@ArucasMember(assignable = false)
 	public NumberValue pitch;
 
+	@ConstructorDoc(
+		desc = "Creates a new fake entity",
+		params = {
+			ENTITY, "entity", "The entity that you want to create into a fake entity",
+			WORLD, "world", "The world that the entity is being rendered in"
+		},
+		example = "fakeEntity = new FakeEntity();"
+	)
 	@ArucasConstructor
 	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) throws CodeError {
 		Value value = context.convertValue(entityValue.value.getType().create(worldValue.value));
@@ -52,86 +109,193 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		this.bodyYaw = this.yaw = this.pitch = ZERO;
 	}
 
+	@FunctionDoc(
+		name = "setWorld",
+		desc = "Sets the world that the entity is being rendered in",
+		params = {WORLD, "world", "The world that the entity is being rendered in"},
+		example = "fakeEntity.setWorld(MinecraftClient.getClient().getWorld());"
+	)
 	@ArucasFunction
-	public Value setWorld(Context context, WorldValue worldValue) {
+	public void setWorld(Context context, WorldValue worldValue) {
 		this.world = worldValue;
-		return NullValue.NULL;
 	}
 
+	@FunctionDoc(
+		name = "setPos",
+		desc = "Sets the position of the entity",
+		params = {
+			POS, "pos", "The new position of the entity",
+			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+		},
+		example = "fakeEntity.setPos(new Pos(0, 0, 0), 0);"
+	)
 	@ArucasFunction
-	public Value setPos(Context context, PosValue posValue, NumberValue interpolation) {
+	public void setPos(Context context, PosValue posValue, NumberValue interpolation) {
 		this.pos = posValue;
 		this.updatePosition(interpolation);
-		return NullValue.NULL;
 	}
 
+	@FunctionDoc(
+		name = "setPos",
+		desc = "Sets the position of the entity",
+		params = {
+			NUMBER, "x", "The new x position of the entity",
+			NUMBER, "y", "The new y position of the entity",
+			NUMBER, "z", "The new z position of the entity",
+			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+		},
+		example = "fakeEntity.setPos(0, 0, 0, 10);"
+	)
 	@ArucasFunction
-	public Value setPos(Context context, NumberValue x, NumberValue y, NumberValue z, NumberValue interpolation) {
-		return this.setPos(context, new PosValue(x.value, y.value, z.value), interpolation);
+	public void setPos(Context context, NumberValue x, NumberValue y, NumberValue z, NumberValue interpolation) {
+		this.setPos(context, new PosValue(x.value, y.value, z.value), interpolation);
 	}
 
+	@FunctionDoc(
+		name = "setPos",
+		desc = "Sets the position of the entity with no interpolation",
+		params = {POS, "pos", "The new position of the entity"},
+		example = "fakeEntity.setPos(new Pos(0, 0, 0));"
+	)
 	@ArucasFunction
-	public Value setPos(Context context, PosValue posValue) {
-		return this.setPos(context, posValue, ZERO);
+	public void setPos(Context context, PosValue posValue) {
+		this.setPos(context, posValue, ZERO);
 	}
 
+	@FunctionDoc(
+		name = "setPos",
+		desc = "Sets the position of the entity with no interpolation",
+		params = {
+			NUMBER, "x", "The new x position of the entity",
+			NUMBER, "y", "The new y position of the entity",
+			NUMBER, "z", "The new z position of the entity"
+		},
+		example = "fakeEntity.setPos(0, 0, 0);"
+	)
 	@ArucasFunction
-	public Value setPos(Context context, NumberValue x, NumberValue y, NumberValue z) {
-		return this.setPos(context, new PosValue(x.value, y.value, z.value), ZERO);
+	public void setPos(Context context, NumberValue x, NumberValue y, NumberValue z) {
+		this.setPos(context, new PosValue(x.value, y.value, z.value), ZERO);
 	}
 
+	@FunctionDoc(
+		name = "setYaw",
+		desc = "Sets the yaw of the entity",
+		params = {
+			NUMBER, "yaw", "The new yaw of the entity",
+			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+		},
+		example = "fakeEntity.setYaw(0, 10);"
+	)
 	@ArucasFunction
-	public Value setYaw(Context context, NumberValue yaw, NumberValue interpolation) {
+	public void setYaw(Context context, NumberValue yaw, NumberValue interpolation) {
 		this.yaw = yaw;
 		this.updatePosition(interpolation);
-		return NullValue.NULL;
 	}
 
+	@FunctionDoc(
+		name = "setYaw",
+		desc = "Sets the yaw of the entity with no interpolation",
+		params = {NUMBER, "yaw", "The new yaw of the entity"},
+		example = "fakeEntity.setYaw(0);"
+	)
 	@ArucasFunction
-	public Value setYaw(Context context, NumberValue yaw) {
-		return this.setYaw(context, yaw, ZERO);
+	public void setYaw(Context context, NumberValue yaw) {
+		this.setYaw(context, yaw, ZERO);
 	}
 
+	@FunctionDoc(
+		name = "setBodyYaw",
+		desc = "Sets the body yaw of the entity",
+		params = {
+			NUMBER, "bodyYaw", "The new body yaw of the entity",
+			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+		},
+		example = "fakeEntity.setBodyYaw(0, 10);"
+	)
 	@ArucasFunction
-	public Value setBodyYaw(Context context, NumberValue yaw, NumberValue interpolation) {
+	public void setBodyYaw(Context context, NumberValue yaw, NumberValue interpolation) {
 		this.bodyYaw = yaw;
 		this.updatePosition(interpolation);
-		return NullValue.NULL;
 	}
 
+	@FunctionDoc(
+		name = "setBodyYaw",
+		desc = "Sets the body yaw of the entity with no interpolation",
+		params = {NUMBER, "bodyYaw", "The new body yaw of the entity"},
+		example = "fakeEntity.setBodyYaw(0);"
+	)
 	@ArucasFunction
-	public Value setBodyYaw(Context context, NumberValue yaw) {
-		return this.setBodyYaw(context, yaw, ZERO);
+	public void setBodyYaw(Context context, NumberValue yaw) {
+		this.setBodyYaw(context, yaw, ZERO);
 	}
 
+	@FunctionDoc(
+		name = "setPitch",
+		desc = "Sets the pitch of the entity",
+		params = {
+			NUMBER, "pitch", "The new pitch of the entity",
+			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+		},
+		example = "fakeEntity.setPitch(0, 10);"
+	)
 	@ArucasFunction
-	public Value setPitch(Context context, NumberValue pitch, NumberValue interpolation) {
+	public void setPitch(Context context, NumberValue pitch, NumberValue interpolation) {
 		this.pitch = pitch;
 		this.updatePosition(interpolation);
-		return NullValue.NULL;
 	}
 
+	@FunctionDoc(
+		name = "setPitch",
+		desc = "Sets the pitch of the entity with no interpolation",
+		params = {NUMBER, "pitch", "The new pitch of the entity"},
+		example = "fakeEntity.setPitch(0);"
+	)
 	@ArucasFunction
-	public Value setPitch(Context context, NumberValue pitch) {
-		return this.setPitch(context, pitch, ZERO);
+	public void setPitch(Context context, NumberValue pitch) {
+		this.setPitch(context, pitch, ZERO);
 	}
 
+	@FunctionDoc(
+		name = "updatePosAndRotation",
+		desc = "Updates the position and rotation of the entity",
+		params = {
+			POS, "pos", "The new position of the entity",
+			NUMBER, "yaw", "The new yaw of the entity",
+			NUMBER, "pitch", "The new pitch of the entity",
+			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+		},
+		example = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0, 10);"
+	)
 	@ArucasFunction
-	public Value updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch, NumberValue interpolation) {
+	public void updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch, NumberValue interpolation) {
 		this.pos = posValue;
 		this.entity.value.setHeadYaw(yaw.value.floatValue());
 		this.entity.value.setPitch(pitch.value.floatValue());
 		this.updatePosition(interpolation);
-		return NullValue.NULL;
 	}
 
+	@FunctionDoc(
+		name = "updatePosAndRotation",
+		desc = "Updates the position and rotation of the entity with no interpolation",
+		params = {
+			POS, "pos", "The new position of the entity",
+			NUMBER, "yaw", "The new yaw of the entity",
+			NUMBER, "pitch", "The new pitch of the entity"
+		},
+		example = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0);"
+	)
 	@ArucasFunction
-	public Value updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch) {
-		return this.updatePosAndRotation(context, posValue, yaw, pitch, ZERO);
+	public void updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch) {
+		this.updatePosAndRotation(context, posValue, yaw, pitch, ZERO);
 	}
 
+	@FunctionDoc(
+		name = "spawn",
+		desc = "Spawns the entity (makes it render in the world)",
+		example = "fakeEntity.spawn();"
+	)
 	@ArucasFunction
-	public Value spawn(Context context) {
+	public void spawn(Context context) {
 		EssentialUtils.getClient().execute(() -> {
 			Vec3d pos = this.pos.value;
 			float yaw = this.yaw.value.floatValue();
@@ -140,15 +304,18 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			this.entity.value.updateTrackedPositionAndAngles(pos.x, pos.y, pos.z, yaw, pitch, 3, true);
 			this.world.value.addEntity(this.entity.value.getId(), this.entity.value);
 		});
-		return NullValue.NULL;
 	}
 
+	@FunctionDoc(
+		name = "despawn",
+		desc = "Despawns the entity (makes it not render in the world)",
+		example = "fakeEntity.despawn();"
+	)
 	@ArucasFunction
-	public Value despawn(Context context) {
+	public void despawn(Context context) {
 		EssentialUtils.getClient().execute(() -> {
 			this.world.value.removeEntity(this.entity.value.getId(), Entity.RemovalReason.DISCARDED);
 		});
-		return NullValue.NULL;
 	}
 
 	private void updatePosition(NumberValue interpolationValue) {

@@ -106,6 +106,7 @@ public class RenderHelper {
 		matrices.push();
 		matrices.translate(posOrigin.getX() - cameraPos.getX(), posOrigin.getY() - cameraPos.getY(), posOrigin.getZ() - cameraPos.getZ());
 		tilt(matrices, box);
+		scale(matrices, box);
 		addBoxVertices(bufferBuilder, matrices, pos1, pos2, red / 255.0F, green / 255.0F, blue / 255.0F, alpha / 255.0F, outline);
 		matrices.pop();
 	}
@@ -244,6 +245,7 @@ public class RenderHelper {
 		matrices.push();
 		matrices.translate(pos.getX() - cameraPos.getX(), pos.getY() - cameraPos.getY(), pos.getZ() - cameraPos.getZ());
 		tilt(matrices, sphere);
+		scale(matrices, sphere);
 		addSphereVertices(bufferBuilder, matrices, sphere.getWidth(), sphere.getSteps(), red / 255.0F, green / 255.0F, blue / 255.0F, alpha / 255.0F, outline);
 		matrices.pop();
 	}
@@ -372,17 +374,17 @@ public class RenderHelper {
 
 	// Renders fake blocks
 	// Reference: https://github.com/ch-yx/fabric-carpet/blob/item_shape/src/main/java/carpet/script/utils/ShapesRenderer.java#L283-L403
-	public static void renderBlocks(MatrixStack matrices, float tickDelta) {
+	public static void renderBlocks(MatrixStack matrices) {
 		MinecraftClient client = EssentialUtils.getClient();
 		VertexConsumerProvider.Immediate immediate = client.getBufferBuilders().getEntityVertexConsumers();
 
 		FakeBlockWrapper.getAllBlocksToRender().forEach(fakeBlock -> {
-			renderFakeBlock(client, matrices, fakeBlock, immediate, tickDelta);
+			renderFakeBlock(client, matrices, fakeBlock, immediate);
 		});
 		immediate.drawCurrentLayer();
 	}
 
-	private static void renderFakeBlock(MinecraftClient client, MatrixStack matrices, FakeBlockWrapper fakeBlock, VertexConsumerProvider.Immediate immediate, float tickDelta) {
+	private static void renderFakeBlock(MinecraftClient client, MatrixStack matrices, FakeBlockWrapper fakeBlock, VertexConsumerProvider.Immediate immediate) {
 		if (client.world == null) {
 			return;
 		}
@@ -410,6 +412,7 @@ public class RenderHelper {
 			}
 		}
 		tilt(matrices, fakeBlock);
+		scale(matrices, fakeBlock);
 
 		matrices.translate(-0.5, -0.5, -0.5);
 
@@ -433,5 +436,9 @@ public class RenderHelper {
 		if (tiltable.getZTilt() != 0.0F) {
 			matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(tiltable.getZTilt()));
 		}
+	}
+
+	private static void scale(MatrixStack matrices, Shape.Scalable scalable) {
+		matrices.scale(scalable.getXScale(), scalable.getYScale(), scalable.getZScale());
 	}
 }

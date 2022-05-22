@@ -28,6 +28,7 @@ import java.util.*;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
+@SuppressWarnings("unused")
 @ClassDoc(
 	name = CONFIG_HANDLER,
 	desc = "This class allows you to easily read and write config files.",

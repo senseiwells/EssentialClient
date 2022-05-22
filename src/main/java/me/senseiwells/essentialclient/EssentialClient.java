@@ -9,6 +9,7 @@ import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandl
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
+import me.senseiwells.essentialclient.utils.clientscript.ScriptNetworkHandler;
 import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
@@ -24,9 +25,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class EssentialClient implements ModInitializer {
-	public static final Logger LOGGER;
 	public static final ChunkClientNetworkHandler CHUNK_NET_HANDLER;
 	public static final GameRuleNetworkHandler GAME_RULE_NET_HANDLER;
+	public static final ScriptNetworkHandler SCRIPT_NET_HANDLER;
+
+	public static final Logger LOGGER;
 	public static final LocalDateTime START_TIME;
 	public static final Set<NetworkHandler> NETWORK_HANDLERS;
 	public static final Set<Config<?>> CONFIG_SET;
@@ -36,6 +39,7 @@ public class EssentialClient implements ModInitializer {
 		LOGGER = LogManager.getLogger("EssentialClient");
 		CHUNK_NET_HANDLER = new ChunkClientNetworkHandler();
 		GAME_RULE_NET_HANDLER = new GameRuleNetworkHandler();
+		SCRIPT_NET_HANDLER = new ScriptNetworkHandler();
 		START_TIME = LocalDateTime.now();
 		VERSION = "1.2.0";
 		NETWORK_HANDLERS = new LinkedHashSet<>();
@@ -47,6 +51,7 @@ public class EssentialClient implements ModInitializer {
 
 		NETWORK_HANDLERS.add(CHUNK_NET_HANDLER);
 		NETWORK_HANDLERS.add(GAME_RULE_NET_HANDLER);
+		NETWORK_HANDLERS.add(SCRIPT_NET_HANDLER);
 	}
 
 	@Override
@@ -74,7 +79,6 @@ public class EssentialClient implements ModInitializer {
 	}
 
 	public static void onDisconnect() {
-		CHUNK_NET_HANDLER.onDisconnect();
-		GAME_RULE_NET_HANDLER.onDisconnect();
+		NETWORK_HANDLERS.forEach(NetworkHandler::onDisconnect);
 	}
 }

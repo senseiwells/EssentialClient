@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 @Mixin(ScreenshotRecorder.class)
 public class ScreenshotRecorderMixin {
 	@WrapWithCondition(method = "method_1661", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false))
-	private boolean onConsumeText(Consumer<?> textConsumer, Object text) {
+	private static boolean onConsumeText(Consumer<?> textConsumer, Object text) {
 		return !ClientRules.DISABLE_SCREENSHOT_MESSAGE.getValue();
 	}
 }

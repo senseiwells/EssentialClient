@@ -13,6 +13,7 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
+import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
@@ -49,7 +50,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static me.senseiwells.arucas.utils.ValueTypes.STRING;
+import static me.senseiwells.arucas.utils.ValueTypes.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINECRAFT_CLIENT;
 
 public class MinecraftClientValue extends GenericValue<MinecraftClient> {
@@ -158,7 +159,10 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				MemberFunction.of("getClientRenderDistance", this::getClientRenderDistance),
 				MemberFunction.of("setClientRenderDistance", 1, this::setClientRenderDistance),
 				MemberFunction.of("runOnMainThread", 1, this::runOnMainThread),
-				MemberFunction.of("tick", this::tick)
+				MemberFunction.of("tick", this::tick),
+
+				MemberFunction.of("canSendScriptPacket", this::canSendScriptPacket),
+				MemberFunction.arbitrary("sendScriptPacket", this::sendScriptPacket)
 			);
 		}
 
@@ -782,6 +786,32 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		 */
 		private Value getVersion(Arguments arguments) {
 			return StringValue.of(EssentialUtils.getMinecraftVersion());
+		}
+
+		@FunctionDoc(
+			name = "canSendScriptPacket",
+			desc = "Returns whether the server supports client script packets",
+			returns = {BOOLEAN, "Whether the client can send packets to the server"},
+			example = "client.canSendScriptPacket()"
+		)
+		private Value canSendScriptPacket(Arguments arguments) {
+			return BooleanValue.of(EssentialClient.SCRIPT_NET_HANDLER.isAvailable());
+		}
+
+		@FunctionDoc(
+			name = "sendScriptPacket",
+			desc = {
+				"This sends a script packet to the server",
+				"You can send the follow types of values:",
+				"Boolean, Number, String, List (of numbers), Text, ItemStack, Pos, and NbtMaps",
+				"You can send byte, int, and long arrays by using the strings 'b', 'i', and 'l' at the start of the list",
+			},
+			params = {ANY, "values...", "the data you want to send to the server"},
+			example = "client.sendScriptPacket('test', false, ['l', 9999, 0, 45]);"
+		)
+		private Value sendScriptPacket(Arguments arguments) throws CodeError {
+			EssentialClient.SCRIPT_NET_HANDLER.sendScriptPacket(arguments.skip());
+			return NullValue.NULL;
 		}
 
 		private MinecraftClient getClient(Arguments arguments) throws CodeError {

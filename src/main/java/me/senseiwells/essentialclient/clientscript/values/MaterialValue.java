@@ -2,6 +2,9 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.ISyntax;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.MemberDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
@@ -24,12 +27,10 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MATERIAL;
+import static me.senseiwells.arucas.utils.ValueTypes.STRING;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class MaterialValue extends GenericValue<Item> {
 	public MaterialValue(Item value) {
@@ -130,22 +131,29 @@ public class MaterialValue extends GenericValue<Item> {
 		}
 	}
 
-	/**
-	 * Material class for Arucas. This class represents all possible item and block types
-	 * and allows you to convert them into instances of ItemStacks and Blocks <br>
-	 * Import the class with <code>import Material from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = MATERIAL,
+		desc = {
+			"This class represents all possible item and block types",
+			"and allows you to convert them into instances of ItemStacks and Blocks"
+		},
+		importPath = "Minecraft"
+	)
 	public static class ArucasMaterialClass extends ArucasClassExtension {
 		public ArucasMaterialClass() {
 			super(MATERIAL);
 		}
 
+		@MemberDoc(
+			isStatic = true,
+			name = "ALL",
+			desc = "This is a list of all materials in the game, including items and blocks, each material also has it's own member",
+			type = MATERIAL,
+			examples = "Material.ALL;"
+		)
 		@Override
 		public Map<String, Value> getDefinedStaticVariables() {
-			Map<String, Value> materialMap = new HashMap<>();
+			SortedMap<String, Value> materialMap = new TreeMap<>();
 			ArucasList materialList = new ArucasList();
 			for (Item item : Registry.ITEM) {
 				MaterialValue materialValue = new MaterialValue(item);
@@ -160,8 +168,11 @@ public class MaterialValue extends GenericValue<Item> {
 					materialList.add(materialValue);
 				}
 			}
-			materialMap.put("ALL", new ListValue(materialList));
-			return materialMap;
+
+			Map<String, Value> linkedMap = new LinkedHashMap<>();
+			linkedMap.put("ALL", new ListValue(materialList));
+			linkedMap.putAll(materialMap);
+			return linkedMap;
 		}
 
 		@Override
@@ -171,14 +182,15 @@ public class MaterialValue extends GenericValue<Item> {
 			);
 		}
 
-		/**
-		 * Name: <code>Material.of(id)</code> <br>
-		 * Description: This converts a block or item id into a Material <br>
-		 * Parameter - String: the id of the block or item <br>
-		 * Returns - Material: the entity instance from the id <br>
-		 * Throws - Error: <code>... is not a valid Material</code> if the id is not a valid material id <br>
-		 * Example: <code>Material.of("diamond");</code>
-		 */
+		@FunctionDoc(
+			isStatic = true,
+			name = "of",
+			desc = "This converts a block or item id into a Material",
+			params = {STRING, "id", "the id of the block or item"},
+			returns = {MATERIAL, "the material instance from the id"},
+			throwMsgs = "... is not a valid Material",
+			example = "Material.of('diamond');"
+		)
 		private Value of(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.getNextString();
 			Optional<Item> item = Registry.ITEM.getOrEmpty(ArucasMinecraftExtension.getId(arguments, stringValue.value));
@@ -198,59 +210,61 @@ public class MaterialValue extends GenericValue<Item> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;Material>.getFullId()</code> <br>
-		 * Description: This returns the full id of the material <br>
-		 * Returns - String: the full id representation of the material <br>
-		 * Example: <code>material.getFullId();</code>
-		 */
+		@FunctionDoc(
+			name = "getFullId",
+			desc = "This returns the full id of the material, for example: 'minecraft:diamond'",
+			returns = {STRING, "the full id representation of the material"},
+			example = "material.getFullId();"
+		)
 		private Value getFullId(Arguments arguments) throws CodeError {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(materialValue.getId().toString());
 		}
 
-		/**
-		 * Name: <code>&lt;Material>.getId()</code> <br>
-		 * Description: This returns the id of the material <br>
-		 * Returns - String: the id representation of the material <br>
-		 * Example: <code>material.getId();</code>
-		 */
+		@FunctionDoc(
+			name = "getId",
+			desc = "This returns the id of the material, for example: 'diamond'",
+			returns = {STRING, "the id representation of the material"},
+			example = "material.getId();"
+		)
 		private Value getId(Arguments arguments) throws CodeError {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(materialValue.getId().getPath());
 		}
 
-		/**
-		 * Name: <code>&lt;Material>.asItemStack()</code> <br>
-		 * Description: This converts the material into an ItemStack <br>
-		 * Returns - ItemStack: the ItemStack representation of the material <br>
-		 * Throws - Error: <code>"Material cannot be converted to an item stack"</code> if the material has no item stack form <br>
-		 * Example: <code>material.asItemStack();</code>
-		 */
+		@FunctionDoc(
+			name = "asItemStack",
+			desc = "This converts the material into an ItemStack",
+			returns = {ITEM_STACK, "the ItemStack representation of the material"},
+			throwMsgs = "Material cannot be converted to an item stack",
+			example = "material.asItemStack();"
+		)
 		private Value asItemStack(Arguments arguments) throws CodeError {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return new ItemStackValue(materialValue.asItemStack(arguments));
 		}
 
-		/**
-		 * Name: <code>&lt;Material>.asBlock()</code> <br>
-		 * Description: This converts the material into a Block <br>
-		 * Returns - Block: the Block representation of the material <br>
-		 * Throws - Error: <code>"Material cannot be converted to a block"</code> if the material has no block form <br>
-		 * Example: <code>material.asBlock();</code>
-		 */
+		@FunctionDoc(
+			name = "asBlock",
+			desc = "This converts the material into a Block",
+			returns = {BLOCK, "the Block representation of the material"},
+			throwMsgs = "Material cannot be converted to a block",
+			example = "material.asBlock();"
+		)
 		private Value asBlock(Arguments arguments) throws CodeError {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return new BlockValue(materialValue.asBlock(arguments).getDefaultState());
 		}
 
-		/**
-		 * Name: <code>&lt;Material>.getTranslatedName()</code> <br>
-		 * Description: This gets the translated name of the ItemStack, for example
-		 * <code>Material.DIAMOND_SWORD</code> would return <code>'Diamond Sword'</code> if your language is English <br>
-		 * Returns - String: the translated name of the ItemStack <br>
-		 * Example: <code>material.getTranslatedName();</code>
-		 */
+		@FunctionDoc(
+			name = "getTranslatedName",
+			desc = {
+				"This gets the translated name of the ItemStack, for example: ",
+				"Material.DIAMOND_SWORD would return 'Diamond Sword' if your language is English"
+			},
+			returns = {STRING, "the translated name of the Material"},
+			example = "material.getTranslatedName();"
+		)
 		private Value getTranslatedName(Arguments arguments) throws CodeError {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(I18n.translate(materialValue.getTranslationKey()));

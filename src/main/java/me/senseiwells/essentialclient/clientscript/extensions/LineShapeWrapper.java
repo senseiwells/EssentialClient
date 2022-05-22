@@ -1,5 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.extensions;
 
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.wrappers.ArucasClass;
 import me.senseiwells.arucas.api.wrappers.ArucasConstructor;
 import me.senseiwells.arucas.utils.Context;
@@ -9,47 +11,20 @@ import me.senseiwells.essentialclient.utils.clientscript.Shape;
 
 import java.util.*;
 
+import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LINE_SHAPE;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 @SuppressWarnings("unused")
+@ClassDoc(
+	name = LINE_SHAPE,
+	desc = "This class allows you to create a line shape which can be used to draw lines in the world.",
+	importPath = "Minecraft"
+)
 @ArucasClass(name = LINE_SHAPE)
-public class LineShapeWrapper extends Shape.Positioned implements Shape.Tiltable {
+public class LineShapeWrapper extends Shape.PositionTiltableScalable {
 	private static final Map<UUID, Set<LineShapeWrapper>> NORMAL_LINES = new LinkedHashMap<>(0);
 	private static final Map<UUID, Set<LineShapeWrapper>> THROUGH_LINES = new LinkedHashMap<>(0);
-
-	private float xTilt;
-	private float yTilt;
-	private float zTilt;
-
-	@Override
-	public float getXTilt() {
-		return this.xTilt;
-	}
-
-	@Override
-	public float getYTilt() {
-		return this.yTilt;
-	}
-
-	@Override
-	public float getZTilt() {
-		return this.zTilt;
-	}
-
-	@Override
-	public void setXTilt(float xTilt) {
-		this.xTilt = xTilt;
-	}
-
-	@Override
-	public void setYTilt(float yTilt) {
-		this.yTilt = yTilt;
-	}
-
-	@Override
-	public void setZTilt(float zTilt) {
-		this.zTilt = zTilt;
-	}
 
 	@Override
 	public void render() {
@@ -63,6 +38,14 @@ public class LineShapeWrapper extends Shape.Positioned implements Shape.Tiltable
 		removeLineToRender(this);
 	}
 
+	@ConstructorDoc(
+		desc = "Creates a new line shape",
+		params = {
+			POS, "pos1", "The starting position of the line",
+			POS, "pos2", "The ending position of the line"
+		},
+		example = "new LineShape(new Pos(0, 0, 0), new Pos(1, 1, 1));"
+	)
 	@ArucasConstructor
 	public void constructor(Context context, PosValue pos1, PosValue pos2) {
 		this.setCreatedContext(context.createBranch());
@@ -71,6 +54,18 @@ public class LineShapeWrapper extends Shape.Positioned implements Shape.Tiltable
 		this.setOutlineWidth(5);
 	}
 
+	@ConstructorDoc(
+		desc = "Creates a new line shape",
+		params = {
+			NUMBER, "x1", "The x position of the starting position of the line",
+			NUMBER, "y1", "The y position of the starting position of the line",
+			NUMBER, "z1", "The z position of the starting position of the line",
+			NUMBER, "x2", "The x position of the ending position of the line",
+			NUMBER, "y2", "The y position of the ending position of the line",
+			NUMBER, "z2", "The z position of the ending position of the line"
+		},
+		example = "new LineShape(0, 0, 0, 1, 1, 1);"
+	)
 	@ArucasConstructor
 	public void constructor(Context context, NumberValue x1, NumberValue y1, NumberValue z1, NumberValue x2, NumberValue y2, NumberValue z2) {
 		this.constructor(context, new PosValue(x1.value, y1.value, z1.value), new PosValue(x2.value, y2.value, z2.value));

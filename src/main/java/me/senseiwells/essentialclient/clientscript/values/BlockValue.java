@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
@@ -32,7 +33,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BLOCK;
+import static me.senseiwells.arucas.utils.ValueTypes.BOOLEAN;
+import static me.senseiwells.arucas.utils.ValueTypes.STRING;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class BlockValue extends GenericValue<BlockState> {
 	private final PosValue blockPos;
@@ -112,6 +115,14 @@ public class BlockValue extends GenericValue<BlockState> {
 			);
 		}
 
+		@FunctionDoc(
+			isStatic = true,
+			name = "of",
+			desc = "This creates a Block from a material or string",
+			params = {MATERIAL, "material", "the material or string to create the Block from"},
+			returns = {BLOCK, "the Block created from the material or string"},
+			example = "Block.of(Material.STONE);"
+		)
 		private Value of(Arguments arguments) throws CodeError {
 			Value value = arguments.getNext();
 			if (value instanceof StringValue stringValue) {
@@ -162,6 +173,12 @@ public class BlockValue extends GenericValue<BlockState> {
 			);
 		}
 
+		@FunctionDoc(
+			name = "getMaterial",
+			desc = "This gets the material of the Block",
+			returns = {MATERIAL, "the material of the Block"},
+			example = "block.getMaterial();"
+		)
 		private Value getMaterial(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			Item blockItem = blockState.getBlock().asItem();
@@ -171,30 +188,76 @@ public class BlockValue extends GenericValue<BlockState> {
 			return new MaterialValue(blockItem);
 		}
 
+		@FunctionDoc(
+			name = "getFullId",
+			desc = "This gets the full id of the Block, for example: 'minecraft:stone'",
+			returns = {STRING, "the full id of the Block"},
+			example = "block.getFullId();"
+		)
 		private Value getFullId(Arguments arguments) throws CodeError {
 			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(arguments).getBlock()).toString());
 		}
 
+		@FunctionDoc(
+			name = "getId",
+			desc = "This gets the id of the Block, for example: 'stone'",
+			returns = {STRING, "the id of the Block"},
+			example = "block.getId();"
+		)
 		private Value getId(Arguments arguments) throws CodeError {
 			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(arguments).getBlock()).getPath());
 		}
 
+		@FunctionDoc(
+			name = "isBlockEntity",
+			desc = "This checks if the Block is a BlockEntity",
+			returns = {BOOLEAN, "true if the Block is a BlockEntity"},
+			example = "block.isBlockEntity();"
+		)
 		private Value isBlockEntity(Arguments arguments) throws CodeError {
 			return BooleanValue.of(this.getBlockState(arguments).getBlock() instanceof BlockEntityProvider);
 		}
 
+		@FunctionDoc(
+			name = "isTransparent",
+			desc = "This checks if the Block is transparent",
+			returns = {BOOLEAN, "true if the Block is transparent"},
+			example = "block.isTransparent();"
+		)
 		private Value isTransparent(Arguments arguments) throws CodeError {
 			return BooleanValue.of(!this.getBlockState(arguments).isOpaque());
 		}
 
+		@FunctionDoc(
+			name = "asItemStack",
+			desc = "This gets the ItemStack of the Block, if the block has no item it will return air",
+			returns = {ITEM_STACK, "the ItemStack of the Block"},
+			example = "block.asItemStack();"
+		)
 		private Value asItemStack(Arguments arguments) throws CodeError {
 			return new ItemStackValue(this.getBlockState(arguments).getBlock().asItem().getDefaultStack());
 		}
 
+		@FunctionDoc(
+			name = "getBlastResistance",
+			desc = "This gets the blast resistance of the Block",
+			returns = {NUMBER, "the blast resistance of the Block"},
+			example = "block.getBlastResistance();"
+		)
 		private Value getBlastResistance(Arguments arguments) throws CodeError {
 			return NumberValue.of(this.getBlockState(arguments).getBlock().getBlastResistance());
 		}
 
+		@FunctionDoc(
+			name = "getBlockProperties",
+			desc = {
+				"This gets the properties of the Block",
+				"You can find a list of all block properties",
+				"[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)"
+			},
+			returns = {MAP, "the properties of the Block, may be empty if there are no properties"},
+			example = "block.getBlockProperties();"
+		)
 		private Value getBlockProperties(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			ArucasMap propertyMap = new ArucasMap();
@@ -215,67 +278,148 @@ public class BlockValue extends GenericValue<BlockState> {
 			return new MapValue(propertyMap);
 		}
 
+		@FunctionDoc(
+			name = "hasBlockPosition",
+			desc = "This checks if the Block has a position or not",
+			returns = {BOOLEAN, "true if the Block has a position"},
+			example = "block.hasBlockPosition();"
+		)
 		private Value hasBlockPosition(Arguments arguments) throws CodeError {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return BooleanValue.of(blockValue.hasBlockPos());
 		}
 
+		@FunctionDoc(
+			name = "getPos",
+			desc = "This gets the position of the Block",
+			returns = {POS, "the position of the Block, may be null if the Block has no position"},
+			example = "block.getPos();"
+		)
 		private Value getPos(Arguments arguments) throws CodeError {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getPos();
 		}
 
+		@FunctionDoc(
+			name = "getX",
+			desc = "This gets the X position of the Block",
+			returns = {NUMBER, "the X position of the Block, may be null if the Block has no position"},
+			example = "block.getX();"
+		)
 		private Value getBlockX(Arguments arguments) throws CodeError {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getBlockX();
 		}
 
+		@FunctionDoc(
+			name = "getY",
+			desc = "This gets the Y position of the Block",
+			returns = {NUMBER, "the Y position of the Block, may be null if the Block has no position"},
+			example = "block.getY();"
+		)
 		private Value getBlockY(Arguments arguments) throws CodeError {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getBlockY();
 		}
 
+		@FunctionDoc(
+			name = "getZ",
+			desc = "This gets the Z position of the Block",
+			returns = {NUMBER, "the Z position of the Block, may be null if the Block has no position"},
+			example = "block.getZ();"
+		)
 		private Value getBlockZ(Arguments arguments) throws CodeError {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getBlockZ();
 		}
 
+		@FunctionDoc(
+			name = "getTranslatedName",
+			desc = {
+				"This gets the translated name of the Block, for example",
+				"'stone' would return 'Stone' if your language is in English"
+			},
+			returns = {STRING, "the translated name of the Block"},
+			example = "block.getTranslatedName();"
+		)
 		private Value getTranslatedName(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return StringValue.of(I18n.translate(blockState.getBlock().getTranslationKey()));
 		}
 
+		@FunctionDoc(
+			name = "isSolidBlock",
+			desc = "This checks if the Block is a solid block",
+			returns = {BOOLEAN, "true if the Block is a solid block"},
+			example = "block.isSolidBlock();"
+		)
 		private Value isSolidBlock(Arguments arguments) throws CodeError {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			boolean isSolid = blockValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos());
 			return BooleanValue.of(isSolid);
 		}
 
+		@FunctionDoc(
+			name = "rotateYClockwise",
+			desc = "This rotates the Block 90 degrees clockwise",
+			returns = {BLOCK, "the rotated Block"},
+			example = "block.rotateYClockwise();"
+		)
 		private Value rotateYClockwise(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.rotate(BlockRotation.CLOCKWISE_90));
 		}
 
+		@FunctionDoc(
+			name = "rotateYCounterClockwise",
+			desc = "This rotates the Block 90 degrees counter-clockwise",
+			returns = {BLOCK, "the rotated Block"},
+			example = "block.rotateYCounterClockwise();"
+		)
 		private Value rotateYCounterClockwise(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.rotate(BlockRotation.COUNTERCLOCKWISE_90));
 		}
 
+		@FunctionDoc(
+			name = "mirrorFrontBack",
+			desc = "This mirrors the Block around the front and back",
+			returns = {BLOCK, "the mirrored Block"},
+			example = "block.mirrorFrontBack();"
+		)
 		private Value mirrorFrontBack(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.mirror(BlockMirror.FRONT_BACK));
 		}
 
+		@FunctionDoc(
+			name = "mirrorLeftRight",
+			desc = "This mirrors the Block around the left and right",
+			returns = {BLOCK, "the mirrored Block"},
+			example = "block.mirrorLeftRight();"
+		)
 		private Value mirrorLeftRight(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.mirror(BlockMirror.LEFT_RIGHT));
 		}
 
+		@FunctionDoc(
+			name = "isFluid",
+			desc = "This checks if the Block is a fluid",
+			returns = {BOOLEAN, "true if the Block is a fluid"},
+			example = "block.isFluid();"
+		)
 		private Value isFluid(Arguments arguments) throws CodeError {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return BooleanValue.of(blockValue.value.contains(FluidBlock.LEVEL));
 		}
 
+		@FunctionDoc(
+			name = "isFluidSource",
+			desc = "This checks if the Block is a fluid source",
+			returns = {BOOLEAN, "true if the Block is a fluid source"},
+			example = "block.isFluidSource();"
+		)
 		private Value isFluidSource(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			Block block = blockState.getBlock();
@@ -285,16 +429,35 @@ public class BlockValue extends GenericValue<BlockState> {
 			return BooleanValue.of(block instanceof Waterloggable && blockState.get(Properties.WATERLOGGED));
 		}
 
+		@FunctionDoc(
+			name = "isReplaceable",
+			desc = "This checks if the Block is replaceable",
+			returns = {BOOLEAN, "true if the Block is replaceable"},
+			example = "block.isReplaceable();"
+		)
 		private Value isReplaceable(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return BooleanValue.of(blockState.getMaterial().isReplaceable());
 		}
 
+		@FunctionDoc(
+			name = "getHardness",
+			desc = "This gets the hardness of the Block",
+			returns = {NUMBER, "the hardness of the Block"},
+			example = "block.getHardness();"
+		)
 		private Value getHardness(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return NumberValue.of(blockState.getHardness(ArucasMinecraftExtension.getWorld(), BlockPos.ORIGIN));
 		}
 
+		@FunctionDoc(
+			name = "sideCoversSmallSquare",
+			desc = "This checks if the Block covers a small square",
+			params = {STRING, "side", "the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'"},
+			returns = {BOOLEAN, "true if the Block covers a small square"},
+			example = "block.sideCoversSmallSquare('north');"
+		)
 		private Value sideCoversSmallSquare(Arguments arguments) throws CodeError {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			StringValue stringDirection = arguments.getNextString();
@@ -302,6 +465,13 @@ public class BlockValue extends GenericValue<BlockState> {
 			return BooleanValue.of(Block.sideCoversSmallSquare(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), direction));
 		}
 
+		@FunctionDoc(
+			name = "isSideSolidFullSquare",
+			desc = "This checks if the Block is solid on the full square",
+			params = {STRING, "side", "the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'"},
+			returns = {BOOLEAN, "true if the Block is solid on the full square"},
+			example = "block.isSideSolidFullSquare('north');"
+		)
 		private Value isSideSolidFullSquare(Arguments arguments) throws CodeError {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			StringValue stringDirection = arguments.getNextString();
@@ -309,12 +479,25 @@ public class BlockValue extends GenericValue<BlockState> {
 			return BooleanValue.of(blockValue.value.isSideSolidFullSquare(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), direction));
 		}
 
+		@FunctionDoc(
+			name = "isSpawnable",
+			desc = "This checks if the Block is spawnable in the case of zombies",
+			returns = {BOOLEAN, "true if the Block is spawnable in the case of zombies"},
+			example = "block.isSpawnable();"
+		)
 		private Value isSpawnable(Arguments arguments) throws CodeError {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			boolean isSpawnable = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), EntityType.ZOMBIE);
 			return BooleanValue.of(isSpawnable);
 		}
 
+		@FunctionDoc(
+			name = "isSpawnable",
+			desc = "This checks if the Block is spawnable in the case of the given entity",
+			params = {ENTITY, "entity", "the entity to check"},
+			returns = {BOOLEAN, "true if the Block is spawnable in the case of the given entity"},
+			example = "block.isSpawnable(zombie);"
+		)
 		private Value isSpawnableType(Arguments arguments) throws CodeError {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
@@ -322,11 +505,23 @@ public class BlockValue extends GenericValue<BlockState> {
 			return BooleanValue.of(isSpawnable);
 		}
 
+		@FunctionDoc(
+			name = "getLuminance",
+			desc = "This gets the luminance of the Block",
+			returns = {NUMBER, "the luminance of the Block"},
+			example = "block.getLuminance();"
+		)
 		private Value getLuminance(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return NumberValue.of(blockState.getLuminance());
 		}
 
+		@FunctionDoc(
+			name = "getBlockNbt",
+			desc = "This gets the NBT of the Block",
+			returns = {MAP, "the NBT of the Block, may be null if the Block has no NBT"},
+			example = "block.getBlockNbt();"
+		)
 		private Value getBlockNbt(Arguments arguments) throws CodeError {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			BlockEntity blockEntity;

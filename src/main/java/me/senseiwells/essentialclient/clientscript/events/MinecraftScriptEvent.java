@@ -104,9 +104,9 @@ public class MinecraftScriptEvent {
 			try {
 				return this.apply(context);
 			}
-			catch (CodeError codeError) {
+			catch (Exception exception) {
 				ArucasThreadHandler threadHandler = context.getThreadHandler();
-				threadHandler.tryError(context, codeError);
+				threadHandler.tryError(context, exception);
 				return null;
 			}
 		}

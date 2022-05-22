@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -18,6 +20,7 @@ import me.senseiwells.essentialclient.utils.clientscript.JsonUtils;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import static me.senseiwells.arucas.utils.ValueTypes.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.JSON;
 
 public class JsonValue extends GenericValue<JsonElement> {
@@ -52,13 +55,11 @@ public class JsonValue extends GenericValue<JsonElement> {
 		return JSON;
 	}
 
-	/**
-	 * Json class for Arucas. <br>
-	 * Import the class with <code>import Json from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = JSON,
+		desc = "This class allows you to create and manipulate JSON objects.",
+		importPath = "Minecraft"
+	)
 	public static class ArucasJsonClass extends ArucasClassExtension {
 		public ArucasJsonClass() {
 			super(JSON);
@@ -73,14 +74,14 @@ public class JsonValue extends GenericValue<JsonElement> {
 			);
 		}
 
-		/**
-		 * Name: <code>Json.fromString(string)</code> <br>
-		 * Description: This converts a string into a Json provided it is formatted correctly <br>
-		 * Parameter - String: the string that you want to parse into a Json <br>
-		 * Returns - Json: the Json parsed from the string <br>
-		 * Throws - Error: <code>"Json could not be parsed"</code> if the string is not formatted correctly <br>
-		 * Example: <code>Json.fromString("{\"key\":\"value\"}")</code>
-		 */
+		@FunctionDoc(
+			name = "fromString",
+			desc = "This converts a string into a Json provided it is formatted correctly",
+			params = {STRING, "string", "the string that you want to parse into a Json"},
+			returns = {JSON, "the Json parsed from the string"},
+			throwMsgs = "Json could not be parsed",
+			example = "Json.fromString('{\"key\":\"value\"}');"
+		)
 		private Value fromString(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.getNextString();
 			try {
@@ -91,29 +92,33 @@ public class JsonValue extends GenericValue<JsonElement> {
 			}
 		}
 
-		/**
-		 * Name: <code>Json.fromList(list)</code> <br>
-		 * Description: This converts a list into a Json, an important thing to note is that
-		 * any values that are not Numbers, Booleans, Lists, Maps, or Null will use their
-		 * <code>toString()</code> member to convert them to a string <br>
-		 * Parameter - List: the list that you want to parse into a Json <br>
-		 * Returns - Json: the Json parsed from the list <br>
-		 * Example: <code>Json.fromList(["value", 1, true])</code>
-		 */
+		@FunctionDoc(
+			name = "fromList",
+			desc = {
+				"This converts a list into a Json, an important thing to note is that",
+				"any values that are not Numbers, Booleans, Lists, Maps, or Null will use their",
+				"toString() member to convert them to a string"
+			},
+			params = {LIST, "list", "the list that you want to parse into a Json"},
+			returns = {JSON, "the Json parsed from the list"},
+			example = "Json.fromList(['value', 1, true]);"
+		)
 		private Value fromList(Arguments arguments) throws CodeError {
 			ListValue listValue = arguments.getNextList();
 			return new JsonValue(JsonUtils.fromValue(arguments.getContext(), listValue));
 		}
 
-		/**
-		 * Name: <code>Json.fromMap(map)</code> <br>
-		 * Description: This converts a map into a Json, an important thing to note is that
-		 * any values that are not Numbers, Booleans, Lists, Maps, or Null will use their
-		 * <code>toString()</code> member to convert them to a string <br>
-		 * Parameter - Map: the map that you want to parse into a Json <br>
-		 * Returns - Json: the Json parsed from the map <br>
-		 * Example: <code>Json.fromMap({"key": ["value1", "value2"]})</code>
-		 */
+		@FunctionDoc(
+			name = "fromMap",
+			desc = {
+				"This converts a map into a Json, an important thing to note is that",
+				"any values that are not Numbers, Booleans, Lists, Maps, or Null will use their",
+				"toString() member to convert them to a string"
+			},
+			params = {MAP, "map", "the map that you want to parse into a Json"},
+			returns = {JSON, "the Json parsed from the map"},
+			example = "Json.fromMap({'key': ['value1', 'value2']});"
+		)
 		private Value fromMap(Arguments arguments) throws CodeError {
 			MapValue mapValue = arguments.getNextMap();
 			return new JsonValue(JsonUtils.fromValue(arguments.getContext(), mapValue));
@@ -127,24 +132,24 @@ public class JsonValue extends GenericValue<JsonElement> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;Json>.getValue()</code> <br>
-		 * Description: This converts the Json back into a Value <br>
-		 * Returns - Value: the Value parsed from the Json <br>
-		 * Example: <code>json.getValue()</code>
-		 */
+		@FunctionDoc(
+			name = "getValue",
+			desc = "This converts the Json back into a Value",
+			returns = {ANY, "the Value parsed from the Json"},
+			example = "json.getValue();"
+		)
 		private Value getValue(Arguments arguments) throws CodeError {
 			JsonValue thisValue = arguments.getNext(JsonValue.class);
 			return JsonUtils.toValue(arguments.getContext(), thisValue.value);
 		}
 
-		/**
-		 * Name: <code>&lt;Json>.writeToFile(file)</code> <br>
-		 * Description: This writes the Json to a file <br>
-		 * Parameter - File: the file that you want to write to <br>
-		 * - Throws: <code>"There was an error writing the file: ..."</code> if there is an error writing to the file <br>
-		 * Example: <code>json.writeToFile(new File("D:/cool/realDirectory"))</code>
-		 */
+		@FunctionDoc(
+			name = "writeToFile",
+			desc = "This writes the Json to a file",
+			params = {FILE, "file", "the file that you want to write to"},
+			throwMsgs = "There was an error writing the file: ...",
+			example = "json.writeToFile(new File('D:/cool/realDirectory'));"
+		)
 		private Value writeToFile(Arguments arguments) throws CodeError {
 			JsonValue thisValue = arguments.getNext(JsonValue.class);
 			FileValue fileValue = arguments.getNext(FileValue.class);

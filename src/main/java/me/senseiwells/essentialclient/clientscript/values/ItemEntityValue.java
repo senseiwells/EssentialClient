@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -17,7 +19,9 @@ import net.minecraft.item.ItemStack;
 
 import java.util.UUID;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_ENTITY;
+import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
+import static me.senseiwells.arucas.utils.ValueTypes.STRING;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class ItemEntityValue extends EntityValue<ItemEntity> {
 	public ItemEntityValue(ItemEntity value) {
@@ -40,14 +44,14 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 		return ITEM_ENTITY;
 	}
 
-	/**
-	 * ItemEntity class for Arucas. This class extends Entity and so inherits all of
-	 * their methods too, ItemEntities are entities that are dropped items. <br>
-	 * Import the class with <code>import ItemEntity from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = ITEM_ENTITY,
+		desc = {
+			"This class extends Entity and so inherits all of their methods too,",
+			"ItemEntities are entities that are dropped items."
+		},
+		importPath = "Minecraft"
+	)
 	public static class ArucasItemEntityClass extends ArucasClassExtension {
 		public ArucasItemEntityClass() {
 			super(ITEM_ENTITY);
@@ -63,46 +67,48 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;ItemEntity>.getItemStack()</code> <br>
-		 * Description: This method returns the ItemStack that is held in the ItemEntity <br>
-		 * Returns - ItemStack: the ItemStack that the entity holds <br>
-		 * Example: <code>livingEntity.getItemStack();</code>
-		 */
+		@FunctionDoc(
+			name = "getItemStack",
+			desc = "This method returns the ItemStack that is held in the ItemEntity",
+			returns = {ITEM_STACK, "the ItemStack that the entity holds"},
+			example = "itemEntity.getItemStack();"
+		)
 		private Value getItemStack(Arguments arguments) throws CodeError {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return new ItemStackValue(itemEntityValue.value.getStack());
 		}
 
-		/**
-		 * Name: <code>&lt;ItemEntity>.getCustomName()</code> <br>
-		 * Description: This method returns the custom name of the ItemEntity <br>
-		 * Returns - String: the custom name of the entity <br>
-		 * Example: <code>livingEntity.getCustomName();</code>
-		 */
+		@FunctionDoc(
+			name = "getCustomName",
+			desc = "This method returns the custom name of the ItemEntity",
+			returns = {STRING, "the custom name of the entity"},
+			example = "itemEntity.getCustomName();"
+		)
 		private Value getCustomName(Arguments arguments) throws CodeError {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return StringValue.of(itemEntityValue.value.getName().asString());
 		}
 
-		/**
-		 * Name: <code>&lt;ItemEntity>.getItemAge()</code> <br>
-		 * Description: This method returns the age of the ItemEntity, this is increased
-		 * every tick and the item entity despawns after 6000 ticks <br>
-		 * Returns - Number: the age of the entity <br>
-		 * Example: <code>livingEntity.getItemAge();</code>
-		 */
+		@FunctionDoc(
+			name = "getItemAge",
+			desc = {
+				"This method returns the age of the ItemEntity",
+				"this is increased every tick and the item entity despawns after 6000 ticks"
+			},
+			returns = {NUMBER, "the age of the entity"},
+			example = "itemEntity.getItemAge();"
+		)
 		private Value getItemAge(Arguments arguments) throws CodeError {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return NumberValue.of(itemEntityValue.value.getItemAge());
 		}
 
-		/**
-		 * Name: <code>&lt;ItemEntity>.getThrower()</code> <br>
-		 * Description: This method returns the player that threw the ItemEntity <br>
-		 * Returns - Player/Null: the player that threw the entity, null if not thrown by a player <br>
-		 * Example: <code>livingEntity.getThrower();</code>
-		 */
+		@FunctionDoc(
+			name = "getThrower",
+			desc = "This method returns the player that threw the ItemEntity",
+			returns = {PLAYER, "the player that threw the entity", "null if not thrown by a player"},
+			example = "itemEntity.getThrower();"
+		)
 		private Value getThrower(Arguments arguments) throws CodeError {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			UUID throwerUuid = itemEntityValue.value.getThrower();

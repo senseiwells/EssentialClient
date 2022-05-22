@@ -193,7 +193,15 @@ public abstract class Shape implements IArucasWrappedClass {
 		this.setBlue(colour & 0xFF);
 	}
 
-	// See above documentation
+	@FunctionDoc(
+		name = "setColor",
+		desc = "This sets the colour of the shape, using a single value, this",
+		params = {
+			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
+			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+		},
+		example = "shape.setColor(0xFF0000);"
+	)
 	@ArucasFunction
 	public final void setColor(Context context, NumberValue numberValue) {
 		this.setColour(context, numberValue);
@@ -224,7 +232,17 @@ public abstract class Shape implements IArucasWrappedClass {
 		this.setBlue(blue);
 	}
 
-	// See above documentation
+	@FunctionDoc(
+		name = "setColor",
+		desc = "This sets the colour of the shape, using three values this function",
+		params = {
+			NUMBER, "red", "the amount of red 0 - 255",
+			NUMBER, "green", "the amount of green 0 - 255",
+			NUMBER, "blue", "the amount of blue 0 - 255"
+		},
+		throwMsgs = "Colour ... is out of bounds, must be between 0 - 255",
+		example = "shape.setColor(34, 55, 0);"
+	)
 	@ArucasFunction
 	public final void setColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
 		this.setColour(context, redValue, greenValue, blueValue);
@@ -306,7 +324,15 @@ public abstract class Shape implements IArucasWrappedClass {
 		this.setOutlineBlue(colour & 0xFF);
 	}
 
-	// See above documentation
+	@FunctionDoc(
+		name = "setOutlineColor",
+		desc = "This sets the width of the shape, using a single value, this function",
+		params = {
+			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
+			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+		},
+		example = "shape.setOutlineColor(0xFF00FF);"
+	)
 	@ArucasFunction
 	public final void setOutlineColor(Context context, NumberValue numberValue) {
 		this.setColour(context, numberValue);
@@ -336,7 +362,16 @@ public abstract class Shape implements IArucasWrappedClass {
 		this.setOutlineBlue(blue);
 	}
 
-	// See above documentation
+	@FunctionDoc(
+		name = "setOutlineColor",
+		desc = "This sets the outline colour of the shape, using three values, this function",
+		params = {
+			NUMBER, "red", "the amount of red 0 - 255",
+			NUMBER, "green", "the amount of green 0 - 255",
+			NUMBER, "blue", "the amount of blue 0 - 255"
+		},
+		example = "shape.setOutlineColor(255, 0, 255);"
+	)
 	@ArucasFunction
 	public final void setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
 		this.setOutlineColour(context, redValue, greenValue, blueValue);
@@ -443,7 +478,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		example = "shape.getRGB();"
 	)
 	@ArucasFunction
-	public final NumberValue getRBG(Context context) {
+	public final NumberValue getRGB(Context context) {
 		return NumberValue.of(this.getRed() << 16 | this.getGreen() << 8 | this.getBlue());
 	}
 
@@ -474,10 +509,10 @@ public abstract class Shape implements IArucasWrappedClass {
 	}
 
 	@FunctionDoc(
-		name = "getRBGAList",
+		name = "getRGBAList",
 		desc = "This returns the RGBA value of the shape as a list",
 		returns = {LIST, "the RGBA value of the shape as a list in the form [red, green, blue, opacity]"},
-		example = "r, g, b, a = shape.getRBGAList();"
+		example = "r, g, b, a = shape.getRGBAList();"
 	)
 	@ArucasFunction
 	public final ListValue getRGBAList(Context context) {
@@ -531,6 +566,12 @@ public abstract class Shape implements IArucasWrappedClass {
 	}
 
 	public abstract static class CentrePositioned extends Shape {
+		@MemberDoc(
+			name = "pos",
+			desc = "This is the position of the shape",
+			type = POS,
+			examples = "shape.pos;"
+		)
 		@ArucasMember(assignable = false)
 		public PosValue pos;
 		private float width;
@@ -613,24 +654,24 @@ public abstract class Shape implements IArucasWrappedClass {
 	}
 
 	public abstract static class Positioned extends Shape {
-		@ArucasMember(assignable = false)
-		public PosValue pos1;
-		@ArucasMember(assignable = false)
-		public PosValue pos2;
-
-		// Need to move the documentation
 		@MemberDoc(
 			name = "pos1",
 			desc = "The first position of the shape",
 			type = POS,
 			examples = "shape.pos1;"
 		)
+		@ArucasMember(assignable = false)
+		public PosValue pos1;
+
 		@MemberDoc(
 			name = "pos2",
 			desc = "The second position of the shape",
 			type = POS,
 			examples = "shape.pos2;"
 		)
+		@ArucasMember(assignable = false)
+		public PosValue pos2;
+
 		@Override
 		public boolean hasPosition() {
 			return true;
@@ -692,6 +733,100 @@ public abstract class Shape implements IArucasWrappedClass {
 		public void centerPositions(Context context) {
 			this.setPos1(context, new PosValue(this.pos1.toBlockPos()));
 			this.setPos2(context, new PosValue(this.pos2.toBlockPos()));
+		}
+	}
+
+	public interface Scalable {
+		float getXScale();
+
+		float getYScale();
+
+		float getZScale();
+
+		void setXScale(float xScale);
+
+		void setYScale(float yScale);
+
+		void setZScale(float zScale);
+
+		@FunctionDoc(
+			name = "setScale",
+			desc = "This sets the scale of the shape",
+			params = {
+				NUMBER, "xScale", "the x scale of the shape",
+				NUMBER, "yScale", "the y scale of the shape",
+				NUMBER, "zScale", "the z scale of the shape"
+			},
+			example = "shape.setScale(1.5, 2.5, 3.5);"
+		)
+		@ArucasFunction
+		default void setScale(Context context, NumberValue xScale, NumberValue yScale, NumberValue zScale) {
+			this.setXScale(xScale.value.floatValue());
+			this.setYScale(yScale.value.floatValue());
+			this.setZScale(zScale.value.floatValue());
+		}
+
+		@FunctionDoc(
+			name = "setXScale",
+			desc = "This sets the x scale of the shape",
+			params = {NUMBER, "xScale", "the x scale of the shape"},
+			example = "shape.setXScale(1.5);"
+		)
+		@ArucasFunction
+		default void setXScale(Context context, NumberValue xScale) {
+			this.setXScale(xScale.value.floatValue());
+		}
+
+		@FunctionDoc(
+			name = "setYScale",
+			desc = "This sets the y scale of the shape",
+			params = {NUMBER, "yScale", "the y scale of the shape"},
+			example = "shape.setYScale(2.5);"
+		)
+		@ArucasFunction
+		default void setYScale(Context context, NumberValue yScale) {
+			this.setYScale(yScale.value.floatValue());
+		}
+
+		@FunctionDoc(
+			name = "setZScale",
+			desc = "This sets the z scale of the shape",
+			params = {NUMBER, "zScale", "the z scale of the shape"},
+			example = "shape.setZScale(3.5);"
+		)
+		@ArucasFunction
+		default void setZScale(Context context, NumberValue zScale) {
+			this.setZScale(zScale.value.floatValue());
+		}
+
+		@FunctionDoc(
+			name = "getXScale",
+			desc = "This gets the x scale of the shape",
+			example = "shape.getXScale();"
+		)
+		@ArucasFunction
+		default NumberValue getXScale(Context context) {
+			return NumberValue.of(this.getXScale());
+		}
+
+		@FunctionDoc(
+			name = "getYScale",
+			desc = "This gets the y scale of the shape",
+			example = "shape.getYScale();"
+		)
+		@ArucasFunction
+		default NumberValue getYScale(Context context) {
+			return NumberValue.of(this.getYScale());
+		}
+
+		@FunctionDoc(
+			name = "getZScale",
+			desc = "This gets the z scale of the shape",
+			example = "shape.getZScale();"
+		)
+		@ArucasFunction
+		default NumberValue getZScale(Context context) {
+			return NumberValue.of(this.getZScale());
 		}
 	}
 
@@ -818,6 +953,146 @@ public abstract class Shape implements IArucasWrappedClass {
 		default Value getDirection(Context context) {
 			Direction direction = this.getDirection();
 			return direction == null ? NullValue.NULL : StringValue.of(direction.getName());
+		}
+	}
+
+	public static class CentreTiltableScalable extends CentrePositioned implements Tiltable, Scalable {
+		private float xScale;
+		private float yScale;
+		private float zScale;
+
+		private float xTilt;
+		private float yTilt;
+		private float zTilt;
+
+		@Override
+		public float getXScale() {
+			return this.xScale;
+		}
+
+		@Override
+		public float getYScale() {
+			return this.yScale;
+		}
+
+		@Override
+		public float getZScale() {
+			return this.zScale;
+		}
+
+		@Override
+		public void setXScale(float xScale) {
+			this.xScale = xScale;
+		}
+
+		@Override
+		public void setYScale(float yScale) {
+			this.yScale = yScale;
+		}
+
+		@Override
+		public void setZScale(float zScale) {
+			this.zScale = zScale;
+		}
+
+		@Override
+		public float getXTilt() {
+			return this.xTilt;
+		}
+
+		@Override
+		public float getYTilt() {
+			return this.yTilt;
+		}
+
+		@Override
+		public float getZTilt() {
+			return this.zTilt;
+		}
+
+		@Override
+		public void setXTilt(float xTilt) {
+			this.xTilt = xTilt;
+		}
+
+		@Override
+		public void setYTilt(float yTilt) {
+			this.yTilt = yTilt;
+		}
+
+		@Override
+		public void setZTilt(float zTilt) {
+			this.zTilt = zTilt;
+		}
+	}
+
+	public static class PositionTiltableScalable extends Positioned implements Tiltable, Scalable {
+		private float xScale;
+		private float yScale;
+		private float zScale;
+
+		private float xTilt;
+		private float yTilt;
+		private float zTilt;
+
+		@Override
+		public float getXScale() {
+			return this.xScale;
+		}
+
+		@Override
+		public float getYScale() {
+			return this.yScale;
+		}
+
+		@Override
+		public float getZScale() {
+			return this.zScale;
+		}
+
+		@Override
+		public void setXScale(float xScale) {
+			this.xScale = xScale;
+		}
+
+		@Override
+		public void setYScale(float yScale) {
+			this.yScale = yScale;
+		}
+
+		@Override
+		public void setZScale(float zScale) {
+			this.zScale = zScale;
+		}
+
+		@Override
+		public float getXTilt() {
+			return this.xTilt;
+		}
+
+		@Override
+		public float getYTilt() {
+			return this.yTilt;
+		}
+
+		@Override
+		public float getZTilt() {
+			return this.zTilt;
+		}
+
+		@Override
+		public void setXTilt(float xTilt) {
+			this.xTilt = xTilt;
+		}
+
+		@Override
+		public void setYTilt(float yTilt) {
+			this.yTilt = yTilt;
+		}
+
+		@Override
+		public void setZTilt(float zTilt) {
+			this.zTilt = zTilt;
 		}
 	}
 }
