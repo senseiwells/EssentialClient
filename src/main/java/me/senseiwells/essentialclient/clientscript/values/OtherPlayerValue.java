@@ -10,6 +10,7 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -201,16 +202,16 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		/**
 		 * Name: <code>&lt;OtherPlayer>.getSlotFor(itemStack)</code> <br>
 		 * Description: This gets the slot number of the specified item in the players combined inventory <br>
-		 * Parameter - ItemStack: the item you want to get the slot of <br>
+		 * Parameter - MaterialLike: the item or material you want to get the slot of <br>
 		 * Returns - Number/Null: the slot number of the item, null if not found <br>
 		 * Example: <code>otherPlayer.getSlotFor(Material.DIAMOND.asItemStack());</code>
 		 */
 		private Value getSlotFor(Arguments arguments) throws CodeError {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
-			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
+			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
 			for (Slot slot : screenHandler.slots) {
-				if (slot.getStack().getItem() == itemStackValue.value.getItem()) {
+				if (slot.getStack().getItem() == materialLike.asItem()) {
 					return NumberValue.of(slot.id);
 				}
 			}

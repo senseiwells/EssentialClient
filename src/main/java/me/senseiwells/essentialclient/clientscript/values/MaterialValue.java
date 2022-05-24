@@ -1,12 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
-import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.api.docs.MemberDoc;
 import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -18,11 +16,10 @@ import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import net.minecraft.block.Block;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -32,7 +29,7 @@ import java.util.*;
 import static me.senseiwells.arucas.utils.ValueTypes.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
-public class MaterialValue extends GenericValue<Item> {
+public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 	public MaterialValue(Item value) {
 		super(value);
 	}
@@ -43,25 +40,6 @@ public class MaterialValue extends GenericValue<Item> {
 
 	public Identifier getId() {
 		return Registry.ITEM.getId(this.value);
-	}
-
-	public ItemStack asItemStack(Arguments arguments) throws CodeError {
-		return this.asItemStack(arguments.getContext(), arguments.getPosition());
-	}
-
-	public ItemStack asItemStack(Context context, ISyntax syntaxPosition) throws CodeError {
-		return this.value.getDefaultStack();
-	}
-
-	public Block asBlock(Arguments arguments) throws CodeError {
-		return this.asBlock(arguments.getContext(), arguments.getPosition());
-	}
-
-	public Block asBlock(Context context, ISyntax syntaxPosition) throws CodeError {
-		if (this.value instanceof BlockItem blockItem) {
-			return blockItem.getBlock();
-		}
-		throw new RuntimeError("Material cannot be converted into a block", syntaxPosition, context);
 	}
 
 	@Override
@@ -93,6 +71,11 @@ public class MaterialValue extends GenericValue<Item> {
 		return new BlockMaterial(block);
 	}
 
+	@Override
+	public Item asItem() {
+		return this.value;
+	}
+
 	private static class BlockMaterial extends MaterialValue {
 		private final Block block;
 
@@ -112,22 +95,22 @@ public class MaterialValue extends GenericValue<Item> {
 		}
 
 		@Override
-		public ItemStack asItemStack(Context context, ISyntax syntaxPosition) throws CodeError {
-			Item item = this.block.asItem();
-			if (item != Items.AIR) {
-				return item.getDefaultStack();
-			}
-			throw new RuntimeError("Material cannot be converted to an item stack", syntaxPosition, context);
-		}
-
-		@Override
-		public Block asBlock(Context context, ISyntax syntaxPosition) {
-			return this.block;
-		}
-
-		@Override
 		public String getAsString(Context context) throws CodeError {
 			return this.getId().getPath();
+		}
+
+		@Override
+		public Item asItem() {
+			Item item = this.block.asItem();
+			if (item == Items.AIR && !this.block.getDefaultState().isAir()) {
+				throw new RuntimeException("Material cannot be converted to an item");
+			}
+			return item;
+		}
+
+		@Override
+		public Block asBlock() {
+			return this.block;
 		}
 	}
 
@@ -241,7 +224,7 @@ public class MaterialValue extends GenericValue<Item> {
 		)
 		private Value asItemStack(Arguments arguments) throws CodeError {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
-			return new ItemStackValue(materialValue.asItemStack(arguments));
+			return new ItemStackValue(materialValue.asItemStack());
 		}
 
 		@FunctionDoc(
@@ -253,7 +236,7 @@ public class MaterialValue extends GenericValue<Item> {
 		)
 		private Value asBlock(Arguments arguments) throws CodeError {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
-			return new BlockValue(materialValue.asBlock(arguments).getDefaultState());
+			return new BlockValue(materialValue.asBlock().getDefaultState());
 		}
 
 		@FunctionDoc(

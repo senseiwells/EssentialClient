@@ -13,6 +13,7 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.mixins.clientScript.MerchantScreenHandlerMixin;
+import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
@@ -23,8 +24,7 @@ import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
 import static me.senseiwells.arucas.utils.ValueTypes.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MERCHANT_SCREEN;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 	public MerchantScreenValue(MerchantScreen screen) {
@@ -156,15 +156,15 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		@FunctionDoc(
 			name = "getIndexOfTrade",
 			desc = "This gets the index of a trade for a certain item",
-			params = {ITEM_STACK, "itemStack", "the item to get the index of"},
+			params = {MATERIAL_LIKE, "materialLike", "the item to get the index of"},
 			returns = {NUMBER, "the index of the trade"},
 			throwMsgs = "Not in merchant gui",
 			example = "screen.getIndexOfTrade(Material.DIAMOND_PICKAXE.asItemStack());"
 		)
 		private Value getIndexOfTrade(Arguments arguments) throws CodeError {
 			this.checkIsCurrentScreen(arguments);
-			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
-			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
+			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
+			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), materialLike.asItem());
 			if (index == -1) {
 				return NullValue.NULL;
 			}
@@ -201,7 +201,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		@FunctionDoc(
 			name = "doesVillagerHaveTrade",
 			desc = "This checks if the villager has a trade for a certain item",
-			params = {ITEM_STACK, "itemStack", "the item to check for"},
+			params = {MATERIAL_LIKE, "materialLike", "the item or material to check for"},
 			returns = {BOOLEAN, "true if the villager has a trade for the item, false otherwise"},
 			throwMsgs = {
 				"Not in merchant gui",
@@ -211,8 +211,8 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		)
 		private Value doesVillagerHaveTrade(Arguments arguments) throws CodeError {
 			this.checkIsCurrentScreen(arguments);
-			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
-			int code = InventoryUtils.checkHasTrade(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
+			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
+			int code = InventoryUtils.checkHasTrade(ArucasMinecraftExtension.getClient(), materialLike.asItem());
 			return BooleanValue.of(this.checkVillagerValid(code, arguments));
 		}
 

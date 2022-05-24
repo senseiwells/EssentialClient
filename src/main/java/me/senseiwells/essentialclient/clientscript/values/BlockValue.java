@@ -12,6 +12,7 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -37,7 +38,7 @@ import static me.senseiwells.arucas.utils.ValueTypes.BOOLEAN;
 import static me.senseiwells.arucas.utils.ValueTypes.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
-public class BlockValue extends GenericValue<BlockState> {
+public class BlockValue extends GenericValue<BlockState> implements MaterialLike {
 	private final PosValue blockPos;
 	private final boolean hasPos;
 
@@ -103,6 +104,20 @@ public class BlockValue extends GenericValue<BlockState> {
 		return "Block{id=%s}".formatted(Registry.BLOCK.getId(this.value.getBlock()).getPath());
 	}
 
+	@Override
+	public Item asItem() {
+		Item item = this.value.getBlock().asItem();
+		if (item == Items.AIR && !this.value.isAir()) {
+			throw new RuntimeException("Material cannot be converted to an item");
+		}
+		return item;
+	}
+
+	@Override
+	public Block asBlock() {
+		return this.value.getBlock();
+	}
+
 	public static class ArucasBlockClass extends ArucasClassExtension {
 		public ArucasBlockClass() {
 			super(BLOCK);
@@ -119,7 +134,7 @@ public class BlockValue extends GenericValue<BlockState> {
 			isStatic = true,
 			name = "of",
 			desc = "This creates a Block from a material or string",
-			params = {MATERIAL, "material", "the material or string to create the Block from"},
+			params = {MATERIAL_LIKE, "material", "the material, item stack, block, or string to create the Block from"},
 			returns = {BLOCK, "the Block created from the material or string"},
 			example = "Block.of(Material.STONE);"
 		)
@@ -132,10 +147,10 @@ public class BlockValue extends GenericValue<BlockState> {
 					return arguments.getError("'%s' is not a value block", id);
 				}).getDefaultState());
 			}
-			if (!(value instanceof MaterialValue materialValue)) {
+			if (!(value instanceof MaterialLike materialLike)) {
 				throw arguments.getError("Parameter must be of type String or Material");
 			}
-			return new BlockValue(materialValue.asBlock(arguments).getDefaultState());
+			return new BlockValue(materialLike.asBlock().getDefaultState());
 		}
 
 		@Override

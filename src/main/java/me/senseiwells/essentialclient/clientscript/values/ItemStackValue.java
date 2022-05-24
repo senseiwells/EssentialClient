@@ -13,6 +13,7 @@ import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.mixins.clientScript.NbtListMixin;
+import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resource.language.I18n;
@@ -21,10 +22,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -41,7 +39,7 @@ import java.util.Map;
 import static me.senseiwells.arucas.utils.ValueTypes.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
-public class ItemStackValue extends GenericValue<ItemStack> {
+public class ItemStackValue extends GenericValue<ItemStack> implements MaterialLike {
 	public ItemStackValue(ItemStack itemStack) {
 		super(itemStack);
 	}
@@ -77,6 +75,11 @@ public class ItemStackValue extends GenericValue<ItemStack> {
 		return this.getAsString(context).hashCode();
 	}
 
+	@Override
+	public Item asItem() {
+		return this.value.getItem();
+	}
+
 	@ClassDoc(
 		name = ITEM_STACK,
 		desc = "This class represents an item stack. It can be used to create new item stacks, or to modify existing ones.",
@@ -99,7 +102,7 @@ public class ItemStackValue extends GenericValue<ItemStack> {
 			isStatic = true,
 			name = "of",
 			desc = "This creates an ItemStack from a material or a string",
-			params = {MATERIAL, "material", "the material or string to create the ItemStack from"},
+			params = {MATERIAL_LIKE, "material", "the material, item stack, block, or string to create the ItemStack from"},
 			returns = {ITEM_STACK, "the new ItemStack instance"},
 			example = "ItemStack.of('dirt');"
 		)
@@ -111,10 +114,10 @@ public class ItemStackValue extends GenericValue<ItemStack> {
 					() -> arguments.getError("'%s' is not a valid item stack", id)
 				).getDefaultStack());
 			}
-			if (!(value instanceof MaterialValue materialValue)) {
+			if (!(value instanceof MaterialLike materialLike)) {
 				throw arguments.getError("Parameter must be of type String or Material");
 			}
-			return new ItemStackValue(materialValue.asItemStack(arguments));
+			return new ItemStackValue(materialLike.asItemStack());
 		}
 
 		@FunctionDoc(
