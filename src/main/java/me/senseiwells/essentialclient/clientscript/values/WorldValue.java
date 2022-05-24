@@ -442,7 +442,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				NUMBER, "z", "the z position of the block"
 			},
 			returns = {BOOLEAN, "true if the block is air"},
-			example = "world.isAir(0, 100, 0)"
+			example = "world.isAir(0, 100, 0);"
 		)
 		private Value isAir(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
@@ -457,7 +457,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			desc = "Returns true if the block at the given position is air",
 			params = {POS, "pos", "the position of the block"},
 			returns = {BOOLEAN, "true if the block is air"},
-			example = "world.isAir(new Pos(0, 100, 0))"
+			example = "world.isAir(new Pos(0, 100, 0));"
 		)
 		private Value isAirPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
@@ -475,7 +475,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				STRING, "direction", "the direction to check, for example 'north', 'east', 'up', etc."
 			},
 			returns = {NUMBER, "the emitted redstone power"},
-			example = "world.getEmittedRedstonePower(0, 100, 0, 'north')"
+			example = "world.getEmittedRedstonePower(0, 100, 0, 'north');"
 		)
 		private Value getEmittedRedstonePower(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
@@ -496,7 +496,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				STRING, "direction", "the direction to check, for example 'north', 'east', 'up', etc."
 			},
 			returns = {NUMBER, "the emitted redstone power"},
-			example = "world.getEmittedRedstonePower(new Pos(0, 100, 0), 'north')"
+			example = "world.getEmittedRedstonePower(new Pos(0, 100, 0), 'north');"
 		)
 		private Value getEmittedRedstonePowerPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
@@ -516,7 +516,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				NUMBER, "z", "the z position of the block"
 			},
 			returns = {NUMBER, "the light level"},
-			example = "world.getLight(0, 100, 0)"
+			example = "world.getLight(0, 100, 0);"
 		)
 		private Value getLight(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
@@ -531,7 +531,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			desc = "Gets the light level at the given position",
 			params = {POS, "pos", "the position of the block"},
 			returns = {NUMBER, "the light level"},
-			example = "world.getLight(new Pos(0, 100, 0))"
+			example = "world.getLight(new Pos(0, 100, 0));"
 		)
 		private Value getLightPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
@@ -547,7 +547,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				POS, "pos2", "the second position"
 			},
 			returns = {LIST, "the list of positions"},
-			example = "world.getArea(new Pos(0, 100, 0), new Pos(0, 100, 0))"
+			example = "world.getArea(new Pos(0, 100, 0), new Pos(0, 100, 0));"
 		)
 		private Value getArea(Arguments arguments) throws CodeError {
 			BlockPos posA = arguments.skip().getNext(PosValue.class).toBlockPos();
@@ -567,7 +567,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				POS, "pos2", "the second position"
 			},
 			returns = {LIST, "the list of blocks"},
-			example = "world.getAreaOfBlocks(new Pos(0, 100, 0), new Pos(0, 100, 0))"
+			example = "world.getAreaOfBlocks(new Pos(0, 100, 0), new Pos(0, 100, 0));"
 		)
 		private Value getAreaOfBlocks(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
