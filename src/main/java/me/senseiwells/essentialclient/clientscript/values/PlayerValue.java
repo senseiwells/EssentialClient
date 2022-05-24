@@ -21,6 +21,8 @@ import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
@@ -42,6 +44,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
@@ -53,6 +56,8 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
 import static me.senseiwells.arucas.utils.ValueTypes.STRING;
@@ -1088,7 +1093,36 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			});
 			return NullValue.NULL;
 		}
+/*
+		private Value breakBlock(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			BlockPos pos = arguments.getNext(PosValue.class).toBlockPos();
+			ClientWorld world = ArucasMinecraftExtension.getWorld(client);
+			if (!EssentialUtils.canMineBlock(world.getBlockState(pos))) {
+				return BooleanValue.FALSE;
+			}
 
+			new ScheduledThreadPoolExecutor()
+
+			Context branch = arguments.getContext().createBranch();
+			branch.getThreadHandler().runAsyncFunctionInThreadPool(branch, c -> {
+				try {
+					BlockState state;
+					while (EssentialUtils.canMineBlock(state = world.getBlockState(pos))) {
+						client.execute(() -> {
+
+						});
+						Thread.sleep(50);
+					}
+				}
+				catch (InterruptedException e) {
+					throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", arguments.getPosition());
+				}
+			});
+			return BooleanValue.TRUE;
+		}
+*/
 		@FunctionDoc(
 			name = "updateBreakingBlock",
 			desc = "This allows you to update your block breaking progress at a position",
@@ -1173,6 +1207,17 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "interactBlock",
+			desc = "This allows you to interact with a block at a position and direction",
+			params = {
+				NUMBER, "x", "the x position",
+				NUMBER, "y", "the y position",
+				NUMBER, "z", "the z position",
+				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
+			},
+			example = "player.interactBlock(0, 100, 0, 'up');"
+		)
 		private Value interactBlock(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			double x = arguments.getNextGeneric(NumberValue.class);
@@ -1187,6 +1232,15 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "interactBlock",
+			desc = "This allows you to interact with a block at a position and direction",
+			params = {
+				POS, "pos", "the position of the block",
+				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
+			},
+			example = "player.interactBlock(new Pos(0, 0, 0), 'up');"
+		)
 		private Value interactBlockPos(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
@@ -1194,6 +1248,26 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return this.interactInternal(player, posValue, stringValue, posValue);
 		}
 
+		@FunctionDoc(
+			name = "interactBlock",
+			desc = {
+				"This allows you to interact with a block at a position and direction",
+				"This function is for very specific cases where there needs to be extra precision",
+				"like when placing stairs or slabs in certain directions, so the first set of",
+				"coords is the exact position of the block, and the second set of coords is the position"
+			},
+			params = {
+				NUMBER, "x", "the exact x position",
+				NUMBER, "y", "the exact y position",
+				NUMBER, "z", "the exact z position",
+				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
+				NUMBER, "blockX", "the x position of the block",
+				NUMBER, "blockY", "the y position of the block",
+				NUMBER, "blockZ", "the z position of the block",
+				BOOLEAN, "insideBlock", "whether the player is inside the block"
+			},
+			example = "player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);"
+		)
 		private Value interactBlockFull(Arguments arguments) throws CodeError {
 			//carpet protocol support but why not client side?
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1212,6 +1286,22 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "interactBlock",
+			desc = {
+				"This allows you to interact with a block at a position and direction",
+				"This function is for very specific cases where there needs to be extra precision",
+				"like when placing stairs or slabs in certain directions, so the first set of",
+				"coords is the exact position of the block, and the second set of coords is the position"
+			},
+			params = {
+				POS, "pos", "the exact position of the block",
+				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
+				POS, "blockPos", "the position of the block",
+				BOOLEAN, "insideBlock", "whether the player is inside the block"
+			},
+			example = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
+		)
 		private Value interactBlockFullPos(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
@@ -1220,6 +1310,12 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return this.interactInternal(player, posValue, stringValue, blockPosValue);
 		}
 
+		@FunctionDoc(
+			name = "getBlockBreakingSpeed",
+			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
+			params = {BLOCK, "block", "the block to get the speed of"},
+			example = "speed = player.getBlockBreakingSpeed(Material.GOLD_BLOCK.asBlock());"
+		)
 		private Value getBlockBreakingSpeed(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BlockValue blockStateValue = arguments.getNext(BlockValue.class);

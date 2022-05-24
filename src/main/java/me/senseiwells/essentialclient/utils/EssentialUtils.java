@@ -2,6 +2,8 @@ package me.senseiwells.essentialclient.utils;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -114,6 +116,10 @@ public class EssentialUtils {
 
 	public static boolean isModInstalled(String modId) {
 		return FabricLoader.getInstance().isModLoaded(modId);
+	}
+
+	public static boolean canMineBlock(BlockState state) {
+		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(null, null) >= 0;
 	}
 
 	public static void throwAsRuntime(ThrowableRunnable runnable) {
