@@ -33,7 +33,7 @@ public class ThreadSafeUtils {
 
 		for (PlayerEntity player : getPlayersSafe(world)) {
 			double e = player.squaredDistanceTo(x, y, z);
-			if ((maxDistance < 0.0 || e < maxDistance * maxDistance) && (d == -1.0 || e < d)) {
+			if (playerEntity != entity && (maxDistance < 0.0 || e < maxDistance * maxDistance) && (d == -1.0 || e < d)) {
 				d = e;
 				playerEntity = player;
 			}

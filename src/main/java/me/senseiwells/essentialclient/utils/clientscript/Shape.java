@@ -244,7 +244,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		example = "shape.setColor(34, 55, 0);"
 	)
 	@ArucasFunction
-	public final void setColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
+	public final void setColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
 		this.setColour(context, redValue, greenValue, blueValue);
 	}
 
@@ -373,7 +373,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		example = "shape.setOutlineColor(255, 0, 255);"
 	)
 	@ArucasFunction
-	public final void setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
+	public final void setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
 		this.setOutlineColour(context, redValue, greenValue, blueValue);
 	}
 

@@ -139,6 +139,7 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 				MemberFunction.of("getYaw", this::getYaw),
 				MemberFunction.of("getPitch", this::getPitch),
 				MemberFunction.of("getDimension", this::getDimension),
+				MemberFunction.of("getWorld", this::getWorld),
 				MemberFunction.of("getBiome", this::getBiome),
 				MemberFunction.of("getFullBiome", this::getFullBiome),
 				MemberFunction.of("getFullId", this::getFullId),
@@ -391,6 +392,20 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 		)
 		private Value getDimension(Arguments arguments) throws CodeError {
 			return StringValue.of(this.getEntity(arguments).getEntityWorld().getRegistryKey().getValue().getPath());
+		}
+
+		@FunctionDoc(
+			name = "getWorld",
+			desc = "This gets the world the entity is in",
+			returns = {WORLD, "the world the entity is in"},
+			example = "entity.getWorld();"
+		)
+		private Value getWorld(Arguments arguments) throws CodeError {
+			Entity entity = this.getEntity(arguments);
+			if (entity.world instanceof ClientWorld world) {
+				return new WorldValue(world);
+			}
+			throw arguments.getError("Could not get entity '%s's world", entity);
 		}
 
 		@FunctionDoc(

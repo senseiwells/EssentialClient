@@ -115,7 +115,6 @@ public final class MinecraftDeobfuscator {
 		}
 	}
 
-
 	private static void loadMappings() {
 		if (!Files.exists(CACHED_MAPPINGS)) {
 			EssentialClient.LOGGER.warn("Could not download mappings");

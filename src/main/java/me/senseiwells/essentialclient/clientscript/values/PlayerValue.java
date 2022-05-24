@@ -21,8 +21,6 @@ import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
@@ -44,7 +42,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
@@ -54,10 +51,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.TimeUnit;
 
 import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
 import static me.senseiwells.arucas.utils.ValueTypes.STRING;
@@ -151,6 +148,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("stonecutter", 2, this::stonecutter),
 				MemberFunction.of("fakeLook", 4, this::fakeLook),
 				MemberFunction.of("swapPlayerSlotWithHotbar", 1, this::swapPlayerSlotWithHotbar),
+				MemberFunction.of("breakBlock", 1, this::breakBlock),
+				MemberFunction.of("breakBlock", 2, this::breakBlockMore),
 				MemberFunction.of("updateBreakingBlock", 3, this::updateBreakingBlock),
 				MemberFunction.of("updateBreakingBlock", 1, this::updateBreakingBlockPos),
 				MemberFunction.of("attackBlock", 4, this::attackBlock),
@@ -1093,36 +1092,66 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			});
 			return NullValue.NULL;
 		}
-/*
+
+		@FunctionDoc(
+			name = "breakBlock",
+			desc = "This breaks a block at a given position, if it is able to be broken",
+			params = {POS, "pos", "the position of the block"},
+			returns = {BOOLEAN, "whether the block can be broken"},
+			example = "player.breakBlock(new Pos(0, 0, 0));"
+		)
 		private Value breakBlock(Arguments arguments) throws CodeError {
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BlockPos pos = arguments.getNext(PosValue.class).toBlockPos();
-			ClientWorld world = ArucasMinecraftExtension.getWorld(client);
-			if (!EssentialUtils.canMineBlock(world.getBlockState(pos))) {
+			if (!EssentialUtils.canMineBlock(player, pos)) {
 				return BooleanValue.FALSE;
 			}
 
-			new ScheduledThreadPoolExecutor()
+			arguments.getContext().getThreadHandler().loopAsyncFunctionInThreadPool(
+				50, TimeUnit.MILLISECONDS,
+				() -> EssentialUtils.canMineBlock(player, pos), () -> { },
+				null, c -> client.execute(() -> interactionManager.updateBlockBreakingProgress(pos, Direction.DOWN))
+			);
 
-			Context branch = arguments.getContext().createBranch();
-			branch.getThreadHandler().runAsyncFunctionInThreadPool(branch, c -> {
-				try {
-					BlockState state;
-					while (EssentialUtils.canMineBlock(state = world.getBlockState(pos))) {
-						client.execute(() -> {
-
-						});
-						Thread.sleep(50);
-					}
-				}
-				catch (InterruptedException e) {
-					throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", arguments.getPosition());
-				}
-			});
 			return BooleanValue.TRUE;
 		}
-*/
+
+		@FunctionDoc(
+			name = "breakBlock",
+			desc = {
+				"This breaks a block at a given position, if it is able to be broken",
+				"and runs a function when the block is broken, or when the block cannot be broken"
+			},
+			params = {
+				POS, "pos", "the position of the block",
+				FUNCTION, "function", "the function to run when the block is broken"
+			},
+			returns = {BOOLEAN, "whether the block can be broken"},
+			example = "player.breakBlock(new Pos(0, 0, 0), fun() { print('broken'); });"
+		)
+		private Value breakBlockMore(Arguments arguments) throws CodeError {
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			BlockPos pos = arguments.getNext(PosValue.class).toBlockPos();
+			FunctionValue function = arguments.getNext(FunctionValue.class);
+			if (!EssentialUtils.canMineBlock(player, pos)) {
+				return BooleanValue.FALSE;
+			}
+
+			Context branchContext = arguments.getContext().createBranch();
+			branchContext.getThreadHandler().loopAsyncFunctionInThreadPool(
+				50, TimeUnit.MILLISECONDS,
+				() -> EssentialUtils.canMineBlock(player, pos),
+				() -> function.call(branchContext.createBranch(), new ArrayList<>()),
+				null, c -> client.execute(() -> interactionManager.updateBlockBreakingProgress(pos, Direction.DOWN))
+			);
+
+			return BooleanValue.TRUE;
+		}
+
 		@FunctionDoc(
 			name = "updateBreakingBlock",
 			desc = "This allows you to update your block breaking progress at a position",

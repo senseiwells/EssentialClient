@@ -1,6 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.ConstructorDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -15,6 +18,8 @@ import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import static me.senseiwells.arucas.utils.ValueTypes.LIST;
+import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 public class PosValue extends GenericValue<Vec3d> {
@@ -77,13 +82,11 @@ public class PosValue extends GenericValue<Vec3d> {
 		return POS;
 	}
 
-	/**
-	 * Pos class for Arucas. <br>
-	 * Import the class with <code>import Pos from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = POS,
+		desc = "This class is a wrapper for 3 coordinate points in Minecraft",
+		importPath = "Minecraft"
+	)
 	public static class ArucasPosClass extends ArucasClassExtension {
 		public ArucasPosClass() {
 			super(POS);
@@ -96,13 +99,15 @@ public class PosValue extends GenericValue<Vec3d> {
 			);
 		}
 
-		/**
-		 * Name: <code>new Pos(x, y, z)</code> <br>
-		 * Description: This creates a new Pos with the given x, y, and z <br>
-		 * Parameter - Number, Number, Number: the x position, y position, and z position <br>
-		 * Returns - Pos: the new Pos object <br>
-		 * Example: <code>new Pos(100, 0, 96);</code>
-		 */
+		@ConstructorDoc(
+			desc = "This creates a new Pos with the given x, y, and z",
+			params = {
+				NUMBER, "x", "the x position",
+				NUMBER, "y", "the y position",
+				NUMBER, "z", "the z position"
+			},
+			example = "new Pos(100, 0, 96);"
+		)
 		private Value newPos(Arguments arguments) throws CodeError {
 			double x = arguments.getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
@@ -120,45 +125,45 @@ public class PosValue extends GenericValue<Vec3d> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;Pos>.getX()</code> <br>
-		 * Description: This returns the x position of the Pos <br>
-		 * Returns - Number: the x position <br>
-		 * Example: <code>pos.getX();</code>
-		 */
+		@FunctionDoc(
+			name = "getX",
+			desc = "This returns the x position of the Pos",
+			returns = {NUMBER, "the x position"},
+			example = "pos.getX();"
+		)
 		private Value getX(Arguments arguments) throws CodeError {
 			PosValue thisValue = arguments.getNext(PosValue.class);
 			return NumberValue.of(thisValue.value.getX());
 		}
 
-		/**
-		 * Name: <code>&lt;Pos>.getY()</code> <br>
-		 * Description: This returns the y position of the Pos <br>
-		 * Returns - Number: the y position <br>
-		 * Example: <code>pos.getY();</code>
-		 */
+		@FunctionDoc(
+			name = "getY",
+			desc = "This returns the y position of the Pos",
+			returns = {NUMBER, "the y position"},
+			example = "pos.getY();"
+		)
 		private Value getY(Arguments arguments) throws CodeError {
 			PosValue thisValue = arguments.getNext(PosValue.class);
 			return NumberValue.of(thisValue.value.getY());
 		}
 
-		/**
-		 * Name: <code>&lt;Pos>.getZ()</code> <br>
-		 * Description: This returns the z position of the Pos <br>
-		 * Returns - Number: the z position <br>
-		 * Example: <code>pos.getZ();</code>
-		 */
+		@FunctionDoc(
+			name = "getZ",
+			desc = "This returns the z position of the Pos",
+			returns = {NUMBER, "the z position"},
+			example = "pos.getZ();"
+		)
 		private Value getZ(Arguments arguments) throws CodeError {
 			PosValue thisValue = arguments.getNext(PosValue.class);
 			return NumberValue.of(thisValue.value.getZ());
 		}
 
-		/**
-		 * Name: <code>&lt;Pos>.toList()</code> <br>
-		 * Description: This returns the Pos as a List containing the x, y, and z positions in order <br>
-		 * Returns - List: the Pos as a List <br>
-		 * Example: <code>x, y, z = pos.toList();</code>
-		 */
+		@FunctionDoc(
+			name = "toList",
+			desc = "This returns the Pos as a List containing the x, y, and z positions in order",
+			returns = {LIST, "the Pos as a List"},
+			example = "x, y, z = pos.toList();"
+		)
 		private Value toList(Arguments arguments) throws CodeError {
 			PosValue thisValue = arguments.getNext(PosValue.class);
 			ArucasList arucasList = new ArucasList();

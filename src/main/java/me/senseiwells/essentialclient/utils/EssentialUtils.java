@@ -12,6 +12,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 
 import java.net.URL;
 import java.nio.file.Files;
@@ -118,7 +119,17 @@ public class EssentialUtils {
 		return FabricLoader.getInstance().isModLoaded(modId);
 	}
 
-	public static boolean canMineBlock(BlockState state) {
+	public static boolean canMineBlock(ClientPlayerEntity player, BlockPos pos) {
+		double x = player.getX() - pos.getX() - 0.5;
+		double y = player.getY() - pos.getY() + 1.0;
+		double z = player.getZ() - pos.getZ() - 0.5;
+		if (x * x + y * y + z * z > 36 || player.world.isOutOfHeightLimit(pos) || !player.world.getWorldBorder().contains(pos)) {
+			return false;
+		}
+		if (player.isBlockBreakingRestricted(player.world, pos, getInteractionManager().getCurrentGameMode())) {
+			return false;
+		}
+		BlockState state = player.world.getBlockState(pos);
 		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(null, null) >= 0;
 	}
 

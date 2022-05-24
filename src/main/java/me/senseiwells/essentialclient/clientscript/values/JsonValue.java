@@ -75,6 +75,7 @@ public class JsonValue extends GenericValue<JsonElement> {
 		}
 
 		@FunctionDoc(
+			isStatic = true,
 			name = "fromString",
 			desc = "This converts a string into a Json provided it is formatted correctly",
 			params = {STRING, "string", "the string that you want to parse into a Json"},
@@ -93,6 +94,7 @@ public class JsonValue extends GenericValue<JsonElement> {
 		}
 
 		@FunctionDoc(
+			isStatic = true,
 			name = "fromList",
 			desc = {
 				"This converts a list into a Json, an important thing to note is that",
@@ -109,6 +111,7 @@ public class JsonValue extends GenericValue<JsonElement> {
 		}
 
 		@FunctionDoc(
+			isStatic = true,
 			name = "fromMap",
 			desc = {
 				"This converts a map into a Json, an important thing to note is that",

@@ -81,7 +81,6 @@ public class MinecraftAPI extends ValueTypes {
 			PlayerValue.ArucasPlayerClass::new,
 			EntityValue.ArucasEntityClass::new,
 			OtherPlayerValue.ArucasAbstractPlayerClass::new,
-			OtherPlayerValue.ArucasOtherPlayerClass::new,
 			LivingEntityValue.ArucasLivingEntityClass::new,
 			ItemEntityValue.ArucasItemEntityClass::new,
 			BlockValue.ArucasBlockClass::new,

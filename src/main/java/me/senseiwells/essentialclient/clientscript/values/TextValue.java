@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -19,6 +21,8 @@ import net.minecraft.util.Formatting;
 
 import java.util.Locale;
 
+import static me.senseiwells.arucas.utils.ValueTypes.ANY;
+import static me.senseiwells.arucas.utils.ValueTypes.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TEXT;
 
 public class TextValue extends GenericValue<MutableText> {
@@ -51,13 +55,11 @@ public class TextValue extends GenericValue<MutableText> {
 		return TEXT;
 	}
 
-	/**
-	 * Text class for Arucas. This allows for formatted strings used inside Minecraft. <br>
-	 * Import the class with <code>import Text from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = TEXT,
+		desc = "This class is used to create formatted strings used inside Minecraft.",
+		importPath = "Minecraft"
+	)
 	public static class ArucasTextClass extends ArucasClassExtension {
 		public ArucasTextClass() {
 			super(TEXT);
@@ -71,24 +73,27 @@ public class TextValue extends GenericValue<MutableText> {
 			);
 		}
 
-		/**
-		 * Name: <code>Text.of(string)</code> <br>
-		 * Description: This converts a string into a text instance <br>
-		 * Returns - Text: the text instance from the string <br>
-		 * Example: <code>Text.of("Hello World!");</code>
-		 */
+		@FunctionDoc(
+			isStatic = true,
+			name = "of",
+			desc = "This converts a string into a text instance",
+			params = {STRING, "string", "The string to convert into a text instance"},
+			returns = {TEXT, "the text instance from the string"},
+			example = "Text.of('Hello World!');"
+		)
 		private Value of(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.getNextString();
 			return new TextValue(new LiteralText(stringValue.value));
 		}
 
-		/**
-		 * Name: <code>Text.parse(textJson)</code> <br>
-		 * Description: This converts a text json into a text instance <br>
-		 * Parameter - String/Json: the string in json format, or a Json value itself <br>
-		 * Returns - Text: the text instance from the json <br>
-		 * Example: <code>Text.parse("{\"text\":\"Hello World!\",\"color\":\"white\",\"italic\":\"true\"}");</code>
-		 */
+		@FunctionDoc(
+			isStatic = true,
+			name = "parse",
+			desc = "This converts a text json into a text instance",
+			params = {STRING, "textJson", "The string in json format, or a Json value itself"},
+			returns = {TEXT, "the text instance from the json"},
+			example = "Text.parse('{\"text\":\"Hello World!\",\"color\":\"white\",\"italic\":\"true\"}');"
+		)
 		private Value parse(Arguments arguments) throws CodeError {
 			Value value = arguments.getNext();
 			if (value instanceof JsonValue json) {
@@ -110,16 +115,32 @@ public class TextValue extends GenericValue<MutableText> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;Text>.withClickEvent(event, value)</code> <br>
-		 * Description: This allows you to add a click event to a text instance <br>
-		 * Parameter - String, String/Function: the name of the event, the value associated with the event,
-		 * <code>"open_url", "https://google.com"</code>, <code>"open_file", C:/Users/user/Desktop/thing.txt"</code>
-		 * <code>"run_command", "/gamemode creative"</code> <code>"suggest_command", "/gamemode survival"</code>
-		 * <code>"copy_to_clipboard", "Ooops!"</code> <code>"run_function", fun() { }</code> <br>
-		 * Throws - Error: <code>"Invalid action: ..."</code> if the given action was invalid <br>
-		 * Example: <code>text.withClickEvent("open_url", "https://youtu.be/dQw4w9WgXcQ");</code>
-		 */
+		@FunctionDoc(
+			name = "withClickEvent",
+			desc = {
+				"This allows you to add a click event to a text instance",
+				"The possible events are: 'open_url', 'open_file', 'run_command', 'suggest_command', 'copy_to_clipboard', 'run_function'"
+			},
+			params = {
+				STRING, "event", "the name of the event",
+				STRING, "value", "the value associated with the event",
+			},
+			returns = {TEXT, "the text instance with the click event"},
+			throwMsgs = "Invalid action: ...",
+			example = """
+			text = Text.of("Hello World!");
+			
+			// Examples of click events
+			text.withClickEvent("open_url", "https://youtu.be/dQw4w9WgXcQ");
+			text.withClickEvent("open_file", "C:/Users/user/Desktop/thing.txt");
+			text.withClickEvent("run_command", "/gamemode creative");
+			text.withClickEvent("suggest_command", "/gamemode survival");
+			text.withClickEvent("copy_to_clipboard", "Ooops!");
+			text.withClickEvent("run_function", fun() {
+				print("Text was clicked!");
+			});
+			"""
+		)
 		private Value withClickEvent(Arguments arguments) throws CodeError {
 			TextValue text = arguments.getNext(TextValue.class);
 			String actionAsString = arguments.getNextGeneric(StringValue.class).toLowerCase(Locale.ROOT);
@@ -142,15 +163,27 @@ public class TextValue extends GenericValue<MutableText> {
 			return text;
 		}
 
-		/**
-		 * Name: <code>&lt;Text>.withHoverEvent(event, value)</code> <br>
-		 * Description: This allows you to add a hover event to a text instance <br>
-		 * Parameter - String, Text/Item/Entity: the name of the event, the value associated with the event,
-		 * <code>"show_text", Text.of("Hello world!")</code>, <code>"show_item", Material.DIAMOND_SWORD.asItemStack()</code>,
-		 * <code>"show_entity", Player.get()</code> <br>
-		 * Throws - Error: <code>"Invalid action: ..."</code> if the given action was invalid <br>
-		 * Example: <code>text.withHoverEvent("show_text", Text.of("Hello world!"));</code>
-		 */
+		@FunctionDoc(
+			name = "withHoverEvent",
+			desc = {
+				"This allows you to add a hover event to a text instance",
+				"The possible events are: 'show_text', 'show_item', 'show_entity'"
+			},
+			params = {
+				STRING, "event", "the name of the event",
+				ANY, "value", "the value associated with the event",
+			},
+			returns = {TEXT, "the text instance with the hover event"},
+			throwMsgs = "Invalid action: ...",
+			example = """
+			text = Text.of("Hello World!");
+			
+			// Examples of hover events
+			text.withHoverEvent("show_text", Text.of("Hello world!"));
+			text.withHoverEvent("show_item", Material.DIAMOND_SWORD.asItemStack());
+			text.withHoverEvent("show_entity", Player.get());
+			"""
+		)
 		private Value withHoverEvent(Arguments arguments) throws CodeError {
 			TextValue text = arguments.getNext(TextValue.class);
 			StringValue stringAction = arguments.getNextString();
@@ -174,14 +207,17 @@ public class TextValue extends GenericValue<MutableText> {
 			return text;
 		}
 
-		/**
-		 * Name: <code>&lt;Text>.format(formatting)</code> <br>
-		 * Description: This allows you to add a formatting to a text instance, a list of formatting
-		 * names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes) <br>
-		 * Parameter - String: the name of the formatting <br>
-		 * Throws - Error: <code>"Invalid formatting: ..."</code> if the given formatting was invalid <br>
-		 * Example: <code>text.format("DARK_RED").format("BOLD");</code>
-		 */
+		@FunctionDoc(
+			name = "format",
+			desc = {
+				"This allows you to add a formatting to a text instance",
+				"A list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes)"
+			},
+			params = {STRING, "formatting", "the name of the formatting"},
+			returns = {TEXT, "the text instance with the formatting added"},
+			throwMsgs = "Invalid formatting: ...",
+			example = "text.format('DARK_RED').format('BOLD');"
+		)
 		private Value formatText(Arguments arguments) throws CodeError {
 			TextValue text = arguments.getNext(TextValue.class);
 			StringValue stringValue = arguments.getNextString();
@@ -193,12 +229,13 @@ public class TextValue extends GenericValue<MutableText> {
 			return text;
 		}
 
-		/**
-		 * Name: <code>&lt;Text>.append(otherText)</code> <br>
-		 * Description: This allows you to append a text instance to another text instance <br>
-		 * Parameter - Text: the text instance to append to <br>
-		 * Example: <code>Text.of("Hello").append(Text.of(" world!"));</code>
-		 */
+		@FunctionDoc(
+			name = "append",
+			desc = "This allows you to append a text instance to another text instance",
+			params = {TEXT, "otherText", "the text instance to append to"},
+			returns = {TEXT, "the text instance with the appended text"},
+			example = "Text.of('Hello').append(Text.of(' world!'));"
+		)
 		private Value appendText(Arguments arguments) throws CodeError {
 			TextValue text = arguments.getNext(TextValue.class);
 			TextValue textValue = arguments.getNext(TextValue.class);
