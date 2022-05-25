@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.utils.render;
 
+@SuppressWarnings("unused")
 public class ChatColour {
 	public static String DARK_RED = "§4";
 	public static String RED = "§c";

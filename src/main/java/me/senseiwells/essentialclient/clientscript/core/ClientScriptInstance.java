@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.ContextBuilder;
+import me.senseiwells.arucas.api.docs.parser.JsonParser;
 import me.senseiwells.arucas.core.Arucas;
 import me.senseiwells.arucas.discord.DiscordAPI;
 import me.senseiwells.arucas.utils.Context;
@@ -38,6 +39,10 @@ public class ClientScriptInstance {
 		MinecraftAPI.addMinecraftAPI(BUILDER);
 		DiscordAPI.addDiscordAPI(BUILDER);
 		ExceptionUtils.runSafe(BUILDER::generateArucasFiles);
+
+		if (EssentialUtils.isDev()) {
+			generateJson();
+		}
 	}
 
 	private final String scriptName;
@@ -209,5 +214,16 @@ public class ClientScriptInstance {
 	public static void runFromContent(String scriptName, String scriptContent) {
 		ClientScriptInstance instance = new ClientScriptInstance(scriptName, scriptContent, null);
 		instance.toggleScript();
+	}
+
+	private static void generateJson() {
+		EssentialClient.LOGGER.info("Generating Documentation...");
+		JsonParser.of(BUILDER).write(() -> {
+			Path path = ClientScript.INSTANCE.getScriptDirectory().resolve("json");
+			if (!Files.exists(path)) {
+				Files.createDirectories(path);
+			}
+			return path.resolve("AllDocs.json");
+		});
 	}
 }
