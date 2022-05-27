@@ -47,10 +47,10 @@ public class PlayerListCommand {
 		).build();
 
 		LiteralCommandNode<ServerCommandSource> deleteListNode = literal("deletelist").then(argument("listname", StringArgumentType.word())
-				.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))
-				.executes(PlayerListCommand::deleteList)
-			)
-			.build();
+			.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))
+			.executes(PlayerListCommand::deleteList)
+		)
+		.build();
 
 		LiteralCommandNode<ServerCommandSource> spawnListNode = literal("spawnlist").then(argument("listname", StringArgumentType.word())
 			.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))

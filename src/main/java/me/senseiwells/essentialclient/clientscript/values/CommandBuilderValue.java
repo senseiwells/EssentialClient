@@ -147,7 +147,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			isStatic = true,
 			name = "fromMap",
 			desc = {
-				"Creates an argument builder from a map",
+				"Creates an argument builder from a map.",
 				"The map must contain a 'name' key as a String that is the name of the command,",
 				"the map then can contain 'subcommands' as a map which contains the subcommands,",
 				"the key of the subcommands is the name of the subcommand, and the value is a map,",
@@ -171,53 +171,53 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			returns = {COMMAND_BUILDER, "the argument builder"},
 			example = """
 				effectCommandMap = {
-				   "name" : "effect",
-				   "subcommands" : {
-					   "give" : {
-						   "<targets> <effect>" : {
-							   "" : fun(target, effect) {
-								   // do something
-							   },
-							   "<seconds>" : {
-								   "" : fun(target, effect, second) {
-									   // do something
-								   },
-								   "<amplifier>" : {
-									   "" : fun(target, effect, second, amplifier) {
-										   // do something
-									   },
-									   "<hideParticle>" : {
-										   "" : fun(target, effect, second, amplifier, hideParticle) {
-											   // do something
-										   }
-									   }
-								   }
-							   }
-						   }
-					   },
-					   "clear" : {
-						   "" : fun() {
-							   // do something
-						   },
-						   "<targets>" : {
-							   "" : fun(target) {
-								   // do something
-							   },
-							   "<effect>" : {
-								   "" : fun(target, effect) {
-									   // do something
-								   }
-							   }
-						   }
-					   }
-				   },
-				   "arguments" : {
-					   "targets" : { "type" : "Entity" },
-					   "effect" : { "type" : "Effect", "suggests" : ["effect1", "effect2"] },
-					   "seconds" : { "type" : "Integer", "min" : 0, "max" : 1000000 },
-					   "amplifier" : { "type" : "Integer", "min" : 0, "max" : 255 },
-					   "hideParticle" : { "type" : "Boolean" }
-				   }
+				    "name" : "effect",
+				    "subcommands" : {
+					    "give" : {
+						    "<targets> <effect>" : {
+							    "" : fun(target, effect) {
+								    // do something
+							    },
+							    "<seconds>" : {
+								    "" : fun(target, effect, second) {
+									    // do something
+								    },
+								    "<amplifier>" : {
+									    "" : fun(target, effect, second, amplifier) {
+										    // do something
+									    },
+									    "<hideParticle>" : {
+										    "" : fun(target, effect, second, amplifier, hideParticle) {
+											    // do something
+										    }
+									    }
+								    }
+							    }
+						    }
+					    },
+					    "clear" : {
+						    "" : fun() {
+							    // do something
+						    },
+						    "<targets>" : {
+							    "" : fun(target) {
+								    // do something
+							    },
+							    "<effect>" : {
+								    "" : fun(target, effect) {
+									    // do something
+								    }
+							    }
+						    }
+					    }
+				    },
+				    "arguments" : {
+					    "targets" : { "type" : "Entity" },
+					    "effect" : { "type" : "Effect", "suggests" : ["effect1", "effect2"] },
+					    "seconds" : { "type" : "Integer", "min" : 0, "max" : 1000000 },
+					    "amplifier" : { "type" : "Integer", "min" : 0, "max" : 255 },
+					    "hideParticle" : { "type" : "Boolean" }
+				    }
 				};
 				effectCommand = CommandBuilder.fromMap(effectCommandMap);
 				"""
@@ -288,7 +288,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 		@FunctionDoc(
 			name = "executes",
 			desc = {
-				"This sets the function to be executed when the command is executed",
+				"This sets the function to be executed when the command is executed,",
 				"this should have the correct amount of parameters for the command"
 			},
 			params = {COMMAND_BUILDER, "function", "the function to execute"},
