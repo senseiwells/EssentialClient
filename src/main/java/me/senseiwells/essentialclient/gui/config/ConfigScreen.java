@@ -53,4 +53,30 @@ public class ConfigScreen extends ChildScreen {
 		drawCenteredText(matrices, renderer, "Version: " + EssentialClient.VERSION, width, 8 + renderer.fontHeight + 8, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (this.client != null && mouseX > this.width - 30 && mouseY < 30) {
+			this.client.setScreen(new Secret(LiteralText.EMPTY, this));
+			return true;
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	private static class Secret extends ChildScreen {
+		protected Secret(Text title, Screen parent) {
+			super(title, parent);
+		}
+
+		@Override
+		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+			this.renderBackground(matrices);
+			super.render(matrices, mouseX, mouseY, delta);
+			int width = this.width / 4;
+			matrices.push();
+			matrices.scale(2.0F, 2.0F, 2.0F);
+			drawCenteredText(matrices, this.textRenderer, "Nothing to see here...", width, 8, 0xFFFFFF);
+			matrices.pop();
+		}
+	}
 }
