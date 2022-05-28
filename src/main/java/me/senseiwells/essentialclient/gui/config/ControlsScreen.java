@@ -30,7 +30,7 @@ public class ControlsScreen extends ChildScreen {
 	protected void init() {
 		this.controlWidget = new ControlsListWidget(this.client, this);
 		this.addSelectableChild(this.controlWidget);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.onClose()));
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.close()));
 	}
 
 	@Override

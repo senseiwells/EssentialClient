@@ -118,8 +118,8 @@ public class RenderHelper {
 		float z1 = (float) (Math.abs(pos1.getZ() - pos2.getZ()) - c0 + 1);
 
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f model = entry.getModel();
-		Matrix3f normal = entry.getNormal();
+		Matrix4f model = entry.getPositionMatrix();
+		Matrix3f normal = entry.getNormalMatrix();
 
 		if (outline) {
 			// idk man
@@ -252,8 +252,8 @@ public class RenderHelper {
 
 	private static void addSphereVertices(BufferBuilder builder, MatrixStack matrices, float radius, float steps, float red, float green, float blue, float alpha, boolean outline) {
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f model = entry.getModel();
-		Matrix3f normal = entry.getNormal();
+		Matrix4f model = entry.getPositionMatrix();
+		Matrix3f normal = entry.getNormalMatrix();
 
 		float step = (float) (2 * Math.PI / steps);
 		int halfSteps = (int) (Math.PI / step) + 1;
@@ -366,8 +366,8 @@ public class RenderHelper {
 		normalVec.normalize();
 
 		MatrixStack.Entry entry = matrices.peek();
-		Matrix4f model = entry.getModel();
-		Matrix3f normal = entry.getNormal();
+		Matrix4f model = entry.getPositionMatrix();
+		Matrix3f normal = entry.getNormalMatrix();
 		builder.vertex(model, pos1.getX(), pos1.getY(), pos1.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
 		builder.vertex(model, pos2.getX(), pos2.getY(), pos2.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
 	}

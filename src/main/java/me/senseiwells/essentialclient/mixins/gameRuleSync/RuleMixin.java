@@ -31,7 +31,7 @@ public abstract class RuleMixin<T extends GameRules.Rule<T>> implements IGameRul
 	@Override
 	public void ruleChanged(String ruleName, MinecraftServer server) {
 		Text text = new LiteralText("Set Game Rule %s to %s".formatted(ruleName, this.serialize()));
-		server.getPlayerManager().broadcastChatMessage(text, MessageType.SYSTEM, Util.NIL_UUID);
+		server.getPlayerManager().broadcast(text, MessageType.SYSTEM, Util.NIL_UUID);
 		this.changed(server);
 	}
 }

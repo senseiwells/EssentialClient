@@ -46,12 +46,12 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 
 	public void fakeTick() {
 		if (this.contextFunction == null || !this.contextFunction.context.getThreadHandler().isRunning()) {
-			this.onClose();
+			this.close();
 		}
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		EssentialUtils.getClient().setScreen(null);
 	}
 

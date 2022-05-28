@@ -102,12 +102,12 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		if (ChunkGrid.instance.getMinimapMode() == ChunkGrid.Minimap.NONE) {
 			EssentialClient.CHUNK_NET_HANDLER.requestChunkData();
 			ChunkHandler.clearAllChunks();
 		}
-		super.onClose();
+		super.close();
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class ChunkDebugScreen extends ChildScreen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (ClientKeyBinds.OPEN_CHUNK_DEBUG.matchesKey(keyCode, scanCode)) {
-			this.onClose();
+			this.close();
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);

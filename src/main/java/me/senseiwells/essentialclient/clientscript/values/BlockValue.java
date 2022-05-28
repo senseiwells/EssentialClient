@@ -20,7 +20,6 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.BlockMirror;
@@ -541,7 +540,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			BlockEntity blockEntity;
 			if (blockValue.hasBlockPos() && (blockEntity = ArucasMinecraftExtension.getWorld().getBlockEntity(blockValue.blockPos.toBlockPos())) != null) {
-				return new MapValue(NbtUtils.nbtToMap(arguments.getContext(), blockEntity.writeNbt(new NbtCompound()), 10));
+				return new MapValue(NbtUtils.nbtToMap(arguments.getContext(), blockEntity.createNbt(), 10));
 			}
 			return NullValue.NULL;
 		}

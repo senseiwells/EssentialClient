@@ -21,7 +21,7 @@ public class DownloadClientScriptScreen extends ChildScreen.Typed<ClientScriptSc
 		}
 		this.widget = new DownloadClientScriptWidget(this.client, this);
 		this.addSelectableChild(this.widget);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, DONE, button -> this.onClose()));
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, DONE, button -> this.close()));
 	}
 
 	@Override

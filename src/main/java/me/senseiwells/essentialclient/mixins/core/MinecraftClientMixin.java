@@ -25,10 +25,10 @@ public abstract class MinecraftClientMixin extends ReentrantThreadExecutor<Runna
 	}
 
 	@Shadow
-	private void doAttack() { }
+	private void doItemUse() { }
 
 	@Shadow
-	private void doItemUse() { }
+	protected abstract boolean doAttack();
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void onTick(CallbackInfo ci) {

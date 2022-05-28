@@ -43,7 +43,7 @@ public class ClientScriptScreen extends ChildScreen {
 		this.scriptWidget = new ClientScriptWidget(this.client, this);
 		this.addSelectableChild(this.scriptWidget);
 		this.addDrawableChild(new ButtonWidget(10, height, 100, 20, REFRESH, button -> this.refresh()));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, height, 200, 20, DONE, button -> this.onClose()));
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, height, 200, 20, DONE, button -> this.close()));
 		this.addDrawableChild(new ButtonWidget(this.width - 110, height, 100, 20, DOCUMENTATION, button -> Util.getOperatingSystem().open(EssentialUtils.SCRIPT_WIKI_URL)));
 		this.addDrawableChild(new ButtonWidget(10, 10, 80, 20, NEW, button -> this.client.setScreen(new CreateClientScriptScreen(this))));
 		this.addDrawableChild(new ButtonWidget(this.width - 90, 10, 80, 20, DOWNLOAD, button -> this.client.setScreen(new DownloadClientScriptScreen(this))));
@@ -91,7 +91,7 @@ public class ClientScriptScreen extends ChildScreen {
 				ClientScript.INSTANCE.removeInstance(this.scriptInstance);
 				this.getParent().scriptWidget.clear();
 				this.getParent().scriptWidget.load(this.client);
-				super.onClose();
+				super.close();
 			}));
 			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, new TranslatableText(scriptInstance.getKeyBind().getTranslationKey()), button -> this.editingKeyBind = true);
 			this.selectedCheck = new CheckboxWidget(0, 0, 20, 20, new LiteralText("Selected"), ClientScript.INSTANCE.isSelected(scriptName)) {
@@ -126,7 +126,7 @@ public class ClientScriptScreen extends ChildScreen {
 			this.addDrawableChild(this.deleteBox);
 			this.addDrawableChild(this.keyBindBox);
 			this.addDrawableChild(this.selectedCheck);
-			this.addDrawableChild(new ButtonWidget(halfWidth - 100, this.height - 27, 200, 20, DONE, button -> this.onClose()));
+			this.addDrawableChild(new ButtonWidget(halfWidth - 100, this.height - 27, 200, 20, DONE, button -> this.close()));
 			this.setFocused(this.nameBox);
 			super.init();
 		}
@@ -138,7 +138,7 @@ public class ClientScriptScreen extends ChildScreen {
 		}
 
 		@Override
-		public void onClose() {
+		public void close() {
 			if (!this.newName.isEmpty() && !this.newName.equals(this.scriptInstance.toString())) {
 				try {
 					Path original = this.scriptInstance.getFileLocation();
@@ -160,7 +160,7 @@ public class ClientScriptScreen extends ChildScreen {
 					EssentialClient.LOGGER.error(exception);
 				}
 			}
-			super.onClose();
+			super.close();
 		}
 
 		@Override
@@ -205,7 +205,7 @@ public class ClientScriptScreen extends ChildScreen {
 
 			MutableText editMessage = this.keyBindBox.getMessage().shallowCopy();
 			if (!keyBinding.isUnbound() && this.client != null) {
-				for (KeyBinding binding : this.client.options.keysAll) {
+				for (KeyBinding binding : this.client.options.allKeys) {
 					if (!this.editingKeyBind && binding != keyBinding && keyBinding.equals(binding)) {
 						this.keyBindBox.setMessage(editMessage.formatted(Formatting.RED));
 					}

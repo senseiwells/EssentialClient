@@ -416,7 +416,7 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 		)
 		private Value getBiome(Arguments arguments) throws CodeError {
 			Entity entity = this.getEntity(arguments);
-			Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
+			Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiome(entity.getBlockPos()).getKey();
 			return biomeKey.isPresent() ? StringValue.of(biomeKey.get().getValue().getPath()) : NullValue.NULL;
 		}
 
@@ -428,7 +428,7 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 		)
 		private Value getFullBiome(Arguments arguments) throws CodeError {
 			Entity entity = this.getEntity(arguments);
-			Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
+			Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiome(entity.getBlockPos()).getKey();
 			return biomeKey.isPresent() ? StringValue.of(biomeKey.get().getValue().toString()) : NullValue.NULL;
 		}
 

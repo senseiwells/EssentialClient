@@ -49,7 +49,7 @@ public class InGameHudMixin {
 
 		Scoreboard scoreboard = this.client.world.getScoreboard();
 		ScoreboardObjective objective = scoreboard.getObjectiveForSlot(0);
-		boolean shouldRender = ClientRules.TOGGLE_TAB.getValue() || this.client.options.keyPlayerList.isPressed();
+		boolean shouldRender = ClientRules.TOGGLE_TAB.getValue() || this.client.options.playerListKey.isPressed();
 
 		this.setPlayerListHudVisible(shouldRender);
 		if (this.tabVisible) {
@@ -60,7 +60,7 @@ public class InGameHudMixin {
 	@Unique
 	private void setPlayerListHudVisible(boolean visible) {
 		if (ClientRules.TOGGLE_TAB.getValue()) {
-			KeyBinding tabKey = this.client.options.keyPlayerList;
+			KeyBinding tabKey = this.client.options.playerListKey;
 			if (tabKey.isPressed() && !tabKey.wasPressed()) {
 				tabKey.setPressed(false);
 				this.tabVisible = !this.tabVisible;

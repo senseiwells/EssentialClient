@@ -108,7 +108,7 @@ public class EssentialUtils {
 	}
 
 	public static String getMinecraftVersion() {
-		return MinecraftVersion.GAME_VERSION.getName();
+		return MinecraftVersion.CURRENT.getName();
 	}
 
 	public static boolean isDev() {

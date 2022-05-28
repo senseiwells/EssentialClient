@@ -35,7 +35,7 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
         }
         this.widget = new ListListWidget(this, this.client);
         this.addSelectableChild(this.widget);
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.onClose()));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.close()));
     }
 
     @Override
@@ -52,9 +52,9 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
     }
 
     @Override
-    public void onClose() {
+    public void close() {
         this.saveEntries();
-        super.onClose();
+        super.close();
     }
 
     @Override

@@ -185,8 +185,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private Value use(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
 			switch (stringValue.value.toLowerCase()) {
-				case "hold" -> ArucasMinecraftExtension.getClient().options.keyUse.setPressed(true);
-				case "stop" -> ArucasMinecraftExtension.getClient().options.keyUse.setPressed(false);
+				case "hold" -> ArucasMinecraftExtension.getClient().options.useKey.setPressed(true);
+				case "stop" -> ArucasMinecraftExtension.getClient().options.useKey.setPressed(false);
 				case "once" -> ((MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).rightClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into use()");
 			}
@@ -203,8 +203,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private Value attack(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
 			switch (stringValue.value.toLowerCase()) {
-				case "hold" -> ArucasMinecraftExtension.getClient().options.keyAttack.setPressed(true);
-				case "stop" -> ArucasMinecraftExtension.getClient().options.keyAttack.setPressed(false);
+				case "hold" -> ArucasMinecraftExtension.getClient().options.attackKey.setPressed(true);
+				case "stop" -> ArucasMinecraftExtension.getClient().options.attackKey.setPressed(false);
 				case "once" -> ((MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).leftClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into attack()");
 			}
@@ -344,7 +344,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.setWalking(true);"
 		)
 		private Value setWalking(Arguments arguments) throws CodeError {
-			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.keyForward);
+			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.forwardKey);
 		}
 
 		@FunctionDoc(
@@ -354,7 +354,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.setSneaking(true);"
 		)
 		private Value setSneaking(Arguments arguments) throws CodeError {
-			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.keySneak);
+			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.sneakKey);
 		}
 
 		@FunctionDoc(

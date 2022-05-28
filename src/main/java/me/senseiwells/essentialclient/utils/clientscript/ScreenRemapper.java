@@ -59,7 +59,7 @@ public class ScreenRemapper {
 		Map.entry(MerchantScreen.class, "Merchant"),
 		Map.entry(MinecartCommandBlockScreen.class, "MinecrartCommandBlock"),
 		Map.entry(MouseOptionsScreen.class, "MouseOptions"),
-		Map.entry(NarratorOptionsScreen.class, "NarratorOptions"),
+		Map.entry(SimpleOptionsScreen.class, "SimpleOptions"),
 		Map.entry(NoticeScreen.class, "Notice"),
 		Map.entry(OpenToLanScreen.class, "OpenToLan"),
 		Map.entry(OptionsScreen.class, "Options"),

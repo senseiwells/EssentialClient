@@ -27,7 +27,7 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 		super(entityType, world);
 	}
 
-	@Inject(method = "getSpeed()F", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D"))
+	@Inject(method = "getFovMultiplier", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D"))
 	public void injectedBefore(CallbackInfoReturnable<Float> cir) {
 		EntityAttributeInstance genericSpeedAttribute = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
 		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(this.SOUL_SPEED_BOOST_ID) != null) {
@@ -41,7 +41,7 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 		}
 	}
 
-	@Inject(method = "getSpeed()F", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D", shift = At.Shift.AFTER))
+	@Inject(method = "getFovMultiplier", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D", shift = At.Shift.AFTER))
 	private void injectedAfter(CallbackInfoReturnable<Float> cir) {
 		EntityAttributeInstance genericSpeedAttribute = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
 		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(this.SOUL_SPEED_BOOST_ID) != null) {

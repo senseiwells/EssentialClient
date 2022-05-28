@@ -48,7 +48,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 			parent.refresh();
 			parent.openScriptConfigScreen(instance);
 		});
-		this.cancelButton = new ButtonWidget(0, 0, 80, 20, new LiteralText("Cancel"), button -> this.onClose());
+		this.cancelButton = new ButtonWidget(0, 0, 80, 20, new LiteralText("Cancel"), button -> this.close());
 	}
 
 	@Override

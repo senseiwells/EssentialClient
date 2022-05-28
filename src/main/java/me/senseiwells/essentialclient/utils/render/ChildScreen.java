@@ -16,7 +16,7 @@ public class ChildScreen extends Screen {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		if (this.client != null) {
 			this.client.setScreen(this.parent);
 		}
@@ -35,7 +35,7 @@ public class ChildScreen extends Screen {
 		}
 
 		@Override
-		public void onClose() {
+		public void close() {
 			if (this.client != null) {
 				this.client.setScreen(this.parent);
 			}

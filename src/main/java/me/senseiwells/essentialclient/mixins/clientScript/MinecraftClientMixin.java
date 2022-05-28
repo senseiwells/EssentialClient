@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import javax.annotation.Nullable;
@@ -31,9 +32,9 @@ public class MinecraftClientMixin {
 	}
 
 	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
-	private void onAttack(CallbackInfo ci) {
+	private void onAttack(CallbackInfoReturnable<Boolean> cir) {
 		if (MinecraftScriptEvents.ON_ATTACK.run()) {
-			ci.cancel();
+			cir.setReturnValue(false);
 		}
 	}
 

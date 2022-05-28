@@ -6,6 +6,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.PressableTextWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -39,6 +40,14 @@ public abstract class TitleScreenMixin extends Screen {
 				b -> this.client.setScreen(new ConfigScreen(this))
 			));
 		}
+	}
+
+	@Redirect(method = "init", at = @At(value = "NEW", target = "net/minecraft/client/gui/widget/PressableTextWidget"))
+	private PressableTextWidget onPressableText(int x, int y, int width, int height, Text text, ButtonWidget.PressAction onPress, TextRenderer textRenderer) {
+		if (ClientRules.ESSENTIAL_CLIENT_BUTTON.getValue() && !ClientRules.FORCE_TITLE_TEXT_DOWN.getValue()) {
+			return new PressableTextWidget(x, 5, width, height, text, onPress, textRenderer);
+		}
+		return new PressableTextWidget(x, y, width, height, text, onPress, textRenderer);
 	}
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"), require = 0)

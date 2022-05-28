@@ -52,7 +52,7 @@ public class NbtUtils {
 		if (element instanceof AbstractNbtNumber nbtNumber) {
 			return NumberValue.of(nbtNumber.doubleValue());
 		}
-		if (element == NbtNull.INSTANCE) {
+		if (element == NbtEnd.INSTANCE) {
 			return NullValue.NULL;
 		}
 		return StringValue.of(element.asString());
@@ -93,7 +93,7 @@ public class NbtUtils {
 			return NbtDouble.of(numberValue.value);
 		}
 		if (value == NullValue.NULL) {
-			return NbtNull.INSTANCE;
+			return NbtEnd.INSTANCE;
 		}
 		return NbtString.of(value.getAsString(context));
 	}
