@@ -240,7 +240,6 @@ public interface Rule<T> {
 		}
 	}
 
-
 	@FunctionalInterface
 	interface RuleListener<T> extends Consumer<Rule<T>> { }
 
@@ -252,7 +251,6 @@ public interface Rule<T> {
 		CYCLE("Cycle"),
 		SLIDER("Slider"),
 		LIST("List"),
-		SUBLIST("SubList"),
 		NONE("None");
 
 		private final String name;
