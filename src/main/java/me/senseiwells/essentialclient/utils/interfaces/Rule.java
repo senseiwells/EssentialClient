@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.utils.interfaces;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import me.senseiwells.essentialclient.EssentialClient;
@@ -212,6 +213,33 @@ public interface Rule<T> {
 		}
 	}
 
+	interface ListRule extends Rule<List<String>> {
+		@Override
+		default List<String> fromJson(JsonElement value) {
+			JsonArray array = value.getAsJsonArray();
+
+			List<String> configData = new ArrayList<>();
+			for (JsonElement element : array) {
+				configData.add(element.getAsString());
+			}
+			return configData;
+		}
+
+		@Override
+		default JsonElement toJson(List<String> value) {
+			JsonArray array = new JsonArray();
+			for (String string : value) {
+				array.add(string);
+			}
+			return array;
+		}
+
+		@Override
+		default Type getType() {
+			return Type.LIST;
+		}
+	}
+
 	@FunctionalInterface
 	interface RuleListener<T> extends Consumer<Rule<T>> { }
 
@@ -222,6 +250,7 @@ public interface Rule<T> {
 		STRING("String", "string", Set.of(String.class)),
 		CYCLE("Cycle"),
 		SLIDER("Slider"),
+		LIST("List"),
 		NONE("None");
 
 		private final String name;
