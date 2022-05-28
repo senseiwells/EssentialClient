@@ -13,6 +13,7 @@
     "clientNick.InGameHudMixin",
     "clientNick.PlayerEntityRendererMixin",
     "clientNick.PlayerListHudMixin",
+    "clientScript.BlockItemMixin",
     "clientScript.ChatHudMixin",
     "clientScript.ClientPlayerEntityMixin",
     "clientScript.ClientPlayerInteractionManagerMixin",

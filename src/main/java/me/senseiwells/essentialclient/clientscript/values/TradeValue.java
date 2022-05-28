@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -12,6 +14,8 @@ import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.TradeOffer;
 
+import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TRADE;
 
 public class TradeValue extends GenericValue<TradeOffer> {
@@ -59,8 +63,12 @@ public class TradeValue extends GenericValue<TradeOffer> {
 		return TRADE;
 	}
 
+	@ClassDoc(
+		name = TRADE,
+		desc = "This class represents a trade offer, and allows you to get information about it.",
+		importPath = "Minecraft"
+	)
 	public static class ArucasTradeOfferClass extends ArucasClassExtension {
-
 		public ArucasTradeOfferClass() {
 			super(TRADE);
 		}
@@ -79,41 +87,89 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			);
 		}
 
+		@FunctionDoc(
+			name = "getSellItem",
+			desc = "Gets the item that is being sold by the merchant",
+			returns = {ITEM_STACK, "the item for sale"},
+			example = "trade.getSellItem();"
+		)
 		public Value getSellItem(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getSellItem());
 		}
 
+		@FunctionDoc(
+			name = "getFirstBuyItem",
+			desc = "Gets the first item that the merchant will buy",
+			returns = {ITEM_STACK, "the first item to buy"},
+			example = "trade.getFirstBuyItem();"
+		)
 		public Value getFirstBuyItem(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getOriginalFirstBuyItem());
 		}
 
+		@FunctionDoc(
+			name = "getAdjustedFirstBuyItem",
+			desc = "Gets the first item that the merchant will buy, adjusted by the price multiplier",
+			returns = {ITEM_STACK, "the first item to buy"},
+			example = "trade.getAdjustedFirstBuyItem();"
+		)
 		public Value getAdjustedFirstBuyItem(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getAdjustedFirstBuyItem());
 		}
 
+		@FunctionDoc(
+			name = "getSecondBuyItem",
+			desc = "Gets the second item that the merchant will buy",
+			returns = {ITEM_STACK, "the second item to buy"},
+			example = "trade.getSecondBuyItem();"
+		)
 		public Value getSecondBuyItem(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getSecondBuyItem());
 		}
 
+		@FunctionDoc(
+			name = "getMaxUses",
+			desc = "Gets the maximum number of times the trade can be used",
+			returns = {NUMBER, "the maximum number of uses"},
+			example = "trade.getMaxUses();"
+		)
 		public Value getMaxUses(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getMaxUses());
 		}
 
+		@FunctionDoc(
+			name = "getUses",
+			desc = "Gets the number of times the trade has been used",
+			returns = {NUMBER, "the number of uses"},
+			example = "trade.getUses();"
+		)
 		public Value getUses(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getUses());
 		}
 
+		@FunctionDoc(
+			name = "getSpecialPrice",
+			desc = "This gets the special price which is used to adjust the price of the first buy item",
+			returns = {NUMBER, "the special price"},
+			example = "trade.getSpecialPrice();"
+		)
 		public Value getSpecialPrice(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getSpecialPrice());
 		}
 
+		@FunctionDoc(
+			name = "getPriceMultiplier",
+			desc = "Gets the price multiplier which is used to adjust the price of the first buy item",
+			returns = {NUMBER, "the price multiplier"},
+			example = "trade.getPriceMultiplier();"
+		)
 		public Value getPriceMultiplier(Arguments arguments) throws CodeError {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getPriceMultiplier());

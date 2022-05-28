@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -26,7 +28,8 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.Objects;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.WORLD;
+import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class WorldValue extends GenericValue<ClientWorld> {
 	public WorldValue(ClientWorld world) {
@@ -58,6 +61,11 @@ public class WorldValue extends GenericValue<ClientWorld> {
 		return WORLD;
 	}
 
+	@ClassDoc(
+		name = WORLD,
+		desc = "This class represents worlds, and allows you to interact with things inside of them.",
+		importPath = "Minecraft"
+	)
 	public static class ArucasWorldClass extends ArucasClassExtension {
 		public ArucasWorldClass() {
 			super(WORLD);
@@ -95,6 +103,17 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			);
 		}
 
+		@FunctionDoc(
+			name = "getBlockAt",
+			desc = "This function gets the block at the given coordinates",
+			params = {
+				NUMBER, "x", "the x coordinate",
+				NUMBER, "y", "the y coordinate",
+				NUMBER, "z", "the z coordinate"
+			},
+			returns = {BLOCK, "the block at the given coordinates"},
+			example = "world.getBlockAt(0, 100, 0);"
+		)
 		private Value getBlockAt(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue num1 = arguments.getNextNumber();
@@ -104,6 +123,13 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return new BlockValue(world.getBlockState(blockPos), blockPos);
 		}
 
+		@FunctionDoc(
+			name = "getBlockAt",
+			desc = "This function gets the block at the given coordinates",
+			params = {POS, "pos", "the position"},
+			returns = {BLOCK, "the block at the given coordinates"},
+			example = "world.getBlockAt(new Pos(0, 100, 0));"
+		)
 		private Value getBlockAtPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
@@ -111,6 +137,13 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return new BlockValue(world.getBlockState(blockPos), blockPos);
 		}
 
+		@FunctionDoc(
+			name = "getOtherPlayer",
+			desc = "This gets another player from the given username",
+			params = {STRING, "username", "the username of the other player"},
+			returns = {PLAYER, "the other player, null if not found"},
+			example = "world.getOtherPlayer('senseiwells');"
+		)
 		private Value getOtherPlayer(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			StringValue stringValue = arguments.getNextString();
@@ -125,6 +158,12 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "getAllOtherPlayers",
+			desc = "This will get all other players in the world",
+			returns = {LIST, "a list of all other players"},
+			example = "world.getAllOtherPlayers();"
+		)
 		private Value getAllOtherPlayers(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			ArucasList otherPlayerValueList = new ArucasList();
@@ -136,6 +175,16 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return new ListValue(otherPlayerValueList);
 		}
 
+		@FunctionDoc(
+			name = "getClosestPlayer",
+			desc = "This will get the closest player to another entity in the world",
+			params = {
+				ENTITY, "entity", "the entity to get the closest player to",
+				NUMBER, "maxDistance", "the maximum distance to search for a player in blocks"
+			},
+			returns = {PLAYER, "the closest player, null if not found"},
+			example = "world.getClosestPlayer(Player.get(), 100);"
+		)
 		private Value getClosestPlayer(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
@@ -143,6 +192,12 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return arguments.getContext().convertValue(ThreadSafeUtils.getClosestPlayer(world, entityValue.value, numberValue.value));
 		}
 
+		@FunctionDoc(
+			name = "getAllEntities",
+			desc = "This will get all entities in the world",
+			returns = {LIST, "a list of all entities"},
+			example = "world.getAllEntities();"
+		)
 		private Value getAllEntities(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			ArucasList valueList = new ArucasList();
@@ -153,36 +208,98 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return new ListValue(valueList);
 		}
 
+		@FunctionDoc(
+			name = "getEntityFromId",
+			desc = "This will get an entity from the given entity id",
+			params = {NUMBER, "entityId", "the entity id"},
+			returns = {ENTITY, "the entity, null if not found"},
+			example = "world.getEntityFromId(1);"
+		)
 		private Value getEntityFromId(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue id = arguments.getNextNumber();
 			return arguments.getContext().convertValue(world.getEntityById(id.value.intValue()));
 		}
 
+		@FunctionDoc(
+			name = "getFullId",
+			desc = "This will get the full id of the world",
+			returns = {STRING, "the full id of the world, for example: 'minecraft:overworld'"},
+			example = "world.getFullId();"
+		)
 		private Value getFullId(Arguments arguments) throws CodeError {
 			return StringValue.of(this.getWorld(arguments).getRegistryKey().getValue().toString());
 		}
 
+		@FunctionDoc(
+			name = "getId",
+			desc = "This will get the id of the world",
+			returns = {STRING, "the id of the world, for example: 'overworld'"},
+			example = "world.getId();"
+		)
 		private Value getId(Arguments arguments) throws CodeError {
 			return StringValue.of(this.getWorld(arguments).getRegistryKey().getValue().getPath());
 		}
 
+		@FunctionDoc(
+			deprecated = "You should use 'world.getId()' instead",
+			name = "getDimensionName",
+			desc = "This will get the id of the world",
+			returns = {STRING, "the id of the world, for example: 'overworld'"},
+			example = "world.getDimensionName();"
+		)
 		private Value getDimensionName(Arguments arguments) throws CodeError {
 			return StringValue.of(this.getWorld(arguments).getRegistryKey().getValue().getPath());
 		}
 
+		@FunctionDoc(
+			name = "isRaining",
+			desc = "This will check if the world is currently raining",
+			returns = {BOOLEAN, "true if the world is currently raining"},
+			example = "world.isRaining();"
+		)
 		private Value isRaining(Arguments arguments) throws CodeError {
 			return BooleanValue.of(this.getWorld(arguments).isRaining());
 		}
 
+		@FunctionDoc(
+			name = "isThundering",
+			desc = "This will check if the world is currently thundering",
+			returns = {BOOLEAN, "true if the world is currently thundering"},
+			example = "world.isThundering();"
+		)
 		private Value isThundering(Arguments arguments) throws CodeError {
 			return BooleanValue.of(this.getWorld(arguments).isThundering());
 		}
 
+		@FunctionDoc(
+			name = "getTimeOfDay",
+			desc = {
+				"This will get the time of day of the world",
+				"info on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle)"
+			},
+			returns = {NUMBER, "the time of day of the world, between 0 and 24000"},
+			example = "world.getTimeOfDay();"
+		)
 		private Value getTimeOfDay(Arguments arguments) throws CodeError {
 			return NumberValue.of(this.getWorld(arguments).getTimeOfDay());
 		}
 
+		@FunctionDoc(
+			name = "renderParticle",
+			desc = {
+				"This will render a particle in the world, you can find a list of all",
+				"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles)"
+			},
+			params = {
+				STRING, "particleId", "the id of the particle",
+				NUMBER, "x", "the x position of the particle",
+				NUMBER, "y", "the y position of the particle",
+				NUMBER, "z", "the z position of the particle",
+			},
+			throwMsgs = "Particle Invalid",
+			example = "world.renderParticle('end_rod', 10, 10, 10);"
+		)
 		private Value renderParticle(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			String particleName = arguments.getNextGeneric(StringValue.class);
@@ -198,6 +315,19 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "renderParticle",
+			desc = {
+				"This will render a particle in the world, you can find a list of all",
+				"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles)"
+			},
+			params = {
+				STRING, "particleId", "the id of the particle",
+				POS, "pos", "the position of the particle"
+			},
+			throwMsgs = "Particle Invalid",
+			example = "world.renderParticle('end_rod', pos);"
+		)
 		private Value renderParticlePos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			String particleName = arguments.getNextGeneric(StringValue.class);
@@ -219,6 +349,22 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "renderParticle",
+			desc = {
+				"This will render a particle in the world with a velocity, you can find a list of all",
+				"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles)"
+			},
+			params = {
+				STRING, "particleId", "the id of the particle",
+				POS, "pos", "the position of the particle",
+				NUMBER, "velX", "the velocity of the particle on the x axis",
+				NUMBER, "velY", "the velocity of the particle on the y axis",
+				NUMBER, "velZ", "the velocity of the particle on the z axis"
+			},
+			throwMsgs = "Particle Invalid",
+			example = "world.renderParticle('end_rod', pos, 0.5, 0.5, 0.5);"
+		)
 		private Value renderParticleVel(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			String particleName = arguments.getNextGeneric(StringValue.class);
@@ -243,6 +389,18 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			deprecated = "This function is dangerous, use at your own risk",
+			name = "setGhostBlock",
+			desc = "This sets a ghost block in the world as if it were a real block, may cause issues",
+			params = {
+				BLOCK, "block", "the block to set",
+				NUMBER, "x", "the x position of the block",
+				NUMBER, "y", "the y position of the block",
+				NUMBER, "z", "the z position of the block"
+			},
+			example = "world.setGhostBlock(Material.BEDROCK.asBlock(), 0, 100, 0);"
+		)
 		private Value setGhostBlock(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			BlockState blockState = arguments.getNextGeneric(BlockValue.class);
@@ -255,6 +413,16 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			deprecated = "This function is dangerous, use at your own risk",
+			name = "setGhostBlock",
+			desc = "This sets a ghost block in the world as if it were a real block, may cause issues",
+			params = {
+				BLOCK, "block", "the block to set",
+				POS, "pos", "the position of the block"
+			},
+			example = "world.setGhostBlock(Material.BEDROCK.asBlock(), new Pos(0, 100, 0));"
+		)
 		private Value setGhostBlockPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			BlockState blockState = arguments.getNextGeneric(BlockValue.class);
@@ -265,6 +433,17 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "isAir",
+			desc = "Returns true if the block at the given position is air",
+			params = {
+				NUMBER, "x", "the x position of the block",
+				NUMBER, "y", "the y position of the block",
+				NUMBER, "z", "the z position of the block"
+			},
+			returns = {BOOLEAN, "true if the block is air"},
+			example = "world.isAir(0, 100, 0);"
+		)
 		private Value isAir(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue x = arguments.getNextNumber();
@@ -273,12 +452,31 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return BooleanValue.of(world.isAir(new BlockPos(x.value, y.value, z.value)));
 		}
 
+		@FunctionDoc(
+			name = "isAir",
+			desc = "Returns true if the block at the given position is air",
+			params = {POS, "pos", "the position of the block"},
+			returns = {BOOLEAN, "true if the block is air"},
+			example = "world.isAir(new Pos(0, 100, 0));"
+		)
 		private Value isAirPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue pos = arguments.getNext(PosValue.class);
 			return BooleanValue.of(world.isAir(new BlockPos(pos.value)));
 		}
 
+		@FunctionDoc(
+			name = "getEmittedRedstonePower",
+			desc = "Gets the emitted restone power at the given position and direction",
+			params = {
+				NUMBER, "x", "the x position of the block",
+				NUMBER, "y", "the y position of the block",
+				NUMBER, "z", "the z position of the block",
+				STRING, "direction", "the direction to check, for example 'north', 'east', 'up', etc."
+			},
+			returns = {NUMBER, "the emitted redstone power"},
+			example = "world.getEmittedRedstonePower(0, 100, 0, 'north');"
+		)
 		private Value getEmittedRedstonePower(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue x = arguments.getNextNumber();
@@ -290,6 +488,16 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NumberValue.of(world.getEmittedRedstonePower(blockPos, direction));
 		}
 
+		@FunctionDoc(
+			name = "getEmittedRedstonePower",
+			desc = "Gets the emitted restone power at the given position and direction",
+			params = {
+				POS, "pos", "the position of the block",
+				STRING, "direction", "the direction to check, for example 'north', 'east', 'up', etc."
+			},
+			returns = {NUMBER, "the emitted redstone power"},
+			example = "world.getEmittedRedstonePower(new Pos(0, 100, 0), 'north');"
+		)
 		private Value getEmittedRedstonePowerPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
@@ -299,6 +507,17 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NumberValue.of(world.getEmittedRedstonePower(blockPos, direction));
 		}
 
+		@FunctionDoc(
+			name = "getLight",
+			desc = "Gets the light level at the given position",
+			params = {
+				NUMBER, "x", "the x position of the block",
+				NUMBER, "y", "the y position of the block",
+				NUMBER, "z", "the z position of the block"
+			},
+			returns = {NUMBER, "the light level"},
+			example = "world.getLight(0, 100, 0);"
+		)
 		private Value getLight(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue x = arguments.getNextNumber();
@@ -307,12 +526,29 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return NumberValue.of(world.getLightLevel(new BlockPos(x.value, y.value, z.value)));
 		}
 
+		@FunctionDoc(
+			name = "getLight",
+			desc = "Gets the light level at the given position",
+			params = {POS, "pos", "the position of the block"},
+			returns = {NUMBER, "the light level"},
+			example = "world.getLight(new Pos(0, 100, 0));"
+		)
 		private Value getLightPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			BlockPos pos = arguments.getNext(PosValue.class).toBlockPos();
 			return NumberValue.of(world.getLightLevel(pos));
 		}
 
+		@FunctionDoc(
+			name = "getArea",
+			desc = "This gets a list of all block positions between the two positions",
+			params = {
+				POS, "pos1", "the first position",
+				POS, "pos2", "the second position"
+			},
+			returns = {LIST, "the list of positions"},
+			example = "world.getArea(new Pos(0, 100, 0), new Pos(0, 100, 0));"
+		)
 		private Value getArea(Arguments arguments) throws CodeError {
 			BlockPos posA = arguments.skip().getNext(PosValue.class).toBlockPos();
 			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
@@ -323,6 +559,16 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return new ListValue(list);
 		}
 
+		@FunctionDoc(
+			name = "getAreaOfBlocks",
+			desc = "This gets a list of all blocks (with positions) between the two positions",
+			params = {
+				POS, "pos1", "the first position",
+				POS, "pos2", "the second position"
+			},
+			returns = {LIST, "the list of blocks"},
+			example = "world.getAreaOfBlocks(new Pos(0, 100, 0), new Pos(0, 100, 0));"
+		)
 		private Value getAreaOfBlocks(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			BlockPos posA = arguments.getNext(PosValue.class).toBlockPos();

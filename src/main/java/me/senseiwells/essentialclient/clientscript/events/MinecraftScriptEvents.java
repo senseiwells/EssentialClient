@@ -23,6 +23,7 @@ public class MinecraftScriptEvents {
 		ON_EAT = new MinecraftScriptEvent("onEat"),
 		ON_GAMEMODE_CHANGE = new MinecraftScriptEvent("onGamemodeChange"),
 		ON_BLOCK_BROKEN = new MinecraftScriptEvent("onBlockBroken"),
+		ON_BLOCK_PLACED = new MinecraftScriptEvent("onBlockPlaced"),
 		ON_DIMENSION_CHANGE = new MinecraftScriptEvent("onDimensionChange"),
 		ON_PLAYER_JOIN = new MinecraftScriptEvent("onPlayerJoin"),
 		ON_PLAYER_LEAVE = new MinecraftScriptEvent("onPlayerLeave"),

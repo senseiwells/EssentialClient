@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -19,6 +21,7 @@ import net.minecraft.text.Text;
 
 import java.util.Objects;
 
+import static me.senseiwells.arucas.utils.ValueTypes.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SCREEN;
 
 public class ScreenValue<T extends Screen> extends GenericValue<T> {
@@ -61,13 +64,11 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 		return new ScreenValue<>(screen);
 	}
 
-	/**
-	 * Screen class for Arucas. <br>
-	 * Import the class with <code>import Screen from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = SCREEN,
+		desc = "This allows you to get information about the player's current screen.",
+		importPath = "Minecraft"
+	)
 	public static class ArucasScreenClass extends ArucasClassExtension {
 		public ArucasScreenClass() {
 			super(SCREEN);
@@ -81,24 +82,22 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;Screen>.getName()</code> <br>
-		 * Description: Gets the name of the specific screen <br>
-		 * Returns - String: the screen name, if you are in the creative menu
-		 * it will return the name of the tab you are on <br>
-		 * Example: <code>screen.getName()</code>
-		 */
+		@FunctionDoc(
+			name = "getName",
+			desc = "Gets the name of the specific screen",
+			returns = {STRING, "the screen name, if you are in the creative menu it will return the name of the tab you are on"},
+			example = "screen.getName()"
+		)
 		private Value getName(Arguments arguments) throws CodeError {
 			return StringValue.of(ScreenRemapper.getScreenName(this.getScreen(arguments).getClass()));
 		}
 
-		/**
-		 * Name: <code>&lt;Screen>.getTitle()</code> <br>
-		 * Description: Gets the title of the specific screen <br>
-		 * Returns - Text: the screen title as text, this may include formatting,
-		 * and custom names for the screen if applicable <br>
-		 * Example: <code>screen.getTitle()</code>
-		 */
+		@FunctionDoc(
+			name = "getTitle",
+			desc = "Gets the title of the specific screen",
+			returns = {STRING, "the screen title as text, this may include formatting, and custom names for the screen if applicable"},
+			example = "screen.getTitle()"
+		)
 		private Value getTitle(Arguments arguments) throws CodeError {
 			Screen screen = this.getScreen(arguments);
 			Text title = screen.getTitle();

@@ -32,7 +32,6 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	protected final ButtonWidget resetButton;
 	private Consumer<ButtonWidget> resetConsumer;
 
-
 	public BaseListEntry(Rule<?> rule, MinecraftClient client, RulesScreen rulesScreen, Supplier<T> editButton) {
 		this.rule = rule;
 		this.client = client;

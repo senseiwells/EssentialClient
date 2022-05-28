@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
-import com.google.gson.JsonElement;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ContextBuilder;
 import me.senseiwells.arucas.utils.ValueTypes;
@@ -75,13 +74,11 @@ public class MinecraftAPI extends ValueTypes {
 	public static void addMinecraftAPI(ContextBuilder builder) {
 		builder.addClasses(
 			IMPORT_NAME,
-			JsonValue.ArucasJsonClass::new,
 			MinecraftClientValue.ArucasMinecraftClientMembers::new,
 			CommandBuilderValue.CommandBuilderClass::new,
 			PlayerValue.ArucasPlayerClass::new,
 			EntityValue.ArucasEntityClass::new,
 			OtherPlayerValue.ArucasAbstractPlayerClass::new,
-			OtherPlayerValue.ArucasOtherPlayerClass::new,
 			LivingEntityValue.ArucasLivingEntityClass::new,
 			ItemEntityValue.ArucasItemEntityClass::new,
 			BlockValue.ArucasBlockClass::new,
@@ -112,7 +109,6 @@ public class MinecraftAPI extends ValueTypes {
 			ArucasMinecraftExtension::new
 		);
 
-		builder.addConversion(JsonElement.class, (j, c) -> new JsonValue(j));
 		builder.addConversion(MinecraftClient.class, (m, c) -> MinecraftClientValue.INSTANCE);
 		builder.addConversion(ClientPlayerEntity.class, (p, c) -> new PlayerValue(p));
 		builder.addConversion(OtherClientPlayerEntity.class, (p, c) -> new OtherPlayerValue(p));

@@ -64,7 +64,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				MemberFunction.of("getVillagerLevel", this::getVillagerLevel),
 				MemberFunction.of("getVillagerProfession", this::getVillagerProfession),
 				MemberFunction.of("tradeIndex", 1, this::tradeIndex),
-				MemberFunction.of("getIndexOfTradeItem", 1, this::getIndexOfTrade),
+				MemberFunction.of("getIndexOfTradeItem", 1, this::getIndexOfTradeItem),
 				MemberFunction.of("getTradeItemForIndex", 1, this::getTradeItemForIndex),
 				MemberFunction.of("doesVillagerHaveTrade", 1, this::doesVillagerHaveTrade),
 				MemberFunction.of("isTradeDisabled", 1, this::isTradeDisabled),
@@ -154,14 +154,14 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		}
 
 		@FunctionDoc(
-			name = "getIndexOfTrade",
+			name = "getIndexOfTradeItem",
 			desc = "This gets the index of a trade for a certain item",
 			params = {MATERIAL_LIKE, "materialLike", "the item to get the index of"},
 			returns = {NUMBER, "the index of the trade"},
 			throwMsgs = "Not in merchant gui",
-			example = "screen.getIndexOfTrade(Material.DIAMOND_PICKAXE.asItemStack());"
+			example = "screen.getIndexOfTradeItem(Material.DIAMOND_PICKAXE.asItemStack());"
 		)
-		private Value getIndexOfTrade(Arguments arguments) throws CodeError {
+		private Value getIndexOfTradeItem(Arguments arguments) throws CodeError {
 			this.checkIsCurrentScreen(arguments);
 			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), materialLike.asItem());

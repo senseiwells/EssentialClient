@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
+import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -23,6 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import static me.senseiwells.arucas.utils.ValueTypes.LIST;
+import static me.senseiwells.arucas.utils.ValueTypes.STRING;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.RECIPE;
 
 public class RecipeValue extends GenericValue<Recipe<?>> {
@@ -55,13 +60,11 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 		return RECIPE;
 	}
 
-	/**
-	 * Recipe class for Arucas. This class represents recipes in Minecraft. <br>
-	 * Import the class with <code>import Recipe from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = RECIPE,
+		desc = "This class represents recipes in Minecraft.",
+		importPath = "Minecraft"
+	)
 	public static class ArucasRecipeClass extends ArucasClassExtension {
 		public ArucasRecipeClass() {
 			super(RECIPE);
@@ -91,13 +94,15 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			);
 		}
 
-		/**
-		 * Name: <code>Recipe.of(recipeId)</code> <br>
-		 * Description: This converts a recipe id into a Recipe if it's valid <br>
-		 * Returns - Recipe: the entity instance from the id <br>
-		 * Throws - Error: <code>Recipe with id ... doesn't exist</code> if the id is not a valid recipe id <br>
-		 * Example: <code>Recipe.of("redstone_block");</code>
-		 */
+		@FunctionDoc(
+			isStatic = true,
+			name = "of",
+			desc = "This converts a recipe id into a Recipe if it's valid",
+			params = {STRING, "recipeId", "the id of the recipe to convert to a Recipe"},
+			returns = {RECIPE, "the recipe instance from the id"},
+			throwMsgs = "Recipe with id ... doesn't exist",
+			example = "Recipe.of('redstone_block')"
+		)
 		private Value newRecipe(Arguments arguments) throws CodeError {
 			String id = arguments.getNextGeneric(StringValue.class);
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
@@ -120,58 +125,57 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;Recipe>.getFullId()</code> <br>
-		 * Description: This returns the full id of the recipe <br>
-		 * Returns - String: the full id of the recipe <br>
-		 * Example: <code>recipe.getFullId();</code>
-		 */
+		@FunctionDoc(
+			name = "getFullId",
+			desc = "This returns the full id of the recipe",
+			returns = {STRING, "the full id of the recipe"},
+			example = "recipe.getFullId()"
+		)
 		private Value getFullId(Arguments arguments) throws CodeError {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().toString());
 		}
 
-		/**
-		 * Name: <code>&lt;Recipe>.getId()</code> <br>
-		 * Description: This returns the id of the recipe <br>
-		 * Returns - String: the id of the recipe <br>
-		 * Example: <code>recipe.getId();</code>
-		 */
+		@FunctionDoc(
+			name = "getId",
+			desc = "This returns the id of the recipe",
+			returns = {STRING, "the id of the recipe"},
+			example = "recipe.getId()"
+		)
 		private Value getId(Arguments arguments) throws CodeError {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().getPath());
 		}
 
-		/**
-		 * Name: <code>&lt;Recipe>.getCraftingType()</code> <br>
-		 * Description: This returns the crafting type of the recipe <br>
-		 * Returns - String: the crafting type of the recipe, for example:
-		 * <code>"crafting", "smelting", "blasting"</code> <br>
-		 * Example: <code>recipe.getCraftingType();</code>
-		 */
+		@FunctionDoc(
+			name = "getCraftingType",
+			desc = "This returns the crafting type of the recipe",
+			returns = {STRING, "the crafting type of the recipe, for example: 'crafting', 'smelting', 'blasting'"},
+			example = "recipe.getCraftingType()"
+		)
 		private Value getCraftingType(Arguments arguments) throws CodeError {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			Identifier identifier = Registry.RECIPE_TYPE.getId(thisValue.value.getType());
 			return identifier == null ? NullValue.NULL : StringValue.of(identifier.getPath());
 		}
 
-		/**
-		 * Name: <code>&lt;Recipe>.getOutput()</code> <br>
-		 * Description: This returns the output of the recipe <br>
-		 * Returns - ItemStack: the output of the recipe <br>
-		 * Example: <code>recipe.getOutput();</code>
-		 */
+		@FunctionDoc(
+			name = "getOutput",
+			desc = "This returns the output of the recipe",
+			returns = {ITEM_STACK, "the output of the recipe"},
+			example = "recipe.getOutput()"
+		)
 		private Value getOutput(Arguments arguments) throws CodeError {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return new ItemStackValue(thisValue.value.getOutput());
 		}
 
-		/**
-		 * Name: <code>&lt;Recipe>.getIngredients()</code> <br>
-		 * Description: This returns all the possible ingredients of the recipe <br>
-		 * Returns - List: list of lists, each inner lists contains possible recipe items <br>
-		 * Example: <code>recipe.getIngredients();</code>
-		 */
+		@FunctionDoc(
+			name = "getIngredients",
+			desc = "This returns all the possible ingredients of the recipe",
+			returns = {LIST, "list of lists, each inner lists contains possible recipe items"},
+			example = "recipe.getIngredients()"
+		)
 		private Value getIngredients(Arguments arguments) throws CodeError {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			ArucasList recipeIngredients = new ArucasList();

@@ -244,7 +244,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		example = "shape.setColor(34, 55, 0);"
 	)
 	@ArucasFunction
-	public final void setColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
+	public final void setColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
 		this.setColour(context, redValue, greenValue, blueValue);
 	}
 
@@ -373,7 +373,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		example = "shape.setOutlineColor(255, 0, 255);"
 	)
 	@ArucasFunction
-	public final void setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue, NumberValue alphaValue) {
+	public final void setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
 		this.setOutlineColour(context, redValue, greenValue, blueValue);
 	}
 
@@ -749,6 +749,12 @@ public abstract class Shape implements IArucasWrappedClass {
 
 		void setZScale(float zScale);
 
+		default void setDefaultScale() {
+			this.setXScale(1.0F);
+			this.setYScale(1.0F);
+			this.setZScale(1.0F);
+		}
+
 		@FunctionDoc(
 			name = "setScale",
 			desc = "This sets the scale of the shape",
@@ -965,6 +971,10 @@ public abstract class Shape implements IArucasWrappedClass {
 		private float yTilt;
 		private float zTilt;
 
+		public CentreTiltableScalable() {
+			this.setDefaultScale();
+		}
+
 		@Override
 		public float getXScale() {
 			return this.xScale;
@@ -1034,6 +1044,10 @@ public abstract class Shape implements IArucasWrappedClass {
 		private float xTilt;
 		private float yTilt;
 		private float zTilt;
+
+		public PositionTiltableScalable() {
+			this.setDefaultScale();
+		}
 
 		@Override
 		public float getXScale() {

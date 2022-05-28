@@ -9,7 +9,6 @@ import me.senseiwells.arucas.api.wrappers.ArucasClass;
 import me.senseiwells.arucas.api.wrappers.ArucasConstructor;
 import me.senseiwells.arucas.api.wrappers.ArucasFunction;
 import me.senseiwells.arucas.api.wrappers.IArucasWrappedClass;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.BooleanValue;
@@ -162,8 +161,8 @@ public class GameEventWrapper implements IArucasWrappedClass {
 				ISyntax.empty(), branchContext
 			));
 		}
-		catch (CodeError codeError) {
-			threadHandler.tryError(branchContext, codeError);
+		catch (Throwable throwable) {
+			threadHandler.tryError(branchContext, throwable);
 		}
 		return false;
 	}

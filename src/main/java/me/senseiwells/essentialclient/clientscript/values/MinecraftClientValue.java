@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.clientscript.values;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.senseiwells.arucas.api.ArucasClassExtension;
+import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
@@ -49,9 +50,11 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static me.senseiwells.arucas.utils.ValueTypes.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINECRAFT_CLIENT;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 	public static MinecraftClientValue INSTANCE = new MinecraftClientValue(EssentialUtils.getClient());
@@ -85,13 +88,11 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		return MINECRAFT_CLIENT;
 	}
 
-	/**
-	 * MinecraftClient class for Arucas. This allows for many core interactions with the MinecraftClient <br>
-	 * Import the class with <code>import MinecraftClient from Minecraft;</code> <br>
-	 * Fully Documented.
-	 *
-	 * @author senseiwells
-	 */
+	@ClassDoc(
+		name = MINECRAFT_CLIENT,
+		desc = "This allows for many core interactions with the MinecraftClient",
+		importPath = "Minecraft"
+	)
 	public static class ArucasMinecraftClientMembers extends ArucasClassExtension {
 		public ArucasMinecraftClientMembers() {
 			super(MINECRAFT_CLIENT);
@@ -100,17 +101,30 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		@Override
 		public ArucasFunctionMap<BuiltInFunction> getDefinedStaticMethods() {
 			return ArucasFunctionMap.of(
-				BuiltInFunction.of("getClient", this::getClientStatic)
+				BuiltInFunction.of("getClient", this::getClientStatic),
+				BuiltInFunction.of("get", this::getClientStaticShort)
 			);
 		}
 
-		/**
-		 * Name: <code>MinecraftClient.getClient()</code> <br>
-		 * Description: Returns the MinecraftClient instance <br>
-		 * Returns - MinecraftClient: the MinecraftClient instance <br>
-		 * Example: <code>MinecraftClient.getClient();</code>
-		 */
+		@FunctionDoc(
+			isStatic = true,
+			name = "getClient",
+			desc = "Returns the MinecraftClient instance",
+			returns = {MINECRAFT_CLIENT, "the MinecraftClient instance"},
+			example = "MinecraftClient.getClient();"
+		)
 		private Value getClientStatic(Arguments arguments) {
+			return MinecraftClientValue.INSTANCE;
+		}
+
+		@FunctionDoc(
+			isStatic = true,
+			name = "get",
+			desc = "Returns the MinecraftClient instance",
+			returns = {MINECRAFT_CLIENT, "the MinecraftClient instance"},
+			example = "MinecraftClient.get();"
+		)
+		private Value getClientStaticShort(Arguments arguments) {
 			return MinecraftClientValue.INSTANCE;
 		}
 
@@ -133,7 +147,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				MemberFunction.of("getServerIp", this::getServerIp),
 				MemberFunction.of("getServerName", this::getServerName),
 				MemberFunction.of("getPing", this::getPing),
-				MemberFunction.of("getScriptsPath", this::getScriptPath),
+				MemberFunction.of("getScriptsPath", this::getScriptsPath),
 				MemberFunction.of("setEssentialClientRule", 2, this::setEssentialClientRule),
 				MemberFunction.of("resetEssentialClientRule", 1, this::resetEssentialClientRule),
 				MemberFunction.of("getEssentialClientValue", 1, this::getEssentialClientRuleValue),
@@ -144,7 +158,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				MemberFunction.of("getWorld", this::getWorld),
 				MemberFunction.of("getVersion", this::getVersion),
 
-				MemberFunction.of("parseStringToNbt", 1, this::stringToNbt),
+				MemberFunction.of("parseStringToNbt", 1, this::parseStringToNbt),
 				MemberFunction.of("removeAllGameEvents", this::removeAllGameEvents, "Use 'GameEvent.unregisterAll()'"),
 				MemberFunction.of("itemFromString", 1, this::itemFromString, "Use 'ItemStack.of(material)'"),
 				MemberFunction.of("blockFromString", 1, this::blockFromString, "Use 'Block.of(material)'"),
@@ -166,33 +180,33 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.syncToTick()</code> <br>
-		 * Description: Synchronizes the current thread in Arucas to the next game tick <br>
-		 * Throws - Error: <code>"Tried to sync non Arucas Thread"</code> if the current thread is not safe to sync <br>
-		 * Example: <code>client.syncToTick();</code>
-		 */
+		@FunctionDoc(
+			name = "syncToTick",
+			desc = "Synchronizes the current thread in Arucas to the next game tick",
+			throwMsgs = "Tried to sync non Arucas Thread",
+			example = "client.syncToTick();"
+		)
 		private Value syncToTick(Arguments arguments) throws CodeError {
 			ClientTickSyncer.syncToTick();
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getRunDirectory()</code> <br>
-		 * Description: Returns the directory where the client is running <br>
-		 * Returns - File: The Minecraft run directory <br>
-		 * Example: <code>client.getRunDirectory();</code>
-		 */
+		@FunctionDoc(
+			name = "getRunDirectory",
+			desc = "Returns the directory where the client is running",
+			returns = {FILE, "the Minecraft run directory"},
+			example = "client.getRunDirectory();"
+		)
 		private Value getRunDirectory(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			return FileValue.of(client.runDirectory);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.screenshot()</code> <br>
-		 * Description: This makes the client take a screenshot <br>
-		 * Example: <code>client.screenshot();</code>
-		 */
+		@FunctionDoc(
+			name = "screenshot",
+			desc = "This makes the client take a screenshot",
+			example = "client.screenshot();"
+		)
 		private Value screenshot(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			ScreenshotRecorder.saveScreenshot(
@@ -203,12 +217,12 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.screenshotNamed(name)</code> <br>
-		 * Description: This makes the client take a screenshot and saves it with a given name <br>
-		 * Parameter - String: the name of the file <br>
-		 * Example: <code>client.screenshotNamed("screenshot.png");</code>
-		 */
+		@FunctionDoc(
+			name = "screenshot",
+			desc = "This makes the client take a screenshot and saves it with a given name",
+			params = {STRING, "name", "the name of the file"},
+			example = "client.screenshot('screenshot.png');"
+		)
 		private Value screenshotNamed(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			StringValue stringValue = arguments.getNextString();
@@ -221,13 +235,13 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.pressKey(key)</code> <br>
-		 * Description: This allows you to simulate a key press inside of Minecraft, this will only press the key down <br>
-		 * Parameter - String: the key to press <br>
-		 * Throws - Error: <code>"Tried to press key outside of Minecraft"</code> if the given key was unknown <br>
-		 * Example: <code>client.pressKey("f");</code>
-		 */
+		@FunctionDoc(
+			name = "pressKey",
+			desc = "This allows you to simulate a key press inside of Minecraft, this will only press the key down",
+			params = {STRING, "key", "the key to press"},
+			throwMsgs = "Tried to press key outside of Minecraft",
+			example = "client.pressKey('f');"
+		)
 		private Value pressKey(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			String key = arguments.getNextGeneric(StringValue.class);
@@ -243,14 +257,16 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.releaseKey(key)</code> <br>
-		 * Description: This allows you to simulate a key release inside of Minecraft, this is useful for keys that only
-		 * work on release, for example <code>F3</code> <br>
-		 * Parameter - String: the key to release <br>
-		 * Throws - Error: <code>"Tried to press unknown key"</code> if the given key was unknown <br>
-		 * Example: <code>client.releaseKey("f");</code>
-		 */
+		@FunctionDoc(
+			name = "releaseKey",
+			desc = {
+				"This allows you to simulate a key release inside of Minecraft, this",
+				"is useful for keys that only work on release, for example `F3`"
+			},
+			params = {STRING, "key", "the key to release"},
+			throwMsgs = "Tried to press unknown key",
+			example = "client.releaseKey('f');"
+		)
 		private Value releaseKey(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			String key = arguments.getNextGeneric(StringValue.class);
@@ -266,13 +282,16 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.holdKey(key, milliseconds)</code> <br>
-		 * Description: This allows you to simulate a key being held inside of Minecraft, this will press, hold, and release <br>
-		 * Parameters - String, Number: the key to hold, the number of milliseconds you want it held for <br>
-		 * Throws - Error: <code>"Tried to press unknown key"</code> if the given key was unknown <br>
-		 * Example: <code>client.holdKey("f", 100);</code>
-		 */
+		@FunctionDoc(
+			name = "holdKey",
+			desc = "This allows you to simulate a key being held inside of Minecraft, this will press, hold, and release",
+			params = {
+				STRING, "key", "the key to hold",
+				NUMBER, "milliseconds", "the number of milliseconds you want it held for"
+			},
+			throwMsgs = "Tried to press unknown key",
+			example = "client.holdKey('f', 100);"
+		)
 		private Value holdKey(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			String key = arguments.getNextGeneric(StringValue.class);
@@ -282,42 +301,39 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				throw arguments.getError("Tried to press unknown key");
 			}
 			long handler = client.getWindow().getHandle();
+			long startTime = System.currentTimeMillis();
 			int scanCode = GLFW.glfwGetKeyScancode(keyCode);
-			Context context = arguments.getContext();
-			context.getThreadHandler().runAsyncFunctionInThreadPool(context.createBranch(), ctx -> {
-				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 1, 0));
-				int ms = milliseconds;
-				try {
-					while (ms > 50) {
-						client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 2, 0));
-						Thread.sleep(50);
-						ms -= 50;
-					}
-				}
-				catch (InterruptedException interruptedException) {
-					throw new CodeError(CodeError.ErrorType.INTERRUPTED_ERROR, "", arguments.getPosition());
-				}
-				client.execute(() -> client.keyboard.onKey(handler, keyCode, scanCode, 0, 0));
-			});
+
+			Context context = arguments.getContext().createBranch();
+			Function<Integer, Runnable> keyPartial = action -> () -> client.keyboard.onKey(handler, keyCode, scanCode, action, 0);
+
+			client.execute(keyPartial.apply(1));
+			context.getThreadHandler().loopAsyncFunctionInThreadPool(
+				50, TimeUnit.MILLISECONDS,
+				() -> System.currentTimeMillis() - startTime < milliseconds,
+				() -> client.execute(keyPartial.apply(0)),
+				null, c -> client.execute(keyPartial.apply(2))
+			);
+
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.clearChat()</code> <br>
-		 * Description: This will clear the chat hud <br>
-		 * Example: <code>client.clearChat();</code>
-		 */
+		@FunctionDoc(
+			name = "clearChat",
+			desc = "This will clear the chat hud",
+			example = "client.clearChat();"
+		)
 		private Value clearChat(Arguments arguments) throws CodeError {
 			this.getClient(arguments).inGameHud.getChatHud().clear(true);
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getLatestChatMessage()</code> <br>
-		 * Description: This will return the latest chat message <br>
-		 * Returns - Text/Null: the latest chat message, null if there is none <br>
-		 * Example: <code>client.getLatestChatMessage();</code>
-		 */
+		@FunctionDoc(
+			name = "getLatestChatMessage",
+			desc = "This will return the latest chat message",
+			returns = {TEXT, "the latest chat message, null if there is none"},
+			example = "client.getLatestChatMessage();"
+		)
 		private Value getLatestChatMessage(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			@SuppressWarnings("unchecked")
@@ -328,12 +344,18 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return new TextValue(chat[0].getText().shallowCopy());
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.addCommand(command)</code> <br>
-		 * Description: This allows you to register your own client side command in game <br>
-		 * Parameters - CommandBuilder/Map: the command builder, or a map that can be parsed as a command <br>
-		 * Example: <code>client.addCommand(CommandBuilder.literal("example"));</code>
-		 */
+		@FunctionDoc(
+			name = "addCommand",
+			desc = "This allows you to register your own client side command in game",
+			params = {MAP, "command", "a command map or a command builder"},
+			example = """
+			client.addCommand({
+			    "name": "example",
+			    "subcommands": { },
+			    "arguments": { }
+			});
+			"""
+		)
 		private Value addCommand(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			Value value = arguments.getNext();
@@ -356,23 +378,23 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.isInSinglePlayer()</code> <br>
-		 * Description: This will return true if the client is in single player mode <br>
-		 * Returns - Boolean: true if the client is in single player mode <br>
-		 * Example: <code>client.isInSinglePlayer();</code>
-		 */
+		@FunctionDoc(
+			name = "isInSinglePlayer",
+			desc = "This will return true if the client is in single player mode",
+			returns = {BOOLEAN, "true if the client is in single player mode"},
+			example = "client.isInSinglePlayer();"
+		)
 		private Value isInSinglePlayer(Arguments arguments) throws CodeError {
 			return BooleanValue.of(this.getClient(arguments).isInSingleplayer());
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.playerNameFromUuid(uuid)</code> <br>
-		 * Description: This will return the player name from the given uuid <br>
-		 * Parameters - String: the uuid as a String <br>
-		 * Returns - String/Null: the player name, null if the uuid is not found <br>
-		 * Example: <code>client.playerNameFromUuid("d4fca8c4-e083-4300-9a73-bf438847861c");</code>
-		 */
+		@FunctionDoc(
+			name = "playerNameFromUuid",
+			desc = "This will return the player name from the given uuid",
+			params = {STRING, "uuid", "the uuid as a string"},
+			returns = {STRING, "the player name, null if the uuid is not found"},
+			example = "client.playerNameFromUuid('d4fca8c4-e083-4300-9a73-bf438847861c');"
+		)
 		private Value playerNameFromUuid(Arguments arguments) throws CodeError {
 			String uuidAsString = arguments.skip().getNextGeneric(StringValue.class);
 			String name = MojangAPI.getNameFromUuid(UUID.fromString(uuidAsString));
@@ -382,13 +404,13 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return StringValue.of(name);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.uuidFromPlayerName(name)</code> <br>
-		 * Description: This will return the uuid from the given player name <br>
-		 * Parameters - String: the player name <br>
-		 * Returns - String/Null: the uuid, null if the player name is not found <br>
-		 * Example: <code>client.uuidFromPlayerName("senseiwells");</code>
-		 */
+		@FunctionDoc(
+			name = "uuidFromPlayerName",
+			desc = "This will return the uuid from the given player name",
+			params = {STRING, "name", "the player name"},
+			returns = {STRING, "the uuid, null if the player name is not found"},
+			example = "client.uuidFromPlayerName('senseiwells');"
+		)
 		private Value uuidFromPlayerName(Arguments arguments) throws CodeError {
 			String name = arguments.skip().getNextGeneric(StringValue.class);
 			UUID uuid = MojangAPI.getUuidFromName(name);
@@ -413,13 +435,12 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return StringValue.of(serverInfo.address);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getServerName()</code> <br>
-		 * Description: This gets the current connected server's name that you have set it to in the multiplayer screen <br>
-		 * Returns - String: the server name <br>
-		 * Throws - Error: <code>"Failed to get server name"</code> <br>
-		 * Example: <code>client.getServerName();</code>
-		 */
+		@FunctionDoc(
+			name = "getServerName",
+			desc = "This gets the current connected server's name that you have set it to in the multiplayer screen",
+			returns = {STRING, "the server name"},
+			example = "client.getServerName();"
+		)
 		private Value getServerName(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			ServerInfo serverInfo = client.getCurrentServerEntry();
@@ -429,13 +450,13 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return StringValue.of(serverInfo.name);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getPing()</code> <br>
-		 * Description: This gets the current connected server's ping <br>
-		 * Returns - Number: the server ping in milliseconds <br>
-		 * Throws - Error: <code>"Failed to get server ping"</code> <br>
-		 * Example: <code>client.getPing();</code>
-		 */
+		@FunctionDoc(
+			name = "getPing",
+			desc = "This gets the current connected server's ping",
+			returns = {NUMBER, "the server ping in milliseconds"},
+			throwMsgs = "Failed to get server ping",
+			example = "client.getPing();"
+		)
 		private Value getPing(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			ServerInfo serverInfo = client.getCurrentServerEntry();
@@ -445,23 +466,29 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NumberValue.of(serverInfo.ping);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getScriptPath()</code> <br>
-		 * Description: This gets the script directory path, this is where all scripts are stored <br>
-		 * Returns - String: the script directory path <br>
-		 * Example: <code>client.getScriptPath();</code>
-		 */
-		private Value getScriptPath(Arguments arguments) {
+		@FunctionDoc(
+			name = "getScriptsPath",
+			desc = "This gets the script directory path, this is where all scripts are stored",
+			returns = {STRING, "the script directory path"},
+			example = "client.getScriptPath();"
+		)
+		private Value getScriptsPath(Arguments arguments) {
 			return StringValue.of(ClientScript.INSTANCE.getScriptDirectory().toString());
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.setEssentialClientRule(clientRule, value)</code> <br>
-		 * Description: This sets the given client rule to the given value <br>
-		 * Parameters - String, Value: the client rule, the new value for the rule <br>
-		 * Throws - Error: <code>"Invalid ClientRule name"</code>, <code>"Cannot set that value"</code> <br>
-		 * Example: <code>client.setEssentialClientRule("highlightLavaSources", false);</code>
-		 */
+		@FunctionDoc(
+			name = "setEssentialClientRule",
+			desc = "This sets the given client rule to the given value",
+			params = {
+				STRING, "ruleName", "the client rule",
+				ANY, "value", "the new value for the rule"
+			},
+			throwMsgs = {
+				"Invalid ClientRule name",
+				"Cannot set that value"
+			},
+			example = "client.setEssentialClientRule('highlightLavaSources', false);"
+		)
 		private Value setEssentialClientRule(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			String clientRuleName = arguments.getNextGeneric(StringValue.class);
@@ -479,13 +506,13 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.resetEssentialClientRule(clientRule)</code> <br>
-		 * Description: This resets the given client rule to its default value <br>
-		 * Parameters - String: the client rule <br>
-		 * Throws - Error: <code>"Invalid ClientRule name"</code> <br>
-		 * Example: <code>client.resetEssentialClientRule("highlightLavaSources");</code>
-		 */
+		@FunctionDoc(
+			name = "resetEssentialClientRule",
+			desc = "This resets the given client rule to its default value",
+			params = {STRING, "ruleName", "the client rule"},
+			throwMsgs = "Invalid ClientRule name",
+			example = "client.resetEssentialClientRule('highlightLavaSources');"
+		)
 		private Value resetEssentialClientRule(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			String clientRuleName = arguments.getNextGeneric(StringValue.class);
@@ -497,14 +524,14 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getEssentialClientRule(clientRule)</code> <br>
-		 * Description: This gets the value of the given client rule <br>
-		 * Parameters - String: the client rule <br>
-		 * Returns - Value: the value of the client rule <br>
-		 * Throws - Error: <code>"Invalid ClientRule name"</code> <br>
-		 * Example: <code>client.getEssentialClientRule("overrideCreativeWalkSpeed");</code>
-		 */
+		@FunctionDoc(
+			name = "getEssentialClientValue",
+			desc = "This gets the value of the given client rule",
+			params = {STRING, "ruleName", "the client rule"},
+			returns = {ANY, "the value of the client rule"},
+			throwMsgs = "Invalid ClientRule name",
+			example = "client.getEssentialClientValue('overrideCreativeWalkSpeed');"
+		)
 		private Value getEssentialClientRuleValue(Arguments arguments) throws CodeError {
 			String clientRuleName = arguments.skip().getNextGeneric(StringValue.class);
 			ClientRule<?> clientRule = ClientRules.ruleFromString(clientRuleName);
@@ -514,12 +541,12 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return arguments.getContext().convertValue(clientRule.getValue());
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getModList()</code> <br>
-		 * Description: This gets a list of all the mod ids of the mods installed <br>
-		 * Returns - List: the mod ids <br>
-		 * Example: <code>client.getModList();</code>
-		 */
+		@FunctionDoc(
+			name = "getModList",
+			desc = "This gets a list of all the mod ids of the mods installed",
+			returns = {LIST, "the mod ids"},
+			example = "client.getModList();"
+		)
 		private Value getModList(Arguments arguments) {
 			ArucasList modList = new ArucasList();
 			for (ModContainer modContainer : FabricLoader.getInstance().getAllMods()) {
@@ -528,73 +555,73 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return new ListValue(modList);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getFps()</code> <br>
-		 * Description: This gets the current fps <br>
-		 * Returns - Number: the fps <br>
-		 * Example: <code>client.getFps();</code>
-		 */
+		@FunctionDoc(
+			name = "getFps",
+			desc = "This gets the current fps",
+			returns = {NUMBER, "the fps"},
+			example = "client.getFps();"
+		)
 		private Value getFps(Arguments arguments) {
 			return NumberValue.of(MinecraftClientAccessor.getFps());
 		}
 
-		/**
-		 * Deprecated: You should use the GameEvent class instead: <code>GameEvent.unregisterAll();</code> <br>
-		 * Name: <code>&lt;MinecraftClient>.unregisterAllGameEvents()</code> <br>
-		 * Description: This unregisters all game events <br>
-		 * Example: <code>client.unregisterAllGameEvents();</code>
-		 */
+		@FunctionDoc(
+			deprecated = "You should use 'GameEvent.unregisterAll()' instead",
+			name = "removeAllGameEvents",
+			desc = "This unregisters all game events",
+			example = "client.removeAllGameEvents();"
+		)
 		private Value removeAllGameEvents(Arguments arguments) {
 			MinecraftScriptEvents.clearEventFunctions(arguments.getContext());
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.stringToNbt(string)</code> <br>
-		 * Description: This parses a string and turns it into a Nbt compound <br>
-		 * Parameters - String: the string to parse <br>
-		 * Returns - Value: the Nbt compound <br>
-		 * Example: <code>client.stringToNbt("{\"test\":\"test\"}");</code>
-		 */
-		private Value stringToNbt(Arguments arguments) throws CodeError {
+		@FunctionDoc(
+			name = "parseStringToNbt",
+			desc = "This parses a string and turns it into a Nbt compound",
+			params = {STRING, "string", "the string to parse"},
+			returns = {ANY, "the Nbt compound"},
+			example = "client.parseStringToNbt('{\"test\":\"test\"}');"
+		)
+		private Value parseStringToNbt(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
 			return NbtUtils.nbtToValue(arguments.getContext(), NbtUtils.rawStringToNbt(stringValue.value), 10);
 		}
 
-		/**
-		 * Deprecated: You should use the ItemStack class instead: <code>ItemStack.of("dirt");</code> <br>
-		 * Name: <code>&lt;MinecraftClient>.itemFromString(string)</code> <br>
-		 * Description: This creates an item stack from the given string <br>
-		 * Parameters - String: the string to parse <br>
-		 * Returns - ItemStack: the item stack <br>
-		 * Example: <code>client.itemFromString("dirt");</code>
-		 */
+		@FunctionDoc(
+			deprecated = "You should use 'ItemStack.of(string)' instead",
+			name = "itemFromString",
+			desc = "This creates an item stack from the given string",
+			params = {STRING, "string", "the string to parse"},
+			returns = {ANY, "the item stack"},
+			example = "client.itemFromString('dirt');"
+		)
 		private Value itemFromString(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
 			return new ItemStackValue(Registry.ITEM.get(ArucasMinecraftExtension.getId(arguments, stringValue.value)).getDefaultStack());
 		}
 
-		/**
-		 * Deprecated: You should use the Block class instead: <code>Block.of("dirt");</code> <br>
-		 * Name: <code>&lt;MinecraftClient>.blockFromString(string)</code> <br>
-		 * Description: This creates a block from the given string <br>
-		 * Parameters - String: the string to parse <br>
-		 * Returns - Block: the block <br>
-		 * Example: <code>client.blockFromString("dirt");</code>
-		 */
+		@FunctionDoc(
+			deprecated = "You should use 'Block.of(string)' instead",
+			name = "blockFromString",
+			desc = "This creates a block from the given string",
+			params = {STRING, "string", "the string to parse"},
+			returns = {ANY, "the block"},
+			example = "client.blockFromString('dirt');"
+		)
 		private Value blockFromString(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
 			return new BlockValue(Registry.BLOCK.get(ArucasMinecraftExtension.getId(arguments, stringValue.value)).getDefaultState());
 		}
 
-		/**
-		 * Deprecated: You should use the Entity class instead: <code>Entity.of("pig");</code> <br>
-		 * Name: <code>&lt;MinecraftClient>.entityFromString(string)</code> <br>
-		 * Description: This creates an entity from the given string <br>
-		 * Parameters - String: the string to parse <br>
-		 * Returns - Entity: the entity <br>
-		 * Example: <code>client.entityFromString("pig");</code>
-		 */
+		@FunctionDoc(
+			deprecated = "You should use 'Entity.of(string)' instead",
+			name = "entityFromString",
+			desc = "This creates an entity from the given string",
+			params = {STRING, "string", "the string to parse"},
+			returns = {ANY, "the entity"},
+			example = "client.entityFromString('pig');"
+		)
 		private Value entityFromString(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			ClientWorld world = ArucasMinecraftExtension.getWorld(client);
@@ -602,27 +629,30 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return arguments.getContext().convertValue(Registry.ENTITY_TYPE.get(ArucasMinecraftExtension.getId(arguments, stringValue.value)).create(world));
 		}
 
-		/**
-		 * Deprecated: You should use the Text class instead: <code>Text.of("Any Text!");</code> <br>
-		 * Name: <code>&lt;MinecraftClient>.textFromString(string)</code> <br>
-		 * Description: This creates a text from the given string <br>
-		 * Parameters - String: the string to parse <br>
-		 * Returns - Text: the text <br>
-		 * Example: <code>client.textFromString("Any Text!");</code>
-		 */
+		@FunctionDoc(
+			deprecated = "You should use 'Text.of(string)' instead",
+			name = "textFromString",
+			desc = "This creates a text from the given string",
+			params = {STRING, "string", "the string to parse"},
+			returns = {ANY, "the text"},
+			example = "client.textFromString('Any Text!');"
+		)
 		private Value textFromString(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
 			return new TextValue(new LiteralText(stringValue.value));
 		}
 
-		/**
-		 * Deprecated: You should use the FakeScreen class instead: <code>new FakeScreen("Name", 3)</code> <br>
-		 * Name: <code>&lt;MinecraftClient>.createFakeScreen(screenName, rows)</code> <br>
-		 * Description: This creates a fake screen with the given name and number of rows of slots available (1 - 6) <br>
-		 * Parameters - String, Number: the name of the screen, number of rows <br>
-		 * Returns - FakeScreen: the fake screen <br>
-		 * Example: <code>client.createFakeScreen("Name", 3);</code>
-		 */
+		@FunctionDoc(
+			deprecated = "You should use 'new FakeScreen(string, rows)' instead",
+			name = "createFakeScreen",
+			desc = "This creates a fake screen with the given name and number of rows of slots available (1 - 6)",
+			params = {
+				STRING, "screenName", "the name of the screen",
+				NUMBER, "rows", "number of rows"
+			},
+			returns = {ANY, "the fake screen"},
+			example = "client.createFakeScreen('Name', 3);"
+		)
 		private Value createFakeScreen(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
@@ -636,13 +666,19 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			}
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.playSound(soundId, volume, pitch)</code> <br>
-		 * Description: This plays the given sound with the given volume and pitch around the player <br>
-		 * Parameters - String, Number, Number: the sound id [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events),
-		 * volume of the sound, pitch of the sound <br>
-		 * Example: <code>client.playSound("entity.lightning_bolt.thunder", 1, 1);</code>
-		 */
+		@FunctionDoc(
+			name = "playSound",
+			desc = {
+				"This plays the given sound with the given volume and pitch around the player",
+				"sound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events)",
+			},
+			params = {
+				STRING, "soundId", "the sound id you want to play",
+				NUMBER, "volume", "the volume of the sound",
+				NUMBER, "pitch", "the pitch of the sound"
+			},
+			example = "client.playSound('entity.lightning_bolt.thunder', 1, 1);"
+		)
 		private Value playSound(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
@@ -654,12 +690,12 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.renderFloatingItem(itemStack)</code> <br>
-		 * Description: This renders an item in front of the player using the totem of undying animation <br>
-		 * Parameters - ItemStack: the item stack to render <br>
-		 * Example: <code>client.renderFloatingItem(Material.DIAMOND.asItemStack());</code>
-		 */
+		@FunctionDoc(
+			name = "renderFloatingItem",
+			desc = "This renders an item in front of the player using the totem of undying animation",
+			params = {ITEM_STACK, "itemStack", "the item stack to render"},
+			example = "client.renderFloatingItem(Material.DIAMOND.asItemStack());"
+		)
 		private Value renderFloatingItem(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			ItemStack itemStack = arguments.getNextGeneric(ItemStackValue.class);
@@ -667,36 +703,38 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.stripFormatting(string)</code> <br>
-		 * Description: This strips the formatting from the given string <br>
-		 * Parameters - String: the string to strip <br>
-		 * Returns - String: the stripped string <br>
-		 * Example: <code>client.stripFormatting("§cHello§r");</code>
-		 */
+		@FunctionDoc(
+			name = "stripFormatting",
+			desc = "This strips the formatting from the given string",
+			params = {STRING, "string", "the string to strip"},
+			returns = {STRING, "the stripped string"},
+			example = "client.stripFormatting('§cHello§r');"
+		)
 		private Value stripFormatting(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
 			return StringValue.of(stringValue.value.replaceAll("§[0-9a-gk-or]", ""));
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getCursorStack()</code> <br>
-		 * Description: This returns the item stack that is currently being held by the cursor <br>
-		 * Returns - ItemStack: the item stack, will be Air if there is nothing <br>
-		 * Example: <code>client.getCursorStack();</code>
-		 */
+		@FunctionDoc(
+			name = "getCursorStack",
+			desc = "This returns the item stack that is currently being held by the cursor",
+			returns = {ITEM_STACK, "the item stack, will be Air if there is nothing"},
+			example = "client.getCursorStack();"
+		)
 		private Value getCursorStack(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			return new ItemStackValue(InventoryUtils.getCursorStack(client));
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.setCursorStack(itemStack)</code> <br>
-		 * Description: This sets the item stack that is currently being held by the cursor, this does not work
-		 * in normal screens only in FakeScreens, this does not actually pick up an item just display like you have <br>
-		 * Parameters - ItemStack: the item stack to set <br>
-		 * Example: <code>client.setCursorStack(Material.DIAMOND.asItemStack());</code>
-		 */
+		@FunctionDoc(
+			name = "setCursorStack",
+			desc = {
+				"This sets the item stack that is currently being held by the cursor, this does not work",
+				"in normal screens only in FakeScreens, this does not actually pick up an item just display like you have"
+			},
+			params = {ITEM_STACK, "itemStack", "the item stack to set"},
+			example = "client.setCursorStack(Material.DIAMOND.asItemStack());"
+		)
 		private Value setCursorStack(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			if (client.currentScreen instanceof FakeInventoryScreen) {
@@ -706,23 +744,23 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return BooleanValue.FALSE;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getClientRenderDistance()</code> <br>
-		 * Description: This returns the current render distance set on the client <br>
-		 * Returns - Number: the render distance <br>
-		 * Example: <code>client.getClientRenderDistance();</code>
-		 */
+		@FunctionDoc(
+			name = "getClientRenderDistance",
+			desc = "This returns the current render distance set on the client",
+			returns = {NUMBER, "the render distance"},
+			example = "client.getClientRenderDistance();"
+		)
 		private Value getClientRenderDistance(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			return NumberValue.of(client.options.viewDistance);
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.setClientRenderDistance(number)</code> <br>
-		 * Description: This sets the render distance on the client <br>
-		 * Parameters - Number: the render distance <br>
-		 * Example: <code>client.setClientRenderDistance(10);</code>
-		 */
+		@FunctionDoc(
+			name = "setClientRenderDistance",
+			desc = "This sets the render distance on the client",
+			params = {NUMBER, "number", "the render distance"},
+			example = "client.setClientRenderDistance(10);"
+		)
 		private Value setClientRenderDistance(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
@@ -731,12 +769,12 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.runOnMainThread(function)</code> <br>
-		 * Description: This runs the given function on the main thread <br>
-		 * Parameters - Function: the function to run <br>
-		 * Example: <code>client.runOnMainThread(fun() { print("Do something"); });</code>
-		 */
+		@FunctionDoc(
+			name = "runOnMainThread",
+			desc = "This runs the given function on the main thread",
+			params = {FUNCTION, "function", "the function to run"},
+			example = "client.runOnMainThread(fun() { print('Do something'); });"
+		)
 		private Value runOnMainThread(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			FunctionValue functionValue = arguments.getNextFunction();
@@ -745,45 +783,45 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.tick()</code> <br>
-		 * Description: This ticks the client <br>
-		 * Example: <code>client.tick();</code>
-		 */
+		@FunctionDoc(
+			name = "tick",
+			desc = "This ticks the client",
+			example = "client.tick();"
+		)
 		private Value tick(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			client.execute(client::tick);
 			return NullValue.NULL;
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getPlayer()</code> <br>
-		 * Description: This returns the current player on the client <br>
-		 * Returns - Player: the main player <br>
-		 * Example: <code>client.getPlayer();</code>
-		 */
+		@FunctionDoc(
+			name = "getPlayer",
+			desc = "This returns the current player on the client",
+			returns = {PLAYER, "the main player"},
+			example = "client.getPlayer();"
+		)
 		private Value getPlayer(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			return new PlayerValue(ArucasMinecraftExtension.getPlayer(client));
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getWorld()</code> <br>
-		 * Description: This returns the world that is currently being played on <br>
-		 * Returns - World: the world <br>
-		 * Example: <code>client.getWorld();</code>
-		 */
+		@FunctionDoc(
+			name = "getWorld",
+			desc = "This returns the world that is currently being played on",
+			returns = {WORLD, "the world"},
+			example = "client.getWorld();"
+		)
 		private Value getWorld(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			return new WorldValue(ArucasMinecraftExtension.getWorld(client));
 		}
 
-		/**
-		 * Name: <code>&lt;MinecraftClient>.getVersion()</code> <br>
-		 * Description: This returns the current version of Minecraft you are playing <br>
-		 * Returns - String: the version for example: <code>"1.17.1"</code> <br>
-		 * Example: <code>client.getVersion();</code>
-		 */
+		@FunctionDoc(
+			name = "getVersion",
+			desc = "This returns the current version of Minecraft you are playing",
+			returns = {STRING, "the version for example: '1.17.1'"},
+			example = "client.getVersion();"
+		)
 		private Value getVersion(Arguments arguments) {
 			return StringValue.of(EssentialUtils.getMinecraftVersion());
 		}
@@ -799,6 +837,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		}
 
 		@FunctionDoc(
+			isVarArgs = true,
 			name = "sendScriptPacket",
 			desc = {
 				"This sends a script packet to the server",

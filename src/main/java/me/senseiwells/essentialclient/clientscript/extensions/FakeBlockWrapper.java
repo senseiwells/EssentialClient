@@ -133,6 +133,7 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 	public void construct(Context context, BlockValue blockValue, PosValue posValue) {
 		this.setBlockState(blockValue.value);
 		this.setBlockPos(posValue.toBlockPos());
+		this.setDefaultScale();
 	}
 
 	@FunctionDoc(
