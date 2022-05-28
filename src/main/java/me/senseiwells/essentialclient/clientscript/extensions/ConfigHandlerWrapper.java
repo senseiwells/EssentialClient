@@ -346,6 +346,15 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 				int max = object.get("max").getAsInt();
 				yield new IntegerSliderClientRule(name, description, defaultValue == null ? 0 : defaultValue.getAsInt(), min, max);
 			}
+			case "list" -> {
+				List<String> configData = new ArrayList<>();
+				if (defaultValue != null && defaultValue.isJsonArray()) {
+					for (JsonElement element : defaultValue.getAsJsonArray()) {
+						configData.add(element.getAsString());
+					}
+				}
+				yield new ListClientRule(name, description, configData);
+			}
 			case "string" -> new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.getAsString());
 			default -> throw new RuntimeException("Invalid config type '%s'".formatted(type));
 		};

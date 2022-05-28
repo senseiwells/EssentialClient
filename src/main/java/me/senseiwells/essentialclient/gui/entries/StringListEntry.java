@@ -49,7 +49,6 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ENTER) {
-			this.editButton.setText(this.editButton.getText());
 			this.editButton.changeFocus(false);
 			if (!this.invalid) {
 				this.changed = false;

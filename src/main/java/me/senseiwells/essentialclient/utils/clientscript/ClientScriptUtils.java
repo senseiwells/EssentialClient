@@ -140,6 +140,15 @@ public class ClientScriptUtils {
 				}
 				yield new IntegerSliderClientRule(name.value, description, 0, min.value.intValue(), max.value.intValue());
 			}
+			case "list" -> {
+				List<String> configData = new ArrayList<>();
+				if (defaultValue instanceof ListValue values) {
+					for (Value listValue : values.value) {
+						configData.add(listValue.getAsString(context));
+					}
+				}
+				yield new ListClientRule(name.value, description, configData);
+			}
 			case "string" -> {
 				yield new StringClientRule(name.value, description, defaultValue == null ? "" : defaultValue.getAsString(context));
 			}
