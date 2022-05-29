@@ -60,6 +60,6 @@ public abstract class SimpleRule<T> implements Rule<T> {
 
 	@Override
 	public void setMaxLength(Integer maxLength) {
-		this.maxLength = maxLength;
+		this.maxLength = maxLength <= 0 ? 32 : maxLength;
 	}
 }

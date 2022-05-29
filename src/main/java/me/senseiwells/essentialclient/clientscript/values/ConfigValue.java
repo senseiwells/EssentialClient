@@ -87,7 +87,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				"'default_value' which is the default value of the config",
 				"'value' which is the current value of the config",
 				"'listener' which is a function that will be called when the config changes, this must have 1 parameter which is the rule that was changed",
-				"'max_length' which is the max length for the input of the config, this must be an integer, default is 32",
+				"'max_length' which is the max length for the input of the config, this must be an integer > 0, default is 32",
 				"And 'cycle' types must contain the following keys:",
 				"'cycle_values' which is a list of values that the config can cycle through",
 				"And slider types must contain the following keys:",
