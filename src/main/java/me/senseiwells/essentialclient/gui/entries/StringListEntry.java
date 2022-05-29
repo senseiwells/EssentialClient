@@ -24,6 +24,7 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 		});
 		this.invalid = false;
 		this.changed = false;
+		this.editButton.setMaxLength(rule.getMaxLength());
 		this.editButton.setText(rule.getValue().toString());
 		this.editButton.setChangedListener(this::checkForInvalid);
 		rulesScreen.addTextField(this.editButton);

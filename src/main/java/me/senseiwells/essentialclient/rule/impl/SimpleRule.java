@@ -8,6 +8,7 @@ public abstract class SimpleRule<T> implements Rule<T> {
 	private final T defaultValue;
 
 	private String optionalInfo;
+	private Integer maxLength;
 	private T value;
 
 	public SimpleRule(String name, String description, T defaultValue) {
@@ -43,6 +44,11 @@ public abstract class SimpleRule<T> implements Rule<T> {
 	}
 
 	@Override
+	public int getMaxLength() {
+		return this.maxLength;
+	}
+
+	@Override
 	public final void setValueQuietly(T value) {
 		this.value = value;
 	}
@@ -50,5 +56,10 @@ public abstract class SimpleRule<T> implements Rule<T> {
 	@Override
 	public final void setOptionalInfo(String optionalInfo) {
 		this.optionalInfo = optionalInfo;
+	}
+
+	@Override
+	public void setMaxLength(Integer maxLength) {
+		this.maxLength = maxLength;
 	}
 }

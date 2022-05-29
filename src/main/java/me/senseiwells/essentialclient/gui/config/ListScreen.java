@@ -62,4 +62,8 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
         this.widget.unFocusAll();
         return super.mouseClicked(mouseX, mouseY, button);
     }
+
+    public Rule.ListRule getRule() {
+        return rule;
+    }
 }

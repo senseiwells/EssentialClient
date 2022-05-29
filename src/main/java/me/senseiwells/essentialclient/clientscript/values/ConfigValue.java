@@ -87,6 +87,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				"'default_value' which is the default value of the config",
 				"'value' which is the current value of the config",
 				"'listener' which is a function that will be called when the config changes, this must have 1 parameter which is the rule that was changed",
+				"'max_length' which is the max length for the input of the config, this must be an integer, default is 32",
 				"And 'cycle' types must contain the following keys:",
 				"'cycle_values' which is a list of values that the config can cycle through",
 				"And slider types must contain the following keys:",
@@ -111,7 +112,8 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 					"optional_info": "This is an optional info",
 					"default_value": true,
 					"value": false,
-					"listener": fun(newValue) { }
+					"listener": fun(newValue) { },
+					"max_length": 64
 				};
 				config = Config.fromMap(configMap);
 				"""
@@ -164,6 +166,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				MemberFunction.of("getType", this::getType),
 				MemberFunction.of("getDescription", this::getDescription),
 				MemberFunction.of("getOptionalInfo", this::getOptionalInfo),
+				MemberFunction.of("getMaxLength", this::getMaxLength),
 				MemberFunction.of("getDefaultValue", this::getDefaultValue),
 				MemberFunction.of("getValue", this::getValue),
 				MemberFunction.of("toJson", this::toJson),
@@ -215,6 +218,17 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 		private Value getOptionalInfo(Arguments arguments) throws RuntimeError {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return StringValue.of(rule.getOptionalInfo());
+		}
+
+		@FunctionDoc(
+				name = "getMaxLength",
+				desc = "Gets the input max length of the config",
+				returns = {NUMBER, "The max length of the config"},
+				example = "config.getMaxLength();"
+		)
+		private Value getMaxLength(Arguments arguments) throws RuntimeError {
+			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
+			return NumberValue.of(rule.getMaxLength());
 		}
 
 		@FunctionDoc(

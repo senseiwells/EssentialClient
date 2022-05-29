@@ -318,6 +318,9 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		objectElement = object.get("optional_info");
 		String optionalInfo = objectElement != null && objectElement.isJsonPrimitive() ? objectElement.getAsString() : null;
 
+		objectElement = object.get("max_length");
+		int maxLength = objectElement != null && objectElement.isJsonPrimitive() ? objectElement.getAsInt() : 32;
+
 		JsonElement defaultValue = object.get("default_value");
 		ClientRule<T> rule = (ClientRule<T>) switch (type) {
 			case "boolean" -> new BooleanClientRule(name, description, defaultValue != null && defaultValue.getAsBoolean());
@@ -364,6 +367,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		}
 
 		rule.setOptionalInfo(optionalInfo);
+		rule.setMaxLength(maxLength);
 
 		this.configs.put(name, new ConfigValue(rule));
 	}

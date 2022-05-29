@@ -21,6 +21,7 @@ public abstract class ClientRule<T> extends SimpleRule<T> {
 		object.addProperty("name", this.getName());
 		object.addProperty("description", this.getDescription());
 		object.addProperty("optional_info", this.getOptionalInfo());
+		object.addProperty("max_length", this.getMaxLength());
 		object.add("default_value", this.getDefaultValueAsJson());
 		object.add("value", this.getValueAsJson());
 		return object;
