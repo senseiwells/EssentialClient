@@ -13,7 +13,6 @@ public interface Rule<T> {
 	Type getType();
 	String getDescription();
 	String getOptionalInfo();
-	int getMaxLength();
 	T getDefaultValue();
 	T getValue();
 	T fromJson(JsonElement element);
@@ -24,7 +23,6 @@ public interface Rule<T> {
 	void setValueQuietly(T value);
 	void setValueFromString(String value);
 	void setOptionalInfo(String optionalInfo);
-	void setMaxLength(Integer maxLength);
 
 	default boolean changeable() {
 		return true;
@@ -160,6 +158,10 @@ public interface Rule<T> {
 		default void setValueFromString(String value) {
 			this.setValue(value);
 		}
+
+		public int getMaxLength();
+
+		public void setMaxLength(Integer maxLength);
 	}
 
 	interface Cycle extends Rule<String> {
@@ -240,6 +242,10 @@ public interface Rule<T> {
 		default Type getType() {
 			return Type.LIST;
 		}
+
+		public int getMaxLength();
+
+		public void setMaxLength(Integer maxLength);
 	}
 
 	@FunctionalInterface

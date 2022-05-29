@@ -166,7 +166,6 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				MemberFunction.of("getType", this::getType),
 				MemberFunction.of("getDescription", this::getDescription),
 				MemberFunction.of("getOptionalInfo", this::getOptionalInfo),
-				MemberFunction.of("getMaxLength", this::getMaxLength),
 				MemberFunction.of("getDefaultValue", this::getDefaultValue),
 				MemberFunction.of("getValue", this::getValue),
 				MemberFunction.of("toJson", this::toJson),
@@ -218,17 +217,6 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 		private Value getOptionalInfo(Arguments arguments) throws RuntimeError {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return StringValue.of(rule.getOptionalInfo());
-		}
-
-		@FunctionDoc(
-				name = "getMaxLength",
-				desc = "Gets the input max length of the config",
-				returns = {NUMBER, "The max length of the config"},
-				example = "config.getMaxLength();"
-		)
-		private Value getMaxLength(Arguments arguments) throws RuntimeError {
-			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
-			return NumberValue.of(rule.getMaxLength());
 		}
 
 		@FunctionDoc(

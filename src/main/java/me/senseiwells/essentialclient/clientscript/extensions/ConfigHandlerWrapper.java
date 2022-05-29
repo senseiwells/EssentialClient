@@ -356,9 +356,15 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 						configData.add(element.getAsString());
 					}
 				}
-				yield new ListClientRule(name, description, configData);
+				ListClientRule listClientRule = new ListClientRule(name, description, configData);
+				listClientRule.setMaxLength(maxLength);
+				yield listClientRule;
 			}
-			case "string" -> new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.getAsString());
+			case "string" -> {
+				StringClientRule stringClientRule = new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.getAsString());
+				stringClientRule.setMaxLength(maxLength);
+				yield stringClientRule;
+			}
 			default -> throw new RuntimeException("Invalid config type '%s'".formatted(type));
 		};
 
@@ -367,7 +373,6 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		}
 
 		rule.setOptionalInfo(optionalInfo);
-		rule.setMaxLength(maxLength);
 
 		this.configs.put(name, new ConfigValue(rule));
 	}

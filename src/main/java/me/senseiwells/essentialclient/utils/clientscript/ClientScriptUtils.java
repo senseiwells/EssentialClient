@@ -152,10 +152,14 @@ public class ClientScriptUtils {
 						configData.add(listValue.getAsString(context));
 					}
 				}
-				yield new ListClientRule(name.value, description, configData);
+				ListClientRule listClientRule = new ListClientRule(name.value, description, configData);
+				listClientRule.setMaxLength(maxLength);
+				yield listClientRule;
 			}
 			case "string" -> {
-				yield new StringClientRule(name.value, description, defaultValue == null ? "" : defaultValue.getAsString(context));
+				StringClientRule stringClientRule = new StringClientRule(name.value, description, defaultValue == null ? "" : defaultValue.getAsString(context));
+				stringClientRule.setMaxLength(maxLength);
+				yield stringClientRule;
 			}
 			default -> throw new RuntimeError("Invalid config type '%s'".formatted(type.value), syntaxPosition, context);
 		};
@@ -174,7 +178,6 @@ public class ClientScriptUtils {
 		}
 
 		clientRule.setOptionalInfo(optionalInfo);
-		clientRule.setMaxLength(maxLength);
 		return configValue;
 	}
 
