@@ -4,11 +4,12 @@ import com.google.gson.JsonObject;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 
 public class StringClientRule extends ClientRule<String> implements Rule.Str {
-	Integer maxLength = 32;
+	private int maxLength;
 
 	public StringClientRule(String name, String description, String defaultValue, RuleListener<String> listener) {
 		super(name, description, defaultValue);
 		this.addListener(listener);
+		this.maxLength = 32;
 	}
 
 	public StringClientRule(String name, String description, String defaultValue) {

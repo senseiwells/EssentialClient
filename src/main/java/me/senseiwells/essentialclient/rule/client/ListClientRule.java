@@ -10,11 +10,12 @@ import java.util.List;
 
 public class ListClientRule extends ClientRule<List<String>> implements Rule.ListRule {
     private static final Gson GSON = new Gson();
-    Integer maxLength = 32;
+    private int maxLength;
 
     public ListClientRule(String name, String description, List<String> defaultValue, RuleListener<List<String>> ruleListener) {
         super(name, description, defaultValue);
         this.addListener(ruleListener);
+        this.maxLength = 32;
     }
 
     public ListClientRule(String name, String description, List<String> listValues) {
