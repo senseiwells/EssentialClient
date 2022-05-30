@@ -30,11 +30,11 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
         List<String> values = this.listScreen.getValues();
 
         if (values.isEmpty()) {
-            this.addEntry(new Entry(this.client, 1, ""));
+            this.addEntry(new Entry(this.client, 1, "", this.listScreen.getRule().getMaxLength()));
         }
 
         for (int index = 0; index < values.size(); index++) {
-            this.addEntry(new Entry(this.client, index + 1, values.get(index)));
+            this.addEntry(new Entry(this.client, index + 1, values.get(index), this.listScreen.getRule().getMaxLength()));
         }
     }
 
@@ -71,11 +71,13 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
         private final ButtonWidget removeButton;
         private final int index;
 
-        public Entry(MinecraftClient client, int index, String value) {
+        public Entry(MinecraftClient client, int index, String value, int maxLength) {
             this.client = client;
 
             this.textField = new TextFieldWidget(client.textRenderer, 0, 0, 150, 14, new LiteralText(value));
+            this.textField.setMaxLength(maxLength);
             this.textField.setText(value);
+
             this.addButton = new ButtonWidget(0, 0, 20, 20, Text.of("+"), button -> {
                 ListListWidget.this.listScreen.saveEntries();
                 ListListWidget.this.listScreen.getValues().add(index, "");

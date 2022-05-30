@@ -318,6 +318,9 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		objectElement = object.get("optional_info");
 		String optionalInfo = objectElement != null && objectElement.isJsonPrimitive() ? objectElement.getAsString() : null;
 
+		objectElement = object.get("max_length");
+		int maxLength = objectElement != null && objectElement.isJsonPrimitive() ? objectElement.getAsInt() : 32;
+
 		JsonElement defaultValue = object.get("default_value");
 		ClientRule<T> rule = (ClientRule<T>) switch (type) {
 			case "boolean" -> new BooleanClientRule(name, description, defaultValue != null && defaultValue.getAsBoolean());
@@ -353,9 +356,15 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 						configData.add(element.getAsString());
 					}
 				}
-				yield new ListClientRule(name, description, configData);
+				ListClientRule listClientRule = new ListClientRule(name, description, configData);
+				listClientRule.setMaxLength(maxLength);
+				yield listClientRule;
 			}
-			case "string" -> new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.getAsString());
+			case "string" -> {
+				StringClientRule stringClientRule = new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.getAsString());
+				stringClientRule.setMaxLength(maxLength);
+				yield stringClientRule;
+			}
 			default -> throw new RuntimeException("Invalid config type '%s'".formatted(type));
 		};
 
