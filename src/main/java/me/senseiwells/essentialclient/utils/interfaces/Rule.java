@@ -159,9 +159,9 @@ public interface Rule<T> {
 			this.setValue(value);
 		}
 
-		public int getMaxLength();
+		int getMaxLength();
 
-		public void setMaxLength(Integer maxLength);
+		void setMaxLength(int maxLength);
 	}
 
 	interface Cycle extends Rule<String> {
@@ -243,9 +243,9 @@ public interface Rule<T> {
 			return Type.LIST;
 		}
 
-		public int getMaxLength();
+		int getMaxLength();
 
-		public void setMaxLength(Integer maxLength);
+		void setMaxLength(int maxLength);
 	}
 
 	@FunctionalInterface

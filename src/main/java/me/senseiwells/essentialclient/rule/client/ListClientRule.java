@@ -62,7 +62,7 @@ public class ListClientRule extends ClientRule<List<String>> implements Rule.Lis
     }
 
     @Override
-    public void setMaxLength(Integer maxLength) {
+    public void setMaxLength(int maxLength) {
         this.maxLength = maxLength <= 0 ? 32 : maxLength;
     }
 }

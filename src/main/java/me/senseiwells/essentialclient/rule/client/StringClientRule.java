@@ -45,7 +45,7 @@ public class StringClientRule extends ClientRule<String> implements Rule.Str {
 	}
 
 	@Override
-	public void setMaxLength(Integer maxLength) {
+	public void setMaxLength(int maxLength) {
 		this.maxLength = maxLength <= 0 ? 32 : maxLength;
 	}
 }
