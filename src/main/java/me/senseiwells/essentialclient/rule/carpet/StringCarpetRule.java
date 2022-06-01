@@ -16,4 +16,12 @@ public class StringCarpetRule extends CarpetClientRule<String> implements Rule.S
 	public String getValueFromString(String value) {
 		return value;
 	}
+
+	@Override
+	public int getMaxLength() {
+		return 32;
+	}
+
+	@Override
+	public void setMaxLength(int maxLength) { }
 }

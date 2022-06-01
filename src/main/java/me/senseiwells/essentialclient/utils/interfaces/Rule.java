@@ -158,6 +158,10 @@ public interface Rule<T> {
 		default void setValueFromString(String value) {
 			this.setValue(value);
 		}
+
+		int getMaxLength();
+
+		void setMaxLength(int maxLength);
 	}
 
 	interface Cycle extends Rule<String> {
@@ -238,6 +242,10 @@ public interface Rule<T> {
 		default Type getType() {
 			return Type.LIST;
 		}
+
+		int getMaxLength();
+
+		void setMaxLength(int maxLength);
 	}
 
 	@FunctionalInterface

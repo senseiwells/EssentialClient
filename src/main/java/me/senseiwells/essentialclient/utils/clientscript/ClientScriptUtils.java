@@ -50,7 +50,8 @@ public class ClientScriptUtils {
 		DEFAULT_VALUE = StringValue.of("default_value"),
 		VALUE = StringValue.of("value"),
 		LISTENER = StringValue.of("listener"),
-		CYCLE_VALUES = StringValue.of("cycle_values");
+		CYCLE_VALUES = StringValue.of("cycle_values"),
+		MAX_LENGTH = StringValue.of("max_length");
 
 	public static ConfigValue mapToRule(ArucasMap map, Context context, ISyntax syntaxPosition) throws CodeError {
 		Value value = map.get(context, TYPE);
@@ -73,6 +74,9 @@ public class ClientScriptUtils {
 
 		value = map.get(context, LISTENER);
 		FunctionValue function = value instanceof FunctionValue f ? f : null;
+
+		value = map.get(context, MAX_LENGTH);
+		int maxLength = value instanceof NumberValue i ? i.value.intValue() : 32;
 
 		Value defaultValue = map.get(context, DEFAULT_VALUE);
 		ClientRule<?> clientRule = switch (type.value.toLowerCase(Locale.ROOT)) {
@@ -147,10 +151,14 @@ public class ClientScriptUtils {
 						configData.add(listValue.getAsString(context));
 					}
 				}
-				yield new ListClientRule(name.value, description, configData);
+				ListClientRule listClientRule = new ListClientRule(name.value, description, configData);
+				listClientRule.setMaxLength(maxLength);
+				yield listClientRule;
 			}
 			case "string" -> {
-				yield new StringClientRule(name.value, description, defaultValue == null ? "" : defaultValue.getAsString(context));
+				StringClientRule stringClientRule = new StringClientRule(name.value, description, defaultValue == null ? "" : defaultValue.getAsString(context));
+				stringClientRule.setMaxLength(maxLength);
+				yield stringClientRule;
 			}
 			default -> throw new RuntimeError("Invalid config type '%s'".formatted(type.value), syntaxPosition, context);
 		};
