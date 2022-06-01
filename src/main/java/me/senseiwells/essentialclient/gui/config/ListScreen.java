@@ -64,6 +64,6 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
     }
 
     public Rule.ListRule getRule() {
-        return rule;
+        return this.rule;
     }
 }

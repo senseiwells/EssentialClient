@@ -106,12 +106,12 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			},
 			example = """
 				configMap = {
-					"type": "boolean",
+					"type": "string",
 					"name": "My Config",
 					"description": "This is my config",
 					"optional_info": "This is an optional info",
-					"default_value": true,
-					"value": false,
+					"default_value": "foo",
+					"value": "bar",
 					"listener": fun(newValue) { },
 					"max_length": 64
 				};
