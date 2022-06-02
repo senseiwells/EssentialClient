@@ -11,22 +11,22 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerListHud.class)
 public abstract class PlayerListHudMixin {
 	@Shadow
 	protected abstract Text applyGameModeFormatting(PlayerListEntry entry, MutableText name);
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;getPlayerName(Lnet/minecraft/client/network/PlayerListEntry;)Lnet/minecraft/text/Text;"))
-	private Text onGetName(PlayerListHud playerListHud, PlayerListEntry entry) {
+	@Inject(method = "getPlayerName", at = @At("HEAD"))
+	private void onGetPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			String playerName = entry.getProfile().getName();
 			String newName = ConfigClientNick.INSTANCE.get(playerName);
 			if (newName != null) {
-				return this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), new LiteralText(newName)));
+				cir.setReturnValue(this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), new LiteralText(newName))));
 			}
 		}
-		return entry.getDisplayName() != null ? this.applyGameModeFormatting(entry, entry.getDisplayName().shallowCopy()) : this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), new LiteralText(entry.getProfile().getName())));
 	}
 }
