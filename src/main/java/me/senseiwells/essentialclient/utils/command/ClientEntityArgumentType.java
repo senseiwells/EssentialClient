@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelectorOptions;
 import net.minecraft.command.EntitySelectorReader;
@@ -23,7 +24,6 @@ import net.minecraft.predicate.NumberRange;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -343,12 +343,13 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 			return builder.buildFuture();
 		}
 
+		@SuppressWarnings("unused")
 		private CompletableFuture<Suggestions> suggestAtSelectors(SuggestionsBuilder builder, Consumer<SuggestionsBuilder> playerNameSuggestor) {
-			builder.suggest("@p", new TranslatableText("argument.entity.selector.nearestPlayer"));
-			builder.suggest("@a", new TranslatableText("argument.entity.selector.allPlayers"));
-			builder.suggest("@r", new TranslatableText("argument.entity.selector.randomPlayer"));
-			builder.suggest("@s", new TranslatableText("argument.entity.selector.self"));
-			builder.suggest("@e", new TranslatableText("argument.entity.selector.allEntities"));
+			builder.suggest("@p", Texts.translatable("argument.entity.selector.nearestPlayer"));
+			builder.suggest("@a", Texts.translatable("argument.entity.selector.allPlayers"));
+			builder.suggest("@r", Texts.translatable("argument.entity.selector.randomPlayer"));
+			builder.suggest("@s", Texts.translatable("argument.entity.selector.self"));
+			builder.suggest("@e", Texts.translatable("argument.entity.selector.allEntities"));
 			return builder.buildFuture();
 		}
 
@@ -623,7 +624,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 			final Text desc;
 
 			private Option(String desc) {
-				this.desc = new TranslatableText(desc);
+				this.desc = Texts.translatable(desc);
 			}
 
 			abstract void apply(Parser parser) throws CommandSyntaxException;

@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.entity.Entity;
@@ -27,7 +28,7 @@ public abstract class FishingBobberEntityMixin extends Entity {
 	private void onFishBite(TrackedData<?> data, CallbackInfo ci) {
 		PlayerEntity playerEntity = this.getPlayerOwner();
 		if (playerEntity != null && playerEntity == EssentialUtils.getPlayer()) {
-			MinecraftScriptEvents.ON_FISH_BITE.run(c -> EssentialUtils.arrayListOf(c.convertValue(this)));
+			MinecraftScriptEvents.ON_FISH_BITE.run(c -> ArucasList.arrayListOf(c.convertValue(this)));
 		}
 	}
 }

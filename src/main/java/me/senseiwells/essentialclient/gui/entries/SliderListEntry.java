@@ -2,15 +2,15 @@ package me.senseiwells.essentialclient.gui.entries;
 
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 public class SliderListEntry extends BaseListEntry<SliderListEntry.RuleSliderWidget> {
 	public SliderListEntry(Rule.Slider<?> rule, MinecraftClient client, RulesScreen rulesScreen) {
 		super(rule, client, rulesScreen, () -> {
-			return new RuleSliderWidget(rule, 0, 0, 100, 20, new LiteralText(rule.getValue().toString()), rule.getPercentage());
+			return new RuleSliderWidget(rule, 0, 0, 100, 20, Texts.literal(rule.getValue().toString()), rule.getPercentage());
 		});
 		this.setResetButton(buttonWidget -> {
 			this.rule.resetToDefault();
@@ -33,7 +33,7 @@ public class SliderListEntry extends BaseListEntry<SliderListEntry.RuleSliderWid
 
 		@Override
 		protected void updateMessage() {
-			this.setMessage(new LiteralText(this.slider.getFormatted()));
+			this.setMessage(Texts.literal(this.slider.getFormatted()));
 		}
 
 		@Override

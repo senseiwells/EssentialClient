@@ -11,7 +11,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
@@ -44,7 +43,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		});
 		this.resetConsumer = buttonWidget -> {
 			this.rule.resetToDefault();
-			this.editButton.setMessage(new LiteralText(this.rule.getDefaultValue().toString()));
+			this.editButton.setMessage(Texts.literal(this.rule.getDefaultValue().toString()));
 		};
 		this.checkDisabled();
 	}
@@ -92,7 +91,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		this.ruleWidget.drawRule(matrices, font, fontX, fontY, 16777215);
 		if (this.isRuleWidgetHovered(mouseX, mouseY)) {
 			List<OrderedText> lines = new ArrayList<>();
-			Text nameText = new LiteralText(this.ruleName).formatted(Formatting.GOLD);
+			Text nameText = Texts.literal(this.ruleName).formatted(Formatting.GOLD);
 			lines.add(nameText.asOrderedText());
 			String info;
 			if (this.ruleWidget.isToggled() && this.rule.getOptionalInfo() != null) {

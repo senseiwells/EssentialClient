@@ -10,11 +10,9 @@ import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -81,7 +79,7 @@ public class RulesScreen extends ChildScreen {
 		if (this.client == null) {
 			return;
 		}
-		this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, LiteralText.EMPTY);
+		this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 15, Texts.EMPTY);
 		this.searchBox.setChangedListener(s -> {
 			this.refreshScroll();
 			this.refreshRules(s);
@@ -89,7 +87,7 @@ public class RulesScreen extends ChildScreen {
 		this.widget = new ConfigListWidget(this, this.client, this.searchBox.getText());
 		this.addSelectableChild(this.widget);
 		this.addDrawableChild(this.searchBox);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.close()));
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
 		this.setInitialFocus(this.searchBox);
 	}
 

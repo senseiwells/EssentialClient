@@ -5,10 +5,10 @@ import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
@@ -21,9 +21,9 @@ public class CreateClientScriptScreen extends ChildScreen {
 	private final ButtonWidget cancelButton;
 
 	public CreateClientScriptScreen(ClientScriptScreen parent) {
-		super(new LiteralText("Create New ClientScript"), parent);
-		this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, new LiteralText("ScriptName"));
-		this.createButton = new ButtonWidget(0, 0, 80, 20, new LiteralText("Create"), button -> {
+		super(Texts.literal("Create New ClientScript"), parent);
+		this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, Texts.literal("ScriptName"));
+		this.createButton = new ButtonWidget(0, 0, 80, 20, Texts.literal("Create"), button -> {
 			String name = this.nameBox.getText();
 			Path scriptPath = ClientScript.INSTANCE.getScriptDirectory();
 			Path newScriptPath = scriptPath.resolve(name + ".arucas");
@@ -48,7 +48,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 			parent.refresh();
 			parent.openScriptConfigScreen(instance);
 		});
-		this.cancelButton = new ButtonWidget(0, 0, 80, 20, new LiteralText("Cancel"), button -> this.close());
+		this.cancelButton = new ButtonWidget(0, 0, 80, 20, Texts.literal("Cancel"), button -> this.close());
 	}
 
 	@Override

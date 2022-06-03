@@ -11,10 +11,8 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import java.util.*;
@@ -34,9 +32,9 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 		}
 
 		sortedKeys.forEach((category, keys) -> {
-			this.addEntry(new CategoryEntry(new TranslatableText(category)));
+			this.addEntry(new CategoryEntry(Texts.translatable(category)));
 			for (ClientKeyBind keyBind : keys) {
-				Text text = new TranslatableText(keyBind.getTranslationKey());
+				Text text = Texts.translatable(keyBind.getTranslationKey());
 				int i = client.textRenderer.getWidth(text);
 				if (i > this.maxKeyNameLength) {
 					this.maxKeyNameLength = i;
@@ -136,7 +134,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 			}
 			if (focused) {
 				this.editButton.setMessage(
-					new LiteralText("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
+					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
 			}
 

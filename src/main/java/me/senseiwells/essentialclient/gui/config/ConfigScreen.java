@@ -6,12 +6,12 @@ import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.gui.clientscript.ClientScriptScreen;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
@@ -19,11 +19,11 @@ import static me.senseiwells.essentialclient.utils.render.Texts.*;
 
 public class ConfigScreen extends ChildScreen {
 	private static final Text
-		WIKI = new LiteralText("Wiki Page"),
-		CONFIG = new LiteralText("Open Config File");
+		WIKI = Texts.literal("Wiki Page"),
+		CONFIG = Texts.literal("Open Config File");
 
 	public ConfigScreen(Screen parent) {
-		super(new LiteralText("Essential Client Options"), parent);
+		super(Texts.literal("Essential Client Options"), parent);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ConfigScreen extends ChildScreen {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.client != null && mouseX > this.width - 30 && mouseY < 30) {
-			this.client.setScreen(new Secret(LiteralText.EMPTY, this));
+			this.client.setScreen(new Secret(Texts.EMPTY, this));
 			return true;
 		}
 		return super.mouseClicked(mouseX, mouseY, button);

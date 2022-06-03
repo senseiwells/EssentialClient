@@ -17,7 +17,7 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
@@ -170,7 +170,7 @@ public class ClientScriptInstance {
 		EssentialUtils.sendMessage("§cAn error occurred while running '%s'".formatted(this.scriptName));
 		EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
 		EssentialUtils.sendMessage(
-			new LiteralText("https://github.com/senseiwells/EssentialClient/issues/new")
+			Text.of("https://github.com/senseiwells/EssentialClient/issues/new").copy()
 				.formatted(Formatting.UNDERLINE)
 				.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
 					gitReport))

@@ -9,14 +9,14 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import me.senseiwells.arucas.values.EnumValue;
 import me.senseiwells.arucas.values.classes.ArucasEnumDefinition;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
-import net.minecraft.text.LiteralText;
 
 import java.util.concurrent.CompletableFuture;
 
 public class DefinitionArgumentType implements ArgumentType<EnumValue> {
 	static {
-		INVALID_ENUM_EXCEPTION = new DynamicCommandExceptionType(o -> new LiteralText("Enum element not found: " + o.toString()));
+		INVALID_ENUM_EXCEPTION = new DynamicCommandExceptionType(o -> Texts.literal("Enum element not found: " + o.toString()));
 	}
 
 	private static final DynamicCommandExceptionType INVALID_ENUM_EXCEPTION;

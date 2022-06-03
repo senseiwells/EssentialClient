@@ -13,9 +13,9 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.command.PlayerData;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerList;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +24,10 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class PlayerListCommand {
-	public static final DynamicCommandExceptionType EXISTS = new DynamicCommandExceptionType(o -> new LiteralText("List %s already exists".formatted(o)));
-	public static final DynamicCommandExceptionType NOT_EXIST = new DynamicCommandExceptionType(o -> new LiteralText("List %s doesn't exist".formatted(o)));
-	public static final DynamicCommandExceptionType EMPTY = new DynamicCommandExceptionType(o -> new LiteralText("%s is empty".formatted(o)));
-	public static final Dynamic2CommandExceptionType HAS_PLAYER = new Dynamic2CommandExceptionType((o, p) -> new LiteralText("%s is already in %s".formatted(o, p)));
+	public static final DynamicCommandExceptionType EXISTS = new DynamicCommandExceptionType(o -> Texts.literal("List %s already exists".formatted(o)));
+	public static final DynamicCommandExceptionType NOT_EXIST = new DynamicCommandExceptionType(o -> Texts.literal("List %s doesn't exist".formatted(o)));
+	public static final DynamicCommandExceptionType EMPTY = new DynamicCommandExceptionType(o -> Texts.literal("%s is empty".formatted(o)));
+	public static final Dynamic2CommandExceptionType HAS_PLAYER = new Dynamic2CommandExceptionType((o, p) -> Texts.literal("%s is already in %s".formatted(o, p)));
 
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {

@@ -2,12 +2,12 @@ package me.senseiwells.essentialclient.gui.entries;
 
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 
 public class StringListEntry extends BaseListEntry<TextFieldWidget> {
@@ -16,7 +16,7 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 
 	public StringListEntry(Rule<?> rule, MinecraftClient client, RulesScreen rulesScreen) {
 		super(rule, client, rulesScreen, () -> {
-			return new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, LiteralText.EMPTY);
+			return new TextFieldWidget(client.textRenderer, 0, 0, 96, 14, Texts.EMPTY);
 		});
 		this.setResetButton(buttonWidget -> {
 			this.rule.resetToDefault();

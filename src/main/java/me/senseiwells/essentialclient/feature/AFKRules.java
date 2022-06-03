@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.misc.Events;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Vec3d;
 
 public class AFKRules {
@@ -32,7 +32,7 @@ public class AFKRules {
 					playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue());
 				}
 				if (logout >= 200 && this.ticks == logout) {
-					playerEntity.networkHandler.onDisconnected(new LiteralText("You've been lazy! (AFK Logout)"));
+					playerEntity.networkHandler.onDisconnected(Texts.literal("You've been lazy! (AFK Logout)"));
 				}
 				return;
 			}

@@ -1,12 +1,12 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
 import me.senseiwells.essentialclient.clientscript.values.TextValue;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
@@ -80,7 +80,7 @@ public class ClientPlayNetworkHandlerMixin {
 		Entity entity = this.world.getEntityById(packet.getEntityId());
 		if (entity == this.client.player) {
 			Entity killer = this.world.getEntityById(packet.getKillerId());
-			MinecraftScriptEvents.ON_DEATH.run(c -> EssentialUtils.arrayListOf(c.convertValue(killer), new TextValue(packet.getMessage().copy())));
+			MinecraftScriptEvents.ON_DEATH.run(c -> ArucasList.arrayListOf(c.convertValue(killer), new TextValue(packet.getMessage().copy())));
 		}
 	}
 
@@ -88,7 +88,7 @@ public class ClientPlayNetworkHandlerMixin {
 	private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getId());
 		if (entity != null) {
-			MinecraftScriptEvents.ON_ENTITY_SPAWN.run(c -> EssentialUtils.arrayListOf(c.convertValue(entity)));
+			MinecraftScriptEvents.ON_ENTITY_SPAWN.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
 		}
 	}
 
@@ -96,13 +96,13 @@ public class ClientPlayNetworkHandlerMixin {
 	private void onMobSpawn(MobSpawnS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getId());
 		if (entity != null) {
-			MinecraftScriptEvents.ON_MOB_SPAWN.run(c -> EssentialUtils.arrayListOf(c.convertValue(entity)));
+			MinecraftScriptEvents.ON_MOB_SPAWN.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
 		}
 	}
 
 	@Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", shift = At.Shift.BEFORE))
 	private void onEntityRemoved(int entityId, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(entityId);
-		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(c -> EssentialUtils.arrayListOf(c.convertValue(entity)));
+		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
 	}
 }

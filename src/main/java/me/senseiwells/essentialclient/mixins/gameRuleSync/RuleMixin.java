@@ -1,9 +1,9 @@
 package me.senseiwells.essentialclient.mixins.gameRuleSync;
 
 import me.senseiwells.essentialclient.utils.interfaces.IGameRule;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.world.GameRules;
@@ -30,7 +30,7 @@ public abstract class RuleMixin<T extends GameRules.Rule<T>> implements IGameRul
 	 */
 	@Override
 	public void ruleChanged(String ruleName, MinecraftServer server) {
-		Text text = new LiteralText("Set Game Rule %s to %s".formatted(ruleName, this.serialize()));
+		Text text = Texts.literal("Set Game Rule %s to %s".formatted(ruleName, this.serialize()));
 		server.getPlayerManager().broadcast(text, MessageType.SYSTEM, Util.NIL_UUID);
 		this.changed(server);
 	}

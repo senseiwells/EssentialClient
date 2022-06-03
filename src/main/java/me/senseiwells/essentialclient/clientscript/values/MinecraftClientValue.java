@@ -43,7 +43,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
 import org.lwjgl.glfw.GLFW;
@@ -639,7 +639,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		)
 		private Value textFromString(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
-			return new TextValue(new LiteralText(stringValue.value));
+			return new TextValue((MutableText) Text.of(stringValue.value));
 		}
 
 		@FunctionDoc(

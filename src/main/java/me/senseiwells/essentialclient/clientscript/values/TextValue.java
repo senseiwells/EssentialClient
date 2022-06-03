@@ -15,6 +15,7 @@ import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.utils.misc.FunctionClickEvent;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.*;
@@ -84,7 +85,7 @@ public class TextValue extends GenericValue<MutableText> {
 		)
 		private Value of(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.getNextString();
-			return new TextValue(new LiteralText(stringValue.value));
+			return new TextValue(Texts.literal(stringValue.value));
 		}
 
 		@FunctionDoc(
