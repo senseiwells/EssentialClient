@@ -13,13 +13,17 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.lang.invoke.MethodHandle;
@@ -98,7 +102,7 @@ public class CommandHelper {
 			EssentialUtils.sendMessage(ChatColour.RED + e.getMessage());
 			if (e.getInput() != null && e.getCursor() >= 0) {
 				int cursor = Math.min(e.getCursor(), e.getInput().length());
-				MutableText text = new LiteralText("").formatted(Formatting.GRAY)
+				MutableText text = Texts.literal("").formatted(Formatting.GRAY)
 					.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
 				if (cursor > 10) {
 					text.append("...");
@@ -106,16 +110,16 @@ public class CommandHelper {
 
 				text.append(e.getInput().substring(Math.max(0, cursor - 10), cursor));
 				if (cursor < e.getInput().length()) {
-					text.append(new LiteralText(e.getInput().substring(cursor)).formatted(Formatting.RED, Formatting.UNDERLINE));
+					text.append(Texts.literal(e.getInput().substring(cursor)).formatted(Formatting.RED, Formatting.UNDERLINE));
 				}
 
-				text.append(new TranslatableText("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
+				text.append(Texts.translatable("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
 				EssentialUtils.sendMessage(text);
 			}
 		}
 		catch (Exception e) {
-			LiteralText error = new LiteralText(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
-			EssentialUtils.getPlayer().sendMessage(new TranslatableText("command.failed")
+			Text error = Texts.literal(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
+			EssentialUtils.getPlayer().sendMessage(Texts.translatable("command.failed")
 				.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
 			e.printStackTrace();
 		}

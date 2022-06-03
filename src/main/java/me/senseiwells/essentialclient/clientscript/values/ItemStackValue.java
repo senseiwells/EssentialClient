@@ -27,7 +27,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -312,7 +311,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			example = "itemStack.getCustomName();"
 		)
 		private Value getCustomName(Arguments arguments) throws CodeError {
-			return StringValue.of(this.getItemStack(arguments).getName().asString());
+			return StringValue.of(this.getItemStack(arguments).getName().getString());
 		}
 
 		@FunctionDoc(
@@ -386,7 +385,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 		private Value setCustomName(Arguments arguments) throws CodeError {
 			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
 			Value nameValue = arguments.getNext();
-			Text name = nameValue instanceof TextValue textValue ? textValue.value : new LiteralText(nameValue.getAsString(arguments.getContext()));
+			Text name = nameValue instanceof TextValue textValue ? textValue.value : Text.of(nameValue.getAsString(arguments.getContext()));
 			itemStackValue.value.setCustomName(name);
 			return itemStackValue;
 		}

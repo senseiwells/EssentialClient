@@ -94,7 +94,10 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 	static {
 		AFKRules.INSTANCE.load();
 		BetterAccurateBlockPlacement.load();
-		HighlightLavaSources.load();
+
+		if (EssentialUtils.isModInstalled("fabric-resource-loader-v0")) {
+			HighlightLavaSources.load();
+		}
 	}
 
 	private static <T extends ClientRule<?>> T register(T clientRule) {

@@ -1,9 +1,9 @@
 package me.senseiwells.essentialclient.gui.clientscript;
 
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 
 import static me.senseiwells.essentialclient.utils.render.Texts.DONE;
 
@@ -11,7 +11,7 @@ public class DownloadClientScriptScreen extends ChildScreen.Typed<ClientScriptSc
 	private DownloadClientScriptWidget widget;
 
 	public DownloadClientScriptScreen(ClientScriptScreen parent) {
-		super(new LiteralText("Download Scripts"), parent);
+		super(Texts.literal("Download Scripts"), parent);
 	}
 
 	@Override

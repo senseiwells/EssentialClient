@@ -124,7 +124,7 @@ public class MinecraftAPI extends ValueTypes {
 		builder.addConversion(FakeInventoryScreen.class, (s, c) -> new FakeInventoryScreenValue(s));
 		builder.addConversion(MerchantScreen.class, (s, c) -> new MerchantScreenValue(s));
 		builder.addConversion(MutableText.class, (t, c) -> new TextValue(t));
-		builder.addConversion(Text.class, (t, c) -> new TextValue(t.shallowCopy()));
+		builder.addConversion(Text.class, (t, c) -> new TextValue(t.copy()));
 		builder.addConversion(Vec3d.class, (p, c) -> new PosValue(p));
 		builder.addConversion(Vec3f.class, (p, c) -> new PosValue(new Vec3d(p)));
 		builder.addConversion(Vec3i.class, (p, c) -> new PosValue(new Vec3d(p.getX(), p.getY(), p.getZ())));

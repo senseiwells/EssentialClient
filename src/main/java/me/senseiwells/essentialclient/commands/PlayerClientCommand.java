@@ -15,13 +15,13 @@ import me.senseiwells.essentialclient.utils.command.EnumArgumentType;
 import me.senseiwells.essentialclient.utils.command.PlayerData;
 import me.senseiwells.essentialclient.utils.command.WorldEnum;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.RotationArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -32,8 +32,8 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class PlayerClientCommand {
-	public static final DynamicCommandExceptionType NO_PLAYER = new DynamicCommandExceptionType(o -> new LiteralText("%s doesn't exist in your config".formatted(o)));
-	public static final Dynamic2CommandExceptionType WRONG_GAMEMODE = new Dynamic2CommandExceptionType((o, p) -> new LiteralText("You are in %s but %s is required".formatted(o, p)));
+	public static final DynamicCommandExceptionType NO_PLAYER = new DynamicCommandExceptionType(o -> Texts.literal("%s doesn't exist in your config".formatted(o)));
+	public static final Dynamic2CommandExceptionType WRONG_GAMEMODE = new Dynamic2CommandExceptionType((o, p) -> Texts.literal("You are in %s but %s is required".formatted(o, p)));
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		if (!ClientRules.COMMAND_PLAYER_CLIENT.getValue()) {

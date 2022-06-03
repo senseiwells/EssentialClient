@@ -1,9 +1,9 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.clientscript.values.WorldValue;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -61,7 +61,7 @@ public class MinecraftClientMixin {
 	@Inject(method = "setScreen", at = @At("HEAD"))
 	private void onOpenScreen(Screen screen, CallbackInfo ci) {
 		if (screen != null) {
-			MinecraftScriptEvents.ON_OPEN_SCREEN.run(c -> EssentialUtils.arrayListOf(c.convertValue(screen)));
+			MinecraftScriptEvents.ON_OPEN_SCREEN.run(c -> ArucasList.arrayListOf(c.convertValue(screen)));
 		}
 	}
 }

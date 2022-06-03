@@ -7,6 +7,7 @@ import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
@@ -14,9 +15,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
@@ -31,7 +30,7 @@ public class ClientScriptScreen extends ChildScreen {
 	private ClientScriptWidget scriptWidget;
 
 	public ClientScriptScreen(Screen parent) {
-		super(new LiteralText("Client Script Options"), parent);
+		super(Texts.literal("Client Script Options"), parent);
 	}
 
 	@Override
@@ -79,22 +78,22 @@ public class ClientScriptScreen extends ChildScreen {
 		private String newName;
 
 		ScriptConfigScreen(ClientScriptScreen parent, ClientScriptInstance scriptInstance) {
-			super(new LiteralText("Script Config for '%s'".formatted(scriptInstance.toString())), parent);
+			super(Texts.literal("Script Config for '%s'".formatted(scriptInstance.toString())), parent);
 			this.scriptInstance = scriptInstance;
 			String scriptName = scriptInstance.toString();
-			this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, new LiteralText("ScriptName"));
+			this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, Texts.literal("ScriptName"));
 			this.nameBox.setText(scriptName);
 			this.nameBox.setChangedListener(s -> this.newName = s);
-			this.openBox = new ButtonWidget(0, 0, 200, 20, new LiteralText("Open Script"), button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
-			this.deleteBox = new ButtonWidget(0, 0, 200, 20, new LiteralText("Delete Script"), button -> ExceptionUtils.runSafe(() -> {
+			this.openBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Open Script"), button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
+			this.deleteBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Delete Script"), button -> ExceptionUtils.runSafe(() -> {
 				Files.delete(this.scriptInstance.getFileLocation());
 				ClientScript.INSTANCE.removeInstance(this.scriptInstance);
 				this.getParent().scriptWidget.clear();
 				this.getParent().scriptWidget.load(this.client);
 				super.onClose();
 			}));
-			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, new TranslatableText(scriptInstance.getKeyBind().getTranslationKey()), button -> this.editingKeyBind = true);
-			this.selectedCheck = new CheckboxWidget(0, 0, 20, 20, new LiteralText("Selected"), ClientScript.INSTANCE.isSelected(scriptName)) {
+			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getTranslationKey()), button -> this.editingKeyBind = true);
+			this.selectedCheck = new CheckboxWidget(0, 0, 20, 20, Texts.literal("Selected"), ClientScript.INSTANCE.isSelected(scriptName)) {
 				@Override
 				public void onPress() {
 					if (this.isChecked()) {
@@ -203,7 +202,7 @@ public class ClientScriptScreen extends ChildScreen {
 			KeyBinding keyBinding = this.scriptInstance.getKeyBind();
 			this.keyBindBox.setMessage(keyBinding.getBoundKeyLocalizedText());
 
-			MutableText editMessage = this.keyBindBox.getMessage().shallowCopy();
+			MutableText editMessage = this.keyBindBox.getMessage().copy();
 			if (!keyBinding.isUnbound() && this.client != null) {
 				for (KeyBinding binding : this.client.options.keysAll) {
 					if (!this.editingKeyBind && binding != keyBinding && keyBinding.equals(binding)) {
@@ -213,7 +212,7 @@ public class ClientScriptScreen extends ChildScreen {
 			}
 			if (this.editingKeyBind) {
 				this.keyBindBox.setMessage(
-					new LiteralText("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
+					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
 			}
 			super.render(matrices, mouseX, mouseY, delta);

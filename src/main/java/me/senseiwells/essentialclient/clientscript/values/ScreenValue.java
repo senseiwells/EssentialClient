@@ -13,10 +13,10 @@ import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.utils.clientscript.ScreenRemapper;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.util.Objects;
@@ -103,7 +103,7 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 			Text title = screen.getTitle();
 			if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
 				int tabIndex = creativeInventoryScreen.getSelectedTab();
-				return new TextValue(new LiteralText(ItemGroup.GROUPS[tabIndex].getName()));
+				return new TextValue(Texts.literal(ItemGroup.GROUPS[tabIndex].getName()));
 			}
 			return title == null ? NullValue.NULL : new TextValue(title.copy());
 		}

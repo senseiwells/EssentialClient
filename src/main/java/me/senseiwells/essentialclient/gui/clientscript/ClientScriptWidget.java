@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.gui.clientscript;
 import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -10,7 +11,6 @@ import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 			this.name = instance.toString();
 			this.scriptInstance = instance;
 			boolean isTemporary = instance.isTemporary();
-			this.configButton = new ButtonWidget(0, 0, 45, 20, new LiteralText(isTemporary ? "Remove" : "Config"), buttonWidget -> {
+			this.configButton = new ButtonWidget(0, 0, 45, 20, Texts.literal(isTemporary ? "Remove" : "Config"), buttonWidget -> {
 				if (!isTemporary) {
 					ClientScriptWidget.this.parent.openScriptConfigScreen(this.scriptInstance);
 					return;
@@ -66,7 +66,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 				}
 				this.scriptInstance.toggleScript();
 			});
-			this.checkButton = new CheckboxWidget(0, 0, 20, 20, new LiteralText(""), ClientScript.INSTANCE.isSelected(this.name)) {
+			this.checkButton = new CheckboxWidget(0, 0, 20, 20, Texts.literal(""), ClientScript.INSTANCE.isSelected(this.name)) {
 				@Override
 				public void onPress() {
 					String instanceName = ScriptListEntry.this.name;

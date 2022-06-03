@@ -489,7 +489,7 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 		private Value getCustomName(Arguments arguments) throws CodeError {
 			Entity entity = this.getEntity(arguments);
 			Text customName = entity.getCustomName();
-			return customName == null ? NullValue.NULL : StringValue.of(customName.asString());
+			return customName == null ? NullValue.NULL : StringValue.of(customName.getString());
 		}
 
 		@FunctionDoc(

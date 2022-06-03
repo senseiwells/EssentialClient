@@ -86,7 +86,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 		)
 		private Value getCustomName(Arguments arguments) throws CodeError {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
-			return StringValue.of(itemEntityValue.value.getName().asString());
+			return StringValue.of(itemEntityValue.value.getName().getString());
 		}
 
 		@FunctionDoc(

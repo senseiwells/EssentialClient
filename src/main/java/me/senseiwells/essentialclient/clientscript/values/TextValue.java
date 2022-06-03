@@ -15,9 +15,13 @@ import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.utils.misc.FunctionClickEvent;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.Locale;
@@ -33,7 +37,7 @@ public class TextValue extends GenericValue<MutableText> {
 
 	@Override
 	public GenericValue<MutableText> copy(Context context) {
-		return new TextValue(this.value.shallowCopy());
+		return new TextValue(this.value.copy());
 	}
 
 	@Override
@@ -84,7 +88,7 @@ public class TextValue extends GenericValue<MutableText> {
 		)
 		private Value of(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.getNextString();
-			return new TextValue(new LiteralText(stringValue.value));
+			return new TextValue(Texts.literal(stringValue.value));
 		}
 
 		@FunctionDoc(

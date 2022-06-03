@@ -1,9 +1,9 @@
 package me.senseiwells.essentialclient.mixins.cleanConfirmScreen;
 
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ConfirmScreen;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringVisitable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,7 +15,7 @@ public class ConfirmScreenMixin {
 	private MultilineText onDisplayMessage(TextRenderer renderer, StringVisitable text, int width) {
 		String message = text.getString();
 		if (message.length() > 120) {
-			text = new LiteralText(message.substring(0, 120) + "...");
+			text = Texts.literal(message.substring(0, 120) + "...");
 		}
 		return MultilineText.create(renderer, text, width);
 	}

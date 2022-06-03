@@ -21,6 +21,7 @@ import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
@@ -42,7 +43,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -254,7 +254,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private Value message(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			Value value = arguments.getNext();
-			Text text = value instanceof TextValue textValue ? textValue.value : new LiteralText(value.getAsString(arguments.getContext()));
+			Text text = value instanceof TextValue textValue ? textValue.value : Texts.literal(value.getAsString(arguments.getContext()));
 			ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, false));
 			return NullValue.NULL;
 		}
@@ -268,7 +268,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private Value messageActionBar(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			Value value = arguments.getNext();
-			Text text = value instanceof TextValue textValue ? textValue.value : new LiteralText(value.getAsString(arguments.getContext()));
+			Text text = value instanceof TextValue textValue ? textValue.value : Texts.literal(value.getAsString(arguments.getContext()));
 			ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, true));
 			return NullValue.NULL;
 		}
@@ -286,8 +286,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Value value = arguments.skip().getNext();
 			Value subValue = arguments.getNext();
 			Context context = arguments.getContext();
-			Text text = value instanceof TextValue textValue ? textValue.value : value.getValue() == null ? null : new LiteralText(value.getAsString(context));
-			Text subText = subValue instanceof TextValue textValue ? textValue.value : subValue.getValue() == null ? null : new LiteralText(subValue.getAsString(context));
+			Text text = value instanceof TextValue textValue ? textValue.value : value.getValue() == null ? null : Texts.literal(value.getAsString(context));
+			Text subText = subValue instanceof TextValue textValue ? textValue.value : subValue.getValue() == null ? null : Texts.literal(subValue.getAsString(context));
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> {
 				client.inGameHud.setTitle(text);
@@ -784,7 +784,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		)
 		private Value logout(Arguments arguments) throws CodeError {
 			String reason = arguments.skip().getNextGeneric(StringValue.class);
-			ArucasMinecraftExtension.getNetworkHandler().onDisconnected(new LiteralText(reason));
+			ArucasMinecraftExtension.getNetworkHandler().onDisconnected(Texts.literal(reason));
 			return NullValue.NULL;
 		}
 
@@ -966,7 +966,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			for (Slot slot : handler.slots) {
 				ItemStack itemStack = slot.getStack();
-				if (!itemStack.getName().asString().equals(newName)) {
+				if (!itemStack.getName().getString().equals(newName)) {
 					Value predicateReturn = functionValue.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						valid = true;

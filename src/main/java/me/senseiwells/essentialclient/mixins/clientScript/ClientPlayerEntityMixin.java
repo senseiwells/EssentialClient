@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import com.mojang.authlib.GameProfile;
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
@@ -10,7 +11,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,7 +41,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 
 	@Inject(method = "closeScreen", at = @At("HEAD"))
 	private void onCloseScreen(CallbackInfo ci) {
-		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(c -> EssentialUtils.arrayListOf(c.convertValue(EssentialUtils.getClient().currentScreen)));
+		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(c -> ArucasList.arrayListOf(c.convertValue(EssentialUtils.getClient().currentScreen)));
 	}
 
 	@Override

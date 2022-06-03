@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.gui.clientscript;
 import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager.Category;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Selectable;
@@ -11,7 +12,6 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -27,7 +27,7 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		this.downloadScreen = downloadScreen;
 
 		for (Category category : Category.values()) {
-			this.addEntry(new CategoryEntry(new LiteralText(category.getPrettyName())));
+			this.addEntry(new CategoryEntry(Texts.literal(category.getPrettyName())));
 			for (String script : ScriptRepositoryManager.INSTANCE.getChildrenNames(category)) {
 				int length = script.length();
 				if (length > this.maxScriptNameLength) {
@@ -73,21 +73,21 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 
 		ScriptListEntry(Category category, String scriptName) {
 			this.scriptName = scriptName;
-			this.viewButton = new ButtonWidget(0, 0, 50, 20, new LiteralText("View"), button -> {
+			this.viewButton = new ButtonWidget(0, 0, 50, 20, Texts.literal("View"), button -> {
 				Util.getOperatingSystem().open(ScriptRepositoryManager.INSTANCE.getViewableLink(category, scriptName));
 			});
-			this.downloadButton = new ButtonWidget(0, 0, 60, 20, new LiteralText("Download").formatted(Formatting.DARK_GREEN), button -> {
+			this.downloadButton = new ButtonWidget(0, 0, 60, 20, Texts.literal("Download").formatted(Formatting.DARK_GREEN), button -> {
 				ToastManager toastManager = DownloadClientScriptWidget.this.client.getToastManager();
 				if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, true)) {
 					SystemToast.show(
 						toastManager, SystemToast.Type.PACK_COPY_FAILURE,
-						new LiteralText("Download Failed"), null
+						Texts.literal("Download Failed"), null
 					);
 					return;
 				}
 				SystemToast.show(
 					toastManager, SystemToast.Type.WORLD_BACKUP,
-					new LiteralText("Download Successful"), null
+					Texts.literal("Download Successful"), null
 				);
 				DownloadClientScriptWidget.this.downloadScreen.getParent().refresh();
 			});

@@ -12,9 +12,9 @@ import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.command.EnumArgumentType;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class ClientScriptCommand {
-	private static final DynamicCommandExceptionType NO_SUCH_SCRIPT = new DynamicCommandExceptionType(o -> new LiteralText("Script with name '%s' doesn't exist".formatted(o)));
+	private static final DynamicCommandExceptionType NO_SUCH_SCRIPT = new DynamicCommandExceptionType(o -> Texts.literal("Script with name '%s' doesn't exist".formatted(o)));
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		CommandHelper.CLIENT_COMMANDS.add("clientscript");

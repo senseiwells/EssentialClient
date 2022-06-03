@@ -1,10 +1,10 @@
 package me.senseiwells.essentialclient.mixins.disableMessages;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.network.MessageType;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,8 +20,9 @@ public class InGameHudMixin {
 			ci.cancel();
 			return;
 		}
-		if (message instanceof TranslatableText text && ClientRules.DISABLE_JOIN_LEAVE_MESSAGES.getValue()) {
-			switch (text.getKey()) {
+		String key = Texts.getTranslatableKey(message);
+		if (key != null && ClientRules.DISABLE_JOIN_LEAVE_MESSAGES.getValue()) {
+			switch (key) {
 				case "multiplayer.player.joined", "multiplayer.player.left", "multiplayer.player.joined.renamed" -> {
 					ci.cancel();
 				}

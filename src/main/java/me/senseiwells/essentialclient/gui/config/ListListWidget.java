@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.gui.config;
 
 import com.google.common.collect.ImmutableList;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -8,7 +9,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -74,7 +74,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
         public Entry(MinecraftClient client, int index, String value, int maxLength) {
             this.client = client;
 
-            this.textField = new TextFieldWidget(client.textRenderer, 0, 0, 150, 14, new LiteralText(value));
+            this.textField = new TextFieldWidget(client.textRenderer, 0, 0, 150, 14, Texts.literal(value));
             this.textField.setMaxLength(maxLength);
             this.textField.setText(value);
 

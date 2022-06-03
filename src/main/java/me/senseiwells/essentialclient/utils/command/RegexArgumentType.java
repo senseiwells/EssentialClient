@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import net.minecraft.text.TranslatableText;
+import me.senseiwells.essentialclient.utils.render.Texts;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.regex.PatternSyntaxException;
 // Taken from ClientCommands
 public class RegexArgumentType implements ArgumentType<Pattern> {
 
-	private static final DynamicCommandExceptionType EXPECTED_REGEX_EXCEPTION = new DynamicCommandExceptionType(arg -> new TranslatableText("Invalid regex %s", arg));
+	private static final DynamicCommandExceptionType EXPECTED_REGEX_EXCEPTION = new DynamicCommandExceptionType(arg -> Texts.translatable("Invalid regex %s", arg));
 
 	private final RegexType type;
 

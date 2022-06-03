@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.utils.render;
 
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.functions.FunctionValue;
@@ -13,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.LiteralText;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	private ContextFunction contextFunction = null;
 
 	public FakeInventoryScreen(PlayerInventory inventory, String title, int rows) {
-		super(getHandler(inventory, rows), inventory, new LiteralText(title));
+		super(getHandler(inventory, rows), inventory, Texts.literal(title));
 		super.init(EssentialUtils.getClient(), this.width, this.height);
 	}
 
@@ -64,7 +64,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
 			Context context = this.contextFunction.context.createBranch();
 			context.getThreadHandler().runAsyncFunctionInThreadPool(context,
-				passedContext -> this.contextFunction.functionValue.call(passedContext, EssentialUtils.arrayListOf(
+				passedContext -> this.contextFunction.functionValue.call(passedContext, ArucasList.arrayListOf(
 					new ItemStackValue(stack),
 					NumberValue.of(slotNumber),
 					StringValue.of(action)

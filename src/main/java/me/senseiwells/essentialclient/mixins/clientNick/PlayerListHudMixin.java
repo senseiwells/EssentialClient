@@ -5,7 +5,6 @@ import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +24,7 @@ public abstract class PlayerListHudMixin {
 			String playerName = entry.getProfile().getName();
 			String newName = ConfigClientNick.INSTANCE.get(playerName);
 			if (newName != null) {
-				cir.setReturnValue(this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), new LiteralText(newName))));
+				cir.setReturnValue(this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), Text.of(newName))));
 			}
 		}
 	}

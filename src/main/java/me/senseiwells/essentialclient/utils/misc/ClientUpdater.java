@@ -4,9 +4,9 @@ import com.google.gson.*;
 import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.io.FileUtils;
@@ -56,11 +56,11 @@ public class ClientUpdater {
 					continue;
 				}
 				Text message = this.tryDownloadUrl(assetObject.get("browser_download_url").getAsString(), assetName) ?
-					new LiteralText("Successfully downloaded '%s' to your mods folder. Please remove the old version.\n".formatted(assetName)).append(
-						new LiteralText("[Click here to open mods folder]").formatted(Formatting.GOLD, Formatting.BOLD).styled(style -> style.withClickEvent(
+					Texts.literal("Successfully downloaded '%s' to your mods folder. Please remove the old version.\n".formatted(assetName)).append(
+						Texts.literal("[Click here to open mods folder]").formatted(Formatting.GOLD, Formatting.BOLD).styled(style -> style.withClickEvent(
 							new ClickEvent(ClickEvent.Action.OPEN_FILE, FabricLoader.getInstance().getGameDir().resolve("mods").toString()))
 						)
-					) : new LiteralText("Failed to download '%s'".formatted(assetName));
+					) : Texts.literal("Failed to download '%s'".formatted(assetName));
 				EssentialUtils.sendMessage(message);
 				return;
 			}

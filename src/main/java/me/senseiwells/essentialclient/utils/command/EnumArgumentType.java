@@ -7,16 +7,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
 	static {
-		INVALID_ELEMENT_EXCEPTION = new DynamicCommandExceptionType(object -> new LiteralText("Enumeration element not found: " + object.toString()));
+		INVALID_ELEMENT_EXCEPTION = new DynamicCommandExceptionType(object -> Texts.literal("Enumeration element not found: " + object.toString()));
 	}
 
 	private static final DynamicCommandExceptionType INVALID_ELEMENT_EXCEPTION;

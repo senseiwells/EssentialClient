@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.utils;
 
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
 import net.minecraft.block.BlockState;
@@ -10,16 +11,12 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
@@ -42,14 +39,14 @@ public class EssentialUtils {
 	public static void sendMessageToActionBar(String message) {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
-			client.execute(() -> client.player.sendMessage(new LiteralText(message), true));
+			client.execute(() -> client.player.sendMessage(Texts.literal(message), true));
 		}
 	}
 
 	public static void sendMessage(String message) {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
-			client.execute(() -> client.player.sendMessage(new LiteralText(message), false));
+			client.execute(() -> client.player.sendMessage(Texts.literal(message), false));
 		}
 	}
 
@@ -65,13 +62,6 @@ public class EssentialUtils {
 		if (client.player != null) {
 			client.execute(() -> client.player.sendChatMessage(message));
 		}
-	}
-
-	@SafeVarargs
-	public static <T> List<T> arrayListOf(T... values) {
-		List<T> list = new ArrayList<>(values.length);
-		list.addAll(Arrays.asList(values));
-		return list;
 	}
 
 	public static Path getEssentialConfigFile() {
