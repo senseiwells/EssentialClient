@@ -311,7 +311,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			example = "itemStack.getCustomName();"
 		)
 		private Value getCustomName(Arguments arguments) throws CodeError {
-			return StringValue.of(this.getItemStack(arguments).getName().asString());
+			return StringValue.of(this.getItemStack(arguments).getName().getString());
 		}
 
 		@FunctionDoc(

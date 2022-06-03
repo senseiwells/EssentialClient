@@ -966,7 +966,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			for (Slot slot : handler.slots) {
 				ItemStack itemStack = slot.getStack();
-				if (!itemStack.getName().asString().equals(newName)) {
+				if (!itemStack.getName().getString().equals(newName)) {
 					Value predicateReturn = functionValue.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						valid = true;

@@ -341,7 +341,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			if (chat.length == 0) {
 				return NullValue.NULL;
 			}
-			return new TextValue(chat[0].getText().shallowCopy());
+			return new TextValue(chat[0].getText().copy());
 		}
 
 		@FunctionDoc(
