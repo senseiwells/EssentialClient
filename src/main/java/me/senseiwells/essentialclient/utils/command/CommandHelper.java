@@ -11,12 +11,14 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.essentialclient.commands.CommandRegister;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
@@ -125,11 +127,11 @@ public class CommandHelper {
 		}
 	}
 
-	public static void setCommandPacket(CommandTreeS2CPacket packet) {
+	public static void setCommandPacket(CommandTreeS2CPacket packet, CommandRegistryAccess registryAccess) {
 		if (packet == null) {
 			return;
 		}
-		Collection<CommandNode<CommandSource>> commandNodes = packet.getCommandTree().getChildren();
+		Collection<CommandNode<CommandSource>> commandNodes = packet.getCommandTree(registryAccess).getChildren();
 		RootCommandNode<CommandSource> newRootCommandNode = new RootCommandNode<>();
 		for (CommandNode<CommandSource> commandNode : commandNodes) {
 			newRootCommandNode.addChild(commandNode);

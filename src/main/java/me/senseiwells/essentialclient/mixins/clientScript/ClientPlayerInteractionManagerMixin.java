@@ -64,7 +64,7 @@ public class ClientPlayerInteractionManagerMixin {
 	}
 
 	@Inject(method = "interactItem", at = @At("HEAD"), cancellable = true)
-	private void onInteractItem(PlayerEntity player, World world, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+	private void onInteractItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
 		ItemStack itemStack = player.getStackInHand(hand);
 		if (MinecraftScriptEvents.ON_INTERACT_ITEM.run(new ItemStackValue(itemStack))) {
 			cir.setReturnValue(ActionResult.PASS);
@@ -72,9 +72,9 @@ public class ClientPlayerInteractionManagerMixin {
 	}
 
 	@Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
-	private void onInteractBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
+	private void onInteractBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
 		BlockPos pos = hitResult.getBlockPos();
-		if (MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockValue(world.getBlockState(pos), pos), new ItemStackValue(player.getStackInHand(hand)))) {
+		if (this.client.world != null && MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new BlockValue(this.client.world.getBlockState(pos), pos), new ItemStackValue(player.getStackInHand(hand)))) {
 			cir.setReturnValue(ActionResult.PASS);
 		}
 	}

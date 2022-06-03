@@ -4,7 +4,6 @@ import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -30,7 +29,7 @@ public class ControlsScreen extends ChildScreen {
 	protected void init() {
 		this.controlWidget = new ControlsListWidget(this.client, this);
 		this.addSelectableChild(this.controlWidget);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.close()));
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
 	}
 
 	@Override

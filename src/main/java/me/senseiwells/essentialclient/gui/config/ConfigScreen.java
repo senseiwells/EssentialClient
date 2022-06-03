@@ -9,7 +9,6 @@ import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -39,7 +38,7 @@ public class ConfigScreen extends ChildScreen {
 		this.addDrawableChild(new ButtonWidget(width, height + 72, 200, 20, SCRIPT_SCREEN, button -> this.client.setScreen(new ClientScriptScreen(this))));
 		this.addDrawableChild(new ButtonWidget(width, height + 96, 200, 20, CONTROLS_SCREEN, button -> this.client.setScreen(new ControlsScreen(this))));
 		this.addDrawableChild(new ButtonWidget(width, height + 120, 200, 20, CHUNK_SCREEN, button -> this.client.setScreen(new ChunkDebugScreen(this)))).active = EssentialClient.CHUNK_NET_HANDLER.isAvailable();
-		this.addDrawableChild(new ButtonWidget(width, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.close()));
+		this.addDrawableChild(new ButtonWidget(width, this.height - 27, 200, 20, DONE, button -> this.close()));
 		this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, WIKI, button -> Util.getOperatingSystem().open(EssentialUtils.WIKI_URL)));
 		this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, CONFIG, button -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
 	}

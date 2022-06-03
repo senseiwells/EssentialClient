@@ -67,7 +67,7 @@ public class ScreenRemapper {
 		Map.entry(PackScreen.class, "Pack"),
 		Map.entry(PresetsScreen.class, "Presets"),
 		Map.entry(ProgressScreen.class, "Progress"),
-		Map.entry(SaveLevelScreen.class, "SaveLevel"),
+		Map.entry(MessageScreen.class, "SaveLevel"),
 		Map.entry(ShulkerBoxScreen.class, "ShulkerBox"),
 		Map.entry(SignEditScreen.class, "SignEdit"),
 		Map.entry(SkinOptionsScreen.class, "SkinOptions"),

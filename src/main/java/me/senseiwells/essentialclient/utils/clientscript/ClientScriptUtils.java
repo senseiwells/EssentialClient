@@ -20,6 +20,7 @@ import me.senseiwells.arucas.values.classes.ArucasEnumDefinition;
 import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.essentialclient.clientscript.values.ConfigValue;
 import me.senseiwells.essentialclient.clientscript.values.PosValue;
+import me.senseiwells.essentialclient.commands.CommandRegister;
 import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.*;
@@ -190,8 +191,8 @@ public class ClientScriptUtils {
 			case "double" -> DoubleArgumentType.doubleArg();
 			case "integer" -> IntegerArgumentType.integer();
 			case "boolean" -> BoolArgumentType.bool();
-			case "itemstack" -> ItemStackArgumentType.itemStack();
-			case "block" -> BlockStateArgumentType.blockState();
+			case "itemstack" -> ItemStackArgumentType.itemStack(CommandRegister.getRegistryAccess());
+			case "block" -> BlockStateArgumentType.blockState(CommandRegister.getRegistryAccess());
 			case "greedystring" -> StringArgumentType.greedyString();
 			case "entity" -> ClientEntityArgumentType.entity();
 			case "entities" -> ClientEntityArgumentType.entities();

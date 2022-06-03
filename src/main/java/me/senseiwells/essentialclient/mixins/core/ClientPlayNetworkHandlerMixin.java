@@ -13,11 +13,13 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,11 +36,15 @@ public class ClientPlayNetworkHandlerMixin {
 	@Final
 	private MinecraftClient client;
 
+	@Shadow
+	private DynamicRegistryManager.Immutable registryManager;
+
 	@SuppressWarnings("unchecked")
 	@Inject(method = "onCommandTree", at = @At("TAIL"))
 	public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
-		CommandHelper.setCommandPacket(packet);
-		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher);
+		CommandRegistryAccess access = new CommandRegistryAccess(this.registryManager);
+		CommandHelper.setCommandPacket(packet, access);
+		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher, access);
 	}
 
 	@Inject(method = "onGameJoin", at = @At("TAIL"))

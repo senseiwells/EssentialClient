@@ -752,7 +752,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		)
 		private Value getClientRenderDistance(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
-			return NumberValue.of(client.options.viewDistance);
+			return NumberValue.of(client.options.getViewDistance().getValue());
 		}
 
 		@FunctionDoc(
@@ -764,7 +764,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		private Value setClientRenderDistance(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
-			client.options.viewDistance = numberValue.value.intValue();
+			client.options.getViewDistance().setValue(numberValue.value.intValue());
 			client.worldRenderer.scheduleTerrainUpdate();
 			return NullValue.NULL;
 		}

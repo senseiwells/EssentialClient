@@ -1256,8 +1256,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
 			BlockHitResult hitResult = new BlockHitResult(new Vec3d(x, y, z), direction, new BlockPos(x, y, z), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			ClientWorld world = ArucasMinecraftExtension.getWorld();
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, world, Hand.MAIN_HAND, hitResult));
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, Hand.MAIN_HAND, hitResult));
 			return NullValue.NULL;
 		}
 
@@ -1310,8 +1309,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			boolean bool = arguments.getNextGeneric(BooleanValue.class);
 			BlockHitResult hitResult = new BlockHitResult(new Vec3d(px, py, pz), direction, new BlockPos(bx, by, bz), bool);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			ClientWorld world = ArucasMinecraftExtension.getWorld();
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, world, Hand.MAIN_HAND, hitResult));
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, Hand.MAIN_HAND, hitResult));
 			return NullValue.NULL;
 		}
 
@@ -1407,8 +1405,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
 			BlockHitResult hitResult = new BlockHitResult(posValue.value, direction, new BlockPos(blockPosValue.value), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			ClientWorld world = ArucasMinecraftExtension.getWorld();
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, world, Hand.MAIN_HAND, hitResult));
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, Hand.MAIN_HAND, hitResult));
 			return NullValue.NULL;
 		}
 

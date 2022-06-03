@@ -3,7 +3,7 @@ package me.senseiwells.essentialclient.gui.config;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
-import net.minecraft.client.gui.screen.ScreenTexts;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -35,7 +35,7 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
         }
         this.widget = new ListListWidget(this, this.client);
         this.addSelectableChild(this.widget);
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, buttonWidget -> this.close()));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
     }
 
     @Override

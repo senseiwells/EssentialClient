@@ -22,6 +22,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.UUID;
+
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
 	@Shadow
@@ -60,9 +62,10 @@ public class ClientPlayNetworkHandlerMixin {
 		MinecraftScriptEvents.ON_RESPAWN.run(new PlayerValue(this.client.player));
 	}
 
-	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"), cancellable = true)
+	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/GameMessageS2CPacket;getMessageType(Lnet/minecraft/util/registry/Registry;)Lnet/minecraft/network/message/MessageType;"), cancellable = true)
 	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(StringValue.of(packet.getSender().toString()), StringValue.of(packet.getMessage().getString()))) {
+		UUID sender = this.client.inGameHud.extractSender(packet.content());
+		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(StringValue.of(sender.toString()), StringValue.of(packet.content().getString()))) {
 			ci.cancel();
 		}
 	}
@@ -87,16 +90,12 @@ public class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onEntitySpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;addEntity(ILnet/minecraft/entity/Entity;)V", shift = At.Shift.AFTER))
 	private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getId());
+		if (entity instanceof LivingEntity) {
+			MinecraftScriptEvents.ON_MOB_SPAWN.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
+			return;
+		}
 		if (entity != null) {
 			MinecraftScriptEvents.ON_ENTITY_SPAWN.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
-		}
-	}
-
-	@Inject(method = "onMobSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;addEntity(ILnet/minecraft/entity/Entity;)V", shift = At.Shift.AFTER))
-	private void onMobSpawn(MobSpawnS2CPacket packet, CallbackInfo ci) {
-		Entity entity = this.world.getEntityById(packet.getId());
-		if (entity != null) {
-			MinecraftScriptEvents.ON_MOB_SPAWN.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
 		}
 	}
 

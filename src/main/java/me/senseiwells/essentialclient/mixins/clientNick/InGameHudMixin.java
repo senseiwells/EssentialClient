@@ -8,21 +8,20 @@ import net.minecraft.client.font.TextVisitFactory;
 import net.minecraft.client.gui.ClientChatListener;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.network.MessageType;
+import net.minecraft.network.message.MessageSender;
+import net.minecraft.network.message.MessageType;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.UUID;
-
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Redirect(method = "addChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ClientChatListener;onChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"))
-	private void onChatMessage(ClientChatListener clientChatListener, MessageType messageType, Text text, UUID sender) {
+	@Redirect(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ClientChatListener;onChatMessage(Lnet/minecraft/network/message/MessageType;Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSender;)V"))
+	private void onChatMessage(ClientChatListener instance, MessageType messageType, Text text, MessageSender messageSender) {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
-			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(sender);
+			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(messageSender.uuid());
 			if (playerListEntry != null) {
 				String newName = ConfigClientNick.INSTANCE.get(playerListEntry.getProfile().getName());
 				String message = TextVisitFactory.removeFormattingCodes(text);
@@ -30,6 +29,6 @@ public class InGameHudMixin {
 				text = newName != null && oldName != null ? Texts.literal(message.replaceAll(oldName, newName)) : text;
 			}
 		}
-		clientChatListener.onChatMessage(messageType, text, sender);
+		instance.onChatMessage(messageType, text, messageSender);
 	}
 }

@@ -38,8 +38,8 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modImplementation "carpet:fabric-carpet:1.19-pre5-${project.carpet_core_version}"
+	// modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	packImplementation "com.github.LlamaLad7:MixinExtras:0.0.9"
 	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.9"
@@ -50,6 +50,7 @@ dependencies {
 	// javax.annotation.Nullable/Nonnull
 	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 	// compileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modCompileOnly fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
 	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
 	modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
 
