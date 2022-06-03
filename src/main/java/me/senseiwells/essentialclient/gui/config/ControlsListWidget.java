@@ -123,7 +123,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 			this.editButton.y = y;
 			this.editButton.setMessage(this.keyBind.getBoundKeyLocalizedText());
 
-			MutableText editMessage = this.editButton.getMessage().shallowCopy();
+			MutableText editMessage = this.editButton.getMessage().copy();
 			if (!this.keyBind.isUnbound()) {
 				for (KeyBinding binding : ControlsListWidget.this.client.options.allKeys) {
 					if (!focused && binding != this.keyBind && this.keyBind.equals(binding)) {

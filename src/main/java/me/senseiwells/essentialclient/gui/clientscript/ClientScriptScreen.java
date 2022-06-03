@@ -202,7 +202,7 @@ public class ClientScriptScreen extends ChildScreen {
 			KeyBinding keyBinding = this.scriptInstance.getKeyBind();
 			this.keyBindBox.setMessage(keyBinding.getBoundKeyLocalizedText());
 
-			MutableText editMessage = this.keyBindBox.getMessage().shallowCopy();
+			MutableText editMessage = this.keyBindBox.getMessage().copy();
 			if (!keyBinding.isUnbound() && this.client != null) {
 				for (KeyBinding binding : this.client.options.allKeys) {
 					if (!this.editingKeyBind && binding != keyBinding && keyBinding.equals(binding)) {
