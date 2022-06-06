@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -115,6 +116,19 @@ public class ChunkGrid {
 		}
 		tessellator.draw();
 
+		ClientPlayerEntity player = this.client.player;
+		if (player != null && this.isPlayerInDimension(player)) {
+			ChunkPos playerChunkPos = player.getChunkPos();
+			int x = playerChunkPos.x - (isMinimap ? this.minimapCornerPoint.x : this.cornerPoint.getX());
+			int z = playerChunkPos.z - (isMinimap ? this.minimapCornerPoint.y : this.cornerPoint.getY());
+			if (x >= 0 && x <= this.columns && z >= 0 && z <= this.rows) {
+				int cellX = thisX + x * this.scale;
+				int cellY = thisY + z * this.scale;
+
+				this.drawCross(tessellator, bufferBuilder, cellX, cellY, thisX, thisY);
+			}
+		}
+
 		DraggablePoint selectionPoint = this.getSelectionPoint();
 		if (selectionPoint != null) {
 			Point drawingPoint = selectionPoint.mainPoint;
@@ -123,7 +137,7 @@ public class ChunkGrid {
 				int minimapSelectionZ = this.cornerPoint.getY() + selectionPoint.getY() - this.minimapCornerPoint.y;
 				drawingPoint = new Point(minimapSelectionX, minimapSelectionZ);
 			}
-			this.drawSelectionBox(tessellator, bufferBuilder, thisX, thisY, drawingPoint);
+			this.drawSelectionBox(tessellator, bufferBuilder, drawingPoint, thisX, thisY);
 			this.updateSelectionInfo();
 		}
 		else {
@@ -155,8 +169,10 @@ public class ChunkGrid {
 			case FOLLOW -> {
 				ClientPlayerEntity player = this.client.player;
 				if (player != null) {
-					this.setDimension(player.world);
-					EssentialClient.CHUNK_NET_HANDLER.requestChunkData(this.getDimension());
+					if (!this.isPlayerInDimension(player)) {
+						this.setDimension(player.world);
+						EssentialClient.CHUNK_NET_HANDLER.requestChunkData(this.getDimension());
+					}
 					Point minimapCorner = this.getCornerOfCentre(player.getChunkPos().x, player.getChunkPos().z);
 					this.minimapCornerPoint.setLocation(minimapCorner);
 				}
@@ -180,10 +196,10 @@ public class ChunkGrid {
 		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
 	}
 
-	private void drawSelectionBox(Tessellator tessellator, BufferBuilder bufferBuilder, int thisX, int thisY, Point selectionPoint) {
-		int red = (-528378 & 0xff0000) >> 16;
-		int green = (-528378 & 0xff00) >> 8;
-		int blue = (-528378 & 0xff);
+	private void drawSelectionBox(Tessellator tessellator, BufferBuilder bufferBuilder, Point selectionPoint, int thisX, int thisY) {
+		int red = 0xF7;
+		int green = 0xF0;
+		int blue = 0x06;
 
 		int x = selectionPoint.x;
 		int z = selectionPoint.y;
@@ -205,6 +221,23 @@ public class ChunkGrid {
 		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
+		tessellator.draw();
+	}
+
+	private void drawCross(Tessellator tessellator, BufferBuilder bufferBuilder, int cellX, int cellY, int x, int y) {
+		int red = 0xF7;
+		int green = 0xF0;
+		int blue = 0x06;
+
+		if (cellX < x || cellY < y || cellX + this.scale > x + this.width || cellY + this.scale > y + this.height) {
+			return;
+		}
+
+		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
 		tessellator.draw();
 	}
 
@@ -350,6 +383,10 @@ public class ChunkGrid {
 
 	public String getDimension() {
 		return this.dimensions.get(this.dimensionIndex);
+	}
+
+	public boolean isPlayerInDimension(PlayerEntity player) {
+		return this.getDimension().equals(player.world.getRegistryKey().getValue().getPath());
 	}
 
 	private DraggablePoint getSelectionPoint() {
