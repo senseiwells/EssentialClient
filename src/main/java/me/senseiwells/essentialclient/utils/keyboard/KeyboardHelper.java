@@ -70,6 +70,7 @@ public class KeyboardHelper {
 		map.put(GLFW.GLFW_KEY_RIGHT_CONTROL, "right_control");
 		map.put(GLFW.GLFW_KEY_TAB, "tab");
 		map.put(GLFW.GLFW_KEY_ESCAPE, "escape");
+		map.put(GLFW.GLFW_KEY_BACKSPACE, "backspace");
 		map.put(GLFW.GLFW_KEY_ENTER, "enter");
 		map.put(GLFW.GLFW_KEY_NUM_LOCK, "num_lock");
 		map.put(GLFW.GLFW_KEY_DELETE, "delete");
