@@ -11,6 +11,7 @@ public class CustomClientCape {
 	private static Identifier currentCape;
 
 	private static final Map<String, Identifier> CAPE_MAP = Util.make(new LinkedHashMap<>(), map -> {
+		map.put("None", null);
 		map.put("Old Mojang", id("mojangclassic"));
 		map.put("Mojang", id("mojangcape"));
 		map.put("Mojang Studios", id("mojangstudios"));
