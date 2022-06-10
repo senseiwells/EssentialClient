@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.clientscript.extensions;
 import me.senseiwells.arucas.api.IArucasExtension;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.throwables.BuiltInException;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
@@ -93,7 +94,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static MinecraftClient getClient() throws CodeError {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client == null) {
-			throw new RuntimeError("MinecraftClient was null", ISyntax.empty());
+			throw new BuiltInException("MinecraftClient was null");
 		}
 		return client;
 	}
@@ -101,7 +102,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayerEntity getPlayer() throws CodeError {
 		ClientPlayerEntity player = getClient().player;
 		if (player == null) {
-			throw new RuntimeError("MinecraftClient.player was null", ISyntax.empty());
+			throw new BuiltInException("MinecraftClient.player was null");
 		}
 		return player;
 	}
@@ -109,7 +110,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayerEntity getPlayer(MinecraftClient client) throws CodeError {
 		ClientPlayerEntity player = client.player;
 		if (player == null) {
-			throw new RuntimeError("MinecraftClient.player was null", ISyntax.empty());
+			throw new BuiltInException("MinecraftClient.player was null");
 		}
 		return player;
 	}
@@ -117,7 +118,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientWorld getWorld() throws CodeError {
 		ClientWorld world = getClient().world;
 		if (world == null) {
-			throw new RuntimeError("MinecraftClient.world was null", ISyntax.empty());
+			throw new BuiltInException("MinecraftClient.world was null");
 		}
 		return world;
 	}
@@ -125,7 +126,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientWorld getWorld(MinecraftClient client) throws CodeError {
 		ClientWorld world = client.world;
 		if (world == null) {
-			throw new RuntimeError("MinecraftClient.world was null", ISyntax.empty());
+			throw new BuiltInException("MinecraftClient.world was null");
 		}
 		return world;
 	}
@@ -133,7 +134,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayNetworkHandler getNetworkHandler() throws CodeError {
 		ClientPlayNetworkHandler networkHandler = getClient().getNetworkHandler();
 		if (networkHandler == null) {
-			throw new RuntimeError("MinecraftClient.networkHandler was null", ISyntax.empty());
+			throw new BuiltInException("MinecraftClient.networkHandler was null");
 		}
 		return networkHandler;
 	}
@@ -141,7 +142,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 	public static ClientPlayerInteractionManager getInteractionManager() throws CodeError {
 		ClientPlayerInteractionManager interactionManager = getClient().interactionManager;
 		if (interactionManager == null) {
-			throw new RuntimeError("MinecraftClient.interactionManager was null", ISyntax.empty());
+			throw new BuiltInException("MinecraftClient.interactionManager was null");
 		}
 		return interactionManager;
 	}
