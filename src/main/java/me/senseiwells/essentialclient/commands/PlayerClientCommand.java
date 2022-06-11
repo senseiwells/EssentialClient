@@ -159,7 +159,7 @@ public class PlayerClientCommand {
 		if (playerData.gamemode() != null && playerGameMode != playerData.gamemode()) {
 			throw WRONG_GAMEMODE.create(playerGameMode, playerData.gamemode());
 		}
-		EssentialUtils.getPlayer().sendChatMessage("/player %s spawn at %s %s %s facing %s %s in %s".formatted(
+		EssentialUtils.sendChatMessage("/player %s spawn at %s %s %s facing %s %s in %s".formatted(
 			playerName,
 			playerData.pos().x + x,
 			playerData.pos().y + y,
