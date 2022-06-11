@@ -101,7 +101,6 @@ public class CarpetClient implements Config.CList {
 					rule = rule != null ? rule.shallowCopy() : new StringCarpetRule(name, this.LOADNT, value);
 				}
 				this.CURRENT_RULES.put(name, rule);
-				return;
 			}
 
 			this.HANDLING_DATA.set(true);
