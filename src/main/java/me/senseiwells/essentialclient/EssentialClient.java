@@ -41,7 +41,7 @@ public class EssentialClient implements ModInitializer {
 		GAME_RULE_NET_HANDLER = new GameRuleNetworkHandler();
 		SCRIPT_NET_HANDLER = new ScriptNetworkHandler();
 		START_TIME = LocalDateTime.now();
-		VERSION = "1.2.0";
+		VERSION = "1.2.1";
 		NETWORK_HANDLERS = new LinkedHashSet<>();
 		CONFIG_SET = new LinkedHashSet<>();
 		registerConfigs();
@@ -56,12 +56,15 @@ public class EssentialClient implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CONFIG_SET.forEach(Config::readConfig);
-		ClientRules.load();
-		ClientKeyBinds.load();
-		MinecraftDeobfuscator.load();
-		CraftingSharedConstants.load();
-		MultiConnectSupport.load();
+		// Run async for faster boot, saves ~2000ms on my machine
+		new Thread(() -> {
+			CONFIG_SET.forEach(Config::readConfig);
+			ClientRules.load();
+			ClientKeyBinds.load();
+			MinecraftDeobfuscator.load();
+			CraftingSharedConstants.load();
+			MultiConnectSupport.load();
+		}, "EssentialClient Init Thread").start();
 	}
 
 	public static void registerConfigs() {

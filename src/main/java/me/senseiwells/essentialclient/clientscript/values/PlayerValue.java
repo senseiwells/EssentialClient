@@ -31,7 +31,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -241,7 +240,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.say('/help');"
 		)
 		private Value say(Arguments arguments) throws CodeError {
-			this.getPlayer(arguments).sendChatMessage(arguments.getNext().getAsString(arguments.getContext()));
+			EssentialUtils.sendChatMessage(arguments.getNext().getAsString(arguments.getContext()));
 			return NullValue.NULL;
 		}
 

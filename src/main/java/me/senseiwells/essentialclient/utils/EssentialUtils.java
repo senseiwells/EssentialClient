@@ -60,7 +60,13 @@ public class EssentialUtils {
 	public static void sendChatMessage(String message) {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
-			client.execute(() -> client.player.sendChatMessage(message));
+			client.execute(() -> {
+				if (message.startsWith("/")) {
+					client.player.sendCommand(message.substring(1));
+					return;
+				}
+				client.player.sendChatMessage(message);
+			});
 		}
 	}
 

@@ -36,6 +36,7 @@ public class ClientScriptInstance {
 			.setDisplayName("Arucas Client")
 			.setArucasAPI(new ImplArucasAPI())
 			.addDefault();
+
 		MinecraftAPI.addMinecraftAPI(BUILDER);
 		DiscordAPI.addDiscordAPI(BUILDER);
 		ExceptionUtils.runSafe(BUILDER::generateArucasFiles);

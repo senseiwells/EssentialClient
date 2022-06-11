@@ -78,7 +78,7 @@ public class AlternateDimensionCommand {
 					else {
 						throw new SimpleCommandExceptionType(Texts.literal("You are not in a valid dimension")).create();
 					}
-					playerEntity.sendChatMessage("/execute in %s run tp @s %f %f %f".formatted(
+					EssentialUtils.sendChatMessage("/execute in %s run tp @s %f %f %f".formatted(
 						dimension,
 						newX,
 						playerEntity.getY(),
