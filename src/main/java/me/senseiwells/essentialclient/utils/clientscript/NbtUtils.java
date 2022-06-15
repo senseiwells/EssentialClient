@@ -1,14 +1,18 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ValuePair;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.utils.impl.IArucasCollection;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import net.minecraft.command.argument.ItemStringReader;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 
 import java.util.Collection;
@@ -98,7 +102,28 @@ public class NbtUtils {
 		return NbtString.of(value.getAsString(context));
 	}
 
-	public static NbtElement rawStringToNbt(String string) {
-		return EssentialUtils.throwAsRuntime(() -> new StringNbtReader(new StringReader(string)).parseElement());
+	public static NbtElement rawStringToNbt(Context context, ISyntax syntaxPosition, String string) throws RuntimeError {
+		try {
+			return new StringNbtReader(new StringReader(string)).parseElement();
+		}
+		catch (CommandSyntaxException cse) {
+			throw new RuntimeError("'%s' couldn't be parsed".formatted(string), syntaxPosition, context);
+		}
+	}
+
+	public static ItemStack nbtToItemStack(Context context, ISyntax syntaxPosition, String string) throws RuntimeError {
+		try {
+			ItemStringReader reader = new ItemStringReader(new StringReader(string), false).consume();
+			ItemStack itemStack = new ItemStack(reader.getItem());
+			itemStack.setNbt(reader.getNbt());
+			return itemStack;
+		}
+		catch (CommandSyntaxException cse) {
+			NbtElement element = NbtUtils.rawStringToNbt(context, syntaxPosition, string);
+			if (element instanceof NbtCompound nbtCompound) {
+				return ItemStack.fromNbt(nbtCompound);
+			}
+			throw new RuntimeError("'%s' couldn't be parsed".formatted(string), syntaxPosition, context);
+		}
 	}
 }
