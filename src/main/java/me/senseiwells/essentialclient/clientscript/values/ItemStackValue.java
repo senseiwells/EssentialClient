@@ -122,14 +122,23 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 		@FunctionDoc(
 			isStatic = true,
 			name = "parse",
-			desc = "This creates an ItemStack from a NBT string",
+			desc = {
+				"This creates an ItemStack from a NBT string, this can be in the form of a map",
+				"or an ItemStack NBT, or like the item stack command format"
+			},
 			params = {STRING, "nbtString", "the NBT string to create the ItemStack from"},
 			returns = {ITEM_STACK, "the new ItemStack instance"},
 			example = "ItemStack.parse('{id:\"minecraft:dirt\",Count:64}')"
 		)
 		private Value parse(Arguments arguments) throws CodeError {
-			MapValue mapValue = arguments.getNextMap();
-			return new ItemStackValue(ItemStack.fromNbt(NbtUtils.mapToNbt(arguments.getContext(), mapValue.value, 10)));
+			Value param = arguments.getNext();
+			if (param instanceof MapValue mapValue) {
+				return new ItemStackValue(ItemStack.fromNbt(NbtUtils.mapToNbt(arguments.getContext(), mapValue.value, 10)));
+			}
+			if (param instanceof StringValue stringValue) {
+				return new ItemStackValue(NbtUtils.nbtToItemStack(arguments.getContext(), arguments.getPosition(), stringValue.value));
+			}
+			throw arguments.getError("Argument must be able to convert to NBT");
 		}
 
 		@Override

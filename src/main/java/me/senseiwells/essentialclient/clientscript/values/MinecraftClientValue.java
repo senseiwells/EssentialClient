@@ -585,7 +585,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		)
 		private Value parseStringToNbt(Arguments arguments) throws CodeError {
 			StringValue stringValue = arguments.skip().getNextString();
-			return NbtUtils.nbtToValue(arguments.getContext(), NbtUtils.rawStringToNbt(stringValue.value), 10);
+			return NbtUtils.nbtToValue(arguments.getContext(), NbtUtils.rawStringToNbt(arguments.getContext(), arguments.getPosition(), stringValue.value), 10);
 		}
 
 		@FunctionDoc(

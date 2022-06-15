@@ -83,5 +83,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "compat.ClientPlayerInteractionManagerMixin"
+  ]
 }
