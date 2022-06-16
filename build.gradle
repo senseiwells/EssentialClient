@@ -47,7 +47,7 @@ dependencies {
 	packImplementation "com.github.LlamaLad7:MixinExtras:0.0.9"
 	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.9"
 
-	packImplementation "com.github.senseiwells:Arucas:v${project.arucas_version}"
+	packImplementation "com.github.senseiwells:Arucas:5b674bccc170f76898a89fe9caf2fb0d8ef3de21"
 	packImplementation "com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}"
 
 	// javax.annotation.Nullable/Nonnull
