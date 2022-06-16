@@ -73,6 +73,7 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = OBFUSCATION_MAPPINGS.get(name);
+		// EssentialClient.LOGGER.info("Obfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
 		return mapped == null ? name : mapped;
 	}
 
@@ -82,6 +83,7 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = CLASS_DEOBFUSCATION_MAPPINGS.get(name);
+		// EssentialClient.LOGGER.info("Deobfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
 		return mapped == null ? name : mapped;
 	}
 
