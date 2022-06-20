@@ -17,14 +17,14 @@ public class ClientTickSyncer {
 		Events.ON_TICK_POST.register(c -> ClientTickSyncer.triggerSync());
 	}
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public synchronized static void syncToTick() throws CodeError {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		OBJECTS_TO_SYNC.add(countDownLatch);
 
 		if (Thread.currentThread() instanceof ArucasThread) {
 			try {
-				@SuppressWarnings("unused")
-				boolean timeOut = countDownLatch.await(50, TimeUnit.MILLISECONDS);
+				countDownLatch.await(50, TimeUnit.MILLISECONDS);
 				return;
 			}
 			catch (InterruptedException e) {

@@ -18,7 +18,7 @@ public abstract class PlayerListHudMixin {
 	@Shadow
 	protected abstract Text applyGameModeFormatting(PlayerListEntry entry, MutableText name);
 
-	@Inject(method = "getPlayerName", at = @At("HEAD"))
+	@Inject(method = "getPlayerName", at = @At("HEAD"), cancellable = true)
 	private void onGetPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> cir) {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			String playerName = entry.getProfile().getName();
