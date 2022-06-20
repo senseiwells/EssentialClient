@@ -53,7 +53,7 @@ public class ClientPlayNetworkHandlerMixin {
 		Entity entity = this.world.getEntityById(packet.getEntityId());
 		LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
 		if (entity instanceof ItemEntity itemEntity && this.client.player != null && this.client.player.equals(livingEntity)) {
-			MinecraftScriptEvents.ON_PICK_UP_ITEM.run(new ItemStackValue(itemEntity.getStack()));
+			MinecraftScriptEvents.ON_PICK_UP_ITEM.run(new ItemStackValue(itemEntity.getStack().copy()));
 		}
 	}
 

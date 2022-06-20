@@ -32,7 +32,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.*;
@@ -45,6 +44,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -155,8 +155,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("attackBlock", 2, this::attackBlockPos),
 				MemberFunction.of("interactBlock", 4, this::interactBlock),
 				MemberFunction.of("interactBlock", 2, this::interactBlockPos),
+				MemberFunction.of("interactBlock", 3, this::interactBlockPosHand),
 				MemberFunction.of("interactBlock", 8, this::interactBlockFull),
 				MemberFunction.of("interactBlock", 4, this::interactBlockFullPos),
+				MemberFunction.of("interactBlock", 5, this::interactBlockFullPosHand),
 				MemberFunction.of("getBlockBreakingSpeed", 1, this::getBlockBreakingSpeed),
 				MemberFunction.of("swapHands", this::swapHands),
 				MemberFunction.of("swingHand", 1, this::swingHand),
@@ -468,8 +470,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.getLookingAtEntity();"
 		)
 		private Value getLookingAtEntity(Arguments arguments) throws CodeError {
-			Entity targetedEntity = ArucasMinecraftExtension.getClient().targetedEntity;
-			return arguments.getContext().convertValue(targetedEntity);
+			if (ArucasMinecraftExtension.getClient().crosshairTarget instanceof EntityHitResult hitResult) {
+				return arguments.getContext().convertValue(hitResult.getEntity());
+			}
+			return NullValue.NULL;
 		}
 
 		@FunctionDoc(
@@ -976,7 +980,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			}
 			anvilHandler.updateResult();
 			anvilHandler.setNewItemName(newName);
-			EssentialUtils.getNetworkHandler().sendPacket(new RenameItemC2SPacket(newName));
+			client.execute(() -> EssentialUtils.getNetworkHandler().sendPacket(new RenameItemC2SPacket(newName)));
 			if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
 				return NumberValue.of(anvilHandler.getLevelCost());
 			}
@@ -1272,7 +1276,30 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
-			return this.interactInternal(player, posValue, stringValue, posValue);
+			return this.interactInternal(player, posValue, stringValue, posValue, Hand.MAIN_HAND);
+		}
+
+		@FunctionDoc(
+			name = "interactBlock",
+			desc = "This allows you to interact with a block at a position, direction, and hand",
+			params = {
+				POS, "pos", "the position of the block",
+				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
+				STRING, "hand", "the hand to use, e.g. 'main_hand', 'off_hand'"
+			},
+			example = "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
+		)
+		private Value interactBlockPosHand(Arguments arguments) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			PosValue posValue = arguments.getNext(PosValue.class);
+			StringValue stringValue = arguments.getNextString();
+			StringValue handValue = arguments.getNextString();
+			Hand hand = switch (handValue.value.toLowerCase()) {
+				case "main_hand", "main" -> Hand.MAIN_HAND;
+				case "off_hand", "off" -> Hand.OFF_HAND;
+				default -> throw arguments.getError("Invalid hand: " + handValue.value);
+			};
+			return this.interactInternal(player, posValue, stringValue, posValue, hand);
 		}
 
 		@FunctionDoc(
@@ -1333,7 +1360,38 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			PosValue posValue = arguments.getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
 			PosValue blockPosValue = arguments.getNext(PosValue.class);
-			return this.interactInternal(player, posValue, stringValue, blockPosValue);
+			return this.interactInternal(player, posValue, stringValue, blockPosValue, Hand.MAIN_HAND);
+		}
+
+		@FunctionDoc(
+			name = "interactBlock",
+			desc = {
+				"This allows you to interact with a block at a position and direction",
+				"This function is for very specific cases where there needs to be extra precision",
+				"like when placing stairs or slabs in certain directions, so the first set of",
+				"coords is the exact position of the block, and the second set of coords is the position"
+			},
+			params = {
+				POS, "pos", "the exact position of the block",
+				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
+				STRING, "hand", "the hand to use, e.g. 'main_hand', 'off_hand'",
+				POS, "blockPos", "the position of the block",
+				BOOLEAN, "insideBlock", "whether the player is inside the block"
+			},
+			example = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');"
+		)
+		private Value interactBlockFullPosHand(Arguments arguments) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			PosValue posValue = arguments.getNext(PosValue.class);
+			StringValue stringValue = arguments.getNextString();
+			StringValue handValue = arguments.getNextString();
+			PosValue blockPosValue = arguments.getNext(PosValue.class);
+			Hand hand = switch (handValue.value.toLowerCase()) {
+				case "main_hand", "main" -> Hand.MAIN_HAND;
+				case "off_hand", "off" -> Hand.OFF_HAND;
+				default -> throw arguments.getError("Invalid hand: " + handValue.value);
+			};
+			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
 
 		@FunctionDoc(
@@ -1400,7 +1458,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NumberValue.of(price);
 		}
 
-		private Value interactInternal(ClientPlayerEntity player, PosValue posValue, StringValue stringValue, PosValue blockPosValue) throws CodeError {
+		private Value interactInternal(ClientPlayerEntity player, PosValue posValue, StringValue stringValue, PosValue blockPosValue, Hand hand) throws CodeError {
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
 			BlockHitResult hitResult = new BlockHitResult(posValue.value, direction, new BlockPos(blockPosValue.value), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();

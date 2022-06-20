@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.mixins.clientScript;
 
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
+import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
@@ -58,7 +59,7 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "clickSlot", at = @At("HEAD"), cancellable = true)
 	private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_CLICK_SLOT.run(NumberValue.of(slotId))) {
+		if (MinecraftScriptEvents.ON_CLICK_SLOT.run(NumberValue.of(slotId), StringValue.of(actionType.name()))) {
 			ci.cancel();
 		}
 	}

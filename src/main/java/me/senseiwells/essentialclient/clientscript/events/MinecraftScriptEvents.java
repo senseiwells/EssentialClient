@@ -17,6 +17,7 @@ public class MinecraftScriptEvents {
 		ON_DISCONNECT = new MinecraftScriptEvent("onDisconnect"),
 		ON_OPEN_SCREEN = new MinecraftScriptEvent("onOpenScreen"),
 		ON_PICK_UP_ITEM = new MinecraftScriptEvent("onPickUpItem"),
+		ON_ANVIL = new MinecraftScriptEvent("onAnvil"),
 		ON_FISH_BITE = new MinecraftScriptEvent("onFishBite"),
 		ON_DEATH = new MinecraftScriptEvent("onDeath"),
 		ON_RESPAWN = new MinecraftScriptEvent("onRespawn"),
