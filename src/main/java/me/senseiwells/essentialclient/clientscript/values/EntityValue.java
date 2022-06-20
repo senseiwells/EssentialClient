@@ -28,6 +28,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.biome.Biome;
 
 import java.util.Objects;
@@ -130,6 +131,7 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 				MemberFunction.of("isGlowing", this::isGlowing),
 				MemberFunction.of("getLookingAtBlock", this::getLookingAtBlock),
 				MemberFunction.of("getLookingAtBlock", 1, this::getLookingAtBlock1),
+				MemberFunction.of("getLookingAtBlock", 2, this::getLookingAtBlock2),
 				MemberFunction.of("getLookingAtPos", 1, this::getLookingAtPos),
 				MemberFunction.of("getEntityIdNumber", this::getEntityIdNumber),
 				MemberFunction.of("getPos", this::getPos),
@@ -272,7 +274,7 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 			HitResult result = entity.raycast(20D, 0.0F, true);
 			if (result.getType() == HitResult.Type.BLOCK) {
 				BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-				return new BlockValue(entity.getEntityWorld().getBlockState(blockPos), blockPos);
+				return new BlockValue(entity.world.getBlockState(blockPos), blockPos);
 			}
 			return new BlockValue(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
 		}
@@ -293,7 +295,42 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 			HitResult result = entity.raycast(numberValue.value, 0.0F, true);
 			if (result.getType() == HitResult.Type.BLOCK) {
 				BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-				return new BlockValue(entity.getEntityWorld().getBlockState(blockPos), blockPos);
+				return new BlockValue(entity.world.getBlockState(blockPos), blockPos);
+			}
+			return new BlockValue(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+		}
+
+		@FunctionDoc(
+			name = "getLookingAtBlock",
+			desc = {
+				"This gets the block that the entity is currently looking at",
+				"with a specific max range, and optionally whether fluids should",
+				"be included, if there is no block then it will return air"
+			},
+			params = {
+				NUMBER, "maxDistance", "the max range to ray cast",
+				STRING, "fluidType", "the types of fluids to include, either 'none', 'sources', or 'all'"
+			},
+			returns = {BLOCK, "the block that the entity is looking at, containing the position"},
+			example = "entity.getLookingAtBlock(10, 'sources');"
+		)
+		private Value getLookingAtBlock2(Arguments arguments) throws CodeError {
+			Entity entity = this.getEntity(arguments);
+			double maxDistance = arguments.getNextGeneric(NumberValue.class);
+			String fluidString = arguments.getNextGeneric(StringValue.class);
+			RaycastContext.FluidHandling fluidType = switch (fluidString) {
+				case "none" -> RaycastContext.FluidHandling.NONE;
+				case "source", "sources", "sources_only" -> RaycastContext.FluidHandling.SOURCE_ONLY;
+				case "all", "any" -> RaycastContext.FluidHandling.ANY;
+				default -> throw arguments.getError("'%s' is not a valid fluid type", fluidString);
+			};
+			Vec3d camera = entity.getCameraPosVec(0.0F);
+			Vec3d rotation = entity.getRotationVec(0.0F);
+			Vec3d end = camera.add(rotation.x * maxDistance, rotation.y * maxDistance, rotation.z * maxDistance);
+			BlockHitResult result = entity.world.raycast(new RaycastContext(camera, end, RaycastContext.ShapeType.OUTLINE, fluidType, entity));
+			if (result.getType() == HitResult.Type.BLOCK) {
+				BlockPos blockPos = result.getBlockPos();
+				return new BlockValue(entity.world.getBlockState(blockPos), blockPos);
 			}
 			return new BlockValue(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
 		}

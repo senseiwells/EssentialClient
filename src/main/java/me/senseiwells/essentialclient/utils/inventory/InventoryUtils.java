@@ -16,7 +16,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -24,6 +23,7 @@ import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -498,21 +498,16 @@ public class InventoryUtils {
 		boolean isEmpty = true;
 		List<Slot> slots = handledScreen.getScreenHandler().slots;
 		for (int i = 0; i < gridLength; i++) {
-			isEmpty &= slots.get(i + 1).hasStack();
+			isEmpty &= !slots.get(i + 1).hasStack();
 		}
 		return isEmpty;
 	}
 
 	public static int getCraftingSlotLength(HandledScreen<? extends ScreenHandler> gui) {
-		ScreenHandler grid = gui.getScreenHandler();
-		int counter = 0;
-		for (Slot slot : grid.slots) {
-			if (slot.inventory instanceof PlayerInventory) {
-				break;
-			}
-			counter += slot.inventory instanceof CraftingInventory ? 1 : 0;
+		if (gui.getScreenHandler() instanceof AbstractRecipeScreenHandler<?> recipeScreen) {
+			return recipeScreen.getCraftingHeight() * recipeScreen.getCraftingWidth();
 		}
-		return counter;
+		return 0;
 	}
 
 	public static void emptyCraftingGrid(MinecraftClient client, HandledScreen<?> handledScreen, PlayerEntity player, int gridSize) {
@@ -522,11 +517,7 @@ public class InventoryUtils {
 			if (slots.get(i).hasStack()) {
 				dropStack(client, handledScreen, i);
 			}
-			try {
-				Thread.sleep(0, 1);
-			}
-			catch (InterruptedException ignored) {
-			}
+			ExceptionUtils.runSafe(() -> Thread.sleep(0L, 1));
 		}
 	}
 
@@ -535,11 +526,7 @@ public class InventoryUtils {
 			int count = craftAll ? 64 : 1;
 			for (int i = 0; i < count; i++) {
 				InventoryUtils.dropStack(client, handledScreen, 0);
-				try {
-					Thread.sleep(2L);
-				}
-				catch (InterruptedException ignored) {
-				}
+				ExceptionUtils.runSafe(() -> Thread.sleep(2L));
 			}
 		}, 40L, TimeUnit.MILLISECONDS);
 	}

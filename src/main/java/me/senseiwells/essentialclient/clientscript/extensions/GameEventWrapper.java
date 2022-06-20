@@ -135,15 +135,19 @@ public class GameEventWrapper implements IArucasWrappedClass {
 	public boolean callFunction(List<Value> arguments) {
 		Context branchContext = this.eventContext.createBranch();
 		ArucasThreadHandler threadHandler = this.eventContext.getThreadHandler();
+
+		int count = this.function.getCount();
+		List<Value> newArguments = count < arguments.size() ? arguments.subList(0, count) : arguments;
+
 		if (this.minecraftEvent.isThreadDefinable() && !this.runOnMainThread && EssentialUtils.getClient().isOnThread()) {
 			threadHandler.runAsyncFunctionInThreadPool(
 				branchContext,
-				context -> this.function.call(context, arguments)
+				context -> this.function.call(context, newArguments)
 			);
 			return false;
 		}
 		try {
-			this.function.call(branchContext, arguments);
+			this.function.call(branchContext, newArguments);
 			return false;
 		}
 		catch (CancelEvent cancelEvent) {
