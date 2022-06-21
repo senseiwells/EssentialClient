@@ -65,7 +65,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 			Context context = this.contextFunction.context.createBranch();
 			context.getThreadHandler().runAsyncFunctionInThreadPool(context,
 				passedContext -> this.contextFunction.functionValue.call(passedContext, ArucasList.arrayListOf(
-					new ItemStackValue(stack),
+					new ItemStackValue(stack.copy()),
 					NumberValue.of(slotNumber),
 					StringValue.of(action)
 				))

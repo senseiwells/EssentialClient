@@ -72,7 +72,7 @@ public class InventoryUtils {
 	}
 
 	public static void dropAllItemType(ClientPlayerEntity playerEntity, Item item) {
-		MinecraftClient client = MinecraftClient.getInstance();
+		MinecraftClient client = EssentialUtils.getClient();
 		if (client.interactionManager == null) {
 			return;
 		}
@@ -82,6 +82,20 @@ public class InventoryUtils {
 			ItemStack stack = slot.getStack();
 			if (filterItemStack.test(stack)) {
 				client.interactionManager.clickSlot(containerPlayer.syncId, slot.id, 1, SlotActionType.THROW, playerEntity);
+			}
+		}
+	}
+
+	public static void dropAllItemExact(ItemStack test) {
+		MinecraftClient client = EssentialUtils.getClient();
+		if (client.interactionManager == null || client.player == null) {
+			return;
+		}
+		ScreenHandler containerPlayer = client.player.currentScreenHandler;
+		for (Slot slot : containerPlayer.slots) {
+			ItemStack stack = slot.getStack();
+			if (stack.isItemEqual(test) && ItemStack.areNbtEqual(stack, test)) {
+				client.interactionManager.clickSlot(containerPlayer.syncId, slot.id, 1, SlotActionType.THROW, client.player);
 			}
 		}
 	}
