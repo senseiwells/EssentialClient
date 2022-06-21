@@ -55,8 +55,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
-import static me.senseiwells.arucas.utils.ValueTypes.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
@@ -128,6 +126,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("setSprinting", 1, this::setSprinting),
 				MemberFunction.of("dropItemInHand", 1, this::dropItemInHand),
 				MemberFunction.of("dropAll", 1, this::dropAll),
+				MemberFunction.of("dropAllExact", 1, this::dropAllExact),
 				MemberFunction.of("look", 2, this::look),
 				MemberFunction.of("lookAtPos", 3, this::lookAtPos),
 				MemberFunction.of("lookAtPos", 1, this::lookAtPosPos),
@@ -142,7 +141,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("logout", 1, this::logout),
 				MemberFunction.of("attackEntity", 1, this::attackEntity),
 				MemberFunction.of("interactWithEntity", 1, this::interactWithEntity),
-				MemberFunction.of("anvil", 2, this::anvil),
+				MemberFunction.of("anvil", 2, this::anvilDrop),
+				MemberFunction.of("anvil", 3, this::anvil),
 				MemberFunction.of("anvilRename", 2, this::anvilRename),
 				MemberFunction.of("stonecutter", 2, this::stonecutter),
 				MemberFunction.of("fakeLook", 4, this::fakeLook),
@@ -394,6 +394,19 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			MaterialLike materialLike = arguments.skip().getAnyNext(MaterialLike.class);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> InventoryUtils.dropAllItemType(client.player, materialLike.asItem()));
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "dropAllExact",
+			desc = "This drops all the items that have the same nbt as a given stack",
+			params = {ITEM_STACK, "itemStack", "the stack with nbt to drop"},
+			example = "player.dropAllExact(Material.GOLD_INGOT.asItemStack());"
+		)
+		private Value dropAllExact(Arguments arguments) throws CodeError {
+			ItemStack stack = arguments.skip().getNextGeneric(ItemStackValue.class);
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			client.execute(() -> InventoryUtils.dropAllItemExact(stack));
 			return NullValue.NULL;
 		}
 
@@ -850,6 +863,48 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to combine two items in an anvil",
 			params = {
 				FUNCTION, "predicate1", "a function determining whether the first ItemStack meets a criteria",
+				FUNCTION, "predicate2", "a function determining whether the second ItemStack meets a criteria",
+				BOOLEAN, "take", "whether you should take the item after putting items in the anvil"
+			},
+			returns = {BOOLEAN, "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"},
+			throwMsgs = {
+				"Not in anvil gui",
+				"Invalid function parameter"
+			},
+			example = """
+			// Enchant a pickaxe with mending
+			player.anvil(
+				// Predicate for pick
+				fun(item) {
+					// We want a netherite pickaxe without mending
+					if (item.getItemId() == "netherite_pickaxe") {
+						hasMending = item.getEnchantments().getKeys().contains("mending");
+						return !hasMending;
+					}
+					return false;
+				},
+				// Predicate for book
+				fun(item) {
+					// We want a book with mending
+					if (item.getItemId() == "enchanted_book") {
+						hasMending = item.getEnchantments().getKeys().contains("mending");
+						return hasMending;
+					}
+					return false;
+				},
+				false
+			);
+			"""
+		)
+		private Value anvil(Arguments arguments) throws CodeError {
+			return this.anvilInternal(arguments, true);
+		}
+
+		@FunctionDoc(
+			name = "anvil",
+			desc = "This allows you to combine two items in an anvil",
+			params = {
+				FUNCTION, "predicate1", "a function determining whether the first ItemStack meets a criteria",
 				FUNCTION, "predicate2", "a function determining whether the second ItemStack meets a criteria"
 			},
 			returns = {BOOLEAN, "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"},
@@ -881,54 +936,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			);
 			"""
 		)
-		private Value anvil(Arguments arguments) throws CodeError {
-			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
-			if (interactionManager == null) {
-				return BooleanValue.FALSE;
-			}
-			ClientPlayerEntity player = this.getPlayer(arguments);
-			ScreenHandler handler = player.currentScreenHandler;
-			if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
-				throw arguments.getError("Not in anvil gui");
-			}
-			FunctionValue predicate1 = arguments.getNextFunction();
-			FunctionValue predicate2 = arguments.getNextFunction();
-			boolean firstValid = false;
-			boolean secondValid = false;
-			MinecraftClient client = ArucasMinecraftExtension.getClient();
-			for (Slot slot : anvilHandler.slots) {
-				if (firstValid && secondValid) {
-					break;
-				}
-				ItemStack itemStack = slot.getStack();
-				if (!firstValid) {
-					Value predicateReturn = predicate1.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
-					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
-						firstValid = true;
-						client.execute(() -> {
-							interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
-							interactionManager.clickSlot(anvilHandler.syncId, 0, 0, SlotActionType.PICKUP, player);
-						});
-						continue;
-					}
-				}
-				if (!secondValid) {
-					Value predicateReturn = predicate2.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
-					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
-						secondValid = true;
-						client.execute(() -> {
-							interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
-							interactionManager.clickSlot(anvilHandler.syncId, 1, 0, SlotActionType.PICKUP, player);
-						});
-					}
-				}
-			}
-			anvilHandler.updateResult();
-			if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
-				return NumberValue.of(anvilHandler.getLevelCost());
-			}
-			interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player);
-			return BooleanValue.of(firstValid && secondValid);
+		private Value anvilDrop(Arguments arguments) throws CodeError {
+			return this.anvilInternal(arguments, false);
 		}
 
 		@FunctionDoc(
@@ -1456,6 +1465,59 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			int price = InventoryUtils.checkPriceForTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
 			this.checkVillagerValid(price, arguments);
 			return NumberValue.of(price);
+		}
+
+		private Value anvilInternal(Arguments arguments, boolean hasArg) throws CodeError {
+			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
+			if (interactionManager == null) {
+				return BooleanValue.FALSE;
+			}
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			ScreenHandler handler = player.currentScreenHandler;
+			if (!(handler instanceof AnvilScreenHandler anvilHandler)) {
+				throw arguments.getError("Not in anvil gui");
+			}
+			FunctionValue predicate1 = arguments.getNextFunction();
+			FunctionValue predicate2 = arguments.getNextFunction();
+			hasArg = hasArg && arguments.getNextBoolean().value;
+			boolean firstValid = false;
+			boolean secondValid = false;
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			for (Slot slot : anvilHandler.slots) {
+				if (firstValid && secondValid) {
+					break;
+				}
+				ItemStack itemStack = slot.getStack();
+				if (!firstValid) {
+					Value predicateReturn = predicate1.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
+					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
+						firstValid = true;
+						client.execute(() -> {
+							interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
+							interactionManager.clickSlot(anvilHandler.syncId, 0, 0, SlotActionType.PICKUP, player);
+						});
+						continue;
+					}
+				}
+				if (!secondValid) {
+					Value predicateReturn = predicate2.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
+					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
+						secondValid = true;
+						client.execute(() -> {
+							interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
+							interactionManager.clickSlot(anvilHandler.syncId, 1, 0, SlotActionType.PICKUP, player);
+						});
+					}
+				}
+			}
+			anvilHandler.updateResult();
+			if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
+				return NumberValue.of(anvilHandler.getLevelCost());
+			}
+			if (hasArg) {
+				client.execute(() -> interactionManager.clickSlot(anvilHandler.syncId, 2, 0, SlotActionType.QUICK_MOVE, player));
+			}
+			return BooleanValue.of(firstValid && secondValid);
 		}
 
 		private Value interactInternal(ClientPlayerEntity player, PosValue posValue, StringValue stringValue, PosValue blockPosValue, Hand hand) throws CodeError {

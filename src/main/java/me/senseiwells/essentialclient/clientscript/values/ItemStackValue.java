@@ -159,6 +159,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 				MemberFunction.of("getCustomName", this::getCustomName),
 				MemberFunction.of("isNbtEqual", 1, this::isNbtEqual),
 				MemberFunction.of("getNbt", this::getNbt),
+				MemberFunction.of("getNbtAsString", this::getNbtAsString),
 				MemberFunction.of("getTranslatedName", this::getTranslatedName),
 				MemberFunction.of("getMiningSpeedMultiplier", 1, this::getMiningSpeedMultiplier),
 
@@ -350,6 +351,21 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 		}
 
 		@FunctionDoc(
+			name = "getNbtAsString",
+			desc = "This gets the NBT data of the ItemStack as a String",
+			returns = {STRING, "the NBT data of the ItemStack"},
+			example = "itemStack.getNbtAsString();"
+		)
+		private Value getNbtAsString(Arguments arguments) throws CodeError {
+			ItemStack itemStack = this.getItemStack(arguments);
+			NbtCompound nbtCompound = itemStack.getNbt();
+			if (nbtCompound == null) {
+				return StringValue.of("");
+			}
+			return StringValue.of(itemStack.getNbt().toString());
+		}
+
+		@FunctionDoc(
 			name = "getTranslatedName",
 			desc = {
 				"This gets the translated name of the ItemStack, for example",
@@ -446,7 +462,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			desc = "This sets the NBT data of the ItemStack",
 			params = {MAP, "nbtMap", "the NBT data of the ItemStack as a map"},
 			returns = {ITEM_STACK, "the ItemStack with the new NBT data"},
-			example = "itemStack.setNbt({'Enchantments': []});"
+			example = "itemStack.setNbt({'Lore': []});"
 		)
 		private Value setNbt(Arguments arguments) throws CodeError {
 			ItemStack itemStack = this.getItemStack(arguments);
