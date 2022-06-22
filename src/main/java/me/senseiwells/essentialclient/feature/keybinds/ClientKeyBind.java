@@ -1,44 +1,85 @@
 package me.senseiwells.essentialclient.feature.keybinds;
 
-import me.senseiwells.essentialclient.mixins.keyboard.KeyBindingAccessor;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Consumer;
+import java.util.Collection;
+import java.util.Iterator;
 
-public class ClientKeyBind extends KeyBinding {
-	private Consumer<MinecraftClient> onPressed;
+public abstract class ClientKeyBind implements Comparable<ClientKeyBind> {
+	private final String name;
+	private final String category;
 
-	ClientKeyBind(String translation, int defaultKey, String category, Consumer<MinecraftClient> onPressed) {
-		super(translation, defaultKey, category);
-		this.onPressed = onPressed;
+	private boolean isPressed;
+
+	private Callback callback;
+
+	ClientKeyBind(String name, String category) {
+		this.name = name;
+		this.category = category;
 	}
 
-	public int getKeyCode() {
-		InputUtil.Key key = ((KeyBindingAccessor) this).getKey();
-		return key == null ? -2 : key.getCode();
+	public abstract void press(InputUtil.Key key);
+
+	public abstract void release(InputUtil.Key key);
+
+	public abstract void addKey(InputUtil.Key key);
+
+	public abstract void clearKey();
+
+	public abstract void resetKey();
+
+	public abstract boolean isSingleKey();
+
+	public abstract boolean isDefault();
+
+	public abstract Collection<InputUtil.Key> getKeys();
+
+	public void setCallback(Callback callback) {
+		this.callback = callback;
 	}
 
-	public void onPress(MinecraftClient client) {
-		if (this.onPressed != null) {
-			this.onPressed.accept(client);
+	void setPressed(boolean pressed) {
+		this.isPressed = pressed;
+	}
+
+	void callCallback() {
+		this.callback.pressed(EssentialUtils.getClient());
+	}
+
+	public boolean isPressed() {
+		return this.isPressed;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public String getCategory() {
+		return this.category;
+	}
+
+	public String getDisplay() {
+		StringBuilder builder = new StringBuilder();
+		Iterator<InputUtil.Key> keyIterator = this.getKeys().iterator();
+		while (keyIterator.hasNext()) {
+			builder.append(keyIterator.next().getLocalizedText().getString());
+			if (keyIterator.hasNext()) {
+				builder.append(" + ");
+			}
 		}
-	}
-
-	public void setOnPressed(Consumer<MinecraftClient> onPressed) {
-		this.onPressed = onPressed;
+		return builder.toString();
 	}
 
 	@Override
-	public void setBoundKey(InputUtil.Key boundKey) {
-		super.setBoundKey(boundKey);
-		KeyBinding.updateKeysByCode();
-		ClientKeyBinds.INSTANCE.saveConfig();
+	public int compareTo(@NotNull ClientKeyBind o) {
+		return this.name.compareTo(o.name);
 	}
 
-	@Override
-	public int compareTo(KeyBinding keyBinding) {
-		return this.getTranslationKey().compareTo(keyBinding.getTranslationKey());
+	@FunctionalInterface
+	public interface Callback {
+		void pressed(MinecraftClient client);
 	}
 }

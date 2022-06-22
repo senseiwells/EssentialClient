@@ -2,7 +2,6 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -201,15 +200,6 @@ public class ChunkDebugScreen extends ChildScreen {
 		bufferBuilder.vertex(this.width, this.height - FOOTER_HEIGHT, 0).texture(this.width / 32f, (this.height - FOOTER_HEIGHT) / 32f).color(64, 64, 64, 255).next();
 
 		tessellator.draw();
-	}
-
-	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (ClientKeyBinds.OPEN_CHUNK_DEBUG.matchesKey(keyCode, scanCode)) {
-			this.close();
-			return true;
-		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
