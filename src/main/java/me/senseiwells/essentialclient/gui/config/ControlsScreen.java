@@ -13,12 +13,14 @@ import org.lwjgl.glfw.GLFW;
 public class ControlsScreen extends ChildScreen {
 	private ClientKeyBind focusedKeyBinding;
 	private ControlsListWidget controlWidget;
+	private boolean firstKey;
 
 	public ControlsScreen(Screen parent) {
 		super(Texts.CONTROLS_SCREEN, parent);
 	}
 
 	public void setFocusedKeyBinding(ClientKeyBind keyBind) {
+		this.firstKey = true;
 		this.focusedKeyBinding = keyBind;
 	}
 
@@ -36,7 +38,6 @@ public class ControlsScreen extends ChildScreen {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.focusedKeyBinding != null) {
-			this.focusedKeyBinding.setBoundKey(InputUtil.Type.MOUSE.createFromCode(button));
 			this.focusedKeyBinding = null;
 			return true;
 		}
@@ -54,9 +55,21 @@ public class ControlsScreen extends ChildScreen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (this.focusedKeyBinding != null) {
-			InputUtil.Key key = keyCode == GLFW.GLFW_KEY_ESCAPE ? InputUtil.UNKNOWN_KEY : InputUtil.fromKeyCode(keyCode, scanCode);
-			this.focusedKeyBinding.setBoundKey(key);
-			this.focusedKeyBinding = null;
+			if (this.focusedKeyBinding.isSingleKey()) {
+				InputUtil.Key key = keyCode == GLFW.GLFW_KEY_ESCAPE ? InputUtil.UNKNOWN_KEY : InputUtil.fromKeyCode(keyCode, scanCode);
+				this.focusedKeyBinding.addKey(key);
+				this.focusedKeyBinding = null;
+				return true;
+			}
+			if (this.firstKey) {
+				this.firstKey = false;
+				this.focusedKeyBinding.clearKey();
+			}
+			if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+				this.focusedKeyBinding = null;
+				return true;
+			}
+			this.focusedKeyBinding.addKey(InputUtil.fromKeyCode(keyCode, scanCode));
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);

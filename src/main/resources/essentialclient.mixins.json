@@ -58,7 +58,6 @@
     "displayTimePlayed.GameMenuScreenMixin",
     "gameRuleSync.RuleInvoker",
     "gameRuleSync.RuleMixin",
-    "keyboard.KeyBindingAccessor",
     "keyboard.KeyboardMixin",
     "mouseScrollRules.MouseMixin",
     "openScreenshotDirectory.ScreenshotRecorderMixin",

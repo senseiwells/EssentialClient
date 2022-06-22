@@ -7,7 +7,7 @@ import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.extensions.*;
 import me.senseiwells.essentialclient.clientscript.values.*;
-import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
+import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.block.Block;
@@ -131,7 +131,7 @@ public class MinecraftAPI extends ValueTypes {
 		builder.addConversion(Recipe.class, (r, c) -> new RecipeValue(r));
 		builder.addConversion(TradeOffer.class, (t, c) -> new TradeValue(t));
 		builder.addConversion(ArgumentBuilder.class, (a, c) -> new CommandBuilderValue(a));
-		builder.addConversion(ClientKeyBind.class, KeyBindWrapper::newKeyBindWrapper);
+		builder.addConversion(MultiKeyBind.class, KeyBindWrapper::newKeyBindWrapper);
 
 		builder.addConversion(ItemStackArgument.class, (i, c) -> EssentialUtils.throwAsRuntime(() -> new ItemStackValue(i.createStack(1, false))));
 		builder.addConversion(BlockStateArgument.class, (b, c) -> new BlockValue(b.getBlockState()));

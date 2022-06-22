@@ -5,6 +5,7 @@ import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
+import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
@@ -74,6 +74,7 @@ public class ClientScriptScreen extends ChildScreen {
 		private final ButtonWidget deleteBox;
 		private final ButtonWidget keyBindBox;
 		private final CheckboxWidget selectedCheck;
+		private boolean firstKey;
 		private boolean editingKeyBind;
 		private String newName;
 
@@ -92,7 +93,7 @@ public class ClientScriptScreen extends ChildScreen {
 				this.getParent().scriptWidget.load(this.client);
 				super.close();
 			}));
-			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getTranslationKey()), button -> this.editingKeyBind = true);
+			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
 			this.selectedCheck = new CheckboxWidget(0, 0, 20, 20, Texts.literal("Selected"), ClientScript.INSTANCE.isSelected(scriptName)) {
 				@Override
 				public void onPress() {
@@ -165,7 +166,6 @@ public class ClientScriptScreen extends ChildScreen {
 		@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
 			if (this.editingKeyBind) {
-				this.scriptInstance.getKeyBind().setBoundKey(InputUtil.Type.MOUSE.createFromCode(button));
 				this.editingKeyBind = false;
 				return true;
 			}
@@ -180,9 +180,22 @@ public class ClientScriptScreen extends ChildScreen {
 		@Override
 		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 			if (this.editingKeyBind) {
-				InputUtil.Key key = keyCode == GLFW.GLFW_KEY_ESCAPE ? InputUtil.UNKNOWN_KEY : InputUtil.fromKeyCode(keyCode, scanCode);
-				this.scriptInstance.getKeyBind().setBoundKey(key);
-				this.editingKeyBind = false;
+				ClientKeyBind keyBind = this.scriptInstance.getKeyBind();
+				if (keyBind.isSingleKey()) {
+					InputUtil.Key key = keyCode == GLFW.GLFW_KEY_ESCAPE ? InputUtil.UNKNOWN_KEY : InputUtil.fromKeyCode(keyCode, scanCode);
+					keyBind.addKey(key);
+					this.editingKeyBind = false;
+					return true;
+				}
+				if (this.firstKey) {
+					this.firstKey = false;
+					keyBind.clearKey();
+				}
+				if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+					this.editingKeyBind = false;
+					return true;
+				}
+				keyBind.addKey(InputUtil.fromKeyCode(keyCode, scanCode));
 				return true;
 			}
 			if (keyCode == GLFW.GLFW_KEY_ENTER && this.nameBox.isFocused()) {
@@ -199,17 +212,10 @@ public class ClientScriptScreen extends ChildScreen {
 			this.textRenderer.draw(matrices, "KeyBind", this.width / 2.0F - 100, this.height / 2.0F + 30, 0xE0E0E0);
 			drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
-			KeyBinding keyBinding = this.scriptInstance.getKeyBind();
-			this.keyBindBox.setMessage(keyBinding.getBoundKeyLocalizedText());
+			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
+			this.keyBindBox.setMessage(Texts.literal(keyBinding.getDisplay()));
 
 			MutableText editMessage = this.keyBindBox.getMessage().copy();
-			if (!keyBinding.isUnbound() && this.client != null) {
-				for (KeyBinding binding : this.client.options.allKeys) {
-					if (!this.editingKeyBind && binding != keyBinding && keyBinding.equals(binding)) {
-						this.keyBindBox.setMessage(editMessage.formatted(Formatting.RED));
-					}
-				}
-			}
 			if (this.editingKeyBind) {
 				this.keyBindBox.setMessage(
 					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
