@@ -5,25 +5,26 @@ import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.api.docs.MemberDoc;
 import me.senseiwells.arucas.api.wrappers.*;
+import me.senseiwells.arucas.throwables.BuiltInException;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.values.ListValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.arucas.values.classes.WrapperClassDefinition;
 import me.senseiwells.arucas.values.classes.WrapperClassValue;
 import me.senseiwells.arucas.values.functions.FunctionValue;
-import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
+import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 import me.senseiwells.essentialclient.utils.keyboard.KeyboardHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.ValueTypes.FUNCTION;
-import static me.senseiwells.arucas.utils.ValueTypes.STRING;
+import static me.senseiwells.arucas.utils.ValueTypes.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.KEY_BIND;
 
 @SuppressWarnings("unused")
@@ -40,7 +41,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 	@ArucasDefinition
 	public static WrapperClassDefinition DEFINITION;
 
-	private ClientKeyBind keyBind;
+	private MultiKeyBind keyBind;
 	private Context callbackContext;
 
 	@MemberDoc(
@@ -59,7 +60,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 	)
 	@ArucasConstructor
 	public void constructor(Context context, StringValue keyBindName) {
-		this.keyBind = ClientKeyBinds.register(keyBindName.value, GLFW.GLFW_KEY_UNKNOWN, "Scripting Key Binds", this::onPressed);
+		this.keyBind = ClientKeyBinds.registerMulti(keyBindName.value, "Scripting Key Binds", this::onPressed);
 	}
 
 	@FunctionDoc(
@@ -71,18 +72,57 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 	@ArucasFunction
 	public void setKey(Context context, StringValue keyName) {
 		int keyCode = KeyboardHelper.translateStringToKey(keyName.value);
-		this.keyBind.setBoundKey(InputUtil.fromKeyCode(keyCode, 0));
+		this.keyBind.clearKey();
+		this.keyBind.addKeys(keyCode);
+	}
+
+	@FunctionDoc(
+		name = "setKeys",
+		desc = "Sets the key bind to new keys",
+		params = {LIST, "keyNames", "the names of keys"},
+		example = "keyBind.setKeys(['control', 'f']);"
+	)
+	@ArucasFunction
+	public void setKeys(Context context, ListValue listValue) throws CodeError {
+		ArucasList list = listValue.value;
+		int[] inputKeys = new int[list.size()];
+		for (int i = 0; i < inputKeys.length; i++) {
+			String keyAsString = list.get(i).getAsString(context);
+			int key = KeyboardHelper.translateStringToKey(keyAsString);
+			if (key < 0) {
+				throw new BuiltInException("Unknown key '%s'".formatted(keyAsString));
+			}
+			inputKeys[i] = key;
+		}
+
+		this.keyBind.clearKey();
+		this.keyBind.addKeys(inputKeys);
 	}
 
 	@FunctionDoc(
 		name = "getKey",
-		desc = "Gets the key bind's key",
+		desc = "Gets the key bind's first key",
 		returns = {STRING, "the key bind's key"},
 		example = "keyBind.getKey();"
 	)
 	@ArucasFunction
 	public Value getKey(Context context) {
-		return StringValue.of(KeyboardHelper.translateKeyToString(this.keyBind.getKeyCode()));
+		return StringValue.of(KeyboardHelper.translateKeyToString(this.keyBind.getFirstKey().getCode()));
+	}
+
+	@FunctionDoc(
+		name = "getKeys",
+		desc = "Gets the all of the keys in the key bind",
+		returns = {LIST, "list of strings of all the keys"},
+		example = "keybind.getKeys();"
+	)
+	@ArucasFunction
+	public Value getKeys(Context context) {
+		ArucasList list = new ArucasList();
+		for (InputUtil.Key key : this.keyBind.getKeys()) {
+			list.add(StringValue.of(KeyboardHelper.translateKeyToString(key.getCode())));
+		}
+		return new ListValue(list);
 	}
 
 	@FunctionDoc(
@@ -110,7 +150,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		return this.keyBind;
 	}
 
-	public static WrapperClassValue newKeyBindWrapper(ClientKeyBind keyBind, Context context) throws CodeError {
+	public static WrapperClassValue newKeyBindWrapper(MultiKeyBind keyBind, Context context) throws CodeError {
 		KeyBindWrapper keyBindWrapper = new KeyBindWrapper();
 		keyBindWrapper.keyBind = keyBind;
 		return DEFINITION.createNewDefinition(keyBindWrapper, context, List.of());

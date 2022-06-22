@@ -9,8 +9,8 @@ import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
+import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
@@ -19,7 +19,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -48,7 +47,7 @@ public class ClientScriptInstance {
 	private final String scriptName;
 	private final String content;
 	private final Path fileLocation;
-	private final ClientKeyBind keyBind;
+	private final MultiKeyBind keyBind;
 	private ArucasThread mainScriptThread;
 	private UUID instanceId;
 	private boolean isStopping;
@@ -57,7 +56,7 @@ public class ClientScriptInstance {
 		this.scriptName = scriptName;
 		this.content = content;
 		this.fileLocation = fileLocation;
-		this.keyBind = ClientKeyBinds.register(scriptName, GLFW.GLFW_KEY_UNKNOWN, "Script Toggles", client -> this.toggleScript());
+		this.keyBind = ClientKeyBinds.registerMulti(scriptName, "Script Toggles", client -> this.toggleScript());
 		ClientScript.INSTANCE.addInstance(this);
 	}
 
@@ -69,7 +68,7 @@ public class ClientScriptInstance {
 		return this.fileLocation;
 	}
 
-	public ClientKeyBind getKeyBind() {
+	public MultiKeyBind getKeyBind() {
 		return this.keyBind;
 	}
 

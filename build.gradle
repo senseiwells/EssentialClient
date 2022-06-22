@@ -15,6 +15,9 @@ repositories {
 	maven {
 		url 'https://jitpack.io'
 	}
+	maven {
+		url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+	}
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -49,6 +52,8 @@ dependencies {
 
 	packImplementation "com.github.senseiwells:Arucas:v${project.arucas_version}"
 	packImplementation "com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}"
+
+	modRuntime "me.djtheredstoner:DevAuth-fabric:1.0.0"
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'

@@ -9,7 +9,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -34,7 +33,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 		sortedKeys.forEach((category, keys) -> {
 			this.addEntry(new CategoryEntry(Texts.translatable(category)));
 			for (ClientKeyBind keyBind : keys) {
-				Text text = Texts.translatable(keyBind.getTranslationKey());
+				Text text = Texts.translatable(keyBind.getName());
 				int i = client.textRenderer.getWidth(text);
 				if (i > this.maxKeyNameLength) {
 					this.maxKeyNameLength = i;
@@ -96,7 +95,8 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 				ControlsListWidget.this.controlsScreen.setFocusedKeyBinding(this.keyBind);
 			});
 			this.resetButton = new ButtonWidget(0, 0, 50, 20, Texts.RESET, button -> {
-				this.keyBind.setBoundKey(this.keyBind.getDefaultKey());
+				this.keyBind.clearKey();
+				this.keyBind.resetKey();
 			});
 		}
 
@@ -121,17 +121,9 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 			this.resetButton.render(matrices, mouseX, mouseY, tickDelta);
 			this.editButton.x = x + 105;
 			this.editButton.y = y;
-			this.editButton.setMessage(this.keyBind.getBoundKeyLocalizedText());
+			this.editButton.setMessage(Texts.literal(this.keyBind.getDisplay()));
 
 			MutableText editMessage = this.editButton.getMessage().copy();
-			if (!this.keyBind.isUnbound()) {
-				for (KeyBinding binding : ControlsListWidget.this.client.options.keysAll) {
-					if (!focused && binding != this.keyBind && this.keyBind.equals(binding)) {
-						this.editButton.setMessage(editMessage.formatted(Formatting.RED));
-					}
-				}
-
-			}
 			if (focused) {
 				this.editButton.setMessage(
 					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
