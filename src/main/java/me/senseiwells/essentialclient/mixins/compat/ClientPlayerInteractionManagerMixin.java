@@ -35,7 +35,7 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "clickSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;onSlotClick(IILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"))
 	private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-		if (MultiConnectAPI.instance().getProtocolVersion() <= 754 && actionType == SlotActionType.THROW) {
+		if (MultiConnectAPI.instance().getProtocolVersion() <= 754 && actionType == SlotActionType.THROW && slotId >= 0) {
 			this.cachedList.set(slotId, ItemStack.EMPTY);
 		}
 	}
