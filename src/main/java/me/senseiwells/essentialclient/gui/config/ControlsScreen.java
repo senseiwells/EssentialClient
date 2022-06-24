@@ -7,15 +7,25 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ControlsScreen extends ChildScreen {
+	private ClientKeyBind hoveredKeyBinding;
 	private ClientKeyBind focusedKeyBinding;
 	private ControlsListWidget controlWidget;
 	private boolean firstKey;
 
 	public ControlsScreen(Screen parent) {
 		super(Texts.CONTROLS_SCREEN, parent);
+	}
+
+	public void setHoveredKeyBinding(ClientKeyBind keyBind) {
+		this.hoveredKeyBinding = keyBind;
 	}
 
 	public void setFocusedKeyBinding(ClientKeyBind keyBind) {
@@ -48,6 +58,17 @@ public class ControlsScreen extends ChildScreen {
 		this.renderBackground(matrices);
 		this.controlWidget.render(matrices, mouseX, mouseY, delta);
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+
+		if (this.hoveredKeyBinding != null) {
+			String display = this.hoveredKeyBinding.getDisplay();
+			List<Text> textList = List.of(
+				Texts.literal(this.hoveredKeyBinding.getName()).formatted(Formatting.GOLD),
+				Texts.literal(display.isEmpty() ? "No binding" : display)
+			);
+			this.renderTooltip(matrices, textList, mouseX, mouseY);
+			this.hoveredKeyBinding = null;
+		}
+
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 

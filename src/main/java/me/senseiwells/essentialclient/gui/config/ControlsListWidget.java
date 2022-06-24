@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
@@ -121,16 +122,27 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 			this.resetButton.render(matrices, mouseX, mouseY, tickDelta);
 			this.editButton.x = x + 105;
 			this.editButton.y = y;
-			this.editButton.setMessage(Texts.literal(this.keyBind.getDisplay()));
 
-			MutableText editMessage = this.editButton.getMessage().copy();
+			MutableText editMessage = Texts.literal(this.keyBind.getDisplay());
+			int textWidth = ControlsListWidget.this.client.textRenderer.getWidth(editMessage);
+			if (textWidth > 70) {
+				editMessage = Texts.literal("...");
+			}
+
 			if (focused) {
 				this.editButton.setMessage(
 					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
 			}
+			else {
+				this.editButton.setMessage(editMessage);
+			}
 
 			this.editButton.render(matrices, mouseX, mouseY, tickDelta);
+
+			if (this.editButton.isMouseOver(mouseX, mouseY)) {
+				ControlsListWidget.this.controlsScreen.setHoveredKeyBinding(this.keyBind);
+			}
 		}
 
 		@Override
