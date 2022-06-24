@@ -46,7 +46,9 @@ public abstract class ClientKeyBind implements Comparable<ClientKeyBind> {
 	}
 
 	void callCallback() {
-		this.callback.pressed(EssentialUtils.getClient());
+		if (this.callback != null) {
+			this.callback.pressed(EssentialUtils.getClient());
+		}
 	}
 
 	public boolean isPressed() {
