@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
+import me.senseiwells.essentialclient.gui.config.ControlsListWidget;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
@@ -23,6 +25,7 @@ import org.lwjgl.glfw.GLFW;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static me.senseiwells.essentialclient.utils.render.Texts.*;
 
@@ -213,14 +216,30 @@ public class ClientScriptScreen extends ChildScreen {
 			drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
-			this.keyBindBox.setMessage(Texts.literal(keyBinding.getDisplay()));
 
-			MutableText editMessage = this.keyBindBox.getMessage().copy();
+			MutableText editMessage = Texts.literal(keyBinding.getDisplay());
+			if (this.client != null &&  this.client.textRenderer.getWidth(editMessage) > 70) {
+				editMessage = Texts.literal("...");
+			}
+
 			if (this.editingKeyBind) {
 				this.keyBindBox.setMessage(
 					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
 			}
+			else {
+				this.keyBindBox.setMessage(editMessage);
+			}
+
+			if (this.keyBindBox.isMouseOver(mouseX, mouseY)) {
+				String display = keyBinding.getDisplay();
+				List<Text> textList = List.of(
+					Texts.literal(keyBinding.getName()).formatted(Formatting.GOLD),
+					Texts.literal(display.isEmpty() ? "No binding" : display)
+				);
+				this.renderTooltip(matrices, textList, mouseX, mouseY);
+			}
+
 			super.render(matrices, mouseX, mouseY, delta);
 		}
 	}
