@@ -242,7 +242,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.say('/help');"
 		)
 		private Value say(Arguments arguments) throws CodeError {
-			EssentialUtils.sendChatMessage(arguments.getNext().getAsString(arguments.getContext()));
+			EssentialUtils.sendChatMessage(arguments.skip().getNext().getAsString(arguments.getContext()));
 			return NullValue.NULL;
 		}
 
@@ -1524,7 +1524,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
 			BlockHitResult hitResult = new BlockHitResult(posValue.value, direction, new BlockPos(blockPosValue.value), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, Hand.MAIN_HAND, hitResult));
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, hand, hitResult));
 			return NullValue.NULL;
 		}
 

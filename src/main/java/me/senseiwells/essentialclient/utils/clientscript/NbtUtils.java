@@ -11,9 +11,11 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.utils.impl.IArucasCollection;
 import me.senseiwells.arucas.values.*;
+import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 
@@ -113,9 +115,9 @@ public class NbtUtils {
 
 	public static ItemStack nbtToItemStack(Context context, ISyntax syntaxPosition, String string) throws RuntimeError {
 		try {
-			ItemStringReader reader = new ItemStringReader(new StringReader(string), false).consume();
-			ItemStack itemStack = new ItemStack(reader.getItem());
-			itemStack.setNbt(reader.getNbt());
+			ItemStringReader.ItemResult reader = ItemStringReader.item(CommandRegistryWrapper.of(Registry.ITEM), new StringReader(string));
+			ItemStack itemStack = new ItemStack(reader.item());
+			itemStack.setNbt(reader.nbt());
 			return itemStack;
 		}
 		catch (CommandSyntaxException cse) {
