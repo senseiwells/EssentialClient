@@ -123,6 +123,13 @@ public class RulesScreen extends ChildScreen {
 		super.close();
 	}
 
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		this.searchBox.setTextFieldFocused(false);
+		this.widget.unFocusAll();
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
 	public static RulesScreen getClientRulesScreen(Screen parent) {
 		return new RulesScreen(Texts.CLIENT_SCREEN, parent, () -> true, ClientRules::getCurrentClientRules);
 	}
