@@ -86,6 +86,11 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 	}
 
 	@Override
+	public void unFocus() {
+		this.editButton.setTextFieldFocused(false);
+	}
+
+	@Override
 	public void updateEntryOnClose() {
 		if (this.invalid) {
 			this.rule.resetToDefault();
