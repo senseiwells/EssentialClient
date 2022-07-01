@@ -13,25 +13,34 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.network.message.MessageType;
 import net.minecraft.network.packet.s2c.play.*;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
+import java.util.function.Function;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private ClientWorld world;
 
 	@Final
 	@Shadow
 	private MinecraftClient client;
+
+	@Shadow private DynamicRegistryManager.Immutable registryManager;
 
 	@Inject(method = "onHealthUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
@@ -64,8 +73,14 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/GameMessageS2CPacket;getMessageType(Lnet/minecraft/util/registry/Registry;)Lnet/minecraft/network/message/MessageType;"), cancellable = true)
 	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-		UUID sender = this.client.inGameHud.extractSender(packet.content());
-		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(StringValue.of(sender.toString()), StringValue.of(packet.content().getString()))) {
+		if (this.handleMessage(Util.NIL_UUID, packet.content().getString(), packet::getMessageType)) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/ChatMessageS2CPacket;sender()Lnet/minecraft/network/message/MessageSender;"), cancellable = true)
+	private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci) {
+		if (this.handleMessage(packet.sender().uuid(), packet.getSignedMessage().getContent().getString(), packet::getMessageType)) {
 			ci.cancel();
 		}
 	}
@@ -103,5 +118,16 @@ public class ClientPlayNetworkHandlerMixin {
 	private void onEntityRemoved(int entityId, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(entityId);
 		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
+	}
+
+	@Unique
+	private boolean handleMessage(UUID uuid, String content, Function<Registry<MessageType>, MessageType> messageType) {
+		Registry<MessageType> registry = this.registryManager.get(Registry.MESSAGE_TYPE_KEY);
+		Identifier messageTypeId = registry.getId(messageType.apply(registry));
+		return MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(
+			StringValue.of(uuid.toString()),
+			StringValue.of(content),
+			StringValue.of(messageTypeId == null ? "unknown" : messageTypeId.getPath())
+		);
 	}
 }
