@@ -62,7 +62,7 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"), cancellable = true)
 	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(StringValue.of(packet.getSender().toString()), StringValue.of(packet.getMessage().getString()))) {
+		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(StringValue.of(packet.getSender().toString()), StringValue.of(packet.getMessage().getString()), StringValue.of(packet.getLocation().name().toLowerCase()))) {
 			ci.cancel();
 		}
 	}
