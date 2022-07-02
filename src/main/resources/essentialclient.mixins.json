@@ -59,6 +59,8 @@
     "gameRuleSync.RuleInvoker",
     "gameRuleSync.RuleMixin",
     "keyboard.KeyboardMixin",
+    "longChatMessages.ChatMessageC2SPacketMixin",
+    "longChatMessages.ChatScreenMixin"
     "mouseScrollRules.MouseMixin",
     "openScreenshotDirectory.ScreenshotRecorderMixin",
     "overrideCreativeWalkSpeed.LivingEntityMixin",

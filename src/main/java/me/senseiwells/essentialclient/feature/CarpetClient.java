@@ -63,6 +63,10 @@ public class CarpetClient implements Config.CList {
 		return this.MANAGERS.contains(name);
 	}
 
+	public CarpetClientRule<?> getRule(String name) {
+		return this.CURRENT_RULES.get(name);
+	}
+
 	public void onDisconnect() {
 		this.isServerCarpet = false;
 		this.CURRENT_RULES.clear();
