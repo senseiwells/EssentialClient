@@ -1,5 +1,9 @@
 package me.senseiwells.essentialclient.utils;
 
+import me.senseiwells.essentialclient.feature.CarpetClient;
+import me.senseiwells.essentialclient.rule.carpet.CarpetClientRule;
+import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
+import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
@@ -121,6 +125,25 @@ public class EssentialUtils {
 		}
 		BlockState state = player.world.getBlockState(pos);
 		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(null, null) >= 0;
+	}
+
+	public static int getMaxChatLength(int fallback) {
+		if (CarpetClient.INSTANCE.isServerCarpet()) {
+			CarpetClientRule<?> rule = CarpetClient.INSTANCE.getRule("maxChatLength");
+			if (rule instanceof IntegerCarpetRule intRule) {
+				int maxLength = intRule.getValue();
+				if (maxLength > 0) {
+					return maxLength;
+				}
+			}
+			if (rule instanceof StringCarpetRule stringRule) {
+				Integer maxLength = catchAsNull(() -> Integer.parseInt(stringRule.getValue()));
+				if (maxLength != null && maxLength >= 0) {
+					return maxLength;
+				}
+			}
+		}
+		return fallback;
 	}
 
 	public static void throwAsRuntime(ThrowableRunnable runnable) {
