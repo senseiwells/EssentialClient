@@ -44,7 +44,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		OPEN_CHUNK_DEBUG = registerMulti("Open Chunk Debug", client -> {
 			if (EssentialClient.CHUNK_NET_HANDLER.isAvailable()) {
 				if (client.currentScreen instanceof ChunkDebugScreen) {
-					client.currentScreen.onClose();
+					client.currentScreen.close();
 					return;
 				}
 				setScreenIfNull(client, () -> new ChunkDebugScreen(null));
