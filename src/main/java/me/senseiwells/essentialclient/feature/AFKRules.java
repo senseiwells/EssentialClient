@@ -14,8 +14,12 @@ public class AFKRules {
 	private int ticks = 0;
 	private double prevMouseX;
 	private double prevMouseY;
+	private boolean wasAfk = false;
 
 	public void load() {
+		Events.ON_DISCONNECT.register(client -> {
+			this.wasAfk = false;
+		});
 		Events.ON_TICK_POST.register(client -> {
 			ClientPlayerEntity playerEntity = client.player;
 			int announceAfk = ClientRules.ANNOUNCE_AFK.getValue();
@@ -40,6 +44,13 @@ public class AFKRules {
 			this.prevMouseX = mouseX;
 			this.prevMouseY = mouseY;
 			this.ticks = 0;
+			if (this.wasAfk) {
+				String message = ClientRules.ANNOUNCE_BACK_MESSAGE.getValue();
+				if (!message.isBlank()) {
+					playerEntity.sendChatMessage(message);
+				}
+				this.wasAfk = false;
+			}
 		});
 	}
 }

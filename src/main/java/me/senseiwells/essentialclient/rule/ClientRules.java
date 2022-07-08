@@ -87,7 +87,8 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		WATER_FOV_MULTIPLIER = register(new DoubleSliderClientRule("waterFovMultiplier", "Determines the percentage of Fov scaling when fully submerged in water", 0, 0, 1));
 
 	public static StringClientRule
-		ANNOUNCE_AFK_MESSAGE = register(new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK"));
+		ANNOUNCE_AFK_MESSAGE = register(new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK")),
+		ANNOUNCE_BACK_MESSAGE = register(new StringClientRule("announceBackMessage", "This is the message you announce after you are back from being afk", ""));
 
 	@SuppressWarnings("unused")
 	public static final CycleClientRule
