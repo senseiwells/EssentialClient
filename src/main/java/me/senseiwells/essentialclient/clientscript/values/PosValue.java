@@ -556,7 +556,6 @@ public class PosValue extends GenericValue<Vec3d> {
 		@FunctionDoc(
 			name = "asCentre",
 			desc = "This returns center value of the position",
-			params = {STRING, "direction", "the direction, can be: north, south, east, west, up, down"},
 			returns = {POS, "the center of the position"},
 			example = "pos.asCentre();"
 		)
@@ -600,7 +599,7 @@ public class PosValue extends GenericValue<Vec3d> {
 			desc = "This returns distance to other position",
 			params = {POS, "other", "other position",},
 			returns = {NUMBER, "distance to other position"},
-			example = "pos.distanceTo(new Pos(0,0,0));"
+			example = "pos.distanceTo(new Pos(0, 0, 0));"
 		)
 		private Value distanceTo(Arguments arguments) throws CodeError {
 			PosValue thisValue = arguments.getNext(PosValue.class);
@@ -617,7 +616,7 @@ public class PosValue extends GenericValue<Vec3d> {
 				NUMBER, "z", "other position z",
 			},
 			returns = {NUMBER, "distance to other position"},
-			example = "pos.distanceTo(0,0,0);"
+			example = "pos.distanceTo(0, 0, 0);"
 		)
 		private Value distanceTo1(Arguments arguments) throws CodeError {
 			PosValue thisValue = arguments.getNext(PosValue.class);
