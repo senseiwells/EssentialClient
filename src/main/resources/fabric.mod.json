@@ -22,7 +22,7 @@
   "environment": "client",
   "entrypoints": {
     "preLaunch": [
-      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
+      "me.senseiwells.essentialclient.feature.MixinExtraSupport::load"
     ],
     "main": [
       "me.senseiwells.essentialclient.EssentialClient"
