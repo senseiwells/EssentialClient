@@ -10,17 +10,15 @@ import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.arucas.values.GenericValue;
-import me.senseiwells.arucas.values.ListValue;
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.Value;
+import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.ConstructorFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
-import static me.senseiwells.arucas.utils.ValueTypes.LIST;
-import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
+import static me.senseiwells.arucas.utils.ValueTypes.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ENTITY;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 public class PosValue extends GenericValue<Vec3d> {
@@ -149,12 +147,326 @@ public class PosValue extends GenericValue<Vec3d> {
 				MemberFunction.of("multiply", 1, this::multiply1),
 				MemberFunction.of("add", 3, this::add),
 				MemberFunction.of("add", 1, this::add1),
+				MemberFunction.of("distanceTo", 1, this::distanceToPos),
+				MemberFunction.of("distanceTo", 3, this::distanceToPosUnpacked),
+				MemberFunction.of("isNear", 1, this::isNearPos),
+				MemberFunction.of("isNear", 2, this::isWithinDistance),
+				MemberFunction.of("offset", 1, this::offsetSingle),
+				MemberFunction.of("offset", 2, this::offsetAmount),
+				MemberFunction.of("east", this::eastSingle),
+				MemberFunction.of("south", this::southSingle),
+				MemberFunction.of("west", this::westSingle),
+				MemberFunction.of("north",this::northSingle),
+				MemberFunction.of("up", this::upSingle),
+				MemberFunction.of("down", this::downSingle),
+				MemberFunction.of("east", 1, this::eastAmount),
+				MemberFunction.of("south", 1, this::southAmount),
+				MemberFunction.of("west", 1, this::westAmount),
+				MemberFunction.of("north", 1, this::northAmount),
+				MemberFunction.of("up", 1, this::upAmount),
+				MemberFunction.of("down", 1, this::downAmount),
+				MemberFunction.of("asCenter", this::asCenter),
+				MemberFunction.of("getSidePos",1, this::getSidePos),
 				MemberFunction.of("subtract", 3, this::subtract),
 				MemberFunction.of("subtract", 1, this::subtract1),
 				MemberFunction.of("dotProduct", 1, this::dotProduct),
 				MemberFunction.of("crossProduct", 1, this::crossProduct),
 				MemberFunction.of("toList", this::toList)
 			);
+		}
+		@FunctionDoc(
+			name = "distanceTo",
+			desc = "This returns distance to other Position",
+			params = {
+				POS, "other", "other position object",
+			},
+			returns = {NUMBER, "distance to other position"},
+			example = "pos.distanceTo(new Pos(0,0,0));"
+		)
+		private Value distanceToPos(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			PosValue posValue = arguments.getNext(PosValue.class);
+			return NumberValue.of(thisValue.value.distanceTo(posValue.value));
+		}
+
+		@FunctionDoc(
+			name = "distanceTo",
+			desc = "This returns distance to other unpacked Position",
+			params = {
+				NUMBER, "x", "other position x",
+				NUMBER, "y", "other position y",
+				NUMBER, "z", "other position z",
+			},
+			returns = {NUMBER, "distance to other position"},
+			example = "pos.distanceTo(0,0,0);"
+		)
+		private Value distanceToPosUnpacked(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			double x = arguments.getNextGeneric(NumberValue.class);
+			double y = arguments.getNextGeneric(NumberValue.class);
+			double z = arguments.getNextGeneric(NumberValue.class);
+			return NumberValue.of(thisValue.value.distanceTo(new Vec3d(x,y,z)));
+		}
+
+		@FunctionDoc(
+			name = "isNear",
+			desc = "This returns whether position to entity is less than 4.5",
+			params = {
+				ENTITY, "entityValue", "Entity Value"
+			},
+			returns = {BOOLEAN, "whether entity is within 4.5 block distance"},
+			example = "pos.isNear(player);"
+		)
+		private Value isNearPos(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
+			return BooleanValue.of(entityValue.value.squaredDistanceTo(thisValue.value) <= 4.5);
+		}
+
+		@FunctionDoc(
+			name = "isNear",
+			desc = "This returns whether position to entity is less than given distance",
+			params = {
+				ENTITY, "entityValue", "Entity Value",
+				NUMBER, "r", "distance"
+			},
+			returns = {BOOLEAN, "whether entity is within given distance"},
+			example = "pos.isNear(player, 8);"
+		)
+		private Value isWithinDistance(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
+			double distance = arguments.getNextGeneric(NumberValue.class);
+			return BooleanValue.of(entityValue.value.squaredDistanceTo(thisValue.value) <= distance);
+		}
+
+		@FunctionDoc(
+			name = "offset",
+			desc = "This returns new position offset with given direction",
+			params = {
+				STRING, "direction", "Direction Name"
+			},
+			returns = {POS, "new Pos object offset to given direction"},
+			example = "pos.offset(\"north\");"
+		)
+		private Value offsetSingle(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			StringValue stringValue = arguments.getNext(StringValue.class);
+			Direction direction = Direction.byName(stringValue.value);
+			if (direction == null)
+				throw arguments.getError("String " + stringValue.value + " is not valid direction name");
+			return new PosValue(thisValue.value.add(Vec3d.of(direction.getVector())));
+		}
+		@FunctionDoc(
+			name = "offset",
+			desc = "This returns new position offset with given direction with amount",
+			params = {
+				STRING, "direction", "Direction Name",
+				NUMBER, "p", "amount"
+			},
+			returns = {POS, "new Pos object offset to given direction with amount"},
+			example = "pos.offset(\"north\", 3);"
+		)
+		private Value offsetAmount(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			StringValue stringValue = arguments.getNext(StringValue.class);
+			double amount = arguments.getNextGeneric(NumberValue.class);
+			Direction direction = Direction.byName(stringValue.value);
+			if (direction == null)
+				throw arguments.getError("String " + stringValue.value + " is not valid direction name");
+			return innerOffsetDirection(thisValue.value, direction, amount);
+		}
+		@FunctionDoc(
+			name = "east",
+			desc = "This returns new position offset with east",
+			returns = {POS, "east position value"},
+			example = "pos.east();"
+		)
+		private Value eastSingle(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.EAST, 1);
+		}
+
+		@FunctionDoc(
+			name = "east",
+			desc = "This returns new position with east, with given amount",
+			params = {
+				NUMBER, "double", "amount"
+			},
+			returns = {POS, "offset position value"},
+			example = "pos.east(1);"
+		)
+
+		private Value eastAmount(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			double amount = arguments.getNextGeneric(NumberValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.EAST, amount);
+		}
+		@FunctionDoc(
+			name = "south",
+			desc = "This returns new position offset with south",
+			returns = {POS, "south position value"},
+			example = "pos.south();"
+		)
+		private Value southSingle(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.SOUTH, 1);
+		}
+
+		@FunctionDoc(
+			name = "south",
+			desc = "This returns new position with south, with given amount",
+			params = {
+				NUMBER, "double", "amount"
+			},
+			returns = {POS, "offset position value"},
+			example = "pos.south(1);"
+		)
+		private Value southAmount(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			double amount = arguments.getNextGeneric(NumberValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.SOUTH, amount);
+		}
+
+		@FunctionDoc(
+			name = "west",
+			desc = "This returns new position offset with west",
+			returns = {POS, "west position value"},
+			example = "pos.west();"
+		)
+		private Value westSingle(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.WEST, 1);
+		}
+
+		@FunctionDoc(
+			name = "west",
+			desc = "This returns new position with west, with given amount",
+			params = {
+				NUMBER, "double", "amount"
+			},
+			returns = {POS, "offset position value"},
+			example = "pos.west(1);"
+		)
+
+		private Value westAmount(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			double amount = arguments.getNextGeneric(NumberValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.WEST, amount);
+		}
+
+		@FunctionDoc(
+			name = "north",
+			desc = "This returns new position offset with north",
+			returns = {POS, "north position value"},
+			example = "pos.north();"
+		)
+		private Value northSingle(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.NORTH, 1);
+		}
+
+		@FunctionDoc(
+			name = "north",
+			desc = "This returns new position with north, with given amount",
+			params = {
+				NUMBER, "double", "amount"
+			},
+			returns = {POS, "offset position value"},
+			example = "pos.north(1);"
+		)
+		private Value northAmount(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			double amount = arguments.getNextGeneric(NumberValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.NORTH, amount);
+		}
+
+		@FunctionDoc(
+			name = "up",
+			desc = "This returns new position offset with up",
+			returns = {POS, "up position value"},
+			example = "pos.up();"
+		)
+		private Value upSingle(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.UP, 1);
+		}
+
+		@FunctionDoc(
+			name = "up",
+			desc = "This returns new position with up, with given amount",
+			params = {
+				NUMBER, "double", "amount"
+			},
+			returns = {POS, "offset position value"},
+			example = "pos.up(3);"
+		)
+		private Value upAmount(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			double amount = arguments.getNextGeneric(NumberValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.UP, amount);
+		}
+
+		@FunctionDoc(
+			name = "down",
+			desc = "This returns new position offset with down",
+			returns = {POS, "down position value"},
+			example = "pos.down();"
+		)
+		private Value downSingle(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.DOWN, 1);
+		}
+
+		@FunctionDoc(
+			name = "down",
+			desc = "This returns new position with down, with given amount",
+			params = {
+				NUMBER, "double", "amount"
+			},
+			returns = {POS, "offset position value"},
+			example = "pos.down(3);"
+		)
+		private Value downAmount(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			double amount = arguments.getNextGeneric(NumberValue.class);
+			return innerOffsetDirection(thisValue.value, Direction.DOWN, amount);
+		}
+
+		@FunctionDoc(
+			name = "asCenter",
+			desc = "This returns center value of blockPos",
+			params = {
+				STRING, "direction", "Direction Name"
+			},
+			returns = {POS, "Center of the blockPos"},
+			example = "pos.asCenter();"
+		)
+		private Value asCenter(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			return new PosValue(Vec3d.ofCenter(thisValue.blockPos));
+		}
+
+		@FunctionDoc(
+			name = "getSidePos",
+			desc = "This returns Side value of blockPos",
+			params = {
+				STRING, "direction", "Direction Name"
+			},
+			returns = {POS, "Side of the blockPos"},
+			example = "pos.getSidePos('east');"
+		)
+		private Value getSidePos(Arguments arguments) throws CodeError {
+			PosValue thisValue = arguments.getNext(PosValue.class);
+			StringValue stringValue = arguments.getNext(StringValue.class);
+			Direction direction = Direction.byName(stringValue.value);
+			if (direction == null)
+				throw arguments.getError("String " + stringValue.value + " is not valid direction name");
+			return new PosValue(Vec3d.ofCenter(thisValue.blockPos).add(Vec3d.of(direction.getVector()).multiply(0.5)));
+		}
+
+		private Value innerOffsetDirection(Vec3d origin, Direction direction, double amount) {
+			return new PosValue(origin.add(Vec3d.of(direction.getVector()).multiply(amount)));
 		}
 
 		@FunctionDoc(
