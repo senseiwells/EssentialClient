@@ -17,6 +17,7 @@ import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExt
 import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
@@ -53,7 +54,6 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
@@ -1069,7 +1069,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			NumberValue pitch = arguments.getNextNumber();
 			StringValue directionValue = arguments.getNextString();
 			NumberValue durationValue = arguments.getNextNumber();
-			Direction direction = Objects.requireNonNullElse(Direction.byName(directionValue.value), Direction.DOWN);
+			Direction direction = ClientScriptUtils.stringToDirection(directionValue.value, Direction.DOWN);
 			int duration = MathHelper.ceil(durationValue.value);
 			duration = duration > 0 ? duration : 20;
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
@@ -1226,7 +1226,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			double y = arguments.getNextGeneric(NumberValue.class);
 			double z = arguments.getNextGeneric(NumberValue.class);
 			StringValue stringValue = arguments.getNextString();
-			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
+			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.attackBlock(new BlockPos(x, y, z), direction));
 			return NullValue.NULL;
 		}
@@ -1244,7 +1244,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			PosValue posValue = arguments.skip().getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
-			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
+			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.attackBlock(new BlockPos(posValue.value), direction));
 			return NullValue.NULL;
 		}
@@ -1266,7 +1266,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			double y = arguments.getNextGeneric(NumberValue.class);
 			double z = arguments.getNextGeneric(NumberValue.class);
 			StringValue stringValue = arguments.getNextString();
-			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
+			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			BlockHitResult hitResult = new BlockHitResult(new Vec3d(x, y, z), direction, new BlockPos(x, y, z), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ClientWorld world = ArucasMinecraftExtension.getWorld();
@@ -1339,7 +1339,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			double px = arguments.getNextGeneric(NumberValue.class);
 			double py = arguments.getNextGeneric(NumberValue.class);
 			double pz = arguments.getNextGeneric(NumberValue.class);
-			Direction direction = Objects.requireNonNullElse(Direction.byName(arguments.getNextGeneric(StringValue.class)), Direction.DOWN);
+			Direction direction = ClientScriptUtils.stringToDirection(arguments.getNextGeneric(StringValue.class), Direction.DOWN);
 			double bx = arguments.getNextGeneric(NumberValue.class);
 			double by = arguments.getNextGeneric(NumberValue.class);
 			double bz = arguments.getNextGeneric(NumberValue.class);
@@ -1524,7 +1524,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		private Value interactInternal(ClientPlayerEntity player, PosValue posValue, StringValue stringValue, PosValue blockPosValue, Hand hand) throws CodeError {
-			Direction direction = Objects.requireNonNullElse(Direction.byName(stringValue.value), Direction.DOWN);
+			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			BlockHitResult hitResult = new BlockHitResult(posValue.value, direction, new BlockPos(blockPosValue.value), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ClientWorld world = ArucasMinecraftExtension.getWorld();

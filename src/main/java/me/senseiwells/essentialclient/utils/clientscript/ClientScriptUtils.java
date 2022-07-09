@@ -8,8 +8,8 @@ import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
-import com.sun.jdi.IntegerValue;
 import me.senseiwells.arucas.api.ISyntax;
+import me.senseiwells.arucas.throwables.BuiltInException;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Context;
@@ -29,6 +29,7 @@ import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -217,6 +218,23 @@ public class ClientScriptUtils {
 			object = selector.isSingleTarget() ? selector.getEntity(source) : selector.getEntities(source);
 		}
 		return context.convertValue(object);
+	}
+
+	public static Direction stringToDirection(String string, Direction defaultDirection) {
+		return switch (string.toLowerCase()) {
+			case "north", "n" -> Direction.NORTH;
+			case "east", "e" -> Direction.EAST;
+			case "south", "s" -> Direction.SOUTH;
+			case "west", "w" -> Direction.WEST;
+			case "up", "u" -> Direction.UP;
+			case "down", "d" -> Direction.DOWN;
+			default -> {
+				if (defaultDirection != null) {
+					yield defaultDirection;
+				}
+				throw new BuiltInException("Invalid direction '%s'".formatted(string));
+			}
+		};
 	}
 
 	private static class CommandParser {

@@ -134,6 +134,7 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 				MemberFunction.of("getLookingAtBlock", 2, this::getLookingAtBlock2),
 				MemberFunction.of("getLookingAtPos", 1, this::getLookingAtPos),
 				MemberFunction.of("getEntityIdNumber", this::getEntityIdNumber),
+				MemberFunction.of("getVelocity", this::getVelocity),
 				MemberFunction.of("getPos", this::getPos),
 				MemberFunction.of("getX", this::getX),
 				MemberFunction.of("getY", this::getY),
@@ -357,6 +358,22 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 		)
 		private Value getEntityIdNumber(Arguments arguments) throws CodeError {
 			return NumberValue.of(this.getEntity(arguments).getId());
+		}
+
+		@FunctionDoc(
+			name = "getVelocity",
+			desc = "This gets the velocity of the entity in a list in the form [x, y, z]",
+			returns = {LIST, "the velocity of the entity"},
+			example = "entity.getVelocity();"
+		)
+		private Value getVelocity(Arguments arguments) throws CodeError {
+			Entity entity = this.getEntity(arguments);
+			Vec3d velocity = entity.getVelocity();
+			ArucasList list = new ArucasList();
+			list.add(NumberValue.of(velocity.x));
+			list.add(NumberValue.of(velocity.y));
+			list.add(NumberValue.of(velocity.z));
+			return new ListValue(list);
 		}
 
 		@FunctionDoc(
