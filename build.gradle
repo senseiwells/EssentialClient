@@ -86,10 +86,12 @@ jar {
 	from "LICENSE"
 }
 
-remapJar {
+prepareRemapJar {
 	dependsOn "shadowJar"
+}
 
-	input.set shadowJar.archiveFile.get()
+remapJar {
+	inputFile.set shadowJar.archiveFile.get()
 }
 
 shadowJar {
