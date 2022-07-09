@@ -1,66 +1,65 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
-	id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
-	id 'maven-publish'
-}
-
-repositories {
-	maven {
-		url 'https://masa.dy.fi/maven'
-	}
-	maven {
-		url "https://maven.terraformersmc.com/releases/"
-	}
-	mavenCentral()
-	maven {
-		url 'https://jitpack.io'
-	}
-	maven {
-		url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
-	}
+	id "java"
+	id "maven-publish"
+	id "fabric-loom" version "0.11-SNAPSHOT"
+	id "com.github.johnrengelman.shadow" version "7.1.2"
+	id "io.github.juuxel.loom-quiltflower" version "1.6.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
-version = project.minecraft_version + '-' + project.mod_version
+version = project.minecraft_version + "-" + project.mod_version
 group = project.maven_group
 
-configurations {
-	// implementations that should be included in the jar file
-	packImplementation {
-		transitive false
+repositories {
+	mavenCentral()
+	maven {
+		url "https://masa.dy.fi/maven"
 	}
+	maven {
+		url "https://maven.terraformersmc.com/releases/"
+	}
+	maven {
+		url "https://jitpack.io"
+	}
+	maven {
+		url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+	}
+}
 
-	implementation.extendsFrom(packImplementation)
+configurations {
+	shade
+}
+
+shadowJar {
+	configurations = [project.configurations.shade]
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "carpet:fabric-carpet:1.19-pre5-${project.carpet_core_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	packImplementation "com.github.LlamaLad7:MixinExtras:0.0.9"
-	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.9"
+	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.11")
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.11"
 
-	packImplementation "com.github.senseiwells:Arucas:v${project.arucas_version}"
-	packImplementation "com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}"
+	include implementation("com.github.senseiwells:Arucas:v${project.arucas_version}")
+	include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
+	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
+		transitive = false
+	}
 
 	modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
 
-	// javax.annotation.Nullable/Nonnull
-	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
-	// compileOnly "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modCompileOnly fabricApi.module("fabric-resource-loader-v0", project.fabric_version)
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
 	modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
 
-	modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") { transitive = false }
-	include("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") { transitive = false }
 }
 
 processResources {
@@ -76,23 +75,25 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
-
 	it.options.release = 16
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 }
 
 jar {
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	from "LICENSE"
-	from {
-		configurations.packImplementation.collect { it.isDirectory() ? it : zipTree(it) }
-	}
+}
+
+remapJar {
+	dependsOn "shadowJar"
+
+	input.set shadowJar.archiveFile.get()
+}
+
+shadowJar {
+	relocate("com.llamalad7", "shadow.llamalad7")
 }
 
 // configure the maven publication
