@@ -7,18 +7,16 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
 public class AFKRules {
-	public static AFKRules INSTANCE = new AFKRules();
+	private static Vec3d prevPlayerLocation;
 
-	private Vec3d prevPlayerLocation;
+	private static int ticks = 0;
+	private static double prevMouseX;
+	private static double prevMouseY;
+	private static boolean wasAfk = false;
 
-	private int ticks = 0;
-	private double prevMouseX;
-	private double prevMouseY;
-	private boolean wasAfk = false;
-
-	public void load() {
+	static {
 		Events.ON_DISCONNECT.register(client -> {
-			this.wasAfk = false;
+			wasAfk = false;
 		});
 		Events.ON_TICK_POST.register(client -> {
 			ClientPlayerEntity playerEntity = client.player;
@@ -30,27 +28,30 @@ public class AFKRules {
 			Vec3d playerLocation = playerEntity.getPos();
 			double mouseX = client.mouse.getX();
 			double mouseY = client.mouse.getX();
-			if (playerLocation.equals(this.prevPlayerLocation) && mouseX == this.prevMouseX && mouseY == this.prevMouseY) {
-				this.ticks++;
-				if (this.ticks == announceAfk) {
+			if (playerLocation.equals(prevPlayerLocation) && mouseX == prevMouseX && mouseY == prevMouseY) {
+				ticks++;
+				if (ticks == announceAfk) {
 					playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue());
+					wasAfk = true;
 				}
-				if (logout >= 200 && this.ticks == logout) {
+				if (logout >= 200 && ticks == logout) {
 					playerEntity.networkHandler.onDisconnected(Texts.literal("You've been lazy! (AFK Logout)"));
 				}
 				return;
 			}
-			this.prevPlayerLocation = playerLocation;
-			this.prevMouseX = mouseX;
-			this.prevMouseY = mouseY;
-			this.ticks = 0;
-			if (this.wasAfk) {
+			prevPlayerLocation = playerLocation;
+			prevMouseX = mouseX;
+			prevMouseY = mouseY;
+			ticks = 0;
+			if (wasAfk) {
 				String message = ClientRules.ANNOUNCE_BACK_MESSAGE.getValue();
 				if (!message.isBlank()) {
 					playerEntity.sendChatMessage(message);
 				}
-				this.wasAfk = false;
+				wasAfk = false;
 			}
 		});
 	}
+
+	public static void load() { }
 }

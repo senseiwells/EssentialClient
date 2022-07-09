@@ -93,7 +93,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		DISPLAY_RULE_TYPE = register(new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type"), ClientRules::refreshScreen));
 
 	static {
-		AFKRules.INSTANCE.load();
+		AFKRules.load();
 		BetterAccurateBlockPlacement.load();
 
 		if (EssentialUtils.isModInstalled("fabric-resource-loader-v0")) {

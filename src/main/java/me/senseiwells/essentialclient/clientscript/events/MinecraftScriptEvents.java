@@ -11,6 +11,7 @@ public class MinecraftScriptEvents {
 	public static final MinecraftScriptEvent
 		ON_CLIENT_TICK = new MinecraftScriptEvent("onClientTick"),
 		ON_HEALTH_UPDATE = new MinecraftScriptEvent("onHealthUpdate"),
+		ON_BLOCK_UPDATE = new MinecraftScriptEvent("onBlockUpdate"),
 		ON_TOTEM = new MinecraftScriptEvent("onTotem"),
 		ON_CLOSE_SCREEN = new MinecraftScriptEvent("onCloseScreen"),
 		ON_CONNECT = new MinecraftScriptEvent("onConnect"),
