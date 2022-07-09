@@ -4,6 +4,7 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
+import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
 import me.senseiwells.essentialclient.clientscript.values.TextValue;
@@ -45,6 +46,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onHealthUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
 		MinecraftScriptEvents.ON_HEALTH_UPDATE.run(NumberValue.of(packet.getHealth()));
+	}
+
+	@Inject(method = "onBlockUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	private void onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
+		MinecraftScriptEvents.ON_BLOCK_UPDATE.run(new BlockValue(packet.getState(), packet.getPos()));
 	}
 
 	@Inject(method = "onEntityStatus", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;showFloatingItem(Lnet/minecraft/item/ItemStack;)V"))
