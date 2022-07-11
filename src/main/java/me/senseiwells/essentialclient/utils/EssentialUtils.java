@@ -15,6 +15,13 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.effect.StatusEffectUtil;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
@@ -72,6 +79,40 @@ public class EssentialUtils {
 				client.player.sendChatMessage(message);
 			});
 		}
+	}
+	public static float getBlockBreakingSpeed(ItemStack itemStack, BlockState blockState, PlayerEntity player){
+		float multiplier = itemStack.getMiningSpeedMultiplier(blockState);
+		if (multiplier > 1.0F){
+			int efficiencyLevel = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, itemStack);
+			if (efficiencyLevel > 0){
+				multiplier += (float) (efficiencyLevel * efficiencyLevel + 1);
+			}
+		}
+		int hasteLevel = StatusEffectUtil.getHasteAmplifier(player);
+		if (hasteLevel > 0){
+			multiplier *= 1.0F + (float)(hasteLevel + 1) * 0.2F;
+		}
+		if (player.hasStatusEffect(StatusEffects.MINING_FATIGUE)){
+			int fatigue = player.getStatusEffect(StatusEffects.MINING_FATIGUE).getAmplifier();
+			switch (fatigue){
+				case 0:
+					multiplier *= 0.3F;
+				case 1:
+					multiplier *= 0.09F;
+				case 2:
+					multiplier *= 0.027F;
+				case 3:
+				default:
+					multiplier *= 8.1e-4F;
+			}
+		}
+		if (player.isSubmergedIn(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)){
+			multiplier /= 5.0F;
+		}
+		if (!player.isOnGround()){
+			multiplier /= 5.0F;
+		}
+		return multiplier;
 	}
 
 	public static Path getEssentialConfigFile() {
