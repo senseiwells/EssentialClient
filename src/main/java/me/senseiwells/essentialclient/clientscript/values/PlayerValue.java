@@ -168,7 +168,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("getSwappableHotbarSlot", this::getSwappableHotbarSlot),
 				MemberFunction.of("spectatorTeleport", 1, this::spectatorTeleport),
 				MemberFunction.of("canPlaceBlockAt", 2, this::canPlaceBlockAtPos),
-				MemberFunction.of("canPlaceBlockAt", 4, this::canPlaceBlockAtPosUnpacked),
+				MemberFunction.of("canPlaceBlockAt", 4, this::canPlaceBlockAtPos1),
+				
 				// Villager Stuff
 				MemberFunction.of("tradeIndex", 1, this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
 				MemberFunction.of("getIndexOfTradeItem", 1, this::getIndexOfTrade, "Use '<MerchantScreen>.getIndexOfTradeItem(itemStack)'"),
@@ -466,25 +467,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		@FunctionDoc(
 			name = "canPlaceBlockAt",
 			desc = "Checks block can be placed at given position",
-			params = {
-				NUMBER, "x", "the x coordinate of the position",
-				NUMBER, "y", "the y coordinate of the position",
-				NUMBER, "z", "the z coordinate of the position"
-			},
-			example = "player.canPlaceBlockAt(block, 0, 0, 0);"
-		)
-		private Value canPlaceBlockAtPosUnpacked(Arguments arguments) throws CodeError {
-			ClientPlayerEntity player = this.getPlayer(arguments);
-			BlockState blockState = arguments.getNext(BlockValue.class).value;
-			double x = arguments.getNextGeneric(NumberValue.class);
-			double y = arguments.getNextGeneric(NumberValue.class);
-			double z = arguments.getNextGeneric(NumberValue.class);
-			return BooleanValue.of(blockState.canPlaceAt(player.clientWorld, new BlockPos(x,y,z)) && player.clientWorld.canPlace(blockState, new BlockPos(x,y,z), ShapeContext.of(player)));
-		}
-
-		@FunctionDoc(
-			name = "canPlaceBlockAt",
-			desc = "Checks block can be placed at given position",
 			params = {POS, "pos", "the position to check"},
 			example = "player.canPlaceBlockAt(block, pos);"
 		)
@@ -492,8 +474,33 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BlockState blockState = arguments.getNext(BlockValue.class).value;
 			PosValue posValue = arguments.getNext(PosValue.class);
-			return BooleanValue.of(blockState.canPlaceAt(player.clientWorld, posValue.toBlockPos()) && player.clientWorld.canPlace(blockState, posValue.toBlockPos(), ShapeContext.of(player)));
+			boolean canPlace = blockState.canPlaceAt(player.clientWorld, posValue.toBlockPos());
+			canPlace = canPlace && player.clientWorld.canPlace(blockState, posValue.toBlockPos(), ShapeContext.of(player));
+			return BooleanValue.of(canPlace);
 		}
+
+		@FunctionDoc(
+			name = "canPlaceBlockAt",
+			desc = "Checks block can be placed at given position",
+			params = {
+				NUMBER, "x", "the x coordinate of the position",
+				NUMBER, "y", "the y coordinate of the position",
+				NUMBER, "z", "the z coordinate of the position"
+			},
+			example = "player.canPlaceBlockAt(block, 0, 0, 0);"
+		)
+		private Value canPlaceBlockAtPos1(Arguments arguments) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			BlockState blockState = arguments.getNextGeneric(BlockValue.class);
+			double x = arguments.getNextGeneric(NumberValue.class);
+			double y = arguments.getNextGeneric(NumberValue.class);
+			double z = arguments.getNextGeneric(NumberValue.class);
+			BlockPos pos = new BlockPos(x, y, z);
+			boolean canPlace = blockState.canPlaceAt(player.clientWorld, pos);
+			canPlace = canPlace && player.clientWorld.canPlace(blockState, pos, ShapeContext.of(player));
+			return BooleanValue.of(canPlace);
+		}
+
 		@FunctionDoc(
 			name = "jump",
 			desc = "This will make the player jump if they are on the ground",
