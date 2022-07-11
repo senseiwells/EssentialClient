@@ -158,6 +158,8 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 				MemberFunction.of("getMaterial", this::getMaterial),
 				MemberFunction.of("getFullId", this::getFullId),
 				MemberFunction.of("getId", this::getId),
+				MemberFunction.of("with", 2, this::with),
+				MemberFunction.of("getDefaultState", this::getDefaultState),
 				MemberFunction.of("isBlockEntity", this::isBlockEntity),
 				MemberFunction.of("isTransparent", this::isTransparent),
 				MemberFunction.of("asItemStack", this::asItemStack),
@@ -185,6 +187,45 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 				MemberFunction.of("getLuminance", this::getLuminance),
 				MemberFunction.of("getBlockEntityNbt", this::getBlockNbt)
 			);
+		}
+
+		@FunctionDoc(
+			name = "getDefaultState",
+			desc = "This gets the default state of the block, it will conserve any positions",
+			returns = {BLOCK, "default state of the Block"},
+			example = "block.getDefaultState();"
+		)
+		private Value getDefaultState(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return new BlockValue(blockValue.value.getBlock().getDefaultState(), blockValue.blockPos);
+		}
+
+		@FunctionDoc(
+			name = "with",
+			desc = "This gets modified block with a property value, conserving positions",
+			params = {
+				STRING, "property", "property name, such as 'facing', 'extended'",
+				STRING, "value", "value name, such as 'north', 'true'"
+			},
+			returns = {BLOCK, "new state of the Block"},
+			example = "block.with('facing', 'north');"
+		)
+		private Value with(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			String propertyAsString = arguments.getNextString().value;
+
+			Property<?> property = blockValue.asBlock().getStateManager().getProperty(propertyAsString);
+			if (property == null) {
+				throw arguments.getError("Property %s is not defined in block", propertyAsString);
+			}
+
+			String value = arguments.getNextString().value;
+			BlockState state = this.getStateWith(blockValue.value, property, value);
+			if (state == null) {
+				throw arguments.getError("Property %s with value %s is not defined in block", propertyAsString, value);
+			}
+
+			return new BlockValue(state, blockValue.blockPos);
 		}
 
 		@FunctionDoc(
@@ -551,6 +592,11 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 				throw arguments.getError("Block does not have position");
 			}
 			return blockValue;
+		}
+
+		private <T extends Comparable<T>> BlockState getStateWith(BlockState blockState, Property<T> property, String value) {
+			Optional<T> optional = property.parse(value);
+			return optional.map(t -> blockState.with(property,t)).orElse(null);
 		}
 
 		private BlockState getBlockState(Arguments arguments) throws CodeError {
