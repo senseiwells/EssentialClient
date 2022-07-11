@@ -41,7 +41,7 @@ public class EssentialClient implements ModInitializer {
 		GAME_RULE_NET_HANDLER = new GameRuleNetworkHandler();
 		SCRIPT_NET_HANDLER = new ScriptNetworkHandler();
 		START_TIME = LocalDateTime.now();
-		VERSION = "1.2.2";
+		VERSION = "1.2.3";
 		NETWORK_HANDLERS = new LinkedHashSet<>();
 		CONFIG_SET = new LinkedHashSet<>();
 		registerConfigs();

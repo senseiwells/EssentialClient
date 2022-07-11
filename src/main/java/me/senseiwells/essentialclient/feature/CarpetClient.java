@@ -42,6 +42,14 @@ public class CarpetClient implements Config.CList {
 		Events.ON_DISCONNECT.register(v -> {
 			INSTANCE.onDisconnect();
 		});
+
+		SettingsManager.addGlobalRuleObserver((c, r, s) -> {
+			INSTANCE.loadSinglePlayerRules();
+			CarpetClientRule<?> rule = INSTANCE.CURRENT_RULES.get(r.name);
+			if (rule != null) {
+				rule.setFromServer(s);
+			}
+		});
 	}
 
 	private CarpetClient() {
@@ -56,7 +64,7 @@ public class CarpetClient implements Config.CList {
 	}
 
 	public boolean isServerCarpet() {
-		return this.isServerCarpet;
+		return this.isServerCarpet | EssentialUtils.getClient().isInSingleplayer();
 	}
 
 	public boolean isCarpetManager(String name) {
@@ -64,6 +72,9 @@ public class CarpetClient implements Config.CList {
 	}
 
 	public CarpetClientRule<?> getRule(String name) {
+		if (this.CURRENT_RULES.isEmpty() && EssentialUtils.getClient().isInSingleplayer()) {
+			this.loadSinglePlayerRules();
+		}
 		return this.CURRENT_RULES.get(name);
 	}
 
@@ -76,7 +87,8 @@ public class CarpetClient implements Config.CList {
 	public Collection<CarpetClientRule<?>> getCurrentCarpetRules() {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.isInSingleplayer()) {
-			return this.getSinglePlayerRules();
+			this.loadSinglePlayerRules();
+			return this.CURRENT_RULES.values();
 		}
 		if (client.getCurrentServerEntry() != null && this.isServerCarpet) {
 			return this.CURRENT_RULES.values();
@@ -116,8 +128,8 @@ public class CarpetClient implements Config.CList {
 		});
 	}
 
-	private Collection<CarpetClientRule<?>> getSinglePlayerRules() {
-		if (this.CURRENT_RULES.isEmpty()) {
+	private void loadSinglePlayerRules() {
+		if (this.CURRENT_RULES.isEmpty() && EssentialUtils.getClient().isInSingleplayer()) {
 			this.HANDLING_DATA.set(true);
 
 			Consumer<SettingsManager> managerProcessor = settings -> {
@@ -140,7 +152,6 @@ public class CarpetClient implements Config.CList {
 
 			this.HANDLING_DATA.set(false);
 		}
-		return this.CURRENT_RULES.values();
 	}
 
 	private CarpetClientRule<?> jsonToClientRule(JsonElement jsonElement) {
