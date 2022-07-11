@@ -15,6 +15,7 @@ import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExt
 import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.*;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.EntityType;
@@ -158,6 +159,8 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 				MemberFunction.of("getMaterial", this::getMaterial),
 				MemberFunction.of("getFullId", this::getFullId),
 				MemberFunction.of("getId", this::getId),
+				MemberFunction.of("with",2, this::getStateModified),
+				MemberFunction.of("getDefaultState", this::getDefaultState),
 				MemberFunction.of("isBlockEntity", this::isBlockEntity),
 				MemberFunction.of("isTransparent", this::isTransparent),
 				MemberFunction.of("asItemStack", this::asItemStack),
@@ -187,6 +190,43 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			);
 		}
 
+		@FunctionDoc(
+			name = "getDefaultState",
+			desc = "This gets the default state of the Block",
+			returns = {BLOCK, "default state of the Block"},
+			example = "block.getDefaultState();"
+		)
+		private Value getDefaultState(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			return new BlockValue(blockValue.value.getBlock().getDefaultState(), blockValue.blockPos);
+		}
+
+		@FunctionDoc(
+			name = "with",
+			desc = "This gets modified Block with property, value",
+			params = {STRING, "property", "property name, such as 'facing', 'extended'",
+					STRING, "value", "value name, such as 'north', 'true'"},
+			returns = {BLOCK, "new state of the Block"},
+			example = "block.with('facing','north');"
+		)
+		private Value getStateModified(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			String stringState = arguments.getNextString().value;
+			Property<?> property = blockValue.asBlock().getStateManager().getProperty(stringState);
+			if (property == null){
+				throw arguments.getError("Property "+ stringState + " is not defined in block ");
+			}
+			String modified = arguments.getNextString().value;
+			BlockState state = getStateWith(blockValue.value, property, modified);
+			if (state == null) {
+				throw arguments.getError("Property "+ stringState + " with value " + modified +" is not defined in block ");
+			}
+			return new BlockValue(state, blockValue.blockPos);
+		}
+		private <T extends Comparable<T>> BlockState getStateWith(BlockState blockState, Property<T> property, String value){
+			Optional<T> optional = property.parse(value);
+			return optional.map(t -> blockState.with(property,t)).orElse(null);
+		}
 		@FunctionDoc(
 			name = "getMaterial",
 			desc = "This gets the material of the Block",
