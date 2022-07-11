@@ -35,6 +35,10 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.effect.StatusEffectUtil;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.*;
@@ -44,6 +48,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -169,7 +174,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("spectatorTeleport", 1, this::spectatorTeleport),
 				MemberFunction.of("canPlaceBlockAt", 2, this::canPlaceBlockAtPos),
 				MemberFunction.of("canPlaceBlockAt", 4, this::canPlaceBlockAtPos1),
-				
+
 				// Villager Stuff
 				MemberFunction.of("tradeIndex", 1, this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
 				MemberFunction.of("getIndexOfTradeItem", 1, this::getIndexOfTrade, "Use '<MerchantScreen>.getIndexOfTradeItem(itemStack)'"),
@@ -1444,17 +1449,50 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
 
+
 		@FunctionDoc(
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
-			params = {BLOCK, "block", "the block to get the speed of"},
-			example = "speed = player.getBlockBreakingSpeed(Material.GOLD_BLOCK.asBlock());"
+			params = {ITEM_STACK, "itemStack", "item to test with", BLOCK, "block", "the block to get the speed of"},
+			example = "speed = player.getBlockBreakingSpeed(Material.NETHERITE_PICKAXE.asItem(), Material.GOLD_BLOCK.asBlock());"
 		)
 		private Value getBlockBreakingSpeed(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
+			ItemStack itemStack = arguments.getNext(ItemStackValue.class).value;
 			BlockValue blockStateValue = arguments.getNext(BlockValue.class);
-			float breakingSpeed = player.getBlockBreakingSpeed(blockStateValue.value);
-			return NumberValue.of(breakingSpeed);
+			//depends on : player.isOnGround / Status Effects / is in water
+			float multiplier = itemStack.getMiningSpeedMultiplier(blockStateValue.value);
+			if (multiplier > 1.0F){
+				int efficiencyLevel = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, itemStack);
+				if (efficiencyLevel > 0){
+					multiplier += (float) (efficiencyLevel * efficiencyLevel + 1);
+				}
+			}
+			int hasteLevel = StatusEffectUtil.getHasteAmplifier(player);
+			if (hasteLevel > 0){
+				multiplier *= 1.0F + (float)(hasteLevel + 1) * 0.2F;
+			}
+			if (player.hasStatusEffect(StatusEffects.MINING_FATIGUE)){
+				int fatigue = player.getStatusEffect(StatusEffects.MINING_FATIGUE).getAmplifier();
+				switch (fatigue){
+					case 0:
+						multiplier *= 0.3F;
+					case 1:
+						multiplier *= 0.09F;
+					case 2:
+						multiplier *= 0.027F;
+					case 3:
+					default:
+						multiplier *= 8.1e-4F;
+				}
+			}
+			if (player.isSubmergedIn(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)){
+				multiplier /= 5.0F;
+			}
+			if (!player.isOnGround()){
+				multiplier /= 5.0F;
+			}
+			return NumberValue.of(multiplier);
 		}
 
 		private Value tradeIndex(Arguments arguments) throws CodeError {
