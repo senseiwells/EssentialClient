@@ -192,8 +192,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			StringValue stringValue = arguments.skip().getNextString();
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
 			switch (stringValue.value.toLowerCase()) {
-				case "hold" -> client.execute(() -> client.options.useKey.setPressed(true));
-				case "stop" -> client.execute(() -> client.options.useKey.setPressed(false));
+				case "hold" -> client.execute(() -> client.options.keyUse.setPressed(true));
+				case "stop" -> client.execute(() -> client.options.keyUse.setPressed(false));
 				case "once" -> ((MinecraftClientInvoker) client).rightClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into use()");
 			}
@@ -211,8 +211,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			StringValue stringValue = arguments.skip().getNextString();
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
 			switch (stringValue.value.toLowerCase()) {
-				case "hold" -> client.execute(() -> client.options.attackKey.setPressed(true));
-				case "stop" -> client.execute(() -> client.options.attackKey.setPressed(false));
+				case "hold" -> client.execute(() -> client.options.keyAttack.setPressed(true));
+				case "stop" -> client.execute(() -> client.options.keyAttack.setPressed(false));
 				case "once" -> ((MinecraftClientInvoker) client).leftClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into attack()");
 			}
