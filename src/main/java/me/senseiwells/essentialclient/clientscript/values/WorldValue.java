@@ -9,6 +9,7 @@ import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
+import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.utils.clientscript.ThreadSafeUtils;
@@ -26,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
+import java.util.List;
 import java.util.Objects;
 
 import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
@@ -99,7 +101,8 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				MemberFunction.of("getLight", 3, this::getLight),
 				MemberFunction.of("getLight", 1, this::getLightPos),
 				MemberFunction.of("getArea", 2, this::getArea),
-				MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks)
+				MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks),
+				MemberFunction.of("forEachBlock", 3, this::forEachBlock)
 			);
 		}
 
@@ -580,6 +583,41 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				list.add(new BlockValue(state, pos));
 			}
 			return new ListValue(list);
+		}
+
+		@FunctionDoc(
+			name = "forEachBlock",
+			desc = {
+				"This iterates over an area of blocks passing into a function,",
+				"the function takes a block you can return true to break the iterator"
+			},
+			params = {
+				POS, "pos1", "the first position",
+				POS, "pos2", "the second position",
+				FUNCTION, "iterating function, passes in the current block"
+			},
+			example = """
+				pos = Player.get().getPos();
+				world.forEachBlock(pos.subtract(5, 5, 5), pos.add(5, 5, 5) fun(block) {
+					print(block);
+				});
+				"""
+		)
+		private Value forEachBlock(Arguments arguments) throws CodeError {
+			ClientWorld world = this.getWorld(arguments);
+			BlockPos posA = arguments.getNext(PosValue.class).toBlockPos();
+			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
+			FunctionValue functionValue = arguments.getNextFunction();
+
+			for (BlockPos pos : BlockPos.iterate(posA, posB)) {
+				BlockState state = world.getBlockState(pos);
+				List<Value> args = ArucasList.arrayListOf(new BlockValue(state, pos));
+				Value returnValue = functionValue.call(arguments.getContext().createBranch(), args);
+				if (returnValue instanceof BooleanValue booleanValue && booleanValue.value) {
+					break;
+				}
+			}
+			return NullValue.NULL;
 		}
 
 		private ClientWorld getWorld(Arguments arguments) throws CodeError {
