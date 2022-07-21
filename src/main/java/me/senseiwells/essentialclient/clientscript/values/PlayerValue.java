@@ -170,7 +170,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("spectatorTeleport", 1, this::spectatorTeleport),
 				MemberFunction.of("canPlaceBlockAt", 2, this::canPlaceBlockAtPos),
 				MemberFunction.of("canPlaceBlockAt", 4, this::canPlaceBlockAtPos1),
-				
+
 				// Villager Stuff
 				MemberFunction.of("tradeIndex", 1, this::tradeIndex, "Use '<MerchantScreen>.tradeIndex(index)'"),
 				MemberFunction.of("getIndexOfTradeItem", 1, this::getIndexOfTrade, "Use '<MerchantScreen>.getIndexOfTradeItem(itemStack)'"),
@@ -1446,18 +1446,19 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
-
+		
 		@FunctionDoc(
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
-			params = {BLOCK, "block", "the block to get the speed of"},
-			example = "speed = player.getBlockBreakingSpeed(Material.GOLD_BLOCK.asBlock());"
+			params = {ITEM_STACK, "itemStack", "item to test with", BLOCK, "block", "the block to get the speed of"},
+			example = "speed = player.getBlockBreakingSpeed(Material.NETHERITE_PICKAXE.asItem(), Material.GOLD_BLOCK.asBlock());"
 		)
 		private Value getBlockBreakingSpeed(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
+			ItemStack itemStack = arguments.getNext(ItemStackValue.class).value;
 			BlockValue blockStateValue = arguments.getNext(BlockValue.class);
-			float breakingSpeed = player.getBlockBreakingSpeed(blockStateValue.value);
-			return NumberValue.of(breakingSpeed);
+			float multiplier = EssentialUtils.getBlockBreakingSpeed(itemStack, blockStateValue.value, player);
+			return NumberValue.of(multiplier);
 		}
 
 		private Value tradeIndex(Arguments arguments) throws CodeError {
