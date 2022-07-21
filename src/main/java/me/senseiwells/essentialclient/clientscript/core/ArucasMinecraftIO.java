@@ -1,21 +1,33 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
+import me.senseiwells.arucas.api.IArucasInput;
+import me.senseiwells.arucas.api.IArucasOutput;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.arucas.api.IArucasOutput;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class ArucasMinecraftOutput implements IArucasOutput {
-	public static ArucasMinecraftOutput INSTANCE = new ArucasMinecraftOutput();
+public enum ArucasMinecraftIO implements IArucasOutput, IArucasInput {
+	INSTANCE;
 
 	private final Consumer<String> outputHandler;
+	private CompletableFuture<String> inputFuture;
 
-	private ArucasMinecraftOutput() {
+	ArucasMinecraftIO() {
 		this.outputHandler = str -> {
 			str = !str.endsWith("\n") ? str : str.substring(0, str.length() - 1);
 			EssentialUtils.sendMessage(str);
 		};
+	}
+
+	public boolean submitInput(String input) {
+		if (this.inputFuture != null) {
+			this.inputFuture.complete(input);
+			this.inputFuture = null;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -44,5 +56,10 @@ public class ArucasMinecraftOutput implements IArucasOutput {
 	@Override
 	public String getResetFormatting() {
 		return "§r";
+	}
+
+	@Override
+	public CompletableFuture<String> takeInput() {
+		return this.inputFuture = new CompletableFuture<>();
 	}
 }

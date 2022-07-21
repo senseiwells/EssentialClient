@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.utils.misc;
 
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -13,18 +13,10 @@ import java.util.regex.Pattern;
 public class EssentialMixinConfig implements IMixinConfigPlugin {
 	private final Pattern mixinPattern = Pattern.compile("([a-zA-Z]+\\.[a-zA-Z]+$)");
 
-	private String getSimpleMixinClass(String mixinClassName) {
-		Matcher matcher = this.mixinPattern.matcher(mixinClassName);
-		if (matcher.find()) {
-			return matcher.group();
-		}
-		return "";
-	}
-
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		return switch (this.getSimpleMixinClass(mixinClassName)) {
-			case "keyboard.KeyboardMixin", "disableNarrator.KeyboardMixin", "disableHotbarScrolling.MouseMixin" -> !EssentialUtils.isModInstalled("rebind_all_the_keys");
+			case "keyboard.KeyboardMixin", "disableNarrator.KeyboardMixin", "disableHotbarScrolling.MouseMixin" -> !this.isModLoaded("rebind_all_the_keys");
 			default -> true;
 		};
 	}
@@ -50,4 +42,17 @@ public class EssentialMixinConfig implements IMixinConfigPlugin {
 
 	@Override
 	public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) { }
+
+	@SuppressWarnings("SameParameterValue")
+	private boolean isModLoaded(String modId) {
+		return FabricLoader.getInstance().isModLoaded(modId);
+	}
+
+	private String getSimpleMixinClass(String mixinClassName) {
+		Matcher matcher = this.mixinPattern.matcher(mixinClassName);
+		if (matcher.find()) {
+			return matcher.group();
+		}
+		return "";
+	}
 }

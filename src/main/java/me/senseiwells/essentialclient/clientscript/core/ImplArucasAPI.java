@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.IArucasAPI;
+import me.senseiwells.arucas.api.IArucasInput;
 import me.senseiwells.arucas.api.IArucasOutput;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
@@ -12,8 +13,13 @@ public class ImplArucasAPI implements IArucasAPI {
 	private final Path IMPORT_PATH = ClientScript.INSTANCE.getScriptDirectory().resolve("libs");
 
 	@Override
+	public IArucasInput getInput() {
+		return ArucasMinecraftIO.INSTANCE;
+	}
+
+	@Override
 	public IArucasOutput getOutput() {
-		return ArucasMinecraftOutput.INSTANCE;
+		return ArucasMinecraftIO.INSTANCE;
 	}
 
 	@Override
