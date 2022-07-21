@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
+import me.senseiwells.essentialclient.clientscript.core.ArucasMinecraftIO;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -34,7 +35,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 
 	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
 	public void onChatMessage(String message, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run(StringValue.of(message))) {
+		if (ArucasMinecraftIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(StringValue.of(message))) {
 			ci.cancel();
 		}
 	}

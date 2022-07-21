@@ -17,7 +17,9 @@ import com.llamalad7.mixinextras.MixinExtrasBootstrap;
  * </p>
  */
 public class MixinExtraSupport {
-	public static void load() {
+	static {
 		MixinExtrasBootstrap.init();
 	}
+
+	public static void load() { }
 }
