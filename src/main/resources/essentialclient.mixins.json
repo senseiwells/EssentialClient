@@ -49,6 +49,7 @@
     "disableArmourRendering.ArmorFeatureRendererMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
+    "disableHotbarScrolling.MouseMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
     "disableMessages.InGameHudMixin",
     "disableNameTags.EntityRendererMixin",
