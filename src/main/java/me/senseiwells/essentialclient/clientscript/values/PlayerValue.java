@@ -193,7 +193,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			switch (stringValue.value.toLowerCase()) {
 				case "hold" -> client.execute(()->client.options.useKey.setPressed(true));
 				case "stop" -> client.execute(()->client.options.useKey.setPressed(false));
-				case "once" -> client.execute(((MinecraftClientInvoker) client)::rightClickMouseAccessor);
+				case "once" -> (MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).rightClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into use()");
 			}
 			return NullValue.NULL;
@@ -212,7 +212,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			switch (stringValue.value.toLowerCase()) {
 				case "hold" -> client.execute(()->client.options.attackKey.setPressed(true));
 				case "stop" -> client.execute(()->client.options.attackKey.setPressed(false));
-				case "once" -> client.execute(((MinecraftClientInvoker) client)::leftClickMouseAccessor);
+				case "once" -> (MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).leftClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into attack()");
 			}
 			return NullValue.NULL;
@@ -248,8 +248,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.say('/help');"
 		)
 		private Value say(Arguments arguments) throws CodeError {
-			String message = arguments.skip().getNext().getAsString(arguments.getContext());
-			ArucasMinecraftExtension.getClient().execute(()->EssentialUtils.sendChatMessage(message));
+			EssentialUtils.sendChatMessage(arguments.skip().getNext().getAsString(arguments.getContext()));
 			return NullValue.NULL;
 		}
 
