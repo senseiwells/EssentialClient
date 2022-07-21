@@ -191,9 +191,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			StringValue stringValue = arguments.skip().getNextString();
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
 			switch (stringValue.value.toLowerCase()) {
-				case "hold" -> client.execute(()->client.options.useKey.setPressed(true));
-				case "stop" -> client.execute(()->client.options.useKey.setPressed(false));
-				case "once" -> (MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).rightClickMouseAccessor();
+				case "hold" -> client.execute(() -> client.options.useKey.setPressed(true));
+				case "stop" -> client.execute(() -> client.options.useKey.setPressed(false));
+				case "once" -> ((MinecraftClientInvoker) client).rightClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into use()");
 			}
 			return NullValue.NULL;
@@ -210,9 +210,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			StringValue stringValue = arguments.skip().getNextString();
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
 			switch (stringValue.value.toLowerCase()) {
-				case "hold" -> client.execute(()->client.options.attackKey.setPressed(true));
-				case "stop" -> client.execute(()->client.options.attackKey.setPressed(false));
-				case "once" -> (MinecraftClientInvoker) ArucasMinecraftExtension.getClient()).leftClickMouseAccessor();
+				case "hold" -> client.execute(() -> client.options.attackKey.setPressed(true));
+				case "stop" -> client.execute(() -> client.options.attackKey.setPressed(false));
+				case "once" -> ((MinecraftClientInvoker) client).leftClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into attack()");
 			}
 			return NullValue.NULL;
@@ -351,7 +351,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.setWalking(true);"
 		)
 		private Value setWalking(Arguments arguments) throws CodeError {
-			return this.setKey(arguments,  ArucasMinecraftExtension.getClient().options.forwardKey);
+			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.forwardKey);
 		}
 
 		@FunctionDoc(
@@ -429,7 +429,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			NumberValue numberValue2 = arguments.getNextNumber();
-			ArucasMinecraftExtension.getClient().execute(()-> {
+			ArucasMinecraftExtension.getClient().execute(() -> {
 				player.setYaw(numberValue.value.floatValue());
 				player.setPitch(numberValue2.value.floatValue());
 			});
@@ -451,7 +451,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			double x = arguments.getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
 			double z = arguments.getNextGeneric(NumberValue.class);
-			ArucasMinecraftExtension.getClient().execute(()->player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, new Vec3d(x, y, z)));
+			ArucasMinecraftExtension.getClient().execute(() -> player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, new Vec3d(x, y, z)));
 			return NullValue.NULL;
 		}
 
@@ -464,7 +464,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private Value lookAtPosPos(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
-			ArucasMinecraftExtension.getClient().execute(()->player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, posValue.value));
+			ArucasMinecraftExtension.getClient().execute(() -> player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, posValue.value));
 			return NullValue.NULL;
 		}
 
@@ -745,7 +745,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				throw arguments.getError("That slot is out of bounds");
 			}
 			final ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			ArucasMinecraftExtension.getClient().execute(() ->interactionManager.clickSlot(player.currentScreenHandler.syncId, numberValue.value.intValue(), 1, SlotActionType.THROW, player));
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(player.currentScreenHandler.syncId, numberValue.value.intValue(), 1, SlotActionType.THROW, player));
 			return NullValue.NULL;
 		}
 
@@ -775,13 +775,13 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"The recipe must only include items or materials"
 			},
 			example = """
-			chestRecipe = [
-			    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
-			    Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
-			    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
-			];
-			player.craft(chestRecipe);
-			"""
+				chestRecipe = [
+				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
+				    Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
+				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
+				];
+				player.craft(chestRecipe);
+				"""
 		)
 		private Value craft(Arguments arguments) throws CodeError {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
@@ -858,14 +858,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			params = {ENTITY, "entity", "the entity to attack"},
 			example = """
-			allEntities = client.getWorld().getAllEntities();
-			foreach (entity : allEntities) {
-				if (entity.getId() == "villager" && player.getSquaredDistanceTo(entity) < 5) {
-					player.attackEntity(entity);
-					break;
+				allEntities = client.getWorld().getAllEntities();
+				foreach (entity : allEntities) {
+					if (entity.getId() == "villager" && player.getSquaredDistanceTo(entity) < 5) {
+						player.attackEntity(entity);
+						break;
+					}
 				}
-			}
-			"""
+				"""
 		)
 		private Value attackEntity(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -883,14 +883,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			params = {ENTITY, "entity", "the entity to interact with"},
 			example = """
-			allEntities = client.getWorld().getAllEntities();
-			foreach (entity : allEntities) {
-				if (entity.getId() == "villager" && player.getSquaredDistanceTo(entity) < 5) {
-					player.interactWithEntity(entity);
-					break;
+				allEntities = client.getWorld().getAllEntities();
+				foreach (entity : allEntities) {
+					if (entity.getId() == "villager" && player.getSquaredDistanceTo(entity) < 5) {
+						player.interactWithEntity(entity);
+						break;
+					}
 				}
-			}
-			"""
+				"""
 		)
 		private Value interactWithEntity(Arguments arguments) throws CodeError {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -914,29 +914,29 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Invalid function parameter"
 			},
 			example = """
-			// Enchant a pickaxe with mending
-			player.anvil(
-				// Predicate for pick
-				fun(item) {
-					// We want a netherite pickaxe without mending
-					if (item.getItemId() == "netherite_pickaxe") {
-						hasMending = item.getEnchantments().getKeys().contains("mending");
-						return !hasMending;
-					}
-					return false;
-				},
-				// Predicate for book
-				fun(item) {
-					// We want a book with mending
-					if (item.getItemId() == "enchanted_book") {
-						hasMending = item.getEnchantments().getKeys().contains("mending");
-						return hasMending;
-					}
-					return false;
-				},
-				false
-			);
-			"""
+				// Enchant a pickaxe with mending
+				player.anvil(
+					// Predicate for pick
+					fun(item) {
+						// We want a netherite pickaxe without mending
+						if (item.getItemId() == "netherite_pickaxe") {
+							hasMending = item.getEnchantments().getKeys().contains("mending");
+							return !hasMending;
+						}
+						return false;
+					},
+					// Predicate for book
+					fun(item) {
+						// We want a book with mending
+						if (item.getItemId() == "enchanted_book") {
+							hasMending = item.getEnchantments().getKeys().contains("mending");
+							return hasMending;
+						}
+						return false;
+					},
+					false
+				);
+				"""
 		)
 		private Value anvil(Arguments arguments) throws CodeError {
 			return this.anvilInternal(arguments, true);
@@ -955,28 +955,28 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Invalid function parameter"
 			},
 			example = """
-			// Enchant a pickaxe with mending
-			player.anvil(
-				// Predicate for pick
-				fun(item) {
-					// We want a netherite pickaxe without mending
-					if (item.getItemId() == "netherite_pickaxe") {
-						hasMending = item.getEnchantments().getKeys().contains("mending");
-						return !hasMending;
+				// Enchant a pickaxe with mending
+				player.anvil(
+					// Predicate for pick
+					fun(item) {
+						// We want a netherite pickaxe without mending
+						if (item.getItemId() == "netherite_pickaxe") {
+							hasMending = item.getEnchantments().getKeys().contains("mending");
+							return !hasMending;
+						}
+						return false;
+					},
+					// Predicate for book
+					fun(item) {
+						// We want a book with mending
+						if (item.getItemId() == "enchanted_book") {
+							hasMending = item.getEnchantments().getKeys().contains("mending");
+							return hasMending;
+						}
+						return false;
 					}
-					return false;
-				},
-				// Predicate for book
-				fun(item) {
-					// We want a book with mending
-					if (item.getItemId() == "enchanted_book") {
-						hasMending = item.getEnchantments().getKeys().contains("mending");
-						return hasMending;
-					}
-					return false;
-				}
-			);
-			"""
+				);
+				"""
 		)
 		private Value anvilDrop(Arguments arguments) throws CodeError {
 			return this.anvilInternal(arguments, false);
@@ -995,14 +995,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Invalid function parameter"
 			},
 			example = """
-			// Rename any shulker box
-			player.anvilRename("Rocket Box",
-				fun(item) {
-					isShulker = item.getItemId().containsString("shulker_box"));
-					return isShulker;
-				}
-			);
-			"""
+				// Rename any shulker box
+				player.anvilRename("Rocket Box",
+					fun(item) {
+						isShulker = item.getItemId().containsString("shulker_box"));
+						return isShulker;
+					}
+				);
+				"""
 		)
 		private Value anvilRename(Arguments arguments) throws CodeError {
 			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
@@ -1202,7 +1202,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				() -> function.call(branchContext.createBranch(), new ArrayList<>()),
 				null, c -> client.execute(() -> {
 					interactionManager.updateBlockBreakingProgress(pos, Direction.DOWN);
-					player.swingHand(Hand.MAIN_HAND);})
+					player.swingHand(Hand.MAIN_HAND);
+				})
 			);
 			return BooleanValue.TRUE;
 		}
@@ -1586,7 +1587,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 
 		private NullValue setKey(Arguments arguments, KeyBinding keyBinding) throws CodeError {
 			BooleanValue booleanValue = arguments.skip().getNextBoolean();
-			ArucasMinecraftExtension.getClient().execute(()->keyBinding.setPressed(booleanValue.value));
+			ArucasMinecraftExtension.getClient().execute(() -> keyBinding.setPressed(booleanValue.value));
 			return NullValue.NULL;
 		}
 
