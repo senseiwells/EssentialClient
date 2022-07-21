@@ -2,6 +2,7 @@
   "required": true,
   "package": "me.senseiwells.essentialclient.mixins",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "me.senseiwells.essentialclient.utils.misc.EssentialMixinConfig",
   "client": [
     "autoWalk.KeyboardInputMixin",
     "betterAccurateBlockPlacement.ClientPlayerEntityMixin",
@@ -38,6 +39,7 @@
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
+    "core.KeyboardMixin",
     "core.MinecraftClientMixin",
     "core.TitleScreenMixin",
     "craftingHax.ClientPlayerInteractionManagerMixin",
@@ -47,6 +49,7 @@
     "disableArmourRendering.ArmorFeatureRendererMixin",
     "disableBobViewWhenHurt.GameRendererMixin",
     "disableBossBar.BossBarHudMixin",
+    "disableHotbarScrolling.MouseMixin",
     "disableMapRendering.ItemFrameEntityRendererMixin",
     "disableMessages.InGameHudMixin",
     "disableNameTags.EntityRendererMixin",

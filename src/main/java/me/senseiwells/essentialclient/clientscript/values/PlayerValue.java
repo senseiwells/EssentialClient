@@ -1447,8 +1447,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
-
-
+    
 		@FunctionDoc(
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
@@ -1459,7 +1458,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			ItemStack itemStack = arguments.getNext(ItemStackValue.class).value;
 			BlockValue blockStateValue = arguments.getNext(BlockValue.class);
-			//depends on : player.isOnGround / Status Effects / is in water
 			float multiplier = EssentialUtils.getBlockBreakingSpeed(itemStack, blockStateValue.value, player);
 			return NumberValue.of(multiplier);
 		}
