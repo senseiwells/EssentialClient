@@ -24,7 +24,7 @@ public class EssentialMixinConfig implements IMixinConfigPlugin {
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		return switch (this.getSimpleMixinClass(mixinClassName)) {
-			case "keyboard.KeyboardMixin", "disableNarrator.KeyboardMixin" -> !EssentialUtils.isModInstalled("rebind_all_the_keys");
+			case "keyboard.KeyboardMixin", "disableNarrator.KeyboardMixin", "disableHotbarScrolling.MouseMixin" -> !EssentialUtils.isModInstalled("rebind_all_the_keys");
 			default -> true;
 		};
 	}
