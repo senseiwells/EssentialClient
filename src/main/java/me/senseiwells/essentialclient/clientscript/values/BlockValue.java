@@ -7,6 +7,7 @@ import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
@@ -185,6 +186,8 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 				MemberFunction.of("isSpawnable", this::isSpawnable),
 				MemberFunction.of("isSpawnable", 1, this::isSpawnableType),
 				MemberFunction.of("getLuminance", this::getLuminance),
+				MemberFunction.of("getMapColour", this::getMapColour),
+				MemberFunction.of("getMapColor", this::getMapColour),
 				MemberFunction.of("getBlockEntityNbt", this::getBlockNbt)
 			);
 		}
@@ -569,6 +572,26 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 		private Value getLuminance(Arguments arguments) throws CodeError {
 			BlockState blockState = this.getBlockState(arguments);
 			return NumberValue.of(blockState.getLuminance());
+		}
+
+		@FunctionDoc(
+			name = "getMapColour",
+			desc = "This gets the map colour of the Block, can also be called with 'getMapColor'",
+			returns = {LIST, "a list with the map colour of the Block as RGB values"},
+			example = "block.getMapColour();"
+		)
+		private Value getMapColour(Arguments arguments) throws CodeError {
+			BlockValue blockValue = arguments.getNext(BlockValue.class);
+			if (blockValue.hasPos) {
+				throw arguments.getError("Block doesn't have a position");
+			}
+
+			int colour = blockValue.value.getMapColor(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos()).color;
+			ArucasList list = new ArucasList();
+			list.add(NumberValue.of((colour & 0xFF0000) >> 16));
+			list.add(NumberValue.of((colour & 0xFF00) >> 8));
+			list.add(NumberValue.of(colour & 0xFF));
+			return new ListValue(list);
 		}
 
 		@FunctionDoc(
