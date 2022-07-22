@@ -8,6 +8,7 @@ import me.senseiwells.essentialclient.feature.MultiConnectSupport;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptNetworkHandler;
 import me.senseiwells.essentialclient.utils.config.Config;
@@ -41,7 +42,7 @@ public class EssentialClient implements ModInitializer {
 		GAME_RULE_NET_HANDLER = new GameRuleNetworkHandler();
 		SCRIPT_NET_HANDLER = new ScriptNetworkHandler();
 		START_TIME = LocalDateTime.now();
-		VERSION = "1.2.3";
+		VERSION = EssentialUtils.getEssentialVersion();
 		NETWORK_HANDLERS = new LinkedHashSet<>();
 		CONFIG_SET = new LinkedHashSet<>();
 		registerConfigs();

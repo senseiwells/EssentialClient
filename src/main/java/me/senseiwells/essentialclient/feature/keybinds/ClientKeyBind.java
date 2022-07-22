@@ -41,6 +41,10 @@ public abstract class ClientKeyBind implements Comparable<ClientKeyBind> {
 		this.callback = callback;
 	}
 
+	public Callback getCallback() {
+		return this.callback;
+	}
+
 	void setPressed(boolean pressed) {
 		this.isPressed = pressed;
 	}

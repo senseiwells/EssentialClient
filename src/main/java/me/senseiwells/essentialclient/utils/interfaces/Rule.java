@@ -286,7 +286,7 @@ public interface Rule<T> {
 
 		public static Type fromString(String name) {
 			for (Type type : Type.values()) {
-				if (type.name.equals(name) || type.alias.equals(name)) {
+				if (type.name.equalsIgnoreCase(name) || type.alias.equals(name)) {
 					return type;
 				}
 			}
