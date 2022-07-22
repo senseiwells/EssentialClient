@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.core;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.Config;
 
@@ -15,13 +14,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ClientScript implements Config.CList {
-	public static ClientScript INSTANCE = new ClientScript();
+public enum ClientScript implements Config.CList {
+	INSTANCE;
 
 	private final Set<ClientScriptInstance> scriptInstances;
 	private final Set<String> selectedScriptNames;
 
-	private ClientScript() {
+	ClientScript() {
 		this.scriptInstances = new HashSet<>();
 		this.selectedScriptNames = new HashSet<>();
 	}
@@ -31,24 +30,26 @@ public class ClientScript implements Config.CList {
 	}
 
 	public List<ClientScriptInstance> getScriptInstancesInOrder() {
-		return this.getScriptInstances().stream().sorted(Comparator.comparing(ClientScriptInstance::toString)).toList();
+		return this.getScriptInstances().stream().sorted(Comparator.comparing(ClientScriptInstance::getName)).toList();
+	}
+
+	public boolean hasScriptInstance(String name) {
+		return this.getScriptInstances().stream().anyMatch(i -> i.getName().equals(name));
 	}
 
 	public boolean isSelected(String name) {
 		return this.selectedScriptNames.contains(name);
 	}
 
-	@SuppressWarnings("UnusedReturnValue")
-	public boolean startAllInstances() {
+	public void startAllInstances() {
 		if (this.scriptInstances.isEmpty()) {
-			return false;
+			return;
 		}
 		for (ClientScriptInstance instance : this.scriptInstances) {
-			if (this.selectedScriptNames.contains(instance.toString())) {
+			if (this.selectedScriptNames.contains(instance.getName())) {
 				instance.toggleScript();
 			}
 		}
-		return true;
 	}
 
 	public void stopAllInstances() {
@@ -63,28 +64,34 @@ public class ClientScript implements Config.CList {
 
 	public void addSelectedInstance(String name) {
 		this.selectedScriptNames.add(name);
+		this.saveConfig();
 	}
 
 	public void removeInstance(ClientScriptInstance clientScriptInstance) {
 		this.scriptInstances.remove(clientScriptInstance);
-		ClientKeyBinds.INSTANCE.remove(clientScriptInstance.toString());
 	}
 
 	public void removeSelectedInstance(String name) {
 		this.selectedScriptNames.remove(name);
+		this.saveConfig();
 	}
 
-	public void refreshAllInstances() {
-		for (ClientScriptInstance instance : this.scriptInstances) {
-			instance.stopScript();
+	public void replaceSelectedInstance(String oldName, String newName) {
+		if (this.selectedScriptNames.remove(oldName)) {
+			this.selectedScriptNames.add(newName);
 		}
-		this.scriptInstances.clear();
+		this.saveConfig();
+	}
+
+	public void refresh() {
 		File[] files = this.getScriptFiles();
 		for (File file : files) {
 			String fileName = file.getName();
 			if (fileName.endsWith(".arucas")) {
 				fileName = fileName.substring(0, fileName.length() - 7);
-				new ClientScriptInstance(fileName, file.toPath());
+				if (!this.hasScriptInstance(fileName)) {
+					new ClientScriptInstance(fileName, file.toPath());
+				}
 			}
 		}
 	}
@@ -120,9 +127,9 @@ public class ClientScript implements Config.CList {
 	public JsonElement getSaveData() {
 		JsonArray scriptData = new JsonArray();
 		this.scriptInstances.forEach(instance -> {
-			if (this.selectedScriptNames.contains(instance.toString())) {
+			if (this.selectedScriptNames.contains(instance.getName())) {
 				JsonObject scriptObject = new JsonObject();
-				scriptObject.addProperty("name", instance.toString());
+				scriptObject.addProperty("name", instance.getName());
 				scriptObject.addProperty("selected", true);
 				scriptData.add(scriptObject);
 			}
@@ -136,6 +143,6 @@ public class ClientScript implements Config.CList {
 			JsonObject scriptObject = element.getAsJsonObject();
 			this.selectedScriptNames.add(scriptObject.get("name").getAsString());
 		});
-		this.refreshAllInstances();
+		this.refresh();
 	}
 }

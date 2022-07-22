@@ -140,6 +140,10 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		return registerMulti(name, DEFAULT_CATEGORY, onPressed, keys);
 	}
 
+	public static MultiKeyBind registerMulti(String name, String category, ClientKeyBind.Callback onPressed, Collection<InputUtil.Key> keys) {
+		return registerMulti(name, category, onPressed, keys.stream().mapToInt(InputUtil.Key::getCode).toArray());
+	}
+
 	public static MultiKeyBind registerMulti(String name, String category, ClientKeyBind.Callback onPressed, int... keys) {
 		ClientKeyBind clientKeyBind = ClientKeyBinds.INSTANCE.map.get(name);
 		if (clientKeyBind instanceof MultiKeyBind multiKeyBind) {
@@ -193,6 +197,10 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 
 		INSTANCE.map.put(name, keyBind);
 		return keyBind;
+	}
+
+	public static ClientKeyBind unregisterKeyBind(String name) {
+		return INSTANCE.map.remove(name);
 	}
 
 	private static void setScreenIfNull(MinecraftClient client, Supplier<Screen> screenFactory) {

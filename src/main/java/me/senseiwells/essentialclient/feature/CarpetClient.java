@@ -300,7 +300,7 @@ public class CarpetClient implements Config.CList {
 		this.ALL_RULES.forEach((name, rule) -> {
 			JsonObject ruleObject = new JsonObject();
 			ruleObject.addProperty("name", name);
-			ruleObject.addProperty("type", rule.getType().name());
+			ruleObject.addProperty("type", rule.getType().toString());
 			ruleObject.addProperty("description", rule.getDescription());
 			ruleObject.addProperty("extras", rule.getOptionalInfo());
 			ruleObject.add("default", rule.getDefaultValueAsJson());
@@ -316,7 +316,7 @@ public class CarpetClient implements Config.CList {
 
 	@Override
 	public void readConfig(JsonArray jsonElement) {
-		JsonArray jsonArray = this.getData(jsonElement.getAsJsonArray());
+		JsonArray jsonArray = this.getData(jsonElement);
 		jsonArray.forEach(element -> {
 			CarpetClientRule<?> rule = this.jsonToClientRule(element);
 			this.ALL_RULES.put(rule.getName(), rule);

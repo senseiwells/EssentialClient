@@ -6,7 +6,6 @@ import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
-import me.senseiwells.essentialclient.gui.config.ControlsListWidget;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -61,7 +60,7 @@ public class ClientScriptScreen extends ChildScreen {
 	}
 
 	public void refresh() {
-		ClientScript.INSTANCE.refreshAllInstances();
+		ClientScript.INSTANCE.refresh();
 		this.scriptWidget.load(this.client);
 	}
 
@@ -82,16 +81,15 @@ public class ClientScriptScreen extends ChildScreen {
 		private String newName;
 
 		ScriptConfigScreen(ClientScriptScreen parent, ClientScriptInstance scriptInstance) {
-			super(Texts.literal("Script Config for '%s'".formatted(scriptInstance.toString())), parent);
+			super(Texts.literal("Script Config for '%s'".formatted(scriptInstance.getName())), parent);
 			this.scriptInstance = scriptInstance;
-			String scriptName = scriptInstance.toString();
+			String scriptName = scriptInstance.getName();
 			this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, Texts.literal("ScriptName"));
 			this.nameBox.setText(scriptName);
 			this.nameBox.setChangedListener(s -> this.newName = s);
 			this.openBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Open Script"), button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
 			this.deleteBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Delete Script"), button -> ExceptionUtils.runSafe(() -> {
-				Files.delete(this.scriptInstance.getFileLocation());
-				ClientScript.INSTANCE.removeInstance(this.scriptInstance);
+				this.scriptInstance.delete();
 				this.getParent().scriptWidget.clear();
 				this.getParent().scriptWidget.load(this.client);
 				super.onClose();
@@ -142,21 +140,15 @@ public class ClientScriptScreen extends ChildScreen {
 
 		@Override
 		public void onClose() {
-			if (!this.newName.isEmpty() && !this.newName.equals(this.scriptInstance.toString())) {
+			if (!this.newName.isEmpty() && !this.newName.equals(this.scriptInstance.getName())) {
 				try {
 					Path original = this.scriptInstance.getFileLocation();
-					Path renamed = original.resolveSibling(this.newName + ".arucas");
-					if (Files.exists(renamed)) {
+					Path newLocation = original.resolveSibling(this.newName + ".arucas");
+					if (Files.exists(newLocation)) {
 						throw new FileAlreadyExistsException("Tried to rename to an existing file");
 					}
-					Files.move(original, renamed);
-					String oldName = this.scriptInstance.toString();
-					if (ClientScript.INSTANCE.isSelected(oldName)) {
-						ClientScript.INSTANCE.removeSelectedInstance(oldName);
-						ClientScript.INSTANCE.addSelectedInstance(this.newName);
-					}
-					ClientScript.INSTANCE.removeInstance(this.scriptInstance);
-					ClientScript.INSTANCE.addInstance(new ClientScriptInstance(this.newName, renamed));
+					this.scriptInstance.renameScript(this.newName, newLocation);
+					Files.move(original, newLocation);
 					this.getParent().refresh();
 				}
 				catch (Exception exception) {
