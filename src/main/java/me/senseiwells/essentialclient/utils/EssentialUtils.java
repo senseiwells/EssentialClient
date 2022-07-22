@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
 import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.MinecraftVersion;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
@@ -29,9 +30,11 @@ import net.minecraft.util.math.BlockPos;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
+	private static final ModContainer ESSENTIAL_CONTAINER;
 	private static final boolean DEV;
 
 	public static URL WIKI_URL;
@@ -40,6 +43,12 @@ public class EssentialUtils {
 	static {
 		ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
 		DEV = FabricLoader.getInstance().isDevelopmentEnvironment();
+
+		Optional<ModContainer> optional = FabricLoader.getInstance().getModContainer("essential-client");
+		if (optional.isEmpty()) {
+			throw new IllegalStateException("EssentialClient mod container was not found?!");
+		}
+		ESSENTIAL_CONTAINER = optional.get();
 
 		throwAsRuntime(() -> {
 			WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki");
@@ -125,6 +134,14 @@ public class EssentialUtils {
 
 	public static boolean isModInstalled(String modId) {
 		return FabricLoader.getInstance().isModLoaded(modId);
+	}
+
+	public static ModContainer getEssentialContainer() {
+		return ESSENTIAL_CONTAINER;
+	}
+
+	public static String getEssentialVersion() {
+		return ESSENTIAL_CONTAINER.getMetadata().getVersion().getFriendlyString();
 	}
 
 	public static boolean canMineBlock(ClientPlayerEntity player, BlockPos pos) {

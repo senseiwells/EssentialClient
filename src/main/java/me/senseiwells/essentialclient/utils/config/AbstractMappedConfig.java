@@ -21,6 +21,10 @@ public abstract class AbstractMappedConfig<T extends JsonElement, K, V> implemen
 		this.map.put(key, value);
 	}
 
+	public boolean has(K key) {
+		return this.map.containsKey(key);
+	}
+
 	public V remove(K key) {
 		return this.map.remove(key);
 	}

@@ -48,7 +48,7 @@ dependencies {
 	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.11")
 	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.11"
 
-	include implementation("com.github.senseiwells:Arucas:55ec8a7559a9a7896e69de389a96b8dc22561bbb")
+	include implementation("com.github.senseiwells:Arucas:0c488f9f5dc9c85240bc559920dd097400862516")
 	include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
 	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
 		transitive = false
@@ -63,10 +63,10 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+	inputs.property "version", project.mod_version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": project.mod_version
 	}
 }
 
@@ -79,11 +79,7 @@ tasks.withType(JavaCompile) {
 }
 
 java {
-	withSourcesJar()
-}
-
-jar {
-	from "LICENSE"
+	// withSourcesJar()
 }
 
 prepareRemapJar {
@@ -95,6 +91,8 @@ remapJar {
 }
 
 shadowJar {
+	from "LICENSE"
+
 	relocate("com.llamalad7", "shadow.llamalad7")
 }
 
@@ -105,9 +103,6 @@ publishing {
 			// add all the jars that should be included when publishing to maven
 			artifact(jar) {
 				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
 			}
 		}
 	}

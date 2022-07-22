@@ -47,7 +47,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 
 		ScriptListEntry(MinecraftClient client, ClientScriptInstance instance) {
 			this.client = client;
-			this.name = instance.toString();
+			this.name = instance.getName();
 			this.scriptInstance = instance;
 			boolean isTemporary = instance.isTemporary();
 			this.configButton = new ButtonWidget(0, 0, 45, 20, Texts.literal(isTemporary ? "Remove" : "Config"), buttonWidget -> {

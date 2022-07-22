@@ -6,7 +6,6 @@ import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
@@ -99,6 +98,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 				this.keyBind.clearKey();
 				this.keyBind.resetKey();
 			});
+			this.resetButton.active = !this.keyBind.isDefault();
 		}
 
 		@Override

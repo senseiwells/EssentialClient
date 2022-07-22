@@ -9,6 +9,7 @@ import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
+import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 import me.senseiwells.essentialclient.rule.ClientRules;
@@ -45,10 +46,10 @@ public class ClientScriptInstance {
 		}
 	}
 
-	private final String scriptName;
 	private final String content;
-	private final Path fileLocation;
-	private final MultiKeyBind keyBind;
+	private Path fileLocation;
+	private String scriptName;
+	private MultiKeyBind keyBind;
 	private ArucasThread mainScriptThread;
 	private UUID instanceId;
 	private boolean isStopping;
@@ -77,18 +78,30 @@ public class ClientScriptInstance {
 		return this.fileLocation == null;
 	}
 
+	public void renameScript(String newName, Path newLocation) {
+		ClientScript.INSTANCE.replaceSelectedInstance(this.scriptName, newName);
+		ClientKeyBind old = ClientKeyBinds.unregisterKeyBind(this.scriptName);
+		this.keyBind = ClientKeyBinds.registerMulti(newName, "Script Toggles", client -> this.toggleScript(), old.getKeys());
+		this.scriptName = newName;
+		this.fileLocation = newLocation;
+	}
+
+	public void delete() throws IOException {
+		this.stopScript();
+		Files.delete(this.fileLocation);
+		ClientScript.INSTANCE.removeInstance(this);
+		ClientKeyBinds.unregisterKeyBind(this.scriptName);
+	}
+
 	public boolean isScriptRunning() {
 		return this.mainScriptThread != null;
 	}
 
-	@SuppressWarnings("UnusedReturnValue")
-	public synchronized boolean toggleScript() {
+	public synchronized void toggleScript() {
 		if (EssentialUtils.getClient().player == null || this.isScriptRunning()) {
 			this.stopScript();
-			return false;
 		}
 		this.executeScript();
-		return true;
 	}
 
 	public synchronized void stopScript() {
@@ -206,8 +219,13 @@ public class ClientScriptInstance {
 		return "https://github.com/senseiwells/EssentialClient/issues/new?title=ClientScript%20Crash&body=" + URLEncoder.encode(report, StandardCharsets.UTF_8);
 	}
 
+	@Deprecated
 	@Override
 	public String toString() {
+		return this.scriptName;
+	}
+
+	public String getName() {
 		return this.scriptName;
 	}
 
