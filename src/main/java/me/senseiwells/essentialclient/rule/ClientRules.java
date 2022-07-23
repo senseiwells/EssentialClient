@@ -55,7 +55,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		DISABLE_TUTORIAL_NOTIFICATIONS = register(new BooleanClientRule("disableTutorialNotifications", "Disables the tutorial toast from showing")),
 		DISPLAY_TIME_PLAYED = register(new BooleanClientRule("displayTimePlayed", "This will display how long you have had your current client open for in the corner of the pause menu")),
 		ESSENTIAL_CLIENT_BUTTON = register(new BooleanClientRule("essentialClientButton", "This renders the Essential Client Menu on the main menu screen, and pause screen", true)),
-		FORCE_TITLE_TEXT_DOWN = register(new BooleanClientRule("forceTitleTextDown", "Forces the Minecraft version and Mojang text always to the bottom on the title screen")),
+		TITLE_TEXT_TO_TOP = register(new BooleanClientRule("titleTextToTop", "Forces the Minecraft version and Mojang text to the top of the screen")),
 		HIGHLIGHT_LAVA_SOURCES = register(new BooleanClientRule("highlightLavaSources", "Highlights lava sources, credit to plusls for the original code for this", ClientRules::refreshWorld)),
 		INCREASE_SPECTATOR_SCROLL_SPEED = register(new BooleanClientRule("increaseSpectatorScrollSpeed", "Increases the limit at which you can scroll to go faster in spectator")),
 		OPEN_SCREENSHOT_DIRECTORY = register(new BooleanClientRule("openScreenshotDirectory", "This opens the screenshot directory instead of directly opening the screenshot")),
