@@ -39,7 +39,7 @@ public abstract class TitleScreenMixin extends Screen {
 		}
 	}
 
-	@ModifyArg(method = "init", at = @At(value = "NEW", target = "net/minecraft/client/gui/widget/PressableTextWidget"), index = 1)
+	@ModifyArg(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/PressableTextWidget;<init>(IIIILnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;Lnet/minecraft/client/font/TextRenderer;)V"), index = 1)
 	private int onPressableText(int y) {
 		return ClientRules.TITLE_TEXT_TO_TOP.getValue() ? 5 : y;
 	}
