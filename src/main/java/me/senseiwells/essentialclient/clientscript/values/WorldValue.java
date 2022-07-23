@@ -4,14 +4,15 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.functions.FunctionValue;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.clientscript.PosIterator;
 import me.senseiwells.essentialclient.utils.clientscript.ThreadSafeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -27,7 +28,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
-import java.util.List;
 import java.util.Objects;
 
 import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
@@ -100,9 +100,10 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				MemberFunction.of("getEmittedRedstonePower", 2, this::getEmittedRedstonePowerPos),
 				MemberFunction.of("getLight", 3, this::getLight),
 				MemberFunction.of("getLight", 1, this::getLightPos),
-				MemberFunction.of("getArea", 2, this::getArea),
-				MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks),
-				MemberFunction.of("forEachBlock", 3, this::forEachBlock)
+				MemberFunction.of("getArea", 2, this::getArea, "This function is memory intensive, use '<World>'.getPositions(pos1, pos2)"),
+				MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks, "This function is memory intensive, use '<World>.getBlocks(pos1, pos2)'"),
+				MemberFunction.of("getPositions", 2, this::getPositions),
+				MemberFunction.of("getBlocks", 2, this::getBlocks)
 			);
 		}
 
@@ -543,6 +544,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 		}
 
 		@FunctionDoc(
+			deprecated = "This function is memory intensive, you should use `<World>.getPositions(pos1, pos2)`",
 			name = "getArea",
 			desc = "This gets a list of all block positions between the two positions",
 			params = {
@@ -563,6 +565,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 		}
 
 		@FunctionDoc(
+			deprecated = "This function is memory intensive, you should use `<World>.getBlocks(pos1, pos2)`",
 			name = "getAreaOfBlocks",
 			desc = "This gets a list of all blocks (with positions) between the two positions",
 			params = {
@@ -586,38 +589,38 @@ public class WorldValue extends GenericValue<ClientWorld> {
 		}
 
 		@FunctionDoc(
-			name = "forEachBlock",
-			desc = {
-				"This iterates over an area of blocks passing into a function,",
-				"the function takes a block you can return true to break the iterator"
-			},
+			name = "getPositions",
+			desc = "This gets an iterator for all positions between two positions",
 			params = {
 				POS, "pos1", "the first position",
-				POS, "pos2", "the second position",
-				FUNCTION, "iterating function, passes in the current block"
+				POS, "pos2", "the second position"
 			},
-			example = """
-				pos = Player.get().getPos();
-				world.forEachBlock(pos.subtract(5, 5, 5), pos.add(5, 5, 5) fun(block) {
-					print(block);
-				});
-				"""
+			returns = {ITERATOR, "the iterator for the positions"},
+			example = "foreach (pos : world.getPositions(new Pos(0, 100, 100), new Pos(0, 100, 0)));"
 		)
-		private Value forEachBlock(Arguments arguments) throws CodeError {
+		private Value getPositions(Arguments arguments) throws RuntimeError {
+			BlockPos posA = arguments.skip().getNext(PosValue.class).toBlockPos();
+			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
+			Iterable<BlockPos> posIterable = BlockPos.iterate(posA, posB);
+			return new IteratorValue(() -> new PosIterator(posIterable.iterator()));
+		}
+
+		@FunctionDoc(
+			name = "getBlocks",
+			desc = "This gets an iterator for all blocks (and positions) between two positions",
+			params = {
+				POS, "pos1", "the first position",
+				POS, "pos2", "the second position"
+			},
+			returns = {ITERATOR, "the iterator for the blocks"},
+			example = "foreach (block : world.getBlocks(new Pos(0, 100, 100), new Pos(0, 100, 0)));"
+		)
+		private Value getBlocks(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			BlockPos posA = arguments.getNext(PosValue.class).toBlockPos();
 			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
-			FunctionValue functionValue = arguments.getNextFunction();
-
-			for (BlockPos pos : BlockPos.iterate(posA, posB)) {
-				BlockState state = world.getBlockState(pos);
-				List<Value> args = ArucasList.arrayListOf(new BlockValue(state, pos));
-				Value returnValue = functionValue.call(arguments.getContext().createBranch(), args);
-				if (returnValue instanceof BooleanValue booleanValue && booleanValue.value) {
-					break;
-				}
-			}
-			return NullValue.NULL;
+			Iterable<BlockPos> posIterable = BlockPos.iterate(posA, posB);
+			return new IteratorValue(() -> new PosIterator.Block(world, posIterable.iterator()));
 		}
 
 		private ClientWorld getWorld(Arguments arguments) throws CodeError {

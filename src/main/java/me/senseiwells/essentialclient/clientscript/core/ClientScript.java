@@ -9,28 +9,33 @@ import me.senseiwells.essentialclient.utils.config.Config;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public enum ClientScript implements Config.CList {
 	INSTANCE;
 
-	private final Set<ClientScriptInstance> scriptInstances;
+	private final Map<String, ClientScriptInstance> scriptInstances;
 	private final Set<String> selectedScriptNames;
 
 	ClientScript() {
-		this.scriptInstances = new HashSet<>();
+		this.scriptInstances = new HashMap<>();
 		this.selectedScriptNames = new HashSet<>();
 	}
 
-	public Set<ClientScriptInstance> getScriptInstances() {
-		return this.scriptInstances;
+	public ClientScriptInstance getScriptInstance(String name) {
+		return this.scriptInstances.get(name);
+	}
+
+	public Collection<ClientScriptInstance> getScriptInstances() {
+		return this.scriptInstances.values();
 	}
 
 	public List<ClientScriptInstance> getScriptInstancesInOrder() {
 		return this.getScriptInstances().stream().sorted(Comparator.comparing(ClientScriptInstance::getName)).toList();
+	}
+
+	public Set<String> getScriptInstanceNames() {
+		return this.scriptInstances.keySet();
 	}
 
 	public boolean hasScriptInstance(String name) {
@@ -45,21 +50,22 @@ public enum ClientScript implements Config.CList {
 		if (this.scriptInstances.isEmpty()) {
 			return;
 		}
-		for (ClientScriptInstance instance : this.scriptInstances) {
-			if (this.selectedScriptNames.contains(instance.getName())) {
+		for (String selected : this.selectedScriptNames) {
+			ClientScriptInstance instance = this.scriptInstances.get(selected);
+			if (instance != null) {
 				instance.toggleScript();
 			}
 		}
 	}
 
 	public void stopAllInstances() {
-		for (ClientScriptInstance instance : this.scriptInstances) {
+		for (ClientScriptInstance instance : this.getScriptInstances()) {
 			instance.stopScript();
 		}
 	}
 
 	public void addInstance(ClientScriptInstance scriptInstance) {
-		this.scriptInstances.add(scriptInstance);
+		this.scriptInstances.put(scriptInstance.getName(), scriptInstance);
 	}
 
 	public void addSelectedInstance(String name) {
@@ -68,7 +74,7 @@ public enum ClientScript implements Config.CList {
 	}
 
 	public void removeInstance(ClientScriptInstance clientScriptInstance) {
-		this.scriptInstances.remove(clientScriptInstance);
+		this.scriptInstances.remove(clientScriptInstance.getName());
 	}
 
 	public void removeSelectedInstance(String name) {
@@ -126,7 +132,7 @@ public enum ClientScript implements Config.CList {
 	@Override
 	public JsonElement getSaveData() {
 		JsonArray scriptData = new JsonArray();
-		this.scriptInstances.forEach(instance -> {
+		this.getScriptInstances().forEach(instance -> {
 			if (this.selectedScriptNames.contains(instance.getName())) {
 				JsonObject scriptObject = new JsonObject();
 				scriptObject.addProperty("name", instance.getName());
