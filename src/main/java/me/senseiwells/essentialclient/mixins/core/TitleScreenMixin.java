@@ -3,11 +3,9 @@ package me.senseiwells.essentialclient.mixins.core;
 import me.senseiwells.essentialclient.gui.config.ConfigScreen;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.render.Texts;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
@@ -41,12 +39,8 @@ public abstract class TitleScreenMixin extends Screen {
 		}
 	}
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"), require = 0)
-	private void onDrawText(MatrixStack matrices, TextRenderer textRenderer, String text, int x, int y, int color) {
-		if (ClientRules.ESSENTIAL_CLIENT_BUTTON.getValue() && !ClientRules.FORCE_TITLE_TEXT_DOWN.getValue()) {
-			drawStringWithShadow(matrices, textRenderer, text, x, 5, color);
-			return;
-		}
-		drawStringWithShadow(matrices, textRenderer, text, x, y, color);
+	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"), index = 4)
+	private int onRender(int y) {
+		return ClientRules.TITLE_TEXT_TO_TOP.getValue() ? 5 : y;
 	}
 }
