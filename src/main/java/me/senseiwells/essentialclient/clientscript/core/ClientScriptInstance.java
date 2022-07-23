@@ -17,6 +17,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -26,6 +27,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public class ClientScriptInstance {
@@ -81,7 +84,8 @@ public class ClientScriptInstance {
 	public void renameScript(String newName, Path newLocation) {
 		ClientScript.INSTANCE.replaceSelectedInstance(this.scriptName, newName);
 		ClientKeyBind old = ClientKeyBinds.unregisterKeyBind(this.scriptName);
-		this.keyBind = ClientKeyBinds.registerMulti(newName, "Script Toggles", client -> this.toggleScript(), old.getKeys());
+		Collection<InputUtil.Key> keys = old != null ? old.getKeys() : List.of();
+		this.keyBind = ClientKeyBinds.registerMulti(newName, "Script Toggles", client -> this.toggleScript(), keys);
 		this.scriptName = newName;
 		this.fileLocation = newLocation;
 	}
@@ -100,6 +104,7 @@ public class ClientScriptInstance {
 	public synchronized void toggleScript() {
 		if (EssentialUtils.getClient().player == null || this.isScriptRunning()) {
 			this.stopScript();
+			return;
 		}
 		this.executeScript();
 	}
