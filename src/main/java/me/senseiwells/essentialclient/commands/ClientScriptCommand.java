@@ -16,8 +16,6 @@ import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 
-import java.util.List;
-
 import static me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager.Category;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -35,7 +33,17 @@ public class ClientScriptCommand {
 
 		root.then(literal("run")
 			.then(argument("scriptName", StringArgumentType.string())
-				.suggests((c, b) -> CommandSource.suggestMatching(List.of("exampleName", "scriptFromCommand"), b))
+				.suggests((c, b) -> CommandSource.suggestMatching(ClientScript.INSTANCE.getScriptInstanceNames(), b))
+				.executes(context -> {
+					String scriptName = StringArgumentType.getString(context, "scriptName");
+					ClientScriptInstance instance = ClientScript.INSTANCE.getScriptInstance(scriptName);
+					if (instance == null) {
+						throw NO_SUCH_SCRIPT.create(scriptName);
+					}
+					instance.stopScript();
+					instance.toggleScript();
+					return 1;
+				})
 				.then(argument("script", StringArgumentType.greedyString())
 					.executes(context -> {
 						String scriptName = StringArgumentType.getString(context, "scriptName");

@@ -48,7 +48,7 @@ dependencies {
 	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.11")
 	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.11"
 
-	include implementation("com.github.senseiwells:Arucas:0c488f9f5dc9c85240bc559920dd097400862516")
+	include implementation("com.github.senseiwells:Arucas:98552db943ab94ef05adae62c7d5be2623593b3f")
 	include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
 	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
 		transitive = false
