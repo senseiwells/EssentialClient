@@ -2,7 +2,9 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 
 public interface Colourable {
 	int getColour();
+
 	int getPriority();
+
 	String getName();
 
 	default boolean hasColour() {

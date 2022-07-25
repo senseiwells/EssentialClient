@@ -48,7 +48,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 		name = OTHER_PLAYER,
 		desc = {
 			"This class is used to represent all players, mainly other players,",
-			"this class extends LivingEntity and so inherits all of their methods too",
+			"this class extends LivingEntity and so inherits all of their methods too"
 		},
 		importPath = "Minecraft"
 	)
@@ -236,14 +236,13 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			PlayerAbilities playerAbilities = playerEntity.getAbilities();
 			Context context = arguments.getContext();
-			ArucasMap map = new ArucasMap() {{
-				this.put(context, StringValue.of("invulnerable"), BooleanValue.of(playerAbilities.invulnerable));
-				this.put(context, StringValue.of("canFly"), BooleanValue.of(playerAbilities.allowFlying));
-				this.put(context, StringValue.of("canBreakBlocks"), BooleanValue.of(playerAbilities.allowModifyWorld));
-				this.put(context, StringValue.of("isCreative"), BooleanValue.of(playerAbilities.creativeMode));
-				this.put(context, StringValue.of("walkSpeed"), NumberValue.of(playerAbilities.getWalkSpeed()));
-				this.put(context, StringValue.of("flySpeed"), NumberValue.of(playerAbilities.getFlySpeed()));
-			}};
+			ArucasMap map = new ArucasMap();
+			map.put(context, StringValue.of("invulnerable"), BooleanValue.of(playerAbilities.invulnerable));
+			map.put(context, StringValue.of("canFly"), BooleanValue.of(playerAbilities.allowFlying));
+			map.put(context, StringValue.of("canBreakBlocks"), BooleanValue.of(playerAbilities.allowModifyWorld));
+			map.put(context, StringValue.of("isCreative"), BooleanValue.of(playerAbilities.creativeMode));
+			map.put(context, StringValue.of("walkSpeed"), NumberValue.of(playerAbilities.getWalkSpeed()));
+			map.put(context, StringValue.of("flySpeed"), NumberValue.of(playerAbilities.getFlySpeed()));
 			return new MapValue(map);
 		}
 

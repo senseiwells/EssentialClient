@@ -190,7 +190,7 @@ public final class MinecraftDeobfuscator {
 	private static class Yarn {
 		private static final String YARN_API_ENTRYPOINT;
 		private static final Path YARN_VERSION;
-		private static String VERSION_CACHE;
+		private static String VERSION_CACHE; // Checkstyle ignore
 
 		public String gameVersion;
 		public String separator;

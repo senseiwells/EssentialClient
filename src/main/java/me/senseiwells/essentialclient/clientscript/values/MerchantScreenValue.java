@@ -45,7 +45,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 		name = MERCHANT_SCREEN,
 		desc = {
 			"This class extends Screen and so inherits all of their methods too,",
-			"this class is used to add functionality to trading screens.",
+			"this class is used to add functionality to trading screens."
 		},
 		importPath = "Minecraft"
 	)

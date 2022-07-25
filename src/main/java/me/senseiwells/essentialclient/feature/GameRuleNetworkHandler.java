@@ -20,7 +20,7 @@ import net.minecraft.world.GameRules;
 import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
 
 public class GameRuleNetworkHandler extends NetworkHandler {
-	public static Identifier GAME_RULE_CHANNEL = new Identifier("essentialclient", "gamerule");
+	public static final Identifier GAME_RULE_CHANNEL = new Identifier("essentialclient", "gamerule");
 	public static final int VERSION = 1_0_0;
 
 	private boolean canModifyRules = false;

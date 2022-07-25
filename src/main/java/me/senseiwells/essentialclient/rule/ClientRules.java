@@ -86,7 +86,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		SOUL_SPEED_FOV_MULTIPLIER = register(new DoubleSliderClientRule("soulSpeedFovMultiplier", "Determines the percentage of Fov scaling when walking on soil soul or soul sand", 0, 0, 1)),
 		WATER_FOV_MULTIPLIER = register(new DoubleSliderClientRule("waterFovMultiplier", "Determines the percentage of Fov scaling when fully submerged in water", 0, 0, 1));
 
-	public static StringClientRule
+	public static final StringClientRule
 		ANNOUNCE_AFK_MESSAGE = register(new StringClientRule("announceAFKMessage", "This is the message you announce after you are afk", "I am now AFK")),
 		ANNOUNCE_BACK_MESSAGE = register(new StringClientRule("announceBackMessage", "This is the message you announce after you are back from being afk", ""));
 
@@ -103,13 +103,6 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		if (EssentialUtils.isModInstalled("fabric-resource-loader-v0")) {
 			HighlightLavaSources.load();
 		}
-	}
-
-	private static <T extends ClientRule<?>> T register(T clientRule) {
-		addRule(clientRule.getName(), clientRule);
-		clientRule.onValueChange();
-		clientRule.addListener(rule -> INSTANCE.saveConfig());
-		return clientRule;
 	}
 
 	private ClientRules() { }
@@ -189,6 +182,13 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 				clientRule.setOptionalInfo(info.getAsString());
 			}
 		}
+		return clientRule;
+	}
+
+	private static <T extends ClientRule<?>> T register(T clientRule) {
+		addRule(clientRule.getName(), clientRule);
+		clientRule.onValueChange();
+		clientRule.addListener(rule -> INSTANCE.saveConfig());
 		return clientRule;
 	}
 }

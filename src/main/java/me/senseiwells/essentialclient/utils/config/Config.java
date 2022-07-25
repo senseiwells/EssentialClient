@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.utils.config;
 
 import com.google.gson.*;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 
@@ -46,16 +47,6 @@ public interface Config<T extends JsonElement> {
 	void readConfig(T element);
 
 	/**
-	 * This is the path of the config, it's
-	 * used to read and write the file
-	 *
-	 * @return the path of the config
-	 */
-	default Path getConfigPath() {
-		return this.getConfigRootPath().resolve(this.getConfigName() + ".json");
-	}
-
-	/**
 	 * This should be called when
 	 * you want to read a config file
 	 */
@@ -64,6 +55,16 @@ public interface Config<T extends JsonElement> {
 		if (element != null) {
 			this.readConfig(element);
 		}
+	}
+
+	/**
+	 * This is the path of the config, it's
+	 * used to read and write the file
+	 *
+	 * @return the path of the config
+	 */
+	default Path getConfigPath() {
+		return this.getConfigRootPath().resolve(this.getConfigName() + ".json");
 	}
 
 	/**
@@ -76,7 +77,7 @@ public interface Config<T extends JsonElement> {
 	default Path getConfigRootPath() {
 		Path root = EssentialUtils.getEssentialConfigFile();
 		if (!Files.exists(root)) {
-			EssentialUtils.throwAsRuntime(() -> Files.createDirectory(root));
+			ExceptionUtils.runSafe(() -> Files.createDirectory(root));
 		}
 		return root;
 	}

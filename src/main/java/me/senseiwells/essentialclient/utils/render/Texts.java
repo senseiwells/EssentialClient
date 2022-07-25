@@ -25,7 +25,6 @@ public class Texts {
 		START = literal("Start").formatted(Formatting.DARK_GREEN),
 		STOP = literal("Stop").formatted(Formatting.DARK_RED);
 
-
 	// These allow for easy porting to later versions
 	public static MutableText literal(String message) {
 		return Text.literal(message);

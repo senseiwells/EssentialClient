@@ -58,6 +58,7 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 			super.setRenderThroughBlocks(renderThroughBlocks);
 		}
 	}
+
 	@ConstructorDoc(
 		desc = "This creates a new sphere shape",
 		params = {POS, "pos", "The position of the sphere"},
@@ -75,7 +76,7 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 		params = {
 			NUMBER, "x", "The x position of the sphere",
 			NUMBER, "y", "The y position of the sphere",
-			NUMBER, "z", "The z position of the sphere",
+			NUMBER, "z", "The z position of the sphere"
 		},
 		example = "new SphereShape(0, 10, 0);"
 	)
@@ -95,6 +96,9 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 		this.steps = steps.value.floatValue();
 	}
 
+	// Checkstyle off
+	// Checkstyle insists we put this wither overloaded method
+
 	@FunctionDoc(
 		name = "getSteps",
 		desc = "This gets the number of steps the sphere will take to render",
@@ -105,6 +109,8 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 	public NumberValue getSteps(Context context) {
 		return NumberValue.of(this.getSteps());
 	}
+
+	// Checkstyle on
 
 	private Map<UUID, Set<SphereShapeWrapper>> getSphereMap() {
 		return this.shouldRenderThroughBlocks() ? THROUGH_SPHERES : NORMAL_SPHERES;

@@ -27,6 +27,7 @@ import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,8 +38,8 @@ public class EssentialUtils {
 	private static final ModContainer ESSENTIAL_CONTAINER;
 	private static final boolean DEV;
 
-	public static URL WIKI_URL;
-	public static URL SCRIPT_WIKI_URL;
+	public static final URL WIKI_URL;
+	public static final URL SCRIPT_WIKI_URL;
 
 	static {
 		ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
@@ -50,11 +51,14 @@ public class EssentialUtils {
 		}
 		ESSENTIAL_CONTAINER = optional.get();
 
-		throwAsRuntime(() -> {
+		try {
 			WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki");
 			SCRIPT_WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki/ClientScript");
 			Files.createDirectories(ESSENTIAL_CLIENT_PATH);
-		});
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static void sendMessageToActionBar(String message) {
@@ -136,10 +140,6 @@ public class EssentialUtils {
 		return FabricLoader.getInstance().isModLoaded(modId);
 	}
 
-	public static ModContainer getEssentialContainer() {
-		return ESSENTIAL_CONTAINER;
-	}
-
 	public static String getEssentialVersion() {
 		return ESSENTIAL_CONTAINER.getMetadata().getVersion().getFriendlyString();
 	}
@@ -158,7 +158,7 @@ public class EssentialUtils {
 		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(null, null) >= 0;
 	}
 
-	public static float getBlockBreakingSpeed(ItemStack itemStack, BlockState blockState, PlayerEntity player){
+	public static float getBlockBreakingSpeed(ItemStack itemStack, BlockState blockState, PlayerEntity player) {
 		float multiplier = itemStack.getMiningSpeedMultiplier(blockState);
 		if (multiplier > 1.0F) {
 			int efficiencyLevel = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, itemStack);
@@ -205,15 +205,6 @@ public class EssentialUtils {
 			}
 		}
 		return fallback;
-	}
-
-	public static void throwAsRuntime(ThrowableRunnable runnable) {
-		try {
-			runnable.run();
-		}
-		catch (Throwable throwable) {
-			throw new RuntimeException(throwable);
-		}
 	}
 
 	public static <T> T throwAsRuntime(ThrowableSupplier<T> supplier) {

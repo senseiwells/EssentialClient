@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.rule.client;
 
 import com.google.gson.JsonElement;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 
 public class DoubleClientRule extends NumberClientRule<Double> {
 	public DoubleClientRule(String name, String description, Double defaultValue, RuleListener<Double> ruleListener) {
@@ -40,7 +40,7 @@ public class DoubleClientRule extends NumberClientRule<Double> {
 
 	@Override
 	public void setValueFromString(String value) {
-		Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(value));
+		Double doubleValue = ExceptionUtils.catchAsNull(() -> Double.parseDouble(value));
 		if (doubleValue == null) {
 			this.logCannotSet(value);
 			return;

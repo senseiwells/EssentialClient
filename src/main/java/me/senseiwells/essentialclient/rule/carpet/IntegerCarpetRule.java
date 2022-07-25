@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.rule.carpet;
 
 import com.google.gson.JsonElement;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 
 public class IntegerCarpetRule extends NumberCarpetRule<Integer> {
 	public IntegerCarpetRule(String name, String description, Integer defaultValue) {
@@ -25,7 +25,7 @@ public class IntegerCarpetRule extends NumberCarpetRule<Integer> {
 
 	@Override
 	public Integer getValueFromString(String value) {
-		Integer intValue = EssentialUtils.catchAsNull(() -> Integer.parseInt(value));
+		Integer intValue = ExceptionUtils.catchAsNull(() -> Integer.parseInt(value));
 		if (intValue == null) {
 			this.logCannotSet(value);
 			return null;

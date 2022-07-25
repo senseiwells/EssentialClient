@@ -45,7 +45,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		desc = "Creates a new ConfigHandler, this is used to read and save configs",
 		params = {
 			STRING, "name", "The name of the config, this will also be the name of the config file",
-			BOOLEAN, "read", "Whether or not to read the config on creation",
+			BOOLEAN, "read", "Whether or not to read the config on creation"
 		},
 		example = "new ConfigHandler('MyConfig', false);"
 	)

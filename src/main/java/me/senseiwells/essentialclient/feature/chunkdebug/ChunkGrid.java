@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -32,11 +33,11 @@ public class ChunkGrid {
 	private final Point minimapCornerPoint = new Point();
 	private final Point mouseDown = new Point();
 	private final List<String> dimensions;
-	private final Map<String, DraggablePoint> dimensionPoints = new LinkedHashMap<>() {{
-		this.put("overworld", null);
-		this.put("the_nether", null);
-		this.put("the_end", null);
-	}};
+	private final Map<String, DraggablePoint> dimensionPoints = Util.make(new LinkedHashMap<>(), map -> {
+		map.put("overworld", null);
+		map.put("the_nether", null);
+		map.put("the_end", null);
+	});
 
 	private boolean panning = false;
 	private int dimensionIndex = 0;
