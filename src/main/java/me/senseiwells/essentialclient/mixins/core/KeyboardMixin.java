@@ -20,7 +20,7 @@ import java.util.Set;
 public class KeyboardMixin {
 	@Shadow
 	@Final
-	private static MinecraftClient client;
+	private MinecraftClient client;
 	private final static Set<Class<? extends Screen>> whiteListedScreenClass = Set.of(
 		CraftingScreen.class, HopperScreen.class, InventoryScreen.class, MerchantScreen.class, BrewingStandScreen.class
 	);
