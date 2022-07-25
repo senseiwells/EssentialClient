@@ -855,7 +855,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
 			client.execute(() -> {
-				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				CraftingSharedConstants.IS_SCRIPT_RECIPE.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false);
 			});
 			return NullValue.NULL;
@@ -877,7 +877,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
 			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
 			client.execute(() -> {
-				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				CraftingSharedConstants.IS_SCRIPT_RECIPE.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value);
 			});
 			return NullValue.NULL;
