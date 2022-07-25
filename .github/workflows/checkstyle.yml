@@ -13,4 +13,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: 'github-pr-check'
           level: warning
-          checkstyle_config: sensei_checkstyle.xml
+          checkstyle_config: checkstyle.xml
