@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class KeyboardHelper {
 
-	private static final Map<String, Integer> stringToKeyMap = Util.make(new HashMap<>(), map -> {
+	private static final Map<String, Integer> STRING_TO_KEY = Util.make(new HashMap<>(), map -> {
 		map.put("a", GLFW.GLFW_KEY_A);
 		map.put("b", GLFW.GLFW_KEY_B);
 		map.put("c", GLFW.GLFW_KEY_C);
@@ -60,7 +60,7 @@ public class KeyboardHelper {
 		map.put("backslash", GLFW.GLFW_KEY_BACKSLASH);
 	});
 
-	private static final Map<Integer, String> keyToStringMap = Util.make(new HashMap<>(), map -> {
+	private static final Map<Integer, String> KEY_TO_STRING = Util.make(new HashMap<>(), map -> {
 		map.put(GLFW.GLFW_KEY_SPACE, "space");
 		map.put(GLFW.GLFW_KEY_LEFT_ALT, "left_alt");
 		map.put(GLFW.GLFW_KEY_RIGHT_ALT, "right_alt");
@@ -126,18 +126,18 @@ public class KeyboardHelper {
 	});
 
 	static {
-		for (Map.Entry<Integer, String> entry : keyToStringMap.entrySet()) {
-			stringToKeyMap.put(entry.getValue(), entry.getKey());
+		for (Map.Entry<Integer, String> entry : KEY_TO_STRING.entrySet()) {
+			STRING_TO_KEY.put(entry.getValue(), entry.getKey());
 		}
 	}
 
 	public static String translateKeyToString(int code) {
-		String keyName = keyToStringMap.get(code);
+		String keyName = KEY_TO_STRING.get(code);
 		return keyName == null ? GLFW.glfwGetKeyName(code, 0) : keyName;
 	}
 
 	public static int translateStringToKey(String string) {
-		Integer keyCode = stringToKeyMap.get(string);
+		Integer keyCode = STRING_TO_KEY.get(string);
 		return keyCode == null ? -1 : keyCode;
 	}
 }

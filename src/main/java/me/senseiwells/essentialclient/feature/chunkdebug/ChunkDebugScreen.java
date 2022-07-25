@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
@@ -188,8 +189,8 @@ public class ChunkDebugScreen extends ChildScreen {
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
 		// Header
-		bufferBuilder.vertex(0, 0, 0).texture( 0, 0).color(64, 64, 64, 255).next();
-		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).texture( 0, HEADER_HEIGHT / 32f).color(64, 64, 64, 255).next();
+		bufferBuilder.vertex(0, 0, 0).texture(0, 0).color(64, 64, 64, 255).next();
+		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).texture(0, HEADER_HEIGHT / 32f).color(64, 64, 64, 255).next();
 		bufferBuilder.vertex(this.width, HEADER_HEIGHT, 0).texture(this.width / 32f, HEADER_HEIGHT / 32f).color(64, 64, 64, 255).next();
 		bufferBuilder.vertex(this.width, 0, 0).texture(this.width / 32f, 0).color(64, 64, 64, 255).next();
 
@@ -247,7 +248,7 @@ public class ChunkDebugScreen extends ChildScreen {
 		@Override
 		public void setTextFieldFocused(boolean focused) {
 			if (this.isFocused() && !focused) {
-				Integer newValue = EssentialUtils.catchAsNull(() -> Integer.parseInt(this.getText()));
+				Integer newValue = ExceptionUtils.catchAsNull(() -> Integer.parseInt(this.getText()));
 				if (newValue == null) {
 					this.setText(String.valueOf(this.lastValidValue));
 				}

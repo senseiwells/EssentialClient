@@ -29,7 +29,6 @@ public class PlayerListCommand {
 	public static final DynamicCommandExceptionType EMPTY = new DynamicCommandExceptionType(o -> Texts.literal("%s is empty".formatted(o)));
 	public static final Dynamic2CommandExceptionType HAS_PLAYER = new Dynamic2CommandExceptionType((o, p) -> Texts.literal("%s is already in %s".formatted(o, p)));
 
-
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		if (!ClientRules.COMMAND_PLAYER_LIST.getValue() || !ClientRules.COMMAND_PLAYER_CLIENT.getValue()) {
 			return;
@@ -49,8 +48,7 @@ public class PlayerListCommand {
 		LiteralCommandNode<ServerCommandSource> deleteListNode = literal("deletelist").then(argument("listname", StringArgumentType.word())
 			.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))
 			.executes(PlayerListCommand::deleteList)
-		)
-		.build();
+		).build();
 
 		LiteralCommandNode<ServerCommandSource> spawnListNode = literal("spawnlist").then(argument("listname", StringArgumentType.word())
 			.suggests((context, builder) -> ConfigPlayerList.INSTANCE.suggestList(builder))

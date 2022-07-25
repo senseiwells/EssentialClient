@@ -19,6 +19,7 @@ public abstract class RecipeBookWidgetMixin {
 	private RecipeBookResults recipesArea;
 	@Shadow
 	private TextFieldWidget searchField;
+
 	@Shadow
 	protected abstract void refreshResults(boolean resetCurrentPage);
 

@@ -45,7 +45,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		desc = "Creates a new ConfigHandler, this is used to read and save configs",
 		params = {
 			STRING, "name", "The name of the config, this will also be the name of the config file",
-			BOOLEAN, "read", "Whether or not to read the config on creation",
+			BOOLEAN, "read", "Whether or not to read the config on creation"
 		},
 		example = "new ConfigHandler('MyConfig', false);"
 	)
@@ -152,9 +152,9 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		params = {CONFIG, "config", "The config to add"},
 		example = """
 			config = Config.fromMap({
-			    "type": "boolean",
-			    "name": "My Config",
-			    "description": "This is my config"
+				"type": "boolean",
+				"name": "My Config",
+				"description": "This is my config"
 			});
 			configHandler.addConfig(config);
 			"""
@@ -170,9 +170,9 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		params = {LIST, "configs", "The configs to add"},
 		example = """
 			config = Config.fromMap({
-			    "type": "boolean",
-			    "name": "My Config",
-			    "description": "This is my config"
+				"type": "boolean",
+				"name": "My Config",
+				"description": "This is my config"
 			});
 			configHandler.addConfigs([config]);
 			"""

@@ -92,7 +92,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				"'cycle_values' which is a list of values that the config can cycle through.",
 				"And slider types must contain the following keys:",
 				"'min' which is the minimum value of the slider,",
-				"'max' which is the maximum value of the slider",
+				"'max' which is the maximum value of the slider"
 			},
 			params = {MAP, "map", "The map to create the config from"},
 			returns = {CONFIG, "The config created from the map"},
@@ -131,18 +131,18 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {LIST, "A list of configs created from the list of config maps"},
 			example = """
 				configs = [
-				    {
-				        "type": "boolean",
-				        "name": "My Config",
-				        "description": "This is my config"
-				    },
-				    {
-				        "type": "cycle",
-				        "name": "My Cycle Config",
-				        "description": "This is my cycle config",
-				        "cycle_values": ["one", "two", "three"],
-				        "default_value": "two"
-				    }
+					{
+						"type": "boolean",
+						"name": "My Config",
+						"description": "This is my config"
+					},
+					{
+						"type": "cycle",
+						"name": "My Cycle Config",
+						"description": "This is my cycle config",
+						"cycle_values": ["one", "two", "three"],
+						"default_value": "two"
+					}
 				];
 				configs = Config.fromListOfMap(configs);
 				"""
@@ -261,7 +261,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			params = {FUNCTION, "listener", "The listener to add"},
 			example = """
 				config.addListener(function(newValue) {
-				    print(newValue);
+					print(newValue);
 				});
 				"""
 		)

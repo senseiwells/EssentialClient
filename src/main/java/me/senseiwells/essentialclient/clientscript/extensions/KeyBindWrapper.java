@@ -39,7 +39,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.KEY_
 @ArucasClass(name = KEY_BIND)
 public class KeyBindWrapper implements IArucasWrappedClass {
 	@ArucasDefinition
-	public static WrapperClassDefinition DEFINITION;
+	public static WrapperClassDefinition DEFINITION; // Checkstyle ignore
 
 	private MultiKeyBind keyBind;
 	private Context callbackContext;

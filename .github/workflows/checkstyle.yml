@@ -1,0 +1,17 @@
+name: Checkstyle
+on:
+  pull_request:
+    branches: ['*']
+jobs:
+  checkstyle:
+    name: Checkstyler
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: nikitasavinov/checkstyle-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: 'github-pr-check'
+          level: error
+          fail_on_error: true
+          checkstyle_config: checkstyle.xml

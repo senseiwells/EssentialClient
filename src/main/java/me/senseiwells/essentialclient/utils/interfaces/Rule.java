@@ -10,18 +10,29 @@ import java.util.function.Consumer;
 
 public interface Rule<T> {
 	String getName();
+
 	Type getType();
+
 	String getDescription();
+
 	String getOptionalInfo();
+
 	T getDefaultValue();
+
 	T getValue();
+
 	T fromJson(JsonElement element);
+
 	JsonElement toJson(T value);
+
 	List<RuleListener<T>> getListeners();
+
 	Rule<T> shallowCopy();
 
 	void setValueQuietly(T value);
+
 	void setValueFromString(String value);
+
 	void setOptionalInfo(String optionalInfo);
 
 	default boolean changeable() {
@@ -107,7 +118,7 @@ public interface Rule<T> {
 
 		@Override
 		default void setValueFromString(String value) {
-			this.setValue(value.equals("true"));
+			this.setValue("true".equals(value));
 		}
 	}
 
@@ -123,9 +134,13 @@ public interface Rule<T> {
 
 	interface Slider<T extends Number> extends Num<T> {
 		String getFormatted();
+
 		T getMin();
+
 		T getMax();
+
 		T getNewValue(double percent);
+
 		double getPercentage();
 
 		default void setFromPercentage(double percentage) {
@@ -166,7 +181,9 @@ public interface Rule<T> {
 
 	interface Cycle extends Rule<String> {
 		List<String> getCycleValues();
+
 		int getCurrentIndex();
+
 		void setCurrentIndex(int index);
 
 		default int getMaxIndex() {

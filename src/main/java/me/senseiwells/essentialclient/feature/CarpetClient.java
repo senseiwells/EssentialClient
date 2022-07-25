@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.gui.RulesScreen;
@@ -257,14 +258,14 @@ public class CarpetClient implements Config.CList {
 
 		CarpetClientRule<?> rule = switch (type) {
 			case BOOLEAN -> {
-				yield new BooleanCarpetRule(name, description, defaultValue.equals("true"));
+				yield new BooleanCarpetRule(name, description, "true".equals(defaultValue));
 			}
 			case INTEGER -> {
-				Integer intValue = EssentialUtils.catchAsNull(() -> Integer.parseInt(defaultValue));
+				Integer intValue = ExceptionUtils.catchAsNull(() -> Integer.parseInt(defaultValue));
 				yield intValue == null ? null : new IntegerCarpetRule(name, description, intValue);
 			}
 			case DOUBLE -> {
-				Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(defaultValue));
+				Double doubleValue = ExceptionUtils.catchAsNull(() -> Double.parseDouble(defaultValue));
 				yield doubleValue == null ? null : new DoubleCarpetRule(name, description, doubleValue);
 			}
 			default -> null;

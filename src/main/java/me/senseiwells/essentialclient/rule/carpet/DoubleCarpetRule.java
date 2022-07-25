@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.rule.carpet;
 
 import com.google.gson.JsonElement;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 
 public class DoubleCarpetRule extends NumberCarpetRule<Double> {
 	public DoubleCarpetRule(String name, String description, Double defaultValue) {
@@ -25,7 +25,7 @@ public class DoubleCarpetRule extends NumberCarpetRule<Double> {
 
 	@Override
 	public Double getValueFromString(String value) {
-		Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(value));
+		Double doubleValue = ExceptionUtils.catchAsNull(() -> Double.parseDouble(value));
 		if (doubleValue == null) {
 			this.logCannotSet(value);
 			return null;

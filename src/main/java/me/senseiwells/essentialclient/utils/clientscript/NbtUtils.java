@@ -27,7 +27,7 @@ public class NbtUtils {
 			return nbtMap;
 		}
 		for (String tagName : compound.getKeys()) {
-			NbtElement element =  compound.get(tagName);
+			NbtElement element = compound.get(tagName);
 			if (element == null) {
 				continue;
 			}

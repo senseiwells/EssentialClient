@@ -57,7 +57,7 @@ import static me.senseiwells.arucas.utils.ValueTypes.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class MinecraftClientValue extends GenericValue<MinecraftClient> {
-	public static MinecraftClientValue INSTANCE = new MinecraftClientValue(EssentialUtils.getClient());
+	public static final MinecraftClientValue INSTANCE = new MinecraftClientValue(EssentialUtils.getClient());
 
 	private MinecraftClientValue(MinecraftClient client) {
 		super(client);
@@ -350,9 +350,9 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {MAP, "command", "a command map or a command builder"},
 			example = """
 			client.addCommand({
-			    "name": "example",
-			    "subcommands": { },
-			    "arguments": { }
+				"name": "example",
+				"subcommands": { },
+				"arguments": { }
 			});
 			"""
 		)
@@ -670,7 +670,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			name = "playSound",
 			desc = {
 				"This plays the given sound with the given volume and pitch around the player",
-				"sound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events)",
+				"sound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events)"
 			},
 			params = {
 				STRING, "soundId", "the sound id you want to play",
@@ -843,7 +843,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				"This sends a script packet to the server",
 				"You can send the follow types of values:",
 				"Boolean, Number, String, List (of numbers), Text, ItemStack, Pos, and NbtMaps",
-				"You can send byte, int, and long arrays by using the strings 'b', 'i', and 'l' at the start of the list",
+				"You can send byte, int, and long arrays by using the strings 'b', 'i', and 'l' at the start of the list"
 			},
 			params = {ANY, "values...", "the data you want to send to the server"},
 			example = "client.sendScriptPacket('test', false, ['l', 9999, 0, 45]);"

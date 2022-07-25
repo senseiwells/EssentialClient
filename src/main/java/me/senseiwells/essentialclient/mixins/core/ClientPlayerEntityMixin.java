@@ -26,7 +26,7 @@ public abstract class ClientPlayerEntityMixin {
 			reader.skip();
 			if (reader.canRead()) {
 				String subCommand = reader.readUnquotedString();
-				if (reader.canRead() && !subCommand.equals("setDefault")) {
+				if (reader.canRead() && !"setDefault".equals(subCommand)) {
 					this.sendCommand("%s setDefault %s%s".formatted(commandName, subCommand, reader.getRemaining()));
 				}
 			}
