@@ -64,12 +64,14 @@ public class ClientPlayerInteractionManagerMixin {
 			ci.cancel();
 		}
 	}
+
 	@Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
 	private void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
 		if (MinecraftScriptEvents.ON_CLICK_RECIPE.run(new RecipeValue(recipe))) {
 			ci.cancel();
 		}
 	}
+
 	@Inject(method = "interactItem", at = @At("HEAD"), cancellable = true)
 	private void onInteractItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
 		ItemStack itemStack = player.getStackInHand(hand);

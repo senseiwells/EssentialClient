@@ -21,21 +21,20 @@ public class KeyboardMixin {
 	@Shadow
 	@Final
 	private MinecraftClient client;
-	private final static Set<Class<? extends Screen>> whiteListedScreenClass = Set.of(
+	private final static Set<Class<? extends Screen>> WHITE_LIST = Set.of(
 		CraftingScreen.class, HopperScreen.class, InventoryScreen.class, MerchantScreen.class, BrewingStandScreen.class
 	);
 
 	@Inject(method = "onKey", at = @At(value = "HEAD"))
 	private void onKeyPressOrRelease(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci) {
-		if (client.getWindow().getHandle() == window && (client.currentScreen == null || whiteListedScreenClass.contains(client.currentScreen.getClass()))){
+		if (this.client.getWindow().getHandle() == window && (this.client.currentScreen == null || WHITE_LIST.contains(this.client.currentScreen.getClass()))) {
 			InputUtil.Key inputKey = InputUtil.fromKeyCode(key, scancode);
-			if(action == 0){
+			if (action == 0) {
 				ClientKeyBinds.onKeyRelease(inputKey);
 			}
 			else {
 				ClientKeyBinds.onKeyPress(inputKey);
 			}
 		}
-
 	}
 }

@@ -868,6 +868,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			});
 			return NullValue.NULL;
 		}
+
 		@FunctionDoc(
 			name = "clickRecipe",
 			desc = "This allows you to click a predefined recipe",
@@ -885,11 +886,12 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			client.execute(() -> interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false));
 			return NullValue.NULL;
 		}
+
 		@FunctionDoc(
 			name = "clickRecipe",
 			desc = "This allows you to click a predefined recipe",
 			params = {RECIPE, "recipe", "the recipe you want to select",
-					BOOLEAN, "boolean", "Shift click or not"},
+					 BOOLEAN, "boolean", "Shift click or not"},
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.clickRecipe(Recipe.CHEST, true);"
 		)
@@ -904,6 +906,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			client.execute(() -> interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value));
 			return NullValue.NULL;
 		}
+
 		@FunctionDoc(
 			name = "logout",
 			desc = "This forces the player to leave the world",
