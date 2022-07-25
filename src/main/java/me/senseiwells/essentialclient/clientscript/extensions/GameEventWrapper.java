@@ -63,7 +63,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 		desc = "This creates a new GameEvent, that is not cancellable",
 		params = {
 			STRING, "eventName", "The name of the event, you can find these on the GameEvents page",
-			FUNCTION, "onEvent", "The function to run when the event is called, some events may have parameters",
+			FUNCTION, "onEvent", "The function to run when the event is called, some events may have parameters"
 		},
 		example = "new GameEvent('onClientTick', fun() { });"
 	)

@@ -100,7 +100,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 	@Override
 	public JsonObject getSaveData() {
 		JsonObject object = new JsonObject();
-		this.map.forEach((k ,v) -> object.add(k, this.valueToJson(v)));
+		this.map.forEach((k, v) -> object.add(k, this.valueToJson(v)));
 		this.unregisteredKeyBinds.forEach((s, keys) -> {
 			JsonArray array = new JsonArray();
 			for (InputUtil.Key key : keys) {

@@ -289,7 +289,7 @@ public class RenderHelper {
 
 		for (int i = 0; i <= totalSteps; i++) {
 			float theta = i * step;
-			float thetaPrime = theta+step;
+			float thetaPrime = theta + step;
 			float xb = 0;
 			float zb = 0;
 			float xbp = 0;

@@ -64,7 +64,7 @@ public class ArucasMinecraftExtension implements IArucasExtension {
 		returns = {THREAD, "The new thread that your function is running on"},
 		example = """
 			runThreaded(fun(parameter) {
-			    print(parameter);
+				print(parameter);
 			}, ['hi']);
 			"""
 	)

@@ -173,6 +173,11 @@ public abstract class Shape implements IArucasWrappedClass {
 		this.setRendering(false);
 	}
 
+	// Checkstyle off
+	// This is done because checkstyle wants to put
+	// overloaded methods together which in this case
+	// isn't applicable, and makes more sense not to
+
 	@FunctionDoc(
 		name = "setColour",
 		desc = {
@@ -181,7 +186,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		},
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setColour(0xFF0000);"
 	)
@@ -198,7 +203,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the colour of the shape, using a single value, this",
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setColor(0xFF0000);"
 	)
@@ -312,7 +317,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		},
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setOutlineColour(0xFF00FF);"
 	)
@@ -329,7 +334,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the width of the shape, using a single value, this function",
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setOutlineColor(0xFF00FF);"
 	)
@@ -961,6 +966,8 @@ public abstract class Shape implements IArucasWrappedClass {
 			return direction == null ? NullValue.NULL : StringValue.of(direction.getName());
 		}
 	}
+	
+	// Checkstyle on
 
 	public static class CentreTiltableScalable extends CentrePositioned implements Tiltable, Scalable {
 		private float xScale;

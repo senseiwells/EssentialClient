@@ -69,6 +69,26 @@ public class ClientScriptScreen extends ChildScreen {
 		EssentialUtils.getClient().setScreen(configScreen);
 	}
 
+	public static class SelectedCheckBox extends CheckboxWidget {
+		private final String scriptName;
+
+		public SelectedCheckBox(String scriptName) {
+			super(0, 0, 20, 20, Texts.literal("Selected"), ClientScript.INSTANCE.isSelected(scriptName));
+			this.scriptName = scriptName;
+		}
+
+		@Override
+		public void onPress() {
+			if (this.isChecked()) {
+				ClientScript.INSTANCE.removeSelectedInstance(this.scriptName);
+			}
+			else {
+				ClientScript.INSTANCE.addSelectedInstance(this.scriptName);
+			}
+			super.onPress();
+		}
+	}
+
 	static class ScriptConfigScreen extends ChildScreen.Typed<ClientScriptScreen> {
 		private final ClientScriptInstance scriptInstance;
 		private final TextFieldWidget nameBox;
@@ -95,18 +115,7 @@ public class ClientScriptScreen extends ChildScreen {
 				super.onClose();
 			}));
 			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
-			this.selectedCheck = new CheckboxWidget(0, 0, 20, 20, Texts.literal("Selected"), ClientScript.INSTANCE.isSelected(scriptName)) {
-				@Override
-				public void onPress() {
-					if (this.isChecked()) {
-						ClientScript.INSTANCE.removeSelectedInstance(scriptName);
-					}
-					else {
-						ClientScript.INSTANCE.addSelectedInstance(scriptName);
-					}
-					super.onPress();
-				}
-			};
+			this.selectedCheck = new SelectedCheckBox(scriptName);
 			this.newName = "";
 		}
 
@@ -210,7 +219,7 @@ public class ClientScriptScreen extends ChildScreen {
 			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
 
 			MutableText editMessage = Texts.literal(keyBinding.getDisplay());
-			if (this.client != null &&  this.client.textRenderer.getWidth(editMessage) > 70) {
+			if (this.client != null && this.client.textRenderer.getWidth(editMessage) > 70) {
 				editMessage = Texts.literal("...");
 			}
 

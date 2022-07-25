@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ChunkHandler {
-	private static final Map<String, Set<ChunkData>> chunkDataMap = new HashMap<>();
+	private static final Map<String, Set<ChunkData>> CHUNK_DATA_MAP = new HashMap<>();
 
 	static {
 		Events.ON_DISCONNECT.register(v -> {
@@ -22,7 +22,7 @@ public class ChunkHandler {
 	}
 
 	public synchronized static ChunkData[] getChunks(String world) {
-		Set<ChunkData> chunkDataSet = chunkDataMap.get(world);
+		Set<ChunkData> chunkDataSet = CHUNK_DATA_MAP.get(world);
 		if (chunkDataSet == null) {
 			return new ChunkData[0];
 		}
@@ -30,7 +30,7 @@ public class ChunkHandler {
 	}
 
 	public synchronized static void clearAllChunks() {
-		chunkDataMap.forEach((s, chunkData) -> chunkData.clear());
+		CHUNK_DATA_MAP.forEach((s, chunkData) -> chunkData.clear());
 	}
 
 	public synchronized static void deserializeAndProcess(String world, long[] chunkPositions, byte[] levelTypes, byte[] statusTypes, byte[] ticketTypes) {
@@ -40,8 +40,8 @@ public class ChunkHandler {
 			return;
 		}
 
-		chunkDataMap.putIfAbsent(world, new HashSet<>());
-		Set<ChunkData> chunkDataSet = chunkDataMap.get(world);
+		CHUNK_DATA_MAP.putIfAbsent(world, new HashSet<>());
+		Set<ChunkData> chunkDataSet = CHUNK_DATA_MAP.get(world);
 
 		for (int i = 0; i < size; i++) {
 			ChunkPos chunkPos = new ChunkPos(chunkPositions[i]);

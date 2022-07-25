@@ -125,8 +125,7 @@ public class RegexArgumentType implements ArgumentType<Pattern> {
 	public enum RegexType {
 		SINGLE_WORD("word", "\\w+"),
 		SLASHY_PHRASE("/\\w+/", "word", "//"),
-		GREEDY_PHRASE("word", "words with spaces", "/and symbols/"),
-		;
+		GREEDY_PHRASE("word", "words with spaces", "/and symbols/");
 
 		private final Collection<String> examples;
 

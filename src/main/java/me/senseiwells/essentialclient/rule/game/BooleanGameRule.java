@@ -15,6 +15,6 @@ public class BooleanGameRule extends GameRule<Boolean> implements Rule.Bool {
 
 	@Override
 	public Boolean getValueFromString(String value) {
-		return value.equals("true");
+		return "true".equals(value);
 	}
 }
