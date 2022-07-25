@@ -891,7 +891,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "clickRecipe",
 			desc = "This allows you to click a predefined recipe",
 			params = {RECIPE, "recipe", "the recipe you want to select",
-					 BOOLEAN, "boolean", "Shift click or not"},
+				BOOLEAN, "boolean", "Shift click or not"},
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.clickRecipe(Recipe.CHEST, true);"
 		)
