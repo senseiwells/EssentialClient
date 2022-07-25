@@ -7,6 +7,7 @@ import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.clientscript.values.RecipeValue;
+import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -66,7 +67,7 @@ public class ClientPlayerInteractionManagerMixin {
 	}
 	@Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
 	private void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_CLICK_RECIPE.run(new RecipeValue(recipe))) {
+		if (!CraftingSharedConstants.IS_SCRIPT_CLICK.get() && MinecraftScriptEvents.ON_CLICK_RECIPE.run(new RecipeValue(recipe))) {
 			ci.cancel();
 		}
 	}
