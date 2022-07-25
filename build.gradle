@@ -13,8 +13,6 @@ spotless {
         trimTrailingWhitespace()
         indentWithTabs()
         endWithNewline()
-        importOrder 'java', 'javax', 'org', 'com', 'com.diffplug', ''
-        googleJavaFormat()
     }
 }
 sourceCompatibility = JavaVersion.VERSION_16
