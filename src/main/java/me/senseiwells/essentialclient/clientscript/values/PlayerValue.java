@@ -140,6 +140,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("getCurrentScreen", this::getCurrentScreen),
 				MemberFunction.of("craft", 1, this::craft),
 				MemberFunction.of("craftRecipe", 1, this::craftRecipe),
+				MemberFunction.of("clickRecipe", 1, this::clickRecipeDefault),
+				MemberFunction.of("clickRecipe", 2, this::clickRecipeWithBoolean),
 				MemberFunction.of("logout", 1, this::logout),
 				MemberFunction.of("attackEntity", 1, this::attackEntity),
 				MemberFunction.of("interactWithEntity", 1, this::interactWithEntity),
@@ -838,6 +840,48 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
+		@FunctionDoc(
+			name = "clickRecipe",
+			desc = "This allows you to click a predefined recipe",
+			params = {RECIPE, "recipe", "the recipe you want to select"},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.clickRecipe(Recipe.CHEST);"
+		)
+		private Value clickRecipeDefault(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false);
+			});
+			return NullValue.NULL;
+		}
+		@FunctionDoc(
+			name = "clickRecipe",
+			desc = "This allows you to click a predefined recipe",
+			params = {RECIPE, "recipe", "the recipe you want to select",
+					BOOLEAN, "boolean", "Shift click or not"},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.clickRecipe(Recipe.CHEST, true);"
+		)
+		private Value clickRecipeWithBoolean(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value);
+			});
+			return NullValue.NULL;
+		}
 		@FunctionDoc(
 			name = "logout",
 			desc = "This forces the player to leave the world",
