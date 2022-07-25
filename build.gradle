@@ -4,16 +4,23 @@ plugins {
 	id "fabric-loom" version "0.11-SNAPSHOT"
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "io.github.juuxel.loom-quiltflower" version "1.6.0"
-  	id "com.diffplug.spotless" version "6.8.0"
+	id "com.diffplug.spotless" version "6.8.0"
 }
 spotless {
-    java {
-    	target 'src/main/**/*.java'
-        removeUnusedImports()
-        trimTrailingWhitespace()
-        indentWithTabs()
-        endWithNewline()
-    }
+	format 'misc', {
+		target '**/*.gradle'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		target 'src/main/**/*.java'
+	toggleOffOn()
+			removeUnusedImports()
+			trimTrailingWhitespace()
+			indentWithTabs()
+			endWithNewline()
+	}
 }
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16

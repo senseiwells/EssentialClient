@@ -350,9 +350,9 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {MAP, "command", "a command map or a command builder"},
 			example = """
 			client.addCommand({
-			    "name": "example",
-			    "subcommands": { },
-			    "arguments": { }
+				"name": "example",
+				"subcommands": { },
+				"arguments": { }
 			});
 			"""
 		)

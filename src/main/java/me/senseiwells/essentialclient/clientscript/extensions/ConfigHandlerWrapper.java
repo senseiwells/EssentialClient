@@ -152,9 +152,9 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		params = {CONFIG, "config", "The config to add"},
 		example = """
 			config = Config.fromMap({
-			    "type": "boolean",
-			    "name": "My Config",
-			    "description": "This is my config"
+				"type": "boolean",
+				"name": "My Config",
+				"description": "This is my config"
 			});
 			configHandler.addConfig(config);
 			"""
@@ -170,9 +170,9 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		params = {LIST, "configs", "The configs to add"},
 		example = """
 			config = Config.fromMap({
-			    "type": "boolean",
-			    "name": "My Config",
-			    "description": "This is my config"
+				"type": "boolean",
+				"name": "My Config",
+				"description": "This is my config"
 			});
 			configHandler.addConfigs([config]);
 			"""

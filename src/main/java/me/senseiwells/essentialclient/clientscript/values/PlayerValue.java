@@ -776,9 +776,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = """
 				chestRecipe = [
-				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
-				    Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
-				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
+					Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
+					Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
+					Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
 				];
 				player.craft(chestRecipe);
 				"""
@@ -1448,7 +1448,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
-    
+
 		@FunctionDoc(
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
