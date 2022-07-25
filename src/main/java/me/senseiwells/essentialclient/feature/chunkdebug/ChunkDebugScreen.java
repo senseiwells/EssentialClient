@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
