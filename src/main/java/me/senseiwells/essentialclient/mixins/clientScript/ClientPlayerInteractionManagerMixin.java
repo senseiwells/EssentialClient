@@ -67,7 +67,7 @@ public class ClientPlayerInteractionManagerMixin {
 	}
 	@Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
 	private void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
-		if (!CraftingSharedConstants.IS_SCRIPT_CLICK.get() && MinecraftScriptEvents.ON_CLICK_RECIPE.run(new RecipeValue(recipe))) {
+		if (!CraftingSharedConstants.IS_SCRIPT_RECIPE.getAndSet(false) && MinecraftScriptEvents.ON_CLICK_RECIPE.run(new RecipeValue(recipe))) {
 			ci.cancel();
 		}
 	}
