@@ -23,9 +23,9 @@ import net.minecraft.item.ItemStack;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
-    public FakeInventoryScreenValue(FakeInventoryScreen value) {
-        super(value);
-    }
+	public FakeInventoryScreenValue(FakeInventoryScreen value) {
+		super(value);
+	}
 
 	@Override
 	public String getAsString(Context context) {
@@ -33,9 +33,9 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 	}
 
 	@Override
-    public ScreenValue<FakeInventoryScreen> copy(Context context) {
-        return this;
-    }
+	public ScreenValue<FakeInventoryScreen> copy(Context context) {
+		return this;
+	}
 
 	@Override
 	public String getTypeName() {
@@ -95,16 +95,15 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			name = "onClick",
 			desc = "This sets the callback for when a slot is clicked in the inventory",
 			params = {
-				FUNCTION, "function", "the callback function which must have 3 parameters, which will be passed " +
-				"in when it is called, item, slotNum, action, being ItemStack, Number, and String respectively"
+				FUNCTION, "function", "the callback function which must have 3 parameters, which will be passed in when it is called, item, slotNum, action, being ItemStack, Number, and String respectively"
 			},
 			example = """
-			fakeScreen.onClick(fun(item, slotNum, action) {
-			    // action can be any of the following:
-			    // 'PICKUP', 'QUICK_MOVE', 'SWAP', 'CLONE', 'THROW', 'QUICK_CRAFT', or 'PICKUP_ALL'
-			    print(action);
-			});
-			"""
+				fakeScreen.onClick(fun(item, slotNum, action) {
+				    // action can be any of the following:
+				    // 'PICKUP', 'QUICK_MOVE', 'SWAP', 'CLONE', 'THROW', 'QUICK_CRAFT', or 'PICKUP_ALL'
+				    print(action);
+				});
+				"""
 		)
 		private Value onClick(Arguments arguments) throws CodeError {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);

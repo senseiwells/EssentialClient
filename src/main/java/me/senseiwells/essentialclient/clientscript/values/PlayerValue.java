@@ -656,7 +656,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"This allows you to click a slot with either right or left click",
 				"and a slot action, the click must be either 'left' or 'right' or a number (for swap).",
 				"The action must be either 'click', 'shift_click', 'swap', 'middle_click',",
-				"'throw', 'drag', or 'double_click'",
+				"'throw', 'drag', or 'double_click'"
 			},
 			params = {
 				NUMBER, "slot", "the slot to click",
@@ -1215,7 +1215,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {
 				NUMBER, "x", "the x position",
 				NUMBER, "y", "the y position",
-				NUMBER, "z", "the z position",
+				NUMBER, "z", "the z position"
 			},
 			example = "player.updateBreakingBlock(0, 0, 0);"
 		)
@@ -1262,7 +1262,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "x", "the x position",
 				NUMBER, "y", "the y position",
 				NUMBER, "z", "the z position",
-				STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc.",
+				STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc."
 			},
 			example = "player.attackBlock(0, 0, 0, 'up');"
 		)
@@ -1282,7 +1282,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to attack a block at a position and direction",
 			params = {
 				POS, "pos", "the position of the block",
-				STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc.",
+				STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc."
 			},
 			example = "player.attackBlock(new Pos(0, 0, 0), 'up');"
 		)

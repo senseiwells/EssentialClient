@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.rule.client;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.util.math.MathHelper;
 
@@ -41,7 +41,7 @@ public class IntegerSliderClientRule extends ClientRule<Integer> implements Rule
 
 	@Override
 	public void setValueFromString(String value) {
-		Integer integer = EssentialUtils.catchAsNull(() -> Integer.parseInt(value));
+		Integer integer = ExceptionUtils.catchAsNull(() -> Integer.parseInt(value));
 		if (integer == null || integer > this.getMax() || integer < this.getMin()) {
 			this.logCannotSet(value);
 			return;

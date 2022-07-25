@@ -12,7 +12,7 @@ import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
 import static me.senseiwells.essentialclient.utils.network.NetworkUtils.RELOAD;
 
 public class ChunkClientNetworkHandler extends NetworkHandler {
-	public static Identifier CHUNK_DEBUG_CHANNEL = new Identifier("essentialclient", "chunkdebug");
+	public static final Identifier CHUNK_DEBUG_CHANNEL = new Identifier("essentialclient", "chunkdebug");
 	public static final int VERSION = 1_0_3;
 
 	public ChunkClientNetworkHandler() { }

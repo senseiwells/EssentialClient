@@ -299,7 +299,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				STRING, "particleId", "the id of the particle",
 				NUMBER, "x", "the x position of the particle",
 				NUMBER, "y", "the y position of the particle",
-				NUMBER, "z", "the z position of the particle",
+				NUMBER, "z", "the z position of the particle"
 			},
 			throwMsgs = "Particle Invalid",
 			example = "world.renderParticle('end_rod', 10, 10, 10);"

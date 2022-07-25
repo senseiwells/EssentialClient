@@ -552,7 +552,6 @@ public class PosValue extends GenericValue<Vec3d> {
 			return new PosValue(Vec3d.ofCenter(thisValue.blockPos).add(Vec3d.of(direction.getVector()).multiply(0.5)));
 		}
 
-
 		@FunctionDoc(
 			name = "asCentre",
 			desc = "This returns center value of the position",
@@ -597,7 +596,7 @@ public class PosValue extends GenericValue<Vec3d> {
 		@FunctionDoc(
 			name = "distanceTo",
 			desc = "This returns distance to other position",
-			params = {POS, "other", "other position",},
+			params = {POS, "other", "other position"},
 			returns = {NUMBER, "distance to other position"},
 			example = "pos.distanceTo(new Pos(0, 0, 0));"
 		)
@@ -613,7 +612,7 @@ public class PosValue extends GenericValue<Vec3d> {
 			params = {
 				NUMBER, "x", "other position x",
 				NUMBER, "y", "other position y",
-				NUMBER, "z", "other position z",
+				NUMBER, "z", "other position z"
 			},
 			returns = {NUMBER, "distance to other position"},
 			example = "pos.distanceTo(0, 0, 0);"
@@ -623,7 +622,7 @@ public class PosValue extends GenericValue<Vec3d> {
 			double x = arguments.getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
 			double z = arguments.getNextGeneric(NumberValue.class);
-			return NumberValue.of(thisValue.value.distanceTo(new Vec3d(x,y,z)));
+			return NumberValue.of(thisValue.value.distanceTo(new Vec3d(x, y, z)));
 		}
 
 		@Override

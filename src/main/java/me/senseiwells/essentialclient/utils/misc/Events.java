@@ -14,7 +14,6 @@ public class Events {
 		ON_DISCONNECT = new Event<>(),
 		ON_DISCONNECT_POST = new Event<>();
 
-
 	public static class Event<T> {
 		private final List<Consumer<T>> listeners;
 

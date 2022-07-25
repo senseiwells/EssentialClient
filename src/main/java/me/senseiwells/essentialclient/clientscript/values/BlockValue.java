@@ -619,7 +619,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 
 		private <T extends Comparable<T>> BlockState getStateWith(BlockState blockState, Property<T> property, String value) {
 			Optional<T> optional = property.parse(value);
-			return optional.map(t -> blockState.with(property,t)).orElse(null);
+			return optional.map(t -> blockState.with(property, t)).orElse(null);
 		}
 
 		private BlockState getBlockState(Arguments arguments) throws CodeError {

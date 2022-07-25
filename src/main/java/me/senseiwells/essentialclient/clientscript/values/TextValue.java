@@ -128,7 +128,7 @@ public class TextValue extends GenericValue<MutableText> {
 			},
 			params = {
 				STRING, "event", "the name of the event",
-				STRING, "value", "the value associated with the event",
+				STRING, "value", "the value associated with the event"
 			},
 			returns = {TEXT, "the text instance with the click event"},
 			throwMsgs = "Invalid action: ...",
@@ -176,7 +176,7 @@ public class TextValue extends GenericValue<MutableText> {
 			},
 			params = {
 				STRING, "event", "the name of the event",
-				ANY, "value", "the value associated with the event",
+				ANY, "value", "the value associated with the event"
 			},
 			returns = {TEXT, "the text instance with the hover event"},
 			throwMsgs = "Invalid action: ...",

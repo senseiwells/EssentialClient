@@ -14,6 +14,6 @@ public class BooleanCarpetRule extends CarpetClientRule<Boolean> implements Rule
 
 	@Override
 	public Boolean getValueFromString(String value) {
-		return value.equals("true");
+		return "true".equals(value);
 	}
 }

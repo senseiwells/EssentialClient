@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.rule.client;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.util.math.MathHelper;
@@ -42,7 +42,7 @@ public class DoubleSliderClientRule extends ClientRule<Double> implements Rule.S
 
 	@Override
 	public void setValueFromString(String value) {
-		Double doubleValue = EssentialUtils.catchAsNull(() -> Double.parseDouble(value));
+		Double doubleValue = ExceptionUtils.catchAsNull(() -> Double.parseDouble(value));
 		if (doubleValue == null || doubleValue > this.getMax() || doubleValue < this.getMin()) {
 			this.logCannotSet(value);
 			return;

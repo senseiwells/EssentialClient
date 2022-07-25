@@ -99,11 +99,11 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	@ArucasConstructor
 	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) throws CodeError {
 		Value value = context.convertValue(entityValue.value.getType().create(worldValue.value));
-		if (!(value instanceof EntityValue<?> entity)) {
+		if (!(value instanceof EntityValue<?> valueEntity)) {
 			throw new RuntimeException("Entity could not be created");
 		}
-		entity.value.setId(getNextFakeId(context));
-		this.entity = entity;
+		valueEntity.value.setId(getNextFakeId(context));
+		this.entity = valueEntity;
 		this.world = worldValue;
 		this.pos = new PosValue(0, 0, 0);
 		this.bodyYaw = this.yaw = this.pitch = ZERO;

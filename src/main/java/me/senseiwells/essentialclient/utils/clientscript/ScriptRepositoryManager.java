@@ -60,7 +60,9 @@ public class ScriptRepositoryManager {
 				writer.write(fileContent);
 				return false;
 			}
-			catch (IOException ignored) { }
+			catch (IOException ignored) {
+
+			}
 		}
 		return true;
 	}

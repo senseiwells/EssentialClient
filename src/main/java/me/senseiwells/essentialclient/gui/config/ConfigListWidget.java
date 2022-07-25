@@ -59,6 +59,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	public abstract static class Entry extends ElementListWidget.Entry<ConfigListWidget.Entry> {
 		public void unFocus() { }
+
 		public void updateEntryOnClose() { }
 	}
 }

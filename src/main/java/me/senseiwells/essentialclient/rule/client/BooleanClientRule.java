@@ -34,7 +34,7 @@ public class BooleanClientRule extends ClientRule<Boolean> implements Rule.Bool 
 
 	@Override
 	public void setValueFromString(String value) {
-		this.setValue(value.equals("true"));
+		this.setValue("true".equals(value));
 	}
 
 	@Override

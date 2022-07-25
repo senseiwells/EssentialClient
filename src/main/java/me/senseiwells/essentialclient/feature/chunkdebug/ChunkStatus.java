@@ -13,8 +13,7 @@ public enum ChunkStatus implements Colourable {
 	LIGHT("Light", -1),
 	SPAWN("Spawn", 0xBFFF00), // Lime green
 	HEIGHTMAPS("Heightmaps", 0xF8518D), // Pink
-	FULL("Full", 0x0A18D8) // Dark blue
-	;
+	FULL("Full", 0x0A18D8); // Dark blue
 
 	private final String prettyName;
 	private final int colour;
