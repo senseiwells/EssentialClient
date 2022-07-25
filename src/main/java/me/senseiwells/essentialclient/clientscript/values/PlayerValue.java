@@ -140,6 +140,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("getCurrentScreen", this::getCurrentScreen),
 				MemberFunction.of("craft", 1, this::craft),
 				MemberFunction.of("craftRecipe", 1, this::craftRecipe),
+				MemberFunction.of("craftRecipe", 2, this::craftRecipeDrop),
 				MemberFunction.of("clickRecipe", 1, this::clickRecipeDefault),
 				MemberFunction.of("clickRecipe", 2, this::clickRecipeWithBoolean),
 				MemberFunction.of("logout", 1, this::logout),
@@ -841,6 +842,33 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		@FunctionDoc(
+			name = "craftRecipe",
+			desc = "This allows you to craft a predefined recipe",
+			params = {RECIPE, "recipe", "the recipe you want to craft", BOOLEAN, "boolean", "whether result should be dropped or not"},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.craftRecipe(Recipe.CHEST, true);"
+		)
+		private Value craftRecipeDrop(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
+				if (booleanValue.value) {
+					InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+				}
+				else {
+					InventoryUtils.dropStackScheduled(client, handledScreen, true);
+				}
+			});
+			return NullValue.NULL;
+		}
+		@FunctionDoc(
 			name = "clickRecipe",
 			desc = "This allows you to click a predefined recipe",
 			params = {RECIPE, "recipe", "the recipe you want to select"},
@@ -854,10 +882,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			}
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
-			client.execute(() -> {
-				CraftingSharedConstants.IS_SCRIPT_RECIPE.set(true);
-				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false);
-			});
+			client.execute(() -> interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false));
 			return NullValue.NULL;
 		}
 		@FunctionDoc(
@@ -876,10 +901,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
 			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
-			client.execute(() -> {
-				CraftingSharedConstants.IS_SCRIPT_RECIPE.set(true);
-				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value);
-			});
+			client.execute(() -> interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value));
 			return NullValue.NULL;
 		}
 		@FunctionDoc(
@@ -1492,7 +1514,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
-    
+
 		@FunctionDoc(
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
