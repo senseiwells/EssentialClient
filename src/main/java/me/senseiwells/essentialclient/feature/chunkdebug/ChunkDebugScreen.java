@@ -36,7 +36,7 @@ public class ChunkDebugScreen extends ChildScreen {
 	@Override
 	public void init() {
 			if (ChunkGrid.instance == null) {
-				ChunkGrid.instance = new ChunkGrid(this.client, this.width, this.height);
+					ChunkGrid.instance = new ChunkGrid(this.client, this.width, this.height);
 			}
 		EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 		int buttonWidth = (this.width - FOOTER_ROW_PADDING * 4) / 3;
