@@ -45,8 +45,8 @@ dependencies {
 	modImplementation "carpet:fabric-carpet:1.19-pre5-${project.carpet_core_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.11")
-	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.11"
+	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
 
 	include implementation("com.github.senseiwells:Arucas:ad5c8f55fcb5efb33e9f281dbe2d3d752627adc3")
 	include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
