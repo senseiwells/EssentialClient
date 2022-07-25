@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.client.util.InputUtil;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Mixin(Keyboard.class)
 public class KeyboardMixin {
 	@Shadow
+	@Final
 	private static MinecraftClient client;
 	private final static Set<Class<? extends Screen>> whiteListedScreenClass = Set.of(
 		CraftingScreen.class, HopperScreen.class, InventoryScreen.class, MerchantScreen.class, BrewingStandScreen.class
