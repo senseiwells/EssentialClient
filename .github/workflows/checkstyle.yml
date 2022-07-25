@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: dbelyaev/action-checkstyle@v0.5.1
+      - uses: nikitasavinov/checkstyle-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
+          reporter: 'github-pr-check'
           level: warning
           checkstyle_config: sensei_checkstyle.xml
