@@ -55,6 +55,7 @@ public class BetterAccurateBlockPlacement {
 			if (ACCURATE_INTO.isPressed() && client.crosshairTarget instanceof BlockHitResult blockHitResult) {
 				fakeYaw = 0;
 				fakePitch = 0;
+				requestedTicks = 1;
 				facing = blockHitResult.getSide();
 				fakeDirection = facing;
 				switch (facing) {
@@ -71,10 +72,12 @@ public class BetterAccurateBlockPlacement {
 				}
 			}
 			else if (wasIntoPressed) {
+				requestedTicks = 1;
 				sendLookPacket(networkHandler, playerEntity);
 				wasIntoPressed = false;
 			}
 			if (ACCURATE_REVERSE.isPressed()) {
+				requestedTicks = 1;
 				switch (facing) {
 					case NORTH, SOUTH, EAST, WEST -> fakeYaw = fakeYaw < 0 ? fakeYaw + 180 : fakeYaw - 180;
 					case UP, DOWN -> fakePitch = fakePitch < 0 ? fakePitch + 180 : fakePitch - 180;
@@ -86,6 +89,7 @@ public class BetterAccurateBlockPlacement {
 				facing = facing.getOpposite();
 			}
 			else if (wasReversePressed) {
+				requestedTicks = 1;
 				sendLookPacket(networkHandler, playerEntity);
 				wasReversePressed = false;
 			}
