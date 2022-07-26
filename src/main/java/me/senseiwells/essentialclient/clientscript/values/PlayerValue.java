@@ -153,6 +153,8 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("breakBlock", 2, this::breakBlockMore),
 				MemberFunction.of("updateBreakingBlock", 3, this::updateBreakingBlock),
 				MemberFunction.of("updateBreakingBlock", 1, this::updateBreakingBlockPos),
+				MemberFunction.of("updateBreakingBlock", 4, this::updateBreakingBlockDirection),
+				MemberFunction.of("updateBreakingBlock", 2, this::updateBreakingBlockDirectionPos),
 				MemberFunction.of("attackBlock", 4, this::attackBlock),
 				MemberFunction.of("attackBlock", 2, this::attackBlockPos),
 				MemberFunction.of("interactBlock", 4, this::interactBlock),
@@ -1220,16 +1222,36 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		)
 		private Value updateBreakingBlock(Arguments arguments) throws CodeError {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			ClientPlayerEntity player = this.getPlayer(arguments);
 			double x = arguments.getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
 			double z = arguments.getNextGeneric(NumberValue.class);
 			BlockPos blockPos = new BlockPos(x, y, z);
-			if (ArucasMinecraftExtension.getWorld().isAir(blockPos)) {
-				return NullValue.NULL;
-			}
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, Direction.DOWN));
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "updateBreakingBlock",
+			desc = "This allows you to update your block breaking progress at a position",
+			params = {
+				NUMBER, "x", "the x position",
+				NUMBER, "y", "the y position",
+				NUMBER, "z", "the z position",
+				STRING, "direction", "direction name"
+			},
+			example = "player.updateBreakingBlock(0, 0, 0, 'down');"
+		)
+		private Value updateBreakingBlockDirection(Arguments arguments) throws CodeError {
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			double x = arguments.getNextGeneric(NumberValue.class);
+			double y = arguments.getNextGeneric(NumberValue.class);
+			double z = arguments.getNextGeneric(NumberValue.class);
+			StringValue stringValue = arguments.getNextString();
+			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
+			BlockPos blockPos = new BlockPos(x, y, z);
 			ArucasMinecraftExtension.getClient().execute(() -> {
-				interactionManager.updateBlockBreakingProgress(blockPos, Direction.UP);
+				interactionManager.updateBlockBreakingProgress(blockPos, direction);
 				player.swingHand(Hand.MAIN_HAND);
 			});
 			return NullValue.NULL;
@@ -1243,14 +1265,25 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		)
 		private Value updateBreakingBlockPos(Arguments arguments) throws CodeError {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
-			if (ArucasMinecraftExtension.getWorld().isAir(blockPos)) {
-				return NullValue.NULL;
-			}
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, Direction.UP));
-			player.swingHand(Hand.MAIN_HAND);
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, Direction.DOWN));
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "updateBreakingBlock",
+			desc = "This allows you to update your block breaking progress at a position",
+			params = {POS, "pos", "the position of the block", STRING, "direction", "direction name"},
+			example = "player.updateBreakingBlock(new Pos(0, 0, 0), 'down');"
+		)
+		private Value updateBreakingBlockDirectionPos(Arguments arguments) throws CodeError {
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			PosValue posValue = arguments.getNext(PosValue.class);
+			BlockPos blockPos = new BlockPos(posValue.value);
+			StringValue stringValue = arguments.getNextString();
+			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, direction));
 			return NullValue.NULL;
 		}
 
