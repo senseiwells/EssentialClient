@@ -27,7 +27,7 @@ public class ItemPlacementContextMixin {
 	@Inject(method = "getPlacementDirections", at = @At("HEAD"), cancellable = true, require = 0)
 	private void onGetArrayDirections(CallbackInfoReturnable<Direction[]> cir) {
 		if (BetterAccurateBlockPlacement.fakeDirection != null) {
-			cir.setReturnValue(BetterAccurateBlockPlacement.getEntityFacingOrder());
+			cir.setReturnValue(BetterAccurateBlockPlacement.getFacingOrder());
 		}
 	}
 }
