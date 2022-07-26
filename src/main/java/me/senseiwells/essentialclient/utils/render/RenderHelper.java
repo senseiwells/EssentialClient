@@ -7,15 +7,30 @@ import me.senseiwells.essentialclient.clientscript.extensions.LineShapeWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.SphereShapeWrapper;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.Shape;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LightType;
+import org.lwjgl.system.MemoryStack;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.List;
 
 public class RenderHelper {
+	@SuppressWarnings("deprecation")
+	public static final Identifier BLOCK_ATLAS_TEXTURE = SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
+	public static final RenderLayer CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucent(BLOCK_ATLAS_TEXTURE);
+	public static final RenderLayer NO_CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucentCull(BLOCK_ATLAS_TEXTURE);
+
 	public static void renderAllShapes(MatrixStack matrices) {
 		setupArucasRendering();
 
@@ -378,9 +393,8 @@ public class RenderHelper {
 		MinecraftClient client = EssentialUtils.getClient();
 		VertexConsumerProvider.Immediate immediate = client.getBufferBuilders().getEntityVertexConsumers();
 
-		FakeBlockWrapper.getAllBlocksToRender().forEach(fakeBlock -> {
-			renderFakeBlock(client, matrices, fakeBlock, immediate);
-		});
+		FakeBlockWrapper.getBlocks().forEach(f -> renderFakeBlock(client, matrices, f, immediate));
+
 		immediate.drawCurrentLayer();
 	}
 
@@ -421,7 +435,9 @@ public class RenderHelper {
 			client.world.getLightLevel(LightType.SKY, fakeBlock.blockPos)
 		);
 
-		client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
+		// client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
+
+		renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, fakeBlock.getAlpha(), light, OverlayTexture.DEFAULT_UV, fakeBlock.cull);
 
 		matrices.pop();
 	}
@@ -440,5 +456,100 @@ public class RenderHelper {
 
 	private static void scale(MatrixStack matrices, Shape.Scalable scalable) {
 		matrices.scale(scalable.getXScale(), scalable.getYScale(), scalable.getZScale());
+	}
+
+	public static void renderBlockAsEntity(BlockState state, MatrixStack matrices, VertexConsumerProvider vertexConsumer, float alpha, int light, int overlay, boolean cull) {
+		MinecraftClient client = EssentialUtils.getClient();
+		BlockRenderManager manager = client.getBlockRenderManager();
+		switch (state.getRenderType()) {
+			case MODEL -> {
+				BakedModel bakedModel = manager.getModel(state);
+				int i = client.getBlockColors().getColor(state, null, null, 0);
+				float red = (i >> 16 & 0xFF) / 255.0F;
+				float green = (i >> 8 & 0xFF) / 255.0F;
+				float blue = (i & 0xFF) / 255.0F;
+				RenderLayer layer = cull ? CULL_BLOCK_LAYER : NO_CULL_BLOCK_LAYER;
+				renderBlock(matrices.peek(), vertexConsumer.getBuffer(layer), state, bakedModel, red, green, blue, alpha, light, overlay);
+			}
+			// Not supported
+			case ENTITYBLOCK_ANIMATED -> manager.renderBlockAsEntity(state, matrices, vertexConsumer, light, overlay);
+		}
+	}
+
+	public static void renderBlock(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockState state, BakedModel bakedModel, float red, float green, float blue, float alpha, int light, int overlay) {
+		Random random = Random.create();
+		long seed = 42L;
+		for (Direction direction : Direction.values()) {
+			random.setSeed(seed);
+			renderQuads(entry, vertexConsumer, red, green, blue, alpha, bakedModel.getQuads(state, direction, random), light, overlay);
+		}
+		random.setSeed(seed);
+		renderQuads(entry, vertexConsumer, red, green, blue, alpha, bakedModel.getQuads(state, null, random), light, overlay);
+	}
+
+	private static void renderQuads(MatrixStack.Entry entry, VertexConsumer vertexConsumer, float red, float green, float blue, float alpha, List<BakedQuad> quads, int light, int overlay) {
+		for (BakedQuad bakedQuad : quads) {
+			float r = 1.0F;
+			float g = 1.0F;
+			float b = 1.0F;
+			float a = MathHelper.clamp(alpha, 0.0F, 1.0F);
+			if (bakedQuad.hasColor()) {
+				r = MathHelper.clamp(red, 0.0f, 1.0F);
+				g = MathHelper.clamp(green, 0.0f, 1.0F);
+				b = MathHelper.clamp(blue, 0.0f, 1.0F);
+			}
+			vertexConsumerQuad(vertexConsumer, entry, bakedQuad, r, g, b, a, light, overlay);
+		}
+	}
+
+	private static void vertexConsumerQuad(VertexConsumer consumer, MatrixStack.Entry matrixEntry, BakedQuad quad, float red, float green, float blue, float alpha, int light, int overlay) {
+		vertexConsumerQuad(consumer, matrixEntry, quad, new float[]{1.0f, 1.0f, 1.0f, 1.0f}, red, green, blue, alpha, new int[]{light, light, light, light}, overlay, false);
+	}
+
+	private static void vertexConsumerQuad(VertexConsumer consumer, MatrixStack.Entry matrixEntry, BakedQuad quad, float[] brightnesses, float red, float green, float blue, float alpha, int[] lights, int overlay, @SuppressWarnings("SameParameterValue") boolean useQuadColorData) {
+		float[] fs = {brightnesses[0], brightnesses[1], brightnesses[2], brightnesses[3]};
+		int[] is = {lights[0], lights[1], lights[2], lights[3]};
+		int[] js = quad.getVertexData();
+		Vec3i vec3i = quad.getFace().getVector();
+		Vec3f vec3f = new Vec3f(vec3i.getX(), vec3i.getY(), vec3i.getZ());
+		Matrix4f matrix4f = matrixEntry.getPositionMatrix();
+		vec3f.transform(matrixEntry.getNormalMatrix());
+		int i = 8;
+		int j = js.length / i;
+		try (MemoryStack memoryStack = MemoryStack.stackPush();) {
+			ByteBuffer byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSizeByte());
+			IntBuffer intBuffer = byteBuffer.asIntBuffer();
+			for (int k = 0; k < j; ++k) {
+				float q;
+				float p;
+				float o;
+				float n;
+				float m;
+				intBuffer.clear();
+				intBuffer.put(js, k * 8, 8);
+				float f = byteBuffer.getFloat(0);
+				float g = byteBuffer.getFloat(4);
+				float h = byteBuffer.getFloat(8);
+				if (useQuadColorData) {
+					float l = (float) (byteBuffer.get(12) & 0xFF) / 255.0f;
+					m = (float) (byteBuffer.get(13) & 0xFF) / 255.0f;
+					n = (float) (byteBuffer.get(14) & 0xFF) / 255.0f;
+					o = l * fs[k] * red;
+					p = m * fs[k] * green;
+					q = n * fs[k] * blue;
+				}
+				else {
+					o = fs[k] * red;
+					p = fs[k] * green;
+					q = fs[k] * blue;
+				}
+				int r = is[k];
+				m = byteBuffer.getFloat(16);
+				n = byteBuffer.getFloat(20);
+				Vector4f vector4f = new Vector4f(f, g, h, 1.0f);
+				vector4f.transform(matrix4f);
+				consumer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), o, p, q, alpha, m, n, overlay, r, vec3f.getX(), vec3f.getY(), vec3f.getZ());
+			}
+		}
 	}
 }

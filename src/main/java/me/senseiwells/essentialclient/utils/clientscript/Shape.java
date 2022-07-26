@@ -12,8 +12,6 @@ import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Locale;
-
 import static me.senseiwells.arucas.utils.ValueTypes.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
@@ -186,7 +184,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		},
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setColour(0xFF0000);"
 	)
@@ -203,7 +201,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the colour of the shape, using a single value, this",
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setColor(0xFF0000);"
 	)
@@ -317,7 +315,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		},
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setOutlineColour(0xFF00FF);"
 	)
@@ -334,7 +332,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the width of the shape, using a single value, this function",
 		params = {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
-				"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
+			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
 		example = "shape.setOutlineColor(0xFF00FF);"
 	)
@@ -951,7 +949,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		)
 		@ArucasFunction
 		default void setDirection(Context context, StringValue direction) {
-			this.setDirection(Direction.byName(direction.value.toUpperCase(Locale.ROOT)));
+			this.setDirection(ClientScriptUtils.stringToDirection(direction.value, null));
 		}
 
 		@FunctionDoc(
