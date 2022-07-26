@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerInteractionManager.class)
-@SuppressWarnings("unused")
 public class ClientPlayerInteractionManagerMixin {
 	@Final
 	@Shadow

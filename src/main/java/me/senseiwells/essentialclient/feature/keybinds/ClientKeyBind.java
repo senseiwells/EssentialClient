@@ -12,6 +12,7 @@ public abstract class ClientKeyBind implements Comparable<ClientKeyBind> {
 	private final String name;
 	private final String category;
 
+	private boolean canUseInGui;
 	private boolean isPressed;
 
 	private Callback callback;
@@ -49,6 +50,10 @@ public abstract class ClientKeyBind implements Comparable<ClientKeyBind> {
 		this.isPressed = pressed;
 	}
 
+	void setCanUseInGui(boolean canUseInGui) {
+		this.canUseInGui = canUseInGui;
+	}
+
 	void callCallback() {
 		if (this.callback != null) {
 			this.callback.pressed(EssentialUtils.getClient());
@@ -57,6 +62,10 @@ public abstract class ClientKeyBind implements Comparable<ClientKeyBind> {
 
 	public boolean isPressed() {
 		return this.isPressed;
+	}
+
+	public boolean canUseInGui() {
+		return this.canUseInGui;
 	}
 
 	public String getName() {

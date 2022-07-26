@@ -844,7 +844,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		@FunctionDoc(
 			name = "craftRecipe",
 			desc = "This allows you to craft a predefined recipe",
-			params = {RECIPE, "recipe", "the recipe you want to craft", BOOLEAN, "boolean", "whether result should be dropped or not"},
+			params = {
+				RECIPE, "recipe", "the recipe you want to craft",
+				BOOLEAN, "boolean", "whether result should be dropped or not"
+			},
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.craftRecipe(Recipe.CHEST, true);"
 		)
@@ -890,8 +893,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		@FunctionDoc(
 			name = "clickRecipe",
 			desc = "This allows you to click a predefined recipe",
-			params = {RECIPE, "recipe", "the recipe you want to select",
-				BOOLEAN, "boolean", "Shift click or not"},
+			params = {
+				RECIPE, "recipe", "the recipe you want to select",
+				BOOLEAN, "boolean", "Shift click or not"
+			},
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.clickRecipe(Recipe.CHEST, true);"
 		)
