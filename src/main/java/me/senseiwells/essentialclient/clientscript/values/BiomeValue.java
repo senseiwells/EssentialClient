@@ -32,7 +32,7 @@ public class BiomeValue extends GenericValue<Biome> {
 
 	@Override
 	public String getAsString(Context context) {
-		return "Biome{%s}".formatted(this.value.toString());
+		return "Biome@" + this.value;
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class BiomeValue extends GenericValue<Biome> {
 		@Override
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
-				MemberFunction.of("doesNotSnow", 3, this::doesNotSnowFull),
-				MemberFunction.of("doesNotSnow", 1, this::doesNotSnowPos),
+				MemberFunction.of("canSnow", 3, this::canSnowFull),
+				MemberFunction.of("canSnow", 1, this::canSnowPos),
 				MemberFunction.of("isHot", 3, this::isHotFull),
 				MemberFunction.of("isHot", 1, this::isHotPos),
 				MemberFunction.of("getFogColor", this::getFogColor),
@@ -80,37 +80,37 @@ public class BiomeValue extends GenericValue<Biome> {
 		}
 
 		@FunctionDoc(
-			name = "doesNotSnow",
-			desc = "This function calculates wheter snow won't fall at given coordinates",
+			name = "canSnow",
+			desc = "This function calculates wheter snow will fall at given coordinates",
 			params = {
 				NUMBER, "x", "the x coordinate",
 				NUMBER, "y", "the y coordinate",
 				NUMBER, "z", "the z coordinate"
 			},
-			returns = {BOOLEAN, "whether snow will not fall at given position"},
-			example = "biome.doesNotSnow(0, 100, 0);"
+			returns = {BOOLEAN, "whether snow will fall at given position"},
+			example = "biome.canSnow(0, 100, 0);"
 		)
-		private Value doesNotSnowFull(Arguments arguments) throws CodeError {
+		private Value canSnowFull(Arguments arguments) throws CodeError {
 			Biome biome = this.getBiome(arguments);
 			NumberValue num1 = arguments.getNextNumber();
 			NumberValue num2 = arguments.getNextNumber();
 			NumberValue num3 = arguments.getNextNumber();
 			BlockPos blockPos = new BlockPos(num1.value, num2.value, num3.value);
-			return BooleanValue.of(biome.doesNotSnow(blockPos));
+			return BooleanValue.of(!biome.doesNotSnow(blockPos));
 		}
 
 		@FunctionDoc(
-			name = "doesNotSnow",
-			desc = "This function calculates wheter snow won't fall at given coordinates",
+			name = "canSnow",
+			desc = "This function calculates wheter snow will fall at given coordinates",
 			params = {POS, "pos", "the position"},
-			returns = {BOOLEAN, "whether snow will not fall at given position"},
-			example = "biome.doesNotSnow(new Pos(0, 100, 0));"
+			returns = {BOOLEAN, "whether snow will fall at given position"},
+			example = "biome.canSnow(new Pos(0, 100, 0));"
 		)
-		private Value doesNotSnowPos(Arguments arguments) throws CodeError {
+		private Value canSnowPos(Arguments arguments) throws CodeError {
 			Biome biome = this.getBiome(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
-			return BooleanValue.of(biome.doesNotSnow(blockPos));
+			return BooleanValue.of(!biome.doesNotSnow(blockPos));
 		}
 
 		@FunctionDoc(

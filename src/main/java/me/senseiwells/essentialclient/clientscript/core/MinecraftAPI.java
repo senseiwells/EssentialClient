@@ -39,6 +39,7 @@ import net.minecraft.world.biome.Biome;
 
 public class MinecraftAPI extends ValueTypes {
 	public static final String
+		BIOME = "Biome",
 		BOX_SHAPE = "BoxShape",
 		CONFIG_HANDLER = "ConfigHandler",
 		FAKE_BLOCK = "FakeBlock",
@@ -67,8 +68,7 @@ public class MinecraftAPI extends ValueTypes {
 		SCREEN = "Screen",
 		TEXT = "Text",
 		TRADE = "Trade",
-		WORLD = "World",
-		BIOME = "Biome";
+		WORLD = "World";
 
 	public static final String IMPORT_NAME = "Minecraft";
 
