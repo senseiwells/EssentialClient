@@ -13,7 +13,7 @@ public abstract class GhostSlotClearInvoker implements IGhostRecipeBookWidget {
 	@Shadow
 	@Final
 	protected RecipeBookGhostSlots ghostSlots;
-	
+
 	@Override
 	public void clearGhostSlots() {
 		this.ghostSlots.reset();

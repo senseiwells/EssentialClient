@@ -13,12 +13,8 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.config.MappedStringConfig;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.screen.PlayerScreenHandler;
 
 import java.util.Collection;
 import java.util.List;

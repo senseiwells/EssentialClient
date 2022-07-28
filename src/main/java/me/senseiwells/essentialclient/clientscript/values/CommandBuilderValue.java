@@ -171,53 +171,53 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			returns = {COMMAND_BUILDER, "the argument builder"},
 			example = """
 				effectCommandMap = {
-				    "name" : "effect",
-				    "subcommands" : {
-					    "give" : {
-						    "<targets> <effect>" : {
-							    "" : fun(target, effect) {
-								    // do something
-							    },
-							    "<seconds>" : {
-								    "" : fun(target, effect, second) {
-									    // do something
-								    },
-								    "<amplifier>" : {
-									    "" : fun(target, effect, second, amplifier) {
-										    // do something
-									    },
-									    "<hideParticle>" : {
-										    "" : fun(target, effect, second, amplifier, hideParticle) {
-											    // do something
-										    }
-									    }
-								    }
-							    }
-						    }
-					    },
-					    "clear" : {
-						    "" : fun() {
-							    // do something
-						    },
-						    "<targets>" : {
-							    "" : fun(target) {
-								    // do something
-							    },
-							    "<effect>" : {
-								    "" : fun(target, effect) {
-									    // do something
-								    }
-							    }
-						    }
-					    }
-				    },
-				    "arguments" : {
-					    "targets" : { "type" : "Entity" },
-					    "effect" : { "type" : "Effect", "suggests" : ["effect1", "effect2"] },
-					    "seconds" : { "type" : "Integer", "min" : 0, "max" : 1000000 },
-					    "amplifier" : { "type" : "Integer", "min" : 0, "max" : 255 },
-					    "hideParticle" : { "type" : "Boolean" }
-				    }
+					"name" : "effect",
+					"subcommands" : {
+						"give" : {
+							"<targets> <effect>" : {
+								"" : fun(target, effect) {
+									// do something
+								},
+								"<seconds>" : {
+									"" : fun(target, effect, second) {
+										// do something
+									},
+									"<amplifier>" : {
+										"" : fun(target, effect, second, amplifier) {
+											// do something
+										},
+										"<hideParticle>" : {
+											"" : fun(target, effect, second, amplifier, hideParticle) {
+												// do something
+											}
+										}
+									}
+								}
+							}
+						},
+						"clear" : {
+							"" : fun() {
+								// do something
+							},
+							"<targets>" : {
+								"" : fun(target) {
+									// do something
+								},
+								"<effect>" : {
+									"" : fun(target, effect) {
+										// do something
+									}
+								}
+							}
+						}
+					},
+					"arguments" : {
+						"targets" : { "type" : "Entity" },
+						"effect" : { "type" : "Effect", "suggests" : ["effect1", "effect2"] },
+						"seconds" : { "type" : "Integer", "min" : 0, "max" : 1000000 },
+						"amplifier" : { "type" : "Integer", "min" : 0, "max" : 255 },
+						"hideParticle" : { "type" : "Boolean" }
+					}
 				};
 				effectCommand = CommandBuilder.fromMap(effectCommandMap);
 				"""

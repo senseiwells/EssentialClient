@@ -134,7 +134,7 @@ public class TextValue extends GenericValue<MutableText> {
 			throwMsgs = "Invalid action: ...",
 			example = """
 			text = Text.of("Hello World!");
-			
+
 			// Examples of click events
 			text.withClickEvent("open_url", "https://youtu.be/dQw4w9WgXcQ");
 			text.withClickEvent("open_file", "C:/Users/user/Desktop/thing.txt");
@@ -182,7 +182,7 @@ public class TextValue extends GenericValue<MutableText> {
 			throwMsgs = "Invalid action: ...",
 			example = """
 			text = Text.of("Hello World!");
-			
+
 			// Examples of hover events
 			text.withHoverEvent("show_text", Text.of("Hello world!"));
 			text.withHoverEvent("show_item", Material.DIAMOND_SWORD.asItemStack());
