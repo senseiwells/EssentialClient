@@ -18,7 +18,6 @@ public class BetterAccurateBlockPlacement {
 	public static int requestedTicks = 0;
 	public static float fakeYaw = 0;
 	public static float fakePitch = 0;
-	public static Direction[] directions = new Direction[6];
 	private static float previousFakeYaw = 0;
 	private static float previousFakePitch = 0;
 	public static boolean wasReversePressed = false;
@@ -105,36 +104,31 @@ public class BetterAccurateBlockPlacement {
 	}
 
 	public static Direction[] getFacingOrder() {
-		float f = fakePitch * 0.017453292F;
-		float g = -fakeYaw * 0.017453292F;
-		float yComponent = MathHelper.sin(f);
-		float horizontalComponent = MathHelper.cos(f);
-		float horizontalDecompose1 = MathHelper.sin(g);
-		float horizontalDecompose2 = MathHelper.cos(g);
-		boolean isPositiveX = horizontalDecompose1 > 0.0F;
-		boolean isPositiveY = yComponent < 0.0F;
-		boolean isPositiveZ = horizontalDecompose2 > 0.0F;
-		float absXComponent = isPositiveX ? horizontalDecompose1 : -horizontalDecompose1;
-		float absYCartesian = isPositiveY ? -yComponent : yComponent;
-		float absZComponent = isPositiveZ ? horizontalDecompose2 : -horizontalDecompose2;
-		float absXCartesian = absXComponent * horizontalComponent;
-		float absZCartesian = absZComponent * horizontalComponent;
-		Direction axisVector1 = isPositiveX ? Direction.EAST : Direction.WEST;
-		Direction axisVector2 = isPositiveY ? Direction.UP : Direction.DOWN;
-		Direction axisVector3 = isPositiveZ ? Direction.SOUTH : Direction.NORTH;
-		if (absXComponent > absZComponent) {
-			if (absYCartesian > absXCartesian) {
-				return listClosest(axisVector2, axisVector1, axisVector3);
+		float theta = fakePitch * 0.017453292F;
+		float omega = -fakeYaw * 0.017453292F;
+		float unitHorizontal = MathHelper.cos(theta);
+		float yVector = -MathHelper.sin(theta);
+		float xVector = unitHorizontal * MathHelper.sin(omega);
+		float zVector = unitHorizontal * MathHelper.cos(omega);
+		float yScalar = Math.abs(yVector);
+		float xScalar = Math.abs(xVector);
+		float zScalar = Math.abs(zVector);
+		Direction directionX = xVector > 0.0F ? Direction.EAST : Direction.WEST;
+		Direction directionY = yVector > 0.0F ? Direction.UP : Direction.DOWN;
+		Direction directionZ = zVector > 0.0F ? Direction.SOUTH : Direction.NORTH;
+		if (xScalar > zScalar) {
+			if (yScalar > xScalar) {
+				return listClosest(directionY, directionX, directionZ);
 			}
 			else {
-				return absZCartesian > absYCartesian ? listClosest(axisVector1, axisVector3, axisVector2) : listClosest(axisVector1, axisVector2, axisVector3);
+				return zScalar > yScalar ? listClosest(directionX, directionZ, directionY) : listClosest(directionX, directionY, directionZ);
 			}
 		}
-		else if (absYCartesian > absZCartesian) {
-			return listClosest(axisVector2, axisVector3, axisVector1);
+		else if (yScalar > zScalar) {
+			return listClosest(directionY, directionZ, directionX);
 		}
 		else {
-			return absXCartesian > absYCartesian ? listClosest(axisVector3, axisVector1, axisVector2) : listClosest(axisVector3, axisVector2, axisVector1);
+			return xScalar > yScalar ? listClosest(directionZ, directionX, directionY) : listClosest(directionZ, directionY, directionX);
 		}
 	}
 
