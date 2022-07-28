@@ -4,7 +4,6 @@ import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.feature.GameRuleNetworkHandler;
-import me.senseiwells.essentialclient.feature.MultiConnectSupport;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.rule.ClientRules;
@@ -64,7 +63,6 @@ public class EssentialClient implements ModInitializer {
 			ClientKeyBinds.load();
 			MinecraftDeobfuscator.load();
 			CraftingSharedConstants.load();
-			MultiConnectSupport.load();
 		}, "EssentialClient Init Thread").start();
 	}
 

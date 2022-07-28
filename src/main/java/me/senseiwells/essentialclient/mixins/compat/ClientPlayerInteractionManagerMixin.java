@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.mixins.compat;
 
 import com.google.common.collect.Lists;
 import net.earthcomputer.multiconnect.api.MultiConnectAPI;
+import net.earthcomputer.multiconnect.api.Protocols;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "clickSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ScreenHandler;onSlotClick(IILnet/minecraft/screen/slot/SlotActionType;Lnet/minecraft/entity/player/PlayerEntity;)V"))
 	private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
-		if (MultiConnectAPI.instance().getProtocolVersion() <= 754 && actionType == SlotActionType.THROW && slotId >= 0) {
+		if (MultiConnectAPI.instance().getProtocolVersion() <= Protocols.V1_16_5 && actionType == SlotActionType.THROW && slotId >= 0) {
 			this.cachedList.set(slotId, ItemStack.EMPTY);
 		}
 	}

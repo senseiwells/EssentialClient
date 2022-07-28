@@ -1,13 +1,13 @@
 package me.senseiwells.essentialclient.mixins.commandSuggestorIgnoresSpaces;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
-import net.minecraft.client.gui.screen.CommandSuggestor;
+import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(CommandSuggestor.class)
+@Mixin(ChatInputSuggestor.class)
 public abstract class CommandSuggestorMixin {
 	@Redirect(method = "refresh", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;getCursor()I"))
 	private int onGetCursor(TextFieldWidget textFieldWidget) {

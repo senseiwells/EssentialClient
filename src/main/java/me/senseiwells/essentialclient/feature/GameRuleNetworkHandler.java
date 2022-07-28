@@ -14,6 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
 
@@ -104,10 +105,10 @@ public class GameRuleNetworkHandler extends NetworkHandler {
 			return;
 		}
 		if (this.getNetworkHandler() != null) {
-			MultiConnectSupport.sendCustomPacket(
-				this.getNetworkHandler(), this.getNetworkChannel(),
+			this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
+				this.getNetworkChannel(),
 				new PacketByteBuf(Unpooled.buffer()).writeVarInt(DATA).writeString(gameRule.getName()).writeString(newValue)
-			);
+			));
 		}
 	}
 

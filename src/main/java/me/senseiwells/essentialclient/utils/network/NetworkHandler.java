@@ -2,9 +2,9 @@ package me.senseiwells.essentialclient.utils.network;
 
 import io.netty.buffer.Unpooled;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.feature.MultiConnectSupport;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
 import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
@@ -59,10 +59,10 @@ public abstract class NetworkHandler {
 
 	private void respondHello() {
 		if (this.networkHandler != null) {
-			MultiConnectSupport.sendCustomPacket(
-				this.networkHandler, this.getNetworkChannel(),
+			this.networkHandler.sendPacket(new CustomPayloadC2SPacket(
+				this.getNetworkChannel(),
 				new PacketByteBuf(Unpooled.buffer()).writeVarInt(HELLO).writeString(EssentialClient.VERSION).writeVarInt(this.getVersion())
-			);
+			));
 		}
 	}
 

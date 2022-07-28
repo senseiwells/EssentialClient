@@ -3,11 +3,11 @@ package me.senseiwells.essentialclient.mixins.carpet;
 import carpet.CarpetSettings;
 import carpet.network.ClientNetworkHandler;
 import io.netty.buffer.Unpooled;
-import me.senseiwells.essentialclient.feature.MultiConnectSupport;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,10 +24,10 @@ public class ClientNetworkHandlerMixin {
 
 	@Inject(method = "respondHello", at = @At("HEAD"), cancellable = true)
 	private static void onHello(CallbackInfo ci) {
-		MultiConnectSupport.sendCustomPacket(
-			EssentialUtils.getNetworkHandler(), carpet.network.CarpetClient.CARPET_CHANNEL,
+		EssentialUtils.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
+			carpet.network.CarpetClient.CARPET_CHANNEL,
 			new PacketByteBuf(Unpooled.buffer()).writeVarInt(carpet.network.CarpetClient.HELLO).writeString(CarpetSettings.carpetVersion)
-		);
+		));
 		ci.cancel();
 	}
 
@@ -39,10 +39,10 @@ public class ClientNetworkHandlerMixin {
 		NbtCompound outer = new NbtCompound();
 		outer.put("clientCommand", tag);
 
-		MultiConnectSupport.sendCustomPacket(
-			EssentialUtils.getNetworkHandler(), carpet.network.CarpetClient.CARPET_CHANNEL,
+		EssentialUtils.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
+			carpet.network.CarpetClient.CARPET_CHANNEL,
 			new PacketByteBuf(Unpooled.buffer()).writeVarInt(carpet.network.CarpetClient.DATA).writeNbt(outer)
-		);
+		));
 
 		ci.cancel();
 	}

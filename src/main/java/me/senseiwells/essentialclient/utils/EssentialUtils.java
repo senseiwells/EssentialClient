@@ -90,7 +90,7 @@ public class EssentialUtils {
 					client.player.sendCommand(message.substring(1));
 					return;
 				}
-				client.player.sendChatMessage(message);
+				client.player.sendChatMessage(message, null);
 			});
 		}
 	}
