@@ -14,10 +14,10 @@ import java.util.List;
 public class ChatHudMixin implements ChatHudAccessor {
 	@Final
 	@Shadow
-	private List<ChatHudLine<Text>> messages;
+	private List<ChatHudLine> messages;
 
 	@Override
-	public List<ChatHudLine<Text>> getMessages() {
+	public List<ChatHudLine> getMessages() {
 		return this.messages;
 	}
 }

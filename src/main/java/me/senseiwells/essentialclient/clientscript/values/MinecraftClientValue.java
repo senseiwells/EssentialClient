@@ -336,12 +336,11 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		)
 		private Value getLatestChatMessage(Arguments arguments) throws CodeError {
 			MinecraftClient client = this.getClient(arguments);
-			@SuppressWarnings("unchecked")
-			ChatHudLine<Text>[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+			ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
 			if (chat.length == 0) {
 				return NullValue.NULL;
 			}
-			return new TextValue(chat[0].getText().copy());
+			return new TextValue(chat[0].content().copy());
 		}
 
 		@FunctionDoc(

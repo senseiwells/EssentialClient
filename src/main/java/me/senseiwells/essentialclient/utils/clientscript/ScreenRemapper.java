@@ -26,7 +26,7 @@ public class ScreenRemapper {
 		Map.entry(ChatOptionsScreen.class, "ChatOptions"),
 		Map.entry(ChatScreen.class, "Chat"),
 		Map.entry(CommandBlockScreen.class, "CommandBlock"),
-		Map.entry(ConfirmChatLinkScreen.class, "ConfirmChatLink"),
+		Map.entry(ConfirmLinkScreen.class, "ConfirmChatLink"),
 		Map.entry(ConfirmScreen.class, "Confirm"),
 		Map.entry(ConnectScreen.class, "Connect"),
 		Map.entry(ControlsOptionsScreen.class, "ControlOptions"),

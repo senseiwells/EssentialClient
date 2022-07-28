@@ -28,9 +28,10 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
@@ -77,16 +78,19 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		MinecraftScriptEvents.ON_RESPAWN.run(new PlayerValue(this.client.player));
 	}
 
-	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/GameMessageS2CPacket;getMessageType(Lnet/minecraft/util/registry/Registry;)Lnet/minecraft/network/message/MessageType;"), cancellable = true)
+	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-		if (this.handleMessage(Util.NIL_UUID, packet.content().getString(), packet::getMessageType)) {
+		if (this.handleMessage(Util.NIL_UUID, packet.content().getString(), packet.overlay() ? "overlay" : "system")) {
 			ci.cancel();
 		}
 	}
 
-	@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/ChatMessageS2CPacket;sender()Lnet/minecraft/network/message/MessageSender;"), cancellable = true)
-	private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci) {
-		if (this.handleMessage(packet.sender().uuid(), packet.getSignedMessage().getContent().getString(), packet::getMessageType)) {
+	@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/message/MessageHandler;onChatMessage(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/network/message/MessageType$Parameters;)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci, Optional<MessageType.Parameters> parameters) {
+		MessageType messageType = parameters.get().type();
+		Identifier typeId = this.registryManager.get(Registry.MESSAGE_TYPE_KEY).getId(messageType);
+		String type = typeId == null ? "unknown" : typeId.getPath();
+		if (this.handleMessage(packet.message().signedHeader().sender(), packet.message().getContent().getString(), type)) {
 			ci.cancel();
 		}
 	}
@@ -127,13 +131,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	}
 
 	@Unique
-	private boolean handleMessage(UUID uuid, String content, Function<Registry<MessageType>, MessageType> messageType) {
-		Registry<MessageType> registry = this.registryManager.get(Registry.MESSAGE_TYPE_KEY);
-		Identifier messageTypeId = registry.getId(messageType.apply(registry));
+	private boolean handleMessage(UUID uuid, String content, String messageType) {
 		return MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(
 			StringValue.of(uuid.toString()),
 			StringValue.of(content),
-			StringValue.of(messageTypeId == null ? "unknown" : messageTypeId.getPath())
+			StringValue.of(messageType)
 		);
 	}
 }

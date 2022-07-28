@@ -11,10 +11,10 @@ import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.essentialclient.clientscript.values.TextValue;
-import me.senseiwells.essentialclient.feature.MultiConnectSupport;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
 import java.util.Locale;
@@ -51,7 +51,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 		}
 
 		ArgumentParser parser = new ArgumentParser(arguments);
-		MultiConnectSupport.sendCustomPacket(this.getNetworkHandler(), this.getNetworkChannel(), parser.parse());
+		this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(this.getNetworkChannel(), parser.parse()));
 	}
 
 	private record PacketParser(PacketByteBuf buf) {

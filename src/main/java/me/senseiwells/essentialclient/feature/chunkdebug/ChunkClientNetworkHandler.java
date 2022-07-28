@@ -2,10 +2,10 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import io.netty.buffer.Unpooled;
 import me.senseiwells.essentialclient.EssentialClient;
-import me.senseiwells.essentialclient.feature.MultiConnectSupport;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
 import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
@@ -59,19 +59,19 @@ public class ChunkClientNetworkHandler extends NetworkHandler {
 
 	private void requestChunkData(Identifier worldIdentifier) {
 		if (this.getNetworkHandler() != null) {
-			MultiConnectSupport.sendCustomPacket(
-				this.getNetworkHandler(), CHUNK_DEBUG_CHANNEL,
+			this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
+				CHUNK_DEBUG_CHANNEL,
 				new PacketByteBuf(Unpooled.buffer()).writeVarInt(DATA).writeIdentifier(worldIdentifier)
-			);
+			));
 		}
 	}
 
 	protected void requestServerRefresh() {
 		if (this.getNetworkHandler() != null) {
-			MultiConnectSupport.sendCustomPacket(
-				this.getNetworkHandler(), CHUNK_DEBUG_CHANNEL,
+			this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
+				CHUNK_DEBUG_CHANNEL,
 				new PacketByteBuf(Unpooled.buffer()).writeVarInt(RELOAD)
-			);
+			));
 		}
 	}
 }

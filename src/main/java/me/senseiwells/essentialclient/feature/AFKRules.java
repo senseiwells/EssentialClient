@@ -31,7 +31,7 @@ public class AFKRules {
 			if (playerLocation.equals(prevPlayerLocation) && mouseX == prevMouseX && mouseY == prevMouseY) {
 				ticks++;
 				if (ticks == announceAfk) {
-					playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue());
+					playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue(), null);
 					wasAfk = true;
 				}
 				if (logout >= 200 && ticks == logout) {
@@ -46,7 +46,7 @@ public class AFKRules {
 			if (wasAfk) {
 				String message = ClientRules.ANNOUNCE_BACK_MESSAGE.getValue();
 				if (!message.isBlank()) {
-					playerEntity.sendChatMessage(message);
+					playerEntity.sendChatMessage(message, null);
 				}
 				wasAfk = false;
 			}
