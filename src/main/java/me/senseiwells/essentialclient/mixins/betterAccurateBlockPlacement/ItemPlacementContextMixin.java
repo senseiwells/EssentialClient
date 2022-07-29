@@ -24,7 +24,7 @@ public class ItemPlacementContextMixin {
 		}
 	}
 	
-	@Inject(method = "getPlacementDirections", at = @At("HEAD"), cancellable = true, require = 0)
+	@Inject(method = "getPlacementDirections", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Direction;getEntityFacingOrder(Lnet/minecraft/entity/Entity;)[Lnet/minecraft/util/math/Direction;"), cancellable = true, require = 0)
 	private void onGetArrayDirections(CallbackInfoReturnable<Direction[]> cir) {
 		if (BetterAccurateBlockPlacement.fakeDirection != null) {
 			cir.setReturnValue(BetterAccurateBlockPlacement.getFacingOrder());
