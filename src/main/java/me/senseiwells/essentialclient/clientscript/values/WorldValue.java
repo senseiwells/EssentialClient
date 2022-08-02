@@ -78,6 +78,8 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return ArucasFunctionMap.of(
 				MemberFunction.of("getBlockAt", 3, this::getBlockAt),
 				MemberFunction.of("getBlockAt", 1, this::getBlockAtPos),
+				MemberFunction.of("getBiomeAt", 3, this::getBiomeAt),
+				MemberFunction.of("getBiomeAt", 1, this::getBiomeAtPos),
 				MemberFunction.of("getOtherPlayer", 1, this::getOtherPlayer),
 				MemberFunction.of("getAllOtherPlayers", this::getAllOtherPlayers),
 				MemberFunction.of("getClosestPlayer", 2, this::getClosestPlayer),
@@ -139,6 +141,40 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
 			return new BlockValue(world.getBlockState(blockPos), blockPos);
+		}
+
+		@FunctionDoc(
+			name = "getBiomeAt",
+			desc = "This function gets the block at the given coordinates",
+			params = {
+				NUMBER, "x", "the x coordinate",
+				NUMBER, "y", "the y coordinate",
+				NUMBER, "z", "the z coordinate"
+			},
+			returns = {BLOCK, "the block at the given coordinates"},
+			example = "world.getBiomeAt(0, 100, 0);"
+		)
+		private Value getBiomeAt(Arguments arguments) throws CodeError {
+			ClientWorld world = this.getWorld(arguments);
+			NumberValue num1 = arguments.getNextNumber();
+			NumberValue num2 = arguments.getNextNumber();
+			NumberValue num3 = arguments.getNextNumber();
+			BlockPos blockPos = new BlockPos(num1.value, num2.value, num3.value);
+			return new BiomeValue(world.getBiome(blockPos).value());
+		}
+
+		@FunctionDoc(
+			name = "getBiomeAt",
+			desc = "This function gets the block at the given coordinates",
+			params = {POS, "pos", "the position"},
+			returns = {BLOCK, "the block at the given coordinates"},
+			example = "world.getBiomeAt(new Pos(0, 100, 0));"
+		)
+		private Value getBiomeAtPos(Arguments arguments) throws CodeError {
+			ClientWorld world = this.getWorld(arguments);
+			PosValue posValue = arguments.getNext(PosValue.class);
+			BlockPos blockPos = new BlockPos(posValue.value);
+			return new BiomeValue(world.getBiome(blockPos).value());
 		}
 
 		@FunctionDoc(
