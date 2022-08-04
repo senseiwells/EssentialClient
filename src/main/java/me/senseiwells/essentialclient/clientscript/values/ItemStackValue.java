@@ -390,7 +390,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			example = """
 			pickaxe = Material.DIAMOND_PICKAXE.asItemStack();
 			goldBlock = Material.GOLD_BLOCK.asBlock();
-			
+
 			pickaxe.getMiningSpeedMultiplier(goldBlock);
 			"""
 		)
@@ -437,8 +437,8 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			example = """
 			itemStack = Material.DIAMOND_PICKAXE.asItemStack();
 			itemStack.setItemLore([
-			    Text.of('This is a pickaxe'),
-			    Text.of('It is made of diamond')
+				Text.of('This is a pickaxe'),
+				Text.of('It is made of diamond')
 			]);
 			"""
 		)

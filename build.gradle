@@ -4,8 +4,24 @@ plugins {
 	id "fabric-loom" version "0.11-SNAPSHOT"
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "io.github.juuxel.loom-quiltflower" version "1.6.0"
+	id "com.diffplug.spotless" version "6.8.0"
 }
-
+spotless {
+	format 'misc', {
+		target '**/*.gradle'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		target 'src/main/**/*.java'
+	toggleOffOn()
+			removeUnusedImports()
+			trimTrailingWhitespace()
+			indentWithTabs()
+			endWithNewline()
+	}
+}
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
@@ -45,8 +61,8 @@ dependencies {
 	modImplementation "carpet:fabric-carpet:1.19-pre5-${project.carpet_core_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.11")
-	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.11"
+	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
 
 	include implementation("com.github.senseiwells:Arucas:ad5c8f55fcb5efb33e9f281dbe2d3d752627adc3")
 	include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")

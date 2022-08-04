@@ -155,13 +155,13 @@ public class RenderHelper {
 		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
 		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
 		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		
+
 		// East Face
 		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
 		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
 		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
 		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		
+
 
 		// North Face
 		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
@@ -187,7 +187,7 @@ public class RenderHelper {
 		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
 		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
 	}
-	
+
 	private static void renderSpheres(MatrixStack matrices) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();

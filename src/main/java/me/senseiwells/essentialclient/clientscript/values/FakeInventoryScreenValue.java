@@ -99,9 +99,9 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			},
 			example = """
 				fakeScreen.onClick(fun(item, slotNum, action) {
-				    // action can be any of the following:
-				    // 'PICKUP', 'QUICK_MOVE', 'SWAP', 'CLONE', 'THROW', 'QUICK_CRAFT', or 'PICKUP_ALL'
-				    print(action);
+					// action can be any of the following:
+					// 'PICKUP', 'QUICK_MOVE', 'SWAP', 'CLONE', 'THROW', 'QUICK_CRAFT', or 'PICKUP_ALL'
+					print(action);
 				});
 				"""
 		)
