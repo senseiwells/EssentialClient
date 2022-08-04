@@ -140,6 +140,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("getCurrentScreen", this::getCurrentScreen),
 				MemberFunction.of("craft", 1, this::craft),
 				MemberFunction.of("craftRecipe", 1, this::craftRecipe),
+				MemberFunction.of("craftRecipe", 2, this::craftRecipeDrop),
+				MemberFunction.of("clickRecipe", 1, this::clickRecipeDefault),
+				MemberFunction.of("clickRecipe", 2, this::clickRecipeWithBoolean),
 				MemberFunction.of("logout", 1, this::logout),
 				MemberFunction.of("attackEntity", 1, this::attackEntity),
 				MemberFunction.of("interactWithEntity", 1, this::interactWithEntity),
@@ -153,8 +156,6 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("breakBlock", 2, this::breakBlockMore),
 				MemberFunction.of("updateBreakingBlock", 3, this::updateBreakingBlock),
 				MemberFunction.of("updateBreakingBlock", 1, this::updateBreakingBlockPos),
-				MemberFunction.of("updateBreakingBlock", 4, this::updateBreakingBlockDirection),
-				MemberFunction.of("updateBreakingBlock", 2, this::updateBreakingBlockDirectionPos),
 				MemberFunction.of("attackBlock", 4, this::attackBlock),
 				MemberFunction.of("attackBlock", 2, this::attackBlockPos),
 				MemberFunction.of("interactBlock", 4, this::interactBlock),
@@ -778,9 +779,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = """
 				chestRecipe = [
-				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
-				    Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
-				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
+					Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
+					Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
+					Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
 				];
 				player.craft(chestRecipe);
 				"""
@@ -836,6 +837,83 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
 				InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+			});
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "craftRecipe",
+			desc = "This allows you to craft a predefined recipe",
+			params = {
+				RECIPE, "recipe", "the recipe you want to craft",
+				BOOLEAN, "boolean", "whether result should be dropped or not"
+			},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.craftRecipe(Recipe.CHEST, true);"
+		)
+		private Value craftRecipeDrop(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
+				if (booleanValue.value) {
+					InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+				}
+				else {
+					InventoryUtils.dropStackScheduled(client, handledScreen, true);
+				}
+			});
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "clickRecipe",
+			desc = "This allows you to click a predefined recipe",
+			params = {RECIPE, "recipe", "the recipe you want to select"},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.clickRecipe(Recipe.CHEST);"
+		)
+		private Value clickRecipeDefault(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false);
+			});
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "clickRecipe",
+			desc = "This allows you to click a predefined recipe",
+			params = {
+				RECIPE, "recipe", "the recipe you want to select",
+				BOOLEAN, "boolean", "Shift click or not"
+			},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.clickRecipe(Recipe.CHEST, true);"
+		)
+		private Value clickRecipeWithBoolean(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value);
 			});
 			return NullValue.NULL;
 		}
@@ -1222,36 +1300,16 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		)
 		private Value updateBreakingBlock(Arguments arguments) throws CodeError {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			double x = arguments.getNextGeneric(NumberValue.class);
-			double y = arguments.getNextGeneric(NumberValue.class);
-			double z = arguments.getNextGeneric(NumberValue.class);
-			BlockPos blockPos = new BlockPos(x, y, z);
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, Direction.DOWN));
-			return NullValue.NULL;
-		}
-
-		@FunctionDoc(
-			name = "updateBreakingBlock",
-			desc = "This allows you to update your block breaking progress at a position",
-			params = {
-				NUMBER, "x", "the x position",
-				NUMBER, "y", "the y position",
-				NUMBER, "z", "the z position",
-				STRING, "direction", "direction name"
-			},
-			example = "player.updateBreakingBlock(0, 0, 0, 'down');"
-		)
-		private Value updateBreakingBlockDirection(Arguments arguments) throws CodeError {
-			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			double x = arguments.getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
 			double z = arguments.getNextGeneric(NumberValue.class);
-			StringValue stringValue = arguments.getNextString();
-			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			BlockPos blockPos = new BlockPos(x, y, z);
+			if (ArucasMinecraftExtension.getWorld().isAir(blockPos)) {
+				return NullValue.NULL;
+			}
 			ArucasMinecraftExtension.getClient().execute(() -> {
-				interactionManager.updateBlockBreakingProgress(blockPos, direction);
+				interactionManager.updateBlockBreakingProgress(blockPos, Direction.UP);
 				player.swingHand(Hand.MAIN_HAND);
 			});
 			return NullValue.NULL;
@@ -1265,25 +1323,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		)
 		private Value updateBreakingBlockPos(Arguments arguments) throws CodeError {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, Direction.DOWN));
-			return NullValue.NULL;
-		}
-
-		@FunctionDoc(
-			name = "updateBreakingBlock",
-			desc = "This allows you to update your block breaking progress at a position",
-			params = {POS, "pos", "the position of the block", STRING, "direction", "direction name"},
-			example = "player.updateBreakingBlock(new Pos(0, 0, 0), 'down');"
-		)
-		private Value updateBreakingBlockDirectionPos(Arguments arguments) throws CodeError {
-			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
-			PosValue posValue = arguments.getNext(PosValue.class);
-			BlockPos blockPos = new BlockPos(posValue.value);
-			StringValue stringValue = arguments.getNextString();
-			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
-			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, direction));
+			if (ArucasMinecraftExtension.getWorld().isAir(blockPos)) {
+				return NullValue.NULL;
+			}
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, Direction.UP));
+			player.swingHand(Hand.MAIN_HAND);
 			return NullValue.NULL;
 		}
 
@@ -1481,7 +1528,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
-    
+
 		@FunctionDoc(
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
