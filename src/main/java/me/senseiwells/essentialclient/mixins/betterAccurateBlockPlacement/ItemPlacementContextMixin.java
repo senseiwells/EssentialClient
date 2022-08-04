@@ -16,14 +16,14 @@ public class ItemPlacementContextMixin {
 			cir.setReturnValue(BetterAccurateBlockPlacement.fakeDirection);
 		}
 	}
-	
+
 	@Inject(method = "getVerticalPlayerLookDirection", at = @At("HEAD"), cancellable = true, require = 0)
 	private void onGetVerticalDirection(CallbackInfoReturnable<Direction> cir) {
 		if (BetterAccurateBlockPlacement.fakeDirection != null && BetterAccurateBlockPlacement.fakeDirection.getAxis() == Direction.Axis.Y) {
 			cir.setReturnValue(BetterAccurateBlockPlacement.fakeDirection);
 		}
 	}
-	
+
 	@Inject(method = "getPlacementDirections", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Direction;getEntityFacingOrder(Lnet/minecraft/entity/Entity;)[Lnet/minecraft/util/math/Direction;"), cancellable = true, require = 0)
 	private void onGetArrayDirections(CallbackInfoReturnable<Direction[]> cir) {
 		if (BetterAccurateBlockPlacement.fakeDirection != null) {
