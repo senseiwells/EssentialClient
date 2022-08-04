@@ -13,6 +13,7 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resource.language.I18n;
@@ -157,7 +158,8 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 				MemberFunction.of("getNbt", this::getNbt),
 				MemberFunction.of("getTranslatedName", this::getTranslatedName),
 				MemberFunction.of("getHitbox", this::getHitbox),
-				MemberFunction.of("collidesWith", 2, this::collidesWithBlockAtPos)
+				MemberFunction.of("collidesWith", 2, this::collidesWithBlockAtPos),
+				MemberFunction.of("canSpawnAt", 1, this::canSpawnPos)
 			);
 		}
 
@@ -645,11 +647,25 @@ public class EntityValue<T extends Entity> extends GenericValue<T> {
 			example = "entity.collidesWith(Pos.get(0, 0, 0), Block.of('minecraft:stone'));"
 		)
 		private Value collidesWithBlockAtPos(Arguments arguments) throws CodeError {
-			// If block is placed at position, will entity collide with it? Then it can't be placed.
 			Entity entity = this.getEntity(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockValue blockStateValue = arguments.getNext(BlockValue.class);
 			return BooleanValue.of(entity.collidesWithStateAtPos(posValue.toBlockPos(), blockStateValue.value));
+		}
+
+		@FunctionDoc(
+			name = "canSpawnAt",
+			desc = "This checks whether the entity can spawn at given position with regard to light and hitbox",
+			params = {
+				POS, "pos", "the position to check"
+			},
+			returns = {BOOLEAN, "whether entity type can spawn at given position"},
+			example = "entity.canSpawnAt(new Pos(0,0,0));"
+		)
+		private Value canSpawnPos(Arguments arguments) throws CodeError {
+			Entity entity = this.getEntity(arguments);
+			PosValue posValue = arguments.getNext(PosValue.class);
+			return BooleanValue.of(EssentialUtils.canSpawn(EssentialUtils.getWorld(), posValue.toBlockPos(), entity.getType()));
 		}
 
 		private Entity getEntity(Arguments arguments) throws CodeError {
