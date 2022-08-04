@@ -64,11 +64,14 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 
 	@Override
 	protected JsonElement valueToJson(ClientKeyBind value) {
-		JsonArray array = new JsonArray();
+		JsonArray keys = new JsonArray();
 		for (InputUtil.Key key : value.getKeys()) {
-			array.add(key.getTranslationKey());
+			keys.add(key.getTranslationKey());
 		}
-		return array;
+		JsonObject keyData = new JsonObject();
+		keyData.add("keys", keys);
+		keyData.addProperty("canUseInGui", value.canUseInGui());
+		return keyData;
 	}
 
 	@Override
@@ -79,9 +82,18 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		if (valueElement.isJsonPrimitive()) {
 			keys.add(InputUtil.fromTranslationKey(valueElement.getAsString()));
 		}
-		else {
+		else if (valueElement.isJsonArray()) {
 			for (JsonElement element : valueElement.getAsJsonArray()) {
 				keys.add(InputUtil.fromTranslationKey(element.getAsString()));
+			}
+		}
+		else {
+			JsonObject keyData = valueElement.getAsJsonObject();
+			for (JsonElement element : keyData.get("keys").getAsJsonArray()) {
+				keys.add(InputUtil.fromTranslationKey(element.getAsString()));
+			}
+			if (keyData.has("canUseInGui")) {
+				existingKeyBind.setCanUseInGui(keyData.get("canUseInGui").getAsBoolean());
 			}
 		}
 
@@ -116,15 +128,19 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		return "ClientKeyBinds";
 	}
 
-	public static void onKeyPress(InputUtil.Key key) {
+	public static void onKeyPress(InputUtil.Key key, boolean isInGui) {
 		for (ClientKeyBind keyBind : getAllKeyBinds()) {
-			keyBind.press(key);
+			if (keyBind.canUseInGui() || !isInGui) {
+				keyBind.press(key);
+			}
 		}
 	}
 
-	public static void onKeyRelease(InputUtil.Key key) {
+	public static void onKeyRelease(InputUtil.Key key, boolean isInGui) {
 		for (ClientKeyBind keyBind : getAllKeyBinds()) {
-			keyBind.release(key);
+			if (keyBind.canUseInGui() || !isInGui) {
+				keyBind.release(key);
+			}
 		}
 	}
 

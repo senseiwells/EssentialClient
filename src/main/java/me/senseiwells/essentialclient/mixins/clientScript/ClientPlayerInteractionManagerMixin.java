@@ -6,12 +6,14 @@ import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
+import me.senseiwells.essentialclient.clientscript.values.RecipeValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -58,6 +60,13 @@ public class ClientPlayerInteractionManagerMixin {
 	@Inject(method = "clickSlot", at = @At("HEAD"), cancellable = true)
 	private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
 		if (MinecraftScriptEvents.ON_CLICK_SLOT.run(NumberValue.of(slotId), StringValue.of(actionType.name()), new ItemStackValue(slotId < 0 ? ItemStack.EMPTY : player.currentScreenHandler.slots.get(slotId).getStack().copy()))) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
+	private void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
+		if (MinecraftScriptEvents.ON_CLICK_RECIPE.run(new RecipeValue(recipe))) {
 			ci.cancel();
 		}
 	}

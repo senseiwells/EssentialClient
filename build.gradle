@@ -6,22 +6,7 @@ plugins {
 	id "io.github.juuxel.loom-quiltflower" version "1.6.0"
 	id "com.diffplug.spotless" version "6.8.0"
 }
-spotless {
-	format 'misc', {
-		target '**/*.gradle'
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
-	java {
-		target 'src/main/**/*.java'
-	toggleOffOn()
-			removeUnusedImports()
-			trimTrailingWhitespace()
-			indentWithTabs()
-			endWithNewline()
-	}
-}
+
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
@@ -92,6 +77,24 @@ processResources {
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
 	it.options.release = 16
+}
+
+spotless {
+	format 'misc', {
+		target '**/*.gradle'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+
+	java {
+		target 'src/main/**/*.java'
+		toggleOffOn()
+		removeUnusedImports()
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
 }
 
 java {
