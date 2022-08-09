@@ -228,7 +228,7 @@ public class BiomeValue extends GenericValue<Biome> {
 		@FunctionDoc(
 			name = "getId",
 			desc = "This function returns Fog color of the biome",
-			returns = {NUMBER, "fog color of the biome"},
+			returns = {STRING, "id of the biome"},
 			example = "biome.getFogColor();"
 		)
 		private Value getId(Arguments arguments) throws CodeError {
@@ -268,8 +268,8 @@ public class BiomeValue extends GenericValue<Biome> {
 		}
 
 		@Override
-		public Class<WorldValue> getValueClass() {
-			return WorldValue.class;
+		public Class<BiomeValue> getValueClass() {
+			return BiomeValue.class;
 		}
 	}
 }
