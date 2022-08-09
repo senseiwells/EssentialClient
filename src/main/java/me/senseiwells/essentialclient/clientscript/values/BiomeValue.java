@@ -204,10 +204,10 @@ public class BiomeValue extends GenericValue<Biome> {
 		}
 
 		@FunctionDoc(
-			name = "getFogColor",
+			name = "getWaterColor",
 			desc = "This function returns Fog color of the biome",
 			returns = {NUMBER, "fog color of the biome"},
-			example = "biome.getFogColor();"
+			example = "biome.getWaterColor();"
 		)
 		private Value getWaterColor(Arguments arguments) throws CodeError {
 			Biome biome = this.getBiome(arguments);
@@ -229,7 +229,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "getId",
 			desc = "This function returns Fog color of the biome",
 			returns = {STRING, "id of the biome"},
-			example = "biome.getFogColor();"
+			example = "biome.getId();"
 		)
 		private Value getId(Arguments arguments) throws CodeError {
 			Biome biome = this.getBiome(arguments);
