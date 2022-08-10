@@ -158,6 +158,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("updateBreakingBlock", 1, this::updateBreakingBlockPos),
 				MemberFunction.of("attackBlock", 4, this::attackBlock),
 				MemberFunction.of("attackBlock", 2, this::attackBlockPos),
+				MemberFunction.of("interactItem", 2, this::interactItem),
 				MemberFunction.of("interactBlock", 4, this::interactBlock),
 				MemberFunction.of("interactBlock", 2, this::interactBlockPos),
 				MemberFunction.of("interactBlock", 3, this::interactBlockPosHand),
@@ -1371,6 +1372,28 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			StringValue stringValue = arguments.getNextString();
 			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.attackBlock(new BlockPos(posValue.value), direction));
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "interactItem",
+			desc = "This allows you to interact item with given Hand",
+			params = {
+				STRING, "hand", " Hand to use, MAIN / OFFHAND or its lowercases are allowed."
+			},
+			example = "player.interactItem('main');"
+		)
+		private Value interactItem(Arguments arguments) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			StringValue stringValue = arguments.getNextString();
+			String string = stringValue.value.toLowerCase();
+			Hand hand = switch (string) {
+				case "main", "mainhand", "main_hand" -> Hand.MAIN_HAND;
+				case "offhand", "off", "off_hand" -> Hand.OFF_HAND;
+				default -> throw new RuntimeError("Argument should be either main / offhand!", arguments.getPosition(), arguments.getContext());
+			};
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactItem(player, hand));
 			return NullValue.NULL;
 		}
 
