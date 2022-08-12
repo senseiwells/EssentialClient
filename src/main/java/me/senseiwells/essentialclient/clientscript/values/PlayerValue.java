@@ -1211,6 +1211,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.fakeLook(90, 0, 'up', 100);"
 		)
+		@SuppressWarnings("ConstantConditions")
 		private Value fakeLook(Arguments arguments) throws CodeError {
 			NumberValue yaw = arguments.skip().getNextNumber();
 			NumberValue pitch = arguments.getNextNumber();
@@ -1221,11 +1222,13 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			duration = duration > 0 ? duration : 20;
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			int finalDuration = duration;
+			ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
 			client.execute(() -> {
 				BetterAccurateBlockPlacement.fakeYaw = yaw.value.floatValue();
 				BetterAccurateBlockPlacement.fakePitch = pitch.value.floatValue();
 				BetterAccurateBlockPlacement.fakeDirection = direction;
 				BetterAccurateBlockPlacement.requestedTicks = finalDuration;
+				BetterAccurateBlockPlacement.sendLookPacket(networkHandler, client.player);
 			});
 			return NullValue.NULL;
 		}
