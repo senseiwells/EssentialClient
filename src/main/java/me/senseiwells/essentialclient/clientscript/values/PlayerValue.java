@@ -169,6 +169,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("swapHands", this::swapHands),
 				MemberFunction.of("swingHand", 1, this::swingHand),
 				MemberFunction.of("clickSlot", 3, this::clickSlot),
+				MemberFunction.of("clickCreativeStack", 2, this::clickCreativeStack),
 				MemberFunction.of("getSwappableHotbarSlot", this::getSwappableHotbarSlot),
 				MemberFunction.of("spectatorTeleport", 1, this::spectatorTeleport),
 				MemberFunction.of("canPlaceBlockAt", 2, this::canPlaceBlockAtPos),
@@ -710,6 +711,30 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			int finalClickData = clickData;
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, slot, finalClickData, slotActionType, player));
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "clickCreativeStack",
+			desc = "This allows you to click Creative stack, but requires sync with server",
+			params = {
+				ITEM_STACK, "itemStack", "Stack to click",
+				NUMBER, "slot", "the slot to click"},
+			throwMsgs = "That slot is out of bounds",
+			example = "player.clickCreativeStack(Material.DIAMOND_SWORD.asItemStack(), 9);"
+		)
+		private Value clickCreativeStack(Arguments arguments) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			ItemStackValue stackValue = arguments.getNext(ItemStackValue.class);
+			NumberValue number = arguments.getNextNumber();
+			ScreenHandler screenHandler = player.currentScreenHandler;
+			int size = screenHandler.slots.size();
+			if (number.value >= size || number.value < 0) {
+				throw arguments.getError("That slot is out of bounds");
+			}
+			int slot = number.getValue().intValue();
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickCreativeStack(stackValue.value, slot));
 			return NullValue.NULL;
 		}
 
