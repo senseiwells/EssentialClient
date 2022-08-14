@@ -964,7 +964,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			return direction == null ? NullValue.NULL : StringValue.of(direction.getName());
 		}
 	}
-	
+
 	// Checkstyle on
 
 	public static class CentreTiltableScalable extends CentrePositioned implements Tiltable, Scalable {

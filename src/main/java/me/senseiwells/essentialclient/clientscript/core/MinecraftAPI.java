@@ -35,9 +35,11 @@ import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
+import net.minecraft.world.biome.Biome;
 
 public class MinecraftAPI extends ValueTypes {
 	public static final String
+		BIOME = "Biome",
 		BOX_SHAPE = "BoxShape",
 		CONFIG_HANDLER = "ConfigHandler",
 		FAKE_BLOCK = "FakeBlock",
@@ -84,6 +86,7 @@ public class MinecraftAPI extends ValueTypes {
 			BlockValue.ArucasBlockClass::new,
 			ItemStackValue.ArucasItemStackClass::new,
 			WorldValue.ArucasWorldClass::new,
+			BiomeValue.ArucasBiomeClass::new,
 			ScreenValue.ArucasScreenClass::new,
 			FakeInventoryScreenValue.ArucasFakeInventoryScreenClass::new,
 			MerchantScreenValue.ArucasMerchantScreenClass::new,
@@ -120,6 +123,7 @@ public class MinecraftAPI extends ValueTypes {
 		builder.addConversion(Item.class, (i, c) -> new MaterialValue(i));
 		builder.addConversion(ItemStack.class, (i, c) -> new ItemStackValue(i));
 		builder.addConversion(ClientWorld.class, (w, c) -> new WorldValue(w));
+		builder.addConversion(Biome.class, (b, c) -> new BiomeValue(b));
 		builder.addConversion(Screen.class, (s, c) -> ScreenValue.of(s));
 		builder.addConversion(FakeInventoryScreen.class, (s, c) -> new FakeInventoryScreenValue(s));
 		builder.addConversion(MerchantScreen.class, (s, c) -> new MerchantScreenValue(s));

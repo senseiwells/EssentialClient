@@ -4,6 +4,7 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.api.docs.MemberDoc;
+import me.senseiwells.arucas.throwables.BuiltInException;
 import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -103,7 +104,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 		public Item asItem() {
 			Item item = this.block.asItem();
 			if (item == Items.AIR && !this.block.getDefaultState().isAir()) {
-				throw new RuntimeException("Material cannot be converted to an item");
+				throw new BuiltInException("Material cannot be converted to an item");
 			}
 			return item;
 		}

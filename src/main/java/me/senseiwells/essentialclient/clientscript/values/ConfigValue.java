@@ -131,18 +131,18 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {LIST, "A list of configs created from the list of config maps"},
 			example = """
 				configs = [
-				    {
-				        "type": "boolean",
-				        "name": "My Config",
-				        "description": "This is my config"
-				    },
-				    {
-				        "type": "cycle",
-				        "name": "My Cycle Config",
-				        "description": "This is my cycle config",
-				        "cycle_values": ["one", "two", "three"],
-				        "default_value": "two"
-				    }
+					{
+						"type": "boolean",
+						"name": "My Config",
+						"description": "This is my config"
+					},
+					{
+						"type": "cycle",
+						"name": "My Cycle Config",
+						"description": "This is my cycle config",
+						"cycle_values": ["one", "two", "three"],
+						"default_value": "two"
+					}
 				];
 				configs = Config.fromListOfMap(configs);
 				"""
@@ -261,7 +261,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			params = {FUNCTION, "listener", "The listener to add"},
 			example = """
 				config.addListener(function(newValue) {
-				    print(newValue);
+					print(newValue);
 				});
 				"""
 		)

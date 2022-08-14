@@ -183,8 +183,8 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 				MemberFunction.of("getHardness", this::getHardness),
 				MemberFunction.of("sideCoversSmallSquare", 1, this::sideCoversSmallSquare),
 				MemberFunction.of("isSideSolidFullSquare", 1, this::isSideSolidFullSquare),
-				MemberFunction.of("isSpawnable", this::isSpawnable),
-				MemberFunction.of("isSpawnable", 1, this::isSpawnableType),
+				MemberFunction.of("isSpawnable", this::allowsSpawning),
+				MemberFunction.of("isSpawnable", 1, this::allowsSpawningType),
 				MemberFunction.of("getLuminance", this::getLuminance),
 				MemberFunction.of("getMapColour", this::getMapColour),
 				MemberFunction.of("getMapColor", this::getMapColour),
@@ -543,24 +543,24 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is spawnable in the case of zombies"},
 			example = "block.isSpawnable();"
 		)
-		private Value isSpawnable(Arguments arguments) throws CodeError {
+		private Value allowsSpawning(Arguments arguments) throws CodeError {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
-			boolean isSpawnable = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), EntityType.ZOMBIE);
-			return BooleanValue.of(isSpawnable);
+			boolean value = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), EntityType.ZOMBIE);
+			return BooleanValue.of(value);
 		}
 
 		@FunctionDoc(
 			name = "isSpawnable",
-			desc = "This checks if the Block is spawnable in the case of the given entity",
+			desc = "This checks if the Block allows spawning for given entity",
 			params = {ENTITY, "entity", "the entity to check"},
-			returns = {BOOLEAN, "true if the Block is spawnable in the case of the given entity"},
+			returns = {BOOLEAN, "true if the Block allows spawning for given entity"},
 			example = "block.isSpawnable(zombie);"
 		)
-		private Value isSpawnableType(Arguments arguments) throws CodeError {
+		private Value allowsSpawningType(Arguments arguments) throws CodeError {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
-			boolean isSpawnable = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), entityValue.value.getType());
-			return BooleanValue.of(isSpawnable);
+			boolean value = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), entityValue.value.getType());
+			return BooleanValue.of(value);
 		}
 
 		@FunctionDoc(

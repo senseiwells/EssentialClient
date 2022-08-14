@@ -42,7 +42,8 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private MinecraftClient client;
 
-	@Shadow private DynamicRegistryManager.Immutable registryManager;
+	@Shadow
+	private DynamicRegistryManager.Immutable registryManager;
 
 	@Inject(method = "onHealthUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
