@@ -3,11 +3,10 @@ package me.senseiwells.essentialclient.clientscript.core;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.senseiwells.arucas.utils.ExceptionUtils;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.utils.config.Config;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -104,10 +103,7 @@ public enum ClientScript implements Config.CList {
 
 	public Path getScriptDirectory() {
 		Path scriptDir = this.getConfigRootPath().resolve("Scripts");
-		if (!Files.exists(scriptDir)) {
-			ExceptionUtils.runSafe(() -> Files.createDirectory(scriptDir));
-		}
-		return scriptDir;
+		return Util.File.INSTANCE.ensureExists(scriptDir);
 	}
 
 	private File[] getScriptFiles() {
