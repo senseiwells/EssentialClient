@@ -249,7 +249,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		example = "configHandler.createScreen();"
 	)
 	@ArucasFunction
-	public synchronized Value createScreen(Context context, TextValue screenName, BooleanValue alphabetical) throws CodeError {
+	public synchronized Value createScreen(Context context, TextValue screenName, BooleanValue alphabetical) {
 		RulesScreen screen = new RulesScreen(screenName.value, EssentialUtils.getClient().currentScreen, () -> true, () -> {
 			Collection<? extends Rule<?>> rules = this.configs.values().stream().map(c -> c.value).toList();
 			if (alphabetical.value) {
@@ -268,7 +268,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		example = "configHandler.createScreen();"
 	)
 	@ArucasFunction
-	public synchronized Value createScreen(Context context, TextValue screenName) throws CodeError {
+	public synchronized Value createScreen(Context context, TextValue screenName) {
 		return this.createScreen(context, screenName, BooleanValue.TRUE);
 	}
 

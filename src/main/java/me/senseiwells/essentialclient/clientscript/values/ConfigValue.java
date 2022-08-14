@@ -4,7 +4,6 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.extensions.util.JsonValue;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -18,7 +17,8 @@ import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.CONFIG;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.JSON;
 
 public class ConfigValue extends GenericValue<ClientRule<?>> {
 	public ConfigValue(ClientRule<?> value) {
@@ -26,22 +26,22 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 	}
 
 	@Override
-	public GenericValue<ClientRule<?>> copy(Context context) throws CodeError {
+	public GenericValue<ClientRule<?>> copy(Context context) {
 		return this;
 	}
 
 	@Override
-	public String getAsString(Context context) throws CodeError {
+	public String getAsString(Context context) {
 		return "Config{name=" + this.value.getName() + ", value=" + this.value.getValue() + "}";
 	}
 
 	@Override
-	public int getHashCode(Context context) throws CodeError {
+	public int getHashCode(Context context) {
 		return this.value.hashCode();
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value other) throws CodeError {
+	public boolean isEquals(Context context, Value other) {
 		return this.value == other.getValue();
 	}
 
@@ -118,7 +118,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				config = Config.fromMap(configMap);
 				"""
 		)
-		private Value fromMap(Arguments arguments) throws CodeError {
+		private Value fromMap(Arguments arguments) {
 			ArucasMap map = arguments.getNextGeneric(MapValue.class);
 			return ClientScriptUtils.mapToRule(map, arguments.getContext(), arguments.getPosition());
 		}
@@ -147,7 +147,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				configs = Config.fromListOfMap(configs);
 				"""
 		)
-		private Value fromListOfMap(Arguments arguments) throws CodeError {
+		private Value fromListOfMap(Arguments arguments) {
 			ArucasList list = arguments.getNextGeneric(ListValue.class);
 			ArucasList configList = new ArucasList();
 			for (Value value : list.toArray()) {
@@ -181,7 +181,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {STRING, "The name of the config"},
 			example = "config.getName();"
 		)
-		private Value getName(Arguments arguments) throws RuntimeError {
+		private Value getName(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return StringValue.of(rule.getName());
 		}
@@ -192,7 +192,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {STRING, "The type of the config"},
 			example = "config.getType();"
 		)
-		private Value getType(Arguments arguments) throws RuntimeError {
+		private Value getType(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return StringValue.of(rule.getTypeAsString());
 		}
@@ -203,7 +203,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {STRING, "The description of the config"},
 			example = "config.getDescription();"
 		)
-		private Value getDescription(Arguments arguments) throws RuntimeError {
+		private Value getDescription(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return StringValue.of(rule.getDescription());
 		}
@@ -214,7 +214,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {STRING, "The optional info of the config"},
 			example = "config.getOptionalInfo();"
 		)
-		private Value getOptionalInfo(Arguments arguments) throws RuntimeError {
+		private Value getOptionalInfo(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return StringValue.of(rule.getOptionalInfo());
 		}
@@ -225,7 +225,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {ANY, "The default value of the config"},
 			example = "config.getDefaultValue();"
 		)
-		private Value getDefaultValue(Arguments arguments) throws CodeError {
+		private Value getDefaultValue(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return arguments.getContext().convertValue(rule.getDefaultValue());
 		}
@@ -236,7 +236,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {ANY, "The value of the config"},
 			example = "config.getValue();"
 		)
-		private Value getValue(Arguments arguments) throws CodeError {
+		private Value getValue(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return arguments.getContext().convertValue(rule.getValue());
 		}
@@ -247,7 +247,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			returns = {JSON, "The config as a json value"},
 			example = "config.toJson();"
 		)
-		private Value toJson(Arguments arguments) throws CodeError {
+		private Value toJson(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			return new JsonValue(rule.serialise());
 		}
@@ -265,7 +265,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				});
 				"""
 		)
-		private Value addListener(Arguments arguments) throws CodeError {
+		private Value addListener(Arguments arguments) {
 			ConfigValue rule = arguments.getNext(ConfigValue.class);
 			FunctionValue listener = arguments.getNext(FunctionValue.class);
 			Context branch = arguments.getContext().createBranch();
@@ -281,7 +281,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			desc = "Resets the config to the default value",
 			example = "config.resetToDefault();"
 		)
-		private Value resetToDefault(Arguments arguments) throws CodeError {
+		private Value resetToDefault(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			rule.resetToDefault();
 			return NullValue.NULL;
@@ -293,7 +293,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			params = {ANY, "value", "The new value of the config"},
 			example = "config.setValue(10);"
 		)
-		private Value setValue(Arguments arguments) throws CodeError {
+		private Value setValue(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			Value value = arguments.getNext();
 			rule.setValueFromString(value.getAsString(arguments.getContext()));

@@ -43,22 +43,22 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 	}
 
 	@Override
-	public CommandBuilderValue copy(Context context) throws CodeError {
+	public CommandBuilderValue copy(Context context) {
 		return this;
 	}
 
 	@Override
-	public String getAsString(Context context) throws CodeError {
+	public String getAsString(Context context) {
 		return "CommandBuilder@" + this.getHashCode(context);
 	}
 
 	@Override
-	public int getHashCode(Context context) throws CodeError {
+	public int getHashCode(Context context) {
 		return this.value.hashCode();
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value other) throws CodeError {
+	public boolean isEquals(Context context, Value other) {
 		return this == other;
 	}
 
@@ -95,7 +95,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			returns = {COMMAND_BUILDER, "the argument builder"},
 			example = "CommandBuilder.literal('test');"
 		)
-		private Value literal(Arguments arguments) throws CodeError {
+		private Value literal(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
 			LiteralArgumentBuilder<ServerCommandSource> literalBuilder = CommandManager.literal(stringValue.value);
 			return new CommandBuilderValue(literalBuilder);
@@ -115,7 +115,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			returns = {COMMAND_BUILDER, "the argument builder"},
 			example = "CommandBuilder.argument('test', 'entityid');"
 		)
-		private Value argument2(Arguments arguments) throws CodeError {
+		private Value argument2(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
 			StringValue argumentTypeString = arguments.getNextString();
 			return this.argument(arguments.getContext(), arguments.getPosition(), stringValue.value, argumentTypeString.value, NullValue.NULL);
@@ -136,7 +136,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			returns = {COMMAND_BUILDER, "the argument builder"},
 			example = "CommandBuilder.argument('test', 'word', ['wow', 'suggestion']);"
 		)
-		private Value argument3(Arguments arguments) throws CodeError {
+		private Value argument3(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
 			StringValue argumentTypeString = arguments.getNextString();
 			Value suggestions = arguments.getNext();
@@ -222,12 +222,12 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 				effectCommand = CommandBuilder.fromMap(effectCommandMap);
 				"""
 		)
-		private Value fromMap(Arguments arguments) throws CodeError {
+		private Value fromMap(Arguments arguments) {
 			MapValue mapValue = arguments.getNextMap();
 			return new CommandBuilderValue(ClientScriptUtils.mapToCommand(mapValue.value, arguments.getContext(), arguments.getPosition()));
 		}
 
-		private Value argument(Context context, ISyntax syntaxPosition, String name, String stringArgType, Value suggestions) throws CodeError {
+		private Value argument(Context context, ISyntax syntaxPosition, String name, String stringArgType, Value suggestions) {
 			SuggestionProvider<ServerCommandSource> extraSuggestion = null;
 			ArgumentType<?> argumentType = switch (stringArgType.toLowerCase()) {
 				case "playername" -> {
@@ -278,7 +278,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			returns = {COMMAND_BUILDER, "the parent command builder"},
 			example = "commandBuilder.then(CommandBuilder.literal('subcommand'));"
 		)
-		private Value then(Arguments arguments) throws CodeError {
+		private Value then(Arguments arguments) {
 			CommandBuilderValue commandBuilderValue = arguments.getNext(CommandBuilderValue.class);
 			CommandBuilderValue nextCommandBuilder = arguments.getNext(CommandBuilderValue.class);
 			commandBuilderValue.value.then(nextCommandBuilder.value);
@@ -295,7 +295,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			returns = {COMMAND_BUILDER, "the parent command builder"},
 			example = "commandBuilder.executes(fun() { });"
 		)
-		private Value executes(Arguments arguments) throws CodeError {
+		private Value executes(Arguments arguments) {
 			CommandBuilderValue commandBuilderValue = arguments.getNext(CommandBuilderValue.class);
 			FunctionValue functionValue = arguments.getNextFunction();
 			Context context = arguments.getContext().createBranch();

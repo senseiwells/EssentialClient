@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -83,7 +82,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			returns = {NUMBER, "the size of the trade list"},
 			example = "screen.getTradeListSize();"
 		)
-		private Value getTradeListSize(Arguments arguments) throws CodeError {
+		private Value getTradeListSize(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
 			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
 			return NumberValue.of(tradeOfferList.size());
@@ -95,7 +94,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			returns = {LIST, "the list of all the Trades"},
 			example = "screen.getTradeList();"
 		)
-		private Value getTradeList(Arguments arguments) throws CodeError {
+		private Value getTradeList(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
 			ArucasList valueList = new ArucasList();
 			TradeOfferList tradeOfferList = merchantScreen.getScreenHandler().getRecipes();
@@ -112,7 +111,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Merchant isn't a villager",
 			example = "screen.getVillagerLevel();"
 		)
-		private Value getVillagerLevel(Arguments arguments) throws CodeError {
+		private Value getVillagerLevel(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
 			Merchant merchant = ((MerchantScreenHandlerMixin) merchantScreen.getScreenHandler()).getMerchant();
 			if (merchant instanceof VillagerEntity villagerEntity) {
@@ -128,7 +127,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Merchant isn't a villager",
 			example = "screen.getVillagerProfession();"
 		)
-		private Value getVillagerProfession(Arguments arguments) throws CodeError {
+		private Value getVillagerProfession(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
 			Merchant merchant = ((MerchantScreenHandlerMixin) merchantScreen.getScreenHandler()).getMerchant();
 			if (merchant instanceof VillagerEntity villagerEntity) {
@@ -144,7 +143,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Not in merchant gui",
 			example = "screen.tradeIndex(0);"
 		)
-		private Value tradeIndex(Arguments arguments) throws CodeError {
+		private Value tradeIndex(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			if (InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
@@ -161,7 +160,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Not in merchant gui",
 			example = "screen.getIndexOfTradeItem(Material.DIAMOND_PICKAXE.asItemStack());"
 		)
-		private Value getIndexOfTradeItem(Arguments arguments) throws CodeError {
+		private Value getIndexOfTradeItem(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), materialLike.asItem());
@@ -183,7 +182,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			},
 			example = "screen.getTradeItemForIndex(0);"
 		)
-		private Value getTradeItemForIndex(Arguments arguments) throws CodeError {
+		private Value getTradeItemForIndex(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			try {
@@ -209,7 +208,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			},
 			example = "screen.doesVillagerHaveTrade(Material.DIAMOND_PICKAXE.asItemStack());"
 		)
-		private Value doesVillagerHaveTrade(Arguments arguments) throws CodeError {
+		private Value doesVillagerHaveTrade(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			int code = InventoryUtils.checkHasTrade(ArucasMinecraftExtension.getClient(), materialLike.asItem());
@@ -223,7 +222,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Not in merchant gui",
 			example = "screen.selectTrade(0);"
 		)
-		private Value selectTrade(Arguments arguments) throws CodeError {
+		private Value selectTrade(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			if (!InventoryUtils.selectTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue())) {
@@ -238,7 +237,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Not in merchant gui",
 			example = "screen.clearTrade();"
 		)
-		private Value clearTrade(Arguments arguments) throws CodeError {
+		private Value clearTrade(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			if (!InventoryUtils.clearTrade(ArucasMinecraftExtension.getClient())) {
 				throw arguments.getError(NOT_IN_GUI);
@@ -252,7 +251,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Not in merchant gui",
 			example = "screen.tradeSelected();"
 		)
-		private Value tradeSelected(Arguments arguments) throws CodeError {
+		private Value tradeSelected(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			if (InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), false)) {
 				throw arguments.getError(NOT_IN_GUI);
@@ -266,7 +265,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			throwMsgs = "Not in merchant gui",
 			example = "screen.tradeSelectedAndThrow();"
 		)
-		private Value tradeSelectedAndThrow(Arguments arguments) throws CodeError {
+		private Value tradeSelectedAndThrow(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			if (InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), true)) {
 				throw arguments.getError(NOT_IN_GUI);
@@ -280,7 +279,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			returns = {BOOLEAN, "true if a trade is selected"},
 			example = "screen.isTradeSelected();"
 		)
-		private Value isTradeSelected(Arguments arguments) throws CodeError {
+		private Value isTradeSelected(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			return BooleanValue.of(InventoryUtils.isTradeSelected(ArucasMinecraftExtension.getClient()));
 		}
@@ -292,7 +291,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			returns = {BOOLEAN, "true if a trade is disabled"},
 			example = "screen.isTradeDisabled(1);"
 		)
-		private Value isTradeDisabled(Arguments arguments) throws CodeError {
+		private Value isTradeDisabled(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			int code = InventoryUtils.checkTradeDisabled(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
@@ -310,7 +309,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			},
 			example = "screen.getPriceForIndex(0);"
 		)
-		private Value getPriceForIndex(Arguments arguments) throws CodeError {
+		private Value getPriceForIndex(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			int price = InventoryUtils.checkPriceForTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
@@ -318,7 +317,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			return NumberValue.of(price);
 		}
 
-		public MerchantScreen checkIsCurrentScreen(Arguments arguments) throws CodeError {
+		public MerchantScreen checkIsCurrentScreen(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			MerchantScreenValue screenValue = arguments.getNext(MerchantScreenValue.class);
 			if (client.currentScreen != screenValue.value) {
@@ -327,7 +326,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			return screenValue.value;
 		}
 
-		public boolean checkVillagerValid(int code, Arguments arguments) throws RuntimeError {
+		public boolean checkVillagerValid(int code, Arguments arguments) {
 			boolean bool = false;
 			switch (code) {
 				case -2 -> throw arguments.getError(NOT_IN_GUI);

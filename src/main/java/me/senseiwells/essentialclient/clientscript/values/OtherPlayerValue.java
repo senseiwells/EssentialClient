@@ -86,7 +86,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {NUMBER, "the currently selected slot number"},
 			example = "otherPlayer.getCurrentSlot();"
 		)
-		private Value getCurrentSlot(Arguments arguments) throws CodeError {
+		private Value getCurrentSlot(Arguments arguments) {
 			return NumberValue.of(this.getOtherPlayer(arguments).getInventory().selectedSlot);
 		}
 
@@ -96,7 +96,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {ITEM_STACK, "the currently selected item"},
 			example = "otherPlayer.getHeldItem();"
 		)
-		private Value getHeldItem(Arguments arguments) throws CodeError {
+		private Value getHeldItem(Arguments arguments) {
 			return new ItemStackValue(this.getOtherPlayer(arguments).getInventory().getMainHandStack());
 		}
 
@@ -106,7 +106,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {BOOLEAN, "whether the inventory is full"},
 			example = "otherPlayer.isInventoryFull();"
 		)
-		private Value isInventoryFull(Arguments arguments) throws CodeError {
+		private Value isInventoryFull(Arguments arguments) {
 			return BooleanValue.of(this.getOtherPlayer(arguments).getInventory().getEmptySlot() == -1);
 		}
 
@@ -116,7 +116,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {STRING, "the players name"},
 			example = "otherPlayer.getPlayerName();"
 		)
-		private Value getPlayerName(Arguments arguments) throws CodeError {
+		private Value getPlayerName(Arguments arguments) {
 			return StringValue.of(this.getOtherPlayer(arguments).getEntityName());
 		}
 
@@ -126,7 +126,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {STRING, "the players gamemode as a string, null if not known, for example 'creative', 'survival', 'spectator'"},
 			example = "otherPlayer.getGamemode();"
 		)
-		private Value getGamemode(Arguments arguments) throws CodeError {
+		private Value getGamemode(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			PlayerListEntry playerInfo = ArucasMinecraftExtension.getNetworkHandler().getPlayerListEntry(playerEntity.getUuid());
 			if (playerInfo == null || playerInfo.getGameMode() == null) {
@@ -141,7 +141,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {NUMBER, "the players total inventory slots"},
 			example = "otherPlayer.getTotalSlots();"
 		)
-		private Value getTotalSlots(Arguments arguments) throws CodeError {
+		private Value getTotalSlots(Arguments arguments) {
 			ScreenHandler screenHandler = this.getOtherPlayer(arguments).currentScreenHandler;
 			return NumberValue.of(screenHandler.slots.size());
 		}
@@ -154,7 +154,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			throwMsgs = "That slot is out of bounds",
 			example = "otherPlayer.getItemForSlot(0);"
 		)
-		private Value getItemForSlot(Arguments arguments) throws CodeError {
+		private Value getItemForSlot(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
@@ -174,7 +174,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			throwMsgs = "That slot is out of bounds",
 			example = "otherPlayer.isPlayerSlot(0);"
 		)
-		private Value isPlayerSlot(Arguments arguments) throws CodeError {
+		private Value isPlayerSlot(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
@@ -195,7 +195,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			throwMsgs = "That slot is out of bounds",
 			example = "otherPlayer.getItemForPlayerSlot(0);"
 		)
-		private Value getItemForPlayerSlot(Arguments arguments) throws CodeError {
+		private Value getItemForPlayerSlot(Arguments arguments) {
 			// This gets the item for a slot in the player's inventory (no screen inventories)
 			AbstractClientPlayerEntity player = this.getOtherPlayer(arguments);
 			int slot = arguments.getNextGeneric(NumberValue.class).intValue();
@@ -213,7 +213,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {NUMBER, "the slot number of the item, null if not found"},
 			example = "otherPlayer.getSlotFor(Material.DIAMOND.asItemStack());"
 		)
-		private Value getSlotFor(Arguments arguments) throws CodeError {
+		private Value getSlotFor(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
@@ -232,7 +232,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {LIST, "the slot numbers of the item, empty list if not found"},
 			example = "otherPlayer.getAllSlotsFor(Material.DIAMOND);"
 		)
-		private Value getAllSlotsFor(Arguments arguments) throws CodeError {
+		private Value getAllSlotsFor(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
@@ -255,7 +255,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {MAP, "the abilities of the player"},
 			example = "otherPlayer.getAbilities();"
 		)
-		private Value getAbilities(Arguments arguments) throws CodeError {
+		private Value getAbilities(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			PlayerAbilities playerAbilities = playerEntity.getAbilities();
 			Context context = arguments.getContext();
@@ -275,7 +275,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {NUMBER, "the number of experience levels"},
 			example = "otherPlayer.getLevels();"
 		)
-		private Value getLevels(Arguments arguments) throws CodeError {
+		private Value getLevels(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			return NumberValue.of(playerEntity.experienceLevel);
 		}
@@ -286,7 +286,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {NUMBER, "the hunger level"},
 			example = "otherPlayer.getHunger();"
 		)
-		private Value getHunger(Arguments arguments) throws CodeError {
+		private Value getHunger(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			return NumberValue.of(playerEntity.getHungerManager().getFoodLevel());
 		}
@@ -297,7 +297,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {NUMBER, "the saturation level"},
 			example = "otherPlayer.getSaturation();"
 		)
-		private Value getSaturation(Arguments arguments) throws CodeError {
+		private Value getSaturation(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			return NumberValue.of(playerEntity.getHungerManager().getSaturationLevel());
 		}
@@ -308,12 +308,12 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			returns = {ENTITY, "the fishing bobber entity, null if the player isn't fishing"},
 			example = "otherPlayer.getFishingBobber();"
 		)
-		private Value getFishingBobber(Arguments arguments) throws CodeError {
+		private Value getFishingBobber(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			return arguments.getContext().convertValue(playerEntity.fishHook);
 		}
 
-		private AbstractClientPlayerEntity getOtherPlayer(Arguments arguments) throws CodeError {
+		private AbstractClientPlayerEntity getOtherPlayer(Arguments arguments) {
 			AbstractPlayerValue<?> player = arguments.getNext(AbstractPlayerValue.class);
 			if (player.value == null) {
 				throw arguments.getError("OtherPlayer was null");

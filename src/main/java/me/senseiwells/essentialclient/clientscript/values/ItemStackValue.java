@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -13,8 +12,8 @@ import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.mixins.clientScript.NbtListMixin;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
-import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
@@ -105,7 +104,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {ITEM_STACK, "the new ItemStack instance"},
 			example = "ItemStack.of('dirt');"
 		)
-		private Value of(Arguments arguments) throws CodeError {
+		private Value of(Arguments arguments) {
 			Value value = arguments.getNext();
 			if (value instanceof StringValue stringValue) {
 				Identifier id = ArucasMinecraftExtension.getId(arguments, stringValue.value);
@@ -130,13 +129,13 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {ITEM_STACK, "the new ItemStack instance"},
 			example = "ItemStack.parse('{id:\"minecraft:dirt\",Count:64}')"
 		)
-		private Value parse(Arguments arguments) throws CodeError {
+		private Value parse(Arguments arguments) {
 			Value param = arguments.getNext();
 			if (param instanceof MapValue mapValue) {
-				return new ItemStackValue(ItemStack.fromNbt(NbtUtils.mapToNbt(arguments.getContext(), mapValue.value, 10)));
+				return new ItemStackValue(ItemStack.fromNbt(ClientScriptUtils.mapToNbt(arguments.getContext(), mapValue.value, 10)));
 			}
 			if (param instanceof StringValue stringValue) {
-				return new ItemStackValue(NbtUtils.nbtToItemStack(arguments.getContext(), arguments.getPosition(), stringValue.value));
+				return new ItemStackValue(ClientScriptUtils.stringToItemStack(arguments.getContext(), arguments.getPosition(), stringValue.value));
 			}
 			throw arguments.getError("Argument must be able to convert to NBT");
 		}
@@ -176,7 +175,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {MATERIAL, "the material of the ItemStack"},
 			example = "itemStack.getMaterial();"
 		)
-		private Value getMaterial(Arguments arguments) throws CodeError {
+		private Value getMaterial(Arguments arguments) {
 			return new MaterialValue(this.getItemStack(arguments).getItem());
 		}
 
@@ -186,7 +185,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {STRING, "the full id of the ItemStack"},
 			example = "itemStack.getFullId();"
 		)
-		private Value getFullId(Arguments arguments) throws CodeError {
+		private Value getFullId(Arguments arguments) {
 			return StringValue.of(Registry.ITEM.getId(this.getItemStack(arguments).getItem()).toString());
 		}
 
@@ -196,7 +195,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {STRING, "the id of the ItemStack"},
 			example = "itemStack.getId();"
 		)
-		private Value getId(Arguments arguments) throws CodeError {
+		private Value getId(Arguments arguments) {
 			return StringValue.of(Registry.ITEM.getId(this.getItemStack(arguments).getItem()).getPath());
 		}
 
@@ -206,7 +205,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {NUMBER, "the count of the ItemStack"},
 			example = "itemStack.getCount();"
 		)
-		private Value getCount(Arguments arguments) throws CodeError {
+		private Value getCount(Arguments arguments) {
 			return NumberValue.of(this.getItemStack(arguments).getCount());
 		}
 
@@ -216,7 +215,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {NUMBER, "the durability of the item"},
 			example = "itemStack.getDurability();"
 		)
-		private Value getDurability(Arguments arguments) throws CodeError {
+		private Value getDurability(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			return NumberValue.of(itemStack.getMaxDamage() - itemStack.getDamage());
 		}
@@ -227,7 +226,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {NUMBER, "the max durability of the item"},
 			example = "itemStack.getMaxDurability();"
 		)
-		private Value getMaxDurability(Arguments arguments) throws CodeError {
+		private Value getMaxDurability(Arguments arguments) {
 			return NumberValue.of(this.getItemStack(arguments).getMaxDamage());
 		}
 
@@ -240,7 +239,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {MAP, "the enchantments of the item, map may be empty"},
 			example = "itemStack.getEnchantments();"
 		)
-		private Value getEnchantments(Arguments arguments) throws CodeError {
+		private Value getEnchantments(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			NbtList nbtList = itemStack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantmentNbt(itemStack) : itemStack.getEnchantments();
 			ArucasMap enchantmentMap = new ArucasMap();
@@ -257,7 +256,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {BOOLEAN, "true if the ItemStack can be placed as a block, false otherwise"},
 			example = "itemStack.isBlockItem();"
 		)
-		private Value isBlockItem(Arguments arguments) throws CodeError {
+		private Value isBlockItem(Arguments arguments) {
 			return BooleanValue.of(this.getItemStack(arguments).getItem() instanceof BlockItem);
 		}
 
@@ -267,7 +266,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {BOOLEAN, "true if the ItemStack is stackable, false otherwise"},
 			example = "itemStack.isStackable();"
 		)
-		private Value isStackable(Arguments arguments) throws CodeError {
+		private Value isStackable(Arguments arguments) {
 			return BooleanValue.of(this.getItemStack(arguments).isStackable());
 		}
 
@@ -277,7 +276,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {NUMBER, "the max stack size of the ItemStack"},
 			example = "itemStack.getMaxCount();"
 		)
-		private Value getMaxCount(Arguments arguments) throws CodeError {
+		private Value getMaxCount(Arguments arguments) {
 			return NumberValue.of(this.getItemStack(arguments).getMaxCount());
 		}
 
@@ -288,7 +287,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			throwMsgs = "Item cannot be converted to a block",
 			example = "itemStack.asBlock();"
 		)
-		private Value asBlock(Arguments arguments) throws CodeError {
+		private Value asBlock(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			if (!(itemStack.getItem() instanceof BlockItem blockItem)) {
 				throw arguments.getError("Item cannot be converted to block");
@@ -303,7 +302,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			throwMsgs = "Item cannot be converted to an ItemEntity",
 			example = "itemStack.asEntity();"
 		)
-		private Value asEntity(Arguments arguments) throws CodeError {
+		private Value asEntity(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			ClientWorld world = ArucasMinecraftExtension.getWorld();
 			ItemEntity itemEntity = EntityType.ITEM.create(world);
@@ -320,7 +319,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {STRING, "the custom name of the ItemStack"},
 			example = "itemStack.getCustomName();"
 		)
-		private Value getCustomName(Arguments arguments) throws CodeError {
+		private Value getCustomName(Arguments arguments) {
 			return StringValue.of(this.getItemStack(arguments).getName().getString());
 		}
 
@@ -331,7 +330,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {BOOLEAN, "true if the ItemStack has the same NBT data as the other given ItemStack"},
 			example = "itemStack.isNbtEqual(Material.GOLD_INGOT.asItemStack());"
 		)
-		private Value isNbtEqual(Arguments arguments) throws CodeError {
+		private Value isNbtEqual(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			ItemStack otherItemStack = arguments.getNextGeneric(ItemStackValue.class);
 			return BooleanValue.of(ItemStack.areNbtEqual(itemStack, otherItemStack));
@@ -343,10 +342,10 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {MAP, "the NBT data of the ItemStack"},
 			example = "itemStack.getNbt();"
 		)
-		private Value getNbt(Arguments arguments) throws CodeError {
+		private Value getNbt(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			NbtCompound nbtCompound = itemStack.getNbt();
-			ArucasMap nbtMap = NbtUtils.nbtToMap(arguments.getContext(), nbtCompound, 10);
+			ArucasMap nbtMap = ClientScriptUtils.nbtToMap(arguments.getContext(), nbtCompound, 10);
 			return new MapValue(nbtMap);
 		}
 
@@ -356,7 +355,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {STRING, "the NBT data of the ItemStack"},
 			example = "itemStack.getNbtAsString();"
 		)
-		private Value getNbtAsString(Arguments arguments) throws CodeError {
+		private Value getNbtAsString(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			NbtCompound nbtCompound = itemStack.getNbt();
 			if (nbtCompound == null) {
@@ -374,7 +373,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {STRING, "the translated name of the ItemStack"},
 			example = "itemStack.getTranslatedName();"
 		)
-		private Value getTranslatedName(Arguments arguments) throws CodeError {
+		private Value getTranslatedName(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			return StringValue.of(I18n.translate(itemStack.getItem().getTranslationKey()));
 		}
@@ -388,13 +387,13 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			params = {BLOCK, "block", "the Block to get the mining speed multiplier for"},
 			returns = {NUMBER, "the mining speed multiplier of the ItemStack for the given Block"},
 			example = """
-			pickaxe = Material.DIAMOND_PICKAXE.asItemStack();
-			goldBlock = Material.GOLD_BLOCK.asBlock();
+				pickaxe = Material.DIAMOND_PICKAXE.asItemStack();
+				goldBlock = Material.GOLD_BLOCK.asBlock();
 
-			pickaxe.getMiningSpeedMultiplier(goldBlock);
-			"""
+				pickaxe.getMiningSpeedMultiplier(goldBlock);
+				"""
 		)
-		private Value getMiningSpeedMultiplier(Arguments arguments) throws CodeError {
+		private Value getMiningSpeedMultiplier(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			BlockState blockState = arguments.getNextGeneric(BlockValue.class);
 			return NumberValue.of(itemStack.getMiningSpeedMultiplier(blockState));
@@ -407,7 +406,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {ITEM_STACK, "the ItemStack with the new custom name"},
 			example = "itemStack.setCustomName('My Pickaxe');"
 		)
-		private Value setCustomName(Arguments arguments) throws CodeError {
+		private Value setCustomName(Arguments arguments) {
 			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
 			Value nameValue = arguments.getNext();
 			Text name = nameValue instanceof TextValue textValue ? textValue.value : Text.of(nameValue.getAsString(arguments.getContext()));
@@ -422,7 +421,7 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {ITEM_STACK, "the ItemStack with the new stack size"},
 			example = "itemStack.setStackSize(5);"
 		)
-		private Value setStackSize(Arguments arguments) throws CodeError {
+		private Value setStackSize(Arguments arguments) {
 			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
 			NumberValue numberValue = arguments.getNextNumber();
 			itemStackValue.value.setCount(numberValue.value.intValue());
@@ -435,14 +434,14 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			params = {LIST, "lore", "the lore of the ItemStack as a list of Text"},
 			returns = {ITEM_STACK, "the ItemStack with the new lore"},
 			example = """
-			itemStack = Material.DIAMOND_PICKAXE.asItemStack();
-			itemStack.setItemLore([
-				Text.of('This is a pickaxe'),
-				Text.of('It is made of diamond')
-			]);
-			"""
+				itemStack = Material.DIAMOND_PICKAXE.asItemStack();
+				itemStack.setItemLore([
+					Text.of('This is a pickaxe'),
+					Text.of('It is made of diamond')
+				]);
+				"""
 		)
-		private Value setLore(Arguments arguments) throws CodeError {
+		private Value setLore(Arguments arguments) {
 			ItemStackValue itemStackValue = arguments.getNext(ItemStackValue.class);
 			ListValue listValue = arguments.getNextList();
 			List<NbtElement> textList = new ArrayList<>();
@@ -464,14 +463,14 @@ public class ItemStackValue extends GenericValue<ItemStack> implements MaterialL
 			returns = {ITEM_STACK, "the ItemStack with the new NBT data"},
 			example = "itemStack.setNbt({'Lore': []});"
 		)
-		private Value setNbt(Arguments arguments) throws CodeError {
+		private Value setNbt(Arguments arguments) {
 			ItemStack itemStack = this.getItemStack(arguments);
 			MapValue mapValue = arguments.getNextMap();
-			itemStack.setNbt(NbtUtils.mapToNbt(arguments.getContext(), mapValue.value, 10));
+			itemStack.setNbt(ClientScriptUtils.mapToNbt(arguments.getContext(), mapValue.value, 10));
 			return NullValue.NULL;
 		}
 
-		private ItemStack getItemStack(Arguments arguments) throws CodeError {
+		private ItemStack getItemStack(Arguments arguments) {
 			ItemStack itemStack = arguments.getNextGeneric(ItemStackValue.class);
 			if (itemStack == null) {
 				throw arguments.getError("ItemStack was null");

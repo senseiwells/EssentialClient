@@ -8,7 +8,6 @@ import me.senseiwells.arucas.api.wrappers.ArucasConstructor;
 import me.senseiwells.arucas.api.wrappers.ArucasFunction;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.essentialclient.utils.clientscript.Shape;
 
 import java.util.*;

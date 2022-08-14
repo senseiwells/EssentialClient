@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -120,7 +119,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BLOCK, "the block at the given coordinates"},
 			example = "world.getBlockAt(0, 100, 0);"
 		)
-		private Value getBlockAt(Arguments arguments) throws CodeError {
+		private Value getBlockAt(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue num1 = arguments.getNextNumber();
 			NumberValue num2 = arguments.getNextNumber();
@@ -136,7 +135,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BLOCK, "the block at the given coordinates"},
 			example = "world.getBlockAt(new Pos(0, 100, 0));"
 		)
-		private Value getBlockAtPos(Arguments arguments) throws CodeError {
+		private Value getBlockAtPos(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
@@ -154,7 +153,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BLOCK, "the block at the given coordinates"},
 			example = "world.getBiomeAt(0, 100, 0);"
 		)
-		private Value getBiomeAt(Arguments arguments) throws CodeError {
+		private Value getBiomeAt(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue num1 = arguments.getNextNumber();
 			NumberValue num2 = arguments.getNextNumber();
@@ -170,7 +169,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BLOCK, "the block at the given coordinates"},
 			example = "world.getBiomeAt(new Pos(0, 100, 0));"
 		)
-		private Value getBiomeAtPos(Arguments arguments) throws CodeError {
+		private Value getBiomeAtPos(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
@@ -184,7 +183,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {PLAYER, "the other player, null if not found"},
 			example = "world.getOtherPlayer('senseiwells');"
 		)
-		private Value getOtherPlayer(Arguments arguments) throws CodeError {
+		private Value getOtherPlayer(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			StringValue stringValue = arguments.getNextString();
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
@@ -204,7 +203,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {LIST, "a list of all other players"},
 			example = "world.getAllOtherPlayers();"
 		)
-		private Value getAllOtherPlayers(Arguments arguments) throws CodeError {
+		private Value getAllOtherPlayers(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			ArucasList otherPlayerValueList = new ArucasList();
 			for (PlayerEntity playerEntity : ThreadSafeUtils.getPlayersSafe(world)) {
@@ -225,7 +224,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {PLAYER, "the closest player, null if not found"},
 			example = "world.getClosestPlayer(Player.get(), 100);"
 		)
-		private Value getClosestPlayer(Arguments arguments) throws CodeError {
+		private Value getClosestPlayer(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
 			NumberValue numberValue = arguments.getNextNumber();
@@ -238,7 +237,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {LIST, "a list of all entities"},
 			example = "world.getAllEntities();"
 		)
-		private Value getAllEntities(Arguments arguments) throws CodeError {
+		private Value getAllEntities(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			ArucasList valueList = new ArucasList();
 
@@ -255,7 +254,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {ENTITY, "the entity, null if not found"},
 			example = "world.getEntityFromId(1);"
 		)
-		private Value getEntityFromId(Arguments arguments) throws CodeError {
+		private Value getEntityFromId(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue id = arguments.getNextNumber();
 			return arguments.getContext().convertValue(world.getEntityById(id.value.intValue()));
@@ -267,7 +266,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {STRING, "the full id of the world, for example: 'minecraft:overworld'"},
 			example = "world.getFullId();"
 		)
-		private Value getFullId(Arguments arguments) throws CodeError {
+		private Value getFullId(Arguments arguments) {
 			return StringValue.of(this.getWorld(arguments).getRegistryKey().getValue().toString());
 		}
 
@@ -277,7 +276,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {STRING, "the id of the world, for example: 'overworld'"},
 			example = "world.getId();"
 		)
-		private Value getId(Arguments arguments) throws CodeError {
+		private Value getId(Arguments arguments) {
 			return StringValue.of(this.getWorld(arguments).getRegistryKey().getValue().getPath());
 		}
 
@@ -288,7 +287,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {STRING, "the id of the world, for example: 'overworld'"},
 			example = "world.getDimensionName();"
 		)
-		private Value getDimensionName(Arguments arguments) throws CodeError {
+		private Value getDimensionName(Arguments arguments) {
 			return StringValue.of(this.getWorld(arguments).getRegistryKey().getValue().getPath());
 		}
 
@@ -298,7 +297,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BOOLEAN, "true if the world is currently raining"},
 			example = "world.isRaining();"
 		)
-		private Value isRaining(Arguments arguments) throws CodeError {
+		private Value isRaining(Arguments arguments) {
 			return BooleanValue.of(this.getWorld(arguments).isRaining());
 		}
 
@@ -308,7 +307,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BOOLEAN, "true if the world is currently thundering"},
 			example = "world.isThundering();"
 		)
-		private Value isThundering(Arguments arguments) throws CodeError {
+		private Value isThundering(Arguments arguments) {
 			return BooleanValue.of(this.getWorld(arguments).isThundering());
 		}
 
@@ -321,7 +320,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {NUMBER, "the time of day of the world, between 0 and 24000"},
 			example = "world.getTimeOfDay();"
 		)
-		private Value getTimeOfDay(Arguments arguments) throws CodeError {
+		private Value getTimeOfDay(Arguments arguments) {
 			return NumberValue.of(this.getWorld(arguments).getTimeOfDay());
 		}
 
@@ -340,7 +339,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			throwMsgs = "Particle Invalid",
 			example = "world.renderParticle('end_rod', 10, 10, 10);"
 		)
-		private Value renderParticle(Arguments arguments) throws CodeError {
+		private Value renderParticle(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			String particleName = arguments.getNextGeneric(StringValue.class);
 			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getId(arguments, particleName));
@@ -368,7 +367,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			throwMsgs = "Particle Invalid",
 			example = "world.renderParticle('end_rod', pos);"
 		)
-		private Value renderParticlePos(Arguments arguments) throws CodeError {
+		private Value renderParticlePos(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			String particleName = arguments.getNextGeneric(StringValue.class);
 			ParticleType<?> particleType = Registry.PARTICLE_TYPE.get(ArucasMinecraftExtension.getId(arguments, particleName));
@@ -405,7 +404,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			throwMsgs = "Particle Invalid",
 			example = "world.renderParticle('end_rod', pos, 0.5, 0.5, 0.5);"
 		)
-		private Value renderParticleVel(Arguments arguments) throws CodeError {
+		private Value renderParticleVel(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			String particleName = arguments.getNextGeneric(StringValue.class);
 			NumberValue xVelocity = arguments.getNextNumber();
@@ -441,7 +440,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			},
 			example = "world.setGhostBlock(Material.BEDROCK.asBlock(), 0, 100, 0);"
 		)
-		private Value setGhostBlock(Arguments arguments) throws CodeError {
+		private Value setGhostBlock(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			BlockState blockState = arguments.getNextGeneric(BlockValue.class);
 			NumberValue x = arguments.getNextNumber();
@@ -463,7 +462,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			},
 			example = "world.setGhostBlock(Material.BEDROCK.asBlock(), new Pos(0, 100, 0));"
 		)
-		private Value setGhostBlockPos(Arguments arguments) throws CodeError {
+		private Value setGhostBlockPos(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			BlockState blockState = arguments.getNextGeneric(BlockValue.class);
 			PosValue posValue = arguments.getNext(PosValue.class);
@@ -484,7 +483,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BOOLEAN, "true if the block is air"},
 			example = "world.isAir(0, 100, 0);"
 		)
-		private Value isAir(Arguments arguments) throws CodeError {
+		private Value isAir(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue x = arguments.getNextNumber();
 			NumberValue y = arguments.getNextNumber();
@@ -499,7 +498,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {BOOLEAN, "true if the block is air"},
 			example = "world.isAir(new Pos(0, 100, 0));"
 		)
-		private Value isAirPos(Arguments arguments) throws CodeError {
+		private Value isAirPos(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue pos = arguments.getNext(PosValue.class);
 			return BooleanValue.of(world.isAir(new BlockPos(pos.value)));
@@ -517,7 +516,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {NUMBER, "the emitted redstone power"},
 			example = "world.getEmittedRedstonePower(0, 100, 0, 'north');"
 		)
-		private Value getEmittedRedstonePower(Arguments arguments) throws CodeError {
+		private Value getEmittedRedstonePower(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue x = arguments.getNextNumber();
 			NumberValue y = arguments.getNextNumber();
@@ -538,7 +537,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {NUMBER, "the emitted redstone power"},
 			example = "world.getEmittedRedstonePower(new Pos(0, 100, 0), 'north');"
 		)
-		private Value getEmittedRedstonePowerPos(Arguments arguments) throws CodeError {
+		private Value getEmittedRedstonePowerPos(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			String stringDirection = arguments.getNextGeneric(StringValue.class);
@@ -558,7 +557,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {NUMBER, "the light level"},
 			example = "world.getLight(0, 100, 0);"
 		)
-		private Value getLight(Arguments arguments) throws CodeError {
+		private Value getLight(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			NumberValue x = arguments.getNextNumber();
 			NumberValue y = arguments.getNextNumber();
@@ -573,7 +572,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {NUMBER, "the light level"},
 			example = "world.getLight(new Pos(0, 100, 0));"
 		)
-		private Value getLightPos(Arguments arguments) throws CodeError {
+		private Value getLightPos(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			BlockPos pos = arguments.getNext(PosValue.class).toBlockPos();
 			return NumberValue.of(world.getLightLevel(pos));
@@ -590,7 +589,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {LIST, "the list of positions"},
 			example = "world.getArea(new Pos(0, 100, 0), new Pos(0, 100, 0));"
 		)
-		private Value getArea(Arguments arguments) throws CodeError {
+		private Value getArea(Arguments arguments) {
 			BlockPos posA = arguments.skip().getNext(PosValue.class).toBlockPos();
 			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
 			ArucasList list = new ArucasList();
@@ -611,7 +610,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {LIST, "the list of blocks"},
 			example = "world.getAreaOfBlocks(new Pos(0, 100, 0), new Pos(0, 100, 0));"
 		)
-		private Value getAreaOfBlocks(Arguments arguments) throws CodeError {
+		private Value getAreaOfBlocks(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			BlockPos posA = arguments.getNext(PosValue.class).toBlockPos();
 			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
@@ -634,7 +633,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {ITERATOR, "the iterator for the positions"},
 			example = "foreach (pos : world.getPositions(new Pos(0, 100, 100), new Pos(0, 100, 0)));"
 		)
-		private Value getPositions(Arguments arguments) throws RuntimeError {
+		private Value getPositions(Arguments arguments) {
 			BlockPos posA = arguments.skip().getNext(PosValue.class).toBlockPos();
 			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
 			Iterable<BlockPos> posIterable = BlockPos.iterate(posA, posB);
@@ -651,7 +650,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			returns = {ITERATOR, "the iterator for the blocks"},
 			example = "foreach (block : world.getBlocks(new Pos(0, 100, 100), new Pos(0, 100, 0)));"
 		)
-		private Value getBlocks(Arguments arguments) throws CodeError {
+		private Value getBlocks(Arguments arguments) {
 			ClientWorld world = this.getWorld(arguments);
 			BlockPos posA = arguments.getNext(PosValue.class).toBlockPos();
 			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
@@ -659,7 +658,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			return new IteratorValue(() -> new PosIterator.Block(world, posIterable.iterator()));
 		}
 
-		private ClientWorld getWorld(Arguments arguments) throws CodeError {
+		private ClientWorld getWorld(Arguments arguments) {
 			ClientWorld world = arguments.getNextGeneric(WorldValue.class);
 			if (world == null) {
 				throw arguments.getError("World was null");

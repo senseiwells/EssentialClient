@@ -20,7 +20,8 @@ import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE_SCREEN;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
 
 public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 	public FakeInventoryScreenValue(FakeInventoryScreen value) {
@@ -70,7 +71,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			},
 			example = "new FakeScreen('MyScreen', 6);"
 		)
-		private Value newFakeScreen(Arguments arguments) throws CodeError {
+		private Value newFakeScreen(Arguments arguments) {
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer();
 			StringValue stringValue = arguments.getNextString();
 			NumberValue numberValue = arguments.getNextNumber();
@@ -105,7 +106,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 				});
 				"""
 		)
-		private Value onClick(Arguments arguments) throws CodeError {
+		private Value onClick(Arguments arguments) {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
 			FunctionValue functionValue = arguments.getNextFunction();
 			fakeScreen.value.setFunctionValue(arguments.getContext(), functionValue);
@@ -121,7 +122,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			},
 			example = "fakeScreen.setStackForSlot(0, Material.DIAMOND_BLOCK.asItemStack());"
 		)
-		private Value setStackForSlot(Arguments arguments) throws CodeError {
+		private Value setStackForSlot(Arguments arguments) {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
 			NumberValue slot = arguments.getNextNumber();
 			ItemStackValue stackValue = arguments.getNext(ItemStackValue.class);
@@ -136,7 +137,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			returns = {ITEM_STACK, "the stack for the given slot"},
 			example = "fakeScreen.getStackForSlot(0);"
 		)
-		private Value getStackForSlot(Arguments arguments) throws CodeError {
+		private Value getStackForSlot(Arguments arguments) {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
 			NumberValue slot = arguments.getNextNumber();
 			ItemStack stack = fakeScreen.value.getStack(slot.value.intValue());

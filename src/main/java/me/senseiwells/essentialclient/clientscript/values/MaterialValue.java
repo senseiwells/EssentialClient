@@ -44,12 +44,12 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 	}
 
 	@Override
-	public GenericValue<Item> copy(Context context) throws CodeError {
+	public GenericValue<Item> copy(Context context) {
 		return this;
 	}
 
 	@Override
-	public String getAsString(Context context) throws CodeError {
+	public String getAsString(Context context) {
 		return this.value.toString();
 	}
 
@@ -96,7 +96,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 		}
 
 		@Override
-		public String getAsString(Context context) throws CodeError {
+		public String getAsString(Context context) {
 			return this.getId().getPath();
 		}
 
@@ -175,7 +175,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 			throwMsgs = "... is not a valid Material",
 			example = "Material.of('diamond');"
 		)
-		private Value of(Arguments arguments) throws CodeError {
+		private Value of(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
 			Optional<Item> item = Registry.ITEM.getOrEmpty(ArucasMinecraftExtension.getId(arguments, stringValue.value));
 			return new MaterialValue(item.orElseThrow(
@@ -200,7 +200,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 			returns = {STRING, "the full id representation of the material"},
 			example = "material.getFullId();"
 		)
-		private Value getFullId(Arguments arguments) throws CodeError {
+		private Value getFullId(Arguments arguments) {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(materialValue.getId().toString());
 		}
@@ -211,7 +211,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 			returns = {STRING, "the id representation of the material"},
 			example = "material.getId();"
 		)
-		private Value getId(Arguments arguments) throws CodeError {
+		private Value getId(Arguments arguments) {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(materialValue.getId().getPath());
 		}
@@ -223,7 +223,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 			throwMsgs = "Material cannot be converted to an item stack",
 			example = "material.asItemStack();"
 		)
-		private Value asItemStack(Arguments arguments) throws CodeError {
+		private Value asItemStack(Arguments arguments) {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return new ItemStackValue(materialValue.asItemStack());
 		}
@@ -235,7 +235,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 			throwMsgs = "Material cannot be converted to a block",
 			example = "material.asBlock();"
 		)
-		private Value asBlock(Arguments arguments) throws CodeError {
+		private Value asBlock(Arguments arguments) {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return new BlockValue(materialValue.asBlock().getDefaultState());
 		}
@@ -249,7 +249,7 @@ public class MaterialValue extends GenericValue<Item> implements MaterialLike {
 			returns = {STRING, "the translated name of the Material"},
 			example = "material.getTranslatedName();"
 		)
-		private Value getTranslatedName(Arguments arguments) throws CodeError {
+		private Value getTranslatedName(Arguments arguments) {
 			MaterialValue materialValue = arguments.getNext(MaterialValue.class);
 			return StringValue.of(I18n.translate(materialValue.getTranslationKey()));
 		}

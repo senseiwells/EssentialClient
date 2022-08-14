@@ -1,8 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import me.senseiwells.arucas.api.ContextBuilder;
-import me.senseiwells.arucas.utils.ValueTypes;
+import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.extensions.*;
@@ -37,7 +36,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.world.biome.Biome;
 
-public class MinecraftAPI extends ValueTypes {
+public class MinecraftAPI {
 	public static final String
 		BIOME = "Biome",
 		BOX_SHAPE = "BoxShape",
@@ -73,8 +72,8 @@ public class MinecraftAPI extends ValueTypes {
 	public static final String IMPORT_NAME = "Minecraft";
 
 	@SuppressWarnings({"deprecation", "unchecked"})
-	public static void addMinecraftAPI(ContextBuilder builder) {
-		builder.addClasses(
+	public static void addMinecraftAPI(ArucasAPI.Builder builder) {
+		builder.addClassDefinitions(
 			IMPORT_NAME,
 			MinecraftClientValue.ArucasMinecraftClientMembers::new,
 			CommandBuilderValue.CommandBuilderClass::new,
@@ -108,9 +107,7 @@ public class MinecraftAPI extends ValueTypes {
 			KeyBindWrapper::new,
 			ConfigHandlerWrapper::new
 		);
-		builder.addExtensions(
-			ArucasMinecraftExtension::new
-		);
+		builder.addBuiltInExtension(new ArucasMinecraftExtension());
 
 		builder.addConversion(MinecraftClient.class, (m, c) -> MinecraftClientValue.INSTANCE);
 		builder.addConversion(ClientPlayerEntity.class, (p, c) -> new PlayerValue(p));

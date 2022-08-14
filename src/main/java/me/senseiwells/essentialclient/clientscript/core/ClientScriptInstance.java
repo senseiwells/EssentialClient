@@ -1,12 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
-import me.senseiwells.arucas.api.ContextBuilder;
+import me.senseiwells.arucas.api.ArucasAPI;
+import me.senseiwells.arucas.api.ThreadHandler;
 import me.senseiwells.arucas.api.docs.parser.JsonParser;
-import me.senseiwells.arucas.core.Arucas;
-import me.senseiwells.arucas.discord.DiscordAPI;
-import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.utils.ExceptionUtils;
-import me.senseiwells.arucas.utils.impl.ArucasThread;
+import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
@@ -18,31 +16,26 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 public class ClientScriptInstance {
-	private static final ContextBuilder BUILDER;
+	private static final ArucasAPI API;
 
 	static {
-		BUILDER = new ContextBuilder()
-			.setDisplayName("Arucas Client")
-			.setArucasAPI(new ImplArucasAPI())
+		ArucasAPI.Builder builder = new ArucasAPI.Builder()
 			.addDefault();
 
-		MinecraftAPI.addMinecraftAPI(BUILDER);
-		DiscordAPI.addDiscordAPI(BUILDER);
-		ExceptionUtils.runSafe(BUILDER::generateArucasFiles);
+		MinecraftAPI.addMinecraftAPI(builder);
+		// DiscordAPI.addDiscordAPI(BUILDER);
+
+		API = builder.build();
+		API.generateNativeFiles(API.getLibraryManager().getImportPath());
 
 		if (EssentialUtils.isDev()) {
 			generateJson();
@@ -53,8 +46,7 @@ public class ClientScriptInstance {
 	private Path fileLocation;
 	private String scriptName;
 	private MultiKeyBind keyBind;
-	private ArucasThread mainScriptThread;
-	private UUID instanceId;
+	private Interpreter interpreter;
 	private boolean isStopping;
 
 	private ClientScriptInstance(String scriptName, String content, Path fileLocation) {
@@ -98,7 +90,7 @@ public class ClientScriptInstance {
 	}
 
 	public boolean isScriptRunning() {
-		return this.mainScriptThread != null;
+		return this.interpreter != null;
 	}
 
 	public synchronized void toggleScript() {
@@ -114,11 +106,8 @@ public class ClientScriptInstance {
 			return;
 		}
 		this.isStopping = true;
-		MinecraftScriptEvents.ON_SCRIPT_END.run(this.instanceId);
+		MinecraftScriptEvents.ON_SCRIPT_END.run(this.interpreter.getProperties().getId());
 
-		this.mainScriptThread.interrupt();
-		this.mainScriptThread = null;
-		this.instanceId = null;
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
 			client.execute(() -> {
@@ -142,18 +131,6 @@ public class ClientScriptInstance {
 			if (fileContent == null) {
 				throw new IOException("File content was null!");
 			}
-			// This is super hacky...
-			// Will be removed in future
-			if (!fileContent.contains("import * from Minecraft;")) {
-				if (this.fileLocation != null) {
-					fileContent = "import * from Minecraft;\n\n" + fileContent;
-					Files.writeString(this.fileLocation, fileContent);
-				}
-				else {
-					EssentialUtils.sendMessage("You should add 'import * from Minecraft;' to the top of '%s'".formatted(this.scriptName));
-					fileContent = "import * from Minecraft;" + fileContent;
-				}
-			}
 		}
 		catch (IOException e) {
 			EssentialUtils.sendMessage("§cAn error occurred while trying to read '%s'".formatted(this.scriptName));
@@ -161,73 +138,15 @@ public class ClientScriptInstance {
 			return;
 		}
 
-		// Create a new context for the file we should run.
-		Context context = BUILDER.build();
+		this.interpreter = Interpreter.of(fileContent, this.scriptName, API, ClientScriptThreadHandler::new);
 
-		context.getThreadHandler().setFatalErrorHandler((c, t, s) -> {
-			if (s.isEmpty()) {
-				this.sendReportMessage(t);
-				return;
-			}
-			this.sendReportMessage(t, s);
-		}).addShutdownEvent(this::stopScript);
+		ThreadHandler threadHandler = this.interpreter.getThreadHandler();
+		threadHandler.addShutdownEvent(this::stopScript);
+		threadHandler.executeAsync();
 
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
 			EssentialUtils.sendMessage("§6Script '%s' has §aSTARTED".formatted(this.scriptName));
 		}
-		this.mainScriptThread = context.getThreadHandler().runOnMainThread(context, this.scriptName, fileContent);
-		this.instanceId = context.getContextId();
-	}
-
-	private void sendReportMessage(Throwable t) {
-		this.sendReportMessage(t, null);
-	}
-
-	private void sendReportMessage(Throwable t, String content) {
-		String gitReport = this.getGithubLink(t, content);
-		EssentialUtils.sendMessage("§cAn error occurred while running '%s'".formatted(this.scriptName));
-		EssentialUtils.sendMessage("§cIf you believe this is a bug please report it");
-		EssentialUtils.sendMessage(
-			Text.of("https://github.com/senseiwells/EssentialClient/issues/new").copy()
-				.formatted(Formatting.UNDERLINE)
-				.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
-					gitReport))
-				)
-				.append("\n")
-		);
-	}
-
-	private String getGithubLink(Throwable t, String content) {
-		String stacktrace = ExceptionUtils.getStackTrace(t);
-		int charsLeft = 1400 - stacktrace.length();
-		String report = """
-			### Minecraft Version: `%s`
-			### Essential Client Version: `%s`
-			### Arucas Version: `%s`
-			### Script:
-			```kt
-			// %s
-			%s
-			```
-			### Crash:
-			```
-			%s
-			```
-			""".formatted(
-			EssentialUtils.getMinecraftVersion(),
-			EssentialClient.VERSION,
-			Arucas.VERSION,
-			this.scriptName,
-			content == null || content.length() > charsLeft ? "'Script could not be included please send it manually" : content,
-			stacktrace
-		);
-		return "https://github.com/senseiwells/EssentialClient/issues/new?title=ClientScript%20Crash&body=" + URLEncoder.encode(report, StandardCharsets.UTF_8);
-	}
-
-	@Deprecated
-	@Override
-	public String toString() {
-		return this.scriptName;
 	}
 
 	public String getName() {
@@ -241,12 +160,11 @@ public class ClientScriptInstance {
 
 	private static void generateJson() {
 		EssentialClient.LOGGER.info("Generating Documentation...");
-		JsonParser.of(BUILDER).write(() -> {
-			Path path = ClientScript.INSTANCE.getScriptDirectory().resolve("json");
-			if (!Files.exists(path)) {
-				Files.createDirectories(path);
-			}
-			return path.resolve("AllDocs.json");
+		Path path = ClientScript.INSTANCE.getScriptDirectory().resolve("json");
+		Util.File.INSTANCE.ensureExists(path);
+
+		EssentialUtils.throwAsRuntime(() -> {
+			return Files.write(path.resolve("AllDocs.json"), Collections.singleton(JsonParser.Companion.of(API).parse()));
 		});
 	}
 }

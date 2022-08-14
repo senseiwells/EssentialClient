@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -106,7 +105,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			returns = {PLAYER, "The main player"},
 			example = "player = Player.get();"
 		)
-		private Value get(Arguments arguments) throws CodeError {
+		private Value get(Arguments arguments) {
 			return new PlayerValue(ArucasMinecraftExtension.getPlayer());
 		}
 
@@ -192,7 +191,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Must pass 'hold', 'stop', or 'once' into use()",
 			example = "player.use('hold');"
 		)
-		private Value use(Arguments arguments) throws CodeError {
+		private Value use(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
 			switch (stringValue.value.toLowerCase()) {
@@ -211,7 +210,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Must pass 'hold', 'stop', or 'once' into attack()",
 			example = "player.attack('once');"
 		)
-		private Value attack(Arguments arguments) throws CodeError {
+		private Value attack(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
 			final MinecraftClient client = ArucasMinecraftExtension.getClient();
 			switch (stringValue.value.toLowerCase()) {
@@ -230,7 +229,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Number must be between 0 - 8",
 			example = "player.setSelectedSlot(0);"
 		)
-		private Value setSelectedSlot(Arguments arguments) throws CodeError {
+		private Value setSelectedSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			if (numberValue.value < 0 || numberValue.value > 8) {
@@ -252,7 +251,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {STRING, "message", "the message to send"},
 			example = "player.say('/help');"
 		)
-		private Value say(Arguments arguments) throws CodeError {
+		private Value say(Arguments arguments) {
 			EssentialUtils.sendChatMessage(arguments.skip().getNext().getAsString(arguments.getContext()));
 			return NullValue.NULL;
 		}
@@ -263,7 +262,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {TEXT, "message", "the message to send, can also be string"},
 			example = "player.message('Hello World!');"
 		)
-		private Value message(Arguments arguments) throws CodeError {
+		private Value message(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			Value value = arguments.getNext();
 			Text text = value instanceof TextValue textValue ? textValue.value : Texts.literal(value.getAsString(arguments.getContext()));
@@ -277,7 +276,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {TEXT, "message", "the message to send, can also be string"},
 			example = "player.messageActionBar('Hello World!');"
 		)
-		private Value messageActionBar(Arguments arguments) throws CodeError {
+		private Value messageActionBar(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			Value value = arguments.getNext();
 			Text text = value instanceof TextValue textValue ? textValue.value : Texts.literal(value.getAsString(arguments.getContext()));
@@ -294,7 +293,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.showTitle('Title!', 'Subtitle!');"
 		)
-		private Value showTitle(Arguments arguments) throws CodeError {
+		private Value showTitle(Arguments arguments) {
 			Value value = arguments.skip().getNext();
 			Value subValue = arguments.getNext();
 			Context context = arguments.getContext();
@@ -313,7 +312,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This opens the player's inventory",
 			example = "player.openInventory();"
 		)
-		private Value openInventory(Arguments arguments) throws CodeError {
+		private Value openInventory(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> client.setScreen(new InventoryScreen(player)));
@@ -327,7 +326,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Opening handled screens is unsafe",
 			example = "player.openScreen(new FakeScreen('MyScreen', 4));"
 		)
-		private Value openScreen(Arguments arguments) throws CodeError {
+		private Value openScreen(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			ScreenValue<?> screenValue = arguments.skip().getNext(ScreenValue.class);
 			if (screenValue.value instanceof HandledScreen && !(screenValue.value instanceof FakeInventoryScreen)) {
@@ -342,7 +341,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This closes the current screen",
 			example = "player.closeScreen();"
 		)
-		private Value closeScreen(Arguments arguments) throws CodeError {
+		private Value closeScreen(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(player::closeHandledScreen);
@@ -355,7 +354,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {BOOLEAN, "walking", "the walking state"},
 			example = "player.setWalking(true);"
 		)
-		private Value setWalking(Arguments arguments) throws CodeError {
+		private Value setWalking(Arguments arguments) {
 			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.forwardKey);
 		}
 
@@ -365,7 +364,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {BOOLEAN, "sneaking", "the sneaking state"},
 			example = "player.setSneaking(true);"
 		)
-		private Value setSneaking(Arguments arguments) throws CodeError {
+		private Value setSneaking(Arguments arguments) {
 			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.sneakKey);
 		}
 
@@ -375,7 +374,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {BOOLEAN, "sprinting", "the sprinting state"},
 			example = "player.setSprinting(true);"
 		)
-		private Value setSprinting(Arguments arguments) throws CodeError {
+		private Value setSprinting(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BooleanValue booleanValue = arguments.getNextBoolean();
 			ArucasMinecraftExtension.getClient().execute(() -> player.setSprinting(booleanValue.value));
@@ -388,7 +387,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {BOOLEAN, "dropAll", "if true, all items in the player's main hand will be dropped"},
 			example = "player.dropItemInHand(true);"
 		)
-		private Value dropItemInHand(Arguments arguments) throws CodeError {
+		private Value dropItemInHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BooleanValue booleanValue = arguments.getNextBoolean();
 			ArucasMinecraftExtension.getClient().execute(() -> player.dropSelectedItem(booleanValue.value));
@@ -401,7 +400,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {MATERIAL_LIKE, "materialLike", "the item stack, or material type to drop"},
 			example = "player.dropAll(Material.DIRT.asItemStack());"
 		)
-		private Value dropAll(Arguments arguments) throws CodeError {
+		private Value dropAll(Arguments arguments) {
 			MaterialLike materialLike = arguments.skip().getAnyNext(MaterialLike.class);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> InventoryUtils.dropAllItemType(client.player, materialLike.asItem()));
@@ -414,7 +413,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {ITEM_STACK, "itemStack", "the stack with nbt to drop"},
 			example = "player.dropAllExact(Material.GOLD_INGOT.asItemStack());"
 		)
-		private Value dropAllExact(Arguments arguments) throws CodeError {
+		private Value dropAllExact(Arguments arguments) {
 			ItemStack stack = arguments.skip().getNextGeneric(ItemStackValue.class);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> InventoryUtils.dropAllItemExact(stack));
@@ -430,7 +429,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.look(0, 0);"
 		)
-		private Value look(Arguments arguments) throws CodeError {
+		private Value look(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			NumberValue numberValue2 = arguments.getNextNumber();
@@ -451,7 +450,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.lookAtPos(0, 0, 0);"
 		)
-		private Value lookAtPos(Arguments arguments) throws CodeError {
+		private Value lookAtPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			double x = arguments.getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
@@ -466,7 +465,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {POS, "pos", "the position to look at"},
 			example = "player.lookAtPos(pos);"
 		)
-		private Value lookAtPosPos(Arguments arguments) throws CodeError {
+		private Value lookAtPosPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			ArucasMinecraftExtension.getClient().execute(() -> player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, posValue.value));
@@ -479,7 +478,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {POS, "pos", "the position to check"},
 			example = "player.canPlaceBlockAt(block, pos);"
 		)
-		private Value canPlaceBlockAtPos(Arguments arguments) throws CodeError {
+		private Value canPlaceBlockAtPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BlockState blockState = arguments.getNext(BlockValue.class).value;
 			PosValue posValue = arguments.getNext(PosValue.class);
@@ -498,7 +497,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.canPlaceBlockAt(block, 0, 0, 0);"
 		)
-		private Value canPlaceBlockAtPos1(Arguments arguments) throws CodeError {
+		private Value canPlaceBlockAtPos1(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BlockState blockState = arguments.getNextGeneric(BlockValue.class);
 			double x = arguments.getNextGeneric(NumberValue.class);
@@ -515,7 +514,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This will make the player jump if they are on the ground",
 			example = "player.jump();"
 		)
-		private Value jump(Arguments arguments) throws CodeError {
+		private Value jump(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			ArucasMinecraftExtension.getClient().execute(() -> {
 				if (player.isOnGround()) {
@@ -532,7 +531,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			returns = {ENTITY, "the entity that the player is looking at"},
 			example = "player.getLookingAtEntity();"
 		)
-		private Value getLookingAtEntity(Arguments arguments) throws CodeError {
+		private Value getLookingAtEntity(Arguments arguments) {
 			if (ArucasMinecraftExtension.getClient().crosshairTarget instanceof EntityHitResult hitResult) {
 				return arguments.getContext().convertValue(hitResult.getEntity());
 			}
@@ -552,7 +551,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "That slot is out of bounds",
 			example = "player.swapSlots(13, 14);"
 		)
-		private Value swapSlots(Arguments arguments) throws CodeError {
+		private Value swapSlots(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			int slot1 = arguments.getNextGeneric(NumberValue.class).intValue();
 			int slot2 = arguments.getNextGeneric(NumberValue.class).intValue();
@@ -596,7 +595,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			returns = {NUMBER, "the slot that is swappable"},
 			example = "player.getSwappableHotbarSlot();"
 		)
-		private Value getSwappableHotbarSlot(Arguments arguments) throws CodeError {
+		private Value getSwappableHotbarSlot(Arguments arguments) {
 			// Return predicted current swappable hotbar slot
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			return NumberValue.of(player.getInventory().getSwappableHotbarSlot());
@@ -608,7 +607,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {ENTITY, "entity", "the entity to teleport to"},
 			example = "player.spectatorTeleport(player.getLookingAtEntity());"
 		)
-		private Value spectatorTeleport(Arguments arguments) throws CodeError {
+		private Value spectatorTeleport(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			if (!player.isSpectator()) {
 				return BooleanValue.FALSE;
@@ -624,7 +623,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This will swap the player's main hand with the off hand",
 			example = "player.swapHands();"
 		)
-		private Value swapHands(Arguments arguments) throws CodeError {
+		private Value swapHands(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
 			if (player.isSpectator()) {
@@ -642,7 +641,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {STRING, "hand", "the hand to swing, this should be either 'main_hand' or 'off_hand'"},
 			example = "player.swingHand('main_hand');"
 		)
-		private Value swingHand(Arguments arguments) throws CodeError {
+		private Value swingHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			StringValue handAsString = arguments.getNextString();
 			Hand hand = switch (handAsString.value.toLowerCase()) {
@@ -674,7 +673,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.clickSlot(9, 'left', 'double_click');"
 		)
-		private Value clickSlot(Arguments arguments) throws CodeError {
+		private Value clickSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			int slot = arguments.getNextGeneric(NumberValue.class).intValue();
 			Value clickDataValue = arguments.getNext();
@@ -723,7 +722,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "That slot is out of bounds",
 			example = "player.clickCreativeStack(Material.DIAMOND_SWORD.asItemStack(), 9);"
 		)
-		private Value clickCreativeStack(Arguments arguments) throws CodeError {
+		private Value clickCreativeStack(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			ItemStackValue stackValue = arguments.getNext(ItemStackValue.class);
 			NumberValue number = arguments.getNextNumber();
@@ -745,7 +744,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "That slot is out of bounds",
 			example = "player.shiftClickSlot(9);"
 		)
-		private Value shiftClickSlot(Arguments arguments) throws CodeError {
+		private Value shiftClickSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			NumberValue number = arguments.getNextNumber();
 			ScreenHandler screenHandler = player.currentScreenHandler;
@@ -765,7 +764,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "That slot is out of bounds",
 			example = "player.dropSlot(9);"
 		)
-		private Value dropSlot(Arguments arguments) throws CodeError {
+		private Value dropSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			ScreenHandler screenHandler = player.currentScreenHandler;
@@ -784,7 +783,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			returns = {SCREEN, "the screen the player is in, if the player is not in a screen it will return null"},
 			example = "screen = player.getCurrentScreen();"
 		)
-		private Value getCurrentScreen(Arguments arguments) throws CodeError {
+		private Value getCurrentScreen(Arguments arguments) {
 			Screen currentScreen = ArucasMinecraftExtension.getClient().currentScreen;
 			return arguments.getContext().convertValue(currentScreen);
 		}
@@ -812,7 +811,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				player.craft(chestRecipe);
 				"""
 		)
-		private Value craft(Arguments arguments) throws CodeError {
+		private Value craft(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			ListValue listValue = arguments.skip().getNextList();
 			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
@@ -852,7 +851,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.craftRecipe(Recipe.CHEST);"
 		)
-		private Value craftRecipe(Arguments arguments) throws CodeError {
+		private Value craftRecipe(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
 				throw arguments.getError("Must be in a crafting GUI");
@@ -877,7 +876,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.craftRecipe(Recipe.CHEST, true);"
 		)
-		private Value craftRecipeDrop(Arguments arguments) throws CodeError {
+		private Value craftRecipeDrop(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
 				throw arguments.getError("Must be in a crafting GUI");
@@ -905,7 +904,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.clickRecipe(Recipe.CHEST);"
 		)
-		private Value clickRecipeDefault(Arguments arguments) throws CodeError {
+		private Value clickRecipeDefault(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
 				throw arguments.getError("Must be in a crafting GUI");
@@ -929,7 +928,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "Must be in a crafting GUI",
 			example = "player.clickRecipe(Recipe.CHEST, true);"
 		)
-		private Value clickRecipeWithBoolean(Arguments arguments) throws CodeError {
+		private Value clickRecipeWithBoolean(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
 				throw arguments.getError("Must be in a crafting GUI");
@@ -950,7 +949,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {STRING, "message", "the message to display to the player on the logout screen"},
 			example = "player.logout('You've been lazy!');"
 		)
-		private Value logout(Arguments arguments) throws CodeError {
+		private Value logout(Arguments arguments) {
 			String reason = arguments.skip().getNextGeneric(StringValue.class);
 			ArucasMinecraftExtension.getNetworkHandler().onDisconnected(Texts.literal(reason));
 			return NullValue.NULL;
@@ -973,7 +972,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				}
 				"""
 		)
-		private Value attackEntity(Arguments arguments) throws CodeError {
+		private Value attackEntity(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			EntityValue<?> entity = arguments.getNext(EntityValue.class);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -998,7 +997,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				}
 				"""
 		)
-		private Value interactWithEntity(Arguments arguments) throws CodeError {
+		private Value interactWithEntity(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			EntityValue<?> entity = arguments.getNext(EntityValue.class);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1044,7 +1043,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				);
 				"""
 		)
-		private Value anvil(Arguments arguments) throws CodeError {
+		private Value anvil(Arguments arguments) {
 			return this.anvilInternal(arguments, true);
 		}
 
@@ -1084,7 +1083,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				);
 				"""
 		)
-		private Value anvilDrop(Arguments arguments) throws CodeError {
+		private Value anvilDrop(Arguments arguments) {
 			return this.anvilInternal(arguments, false);
 		}
 
@@ -1110,7 +1109,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				);
 				"""
 		)
-		private Value anvilRename(Arguments arguments) throws CodeError {
+		private Value anvilRename(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 			if (interactionManager == null) {
 				return NullValue.NULL;
@@ -1159,7 +1158,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.stonecutter(Material.STONE.asItemstack(), Material.STONE_BRICKS.asItemStack());"
 		)
-		private Value stonecutter(Arguments arguments) throws CodeError {
+		private Value stonecutter(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 			if (interactionManager == null) {
 				return BooleanValue.FALSE;
@@ -1212,7 +1211,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			example = "player.fakeLook(90, 0, 'up', 100);"
 		)
 		@SuppressWarnings("ConstantConditions")
-		private Value fakeLook(Arguments arguments) throws CodeError {
+		private Value fakeLook(Arguments arguments) {
 			NumberValue yaw = arguments.skip().getNextNumber();
 			NumberValue pitch = arguments.getNextNumber();
 			StringValue directionValue = arguments.getNextString();
@@ -1240,7 +1239,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			throwMsgs = "That slot is out of bounds",
 			example = "player.swapPlayerSlotWithHotbar(15);"
 		)
-		private Value swapPlayerSlotWithHotbar(Arguments arguments) throws CodeError {
+		private Value swapPlayerSlotWithHotbar(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			NumberValue slotToSwap = arguments.getNextNumber();
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
@@ -1263,7 +1262,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			returns = {BOOLEAN, "whether the block can be broken"},
 			example = "player.breakBlock(new Pos(0, 0, 0));"
 		)
-		private Value breakBlock(Arguments arguments) throws CodeError {
+		private Value breakBlock(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1294,7 +1293,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			returns = {BOOLEAN, "whether the block can be broken"},
 			example = "player.breakBlock(new Pos(0, 0, 0), fun() { print('broken'); });"
 		)
-		private Value breakBlockMore(Arguments arguments) throws CodeError {
+		private Value breakBlockMore(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1327,7 +1326,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.updateBreakingBlock(0, 0, 0);"
 		)
-		private Value updateBreakingBlock(Arguments arguments) throws CodeError {
+		private Value updateBreakingBlock(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			double x = arguments.getNextGeneric(NumberValue.class);
@@ -1350,7 +1349,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {POS, "pos", "the position of the block"},
 			example = "player.updateBreakingBlock(new Pos(0, 0, 0));"
 		)
-		private Value updateBreakingBlockPos(Arguments arguments) throws CodeError {
+		private Value updateBreakingBlockPos(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
@@ -1374,7 +1373,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.attackBlock(0, 0, 0, 'up');"
 		)
-		private Value attackBlock(Arguments arguments) throws CodeError {
+		private Value attackBlock(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			double x = arguments.skip().getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
@@ -1394,7 +1393,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.attackBlock(new Pos(0, 0, 0), 'up');"
 		)
-		private Value attackBlockPos(Arguments arguments) throws CodeError {
+		private Value attackBlockPos(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			PosValue posValue = arguments.skip().getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
@@ -1411,7 +1410,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.interactItem('main');"
 		)
-		private Value interactItem(Arguments arguments) throws CodeError {
+		private Value interactItem(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			StringValue stringValue = arguments.getNextString();
 			String string = stringValue.value.toLowerCase();
@@ -1436,7 +1435,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.interactBlock(0, 100, 0, 'up');"
 		)
-		private Value interactBlock(Arguments arguments) throws CodeError {
+		private Value interactBlock(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			double x = arguments.getNextGeneric(NumberValue.class);
 			double y = arguments.getNextGeneric(NumberValue.class);
@@ -1458,7 +1457,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.interactBlock(new Pos(0, 0, 0), 'up');"
 		)
-		private Value interactBlockPos(Arguments arguments) throws CodeError {
+		private Value interactBlockPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
@@ -1475,7 +1474,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
 		)
-		private Value interactBlockPosHand(Arguments arguments) throws CodeError {
+		private Value interactBlockPosHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
@@ -1508,7 +1507,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);"
 		)
-		private Value interactBlockFull(Arguments arguments) throws CodeError {
+		private Value interactBlockFull(Arguments arguments) {
 			//carpet protocol support but why not client side?
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			double px = arguments.getNextGeneric(NumberValue.class);
@@ -1541,7 +1540,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
 		)
-		private Value interactBlockFullPos(Arguments arguments) throws CodeError {
+		private Value interactBlockFullPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
@@ -1566,7 +1565,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');"
 		)
-		private Value interactBlockFullPosHand(Arguments arguments) throws CodeError {
+		private Value interactBlockFullPosHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			StringValue stringValue = arguments.getNextString();
@@ -1586,7 +1585,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {ITEM_STACK, "itemStack", "item to test with", BLOCK, "block", "the block to get the speed of"},
 			example = "speed = player.getBlockBreakingSpeed(Material.NETHERITE_PICKAXE.asItem(), Material.GOLD_BLOCK.asBlock());"
 		)
-		private Value getBlockBreakingSpeed(Arguments arguments) throws CodeError {
+		private Value getBlockBreakingSpeed(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			ItemStack itemStack = arguments.getNext(ItemStackValue.class).value;
 			BlockValue blockStateValue = arguments.getNext(BlockValue.class);
@@ -1594,7 +1593,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NumberValue.of(multiplier);
 		}
 
-		private Value tradeIndex(Arguments arguments) throws CodeError {
+		private Value tradeIndex(Arguments arguments) {
 			NumberValue numberValue = arguments.skip().getNextNumber();
 			if (InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
 				throw arguments.getError("Not in merchant gui");
@@ -1602,7 +1601,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
-		private Value getIndexOfTrade(Arguments arguments) throws CodeError {
+		private Value getIndexOfTrade(Arguments arguments) {
 			ItemStackValue itemStackValue = arguments.skip().getNext(ItemStackValue.class);
 			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
 			if (index == -1) {
@@ -1612,7 +1611,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NumberValue.of(index);
 		}
 
-		private Value getTradeItemForIndex(Arguments arguments) throws CodeError {
+		private Value getTradeItemForIndex(Arguments arguments) {
 			NumberValue numberValue = arguments.skip().getNextNumber();
 			try {
 				ItemStack itemStack = InventoryUtils.getTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
@@ -1626,26 +1625,26 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			}
 		}
 
-		private Value doesVillagerHaveTrade(Arguments arguments) throws CodeError {
+		private Value doesVillagerHaveTrade(Arguments arguments) {
 			ItemStackValue itemStackValue = arguments.skip().getNext(ItemStackValue.class);
 			int code = InventoryUtils.checkHasTrade(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
 			return BooleanValue.of(this.checkVillagerValid(code, arguments));
 		}
 
-		private Value isTradeDisabled(Arguments arguments) throws CodeError {
+		private Value isTradeDisabled(Arguments arguments) {
 			NumberValue numberValue = arguments.skip().getNextNumber();
 			int code = InventoryUtils.checkTradeDisabled(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
 			return BooleanValue.of(this.checkVillagerValid(code, arguments));
 		}
 
-		private Value getPriceForIndex(Arguments arguments) throws CodeError {
+		private Value getPriceForIndex(Arguments arguments) {
 			NumberValue numberValue = arguments.skip().getNextNumber();
 			int price = InventoryUtils.checkPriceForTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue());
 			this.checkVillagerValid(price, arguments);
 			return NumberValue.of(price);
 		}
 
-		private Value anvilInternal(Arguments arguments, boolean hasArg) throws CodeError {
+		private Value anvilInternal(Arguments arguments, boolean hasArg) {
 			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 			if (interactionManager == null) {
 				return BooleanValue.FALSE;
@@ -1698,7 +1697,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return BooleanValue.of(firstValid && secondValid);
 		}
 
-		private Value interactInternal(ClientPlayerEntity player, PosValue posValue, StringValue stringValue, PosValue blockPosValue, Hand hand) throws CodeError {
+		private Value interactInternal(ClientPlayerEntity player, PosValue posValue, StringValue stringValue, PosValue blockPosValue, Hand hand) {
 			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			BlockHitResult hitResult = new BlockHitResult(posValue.value, direction, new BlockPos(blockPosValue.value), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1706,7 +1705,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return NullValue.NULL;
 		}
 
-		private boolean checkVillagerValid(int code, Arguments arguments) throws RuntimeError {
+		private boolean checkVillagerValid(int code, Arguments arguments) {
 			boolean bool = false;
 			switch (code) {
 				case -2 -> throw arguments.getError("Not in merchant gui");
@@ -1716,13 +1715,13 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			return bool;
 		}
 
-		private NullValue setKey(Arguments arguments, KeyBinding keyBinding) throws CodeError {
+		private NullValue setKey(Arguments arguments, KeyBinding keyBinding) {
 			BooleanValue booleanValue = arguments.skip().getNextBoolean();
 			ArucasMinecraftExtension.getClient().execute(() -> keyBinding.setPressed(booleanValue.value));
 			return NullValue.NULL;
 		}
 
-		private ClientPlayerEntity getPlayer(Arguments arguments) throws CodeError {
+		private ClientPlayerEntity getPlayer(Arguments arguments) {
 			ClientPlayerEntity player = arguments.getNextGeneric(PlayerValue.class);
 			if (player == null) {
 				throw arguments.getError("Player was null");

@@ -14,7 +14,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LIVING_ENTITY;
 
 public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 	public LivingEntityValue(T value) {
@@ -68,7 +68,7 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 			returns = {LIST, "a list of status effects, may be empty"},
 			example = "livingEntity.getStatusEffects();"
 		)
-		private Value getStatusEffects(Arguments arguments) throws CodeError {
+		private Value getStatusEffects(Arguments arguments) {
 			LivingEntity livingEntity = this.getLivingEntity(arguments);
 			ArucasList potionList = new ArucasList();
 			livingEntity.getStatusEffects().forEach(s -> {
@@ -84,7 +84,7 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 			returns = {NUMBER, "the LivingEntity's health"},
 			example = "livingEntity.getHealth();"
 		)
-		private Value getHealth(Arguments arguments) throws CodeError {
+		private Value getHealth(Arguments arguments) {
 			return NumberValue.of(this.getLivingEntity(arguments).getHealth());
 		}
 
@@ -94,11 +94,11 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 			returns = {BOOLEAN, "true if the LivingEntity is fly falling"},
 			example = "livingEntity.isFlyFalling();"
 		)
-		private Value isFlyFalling(Arguments arguments) throws CodeError {
+		private Value isFlyFalling(Arguments arguments) {
 			return BooleanValue.of(this.getLivingEntity(arguments).isFallFlying());
 		}
 
-		private LivingEntity getLivingEntity(Arguments arguments) throws CodeError {
+		private LivingEntity getLivingEntity(Arguments arguments) {
 			LivingEntityValue<?> livingEntity = arguments.getNext(LivingEntityValue.class);
 			if (livingEntity.value == null) {
 				throw arguments.getError("LivingEntity was null");

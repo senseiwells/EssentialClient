@@ -10,14 +10,12 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.essentialclient.utils.clientscript.Shape;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;

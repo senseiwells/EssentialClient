@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.CompletableFuture;
 
-public enum ArucasMinecraftIO implements ArucasInput, ArucasOutput {
+public enum ClientScriptIO implements ArucasInput, ArucasOutput {
 	INSTANCE;
 
 	private final Logger logger = LogManager.getLogger("ClientScript");

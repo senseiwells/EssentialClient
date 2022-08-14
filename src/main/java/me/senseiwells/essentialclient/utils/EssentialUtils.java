@@ -213,40 +213,45 @@ public class EssentialUtils {
 				}
 			}
 			if (rule instanceof StringCarpetRule stringRule) {
-				Integer maxLength = catchAsNull(() -> Integer.parseInt(stringRule.getValue()));
-				if (maxLength != null && maxLength >= 0) {
-					return maxLength;
+
+				try {
+					int maxLength = Integer.parseInt(stringRule.getValue());
+					if (maxLength >= 0) {
+						return maxLength;
+					}
+				}
+				catch (NumberFormatException ignore) {
 				}
 			}
 		}
 		return fallback;
 	}
 
-	public static <T> T throwAsRuntime(ThrowableSupplier<T> supplier) {
+	public static void throwAsRuntime(ThrowableRunnable runnable) {
 		try {
-			return supplier.get();
+			runnable.run();
 		}
-		catch (Throwable throwable) {
+		catch (Exception throwable) {
 			throw new RuntimeException(throwable);
 		}
 	}
 
-	public static <T> T catchAsNull(ThrowableSupplier<T> throwableSupplier) {
+	public static <T> T throwAsRuntime(ThrowableSupplier<T> supplier) {
 		try {
-			return throwableSupplier.get();
+			return supplier.get();
 		}
-		catch (Throwable throwable) {
-			return null;
+		catch (Exception throwable) {
+			throw new RuntimeException(throwable);
 		}
 	}
 
 	@FunctionalInterface
 	public interface ThrowableRunnable {
-		void run() throws Throwable;
+		void run() throws Exception;
 	}
 
 	@FunctionalInterface
 	public interface ThrowableSupplier<T> {
-		T get() throws Throwable;
+		T get() throws Exception;
 	}
 }

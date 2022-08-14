@@ -36,22 +36,22 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 	}
 
 	@Override
-	public GenericValue<Recipe<?>> copy(Context context) throws CodeError {
+	public GenericValue<Recipe<?>> copy(Context context) {
 		return this;
 	}
 
 	@Override
-	public String getAsString(Context context) throws CodeError {
+	public String getAsString(Context context) {
 		return "Recipe{" + this.value.getId().getPath() + "}";
 	}
 
 	@Override
-	public int getHashCode(Context context) throws CodeError {
+	public int getHashCode(Context context) {
 		return this.value.hashCode();
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value value) throws CodeError {
+	public boolean isEquals(Context context, Value value) {
 		return this.value == value.getValue();
 	}
 
@@ -103,7 +103,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			throwMsgs = "Recipe with id ... doesn't exist",
 			example = "Recipe.of('redstone_block')"
 		)
-		private Value newRecipe(Arguments arguments) throws CodeError {
+		private Value newRecipe(Arguments arguments) {
 			String id = arguments.getNextGeneric(StringValue.class);
 			ClientPlayNetworkHandler networkHandler = ArucasMinecraftExtension.getNetworkHandler();
 			Identifier identifier = ArucasMinecraftExtension.getId(arguments, id);
@@ -131,7 +131,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			returns = {STRING, "the full id of the recipe"},
 			example = "recipe.getFullId()"
 		)
-		private Value getFullId(Arguments arguments) throws CodeError {
+		private Value getFullId(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().toString());
 		}
@@ -142,7 +142,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			returns = {STRING, "the id of the recipe"},
 			example = "recipe.getId()"
 		)
-		private Value getId(Arguments arguments) throws CodeError {
+		private Value getId(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return StringValue.of(thisValue.value.getId().getPath());
 		}
@@ -153,7 +153,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			returns = {STRING, "the crafting type of the recipe, for example: 'crafting', 'smelting', 'blasting'"},
 			example = "recipe.getCraftingType()"
 		)
-		private Value getCraftingType(Arguments arguments) throws CodeError {
+		private Value getCraftingType(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			Identifier identifier = Registry.RECIPE_TYPE.getId(thisValue.value.getType());
 			return identifier == null ? NullValue.NULL : StringValue.of(identifier.getPath());
@@ -165,7 +165,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			returns = {ITEM_STACK, "the output of the recipe"},
 			example = "recipe.getOutput()"
 		)
-		private Value getOutput(Arguments arguments) throws CodeError {
+		private Value getOutput(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			return new ItemStackValue(thisValue.value.getOutput());
 		}
@@ -176,7 +176,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			returns = {LIST, "list of lists, each inner lists contains possible recipe items"},
 			example = "recipe.getIngredients()"
 		)
-		private Value getIngredients(Arguments arguments) throws CodeError {
+		private Value getIngredients(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			ArucasList recipeIngredients = new ArucasList();
 			for (Ingredient ingredient : thisValue.value.getIngredients()) {

@@ -5,12 +5,9 @@ import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.api.docs.MemberDoc;
 import me.senseiwells.arucas.api.wrappers.*;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.essentialclient.clientscript.values.EntityValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.essentialclient.clientscript.values.WorldValue;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.world.ClientWorld;
@@ -97,7 +94,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		example = "fakeEntity = new FakeEntity();"
 	)
 	@ArucasConstructor
-	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) throws CodeError {
+	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) {
 		Value value = context.convertValue(entityValue.value.getType().create(worldValue.value));
 		if (!(value instanceof EntityValue<?> valueEntity)) {
 			throw new RuntimeException("Entity could not be created");

@@ -88,7 +88,7 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 			returns = {STRING, "the screen name, if you are in the creative menu it will return the name of the tab you are on"},
 			example = "screen.getName()"
 		)
-		private Value getName(Arguments arguments) throws CodeError {
+		private Value getName(Arguments arguments) {
 			return StringValue.of(ScreenRemapper.getScreenName(this.getScreen(arguments).getClass()));
 		}
 
@@ -98,7 +98,7 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 			returns = {STRING, "the screen title as text, this may include formatting, and custom names for the screen if applicable"},
 			example = "screen.getTitle()"
 		)
-		private Value getTitle(Arguments arguments) throws CodeError {
+		private Value getTitle(Arguments arguments) {
 			Screen screen = this.getScreen(arguments);
 			Text title = screen.getTitle();
 			if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
@@ -108,7 +108,7 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 			return title == null ? NullValue.NULL : new TextValue(title.copy());
 		}
 
-		private Screen getScreen(Arguments arguments) throws CodeError {
+		private Screen getScreen(Arguments arguments) {
 			ScreenValue<?> screen = arguments.getNext(ScreenValue.class);
 			if (screen.value == null) {
 				throw arguments.getError("Screen was null");

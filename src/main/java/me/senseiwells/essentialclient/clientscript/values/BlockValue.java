@@ -2,8 +2,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -13,8 +11,8 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.BuiltInFunction;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
-import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.resource.language.I18n;
@@ -138,7 +136,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BLOCK, "the Block created from the material or string"},
 			example = "Block.of(Material.STONE);"
 		)
-		private Value of(Arguments arguments) throws CodeError {
+		private Value of(Arguments arguments) {
 			Value value = arguments.getNext();
 			if (value instanceof StringValue stringValue) {
 				Identifier id = ArucasMinecraftExtension.getId(arguments, stringValue.value);
@@ -198,7 +196,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BLOCK, "default state of the Block"},
 			example = "block.getDefaultState();"
 		)
-		private Value getDefaultState(Arguments arguments) throws CodeError {
+		private Value getDefaultState(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return new BlockValue(blockValue.value.getBlock().getDefaultState(), blockValue.blockPos);
 		}
@@ -213,7 +211,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BLOCK, "new state of the Block"},
 			example = "block.with('facing', 'north');"
 		)
-		private Value with(Arguments arguments) throws CodeError {
+		private Value with(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			String propertyAsString = arguments.getNextString().value;
 
@@ -237,7 +235,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {MATERIAL, "the material of the Block"},
 			example = "block.getMaterial();"
 		)
-		private Value getMaterial(Arguments arguments) throws CodeError {
+		private Value getMaterial(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			Item blockItem = blockState.getBlock().asItem();
 			if (blockItem == Items.AIR && blockState.getBlock() != Blocks.AIR) {
@@ -252,7 +250,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {STRING, "the full id of the Block"},
 			example = "block.getFullId();"
 		)
-		private Value getFullId(Arguments arguments) throws CodeError {
+		private Value getFullId(Arguments arguments) {
 			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(arguments).getBlock()).toString());
 		}
 
@@ -262,7 +260,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {STRING, "the id of the Block"},
 			example = "block.getId();"
 		)
-		private Value getId(Arguments arguments) throws CodeError {
+		private Value getId(Arguments arguments) {
 			return StringValue.of(Registry.BLOCK.getId(this.getBlockState(arguments).getBlock()).getPath());
 		}
 
@@ -272,7 +270,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is a BlockEntity"},
 			example = "block.isBlockEntity();"
 		)
-		private Value isBlockEntity(Arguments arguments) throws CodeError {
+		private Value isBlockEntity(Arguments arguments) {
 			return BooleanValue.of(this.getBlockState(arguments).getBlock() instanceof BlockEntityProvider);
 		}
 
@@ -282,7 +280,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is transparent"},
 			example = "block.isTransparent();"
 		)
-		private Value isTransparent(Arguments arguments) throws CodeError {
+		private Value isTransparent(Arguments arguments) {
 			return BooleanValue.of(!this.getBlockState(arguments).isOpaque());
 		}
 
@@ -292,7 +290,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {ITEM_STACK, "the ItemStack of the Block"},
 			example = "block.asItemStack();"
 		)
-		private Value asItemStack(Arguments arguments) throws CodeError {
+		private Value asItemStack(Arguments arguments) {
 			return new ItemStackValue(this.getBlockState(arguments).getBlock().asItem().getDefaultStack());
 		}
 
@@ -302,7 +300,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {NUMBER, "the blast resistance of the Block"},
 			example = "block.getBlastResistance();"
 		)
-		private Value getBlastResistance(Arguments arguments) throws CodeError {
+		private Value getBlastResistance(Arguments arguments) {
 			return NumberValue.of(this.getBlockState(arguments).getBlock().getBlastResistance());
 		}
 
@@ -316,7 +314,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {MAP, "the properties of the Block, may be empty if there are no properties"},
 			example = "block.getBlockProperties();"
 		)
-		private Value getBlockProperties(Arguments arguments) throws CodeError {
+		private Value getBlockProperties(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			ArucasMap propertyMap = new ArucasMap();
 			for (Map.Entry<Property<?>, Comparable<?>> entry : blockState.getEntries().entrySet()) {
@@ -342,7 +340,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block has a position"},
 			example = "block.hasBlockPosition();"
 		)
-		private Value hasBlockPosition(Arguments arguments) throws CodeError {
+		private Value hasBlockPosition(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return BooleanValue.of(blockValue.hasBlockPos());
 		}
@@ -353,7 +351,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {POS, "the position of the Block, may be null if the Block has no position"},
 			example = "block.getPos();"
 		)
-		private Value getPos(Arguments arguments) throws CodeError {
+		private Value getPos(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getPos();
 		}
@@ -364,7 +362,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {NUMBER, "the X position of the Block, may be null if the Block has no position"},
 			example = "block.getX();"
 		)
-		private Value getBlockX(Arguments arguments) throws CodeError {
+		private Value getBlockX(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getBlockX();
 		}
@@ -375,7 +373,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {NUMBER, "the Y position of the Block, may be null if the Block has no position"},
 			example = "block.getY();"
 		)
-		private Value getBlockY(Arguments arguments) throws CodeError {
+		private Value getBlockY(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getBlockY();
 		}
@@ -386,7 +384,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {NUMBER, "the Z position of the Block, may be null if the Block has no position"},
 			example = "block.getZ();"
 		)
-		private Value getBlockZ(Arguments arguments) throws CodeError {
+		private Value getBlockZ(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return blockValue.getBlockZ();
 		}
@@ -400,7 +398,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {STRING, "the translated name of the Block"},
 			example = "block.getTranslatedName();"
 		)
-		private Value getTranslatedName(Arguments arguments) throws CodeError {
+		private Value getTranslatedName(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return StringValue.of(I18n.translate(blockState.getBlock().getTranslationKey()));
 		}
@@ -411,7 +409,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is a solid block"},
 			example = "block.isSolidBlock();"
 		)
-		private Value isSolidBlock(Arguments arguments) throws CodeError {
+		private Value isSolidBlock(Arguments arguments) {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			boolean isSolid = blockValue.value.isSolidBlock(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos());
 			return BooleanValue.of(isSolid);
@@ -423,7 +421,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BLOCK, "the rotated Block"},
 			example = "block.rotateYClockwise();"
 		)
-		private Value rotateYClockwise(Arguments arguments) throws CodeError {
+		private Value rotateYClockwise(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.rotate(BlockRotation.CLOCKWISE_90));
 		}
@@ -434,7 +432,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BLOCK, "the rotated Block"},
 			example = "block.rotateYCounterClockwise();"
 		)
-		private Value rotateYCounterClockwise(Arguments arguments) throws CodeError {
+		private Value rotateYCounterClockwise(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.rotate(BlockRotation.COUNTERCLOCKWISE_90));
 		}
@@ -445,7 +443,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BLOCK, "the mirrored Block"},
 			example = "block.mirrorFrontBack();"
 		)
-		private Value mirrorFrontBack(Arguments arguments) throws CodeError {
+		private Value mirrorFrontBack(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.mirror(BlockMirror.FRONT_BACK));
 		}
@@ -456,7 +454,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BLOCK, "the mirrored Block"},
 			example = "block.mirrorLeftRight();"
 		)
-		private Value mirrorLeftRight(Arguments arguments) throws CodeError {
+		private Value mirrorLeftRight(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return new BlockValue(blockState.mirror(BlockMirror.LEFT_RIGHT));
 		}
@@ -467,7 +465,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is a fluid"},
 			example = "block.isFluid();"
 		)
-		private Value isFluid(Arguments arguments) throws CodeError {
+		private Value isFluid(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			return BooleanValue.of(blockValue.value.contains(FluidBlock.LEVEL));
 		}
@@ -478,7 +476,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is a fluid source"},
 			example = "block.isFluidSource();"
 		)
-		private Value isFluidSource(Arguments arguments) throws CodeError {
+		private Value isFluidSource(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			Block block = blockState.getBlock();
 			if ((block instanceof FluidBlock && blockState.get(FluidBlock.LEVEL) == 0) || block instanceof BubbleColumnBlock) {
@@ -493,7 +491,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is replaceable"},
 			example = "block.isReplaceable();"
 		)
-		private Value isReplaceable(Arguments arguments) throws CodeError {
+		private Value isReplaceable(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return BooleanValue.of(blockState.getMaterial().isReplaceable());
 		}
@@ -504,7 +502,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {NUMBER, "the hardness of the Block"},
 			example = "block.getHardness();"
 		)
-		private Value getHardness(Arguments arguments) throws CodeError {
+		private Value getHardness(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return NumberValue.of(blockState.getHardness(ArucasMinecraftExtension.getWorld(), BlockPos.ORIGIN));
 		}
@@ -516,7 +514,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block covers a small square"},
 			example = "block.sideCoversSmallSquare('north');"
 		)
-		private Value sideCoversSmallSquare(Arguments arguments) throws CodeError {
+		private Value sideCoversSmallSquare(Arguments arguments) {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			StringValue stringDirection = arguments.getNextString();
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
@@ -530,7 +528,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is solid on the full square"},
 			example = "block.isSideSolidFullSquare('north');"
 		)
-		private Value isSideSolidFullSquare(Arguments arguments) throws CodeError {
+		private Value isSideSolidFullSquare(Arguments arguments) {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			StringValue stringDirection = arguments.getNextString();
 			Direction direction = Objects.requireNonNullElse(Direction.byName(stringDirection.value), Direction.DOWN);
@@ -543,7 +541,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block is spawnable in the case of zombies"},
 			example = "block.isSpawnable();"
 		)
-		private Value allowsSpawning(Arguments arguments) throws CodeError {
+		private Value allowsSpawning(Arguments arguments) {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			boolean value = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), EntityType.ZOMBIE);
 			return BooleanValue.of(value);
@@ -556,7 +554,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {BOOLEAN, "true if the Block allows spawning for given entity"},
 			example = "block.isSpawnable(zombie);"
 		)
-		private Value allowsSpawningType(Arguments arguments) throws CodeError {
+		private Value allowsSpawningType(Arguments arguments) {
 			BlockValue blockValue = this.getBlockWithPos(arguments);
 			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
 			boolean value = blockValue.value.allowsSpawning(ArucasMinecraftExtension.getWorld(), blockValue.blockPos.toBlockPos(), entityValue.value.getType());
@@ -569,7 +567,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {NUMBER, "the luminance of the Block"},
 			example = "block.getLuminance();"
 		)
-		private Value getLuminance(Arguments arguments) throws CodeError {
+		private Value getLuminance(Arguments arguments) {
 			BlockState blockState = this.getBlockState(arguments);
 			return NumberValue.of(blockState.getLuminance());
 		}
@@ -580,7 +578,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {LIST, "a list with the map colour of the Block as RGB values"},
 			example = "block.getMapColour();"
 		)
-		private Value getMapColour(Arguments arguments) throws CodeError {
+		private Value getMapColour(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			if (blockValue.hasPos) {
 				throw arguments.getError("Block doesn't have a position");
@@ -600,16 +598,16 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			returns = {MAP, "the NBT of the Block, may be null if the Block has no NBT"},
 			example = "block.getBlockNbt();"
 		)
-		private Value getBlockNbt(Arguments arguments) throws CodeError {
+		private Value getBlockNbt(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			BlockEntity blockEntity;
 			if (blockValue.hasBlockPos() && (blockEntity = ArucasMinecraftExtension.getWorld().getBlockEntity(blockValue.blockPos.toBlockPos())) != null) {
-				return new MapValue(NbtUtils.nbtToMap(arguments.getContext(), blockEntity.createNbt(), 10));
+				return new MapValue(ClientScriptUtils.nbtToMap(arguments.getContext(), blockEntity.createNbt(), 10));
 			}
 			return NullValue.NULL;
 		}
 
-		private BlockValue getBlockWithPos(Arguments arguments) throws RuntimeError {
+		private BlockValue getBlockWithPos(Arguments arguments) {
 			BlockValue blockValue = arguments.getNext(BlockValue.class);
 			if (!blockValue.hasPos) {
 				throw arguments.getError("Block does not have position");
@@ -622,7 +620,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			return optional.map(t -> blockState.with(property, t)).orElse(null);
 		}
 
-		private BlockState getBlockState(Arguments arguments) throws CodeError {
+		private BlockState getBlockState(Arguments arguments) {
 			BlockState block = arguments.getNextGeneric(BlockValue.class);
 			if (block == null) {
 				throw arguments.getError("Block was null");

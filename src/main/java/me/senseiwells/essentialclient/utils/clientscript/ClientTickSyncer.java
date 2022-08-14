@@ -18,7 +18,7 @@ public class ClientTickSyncer {
 	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public synchronized static void syncToTick() throws CodeError {
+	public synchronized static void syncToTick() {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		OBJECTS_TO_SYNC.add(countDownLatch);
 

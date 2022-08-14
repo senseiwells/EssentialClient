@@ -2,7 +2,6 @@ package me.senseiwells.essentialclient.utils.clientscript;
 
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;

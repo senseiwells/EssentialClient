@@ -86,7 +86,7 @@ public class TextValue extends GenericValue<MutableText> {
 			returns = {TEXT, "the text instance from the string"},
 			example = "Text.of('Hello World!');"
 		)
-		private Value of(Arguments arguments) throws CodeError {
+		private Value of(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
 			return new TextValue(Texts.literal(stringValue.value));
 		}
@@ -99,7 +99,7 @@ public class TextValue extends GenericValue<MutableText> {
 			returns = {TEXT, "the text instance from the json"},
 			example = "Text.parse('{\"text\":\"Hello World!\",\"color\":\"white\",\"italic\":\"true\"}');"
 		)
-		private Value parse(Arguments arguments) throws CodeError {
+		private Value parse(Arguments arguments) {
 			Value value = arguments.getNext();
 			if (value instanceof JsonValue json) {
 				return new TextValue(Text.Serializer.fromJson(json.value));
@@ -133,20 +133,20 @@ public class TextValue extends GenericValue<MutableText> {
 			returns = {TEXT, "the text instance with the click event"},
 			throwMsgs = "Invalid action: ...",
 			example = """
-			text = Text.of("Hello World!");
+				text = Text.of("Hello World!");
 
-			// Examples of click events
-			text.withClickEvent("open_url", "https://youtu.be/dQw4w9WgXcQ");
-			text.withClickEvent("open_file", "C:/Users/user/Desktop/thing.txt");
-			text.withClickEvent("run_command", "/gamemode creative");
-			text.withClickEvent("suggest_command", "/gamemode survival");
-			text.withClickEvent("copy_to_clipboard", "Ooops!");
-			text.withClickEvent("run_function", fun() {
-				print("Text was clicked!");
-			});
-			"""
+				// Examples of click events
+				text.withClickEvent("open_url", "https://youtu.be/dQw4w9WgXcQ");
+				text.withClickEvent("open_file", "C:/Users/user/Desktop/thing.txt");
+				text.withClickEvent("run_command", "/gamemode creative");
+				text.withClickEvent("suggest_command", "/gamemode survival");
+				text.withClickEvent("copy_to_clipboard", "Ooops!");
+				text.withClickEvent("run_function", fun() {
+					print("Text was clicked!");
+				});
+				"""
 		)
-		private Value withClickEvent(Arguments arguments) throws CodeError {
+		private Value withClickEvent(Arguments arguments) {
 			TextValue text = arguments.getNext(TextValue.class);
 			String actionAsString = arguments.getNextGeneric(StringValue.class).toLowerCase(Locale.ROOT);
 			ClickEvent.Action action = ClickEvent.Action.byName(actionAsString);
@@ -181,15 +181,15 @@ public class TextValue extends GenericValue<MutableText> {
 			returns = {TEXT, "the text instance with the hover event"},
 			throwMsgs = "Invalid action: ...",
 			example = """
-			text = Text.of("Hello World!");
+				text = Text.of("Hello World!");
 
-			// Examples of hover events
-			text.withHoverEvent("show_text", Text.of("Hello world!"));
-			text.withHoverEvent("show_item", Material.DIAMOND_SWORD.asItemStack());
-			text.withHoverEvent("show_entity", Player.get());
-			"""
+				// Examples of hover events
+				text.withHoverEvent("show_text", Text.of("Hello world!"));
+				text.withHoverEvent("show_item", Material.DIAMOND_SWORD.asItemStack());
+				text.withHoverEvent("show_entity", Player.get());
+				"""
 		)
-		private Value withHoverEvent(Arguments arguments) throws CodeError {
+		private Value withHoverEvent(Arguments arguments) {
 			TextValue text = arguments.getNext(TextValue.class);
 			StringValue stringAction = arguments.getNextString();
 			HoverEvent hoverEvent = switch (stringAction.value) {
@@ -223,7 +223,7 @@ public class TextValue extends GenericValue<MutableText> {
 			throwMsgs = "Invalid formatting: ...",
 			example = "text.format('DARK_RED').format('BOLD');"
 		)
-		private Value formatText(Arguments arguments) throws CodeError {
+		private Value formatText(Arguments arguments) {
 			TextValue text = arguments.getNext(TextValue.class);
 			StringValue stringValue = arguments.getNextString();
 			Formatting formatting = Formatting.byName(stringValue.value.toUpperCase(Locale.ROOT));
@@ -241,7 +241,7 @@ public class TextValue extends GenericValue<MutableText> {
 			returns = {TEXT, "the text instance with the appended text"},
 			example = "Text.of('Hello').append(Text.of(' world!'));"
 		)
-		private Value appendText(Arguments arguments) throws CodeError {
+		private Value appendText(Arguments arguments) {
 			TextValue text = arguments.getNext(TextValue.class);
 			TextValue textValue = arguments.getNext(TextValue.class);
 			text.value.append(textValue.value);

@@ -8,7 +8,6 @@ import me.senseiwells.arucas.api.wrappers.IArucasWrappedClass;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 

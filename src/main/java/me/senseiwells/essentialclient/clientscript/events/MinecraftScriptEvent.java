@@ -1,10 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.events;
 
-import me.senseiwells.arucas.api.ArucasThreadHandler;
-import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.arucas.values.Value;
 import me.senseiwells.essentialclient.clientscript.extensions.GameEventWrapper;
 
 import java.util.*;
@@ -33,32 +31,32 @@ public class MinecraftScriptEvent {
 		return true;
 	}
 
-	public synchronized void registerEvent(Context context, GameEventWrapper gameEvent) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(context.getContextId(), id -> {
-			context.getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
+	public synchronized void registerEvent(Interpreter interpreter, GameEventWrapper gameEvent) {
+		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(interpreter.getProperties().getId(), id -> {
+			interpreter.getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
 			return new LinkedHashSet<>();
 		});
 		gameEventWrappers.add(gameEvent);
 	}
 
-	public synchronized boolean unregisterEvent(Context context, GameEventWrapper gameEvent) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(context.getContextId());
+	public synchronized boolean unregisterEvent(Interpreter interpreter, GameEventWrapper gameEvent) {
+		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(interpreter.getProperties().getId());
 		return gameEventWrappers != null && gameEventWrappers.remove(gameEvent);
 	}
 
-	public synchronized boolean isEventRegistered(Context context, GameEventWrapper gameEvent) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(context.getContextId());
+	public synchronized boolean isEventRegistered(Interpreter interpreter, GameEventWrapper gameEvent) {
+		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(interpreter.getProperties().getId());
 		return gameEventWrappers != null && gameEventWrappers.contains(gameEvent);
 	}
 
-	public synchronized void clearRegisteredEvents(Context context) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(context.getContextId());
+	public synchronized void clearRegisteredEvents(Interpreter interpreter) {
+		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(interpreter.getProperties().getId());
 		if (gameEventWrappers != null) {
 			gameEventWrappers.clear();
 		}
 	}
 
-	public synchronized boolean run(Value... arguments) {
+	public synchronized boolean run(ClassInstance... arguments) {
 		ArucasList argumentList = new ArucasList();
 		argumentList.addAll(List.of(arguments));
 		boolean shouldCancel = false;
@@ -73,7 +71,7 @@ public class MinecraftScriptEvent {
 	}
 
 	public synchronized boolean run(ArgumentSupplier argumentSupplier) {
-		List<Value> values = null;
+		List<ClassInstance> values = null;
 		boolean shouldCancel = false;
 		for (Set<GameEventWrapper> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
 			for (GameEventWrapper gameEvent : gameEventWrappers) {
@@ -98,15 +96,14 @@ public class MinecraftScriptEvent {
 
 	@FunctionalInterface
 	public interface ArgumentSupplier {
-		List<Value> apply(Context context) throws CodeError;
+		List<ClassInstance> apply(Interpreter interpreter);
 
-		default List<Value> applySafe(Context context) {
+		default List<ClassInstance> applySafe(Interpreter interpreter) {
 			try {
-				return this.apply(context);
+				return this.apply(interpreter);
 			}
 			catch (Exception exception) {
-				ArucasThreadHandler threadHandler = context.getThreadHandler();
-				threadHandler.tryError(context, exception);
+				interpreter.getThreadHandler().handleError(exception);
 				return null;
 			}
 		}
@@ -135,7 +132,7 @@ public class MinecraftScriptEvent {
 			return this.isThreadDefinable;
 		}
 
-		public synchronized boolean run(UUID uuid, Value... arguments) {
+		public synchronized boolean run(UUID uuid, ClassInstance... arguments) {
 			ArucasList argumentList = new ArucasList();
 			argumentList.addAll(List.of(arguments));
 			boolean shouldCancel = false;
@@ -153,7 +150,7 @@ public class MinecraftScriptEvent {
 
 		@Deprecated
 		@Override
-		public synchronized boolean run(Value... arguments) {
+		public synchronized boolean run(ClassInstance... arguments) {
 			return false;
 		}
 

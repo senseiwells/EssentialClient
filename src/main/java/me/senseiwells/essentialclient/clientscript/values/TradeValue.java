@@ -39,22 +39,22 @@ public class TradeValue extends GenericValue<TradeOffer> {
 	}
 
 	@Override
-	public GenericValue<TradeOffer> copy(Context context) throws CodeError {
+	public GenericValue<TradeOffer> copy(Context context) {
 		return new TradeValue(new TradeOffer(this.value.toNbt()));
 	}
 
 	@Override
-	public String getAsString(Context context) throws CodeError {
+	public String getAsString(Context context) {
 		return "Trade@" + this.getHashCode(context);
 	}
 
 	@Override
-	public int getHashCode(Context context) throws CodeError {
+	public int getHashCode(Context context) {
 		return this.value.hashCode();
 	}
 
 	@Override
-	public boolean isEquals(Context context, Value value) throws CodeError {
+	public boolean isEquals(Context context, Value value) {
 		return value instanceof TradeValue tradeValue && this.allMatch(tradeValue.value);
 	}
 
@@ -93,7 +93,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {ITEM_STACK, "the item for sale"},
 			example = "trade.getSellItem();"
 		)
-		public Value getSellItem(Arguments arguments) throws CodeError {
+		public Value getSellItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getSellItem());
 		}
@@ -104,7 +104,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {ITEM_STACK, "the first item to buy"},
 			example = "trade.getFirstBuyItem();"
 		)
-		public Value getFirstBuyItem(Arguments arguments) throws CodeError {
+		public Value getFirstBuyItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getOriginalFirstBuyItem());
 		}
@@ -115,7 +115,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {ITEM_STACK, "the first item to buy"},
 			example = "trade.getAdjustedFirstBuyItem();"
 		)
-		public Value getAdjustedFirstBuyItem(Arguments arguments) throws CodeError {
+		public Value getAdjustedFirstBuyItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getAdjustedFirstBuyItem());
 		}
@@ -126,7 +126,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {ITEM_STACK, "the second item to buy"},
 			example = "trade.getSecondBuyItem();"
 		)
-		public Value getSecondBuyItem(Arguments arguments) throws CodeError {
+		public Value getSecondBuyItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return new ItemStackValue(thisValue.value.getSecondBuyItem());
 		}
@@ -137,7 +137,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {NUMBER, "the maximum number of uses"},
 			example = "trade.getMaxUses();"
 		)
-		public Value getMaxUses(Arguments arguments) throws CodeError {
+		public Value getMaxUses(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getMaxUses());
 		}
@@ -148,7 +148,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {NUMBER, "the number of uses"},
 			example = "trade.getUses();"
 		)
-		public Value getUses(Arguments arguments) throws CodeError {
+		public Value getUses(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getUses());
 		}
@@ -159,7 +159,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {NUMBER, "the special price"},
 			example = "trade.getSpecialPrice();"
 		)
-		public Value getSpecialPrice(Arguments arguments) throws CodeError {
+		public Value getSpecialPrice(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getSpecialPrice());
 		}
@@ -170,7 +170,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			returns = {NUMBER, "the price multiplier"},
 			example = "trade.getPriceMultiplier();"
 		)
-		public Value getPriceMultiplier(Arguments arguments) throws CodeError {
+		public Value getPriceMultiplier(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
 			return NumberValue.of(thisValue.value.getPriceMultiplier());
 		}

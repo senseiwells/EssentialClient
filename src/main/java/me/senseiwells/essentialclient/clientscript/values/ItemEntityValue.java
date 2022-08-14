@@ -73,7 +73,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			returns = {ITEM_STACK, "the ItemStack that the entity holds"},
 			example = "itemEntity.getItemStack();"
 		)
-		private Value getItemStack(Arguments arguments) throws CodeError {
+		private Value getItemStack(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return new ItemStackValue(itemEntityValue.value.getStack());
 		}
@@ -84,7 +84,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			returns = {STRING, "the custom name of the entity"},
 			example = "itemEntity.getCustomName();"
 		)
-		private Value getCustomName(Arguments arguments) throws CodeError {
+		private Value getCustomName(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return StringValue.of(itemEntityValue.value.getName().getString());
 		}
@@ -98,7 +98,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			returns = {NUMBER, "the age of the entity"},
 			example = "itemEntity.getItemAge();"
 		)
-		private Value getItemAge(Arguments arguments) throws CodeError {
+		private Value getItemAge(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			return NumberValue.of(itemEntityValue.value.getItemAge());
 		}
@@ -109,7 +109,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			returns = {PLAYER, "the player that threw the entity", "null if not thrown by a player"},
 			example = "itemEntity.getThrower();"
 		)
-		private Value getThrower(Arguments arguments) throws CodeError {
+		private Value getThrower(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			UUID throwerUuid = itemEntityValue.value.getThrower();
 			if (throwerUuid == null) {

@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import io.netty.buffer.Unpooled;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
@@ -9,7 +8,6 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
 import me.senseiwells.essentialclient.clientscript.values.TextValue;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -45,7 +43,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 		MinecraftScriptEvents.ON_SCRIPT_PACKET.run(c -> ArucasList.arrayListOf(parser.parseToValues(c)));
 	}
 
-	public void sendScriptPacket(Arguments arguments) throws CodeError {
+	public void sendScriptPacket(Arguments arguments) {
 		if (this.getNetworkHandler() == null) {
 			throw arguments.getError("Server is not accepting client script packets");
 		}
@@ -55,7 +53,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 	}
 
 	private record PacketParser(PacketByteBuf buf) {
-		private ListValue parseToValues(Context context) throws CodeError {
+		private ListValue parseToValues(Context context) {
 			ArucasList list = new ArucasList();
 
 			while (this.buf.readableBytes() > 0) {
@@ -99,7 +97,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 			this.buf.writeVarInt(16);
 		}
 
-		private PacketByteBuf parse() throws CodeError {
+		private PacketByteBuf parse() {
 			for (Value value : this.arguments.getRemaining()) {
 				if (value instanceof BooleanValue booleanValue) {
 					this.buf.writeByte(BOOLEAN);
@@ -135,7 +133,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 				}
 				if (value instanceof MapValue map) {
 					this.buf.writeByte(NBT);
-					this.buf.writeNbt(NbtUtils.mapToNbt(this.arguments.getContext(), map.value, 10));
+					this.buf.writeNbt(ClientScriptUtils.mapToNbt(this.arguments.getContext(), map.value, 10));
 					continue;
 				}
 				if (value instanceof ListValue list) {
@@ -145,7 +143,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 			return this.buf;
 		}
 
-		private void parseList(ListValue listValue) throws CodeError {
+		private void parseList(ListValue listValue) {
 			ArucasList list = listValue.value;
 			if (list.isEmpty()) {
 				this.buf.writeLongArray(new long[0]);
@@ -158,7 +156,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 				switch (string.value.toLowerCase(Locale.ROOT)) {
 					case "b" -> {
 						byte[] bytes = new byte[list.size() - 1];
-						for ( ; mod < list.size(); mod++) {
+						for (; mod < list.size(); mod++) {
 							Value value = list.get(mod);
 							if (!(value instanceof NumberValue number)) {
 								throw this.arguments.getError("Expected numbers in packet list, got: ", value);
@@ -171,7 +169,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 					}
 					case "i" -> {
 						int[] ints = new int[list.size() - 1];
-						for ( ; mod < list.size(); mod++) {
+						for (; mod < list.size(); mod++) {
 							Value value = list.get(mod);
 							if (!(value instanceof NumberValue number)) {
 								throw this.arguments.getError("Expected numbers in packet list, got: ", value);

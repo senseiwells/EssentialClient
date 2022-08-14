@@ -18,7 +18,8 @@ import net.minecraft.world.biome.BiomeKeys;
 import java.util.Optional;
 
 import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BIOME;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 public class BiomeValue extends GenericValue<Biome> {
 	public BiomeValue(Biome biome) {
@@ -90,7 +91,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {BOOLEAN, "whether snow will fall at given position"},
 			example = "biome.canSnow(0, 100, 0);"
 		)
-		private Value canSnowFull(Arguments arguments) throws CodeError {
+		private Value canSnowFull(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			NumberValue num1 = arguments.getNextNumber();
 			NumberValue num2 = arguments.getNextNumber();
@@ -106,7 +107,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {BOOLEAN, "whether snow will fall at given position"},
 			example = "biome.canSnow(new Pos(0, 100, 0));"
 		)
-		private Value canSnowPos(Arguments arguments) throws CodeError {
+		private Value canSnowPos(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
@@ -124,7 +125,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {BOOLEAN, "whether temperature is hot at given position"},
 			example = "biome.isHot(0, 100, 0);"
 		)
-		private Value isHotFull(Arguments arguments) throws CodeError {
+		private Value isHotFull(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			NumberValue num1 = arguments.getNextNumber();
 			NumberValue num2 = arguments.getNextNumber();
@@ -140,7 +141,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {BOOLEAN, "whether temperature is hot at given position"},
 			example = "biome.isHot(0, 100, 0);"
 		)
-		private Value isHotPos(Arguments arguments) throws CodeError {
+		private Value isHotPos(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
@@ -154,7 +155,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {BOOLEAN, "whether temperature is cold at given position"},
 			example = "biome.isCold(0, 100, 0);"
 		)
-		private Value isColdPos(Arguments arguments) throws CodeError {
+		private Value isColdPos(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
@@ -172,7 +173,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {BOOLEAN, "whether temperature is cold at given position"},
 			example = "biome.isCold(0, 100, 0);"
 		)
-		private Value isColdFull(Arguments arguments) throws CodeError {
+		private Value isColdFull(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			NumberValue num1 = arguments.getNextNumber();
 			NumberValue num2 = arguments.getNextNumber();
@@ -187,7 +188,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {NUMBER, "fog color of the biome"},
 			example = "biome.getFogColor();"
 		)
-		private Value getFogColor(Arguments arguments) throws CodeError {
+		private Value getFogColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			return NumberValue.of(biome.getFogColor());
 		}
@@ -198,7 +199,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {NUMBER, "temperature of the biome"},
 			example = "biome.getTemperature();"
 		)
-		private Value getTemperature(Arguments arguments) throws CodeError {
+		private Value getTemperature(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			return NumberValue.of(biome.getTemperature());
 		}
@@ -209,7 +210,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {NUMBER, "fog color of the biome"},
 			example = "biome.getWaterColor();"
 		)
-		private Value getWaterColor(Arguments arguments) throws CodeError {
+		private Value getWaterColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			return NumberValue.of(biome.getFogColor());
 		}
@@ -220,7 +221,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {NUMBER, "water fog color of the biome"},
 			example = "biome.getWaterFogColor();"
 		)
-		private Value getWaterFogColor(Arguments arguments) throws CodeError {
+		private Value getWaterFogColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			return NumberValue.of(biome.getWaterFogColor());
 		}
@@ -231,7 +232,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {STRING, "id of the biome"},
 			example = "biome.getId();"
 		)
-		private Value getId(Arguments arguments) throws CodeError {
+		private Value getId(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			Optional<RegistryKey<Biome>> biomeKey = BuiltinRegistries.BIOME.getKey(biome);
 			return biomeKey.map(biomeRegistryKey -> StringValue.of(biomeRegistryKey.getValue().getPath())).orElseGet(() -> StringValue.of(BiomeKeys.PLAINS.getValue().getPath()));
@@ -243,7 +244,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {NUMBER, "sky color of the biome"},
 			example = "biome.getSkyColor();"
 		)
-		private Value getSkyColor(Arguments arguments) throws CodeError {
+		private Value getSkyColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			return NumberValue.of(biome.getSkyColor());
 		}
@@ -254,12 +255,12 @@ public class BiomeValue extends GenericValue<Biome> {
 			returns = {BOOLEAN, "whether biome has high humidity"},
 			example = "biome.hasHighHumidity();"
 		)
-		private Value hasHighHumidity(Arguments arguments) throws CodeError {
+		private Value hasHighHumidity(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
 			return BooleanValue.of(biome.hasHighHumidity());
 		}
 
-		private Biome getBiome(Arguments arguments) throws CodeError {
+		private Biome getBiome(Arguments arguments) {
 			Biome biome = arguments.getNextGeneric(BiomeValue.class);
 			if (biome == null) {
 				throw arguments.getError("Biome was null");

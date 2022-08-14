@@ -83,7 +83,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		example = "keyBind.setKeys(['control', 'f']);"
 	)
 	@ArucasFunction
-	public void setKeys(Context context, ListValue listValue) throws CodeError {
+	public void setKeys(Context context, ListValue listValue) {
 		ArucasList list = listValue.value;
 		int[] inputKeys = new int[list.size()];
 		for (int i = 0; i < inputKeys.length; i++) {
@@ -150,7 +150,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		return this.keyBind;
 	}
 
-	public static WrapperClassValue newKeyBindWrapper(MultiKeyBind keyBind, Context context) throws CodeError {
+	public static WrapperClassValue newKeyBindWrapper(MultiKeyBind keyBind, Context context) {
 		KeyBindWrapper keyBindWrapper = new KeyBindWrapper();
 		keyBindWrapper.keyBind = keyBind;
 		return DEFINITION.createNewDefinition(keyBindWrapper, context, List.of());

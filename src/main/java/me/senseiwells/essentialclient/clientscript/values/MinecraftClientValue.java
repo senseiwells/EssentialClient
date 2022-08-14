@@ -5,7 +5,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -25,7 +24,6 @@ import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientTickSyncer;
-import me.senseiwells.essentialclient.utils.clientscript.NbtUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.interfaces.ChatHudAccessor;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
@@ -65,7 +63,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 	}
 
 	@Override
-	public GenericValue<MinecraftClient> copy(Context context) throws CodeError {
+	public GenericValue<MinecraftClient> copy(Context context) {
 		return this;
 	}
 
@@ -188,7 +186,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			desc = "Disables client's screen handler syncing",
 			example = "client.disableSync();"
 		)
-		private Value disableScreenSync(Arguments arguments) throws CodeError {
+		private Value disableScreenSync(Arguments arguments) {
 			final MinecraftClient client = this.getClient(arguments);
 			if (client.player == null) {
 				throw new RuntimeError("Player of client was null!", arguments.getPosition(), arguments.getContext());
@@ -202,7 +200,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			desc = "Enables client's screen handler syncing",
 			example = "client.enableSync();"
 		)
-		private Value enableScreenSync(Arguments arguments) throws CodeError {
+		private Value enableScreenSync(Arguments arguments) {
 			final MinecraftClient client = this.getClient(arguments);
 			if (client.player == null) {
 				throw new RuntimeError("Player of client was null!", arguments.getPosition(), arguments.getContext());
@@ -217,7 +215,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			throwMsgs = "Tried to sync non Arucas Thread",
 			example = "client.syncToTick();"
 		)
-		private Value syncToTick(Arguments arguments) throws CodeError {
+		private Value syncToTick(Arguments arguments) {
 			ClientTickSyncer.syncToTick();
 			return NullValue.NULL;
 		}
@@ -228,7 +226,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {FILE, "the Minecraft run directory"},
 			example = "client.getRunDirectory();"
 		)
-		private Value getRunDirectory(Arguments arguments) throws CodeError {
+		private Value getRunDirectory(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			return FileValue.of(client.runDirectory);
 		}
@@ -238,7 +236,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			desc = "This makes the client take a screenshot",
 			example = "client.screenshot();"
 		)
-		private Value screenshot(Arguments arguments) throws CodeError {
+		private Value screenshot(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ScreenshotRecorder.saveScreenshot(
 				client.runDirectory,
@@ -254,7 +252,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {STRING, "name", "the name of the file"},
 			example = "client.screenshot('screenshot.png');"
 		)
-		private Value screenshotNamed(Arguments arguments) throws CodeError {
+		private Value screenshotNamed(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			StringValue stringValue = arguments.getNextString();
 			ScreenshotRecorder.saveScreenshot(
@@ -273,7 +271,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			throwMsgs = "Tried to press key outside of Minecraft",
 			example = "client.pressKey('f');"
 		)
-		private Value pressKey(Arguments arguments) throws CodeError {
+		private Value pressKey(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			String key = arguments.getNextGeneric(StringValue.class);
 			final int keyCode = KeyboardHelper.translateStringToKey(key);
@@ -298,7 +296,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			throwMsgs = "Tried to press unknown key",
 			example = "client.releaseKey('f');"
 		)
-		private Value releaseKey(Arguments arguments) throws CodeError {
+		private Value releaseKey(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			String key = arguments.getNextGeneric(StringValue.class);
 			final int keyCode = KeyboardHelper.translateStringToKey(key);
@@ -323,7 +321,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			throwMsgs = "Tried to press unknown key",
 			example = "client.holdKey('f', 100);"
 		)
-		private Value holdKey(Arguments arguments) throws CodeError {
+		private Value holdKey(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			String key = arguments.getNextGeneric(StringValue.class);
 			int milliseconds = arguments.getNextGeneric(NumberValue.class).intValue();
@@ -354,7 +352,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			desc = "This will clear the chat hud",
 			example = "client.clearChat();"
 		)
-		private Value clearChat(Arguments arguments) throws CodeError {
+		private Value clearChat(Arguments arguments) {
 			this.getClient(arguments).inGameHud.getChatHud().clear(true);
 			return NullValue.NULL;
 		}
@@ -365,7 +363,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {TEXT, "the latest chat message, null if there is none"},
 			example = "client.getLatestChatMessage();"
 		)
-		private Value getLatestChatMessage(Arguments arguments) throws CodeError {
+		private Value getLatestChatMessage(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
 			if (chat.length == 0) {
@@ -379,14 +377,14 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			desc = "This allows you to register your own client side command in game",
 			params = {MAP, "command", "a command map or a command builder"},
 			example = """
-			client.addCommand({
-				"name": "example",
-				"subcommands": { },
-				"arguments": { }
-			});
-			"""
+				client.addCommand({
+					"name": "example",
+					"subcommands": { },
+					"arguments": { }
+				});
+				"""
 		)
-		private Value addCommand(Arguments arguments) throws CodeError {
+		private Value addCommand(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			Value value = arguments.getNext();
 			CommandNode<ServerCommandSource> commandNode;
@@ -414,7 +412,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {BOOLEAN, "true if the client is in single player mode"},
 			example = "client.isInSinglePlayer();"
 		)
-		private Value isInSinglePlayer(Arguments arguments) throws CodeError {
+		private Value isInSinglePlayer(Arguments arguments) {
 			return BooleanValue.of(this.getClient(arguments).isInSingleplayer());
 		}
 
@@ -425,7 +423,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {STRING, "the player name, null if the uuid is not found"},
 			example = "client.playerNameFromUuid('d4fca8c4-e083-4300-9a73-bf438847861c');"
 		)
-		private Value playerNameFromUuid(Arguments arguments) throws CodeError {
+		private Value playerNameFromUuid(Arguments arguments) {
 			String uuidAsString = arguments.skip().getNextGeneric(StringValue.class);
 			String name = MojangAPI.getNameFromUuid(UUID.fromString(uuidAsString));
 			if (name == null) {
@@ -441,7 +439,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {STRING, "the uuid, null if the player name is not found"},
 			example = "client.uuidFromPlayerName('senseiwells');"
 		)
-		private Value uuidFromPlayerName(Arguments arguments) throws CodeError {
+		private Value uuidFromPlayerName(Arguments arguments) {
 			String name = arguments.skip().getNextGeneric(StringValue.class);
 			UUID uuid = MojangAPI.getUuidFromName(name);
 			if (uuid == null) {
@@ -456,7 +454,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {STRING, "The server ip, null if in single player"},
 			example = "client.getServerIp();"
 		)
-		private Value getServerIp(Arguments arguments) throws CodeError {
+		private Value getServerIp(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ServerInfo serverInfo = client.getCurrentServerEntry();
 			if (serverInfo == null) {
@@ -471,7 +469,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {STRING, "the server name"},
 			example = "client.getServerName();"
 		)
-		private Value getServerName(Arguments arguments) throws CodeError {
+		private Value getServerName(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ServerInfo serverInfo = client.getCurrentServerEntry();
 			if (serverInfo == null) {
@@ -487,7 +485,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			throwMsgs = "Failed to get server ping",
 			example = "client.getPing();"
 		)
-		private Value getPing(Arguments arguments) throws CodeError {
+		private Value getPing(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ServerInfo serverInfo = client.getCurrentServerEntry();
 			if (serverInfo == null) {
@@ -519,7 +517,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			},
 			example = "client.setEssentialClientRule('highlightLavaSources', false);"
 		)
-		private Value setEssentialClientRule(Arguments arguments) throws CodeError {
+		private Value setEssentialClientRule(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			String clientRuleName = arguments.getNextGeneric(StringValue.class);
 			String clientRuleValue = arguments.getNext().getAsString(arguments.getContext());
@@ -543,7 +541,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			throwMsgs = "Invalid ClientRule name",
 			example = "client.resetEssentialClientRule('highlightLavaSources');"
 		)
-		private Value resetEssentialClientRule(Arguments arguments) throws CodeError {
+		private Value resetEssentialClientRule(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			String clientRuleName = arguments.getNextGeneric(StringValue.class);
 			ClientRule<?> clientRule = ClientRules.ruleFromString(clientRuleName);
@@ -562,7 +560,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			throwMsgs = "Invalid ClientRule name",
 			example = "client.getEssentialClientValue('overrideCreativeWalkSpeed');"
 		)
-		private Value getEssentialClientRuleValue(Arguments arguments) throws CodeError {
+		private Value getEssentialClientRuleValue(Arguments arguments) {
 			String clientRuleName = arguments.skip().getNextGeneric(StringValue.class);
 			ClientRule<?> clientRule = ClientRules.ruleFromString(clientRuleName);
 			if (clientRule == null) {
@@ -613,9 +611,9 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {ANY, "the Nbt compound"},
 			example = "client.parseStringToNbt('{\"test\":\"test\"}');"
 		)
-		private Value parseStringToNbt(Arguments arguments) throws CodeError {
+		private Value parseStringToNbt(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
-			return NbtUtils.nbtToValue(arguments.getContext(), NbtUtils.rawStringToNbt(arguments.getContext(), arguments.getPosition(), stringValue.value), 10);
+			return ClientScriptUtils.nbtToValue(arguments.getContext(), ClientScriptUtils.stringToNbt(arguments.getContext(), arguments.getPosition(), stringValue.value), 10);
 		}
 
 		@FunctionDoc(
@@ -626,7 +624,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {ANY, "the item stack"},
 			example = "client.itemFromString('dirt');"
 		)
-		private Value itemFromString(Arguments arguments) throws CodeError {
+		private Value itemFromString(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
 			return new ItemStackValue(Registry.ITEM.get(ArucasMinecraftExtension.getId(arguments, stringValue.value)).getDefaultStack());
 		}
@@ -639,7 +637,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {ANY, "the block"},
 			example = "client.blockFromString('dirt');"
 		)
-		private Value blockFromString(Arguments arguments) throws CodeError {
+		private Value blockFromString(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
 			return new BlockValue(Registry.BLOCK.get(ArucasMinecraftExtension.getId(arguments, stringValue.value)).getDefaultState());
 		}
@@ -652,7 +650,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {ANY, "the entity"},
 			example = "client.entityFromString('pig');"
 		)
-		private Value entityFromString(Arguments arguments) throws CodeError {
+		private Value entityFromString(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ClientWorld world = ArucasMinecraftExtension.getWorld(client);
 			StringValue stringValue = arguments.getNextString();
@@ -667,7 +665,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {ANY, "the text"},
 			example = "client.textFromString('Any Text!');"
 		)
-		private Value textFromString(Arguments arguments) throws CodeError {
+		private Value textFromString(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
 			return new TextValue((MutableText) Text.of(stringValue.value));
 		}
@@ -683,7 +681,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {ANY, "the fake screen"},
 			example = "client.createFakeScreen('Name', 3);"
 		)
-		private Value createFakeScreen(Arguments arguments) throws CodeError {
+		private Value createFakeScreen(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			StringValue stringValue = arguments.getNextString();
@@ -709,7 +707,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			},
 			example = "client.playSound('entity.lightning_bolt.thunder', 1, 1);"
 		)
-		private Value playSound(Arguments arguments) throws CodeError {
+		private Value playSound(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer(client);
 			StringValue stringValue = arguments.getNextString();
@@ -726,7 +724,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {ITEM_STACK, "itemStack", "the item stack to render"},
 			example = "client.renderFloatingItem(Material.DIAMOND.asItemStack());"
 		)
-		private Value renderFloatingItem(Arguments arguments) throws CodeError {
+		private Value renderFloatingItem(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			ItemStack itemStack = arguments.getNextGeneric(ItemStackValue.class);
 			client.gameRenderer.showFloatingItem(itemStack);
@@ -740,7 +738,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {STRING, "the stripped string"},
 			example = "client.stripFormatting('§cHello§r');"
 		)
-		private Value stripFormatting(Arguments arguments) throws CodeError {
+		private Value stripFormatting(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
 			return StringValue.of(stringValue.value.replaceAll("§[0-9a-gk-or]", ""));
 		}
@@ -751,7 +749,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {ITEM_STACK, "the item stack, will be Air if there is nothing"},
 			example = "client.getCursorStack();"
 		)
-		private Value getCursorStack(Arguments arguments) throws CodeError {
+		private Value getCursorStack(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			return new ItemStackValue(InventoryUtils.getCursorStack(client));
 		}
@@ -765,7 +763,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {ITEM_STACK, "itemStack", "the item stack to set"},
 			example = "client.setCursorStack(Material.DIAMOND.asItemStack());"
 		)
-		private Value setCursorStack(Arguments arguments) throws CodeError {
+		private Value setCursorStack(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			if (client.currentScreen instanceof FakeInventoryScreen) {
 				ItemStack itemStack = arguments.getNextGeneric(ItemStackValue.class);
@@ -780,7 +778,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {NUMBER, "the render distance"},
 			example = "client.getClientRenderDistance();"
 		)
-		private Value getClientRenderDistance(Arguments arguments) throws CodeError {
+		private Value getClientRenderDistance(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			return NumberValue.of(client.options.getViewDistance().getValue());
 		}
@@ -791,7 +789,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {NUMBER, "number", "the render distance"},
 			example = "client.setClientRenderDistance(10);"
 		)
-		private Value setClientRenderDistance(Arguments arguments) throws CodeError {
+		private Value setClientRenderDistance(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			NumberValue numberValue = arguments.getNextNumber();
 			client.options.getViewDistance().setValue(numberValue.value.intValue());
@@ -805,7 +803,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {FUNCTION, "function", "the function to run"},
 			example = "client.runOnMainThread(fun() { print('Do something'); });"
 		)
-		private Value runOnMainThread(Arguments arguments) throws CodeError {
+		private Value runOnMainThread(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			FunctionValue functionValue = arguments.getNextFunction();
 			Context branchedContext = arguments.getContext().createBranch();
@@ -818,7 +816,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			desc = "This ticks the client",
 			example = "client.tick();"
 		)
-		private Value tick(Arguments arguments) throws CodeError {
+		private Value tick(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			client.execute(client::tick);
 			return NullValue.NULL;
@@ -830,7 +828,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {PLAYER, "the main player"},
 			example = "client.getPlayer();"
 		)
-		private Value getPlayer(Arguments arguments) throws CodeError {
+		private Value getPlayer(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			return new PlayerValue(ArucasMinecraftExtension.getPlayer(client));
 		}
@@ -841,7 +839,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			returns = {WORLD, "the world"},
 			example = "client.getWorld();"
 		)
-		private Value getWorld(Arguments arguments) throws CodeError {
+		private Value getWorld(Arguments arguments) {
 			MinecraftClient client = this.getClient(arguments);
 			return new WorldValue(ArucasMinecraftExtension.getWorld(client));
 		}
@@ -878,12 +876,12 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {ANY, "values...", "the data you want to send to the server"},
 			example = "client.sendScriptPacket('test', false, ['l', 9999, 0, 45]);"
 		)
-		private Value sendScriptPacket(Arguments arguments) throws CodeError {
+		private Value sendScriptPacket(Arguments arguments) {
 			EssentialClient.SCRIPT_NET_HANDLER.sendScriptPacket(arguments.skip());
 			return NullValue.NULL;
 		}
 
-		private MinecraftClient getClient(Arguments arguments) throws CodeError {
+		private MinecraftClient getClient(Arguments arguments) {
 			MinecraftClient client = arguments.getNextGeneric(MinecraftClientValue.class);
 			if (client == null) {
 				throw arguments.getError("Client was null");

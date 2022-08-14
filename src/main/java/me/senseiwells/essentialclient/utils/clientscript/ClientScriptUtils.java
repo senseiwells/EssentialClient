@@ -1,43 +1,29 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
-import com.mojang.brigadier.arguments.*;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.context.ParsedArgument;
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
-import com.mojang.brigadier.suggestion.Suggestions;
-import me.senseiwells.arucas.api.ISyntax;
-import me.senseiwells.arucas.throwables.BuiltInException;
-import me.senseiwells.arucas.throwables.CodeError;
-import me.senseiwells.arucas.throwables.RuntimeError;
-import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.utils.ValuePair;
+import me.senseiwells.arucas.builtin.*;
+import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.exceptions.RuntimeError;
+import me.senseiwells.arucas.utils.impl.ArucasCollection;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
-import me.senseiwells.arucas.values.*;
-import me.senseiwells.arucas.values.classes.ArucasEnumDefinition;
-import me.senseiwells.arucas.values.functions.FunctionValue;
-import me.senseiwells.essentialclient.clientscript.values.ConfigValue;
-import me.senseiwells.essentialclient.clientscript.values.PosValue;
-import me.senseiwells.essentialclient.commands.CommandRegister;
-import me.senseiwells.essentialclient.rule.client.*;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.command.*;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.*;
-import net.minecraft.command.suggestion.SuggestionProviders;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.command.CommandRegistryWrapper;
+import net.minecraft.command.argument.ItemStringReader;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.*;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.RaycastContext;
+import shadow.kotlin.Pair;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
 
 public class ClientScriptUtils {
+	/*
 	public static final StringValue
 		NAME = StringValue.of("name"),
 		SUBCOMMANDS = StringValue.of("subcommands"),
@@ -56,7 +42,7 @@ public class ClientScriptUtils {
 		CYCLE_VALUES = StringValue.of("cycle_values"),
 		MAX_LENGTH = StringValue.of("max_length");
 
-	public static ConfigValue mapToRule(ArucasMap map, Context context, ISyntax syntaxPosition) throws CodeError {
+	public static ConfigValue mapToRule(ArucasMap map, Context context, ISyntax syntaxPosition) {
 		Value value = map.get(context, TYPE);
 		if (!(value instanceof StringValue type)) {
 			throw new RuntimeError("Config map must contain a type that is a string", syntaxPosition, context);
@@ -183,11 +169,11 @@ public class ClientScriptUtils {
 		return configValue;
 	}
 
-	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Context context, ISyntax syntaxPosition) throws CodeError {
+	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Context context, ISyntax syntaxPosition) {
 		return new CommandParser(arucasMap, context, syntaxPosition).parse();
 	}
 
-	public static ArgumentType<?> parseArgumentType(String string, Context context, ISyntax syntaxPosition) throws RuntimeError {
+	public static ArgumentType<?> parseArgumentType(String string, Context context, ISyntax syntaxPosition) {
 		return switch (string.toLowerCase()) {
 			case "playername", "word" -> StringArgumentType.word();
 			case "double" -> DoubleArgumentType.doubleArg();
@@ -219,8 +205,11 @@ public class ClientScriptUtils {
 			object = selector.isSingleTarget() ? selector.getEntity(source) : selector.getEntities(source);
 		}
 		return context.convertValue(object);
-	}
+	}*/
 
+	/**
+	 * Default direction can be null, in which case a RuntimeError is thrown.
+	 */
 	public static Direction stringToDirection(String string, Direction defaultDirection) {
 		return switch (string.toLowerCase()) {
 			case "north", "n" -> Direction.NORTH;
@@ -233,11 +222,140 @@ public class ClientScriptUtils {
 				if (defaultDirection != null) {
 					yield defaultDirection;
 				}
-				throw new BuiltInException("Invalid direction '%s'".formatted(string));
+				throw new RuntimeError("Invalid direction '%s'".formatted(string));
 			}
 		};
 	}
 
+	public static Identifier stringToIdentifier(String string) {
+		try {
+			return new Identifier(string);
+		}
+		catch (InvalidIdentifierException e) {
+			throw new RuntimeError("Invalid id '%s'".formatted(string), e);
+		}
+	}
+
+	public static RaycastContext.FluidHandling stringToFluidType(String string) {
+		return switch (string) {
+			case "none" -> RaycastContext.FluidHandling.NONE;
+			case "source", "sources", "sources_only" -> RaycastContext.FluidHandling.SOURCE_ONLY;
+			case "all", "any" -> RaycastContext.FluidHandling.ANY;
+			default -> throw new RuntimeError("'%s' is not a valid fluid type".formatted(string));
+		};
+	}
+
+	public static NbtElement stringToNbt(String string) {
+		try {
+			return new StringNbtReader(new StringReader(string)).parseElement();
+		}
+		catch (CommandSyntaxException cse) {
+			throw new RuntimeError("'%s' couldn't be parsed".formatted(string));
+		}
+	}
+
+	public static ItemStack stringToItemStack(String string) {
+		try {
+			ItemStringReader.ItemResult reader = ItemStringReader.item(CommandRegistryWrapper.of(Registry.ITEM), new StringReader(string));
+			ItemStack itemStack = new ItemStack(reader.item());
+			itemStack.setNbt(reader.nbt());
+			return itemStack;
+		}
+		catch (CommandSyntaxException cse) {
+			NbtElement element = stringToNbt(string);
+			if (element instanceof NbtCompound nbtCompound) {
+				return ItemStack.fromNbt(nbtCompound);
+			}
+			throw new RuntimeError("'%s' couldn't be parsed".formatted(string));
+		}
+	}
+
+	public static ArucasMap nbtToMap(Interpreter interpreter, NbtCompound compound, int depth) {
+		ArucasMap nbtMap = new ArucasMap();
+		depth--;
+		if (compound == null || depth < 0) {
+			return nbtMap;
+		}
+		for (String tagName : compound.getKeys()) {
+			NbtElement element = compound.get(tagName);
+			if (element == null) {
+				continue;
+			}
+			nbtMap.put(interpreter, interpreter.create(StringDef.class, tagName), nbtToValue(interpreter, element, depth));
+		}
+		return nbtMap;
+	}
+
+	public static ArucasList nbtToList(Interpreter interpreter, AbstractNbtList<?> list, int depth) {
+		ArucasList nbtList = new ArucasList();
+		depth--;
+		if (list == null || depth < 0) {
+			return nbtList;
+		}
+		for (NbtElement element : list) {
+			nbtList.add(nbtToValue(interpreter, element, depth));
+		}
+		return nbtList;
+	}
+
+	public static ClassInstance nbtToValue(Interpreter interpreter, NbtElement element, int depth) {
+		if (element instanceof NbtCompound inCompound) {
+			return interpreter.create(MapDef.class, nbtToMap(interpreter, inCompound, depth));
+		}
+		if (element instanceof AbstractNbtList<?> nbtList) {
+			return interpreter.create(ListDef.class, nbtToList(interpreter, nbtList, depth));
+		}
+		if (element instanceof AbstractNbtNumber nbtNumber) {
+			return interpreter.create(NumberDef.class, nbtNumber.doubleValue());
+		}
+		if (element == NbtEnd.INSTANCE) {
+			return interpreter.getNull();
+		}
+		return interpreter.create(StringDef.class, element.asString());
+	}
+
+	public static NbtCompound mapToNbt(Interpreter interpreter, ArucasMap map, int depth) {
+		NbtCompound compound = new NbtCompound();
+		if (map == null || depth < 0) {
+			return compound;
+		}
+		for (Pair<ClassInstance, ClassInstance> values : map.pairSet()) {
+			compound.put(values.component1().toString(interpreter), valueToNbt(interpreter, values.component2(), depth));
+		}
+		return compound;
+	}
+
+	public static NbtList collectionToNbt(Interpreter interpreter, Collection<ClassInstance> collection, int depth) {
+		NbtList list = new NbtList();
+		if (collection == null || depth < 0) {
+			return list;
+		}
+		for (ClassInstance instance : collection) {
+			NbtElement element = valueToNbt(interpreter, instance, depth);
+			// Doing it like this avoids the throwing of an error
+			list.addElement(list.size(), element);
+		}
+		return list;
+	}
+
+	public static NbtElement valueToNbt(Interpreter interpreter, ClassInstance value, int depth) {
+		Object primitive = value.getPrimitive(MapDef.class);
+		if (primitive != null) {
+			return mapToNbt(interpreter, (ArucasMap) primitive, depth);
+		}
+		if ((primitive = value.getPrimitive(CollectionDef.class)) != null) {
+			return collectionToNbt(interpreter, ((ArucasCollection) primitive).asCollection(), depth);
+		}
+		if ((primitive = value.getPrimitive(NumberDef.class)) != null) {
+			return NbtDouble.of((double) primitive);
+		}
+		if (value == interpreter.getNull()) {
+			return NbtEnd.INSTANCE;
+		}
+		return NbtString.of(value.toString(interpreter));
+	}
+
+	/*
 	private static class CommandParser {
 		private final Context context;
 		private final ISyntax syntaxPosition;
@@ -245,7 +363,7 @@ public class ClientScriptUtils {
 		private final ArucasMap subCommandMap;
 		private final ArucasMap argumentMap;
 
-		CommandParser(ArucasMap commandMap, Context context, ISyntax syntaxPosition) throws CodeError {
+		CommandParser(ArucasMap commandMap, Context context, ISyntax syntaxPosition) {
 			this.context = context.createBranch();
 			this.syntaxPosition = syntaxPosition;
 
@@ -258,7 +376,7 @@ public class ClientScriptUtils {
 			this.argumentMap = commandMap.get(context, ARGUMENTS) instanceof MapValue map ? map.value : null;
 		}
 
-		ArgumentBuilder<ServerCommandSource, ?> parse() throws CodeError {
+		ArgumentBuilder<ServerCommandSource, ?> parse() {
 			LiteralArgumentBuilder<ServerCommandSource> baseCommand = CommandManager.literal(this.commandName);
 			if (this.subCommandMap == null) {
 				return baseCommand;
@@ -266,7 +384,7 @@ public class ClientScriptUtils {
 			return this.command(baseCommand, this.subCommandMap);
 		}
 
-		private ArgumentBuilder<ServerCommandSource, ?> command(ArgumentBuilder<ServerCommandSource, ?> parent, ArucasMap childMap) throws CodeError {
+		private ArgumentBuilder<ServerCommandSource, ?> command(ArgumentBuilder<ServerCommandSource, ?> parent, ArucasMap childMap) {
 			for (ValuePair pair : childMap.pairSet()) {
 				if (!(pair.getKey() instanceof StringValue stringValue)) {
 					throw new RuntimeError("Expected string value in subcommand map", this.syntaxPosition, this.context);
@@ -310,7 +428,7 @@ public class ClientScriptUtils {
 			return parent;
 		}
 
-		private ArgumentBuilder<ServerCommandSource, ?> subCommand(String string, ArucasMap childMap) throws CodeError {
+		private ArgumentBuilder<ServerCommandSource, ?> subCommand(String string, ArucasMap childMap) {
 			if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
 				return this.command(CommandManager.literal(string), childMap);
 			}
@@ -321,7 +439,7 @@ public class ClientScriptUtils {
 			throw new RuntimeError("Expected map value for argument '%s'".formatted(string), this.syntaxPosition, this.context);
 		}
 
-		private ArgumentBuilder<ServerCommandSource, ?> connectedCommand(String string) throws CodeError {
+		private ArgumentBuilder<ServerCommandSource, ?> connectedCommand(String string) {
 			if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
 				return CommandManager.literal(string);
 			}
@@ -332,7 +450,7 @@ public class ClientScriptUtils {
 			throw new RuntimeError("Expected map value for argument '%s'".formatted(string), this.syntaxPosition, this.context);
 		}
 
-		private ArgumentBuilder<ServerCommandSource, ?> getArgument(String name, ArucasMap arguments) throws CodeError {
+		private ArgumentBuilder<ServerCommandSource, ?> getArgument(String name, ArucasMap arguments) {
 			Value argumentValue = arguments.get(this.context, TYPE);
 			if (!(argumentValue instanceof StringValue stringValue)) {
 				throw new RuntimeError("Expected string for 'type' for argument '%s'".formatted(name), this.syntaxPosition, this.context);
@@ -433,4 +551,5 @@ public class ClientScriptUtils {
 			return argumentBuilder;
 		}
 	}
+	 */
 }
