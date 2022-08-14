@@ -6,7 +6,6 @@ import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.api.wrappers.ArucasClass;
 import me.senseiwells.arucas.api.wrappers.ArucasConstructor;
 import me.senseiwells.arucas.api.wrappers.ArucasFunction;
-import me.senseiwells.arucas.throwables.BuiltInException;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.Value;
@@ -32,12 +31,12 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 @ArucasClass(name = FAKE_BLOCK)
 public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Directional, Shape.Scalable {
 	private static final Map<UUID, Set<FakeBlockWrapper>> NORMAL_BLOCKS = new LinkedHashMap<>(0);
-	private static final Supplier<BuiltInException> UNSUPPORTED = () -> new BuiltInException("FakeBlock does not support this function");
+	private static final Map<UUID, Set<FakeBlockWrapper>> THROUGH_BLOCKS = new LinkedHashMap<>(0);
 
 	public BlockPos blockPos;
 	public BlockState blockState;
-	public Direction direction;
-	public boolean cull;
+	public Direction direction = Direction.NORTH;
+	public boolean cull = true;
 
 	private float xTilt;
 	private float yTilt;
@@ -138,88 +137,16 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 	}
 
 	@Override
-	public int getRed() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public int getGreen() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public int getBlue() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public int getAlpha() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public int getOutlineRed() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public int getOutlineGreen() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public int getOutlineBlue() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public int getOutlineWidth() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public boolean hasOutline() {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public void setRed(int red) {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public void setGreen(int green) {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public void setBlue(int blue) {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public void setOutlineRed(int outlineRed) {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public void setOutlineGreen(int outlineGreen) {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public void setOutlineBlue(int outlineBlue) {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
-	public void setOutlineWidth(int outline) {
-		throw UNSUPPORTED.get();
-	}
-
-	@Override
 	public void setRenderThroughBlocks(boolean renderThroughBlocks) {
-		throw UNSUPPORTED.get();
+		if (this.shouldRenderThroughBlocks() ^ renderThroughBlocks) {
+			if (this.isRendering()) {
+				removeFakeBlock(this);
+				super.setRenderThroughBlocks(renderThroughBlocks);
+				addFakeBlock(this);
+				return;
+			}
+			super.setRenderThroughBlocks(renderThroughBlocks);
+		}
 	}
 
 	@ConstructorDoc(
@@ -304,10 +231,15 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 		return BooleanValue.of(this.cull);
 	}
 
+	private Map<UUID, Set<FakeBlockWrapper>> getBlockMap() {
+		return this.shouldRenderThroughBlocks() ? THROUGH_BLOCKS : NORMAL_BLOCKS;
+	}
+
 	public synchronized static void addFakeBlock(FakeBlockWrapper blockWrapper) {
 		Context context = blockWrapper.getCreatedContext();
-		Set<FakeBlockWrapper> fakeBlockWrapperSet = NORMAL_BLOCKS.computeIfAbsent(context.getContextId(), id -> {
-			context.getThreadHandler().addShutdownEvent(() -> NORMAL_BLOCKS.remove(id));
+		Map<UUID, Set<FakeBlockWrapper>> map = blockWrapper.getBlockMap();
+		Set<FakeBlockWrapper> fakeBlockWrapperSet = map.computeIfAbsent(context.getContextId(), id -> {
+			context.getThreadHandler().addShutdownEvent(() -> map.remove(id));
 			return new LinkedHashSet<>();
 		});
 		fakeBlockWrapperSet.add(blockWrapper);
@@ -315,7 +247,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 
 	public synchronized static void removeFakeBlock(FakeBlockWrapper blockWrapper) {
 		Context context = blockWrapper.getCreatedContext();
-		Set<FakeBlockWrapper> fakeBlocks = NORMAL_BLOCKS.get(context.getContextId());
+		Set<FakeBlockWrapper> fakeBlocks = blockWrapper.getBlockMap().get(context.getContextId());
 		if (fakeBlocks != null) {
 			fakeBlocks.remove(blockWrapper);
 		}
@@ -323,5 +255,9 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 
 	public synchronized static Stream<FakeBlockWrapper> getBlocks() {
 		return NORMAL_BLOCKS.values().stream().flatMap(Collection::stream);
+	}
+
+	public synchronized static Stream<FakeBlockWrapper> getThroughBlocks() {
+		return THROUGH_BLOCKS.values().stream().flatMap(Collection::stream);
 	}
 }

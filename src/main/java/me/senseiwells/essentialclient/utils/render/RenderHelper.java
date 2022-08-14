@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.utils.render;
 
+import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
 import me.senseiwells.essentialclient.clientscript.extensions.FakeBlockWrapper;
@@ -28,8 +29,8 @@ import java.util.List;
 public class RenderHelper {
 	@SuppressWarnings("deprecation")
 	public static final Identifier BLOCK_ATLAS_TEXTURE = SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
-	public static final RenderLayer CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucent(BLOCK_ATLAS_TEXTURE);
-	public static final RenderLayer NO_CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucentCull(BLOCK_ATLAS_TEXTURE);
+	public static final RenderLayer CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucentCull(BLOCK_ATLAS_TEXTURE);
+	public static final RenderLayer NO_CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucent(BLOCK_ATLAS_TEXTURE);
 
 	public static void renderAllShapes(MatrixStack matrices) {
 		setupArucasRendering();
@@ -37,6 +38,7 @@ public class RenderHelper {
 		renderBoxes(matrices);
 		renderSpheres(matrices);
 		renderLines(matrices);
+		// renderBlocks(matrices);
 
 		resetArucasRendering();
 	}
@@ -339,6 +341,7 @@ public class RenderHelper {
 		List<LineShapeWrapper> normalLines = LineShapeWrapper.getNormalLines();
 		List<LineShapeWrapper> throughLines = LineShapeWrapper.getThroughLines();
 		if (!normalLines.isEmpty()) {
+			RenderSystem.enableDepthTest();
 			drawLines(tessellator, bufferBuilder, matrices, cameraPos, normalLines);
 		}
 
@@ -387,15 +390,19 @@ public class RenderHelper {
 		builder.vertex(model, pos2.getX(), pos2.getY(), pos2.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
 	}
 
-	// Renders fake blocks
-	// Reference: https://github.com/ch-yx/fabric-carpet/blob/item_shape/src/main/java/carpet/script/utils/ShapesRenderer.java#L283-L403
 	public static void renderBlocks(MatrixStack matrices) {
 		MinecraftClient client = EssentialUtils.getClient();
 		VertexConsumerProvider.Immediate immediate = client.getBufferBuilders().getEntityVertexConsumers();
 
 		FakeBlockWrapper.getBlocks().forEach(f -> renderFakeBlock(client, matrices, f, immediate));
+		immediate.draw(NO_CULL_BLOCK_LAYER);
+		immediate.draw(CULL_BLOCK_LAYER);
 
-		immediate.drawCurrentLayer();
+		RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, MinecraftClient.IS_SYSTEM_MAC);
+
+		FakeBlockWrapper.getThroughBlocks().forEach(f -> renderFakeBlock(client, matrices, f, immediate));
+		immediate.draw(NO_CULL_BLOCK_LAYER);
+		immediate.draw(CULL_BLOCK_LAYER);
 	}
 
 	private static void renderFakeBlock(MinecraftClient client, MatrixStack matrices, FakeBlockWrapper fakeBlock, VertexConsumerProvider.Immediate immediate) {
@@ -437,7 +444,7 @@ public class RenderHelper {
 
 		// client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
 
-		renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, fakeBlock.getAlpha(), light, OverlayTexture.DEFAULT_UV, fakeBlock.cull);
+		renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, fakeBlock.getAlpha() / 255.0F, light, OverlayTexture.DEFAULT_UV, fakeBlock.cull);
 
 		matrices.pop();
 	}
@@ -516,7 +523,7 @@ public class RenderHelper {
 		vec3f.transform(matrixEntry.getNormalMatrix());
 		int i = 8;
 		int j = js.length / i;
-		try (MemoryStack memoryStack = MemoryStack.stackPush();) {
+		try (MemoryStack memoryStack = MemoryStack.stackPush()) {
 			ByteBuffer byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSizeByte());
 			IntBuffer intBuffer = byteBuffer.asIntBuffer();
 			for (int k = 0; k < j; ++k) {
