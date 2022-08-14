@@ -88,6 +88,10 @@ prepareRemapJar {
 
 remapJar {
 	inputFile.set shadowJar.archiveFile.get()
+
+	doLast {
+		shadowJar.archiveFile.get().asFile.delete()
+	}
 }
 
 shadowJar {
