@@ -140,6 +140,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("getCurrentScreen", this::getCurrentScreen),
 				MemberFunction.of("craft", 1, this::craft),
 				MemberFunction.of("craftRecipe", 1, this::craftRecipe),
+				MemberFunction.of("craftRecipe", 2, this::craftRecipeDrop),
+				MemberFunction.of("clickRecipe", 1, this::clickRecipeDefault),
+				MemberFunction.of("clickRecipe", 2, this::clickRecipeWithBoolean),
 				MemberFunction.of("logout", 1, this::logout),
 				MemberFunction.of("attackEntity", 1, this::attackEntity),
 				MemberFunction.of("interactWithEntity", 1, this::interactWithEntity),
@@ -155,6 +158,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("updateBreakingBlock", 1, this::updateBreakingBlockPos),
 				MemberFunction.of("attackBlock", 4, this::attackBlock),
 				MemberFunction.of("attackBlock", 2, this::attackBlockPos),
+				MemberFunction.of("interactItem", 2, this::interactItem),
 				MemberFunction.of("interactBlock", 4, this::interactBlock),
 				MemberFunction.of("interactBlock", 2, this::interactBlockPos),
 				MemberFunction.of("interactBlock", 3, this::interactBlockPosHand),
@@ -165,6 +169,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("swapHands", this::swapHands),
 				MemberFunction.of("swingHand", 1, this::swingHand),
 				MemberFunction.of("clickSlot", 3, this::clickSlot),
+				MemberFunction.of("clickCreativeStack", 2, this::clickCreativeStack),
 				MemberFunction.of("getSwappableHotbarSlot", this::getSwappableHotbarSlot),
 				MemberFunction.of("spectatorTeleport", 1, this::spectatorTeleport),
 				MemberFunction.of("canPlaceBlockAt", 2, this::canPlaceBlockAtPos),
@@ -710,6 +715,30 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		@FunctionDoc(
+			name = "clickCreativeStack",
+			desc = "This allows you to click Creative stack, but requires sync with server",
+			params = {
+				ITEM_STACK, "itemStack", "Stack to click",
+				NUMBER, "slot", "the slot to click"},
+			throwMsgs = "That slot is out of bounds",
+			example = "player.clickCreativeStack(Material.DIAMOND_SWORD.asItemStack(), 9);"
+		)
+		private Value clickCreativeStack(Arguments arguments) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			ItemStackValue stackValue = arguments.getNext(ItemStackValue.class);
+			NumberValue number = arguments.getNextNumber();
+			ScreenHandler screenHandler = player.currentScreenHandler;
+			int size = screenHandler.slots.size();
+			if (number.value >= size || number.value < 0) {
+				throw arguments.getError("That slot is out of bounds");
+			}
+			int slot = number.getValue().intValue();
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickCreativeStack(stackValue.value, slot));
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
 			name = "shiftClickSlot",
 			desc = "This allows you to shift click a slot",
 			params = {NUMBER, "slot", "the slot to click"},
@@ -776,9 +805,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = """
 				chestRecipe = [
-				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
-				    Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
-				    Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
+					Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
+					Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
+					Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS
 				];
 				player.craft(chestRecipe);
 				"""
@@ -834,6 +863,83 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
 				InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+			});
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "craftRecipe",
+			desc = "This allows you to craft a predefined recipe",
+			params = {
+				RECIPE, "recipe", "the recipe you want to craft",
+				BOOLEAN, "boolean", "whether result should be dropped or not"
+			},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.craftRecipe(Recipe.CHEST, true);"
+		)
+		private Value craftRecipeDrop(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
+				if (booleanValue.value) {
+					InventoryUtils.shiftClickSlot(client, handledScreen, 0);
+				}
+				else {
+					InventoryUtils.dropStackScheduled(client, handledScreen, true);
+				}
+			});
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "clickRecipe",
+			desc = "This allows you to click a predefined recipe",
+			params = {RECIPE, "recipe", "the recipe you want to select"},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.clickRecipe(Recipe.CHEST);"
+		)
+		private Value clickRecipeDefault(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false);
+			});
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "clickRecipe",
+			desc = "This allows you to click a predefined recipe",
+			params = {
+				RECIPE, "recipe", "the recipe you want to select",
+				BOOLEAN, "boolean", "Shift click or not"
+			},
+			throwMsgs = "Must be in a crafting GUI",
+			example = "player.clickRecipe(Recipe.CHEST, true);"
+		)
+		private Value clickRecipeWithBoolean(Arguments arguments) throws CodeError {
+			MinecraftClient client = ArucasMinecraftExtension.getClient();
+			if (!(client.currentScreen instanceof HandledScreen<?> handledScreen)) {
+				throw arguments.getError("Must be in a crafting GUI");
+			}
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			RecipeValue recipeValue = arguments.skip().getNext(RecipeValue.class);
+			BooleanValue booleanValue = arguments.getNext(BooleanValue.class);
+			client.execute(() -> {
+				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value);
 			});
 			return NullValue.NULL;
 		}
@@ -1105,6 +1211,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			},
 			example = "player.fakeLook(90, 0, 'up', 100);"
 		)
+		@SuppressWarnings("ConstantConditions")
 		private Value fakeLook(Arguments arguments) throws CodeError {
 			NumberValue yaw = arguments.skip().getNextNumber();
 			NumberValue pitch = arguments.getNextNumber();
@@ -1115,11 +1222,13 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			duration = duration > 0 ? duration : 20;
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			int finalDuration = duration;
+			ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
 			client.execute(() -> {
 				BetterAccurateBlockPlacement.fakeYaw = yaw.value.floatValue();
 				BetterAccurateBlockPlacement.fakePitch = pitch.value.floatValue();
 				BetterAccurateBlockPlacement.fakeDirection = direction;
 				BetterAccurateBlockPlacement.requestedTicks = finalDuration;
+				BetterAccurateBlockPlacement.sendLookPacket(networkHandler, client.player);
 			});
 			return NullValue.NULL;
 		}
@@ -1295,6 +1404,28 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		}
 
 		@FunctionDoc(
+			name = "interactItem",
+			desc = "This allows you to interact item with given Hand",
+			params = {
+				STRING, "hand", " Hand to use, MAIN / OFFHAND or its lowercases are allowed."
+			},
+			example = "player.interactItem('main');"
+		)
+		private Value interactItem(Arguments arguments) throws CodeError {
+			ClientPlayerEntity player = this.getPlayer(arguments);
+			StringValue stringValue = arguments.getNextString();
+			String string = stringValue.value.toLowerCase();
+			Hand hand = switch (string) {
+				case "main", "mainhand", "main_hand" -> Hand.MAIN_HAND;
+				case "offhand", "off", "off_hand" -> Hand.OFF_HAND;
+				default -> throw new RuntimeError("Argument should be either main / offhand!", arguments.getPosition(), arguments.getContext());
+			};
+			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
+			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactItem(player, hand));
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
 			name = "interactBlock",
 			desc = "This allows you to interact with a block at a position and direction",
 			params = {
@@ -1448,7 +1579,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			return this.interactInternal(player, posValue, stringValue, blockPosValue, hand);
 		}
-    
+
 		@FunctionDoc(
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",

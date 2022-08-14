@@ -6,6 +6,7 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.throwables.CodeError;
+import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -132,6 +133,8 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 		public ArucasFunctionMap<MemberFunction> getDefinedMethods() {
 			return ArucasFunctionMap.of(
 				MemberFunction.of("syncToTick", this::syncToTick),
+				MemberFunction.of("disableSync", this::disableScreenSync),
+				MemberFunction.of("enableSync", this::enableScreenSync),
 				MemberFunction.of("getRunDirectory", this::getRunDirectory),
 				MemberFunction.of("screenshot", this::screenshot),
 				MemberFunction.of("screenshot", 1, this::screenshotNamed),
@@ -178,6 +181,34 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 				MemberFunction.of("canSendScriptPacket", this::canSendScriptPacket),
 				MemberFunction.arbitrary("sendScriptPacket", this::sendScriptPacket)
 			);
+		}
+
+		@FunctionDoc(
+			name = "disableSync",
+			desc = "Disables client's screen handler syncing",
+			example = "client.disableSync();"
+		)
+		private Value disableScreenSync(Arguments arguments) throws CodeError {
+			final MinecraftClient client = this.getClient(arguments);
+			if (client.player == null) {
+				throw new RuntimeError("Player of client was null!", arguments.getPosition(), arguments.getContext());
+			}
+			client.execute(() -> client.player.currentScreenHandler.disableSyncing());
+			return NullValue.NULL;
+		}
+
+		@FunctionDoc(
+			name = "enableSync",
+			desc = "Enables client's screen handler syncing",
+			example = "client.enableSync();"
+		)
+		private Value enableScreenSync(Arguments arguments) throws CodeError {
+			final MinecraftClient client = this.getClient(arguments);
+			if (client.player == null) {
+				throw new RuntimeError("Player of client was null!", arguments.getPosition(), arguments.getContext());
+			}
+			client.execute(() -> client.player.currentScreenHandler.enableSyncing());
+			return NullValue.NULL;
 		}
 
 		@FunctionDoc(
@@ -349,9 +380,9 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			params = {MAP, "command", "a command map or a command builder"},
 			example = """
 			client.addCommand({
-			    "name": "example",
-			    "subcommands": { },
-			    "arguments": { }
+				"name": "example",
+				"subcommands": { },
+				"arguments": { }
 			});
 			"""
 		)

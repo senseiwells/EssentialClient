@@ -11,7 +11,6 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.essentialclient.commands.CommandRegister;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
 import me.senseiwells.essentialclient.utils.render.Texts;

@@ -17,6 +17,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerAbilities;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -66,6 +67,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				MemberFunction.of("getPlayerName", this::getPlayerName),
 				MemberFunction.of("getGamemode", this::getGamemode),
 				MemberFunction.of("getTotalSlots", this::getTotalSlots),
+				MemberFunction.of("isPlayerSlot", 1, this::isPlayerSlot),
 				MemberFunction.of("getItemForSlot", 1, this::getItemForSlot),
 				MemberFunction.of("getItemForPlayerSlot", 1, this::getItemForPlayerSlot),
 				MemberFunction.of("getSlotFor", 1, this::getSlotFor),
@@ -162,6 +164,27 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			}
 			ItemStack itemStack = screenHandler.slots.get(index).getStack();
 			return new ItemStackValue(itemStack);
+		}
+
+		@FunctionDoc(
+			name = "isPlayerSlot",
+			desc = "This gets inventory type (player / other) for given slot numbers",
+			params = {NUMBER, "slotNum", "the slot number you want to get"},
+			returns = {BOOLEAN, "whether slot was player inventory or not"},
+			throwMsgs = "That slot is out of bounds",
+			example = "otherPlayer.isPlayerSlot(0);"
+		)
+		private Value isPlayerSlot(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
+			NumberValue numberValue = arguments.getNextNumber();
+			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
+			int index = numberValue.value.intValue();
+			if (index > screenHandler.slots.size() || index < 0) {
+				throw arguments.getError("That slot is out of bounds");
+			}
+			Slot slot = screenHandler.slots.get(index);
+			boolean retVal = slot.inventory instanceof PlayerInventory;
+			return BooleanValue.of(retVal);
 		}
 
 		@FunctionDoc(
