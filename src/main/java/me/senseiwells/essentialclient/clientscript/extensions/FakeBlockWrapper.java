@@ -6,8 +6,9 @@ import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.api.wrappers.ArucasClass;
 import me.senseiwells.arucas.api.wrappers.ArucasConstructor;
 import me.senseiwells.arucas.api.wrappers.ArucasFunction;
-import me.senseiwells.arucas.api.wrappers.IArucasWrappedClass;
+import me.senseiwells.arucas.throwables.BuiltInException;
 import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.Value;
 import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.clientscript.values.PosValue;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
@@ -28,12 +30,14 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 	importPath = "Minecraft"
 )
 @ArucasClass(name = FAKE_BLOCK)
-public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Shape.Directional, Shape.Scalable {
-	private static final Map<UUID, Set<FakeBlockWrapper>> BLOCKS_TO_RENDER = new LinkedHashMap<>(0);
+public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Directional, Shape.Scalable {
+	private static final Map<UUID, Set<FakeBlockWrapper>> NORMAL_BLOCKS = new LinkedHashMap<>(0);
+	private static final Supplier<BuiltInException> UNSUPPORTED = () -> new BuiltInException("FakeBlock does not support this function");
 
 	public BlockPos blockPos;
 	public BlockState blockState;
 	public Direction direction;
+	public boolean cull;
 
 	private float xTilt;
 	private float yTilt;
@@ -121,6 +125,103 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 		this.direction = direction;
 	}
 
+	@Override
+	public void render() {
+		super.render();
+		addFakeBlock(this);
+	}
+
+	@Override
+	public void stopRendering() {
+		super.stopRendering();
+		removeFakeBlock(this);
+	}
+
+	@Override
+	public int getRed() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public int getGreen() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public int getBlue() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public int getAlpha() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public int getOutlineRed() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public int getOutlineGreen() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public int getOutlineBlue() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public int getOutlineWidth() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public boolean hasOutline() {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setRed(int red) {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setGreen(int green) {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setBlue(int blue) {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setOutlineRed(int outlineRed) {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setOutlineGreen(int outlineGreen) {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setOutlineBlue(int outlineBlue) {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setOutlineWidth(int outline) {
+		throw UNSUPPORTED.get();
+	}
+
+	@Override
+	public void setRenderThroughBlocks(boolean renderThroughBlocks) {
+		throw UNSUPPORTED.get();
+	}
+
 	@ConstructorDoc(
 		desc = "Creates a fake block with the given block and position",
 		params = {
@@ -131,6 +232,7 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 	)
 	@ArucasConstructor
 	public void construct(Context context, BlockValue blockValue, PosValue posValue) {
+		this.setCreatedContext(context.createBranch());
 		this.setBlockState(blockValue.value);
 		this.setBlockPos(posValue.toBlockPos());
 		this.setDefaultScale();
@@ -181,41 +283,45 @@ public class FakeBlockWrapper implements IArucasWrappedClass, Shape.Tiltable, Sh
 	}
 
 	@FunctionDoc(
-		name = "render",
-		desc = "This sets the shape to be rendered indefinitely, the shape will only stop rendering when the script ends or when you call the stopRendering() method",
-		example = "shape.render();"
+		name = "setCull",
+		params = {BOOLEAN, "shouldCull", "whether the block should be culled"},
+		desc = "Sets whether the block should be culled",
+		example = "fakeBlock.setCull(true);"
 	)
 	@ArucasFunction
-	public void render(Context context) {
-		addFakeBlock(context, this);
+	public void setCull(Context context, BooleanValue shouldCull) {
+		this.cull = shouldCull.value;
 	}
 
 	@FunctionDoc(
-		name = "stopRendering",
-		desc = "This stops the shape from rendering",
-		example = "shape.stopRendering();"
+		name = "shouldCull",
+		desc = "Returns whether the block is set to cull or not",
+		returns = {BOOLEAN, "whether the block should cull"},
+		example = "fakeBlock.shouldCull();"
 	)
 	@ArucasFunction
-	public void stopRendering(Context context) {
-		removeFakeBlock(context, this);
+	public Value shouldCull(Context context) {
+		return BooleanValue.of(this.cull);
 	}
 
-	public synchronized static void addFakeBlock(Context context, FakeBlockWrapper blockWrapper) {
-		Set<FakeBlockWrapper> blockWrappers = BLOCKS_TO_RENDER.computeIfAbsent(context.getContextId(), id -> {
-			context.getThreadHandler().addShutdownEvent(() -> BLOCKS_TO_RENDER.remove(id));
+	public synchronized static void addFakeBlock(FakeBlockWrapper blockWrapper) {
+		Context context = blockWrapper.getCreatedContext();
+		Set<FakeBlockWrapper> fakeBlockWrapperSet = NORMAL_BLOCKS.computeIfAbsent(context.getContextId(), id -> {
+			context.getThreadHandler().addShutdownEvent(() -> NORMAL_BLOCKS.remove(id));
 			return new LinkedHashSet<>();
 		});
-		blockWrappers.add(blockWrapper);
+		fakeBlockWrapperSet.add(blockWrapper);
 	}
 
-	public synchronized static void removeFakeBlock(Context context, FakeBlockWrapper blockWrapper) {
-		Set<FakeBlockWrapper> fakeBlocks = BLOCKS_TO_RENDER.get(context.getContextId());
+	public synchronized static void removeFakeBlock(FakeBlockWrapper blockWrapper) {
+		Context context = blockWrapper.getCreatedContext();
+		Set<FakeBlockWrapper> fakeBlocks = NORMAL_BLOCKS.get(context.getContextId());
 		if (fakeBlocks != null) {
 			fakeBlocks.remove(blockWrapper);
 		}
 	}
 
-	public synchronized static Stream<FakeBlockWrapper> getAllBlocksToRender() {
-		return BLOCKS_TO_RENDER.values().stream().flatMap(Collection::stream);
+	public synchronized static Stream<FakeBlockWrapper> getBlocks() {
+		return NORMAL_BLOCKS.values().stream().flatMap(Collection::stream);
 	}
 }
