@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -86,7 +85,7 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 			name = "getName",
 			desc = "Gets the name of the specific screen",
 			returns = {STRING, "the screen name, if you are in the creative menu it will return the name of the tab you are on"},
-			example = "screen.getName()"
+			examples = "screen.getName()"
 		)
 		private Value getName(Arguments arguments) {
 			return StringValue.of(ScreenRemapper.getScreenName(this.getScreen(arguments).getClass()));
@@ -96,7 +95,7 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 			name = "getTitle",
 			desc = "Gets the title of the specific screen",
 			returns = {STRING, "the screen title as text, this may include formatting, and custom names for the screen if applicable"},
-			example = "screen.getTitle()"
+			examples = "screen.getTitle()"
 		)
 		private Value getTitle(Arguments arguments) {
 			Screen screen = this.getScreen(arguments);

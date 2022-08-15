@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -66,7 +65,7 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 				"[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects)"
 			},
 			returns = {LIST, "a list of status effects, may be empty"},
-			example = "livingEntity.getStatusEffects();"
+			examples = "livingEntity.getStatusEffects();"
 		)
 		private Value getStatusEffects(Arguments arguments) {
 			LivingEntity livingEntity = this.getLivingEntity(arguments);
@@ -82,7 +81,7 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 			name = "getHealth",
 			desc = "This gets the LivingEntity's current health",
 			returns = {NUMBER, "the LivingEntity's health"},
-			example = "livingEntity.getHealth();"
+			examples = "livingEntity.getHealth();"
 		)
 		private Value getHealth(Arguments arguments) {
 			return NumberValue.of(this.getLivingEntity(arguments).getHealth());
@@ -92,7 +91,7 @@ public class LivingEntityValue<T extends LivingEntity> extends EntityValue<T> {
 			name = "isFlyFalling",
 			desc = "This checks if the LivingEntity is fly falling (gliding with elytra)",
 			returns = {BOOLEAN, "true if the LivingEntity is fly falling"},
-			example = "livingEntity.isFlyFalling();"
+			examples = "livingEntity.isFlyFalling();"
 		)
 		private Value isFlyFalling(Arguments arguments) {
 			return BooleanValue.of(this.getLivingEntity(arguments).isFallFlying());

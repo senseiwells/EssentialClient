@@ -9,7 +9,6 @@ import me.senseiwells.arucas.api.wrappers.ArucasFunction;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.BooleanValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import me.senseiwells.essentialclient.utils.clientscript.Shape;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -153,7 +152,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 			BLOCK, "block", "The block to use",
 			POS, "pos", "The position of the block"
 		},
-		example = "new FakeBlock(Material.BEDROCK.asBlock(), new Pos(0, 0, 0));"
+		examples = "new FakeBlock(Material.BEDROCK.asBlock(), new Pos(0, 0, 0));"
 	)
 	@ArucasConstructor
 	public void construct(Context context, BlockValue blockValue, PosValue posValue) {
@@ -167,7 +166,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 		name = "setBlock",
 		desc = "Sets the block type to render of the fake block",
 		params = {BLOCK, "block", "The block to render"},
-		example = "fakeBlock.setBlock(Material.BEDROCK.asBlock());"
+		examples = "fakeBlock.setBlock(Material.BEDROCK.asBlock());"
 	)
 	@ArucasFunction
 	public void setBlock(Context context, BlockValue blockValue) {
@@ -178,7 +177,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 		name = "setPos",
 		desc = "Sets the position of the fake block",
 		params = {POS, "pos", "The position of the block"},
-		example = "fakeBlock.setPos(new Pos(0, 0, 0));"
+		examples = "fakeBlock.setPos(new Pos(0, 0, 0));"
 	)
 	@ArucasFunction
 	public void setPos(Context context, PosValue posValue) {
@@ -189,7 +188,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 		name = "getBlock",
 		desc = "Gets the current block type of the fake block",
 		returns = {BLOCK, "The block type of the fake block"},
-		example = "fakeBlock.getBlock();"
+		examples = "fakeBlock.getBlock();"
 	)
 	@ArucasFunction
 	public Value getBlock(Context context) {
@@ -200,7 +199,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 		name = "getPos",
 		desc = "Gets the current position of the fake block",
 		returns = {POS, "The position of the fake block"},
-		example = "fakeBlock.getPos();"
+		examples = "fakeBlock.getPos();"
 	)
 	@ArucasFunction
 	public Value getPos(Context context) {
@@ -211,7 +210,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 		name = "setCull",
 		params = {BOOLEAN, "shouldCull", "whether the block should be culled"},
 		desc = "Sets whether the block should be culled",
-		example = "fakeBlock.setCull(true);"
+		examples = "fakeBlock.setCull(true);"
 	)
 	@ArucasFunction
 	public void setCull(Context context, BooleanValue shouldCull) {
@@ -222,7 +221,7 @@ public class FakeBlockWrapper extends Shape implements Shape.Tiltable, Shape.Dir
 		name = "shouldCull",
 		desc = "Returns whether the block is set to cull or not",
 		returns = {BOOLEAN, "whether the block should cull"},
-		example = "fakeBlock.shouldCull();"
+		examples = "fakeBlock.shouldCull();"
 	)
 	@ArucasFunction
 	public Value shouldCull(Context context) {

@@ -185,7 +185,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
 			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
-		example = "shape.setColour(0xFF0000);"
+		examples = "shape.setColour(0xFF0000);"
 	)
 	@ArucasFunction
 	public final void setColour(Context context, NumberValue numberValue) {
@@ -202,7 +202,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
 			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
-		example = "shape.setColor(0xFF0000);"
+		examples = "shape.setColor(0xFF0000);"
 	)
 	@ArucasFunction
 	public final void setColor(Context context, NumberValue numberValue) {
@@ -221,7 +221,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "blue", "the amount of blue 0 - 255"
 		},
 		throwMsgs = "Colour ... is out of bounds, must be between 0 - 255",
-		example = "shape.setColour(34, 55, 0);"
+		examples = "shape.setColour(34, 55, 0);"
 	)
 	@ArucasFunction
 	public final void setColour(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
@@ -243,7 +243,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "blue", "the amount of blue 0 - 255"
 		},
 		throwMsgs = "Colour ... is out of bounds, must be between 0 - 255",
-		example = "shape.setColor(34, 55, 0);"
+		examples = "shape.setColor(34, 55, 0);"
 	)
 	@ArucasFunction
 	public final void setColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
@@ -255,7 +255,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the red value of the shape, using a single value",
 		params = {NUMBER, "red", "the amount of red between 0 - 255"},
 		throwMsgs = "Colour ... is out of bounds, must be between 0 - 255",
-		example = "shape.setRed(34);"
+		examples = "shape.setRed(34);"
 	)
 	@ArucasFunction
 	public final void setRed(Context context, NumberValue numberValue) {
@@ -269,7 +269,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the green value of the shape, using a single value",
 		params = {NUMBER, "green", "the amount of green between 0 - 255"},
 		throwMsgs = "Colour ... is out of bounds, must be between 0 - 255",
-		example = "shape.setGreen(34);"
+		examples = "shape.setGreen(34);"
 	)
 	@ArucasFunction
 	public final void setGreen(Context context, NumberValue numberValue) {
@@ -283,7 +283,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the blue value of the shape, using a single value",
 		params = {NUMBER, "blue", "the amount of blue between 0 - 255"},
 		throwMsgs = "Colour ... is out of bounds, must be between 0 - 255",
-		example = "shape.setBlue(34);"
+		examples = "shape.setBlue(34);"
 	)
 	@ArucasFunction
 	public final void setBlue(Context context, NumberValue numberValue) {
@@ -297,7 +297,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		desc = "This sets the opacity of the shape, using a single value",
 		params = {NUMBER, "alpha", "the opacity, where 255 is solid colour and 0 is no colour"},
 		throwMsgs = "Colour ... is out of bounds, must be between 0 - 255",
-		example = "shape.setOpacity(34);"
+		examples = "shape.setOpacity(34);"
 	)
 	@ArucasFunction
 	public final void setOpacity(Context context, NumberValue numberValue) {
@@ -316,7 +316,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
 			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
-		example = "shape.setOutlineColour(0xFF00FF);"
+		examples = "shape.setOutlineColour(0xFF00FF);"
 	)
 	@ArucasFunction
 	public final void setOutlineColour(Context context, NumberValue numberValue) {
@@ -333,7 +333,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "colour", "the colour, usually you would use hexadecimal, 0xRRGGBB where RR represents red from 00 - FF, " +
 			"GG represents green from 00 - FF, and BB represents blue from 00 - FF"
 		},
-		example = "shape.setOutlineColor(0xFF00FF);"
+		examples = "shape.setOutlineColor(0xFF00FF);"
 	)
 	@ArucasFunction
 	public final void setOutlineColor(Context context, NumberValue numberValue) {
@@ -351,7 +351,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "green", "the amount of green 0 - 255",
 			NUMBER, "blue", "the amount of blue 0 - 255"
 		},
-		example = "shape.setOutlineColour(255, 0, 255);"
+		examples = "shape.setOutlineColour(255, 0, 255);"
 	)
 	@ArucasFunction
 	public final void setOutlineColour(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
@@ -372,7 +372,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			NUMBER, "green", "the amount of green 0 - 255",
 			NUMBER, "blue", "the amount of blue 0 - 255"
 		},
-		example = "shape.setOutlineColor(255, 0, 255);"
+		examples = "shape.setOutlineColor(255, 0, 255);"
 	)
 	@ArucasFunction
 	public final void setOutlineColor(Context context, NumberValue redValue, NumberValue greenValue, NumberValue blueValue) {
@@ -383,7 +383,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "setOutlineRed",
 		desc = "This sets the outline red value of the shape, using a single value",
 		params = {NUMBER, "red", "the amount of red between 0 - 255"},
-		example = "shape.setOutlineRed(34);"
+		examples = "shape.setOutlineRed(34);"
 	)
 	@ArucasFunction
 	public final void setOutlineRed(Context context, NumberValue numberValue) {
@@ -396,7 +396,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "setOutlineGreen",
 		desc = "This sets the outline green value of the shape, using a single value",
 		params = {NUMBER, "green", "the amount of green between 0 - 255"},
-		example = "shape.setOutlineGreen(34);"
+		examples = "shape.setOutlineGreen(34);"
 	)
 	@ArucasFunction
 	public final void setOutlineGreen(Context context, NumberValue numberValue) {
@@ -409,7 +409,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "setOutlineBlue",
 		desc = "This sets the outline blue value of the shape, using a single value",
 		params = {NUMBER, "blue", "the amount of blue between 0 - 255"},
-		example = "shape.setOutlineBlue(34);"
+		examples = "shape.setOutlineBlue(34);"
 	)
 	@ArucasFunction
 	public final void setOutlineBlue(Context context, NumberValue numberValue) {
@@ -422,7 +422,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "setOutlinePixelWidth",
 		desc = "This sets the outline pixel width of the shape, using a single value",
 		params = {NUMBER, "width", "the width of the outline in pixels"},
-		example = "shape.setOutlinePixelWidth(5);"
+		examples = "shape.setOutlinePixelWidth(5);"
 	)
 	@ArucasFunction
 	public final void setOutlinePixelWidth(Context context, NumberValue width) {
@@ -433,7 +433,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "setRenderThroughBlocks",
 		desc = "This sets whether the shape should render through blocks",
 		params = {BOOLEAN, "boolean", "whether the shape should render through blocks"},
-		example = "shape.setRenderThroughBlocks(true);"
+		examples = "shape.setRenderThroughBlocks(true);"
 	)
 	@ArucasFunction
 	public final void setRenderThroughBlocks(Context context, BooleanValue booleanValue) {
@@ -444,7 +444,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "getRed",
 		desc = "This returns the red value of the shape",
 		returns = {NUMBER, "the red value of the shape"},
-		example = "shape.getRed();"
+		examples = "shape.getRed();"
 	)
 	@ArucasFunction
 	public final NumberValue getRed(Context context) {
@@ -455,7 +455,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "getGreen",
 		desc = "This returns the green value of the shape",
 		returns = {NUMBER, "the green value of the shape"},
-		example = "shape.getGreen();"
+		examples = "shape.getGreen();"
 	)
 	@ArucasFunction
 	public final NumberValue getGreen(Context context) {
@@ -466,7 +466,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "getBlue",
 		desc = "This returns the blue value of the shape",
 		returns = {NUMBER, "the blue value of the shape"},
-		example = "shape.getBlue();"
+		examples = "shape.getBlue();"
 	)
 	@ArucasFunction
 	public final NumberValue getBlue(Context context) {
@@ -477,7 +477,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "getRGB",
 		desc = "This returns the RGB value of the shape",
 		returns = {NUMBER, "the RGB value of the shape as a single number in the form 0xRRGGBB"},
-		example = "shape.getRGB();"
+		examples = "shape.getRGB();"
 	)
 	@ArucasFunction
 	public final NumberValue getRGB(Context context) {
@@ -488,7 +488,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "getRGBList",
 		desc = "This returns the RGB value of the shape as a list",
 		returns = {LIST, "the RGB value of the shape as a list in the form [red, green, blue]"},
-		example = "r, g, b = shape.getRGBList();"
+		examples = "r, g, b = shape.getRGBList();"
 	)
 	@ArucasFunction
 	public final ListValue getRGBList(Context context) {
@@ -503,7 +503,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "getOpacity",
 		desc = "This returns the opacity of the shape",
 		returns = {NUMBER, "the opacity of the shape"},
-		example = "shape.getOpacity();"
+		examples = "shape.getOpacity();"
 	)
 	@ArucasFunction
 	public final NumberValue getOpacity(Context context) {
@@ -514,7 +514,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "getRGBAList",
 		desc = "This returns the RGBA value of the shape as a list",
 		returns = {LIST, "the RGBA value of the shape as a list in the form [red, green, blue, opacity]"},
-		example = "r, g, b, a = shape.getRGBAList();"
+		examples = "r, g, b, a = shape.getRGBAList();"
 	)
 	@ArucasFunction
 	public final ListValue getRGBAList(Context context) {
@@ -530,7 +530,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		name = "shouldRenderThroughBlocks",
 		desc = "This returns whether the shape should render through blocks",
 		returns = {BOOLEAN, "whether the shape should render through blocks"},
-		example = "shape.shouldRenderThroughBlocks();"
+		examples = "shape.shouldRenderThroughBlocks();"
 	)
 	@ArucasFunction
 	public final BooleanValue shouldRenderThroughBlocks(Context context) {
@@ -540,7 +540,7 @@ public abstract class Shape implements IArucasWrappedClass {
 	@FunctionDoc(
 		name = "render",
 		desc = "This sets the shape to be rendered indefinitely, the shape will only stop rendering when the script ends or when you call the stopRendering() method",
-		example = "shape.render();"
+		examples = "shape.render();"
 	)
 	@ArucasFunction
 	public final void render(Context context) {
@@ -550,7 +550,7 @@ public abstract class Shape implements IArucasWrappedClass {
 	@FunctionDoc(
 		name = "stopRendering",
 		desc = "This stops the shape from rendering",
-		example = "shape.stopRendering();"
+		examples = "shape.stopRendering();"
 	)
 	@ArucasFunction
 	public final void stopRendering(Context context) {
@@ -615,7 +615,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setPos",
 			desc = "This returns the position of the shape",
 			params = {POS, "pos", "the position of the shape"},
-			example = "shape.setPos(new Pos(0, 0, 0));"
+			examples = "shape.setPos(new Pos(0, 0, 0));"
 		)
 		@ArucasFunction
 		public void setPos(Context context, PosValue posValue) {
@@ -626,7 +626,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "getWidth",
 			desc = "This returns the width of the shape",
 			returns = {NUMBER, "the width of the shape"},
-			example = "shape.getWidth();"
+			examples = "shape.getWidth();"
 		)
 		@ArucasFunction
 		public NumberValue getWidth(Context context) {
@@ -637,7 +637,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setWidth",
 			desc = "This sets the width of the shape",
 			params = {NUMBER, "width", "the width of the shape"},
-			example = "shape.setWidth(10.5);"
+			examples = "shape.setWidth(10.5);"
 		)
 		@ArucasFunction
 		public void setWidth(Context context, NumberValue width) {
@@ -647,7 +647,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		@FunctionDoc(
 			name = "centerPosition",
 			desc = "This rounds the position to the nearest block position",
-			example = "shape.centerPosition();"
+			examples = "shape.centerPosition();"
 		)
 		@ArucasFunction
 		public void centerPosition(Context context) {
@@ -708,7 +708,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setPos1",
 			desc = "This sets the first position of the shape",
 			params = {POS, "pos1", "the first position of the shape"},
-			example = "shape.setPos1(new Pos(1, 0, 100));"
+			examples = "shape.setPos1(new Pos(1, 0, 100));"
 		)
 		@ArucasFunction
 		public void setPos1(Context context, PosValue posValue) {
@@ -719,7 +719,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setPos2",
 			desc = "This sets the second position of the shape",
 			params = {POS, "pos2", "the second position of the shape"},
-			example = "shape.setPos2(new Pos(100, 0, 200));"
+			examples = "shape.setPos2(new Pos(100, 0, 200));"
 		)
 		@ArucasFunction
 		public void setPos2(Context context, PosValue posValue) {
@@ -729,7 +729,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		@FunctionDoc(
 			name = "centerPositions",
 			desc = "This centers the positions of the shape",
-			example = "shape.centerPositions();"
+			examples = "shape.centerPositions();"
 		)
 		@ArucasFunction
 		public void centerPositions(Context context) {
@@ -765,7 +765,7 @@ public abstract class Shape implements IArucasWrappedClass {
 				NUMBER, "yScale", "the y scale of the shape",
 				NUMBER, "zScale", "the z scale of the shape"
 			},
-			example = "shape.setScale(1.5, 2.5, 3.5);"
+			examples = "shape.setScale(1.5, 2.5, 3.5);"
 		)
 		@ArucasFunction
 		default void setScale(Context context, NumberValue xScale, NumberValue yScale, NumberValue zScale) {
@@ -778,7 +778,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setXScale",
 			desc = "This sets the x scale of the shape",
 			params = {NUMBER, "xScale", "the x scale of the shape"},
-			example = "shape.setXScale(1.5);"
+			examples = "shape.setXScale(1.5);"
 		)
 		@ArucasFunction
 		default void setXScale(Context context, NumberValue xScale) {
@@ -789,7 +789,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setYScale",
 			desc = "This sets the y scale of the shape",
 			params = {NUMBER, "yScale", "the y scale of the shape"},
-			example = "shape.setYScale(2.5);"
+			examples = "shape.setYScale(2.5);"
 		)
 		@ArucasFunction
 		default void setYScale(Context context, NumberValue yScale) {
@@ -800,7 +800,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setZScale",
 			desc = "This sets the z scale of the shape",
 			params = {NUMBER, "zScale", "the z scale of the shape"},
-			example = "shape.setZScale(3.5);"
+			examples = "shape.setZScale(3.5);"
 		)
 		@ArucasFunction
 		default void setZScale(Context context, NumberValue zScale) {
@@ -810,7 +810,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		@FunctionDoc(
 			name = "getXScale",
 			desc = "This gets the x scale of the shape",
-			example = "shape.getXScale();"
+			examples = "shape.getXScale();"
 		)
 		@ArucasFunction
 		default NumberValue getXScale(Context context) {
@@ -820,7 +820,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		@FunctionDoc(
 			name = "getYScale",
 			desc = "This gets the y scale of the shape",
-			example = "shape.getYScale();"
+			examples = "shape.getYScale();"
 		)
 		@ArucasFunction
 		default NumberValue getYScale(Context context) {
@@ -830,7 +830,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		@FunctionDoc(
 			name = "getZScale",
 			desc = "This gets the z scale of the shape",
-			example = "shape.getZScale();"
+			examples = "shape.getZScale();"
 		)
 		@ArucasFunction
 		default NumberValue getZScale(Context context) {
@@ -859,7 +859,7 @@ public abstract class Shape implements IArucasWrappedClass {
 				NUMBER, "yTilt", "the y tilt",
 				NUMBER, "zTilt", "the z tilt"
 			},
-			example = "shape.setTilt(100, 0, 80);"
+			examples = "shape.setTilt(100, 0, 80);"
 		)
 		@ArucasFunction
 		default void setTilt(Context context, NumberValue xTilt, NumberValue yTilt, NumberValue zTilt) {
@@ -872,7 +872,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setXTilt",
 			desc = "This sets the x tilt of the shape",
 			params = {NUMBER, "xTilt", "the x tilt"},
-			example = "shape.setXTilt(100);"
+			examples = "shape.setXTilt(100);"
 		)
 		@ArucasFunction
 		default void setXTilt(Context context, NumberValue xTilt) {
@@ -883,7 +883,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setYTilt",
 			desc = "This sets the y tilt of the shape",
 			params = {NUMBER, "yTilt", "the y tilt"},
-			example = "shape.setYTilt(100);"
+			examples = "shape.setYTilt(100);"
 		)
 		@ArucasFunction
 		default void setYTilt(Context context, NumberValue yTilt) {
@@ -894,7 +894,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setZTilt",
 			desc = "This sets the z tilt of the shape",
 			params = {NUMBER, "zTilt", "the z tilt"},
-			example = "shape.setZTilt(100);"
+			examples = "shape.setZTilt(100);"
 		)
 		@ArucasFunction
 		default void setZTilt(Context context, NumberValue zTilt) {
@@ -905,7 +905,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "getXTilt",
 			desc = "This gets the x tilt of the shape",
 			returns = {NUMBER, "the x tilt"},
-			example = "shape.getXTilt();"
+			examples = "shape.getXTilt();"
 		)
 		@ArucasFunction
 		default NumberValue getXTilt(Context context) {
@@ -916,7 +916,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "getYTilt",
 			desc = "This gets the y tilt of the shape",
 			returns = {NUMBER, "the y tilt"},
-			example = "shape.getYTilt();"
+			examples = "shape.getYTilt();"
 		)
 		@ArucasFunction
 		default NumberValue getYTilt(Context context) {
@@ -927,7 +927,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "getZTilt",
 			desc = "This gets the z tilt of the shape",
 			returns = {NUMBER, "the z tilt"},
-			example = "shape.getZTilt();"
+			examples = "shape.getZTilt();"
 		)
 		@ArucasFunction
 		default NumberValue getZTilt(Context context) {
@@ -944,7 +944,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "setDirection",
 			desc = "This sets the direction of the shape",
 			params = {STRING, "direction", "the direction of the shape as a string, this can be 'north', 'south', 'east', 'west', 'down', or 'up'"},
-			example = "shape.setDirection('down');"
+			examples = "shape.setDirection('down');"
 		)
 		@ArucasFunction
 		default void setDirection(Context context, StringValue direction) {
@@ -955,7 +955,7 @@ public abstract class Shape implements IArucasWrappedClass {
 			name = "getDirection",
 			desc = "This gets the direction of the shape",
 			returns = {STRING, "the direction of the shape as a string, this can be 'north', 'south', 'east', 'west', 'down', or 'up', null if it has no direction"},
-			example = "shape.getDirection();"
+			examples = "shape.getDirection();"
 		)
 		@ArucasFunction
 		default Value getDirection(Context context) {

@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.mixins.clientScript;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

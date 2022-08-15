@@ -56,7 +56,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 	@ConstructorDoc(
 		desc = "Creates a new key bind",
 		params = {STRING, "keyName", "the name of the key"},
-		example = "new KeyBind('MyKey');"
+		examples = "new KeyBind('MyKey');"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, StringValue keyBindName) {
@@ -67,7 +67,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		name = "setKey",
 		desc = "Sets the key bind to a new key",
 		params = {STRING, "keyName", "the name of the key"},
-		example = "keyBind.setKey('f');"
+		examples = "keyBind.setKey('f');"
 	)
 	@ArucasFunction
 	public void setKey(Context context, StringValue keyName) {
@@ -80,7 +80,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		name = "setKeys",
 		desc = "Sets the key bind to new keys",
 		params = {LIST, "keyNames", "the names of keys"},
-		example = "keyBind.setKeys(['control', 'f']);"
+		examples = "keyBind.setKeys(['control', 'f']);"
 	)
 	@ArucasFunction
 	public void setKeys(Context context, ListValue listValue) {
@@ -103,7 +103,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		name = "getKey",
 		desc = "Gets the key bind's first key",
 		returns = {STRING, "the key bind's key"},
-		example = "keyBind.getKey();"
+		examples = "keyBind.getKey();"
 	)
 	@ArucasFunction
 	public Value getKey(Context context) {
@@ -114,7 +114,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		name = "getKeys",
 		desc = "Gets the all of the keys in the key bind",
 		returns = {LIST, "list of strings of all the keys"},
-		example = "keybind.getKeys();"
+		examples = "keybind.getKeys();"
 	)
 	@ArucasFunction
 	public Value getKeys(Context context) {
@@ -129,7 +129,7 @@ public class KeyBindWrapper implements IArucasWrappedClass {
 		name = "setCallback",
 		desc = "Sets the callback function for the key bind",
 		params = {FUNCTION, "callback", "the callback function"},
-		example = "keyBind.setCallback(fun() { print('My key was pressed'); });"
+		examples = "keyBind.setCallback(fun() { print('My key was pressed'); });"
 	)
 	@ArucasFunction
 	public void setCallback(Context context, FunctionValue functionValue) {

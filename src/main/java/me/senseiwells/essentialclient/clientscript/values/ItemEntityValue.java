@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -71,7 +70,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			name = "getItemStack",
 			desc = "This method returns the ItemStack that is held in the ItemEntity",
 			returns = {ITEM_STACK, "the ItemStack that the entity holds"},
-			example = "itemEntity.getItemStack();"
+			examples = "itemEntity.getItemStack();"
 		)
 		private Value getItemStack(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
@@ -82,7 +81,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			name = "getCustomName",
 			desc = "This method returns the custom name of the ItemEntity",
 			returns = {STRING, "the custom name of the entity"},
-			example = "itemEntity.getCustomName();"
+			examples = "itemEntity.getCustomName();"
 		)
 		private Value getCustomName(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
@@ -96,7 +95,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 				"this is increased every tick and the item entity despawns after 6000 ticks"
 			},
 			returns = {NUMBER, "the age of the entity"},
-			example = "itemEntity.getItemAge();"
+			examples = "itemEntity.getItemAge();"
 		)
 		private Value getItemAge(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
@@ -107,7 +106,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			name = "getThrower",
 			desc = "This method returns the player that threw the ItemEntity",
 			returns = {PLAYER, "the player that threw the entity", "null if not thrown by a player"},
-			example = "itemEntity.getThrower();"
+			examples = "itemEntity.getThrower();"
 		)
 		private Value getThrower(Arguments arguments) {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);

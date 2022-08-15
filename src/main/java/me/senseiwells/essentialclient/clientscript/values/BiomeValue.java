@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -89,7 +88,7 @@ public class BiomeValue extends GenericValue<Biome> {
 				NUMBER, "z", "the z coordinate"
 			},
 			returns = {BOOLEAN, "whether snow will fall at given position"},
-			example = "biome.canSnow(0, 100, 0);"
+			examples = "biome.canSnow(0, 100, 0);"
 		)
 		private Value canSnowFull(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -105,7 +104,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			desc = "This function calculates wheter snow will fall at given coordinates",
 			params = {POS, "pos", "the position"},
 			returns = {BOOLEAN, "whether snow will fall at given position"},
-			example = "biome.canSnow(new Pos(0, 100, 0));"
+			examples = "biome.canSnow(new Pos(0, 100, 0));"
 		)
 		private Value canSnowPos(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -123,7 +122,7 @@ public class BiomeValue extends GenericValue<Biome> {
 				NUMBER, "z", "the z coordinate"
 			},
 			returns = {BOOLEAN, "whether temperature is hot at given position"},
-			example = "biome.isHot(0, 100, 0);"
+			examples = "biome.isHot(0, 100, 0);"
 		)
 		private Value isHotFull(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -139,7 +138,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			desc = "This function calculates wheter biome is hot at given position",
 			params = {POS, "pos", "the position"},
 			returns = {BOOLEAN, "whether temperature is hot at given position"},
-			example = "biome.isHot(0, 100, 0);"
+			examples = "biome.isHot(0, 100, 0);"
 		)
 		private Value isHotPos(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -153,7 +152,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			desc = "This function calculates wheter biome is cold at given position",
 			params = {POS, "pos", "the position"},
 			returns = {BOOLEAN, "whether temperature is cold at given position"},
-			example = "biome.isCold(0, 100, 0);"
+			examples = "biome.isCold(0, 100, 0);"
 		)
 		private Value isColdPos(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -171,7 +170,7 @@ public class BiomeValue extends GenericValue<Biome> {
 				NUMBER, "z", "the z coordinate"
 			},
 			returns = {BOOLEAN, "whether temperature is cold at given position"},
-			example = "biome.isCold(0, 100, 0);"
+			examples = "biome.isCold(0, 100, 0);"
 		)
 		private Value isColdFull(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -186,7 +185,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "getFogColor",
 			desc = "This function returns Fog color of the biome",
 			returns = {NUMBER, "fog color of the biome"},
-			example = "biome.getFogColor();"
+			examples = "biome.getFogColor();"
 		)
 		private Value getFogColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -197,7 +196,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "getTemperature",
 			desc = "This function returns temperature of the biome",
 			returns = {NUMBER, "temperature of the biome"},
-			example = "biome.getTemperature();"
+			examples = "biome.getTemperature();"
 		)
 		private Value getTemperature(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -208,7 +207,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "getWaterColor",
 			desc = "This function returns Fog color of the biome",
 			returns = {NUMBER, "fog color of the biome"},
-			example = "biome.getWaterColor();"
+			examples = "biome.getWaterColor();"
 		)
 		private Value getWaterColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -219,7 +218,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "getWaterFogColor",
 			desc = "This function returns water fog color of the biome",
 			returns = {NUMBER, "water fog color of the biome"},
-			example = "biome.getWaterFogColor();"
+			examples = "biome.getWaterFogColor();"
 		)
 		private Value getWaterFogColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -230,7 +229,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "getId",
 			desc = "This function returns Fog color of the biome",
 			returns = {STRING, "id of the biome"},
-			example = "biome.getId();"
+			examples = "biome.getId();"
 		)
 		private Value getId(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -242,7 +241,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "getSkyColor",
 			desc = "This function returns sky color of the biome",
 			returns = {NUMBER, "sky color of the biome"},
-			example = "biome.getSkyColor();"
+			examples = "biome.getSkyColor();"
 		)
 		private Value getSkyColor(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);
@@ -253,7 +252,7 @@ public class BiomeValue extends GenericValue<Biome> {
 			name = "hasHighHumidity",
 			desc = "This function returns if biome has high humidity",
 			returns = {BOOLEAN, "whether biome has high humidity"},
-			example = "biome.hasHighHumidity();"
+			examples = "biome.hasHighHumidity();"
 		)
 		private Value hasHighHumidity(Arguments arguments) {
 			Biome biome = this.getBiome(arguments);

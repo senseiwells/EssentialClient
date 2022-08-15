@@ -56,7 +56,7 @@ public class BoxShapeWrapper extends Shape.PositionTiltableScalable {
 			POS, "pos1", "The position of the first corner of the box",
 			POS, "pos2", "The position of the second corner of the box"
 		},
-		example = "new BoxShape(new Pos(0, 0, 0), new Pos(10, 10, 10));"
+		examples = "new BoxShape(new Pos(0, 0, 0), new Pos(10, 10, 10));"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, PosValue pos1, PosValue pos2) {
@@ -75,7 +75,7 @@ public class BoxShapeWrapper extends Shape.PositionTiltableScalable {
 			NUMBER, "y2", "The y position of the second corner of the box",
 			NUMBER, "z2", "The z position of the second corner of the box"
 		},
-		example = "new BoxShape(0, 0, 0, 10, 10, 10);"
+		examples = "new BoxShape(0, 0, 0, 10, 10, 10);"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, NumberValue x1, NumberValue y1, NumberValue z1, NumberValue x2, NumberValue y2, NumberValue z2) {
@@ -85,7 +85,7 @@ public class BoxShapeWrapper extends Shape.PositionTiltableScalable {
 	@ConstructorDoc(
 		desc = "Creates a new box shape, this is used to render boxes",
 		params = {POS, "pos", "The position which will be used for the first and second corner of the box"},
-		example = "new BoxShape(new Pos(0, 0, 0));"
+		examples = "new BoxShape(new Pos(0, 0, 0));"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, PosValue origin) {
@@ -99,7 +99,7 @@ public class BoxShapeWrapper extends Shape.PositionTiltableScalable {
 			NUMBER, "y", "The y position which will be used for the first and second corner of the box",
 			NUMBER, "z", "The z position which will be used for the first and second corner of the box"
 		},
-		example = "new BoxShape(0, 0, 0);"
+		examples = "new BoxShape(0, 0, 0);"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, NumberValue x, NumberValue y, NumberValue z) {

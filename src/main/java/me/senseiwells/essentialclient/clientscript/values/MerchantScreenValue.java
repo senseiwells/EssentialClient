@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -12,7 +11,6 @@ import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.mixins.clientScript.MerchantScreenHandlerMixin;
-import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
@@ -23,7 +21,8 @@ import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
 import static me.senseiwells.arucas.utils.ValueTypes.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MERCHANT_SCREEN;
 
 public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 	public MerchantScreenValue(MerchantScreen screen) {
@@ -80,7 +79,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			name = "getTradeListSize",
 			desc = "This gets the size of all the trades available",
 			returns = {NUMBER, "the size of the trade list"},
-			example = "screen.getTradeListSize();"
+			examples = "screen.getTradeListSize();"
 		)
 		private Value getTradeListSize(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
@@ -92,7 +91,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			name = "getTradeList",
 			desc = "This gets a list of all the merchant's trades",
 			returns = {LIST, "the list of all the Trades"},
-			example = "screen.getTradeList();"
+			examples = "screen.getTradeList();"
 		)
 		private Value getTradeList(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
@@ -109,7 +108,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			desc = "This gets the level of the villager",
 			returns = {NUMBER, "the level of the villager"},
 			throwMsgs = "Merchant isn't a villager",
-			example = "screen.getVillagerLevel();"
+			examples = "screen.getVillagerLevel();"
 		)
 		private Value getVillagerLevel(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
@@ -125,7 +124,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			desc = "This gets the profession of the villager",
 			returns = {STRING, "the profession of the villager, for example: 'armorer', 'mason', 'weaponsmith'"},
 			throwMsgs = "Merchant isn't a villager",
-			example = "screen.getVillagerProfession();"
+			examples = "screen.getVillagerProfession();"
 		)
 		private Value getVillagerProfession(Arguments arguments) {
 			MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
@@ -141,7 +140,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			desc = "This makes your player trade with the merchant at a certain index",
 			params = {NUMBER, "index", "the index of the trade"},
 			throwMsgs = "Not in merchant gui",
-			example = "screen.tradeIndex(0);"
+			examples = "screen.tradeIndex(0);"
 		)
 		private Value tradeIndex(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -158,7 +157,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			params = {MATERIAL_LIKE, "materialLike", "the item to get the index of"},
 			returns = {NUMBER, "the index of the trade"},
 			throwMsgs = "Not in merchant gui",
-			example = "screen.getIndexOfTradeItem(Material.DIAMOND_PICKAXE.asItemStack());"
+			examples = "screen.getIndexOfTradeItem(Material.DIAMOND_PICKAXE.asItemStack());"
 		)
 		private Value getIndexOfTradeItem(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -180,7 +179,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				"Not in merchant gui",
 				"That trade is out of bounds"
 			},
-			example = "screen.getTradeItemForIndex(0);"
+			examples = "screen.getTradeItemForIndex(0);"
 		)
 		private Value getTradeItemForIndex(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -206,7 +205,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				"Not in merchant gui",
 				"That trade is out of bounds"
 			},
-			example = "screen.doesVillagerHaveTrade(Material.DIAMOND_PICKAXE.asItemStack());"
+			examples = "screen.doesVillagerHaveTrade(Material.DIAMOND_PICKAXE.asItemStack());"
 		)
 		private Value doesVillagerHaveTrade(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -220,7 +219,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			desc = "This selects the currently selected trade, as if you were to click it",
 			params = {NUMBER, "index", "the index of the trade"},
 			throwMsgs = "Not in merchant gui",
-			example = "screen.selectTrade(0);"
+			examples = "screen.selectTrade(0);"
 		)
 		private Value selectTrade(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -235,7 +234,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			name = "clearTrade",
 			desc = "This clears the currently selected trade",
 			throwMsgs = "Not in merchant gui",
-			example = "screen.clearTrade();"
+			examples = "screen.clearTrade();"
 		)
 		private Value clearTrade(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -249,7 +248,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			name = "tradeSelected",
 			desc = "This trades the currently selected trade",
 			throwMsgs = "Not in merchant gui",
-			example = "screen.tradeSelected();"
+			examples = "screen.tradeSelected();"
 		)
 		private Value tradeSelected(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -263,7 +262,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			name = "tradeSelectedAndThrow",
 			desc = "This trades the currently selected trade and throws the items that were traded",
 			throwMsgs = "Not in merchant gui",
-			example = "screen.tradeSelectedAndThrow();"
+			examples = "screen.tradeSelectedAndThrow();"
 		)
 		private Value tradeSelectedAndThrow(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -277,7 +276,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			name = "isTradeSelected",
 			desc = "This returns true if a trade is selected",
 			returns = {BOOLEAN, "true if a trade is selected"},
-			example = "screen.isTradeSelected();"
+			examples = "screen.isTradeSelected();"
 		)
 		private Value isTradeSelected(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -289,7 +288,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			desc = "This returns true if a trade is disabled at an index",
 			params = {NUMBER, "index", "the index of the trade"},
 			returns = {BOOLEAN, "true if a trade is disabled"},
-			example = "screen.isTradeDisabled(1);"
+			examples = "screen.isTradeDisabled(1);"
 		)
 		private Value isTradeDisabled(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);
@@ -307,7 +306,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 				"Not in merchant gui",
 				"That trade is out of bounds"
 			},
-			example = "screen.getPriceForIndex(0);"
+			examples = "screen.getPriceForIndex(0);"
 		)
 		private Value getPriceForIndex(Arguments arguments) {
 			this.checkIsCurrentScreen(arguments);

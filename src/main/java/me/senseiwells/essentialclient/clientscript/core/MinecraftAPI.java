@@ -57,7 +57,6 @@ public class MinecraftAPI {
 		JSON = "Json",
 		LIVING_ENTITY = "LivingEntity",
 		MATERIAL = "Material",
-		MATERIAL_LIKE = "MaterialLike",
 		MERCHANT_SCREEN = "MerchantScreen",
 		MINECRAFT_CLIENT = "MinecraftClient",
 		OTHER_PLAYER = "OtherPlayer",

@@ -18,8 +18,8 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
-import me.senseiwells.essentialclient.utils.clientscript.ScriptBlock;
-import me.senseiwells.essentialclient.utils.clientscript.ScriptPos;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
@@ -247,14 +247,14 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		returns = {BLOCK, "the block that the entity is looking at, containing the position"},
 		examples = "entity.getLookingAtBlock();"
 	)
-	private ScriptBlock getLookingAtBlock(Arguments arguments) {
+	private ScriptBlockState getLookingAtBlock(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		HitResult result = entity.raycast(20D, 0.0F, true);
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-			return new ScriptBlock(entity.world.getBlockState(blockPos), blockPos);
+			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
 		}
-		return new ScriptBlock(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+		return new ScriptBlockState(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
 	}
 
 	@FunctionDoc(
@@ -267,15 +267,15 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		returns = {BLOCK, "the block that the entity is looking at, containing the position"},
 		examples = "entity.getLookingAtBlock(10);"
 	)
-	private ScriptBlock getLookingAtBlock1(Arguments arguments) {
+	private ScriptBlockState getLookingAtBlock1(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		double maxDistance = arguments.nextPrimitive(NumberDef.class);
 		HitResult result = entity.raycast(maxDistance, 0.0F, true);
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-			return new ScriptBlock(entity.world.getBlockState(blockPos), blockPos);
+			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
 		}
-		return new ScriptBlock(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+		return new ScriptBlockState(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
 	}
 
 	@FunctionDoc(
@@ -292,7 +292,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		returns = {BLOCK, "the block that the entity is looking at, containing the position"},
 		examples = "entity.getLookingAtBlock(10, 'sources');"
 	)
-	private ScriptBlock getLookingAtBlock2(Arguments arguments) {
+	private ScriptBlockState getLookingAtBlock2(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		double maxDistance = arguments.nextPrimitive(NumberDef.class);
 		String fluidString = arguments.nextPrimitive(StringDef.class);
@@ -303,9 +303,9 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		BlockHitResult result = entity.world.raycast(new RaycastContext(camera, end, RaycastContext.ShapeType.OUTLINE, fluidType, entity));
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockPos blockPos = result.getBlockPos();
-			return new ScriptBlock(entity.world.getBlockState(blockPos), blockPos);
+			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
 		}
-		return new ScriptBlock(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+		return new ScriptBlockState(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
 	}
 
 	@FunctionDoc(
@@ -616,8 +616,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	private boolean collidesWithBlockAtPos(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		ScriptBlock block = arguments.nextPrimitive(BlockDef.class);
-		return entity.collidesWithStateAtPos(pos.getBlockPos(), block.state());
+		ScriptBlockState block = arguments.nextPrimitive(BlockDef.class);
+		return entity.collidesWithStateAtPos(pos.getBlockPos(), block.state);
 	}
 
 	@FunctionDoc(

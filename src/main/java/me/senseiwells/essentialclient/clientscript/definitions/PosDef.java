@@ -15,7 +15,7 @@ import me.senseiwells.arucas.utils.ConstructorFunction;
 import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
-import me.senseiwells.essentialclient.utils.clientscript.ScriptPos;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;

@@ -11,7 +11,6 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.ISyntax;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
@@ -93,7 +92,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			desc = "Creates a literal argument with just a string",
 			params = {STRING, "argument", "the literal argument"},
 			returns = {COMMAND_BUILDER, "the argument builder"},
-			example = "CommandBuilder.literal('test');"
+			examples = "CommandBuilder.literal('test');"
 		)
 		private Value literal(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
@@ -113,7 +112,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 				STRING, "argumentType", "the type of the argument"
 			},
 			returns = {COMMAND_BUILDER, "the argument builder"},
-			example = "CommandBuilder.argument('test', 'entityid');"
+			examples = "CommandBuilder.argument('test', 'entityid');"
 		)
 		private Value argument2(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
@@ -134,7 +133,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 				LIST, "suggestions", "a list of strings for the suggestions for the argument"
 			},
 			returns = {COMMAND_BUILDER, "the argument builder"},
-			example = "CommandBuilder.argument('test', 'word', ['wow', 'suggestion']);"
+			examples = "CommandBuilder.argument('test', 'word', ['wow', 'suggestion']);"
 		)
 		private Value argument3(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
@@ -169,7 +168,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			},
 			params = {MAP, "argumentMap", "the map of arguments"},
 			returns = {COMMAND_BUILDER, "the argument builder"},
-			example = """
+			examples = """
 				effectCommandMap = {
 					"name" : "effect",
 					"subcommands" : {
@@ -255,8 +254,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 						stringSuggestions.add(value.getAsString(context));
 					}
 					argumentBuilder.suggests((c, b) -> CommandSource.suggestMatching(stringSuggestions, b));
-				}
-				else {
+				} else {
 					throw new RuntimeError("Expected 'null' or a list", syntaxPosition, context);
 				}
 			}
@@ -276,7 +274,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			desc = "This adds a child CommandBuilder to your command builder",
 			params = {COMMAND_BUILDER, "childBuilder", "the child command builder to add"},
 			returns = {COMMAND_BUILDER, "the parent command builder"},
-			example = "commandBuilder.then(CommandBuilder.literal('subcommand'));"
+			examples = "commandBuilder.then(CommandBuilder.literal('subcommand'));"
 		)
 		private Value then(Arguments arguments) {
 			CommandBuilderValue commandBuilderValue = arguments.getNext(CommandBuilderValue.class);
@@ -293,7 +291,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			},
 			params = {COMMAND_BUILDER, "function", "the function to execute"},
 			returns = {COMMAND_BUILDER, "the parent command builder"},
-			example = "commandBuilder.executes(fun() { });"
+			examples = "commandBuilder.executes(fun() { });"
 		)
 		private Value executes(Arguments arguments) {
 			CommandBuilderValue commandBuilderValue = arguments.getNext(CommandBuilderValue.class);

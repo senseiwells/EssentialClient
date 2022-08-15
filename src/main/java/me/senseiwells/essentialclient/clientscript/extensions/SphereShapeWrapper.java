@@ -61,7 +61,7 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 	@ConstructorDoc(
 		desc = "This creates a new sphere shape",
 		params = {POS, "pos", "The position of the sphere"},
-		example = "new SphereShape(new Pos(0, 10, 0));"
+		examples = "new SphereShape(new Pos(0, 10, 0));"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, PosValue pos) {
@@ -77,7 +77,7 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 			NUMBER, "y", "The y position of the sphere",
 			NUMBER, "z", "The z position of the sphere"
 		},
-		example = "new SphereShape(0, 10, 0);"
+		examples = "new SphereShape(0, 10, 0);"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, NumberValue x, NumberValue y, NumberValue z) {
@@ -88,7 +88,7 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 		name = "setSteps",
 		desc = "This sets the number of steps the sphere will take to render",
 		params = {NUMBER, "steps", "The number of steps"},
-		example = "sphere.setSteps(30);"
+		examples = "sphere.setSteps(30);"
 	)
 	@ArucasFunction
 	public void setSteps(Context context, NumberValue steps) {
@@ -102,7 +102,7 @@ public class SphereShapeWrapper extends Shape.CentreTiltableScalable {
 		name = "getSteps",
 		desc = "This gets the number of steps the sphere will take to render",
 		returns = {NUMBER, "The number of steps"},
-		example = "sphere.getSteps();"
+		examples = "sphere.getSteps();"
 	)
 	@ArucasFunction
 	public NumberValue getSteps(Context context) {

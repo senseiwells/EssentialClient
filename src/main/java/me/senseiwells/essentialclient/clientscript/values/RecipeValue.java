@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -101,7 +100,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			params = {STRING, "recipeId", "the id of the recipe to convert to a Recipe"},
 			returns = {RECIPE, "the recipe instance from the id"},
 			throwMsgs = "Recipe with id ... doesn't exist",
-			example = "Recipe.of('redstone_block')"
+			examples = "Recipe.of('redstone_block')"
 		)
 		private Value newRecipe(Arguments arguments) {
 			String id = arguments.getNextGeneric(StringValue.class);
@@ -129,7 +128,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			name = "getFullId",
 			desc = "This returns the full id of the recipe",
 			returns = {STRING, "the full id of the recipe"},
-			example = "recipe.getFullId()"
+			examples = "recipe.getFullId()"
 		)
 		private Value getFullId(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
@@ -140,7 +139,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			name = "getId",
 			desc = "This returns the id of the recipe",
 			returns = {STRING, "the id of the recipe"},
-			example = "recipe.getId()"
+			examples = "recipe.getId()"
 		)
 		private Value getId(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
@@ -151,7 +150,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			name = "getCraftingType",
 			desc = "This returns the crafting type of the recipe",
 			returns = {STRING, "the crafting type of the recipe, for example: 'crafting', 'smelting', 'blasting'"},
-			example = "recipe.getCraftingType()"
+			examples = "recipe.getCraftingType()"
 		)
 		private Value getCraftingType(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
@@ -163,7 +162,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			name = "getOutput",
 			desc = "This returns the output of the recipe",
 			returns = {ITEM_STACK, "the output of the recipe"},
-			example = "recipe.getOutput()"
+			examples = "recipe.getOutput()"
 		)
 		private Value getOutput(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
@@ -174,7 +173,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 			name = "getIngredients",
 			desc = "This returns all the possible ingredients of the recipe",
 			returns = {LIST, "list of lists, each inner lists contains possible recipe items"},
-			example = "recipe.getIngredients()"
+			examples = "recipe.getIngredients()"
 		)
 		private Value getIngredients(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);

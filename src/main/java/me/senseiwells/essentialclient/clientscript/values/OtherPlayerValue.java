@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -12,7 +11,6 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
-import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -84,7 +82,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getCurrentSlot",
 			desc = "This gets the players currently selected slot",
 			returns = {NUMBER, "the currently selected slot number"},
-			example = "otherPlayer.getCurrentSlot();"
+			examples = "otherPlayer.getCurrentSlot();"
 		)
 		private Value getCurrentSlot(Arguments arguments) {
 			return NumberValue.of(this.getOtherPlayer(arguments).getInventory().selectedSlot);
@@ -94,7 +92,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getHeldItem",
 			desc = "This gets the players currently selected item, in their main hand",
 			returns = {ITEM_STACK, "the currently selected item"},
-			example = "otherPlayer.getHeldItem();"
+			examples = "otherPlayer.getHeldItem();"
 		)
 		private Value getHeldItem(Arguments arguments) {
 			return new ItemStackValue(this.getOtherPlayer(arguments).getInventory().getMainHandStack());
@@ -104,7 +102,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "isInventoryFull",
 			desc = "This gets whether the players inventory is full",
 			returns = {BOOLEAN, "whether the inventory is full"},
-			example = "otherPlayer.isInventoryFull();"
+			examples = "otherPlayer.isInventoryFull();"
 		)
 		private Value isInventoryFull(Arguments arguments) {
 			return BooleanValue.of(this.getOtherPlayer(arguments).getInventory().getEmptySlot() == -1);
@@ -114,7 +112,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getPlayerName",
 			desc = "This gets the players name",
 			returns = {STRING, "the players name"},
-			example = "otherPlayer.getPlayerName();"
+			examples = "otherPlayer.getPlayerName();"
 		)
 		private Value getPlayerName(Arguments arguments) {
 			return StringValue.of(this.getOtherPlayer(arguments).getEntityName());
@@ -124,7 +122,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getGamemode",
 			desc = "This gets the players gamemode",
 			returns = {STRING, "the players gamemode as a string, null if not known, for example 'creative', 'survival', 'spectator'"},
-			example = "otherPlayer.getGamemode();"
+			examples = "otherPlayer.getGamemode();"
 		)
 		private Value getGamemode(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -139,7 +137,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getTotalSlots",
 			desc = "This gets the players total inventory slots",
 			returns = {NUMBER, "the players total inventory slots"},
-			example = "otherPlayer.getTotalSlots();"
+			examples = "otherPlayer.getTotalSlots();"
 		)
 		private Value getTotalSlots(Arguments arguments) {
 			ScreenHandler screenHandler = this.getOtherPlayer(arguments).currentScreenHandler;
@@ -152,7 +150,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			params = {NUMBER, "slotNum", "the slot number you want to get"},
 			returns = {ITEM_STACK, "the item in the specified slot"},
 			throwMsgs = "That slot is out of bounds",
-			example = "otherPlayer.getItemForSlot(0);"
+			examples = "otherPlayer.getItemForSlot(0);"
 		)
 		private Value getItemForSlot(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -172,7 +170,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			params = {NUMBER, "slotNum", "the slot number you want to get"},
 			returns = {BOOLEAN, "whether slot was player inventory or not"},
 			throwMsgs = "That slot is out of bounds",
-			example = "otherPlayer.isPlayerSlot(0);"
+			examples = "otherPlayer.isPlayerSlot(0);"
 		)
 		private Value isPlayerSlot(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -193,7 +191,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			params = {NUMBER, "slotNum", "the slot number you want to get"},
 			returns = {ITEM_STACK, "the item in the specified slot"},
 			throwMsgs = "That slot is out of bounds",
-			example = "otherPlayer.getItemForPlayerSlot(0);"
+			examples = "otherPlayer.getItemForPlayerSlot(0);"
 		)
 		private Value getItemForPlayerSlot(Arguments arguments) {
 			// This gets the item for a slot in the player's inventory (no screen inventories)
@@ -211,7 +209,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			desc = "This gets the slot number of the specified item in the players combined inventory",
 			params = {MATERIAL_LIKE, "materialLike", "the item or material you want to get the slot of"},
 			returns = {NUMBER, "the slot number of the item, null if not found"},
-			example = "otherPlayer.getSlotFor(Material.DIAMOND.asItemStack());"
+			examples = "otherPlayer.getSlotFor(Material.DIAMOND.asItemStack());"
 		)
 		private Value getSlotFor(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -230,7 +228,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			desc = "This gets all the slot numbers of the specified item in the players combined inventory",
 			params = {MATERIAL_LIKE, "materialLike", "the item or material you want to get the slot of"},
 			returns = {LIST, "the slot numbers of the item, empty list if not found"},
-			example = "otherPlayer.getAllSlotsFor(Material.DIAMOND);"
+			examples = "otherPlayer.getAllSlotsFor(Material.DIAMOND);"
 		)
 		private Value getAllSlotsFor(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -253,7 +251,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				"`{\"invulnerable\": false, \"canFly\": true, \"canBreakBlocks\": true, \"isCreative\": true, \"walkSpeed\": 1.0, \"flySpeed\": 1.2}`"
 			},
 			returns = {MAP, "the abilities of the player"},
-			example = "otherPlayer.getAbilities();"
+			examples = "otherPlayer.getAbilities();"
 		)
 		private Value getAbilities(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -273,7 +271,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getLevels",
 			desc = "This gets the number of experience levels the player has",
 			returns = {NUMBER, "the number of experience levels"},
-			example = "otherPlayer.getLevels();"
+			examples = "otherPlayer.getLevels();"
 		)
 		private Value getLevels(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -284,7 +282,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getHunger",
 			desc = "This gets the hunger level of the player",
 			returns = {NUMBER, "the hunger level"},
-			example = "otherPlayer.getHunger();"
+			examples = "otherPlayer.getHunger();"
 		)
 		private Value getHunger(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -295,7 +293,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getSaturation",
 			desc = "This gets the saturation level of the player",
 			returns = {NUMBER, "the saturation level"},
-			example = "otherPlayer.getSaturation();"
+			examples = "otherPlayer.getSaturation();"
 		)
 		private Value getSaturation(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
@@ -306,7 +304,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			name = "getFishingBobber",
 			desc = "This gets the fishing bobber that the player has",
 			returns = {ENTITY, "the fishing bobber entity, null if the player isn't fishing"},
-			example = "otherPlayer.getFishingBobber();"
+			examples = "otherPlayer.getFishingBobber();"
 		)
 		private Value getFishingBobber(Arguments arguments) {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);

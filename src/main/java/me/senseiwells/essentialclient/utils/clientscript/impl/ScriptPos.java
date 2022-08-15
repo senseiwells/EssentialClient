@@ -1,4 +1,4 @@
-package me.senseiwells.essentialclient.utils.clientscript;
+package me.senseiwells.essentialclient.utils.clientscript.impl;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;

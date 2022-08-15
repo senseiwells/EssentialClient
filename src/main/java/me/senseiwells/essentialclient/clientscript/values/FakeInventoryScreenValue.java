@@ -4,7 +4,6 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -69,7 +68,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 				STRING, "name", "the name of the screen",
 				NUMBER, "rows", "the number of rows between 1 - 6"
 			},
-			example = "new FakeScreen('MyScreen', 6);"
+			examples = "new FakeScreen('MyScreen', 6);"
 		)
 		private Value newFakeScreen(Arguments arguments) {
 			ClientPlayerEntity player = ArucasMinecraftExtension.getPlayer();
@@ -98,7 +97,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			params = {
 				FUNCTION, "function", "the callback function which must have 3 parameters, which will be passed in when it is called, item, slotNum, action, being ItemStack, Number, and String respectively"
 			},
-			example = """
+			examples = """
 				fakeScreen.onClick(fun(item, slotNum, action) {
 					// action can be any of the following:
 					// 'PICKUP', 'QUICK_MOVE', 'SWAP', 'CLONE', 'THROW', 'QUICK_CRAFT', or 'PICKUP_ALL'
@@ -120,7 +119,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 				NUMBER, "slotNum", "the slot number",
 				ITEM_STACK, "stack", "the stack to set"
 			},
-			example = "fakeScreen.setStackForSlot(0, Material.DIAMOND_BLOCK.asItemStack());"
+			examples = "fakeScreen.setStackForSlot(0, Material.DIAMOND_BLOCK.asItemStack());"
 		)
 		private Value setStackForSlot(Arguments arguments) {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
@@ -135,7 +134,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			desc = "Gets the stack for the given slot, if the slot is out of bounds it returns null",
 			params = {NUMBER, "slotNum", "the slot number"},
 			returns = {ITEM_STACK, "the stack for the given slot"},
-			example = "fakeScreen.getStackForSlot(0);"
+			examples = "fakeScreen.getStackForSlot(0);"
 		)
 		private Value getStackForSlot(Arguments arguments) {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);

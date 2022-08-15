@@ -4,7 +4,6 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.extensions.util.JsonValue;
-import me.senseiwells.arucas.throwables.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -104,7 +103,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				"... type must have 'max' as a number",
 				"Invalid config type ..."
 			},
-			example = """
+			examples = """
 				configMap = {
 					"type": "string",
 					"name": "My Config",
@@ -129,7 +128,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			desc = "Creates a config from a list of config maps",
 			params = {LIST, "list", "The list of config maps"},
 			returns = {LIST, "A list of configs created from the list of config maps"},
-			example = """
+			examples = """
 				configs = [
 					{
 						"type": "boolean",
@@ -179,7 +178,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "getName",
 			desc = "Gets the name of the config",
 			returns = {STRING, "The name of the config"},
-			example = "config.getName();"
+			examples = "config.getName();"
 		)
 		private Value getName(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -190,7 +189,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "getType",
 			desc = "Gets the type of the config",
 			returns = {STRING, "The type of the config"},
-			example = "config.getType();"
+			examples = "config.getType();"
 		)
 		private Value getType(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -201,7 +200,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "getDescription",
 			desc = "Gets the description of the config",
 			returns = {STRING, "The description of the config"},
-			example = "config.getDescription();"
+			examples = "config.getDescription();"
 		)
 		private Value getDescription(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -212,7 +211,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "getOptionalInfo",
 			desc = "Gets the optional info of the config",
 			returns = {STRING, "The optional info of the config"},
-			example = "config.getOptionalInfo();"
+			examples = "config.getOptionalInfo();"
 		)
 		private Value getOptionalInfo(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -223,7 +222,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "getDefaultValue",
 			desc = "Gets the default value of the config",
 			returns = {ANY, "The default value of the config"},
-			example = "config.getDefaultValue();"
+			examples = "config.getDefaultValue();"
 		)
 		private Value getDefaultValue(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -234,7 +233,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "getValue",
 			desc = "Gets the value of the config",
 			returns = {ANY, "The value of the config"},
-			example = "config.getValue();"
+			examples = "config.getValue();"
 		)
 		private Value getValue(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -245,7 +244,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "toJson",
 			desc = "Converts the config into a json value, this will not keep the listeners",
 			returns = {JSON, "The config as a json value"},
-			example = "config.toJson();"
+			examples = "config.toJson();"
 		)
 		private Value toJson(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -259,7 +258,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 				"The listener must have one parameter, this is the rule that was changed"
 			},
 			params = {FUNCTION, "listener", "The listener to add"},
-			example = """
+			examples = """
 				config.addListener(function(newValue) {
 					print(newValue);
 				});
@@ -279,7 +278,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 		@FunctionDoc(
 			name = "resetToDefault",
 			desc = "Resets the config to the default value",
-			example = "config.resetToDefault();"
+			examples = "config.resetToDefault();"
 		)
 		private Value resetToDefault(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
@@ -291,7 +290,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			name = "setValue",
 			desc = "Sets the value of the config, if the value is invalid it will not be changed",
 			params = {ANY, "value", "The new value of the config"},
-			example = "config.setValue(10);"
+			examples = "config.setValue(10);"
 		)
 		private Value setValue(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);

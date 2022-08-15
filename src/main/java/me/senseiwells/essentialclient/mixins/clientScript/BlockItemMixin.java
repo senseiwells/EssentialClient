@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.BlockValue;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.math.BlockPos;

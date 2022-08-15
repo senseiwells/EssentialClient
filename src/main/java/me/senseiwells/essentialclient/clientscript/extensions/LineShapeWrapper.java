@@ -43,7 +43,7 @@ public class LineShapeWrapper extends Shape.PositionTiltableScalable {
 			POS, "pos1", "The starting position of the line",
 			POS, "pos2", "The ending position of the line"
 		},
-		example = "new LineShape(new Pos(0, 0, 0), new Pos(1, 1, 1));"
+		examples = "new LineShape(new Pos(0, 0, 0), new Pos(1, 1, 1));"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, PosValue pos1, PosValue pos2) {
@@ -63,7 +63,7 @@ public class LineShapeWrapper extends Shape.PositionTiltableScalable {
 			NUMBER, "y2", "The y position of the ending position of the line",
 			NUMBER, "z2", "The z position of the ending position of the line"
 		},
-		example = "new LineShape(0, 0, 0, 1, 1, 1);"
+		examples = "new LineShape(0, 0, 0, 1, 1, 1);"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, NumberValue x1, NumberValue y1, NumberValue z1, NumberValue x2, NumberValue y2, NumberValue z2) {

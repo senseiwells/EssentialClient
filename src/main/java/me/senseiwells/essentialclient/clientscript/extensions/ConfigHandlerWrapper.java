@@ -47,7 +47,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 			STRING, "name", "The name of the config, this will also be the name of the config file",
 			BOOLEAN, "read", "Whether or not to read the config on creation"
 		},
-		example = "new ConfigHandler('MyConfig', false);"
+		examples = "new ConfigHandler('MyConfig', false);"
 	)
 	@ArucasConstructor
 	public synchronized void constructor(Context context, StringValue name, BooleanValue read) {
@@ -68,7 +68,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 	@ConstructorDoc(
 		desc = "Creates a new ConfigHandler, this is used to read and save configs",
 		params = {STRING, "name", "The name of the config, this will also be the name of the config file"},
-		example = "new ConfigHandler('MyConfig');"
+		examples = "new ConfigHandler('MyConfig');"
 	)
 	@ArucasConstructor
 	public synchronized void constructor(Context context, StringValue name) {
@@ -79,7 +79,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "getName",
 		desc = "Gets the name of the config",
 		returns = {STRING, "The name of the config"},
-		example = "configHandler.getName();"
+		examples = "configHandler.getName();"
 	)
 	@ArucasFunction
 	public synchronized Value getName(Context context) {
@@ -93,7 +93,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 			"If configs are already in the handler, only the values",
 			"will be overwritten"
 		},
-		example = "configHandler.read();"
+		examples = "configHandler.read();"
 	)
 	@ArucasFunction
 	public synchronized void read(Context context) {
@@ -106,7 +106,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 	@FunctionDoc(
 		name = "save",
 		desc = "Saves the configs to the file",
-		example = "configHandler.save();"
+		examples = "configHandler.save();"
 	)
 	@ArucasFunction
 	public synchronized void save(Context context) {
@@ -117,7 +117,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "setSaveOnClose",
 		desc = "Sets whether or not the configs should be saved when the script ends, by default this is true",
 		params = {BOOLEAN, "saveOnClose", "Whether or not the configs should be saved when the script ends"},
-		example = "configHandler.setSaveOnClose(false);"
+		examples = "configHandler.setSaveOnClose(false);"
 	)
 	@ArucasFunction
 	public synchronized void setSaveOnClose(Context context, BooleanValue value) {
@@ -128,7 +128,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "willSaveOnClose",
 		desc = "Gets whether or not the configs will be saved when the script ends",
 		returns = {BOOLEAN, "Whether or not the configs will be saved when the script ends"},
-		example = "configHandler.willSaveOnClose();"
+		examples = "configHandler.willSaveOnClose();"
 	)
 	@ArucasFunction
 	public synchronized Value willSaveOnClose(Context context) {
@@ -139,7 +139,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "setSavePath",
 		desc = "Sets the path to save the configs to, this shouldn't include the file name",
 		params = {FILE, "savePath", "The path to save the configs to"},
-		example = "configHandler.setSavePath(new File('/home/user/scripts/'));"
+		examples = "configHandler.setSavePath(new File('/home/user/scripts/'));"
 	)
 	@ArucasFunction
 	public void setSavePath(Context context, FileValue fileValue) {
@@ -150,7 +150,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "addConfig",
 		desc = "Adds a config to the handler",
 		params = {CONFIG, "config", "The config to add"},
-		example = """
+		examples = """
 			config = Config.fromMap({
 				"type": "boolean",
 				"name": "My Config",
@@ -168,7 +168,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "addConfigs",
 		desc = "Adds multiple configs to the handler",
 		params = {LIST, "configs", "The configs to add"},
-		example = """
+		examples = """
 			config = Config.fromMap({
 				"type": "boolean",
 				"name": "My Config",
@@ -192,7 +192,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		desc = "Gets a config from the handler",
 		params = {STRING, "name", "The name of the config"},
 		returns = {CONFIG, "The config"},
-		example = "configHandler.getConfig('MyConfig');"
+		examples = "configHandler.getConfig('MyConfig');"
 	)
 	@ArucasFunction
 	public synchronized Value getConfig(Context context, StringValue name) {
@@ -204,7 +204,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "removeConfig",
 		desc = "Removes a config from the handler",
 		params = {STRING, "name", "The name of the config to remove"},
-		example = "configHandler.removeConfig('My Config');"
+		examples = "configHandler.removeConfig('My Config');"
 	)
 	@ArucasFunction
 	public synchronized Value removeConfig(Context context, StringValue name) {
@@ -214,7 +214,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 	@FunctionDoc(
 		name = "resetAllToDefault",
 		desc = "Resets all configs to their default values",
-		example = "configHandler.resetAllToDefault();"
+		examples = "configHandler.resetAllToDefault();"
 	)
 	@ArucasFunction
 	public synchronized void resetAllToDefault(Context context) {
@@ -227,7 +227,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		name = "getAllConfigs",
 		desc = "Gets all the configs in the handler",
 		returns = {LIST, "All the configs in the handler"},
-		example = "configHandler.getAllConfigs();"
+		examples = "configHandler.getAllConfigs();"
 	)
 	@ArucasFunction
 	public synchronized Value getAllConfigs(Context context) {
@@ -246,7 +246,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 			BOOLEAN, "alphabetical", "Whether or not to sort the configs alphabetically"
 		},
 		returns = {SCREEN, "The new config screen"},
-		example = "configHandler.createScreen();"
+		examples = "configHandler.createScreen();"
 	)
 	@ArucasFunction
 	public synchronized Value createScreen(Context context, TextValue screenName, BooleanValue alphabetical) {
@@ -265,7 +265,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 		desc = "Creates a new config screen containing all of the configs in the handler, in alphabetical order",
 		params = {TEXT, "title", "The title of the screen"},
 		returns = {SCREEN, "The new config screen"},
-		example = "configHandler.createScreen();"
+		examples = "configHandler.createScreen();"
 	)
 	@ArucasFunction
 	public synchronized Value createScreen(Context context, TextValue screenName) {

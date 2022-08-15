@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.values;
 import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -91,7 +90,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getSellItem",
 			desc = "Gets the item that is being sold by the merchant",
 			returns = {ITEM_STACK, "the item for sale"},
-			example = "trade.getSellItem();"
+			examples = "trade.getSellItem();"
 		)
 		public Value getSellItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
@@ -102,7 +101,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getFirstBuyItem",
 			desc = "Gets the first item that the merchant will buy",
 			returns = {ITEM_STACK, "the first item to buy"},
-			example = "trade.getFirstBuyItem();"
+			examples = "trade.getFirstBuyItem();"
 		)
 		public Value getFirstBuyItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
@@ -113,7 +112,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getAdjustedFirstBuyItem",
 			desc = "Gets the first item that the merchant will buy, adjusted by the price multiplier",
 			returns = {ITEM_STACK, "the first item to buy"},
-			example = "trade.getAdjustedFirstBuyItem();"
+			examples = "trade.getAdjustedFirstBuyItem();"
 		)
 		public Value getAdjustedFirstBuyItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
@@ -124,7 +123,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getSecondBuyItem",
 			desc = "Gets the second item that the merchant will buy",
 			returns = {ITEM_STACK, "the second item to buy"},
-			example = "trade.getSecondBuyItem();"
+			examples = "trade.getSecondBuyItem();"
 		)
 		public Value getSecondBuyItem(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
@@ -135,7 +134,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getMaxUses",
 			desc = "Gets the maximum number of times the trade can be used",
 			returns = {NUMBER, "the maximum number of uses"},
-			example = "trade.getMaxUses();"
+			examples = "trade.getMaxUses();"
 		)
 		public Value getMaxUses(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
@@ -146,7 +145,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getUses",
 			desc = "Gets the number of times the trade has been used",
 			returns = {NUMBER, "the number of uses"},
-			example = "trade.getUses();"
+			examples = "trade.getUses();"
 		)
 		public Value getUses(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
@@ -157,7 +156,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getSpecialPrice",
 			desc = "This gets the special price which is used to adjust the price of the first buy item",
 			returns = {NUMBER, "the special price"},
-			example = "trade.getSpecialPrice();"
+			examples = "trade.getSpecialPrice();"
 		)
 		public Value getSpecialPrice(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);
@@ -168,7 +167,7 @@ public class TradeValue extends GenericValue<TradeOffer> {
 			name = "getPriceMultiplier",
 			desc = "Gets the price multiplier which is used to adjust the price of the first buy item",
 			returns = {NUMBER, "the price multiplier"},
-			example = "trade.getPriceMultiplier();"
+			examples = "trade.getPriceMultiplier();"
 		)
 		public Value getPriceMultiplier(Arguments arguments) {
 			TradeValue thisValue = arguments.getNext(TradeValue.class);

@@ -7,7 +7,6 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.ItemStackValue;
 import me.senseiwells.essentialclient.clientscript.values.TextValue;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

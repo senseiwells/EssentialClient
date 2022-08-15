@@ -4,7 +4,6 @@ import me.senseiwells.arucas.api.ArucasClassExtension;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.extensions.util.JsonValue;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ArucasFunctionMap;
 import me.senseiwells.arucas.utils.Context;
@@ -84,7 +83,7 @@ public class TextValue extends GenericValue<MutableText> {
 			desc = "This converts a string into a text instance",
 			params = {STRING, "string", "The string to convert into a text instance"},
 			returns = {TEXT, "the text instance from the string"},
-			example = "Text.of('Hello World!');"
+			examples = "Text.of('Hello World!');"
 		)
 		private Value of(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
@@ -97,7 +96,7 @@ public class TextValue extends GenericValue<MutableText> {
 			desc = "This converts a text json into a text instance",
 			params = {STRING, "textJson", "The string in json format, or a Json value itself"},
 			returns = {TEXT, "the text instance from the json"},
-			example = "Text.parse('{\"text\":\"Hello World!\",\"color\":\"white\",\"italic\":\"true\"}');"
+			examples = "Text.parse('{\"text\":\"Hello World!\",\"color\":\"white\",\"italic\":\"true\"}');"
 		)
 		private Value parse(Arguments arguments) {
 			Value value = arguments.getNext();
@@ -132,7 +131,7 @@ public class TextValue extends GenericValue<MutableText> {
 			},
 			returns = {TEXT, "the text instance with the click event"},
 			throwMsgs = "Invalid action: ...",
-			example = """
+			examples = """
 				text = Text.of("Hello World!");
 
 				// Examples of click events
@@ -159,8 +158,7 @@ public class TextValue extends GenericValue<MutableText> {
 					}
 					default -> throw arguments.getError("Invalid action: %s", actionAsString);
 				}
-			}
-			else {
+			} else {
 				StringValue stringValue = arguments.getNextString();
 				clickEvent = new ClickEvent(action, stringValue.value);
 			}
@@ -180,7 +178,7 @@ public class TextValue extends GenericValue<MutableText> {
 			},
 			returns = {TEXT, "the text instance with the hover event"},
 			throwMsgs = "Invalid action: ...",
-			example = """
+			examples = """
 				text = Text.of("Hello World!");
 
 				// Examples of hover events
@@ -221,7 +219,7 @@ public class TextValue extends GenericValue<MutableText> {
 			params = {STRING, "formatting", "the name of the formatting"},
 			returns = {TEXT, "the text instance with the formatting added"},
 			throwMsgs = "Invalid formatting: ...",
-			example = "text.format('DARK_RED').format('BOLD');"
+			examples = "text.format('DARK_RED').format('BOLD');"
 		)
 		private Value formatText(Arguments arguments) {
 			TextValue text = arguments.getNext(TextValue.class);
@@ -239,7 +237,7 @@ public class TextValue extends GenericValue<MutableText> {
 			desc = "This allows you to append a text instance to another text instance",
 			params = {TEXT, "otherText", "the text instance to append to"},
 			returns = {TEXT, "the text instance with the appended text"},
-			example = "Text.of('Hello').append(Text.of(' world!'));"
+			examples = "Text.of('Hello').append(Text.of(' world!'));"
 		)
 		private Value appendText(Arguments arguments) {
 			TextValue text = arguments.getNext(TextValue.class);

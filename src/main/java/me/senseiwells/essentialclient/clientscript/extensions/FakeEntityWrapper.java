@@ -91,7 +91,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			ENTITY, "entity", "The entity that you want to create into a fake entity",
 			WORLD, "world", "The world that the entity is being rendered in"
 		},
-		example = "fakeEntity = new FakeEntity();"
+		examples = "fakeEntity = new FakeEntity();"
 	)
 	@ArucasConstructor
 	public void constructor(Context context, EntityValue<?> entityValue, WorldValue worldValue) {
@@ -110,7 +110,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		name = "setWorld",
 		desc = "Sets the world that the entity is being rendered in",
 		params = {WORLD, "world", "The world that the entity is being rendered in"},
-		example = "fakeEntity.setWorld(MinecraftClient.getClient().getWorld());"
+		examples = "fakeEntity.setWorld(MinecraftClient.getClient().getWorld());"
 	)
 	@ArucasFunction
 	public void setWorld(Context context, WorldValue worldValue) {
@@ -124,7 +124,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			POS, "pos", "The new position of the entity",
 			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
 		},
-		example = "fakeEntity.setPos(new Pos(0, 0, 0), 0);"
+		examples = "fakeEntity.setPos(new Pos(0, 0, 0), 0);"
 	)
 	@ArucasFunction
 	public void setPos(Context context, PosValue posValue, NumberValue interpolation) {
@@ -141,7 +141,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			NUMBER, "z", "The new z position of the entity",
 			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
 		},
-		example = "fakeEntity.setPos(0, 0, 0, 10);"
+		examples = "fakeEntity.setPos(0, 0, 0, 10);"
 	)
 	@ArucasFunction
 	public void setPos(Context context, NumberValue x, NumberValue y, NumberValue z, NumberValue interpolation) {
@@ -152,7 +152,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		name = "setPos",
 		desc = "Sets the position of the entity with no interpolation",
 		params = {POS, "pos", "The new position of the entity"},
-		example = "fakeEntity.setPos(new Pos(0, 0, 0));"
+		examples = "fakeEntity.setPos(new Pos(0, 0, 0));"
 	)
 	@ArucasFunction
 	public void setPos(Context context, PosValue posValue) {
@@ -167,7 +167,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			NUMBER, "y", "The new y position of the entity",
 			NUMBER, "z", "The new z position of the entity"
 		},
-		example = "fakeEntity.setPos(0, 0, 0);"
+		examples = "fakeEntity.setPos(0, 0, 0);"
 	)
 	@ArucasFunction
 	public void setPos(Context context, NumberValue x, NumberValue y, NumberValue z) {
@@ -181,7 +181,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			NUMBER, "yaw", "The new yaw of the entity",
 			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
 		},
-		example = "fakeEntity.setYaw(0, 10);"
+		examples = "fakeEntity.setYaw(0, 10);"
 	)
 	@ArucasFunction
 	public void setYaw(Context context, NumberValue yaw, NumberValue interpolation) {
@@ -193,7 +193,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		name = "setYaw",
 		desc = "Sets the yaw of the entity with no interpolation",
 		params = {NUMBER, "yaw", "The new yaw of the entity"},
-		example = "fakeEntity.setYaw(0);"
+		examples = "fakeEntity.setYaw(0);"
 	)
 	@ArucasFunction
 	public void setYaw(Context context, NumberValue yaw) {
@@ -207,7 +207,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			NUMBER, "bodyYaw", "The new body yaw of the entity",
 			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
 		},
-		example = "fakeEntity.setBodyYaw(0, 10);"
+		examples = "fakeEntity.setBodyYaw(0, 10);"
 	)
 	@ArucasFunction
 	public void setBodyYaw(Context context, NumberValue yaw, NumberValue interpolation) {
@@ -219,7 +219,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		name = "setBodyYaw",
 		desc = "Sets the body yaw of the entity with no interpolation",
 		params = {NUMBER, "bodyYaw", "The new body yaw of the entity"},
-		example = "fakeEntity.setBodyYaw(0);"
+		examples = "fakeEntity.setBodyYaw(0);"
 	)
 	@ArucasFunction
 	public void setBodyYaw(Context context, NumberValue yaw) {
@@ -233,7 +233,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			NUMBER, "pitch", "The new pitch of the entity",
 			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
 		},
-		example = "fakeEntity.setPitch(0, 10);"
+		examples = "fakeEntity.setPitch(0, 10);"
 	)
 	@ArucasFunction
 	public void setPitch(Context context, NumberValue pitch, NumberValue interpolation) {
@@ -245,7 +245,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 		name = "setPitch",
 		desc = "Sets the pitch of the entity with no interpolation",
 		params = {NUMBER, "pitch", "The new pitch of the entity"},
-		example = "fakeEntity.setPitch(0);"
+		examples = "fakeEntity.setPitch(0);"
 	)
 	@ArucasFunction
 	public void setPitch(Context context, NumberValue pitch) {
@@ -261,7 +261,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			NUMBER, "pitch", "The new pitch of the entity",
 			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
 		},
-		example = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0, 10);"
+		examples = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0, 10);"
 	)
 	@ArucasFunction
 	public void updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch, NumberValue interpolation) {
@@ -279,7 +279,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 			NUMBER, "yaw", "The new yaw of the entity",
 			NUMBER, "pitch", "The new pitch of the entity"
 		},
-		example = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0);"
+		examples = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0);"
 	)
 	@ArucasFunction
 	public void updatePosAndRotation(Context context, PosValue posValue, NumberValue yaw, NumberValue pitch) {
@@ -289,7 +289,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	@FunctionDoc(
 		name = "spawn",
 		desc = "Spawns the entity (makes it render in the world)",
-		example = "fakeEntity.spawn();"
+		examples = "fakeEntity.spawn();"
 	)
 	@ArucasFunction
 	public void spawn(Context context) {
@@ -306,7 +306,7 @@ public class FakeEntityWrapper implements IArucasWrappedClass {
 	@FunctionDoc(
 		name = "despawn",
 		desc = "Despawns the entity (makes it not render in the world)",
-		example = "fakeEntity.despawn();"
+		examples = "fakeEntity.despawn();"
 	)
 	@ArucasFunction
 	public void despawn(Context context) {

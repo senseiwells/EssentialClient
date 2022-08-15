@@ -45,7 +45,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 			FUNCTION, "onEvent", "The function to run when the event is called, some events may have parameters",
 			BOOLEAN, "cancellable", "Whether or not the event is cancellable, if it is then it will run on the main thread"
 		},
-		example = "new GameEvent('onClientTick', fun() { }, true);"
+		examples = "new GameEvent('onClientTick', fun() { }, true);"
 	)
 	@ArucasConstructor
 	public void constructor(Context eventContext, StringValue eventName, FunctionValue function, BooleanValue cancellable) {
@@ -65,7 +65,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 			STRING, "eventName", "The name of the event, you can find these on the GameEvents page",
 			FUNCTION, "onEvent", "The function to run when the event is called, some events may have parameters"
 		},
-		example = "new GameEvent('onClientTick', fun() { });"
+		examples = "new GameEvent('onClientTick', fun() { });"
 	)
 	@ArucasConstructor
 	public void constructor(Context eventContext, StringValue eventName, FunctionValue function) {
@@ -76,7 +76,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 		name = "isRegistered",
 		desc = "This returns whether or not the event is registered",
 		returns = {BOOLEAN, "Whether or not the event is registered"},
-		example = "gameEvent.isRegistered();"
+		examples = "gameEvent.isRegistered();"
 	)
 	@ArucasFunction
 	public BooleanValue isRegistered(Context context) {
@@ -86,7 +86,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 	@FunctionDoc(
 		name = "register",
 		desc = "This registers the event",
-		example = "gameEvent.register();"
+		examples = "gameEvent.register();"
 	)
 	@ArucasFunction
 	public void register(Context context) {
@@ -96,7 +96,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 	@FunctionDoc(
 		name = "unregister",
 		desc = "This unregisters the event",
-		example = "gameEvent.unregister();"
+		examples = "gameEvent.unregister();"
 	)
 	@ArucasFunction
 	public BooleanValue unregister(Context context) {
@@ -110,7 +110,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 			"If called on a cancellable event, this will stop execution and cancel the event,",
 			"if called on a non-cancellable event, or not on an event, this will throw an error"
 		},
-		example = "GameEvent.cancel();"
+		examples = "GameEvent.cancel();"
 	)
 	@ArucasFunction
 	public static void cancel(Context context) throws CancelEvent {
@@ -121,7 +121,7 @@ public class GameEventWrapper implements IArucasWrappedClass {
 		isStatic = true,
 		name = "unregisterAll",
 		desc = "This unregisters all events registered by this script",
-		example = "GameEvent.unregisterAll();"
+		examples = "GameEvent.unregisterAll();"
 	)
 	@ArucasFunction
 	public static void unregisterAll(Context context) {

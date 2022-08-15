@@ -17,7 +17,6 @@ import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
-import me.senseiwells.essentialclient.utils.clientscript.MaterialLike;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
@@ -103,7 +102,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "get",
 			desc = "This gets the main player",
 			returns = {PLAYER, "The main player"},
-			example = "player = Player.get();"
+			examples = "player = Player.get();"
 		)
 		private Value get(Arguments arguments) {
 			return new PlayerValue(ArucasMinecraftExtension.getPlayer());
@@ -189,7 +188,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to make your player use",
 			params = {STRING, "action", "the type of action, either 'hold', 'stop', or 'once'"},
 			throwMsgs = "Must pass 'hold', 'stop', or 'once' into use()",
-			example = "player.use('hold');"
+			examples = "player.use('hold');"
 		)
 		private Value use(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
@@ -208,7 +207,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to make your player attack",
 			params = {STRING, "action", "the type of action, either 'hold', 'stop', or 'once'"},
 			throwMsgs = "Must pass 'hold', 'stop', or 'once' into attack()",
-			example = "player.attack('once');"
+			examples = "player.attack('once');"
 		)
 		private Value attack(Arguments arguments) {
 			StringValue stringValue = arguments.skip().getNextString();
@@ -227,7 +226,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to set the slot number your player is holding",
 			params = {NUMBER, "slot", "the slot number, must be between 0 - 8"},
 			throwMsgs = "Number must be between 0 - 8",
-			example = "player.setSelectedSlot(0);"
+			examples = "player.setSelectedSlot(0);"
 		)
 		private Value setSelectedSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -249,7 +248,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "say",
 			desc = "This allows you to make your player send a message in chat, this includes commands",
 			params = {STRING, "message", "the message to send"},
-			example = "player.say('/help');"
+			examples = "player.say('/help');"
 		)
 		private Value say(Arguments arguments) {
 			EssentialUtils.sendChatMessage(arguments.skip().getNext().getAsString(arguments.getContext()));
@@ -260,7 +259,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "message",
 			desc = "This allows you to send a message to your player, only they will see this, purely client side",
 			params = {TEXT, "message", "the message to send, can also be string"},
-			example = "player.message('Hello World!');"
+			examples = "player.message('Hello World!');"
 		)
 		private Value message(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -274,7 +273,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "messageActionBar",
 			desc = "This allows you to set the current memssage displaying on the action bar",
 			params = {TEXT, "message", "the message to send, can also be string"},
-			example = "player.messageActionBar('Hello World!');"
+			examples = "player.messageActionBar('Hello World!');"
 		)
 		private Value messageActionBar(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -291,7 +290,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				TEXT, "title", "the title to show, can be string or null",
 				TEXT, "subtitle", "the subtitle to show, can be string or null"
 			},
-			example = "player.showTitle('Title!', 'Subtitle!');"
+			examples = "player.showTitle('Title!', 'Subtitle!');"
 		)
 		private Value showTitle(Arguments arguments) {
 			Value value = arguments.skip().getNext();
@@ -310,7 +309,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		@FunctionDoc(
 			name = "openInventory",
 			desc = "This opens the player's inventory",
-			example = "player.openInventory();"
+			examples = "player.openInventory();"
 		)
 		private Value openInventory(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -324,7 +323,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This opens a screen for the player, this cannot open server side screens",
 			params = {SCREEN, "screen", "the screen to open"},
 			throwMsgs = "Opening handled screens is unsafe",
-			example = "player.openScreen(new FakeScreen('MyScreen', 4));"
+			examples = "player.openScreen(new FakeScreen('MyScreen', 4));"
 		)
 		private Value openScreen(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
@@ -339,7 +338,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		@FunctionDoc(
 			name = "closeScreen",
 			desc = "This closes the current screen",
-			example = "player.closeScreen();"
+			examples = "player.closeScreen();"
 		)
 		private Value closeScreen(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -352,7 +351,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "setWalking",
 			desc = "This sets the player's walking state",
 			params = {BOOLEAN, "walking", "the walking state"},
-			example = "player.setWalking(true);"
+			examples = "player.setWalking(true);"
 		)
 		private Value setWalking(Arguments arguments) {
 			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.forwardKey);
@@ -362,7 +361,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "setSneaking",
 			desc = "This sets the player's sneaking state",
 			params = {BOOLEAN, "sneaking", "the sneaking state"},
-			example = "player.setSneaking(true);"
+			examples = "player.setSneaking(true);"
 		)
 		private Value setSneaking(Arguments arguments) {
 			return this.setKey(arguments, ArucasMinecraftExtension.getClient().options.sneakKey);
@@ -372,7 +371,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "setSprinting",
 			desc = "This sets the player's sprinting state",
 			params = {BOOLEAN, "sprinting", "the sprinting state"},
-			example = "player.setSprinting(true);"
+			examples = "player.setSprinting(true);"
 		)
 		private Value setSprinting(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -385,7 +384,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "dropItemInHand",
 			desc = "This drops the item(s) in the player's main hand",
 			params = {BOOLEAN, "dropAll", "if true, all items in the player's main hand will be dropped"},
-			example = "player.dropItemInHand(true);"
+			examples = "player.dropItemInHand(true);"
 		)
 		private Value dropItemInHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -398,7 +397,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "dropAll",
 			desc = "This drops all items of a given type in the player's inventory",
 			params = {MATERIAL_LIKE, "materialLike", "the item stack, or material type to drop"},
-			example = "player.dropAll(Material.DIRT.asItemStack());"
+			examples = "player.dropAll(Material.DIRT.asItemStack());"
 		)
 		private Value dropAll(Arguments arguments) {
 			MaterialLike materialLike = arguments.skip().getAnyNext(MaterialLike.class);
@@ -411,7 +410,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "dropAllExact",
 			desc = "This drops all the items that have the same nbt as a given stack",
 			params = {ITEM_STACK, "itemStack", "the stack with nbt to drop"},
-			example = "player.dropAllExact(Material.GOLD_INGOT.asItemStack());"
+			examples = "player.dropAllExact(Material.GOLD_INGOT.asItemStack());"
 		)
 		private Value dropAllExact(Arguments arguments) {
 			ItemStack stack = arguments.skip().getNextGeneric(ItemStackValue.class);
@@ -427,7 +426,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "yaw", "the yaw of the player's look direction",
 				NUMBER, "pitch", "the pitch of the player's look direction"
 			},
-			example = "player.look(0, 0);"
+			examples = "player.look(0, 0);"
 		)
 		private Value look(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -448,7 +447,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "y", "the y coordinate of the position",
 				NUMBER, "z", "the z coordinate of the position"
 			},
-			example = "player.lookAtPos(0, 0, 0);"
+			examples = "player.lookAtPos(0, 0, 0);"
 		)
 		private Value lookAtPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -463,7 +462,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "lookAtPos",
 			desc = "This makes your player look towards a position",
 			params = {POS, "pos", "the position to look at"},
-			example = "player.lookAtPos(pos);"
+			examples = "player.lookAtPos(pos);"
 		)
 		private Value lookAtPosPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -476,7 +475,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "canPlaceBlockAt",
 			desc = "Checks block can be placed at given position",
 			params = {POS, "pos", "the position to check"},
-			example = "player.canPlaceBlockAt(block, pos);"
+			examples = "player.canPlaceBlockAt(block, pos);"
 		)
 		private Value canPlaceBlockAtPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -495,7 +494,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "y", "the y coordinate of the position",
 				NUMBER, "z", "the z coordinate of the position"
 			},
-			example = "player.canPlaceBlockAt(block, 0, 0, 0);"
+			examples = "player.canPlaceBlockAt(block, 0, 0, 0);"
 		)
 		private Value canPlaceBlockAtPos1(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -512,7 +511,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		@FunctionDoc(
 			name = "jump",
 			desc = "This will make the player jump if they are on the ground",
-			example = "player.jump();"
+			examples = "player.jump();"
 		)
 		private Value jump(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -529,7 +528,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "getLookingAtEntity",
 			desc = "This gets the entity that the player is currently looking at",
 			returns = {ENTITY, "the entity that the player is looking at"},
-			example = "player.getLookingAtEntity();"
+			examples = "player.getLookingAtEntity();"
 		)
 		private Value getLookingAtEntity(Arguments arguments) {
 			if (ArucasMinecraftExtension.getClient().crosshairTarget instanceof EntityHitResult hitResult) {
@@ -549,7 +548,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "slot2", "the slot to swap with slot1"
 			},
 			throwMsgs = "That slot is out of bounds",
-			example = "player.swapSlots(13, 14);"
+			examples = "player.swapSlots(13, 14);"
 		)
 		private Value swapSlots(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -572,12 +571,10 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 						interactionManager.clickSlot(screenHandler.syncId, slot1, 0, SlotActionType.SWAP, player);
 						player.getInventory().updateItems();
 					});
-				}
-				else {
+				} else {
 					InventoryUtils.swapSlot(client, screenHandler, slot1, secondMapped);
 				}
-			}
-			else {
+			} else {
 				InventoryUtils.swapSlot(client, screenHandler, slot2, firstMapped);
 			}
 			return NullValue.NULL;
@@ -593,7 +590,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"if there is no such slot it will return the current selected slot"
 			},
 			returns = {NUMBER, "the slot that is swappable"},
-			example = "player.getSwappableHotbarSlot();"
+			examples = "player.getSwappableHotbarSlot();"
 		)
 		private Value getSwappableHotbarSlot(Arguments arguments) {
 			// Return predicted current swappable hotbar slot
@@ -605,7 +602,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "spectatorTeleport",
 			desc = "This allows you to teleport to any entity as long as you are in spectator mode",
 			params = {ENTITY, "entity", "the entity to teleport to"},
-			example = "player.spectatorTeleport(player.getLookingAtEntity());"
+			examples = "player.spectatorTeleport(player.getLookingAtEntity());"
 		)
 		private Value spectatorTeleport(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -621,7 +618,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		@FunctionDoc(
 			name = "swapHands",
 			desc = "This will swap the player's main hand with the off hand",
-			example = "player.swapHands();"
+			examples = "player.swapHands();"
 		)
 		private Value swapHands(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -639,7 +636,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "swingHand",
 			desc = "This will play the player's hand swing animation for a given hand",
 			params = {STRING, "hand", "the hand to swing, this should be either 'main_hand' or 'off_hand'"},
-			example = "player.swingHand('main_hand');"
+			examples = "player.swingHand('main_hand');"
 		)
 		private Value swingHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -671,7 +668,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Invalid slotActionType, see Wiki",
 				"That slot is out of bounds"
 			},
-			example = "player.clickSlot(9, 'left', 'double_click');"
+			examples = "player.clickSlot(9, 'left', 'double_click');"
 		)
 		private Value clickSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -684,11 +681,9 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 					case "left" -> 0;
 					default -> throw arguments.getError("Invalid clickData must be 'left' or 'right' or a number");
 				};
-			}
-			else if (clickDataValue instanceof NumberValue clickDataNumber) {
+			} else if (clickDataValue instanceof NumberValue clickDataNumber) {
 				clickData = clickDataNumber.value.intValue();
-			}
-			else {
+			} else {
 				throw arguments.getError("Invalid clickData must be 'left' or 'right' or a number");
 			}
 			String stringValue = arguments.getNextGeneric(StringValue.class).toLowerCase();
@@ -720,7 +715,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				ITEM_STACK, "itemStack", "Stack to click",
 				NUMBER, "slot", "the slot to click"},
 			throwMsgs = "That slot is out of bounds",
-			example = "player.clickCreativeStack(Material.DIAMOND_SWORD.asItemStack(), 9);"
+			examples = "player.clickCreativeStack(Material.DIAMOND_SWORD.asItemStack(), 9);"
 		)
 		private Value clickCreativeStack(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -742,7 +737,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to shift click a slot",
 			params = {NUMBER, "slot", "the slot to click"},
 			throwMsgs = "That slot is out of bounds",
-			example = "player.shiftClickSlot(9);"
+			examples = "player.shiftClickSlot(9);"
 		)
 		private Value shiftClickSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -762,7 +757,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to drop the items in a slot",
 			params = {NUMBER, "slot", "the slot to drop"},
 			throwMsgs = "That slot is out of bounds",
-			example = "player.dropSlot(9);"
+			examples = "player.dropSlot(9);"
 		)
 		private Value dropSlot(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -781,7 +776,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "getCurrentScreen",
 			desc = "This gets the current screen the player is in",
 			returns = {SCREEN, "the screen the player is in, if the player is not in a screen it will return null"},
-			example = "screen = player.getCurrentScreen();"
+			examples = "screen = player.getCurrentScreen();"
 		)
 		private Value getCurrentScreen(Arguments arguments) {
 			Screen currentScreen = ArucasMinecraftExtension.getClient().currentScreen;
@@ -802,7 +797,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Recipe must either be 3x3 or 2x2",
 				"The recipe must only include items or materials"
 			},
-			example = """
+			examples = """
 				chestRecipe = [
 					Material.OAK_PLANKS, Material.OAK_PLANKS, Material.OAK_PLANKS,
 					Material.OAK_PLANKS,    Material.AIR    , Material.OAK_PLANKS,
@@ -823,8 +818,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				if (!(handledScreen instanceof CraftingScreen)) {
 					throw arguments.getError("You must be in a crafting table to craft a 3x3");
 				}
-			}
-			else if (listSize != 4) {
+			} else if (listSize != 4) {
 				throw arguments.getError("Recipe must either be 3x3 or 2x2");
 			}
 
@@ -849,7 +843,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to craft a predefined recipe",
 			params = {RECIPE, "recipe", "the recipe you want to craft"},
 			throwMsgs = "Must be in a crafting GUI",
-			example = "player.craftRecipe(Recipe.CHEST);"
+			examples = "player.craftRecipe(Recipe.CHEST);"
 		)
 		private Value craftRecipe(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
@@ -874,7 +868,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				BOOLEAN, "boolean", "whether result should be dropped or not"
 			},
 			throwMsgs = "Must be in a crafting GUI",
-			example = "player.craftRecipe(Recipe.CHEST, true);"
+			examples = "player.craftRecipe(Recipe.CHEST, true);"
 		)
 		private Value craftRecipeDrop(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
@@ -889,8 +883,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
 				if (booleanValue.value) {
 					InventoryUtils.shiftClickSlot(client, handledScreen, 0);
-				}
-				else {
+				} else {
 					InventoryUtils.dropStackScheduled(client, handledScreen, true);
 				}
 			});
@@ -902,7 +895,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to click a predefined recipe",
 			params = {RECIPE, "recipe", "the recipe you want to select"},
 			throwMsgs = "Must be in a crafting GUI",
-			example = "player.clickRecipe(Recipe.CHEST);"
+			examples = "player.clickRecipe(Recipe.CHEST);"
 		)
 		private Value clickRecipeDefault(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
@@ -926,7 +919,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				BOOLEAN, "boolean", "Shift click or not"
 			},
 			throwMsgs = "Must be in a crafting GUI",
-			example = "player.clickRecipe(Recipe.CHEST, true);"
+			examples = "player.clickRecipe(Recipe.CHEST, true);"
 		)
 		private Value clickRecipeWithBoolean(Arguments arguments) {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
@@ -947,7 +940,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "logout",
 			desc = "This forces the player to leave the world",
 			params = {STRING, "message", "the message to display to the player on the logout screen"},
-			example = "player.logout('You've been lazy!');"
+			examples = "player.logout('You've been lazy!');"
 		)
 		private Value logout(Arguments arguments) {
 			String reason = arguments.skip().getNextGeneric(StringValue.class);
@@ -962,7 +955,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"having to be looking at it or clicking on the entity"
 			},
 			params = {ENTITY, "entity", "the entity to attack"},
-			example = """
+			examples = """
 				allEntities = client.getWorld().getAllEntities();
 				foreach (entity : allEntities) {
 					if (entity.getId() == "villager" && player.getSquaredDistanceTo(entity) < 5) {
@@ -987,7 +980,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"having to be looking at it or clicking on the entity"
 			},
 			params = {ENTITY, "entity", "the entity to interact with"},
-			example = """
+			examples = """
 				allEntities = client.getWorld().getAllEntities();
 				foreach (entity : allEntities) {
 					if (entity.getId() == "villager" && player.getSquaredDistanceTo(entity) < 5) {
@@ -1018,7 +1011,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Not in anvil gui",
 				"Invalid function parameter"
 			},
-			example = """
+			examples = """
 				// Enchant a pickaxe with mending
 				player.anvil(
 					// Predicate for pick
@@ -1059,7 +1052,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Not in anvil gui",
 				"Invalid function parameter"
 			},
-			example = """
+			examples = """
 				// Enchant a pickaxe with mending
 				player.anvil(
 					// Predicate for pick
@@ -1099,7 +1092,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Not in anvil gui",
 				"Invalid function parameter"
 			},
-			example = """
+			examples = """
 				// Rename any shulker box
 				player.anvilRename("Rocket Box",
 					fun(item) {
@@ -1156,7 +1149,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				"Not in stonecutter gui",
 				"Recipe does not exist"
 			},
-			example = "player.stonecutter(Material.STONE.asItemstack(), Material.STONE_BRICKS.asItemStack());"
+			examples = "player.stonecutter(Material.STONE.asItemstack(), Material.STONE_BRICKS.asItemStack());"
 		)
 		private Value stonecutter(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
@@ -1208,7 +1201,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				STRING, "direction", "the direction to look at",
 				NUMBER, "duration", "the duration of the look in ticks"
 			},
-			example = "player.fakeLook(90, 0, 'up', 100);"
+			examples = "player.fakeLook(90, 0, 'up', 100);"
 		)
 		@SuppressWarnings("ConstantConditions")
 		private Value fakeLook(Arguments arguments) {
@@ -1237,7 +1230,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This allows you to swap a slot in the player's inventory with the hotbar",
 			params = {NUMBER, "slot", "the slot to swap"},
 			throwMsgs = "That slot is out of bounds",
-			example = "player.swapPlayerSlotWithHotbar(15);"
+			examples = "player.swapPlayerSlotWithHotbar(15);"
 		)
 		private Value swapPlayerSlotWithHotbar(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1260,7 +1253,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			desc = "This breaks a block at a given position, if it is able to be broken",
 			params = {POS, "pos", "the position of the block"},
 			returns = {BOOLEAN, "whether the block can be broken"},
-			example = "player.breakBlock(new Pos(0, 0, 0));"
+			examples = "player.breakBlock(new Pos(0, 0, 0));"
 		)
 		private Value breakBlock(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1291,7 +1284,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				FUNCTION, "function", "the function to run when the block is broken"
 			},
 			returns = {BOOLEAN, "whether the block can be broken"},
-			example = "player.breakBlock(new Pos(0, 0, 0), fun() { print('broken'); });"
+			examples = "player.breakBlock(new Pos(0, 0, 0), fun() { print('broken'); });"
 		)
 		private Value breakBlockMore(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1324,7 +1317,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "y", "the y position",
 				NUMBER, "z", "the z position"
 			},
-			example = "player.updateBreakingBlock(0, 0, 0);"
+			examples = "player.updateBreakingBlock(0, 0, 0);"
 		)
 		private Value updateBreakingBlock(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1347,7 +1340,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "updateBreakingBlock",
 			desc = "This allows you to update your block breaking progress at a position",
 			params = {POS, "pos", "the position of the block"},
-			example = "player.updateBreakingBlock(new Pos(0, 0, 0));"
+			examples = "player.updateBreakingBlock(new Pos(0, 0, 0));"
 		)
 		private Value updateBreakingBlockPos(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1371,7 +1364,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "z", "the z position",
 				STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc."
 			},
-			example = "player.attackBlock(0, 0, 0, 'up');"
+			examples = "player.attackBlock(0, 0, 0, 'up');"
 		)
 		private Value attackBlock(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1391,7 +1384,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				POS, "pos", "the position of the block",
 				STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc."
 			},
-			example = "player.attackBlock(new Pos(0, 0, 0), 'up');"
+			examples = "player.attackBlock(new Pos(0, 0, 0), 'up');"
 		)
 		private Value attackBlockPos(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
@@ -1408,7 +1401,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			params = {
 				STRING, "hand", " Hand to use, MAIN / OFFHAND or its lowercases are allowed."
 			},
-			example = "player.interactItem('main');"
+			examples = "player.interactItem('main');"
 		)
 		private Value interactItem(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1433,7 +1426,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "z", "the z position",
 				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
 			},
-			example = "player.interactBlock(0, 100, 0, 'up');"
+			examples = "player.interactBlock(0, 100, 0, 'up');"
 		)
 		private Value interactBlock(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1455,7 +1448,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				POS, "pos", "the position of the block",
 				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
 			},
-			example = "player.interactBlock(new Pos(0, 0, 0), 'up');"
+			examples = "player.interactBlock(new Pos(0, 0, 0), 'up');"
 		)
 		private Value interactBlockPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1472,7 +1465,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
 				STRING, "hand", "the hand to use, e.g. 'main_hand', 'off_hand'"
 			},
-			example = "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
+			examples = "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
 		)
 		private Value interactBlockPosHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1505,7 +1498,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				NUMBER, "blockZ", "the z position of the block",
 				BOOLEAN, "insideBlock", "whether the player is inside the block"
 			},
-			example = "player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);"
+			examples = "player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);"
 		)
 		private Value interactBlockFull(Arguments arguments) {
 			//carpet protocol support but why not client side?
@@ -1538,7 +1531,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				POS, "blockPos", "the position of the block",
 				BOOLEAN, "insideBlock", "whether the player is inside the block"
 			},
-			example = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
+			examples = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
 		)
 		private Value interactBlockFullPos(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1563,7 +1556,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				POS, "blockPos", "the position of the block",
 				BOOLEAN, "insideBlock", "whether the player is inside the block"
 			},
-			example = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');"
+			examples = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');"
 		)
 		private Value interactBlockFullPosHand(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
@@ -1583,7 +1576,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			name = "getBlockBreakingSpeed",
 			desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
 			params = {ITEM_STACK, "itemStack", "item to test with", BLOCK, "block", "the block to get the speed of"},
-			example = "speed = player.getBlockBreakingSpeed(Material.NETHERITE_PICKAXE.asItem(), Material.GOLD_BLOCK.asBlock());"
+			examples = "speed = player.getBlockBreakingSpeed(Material.NETHERITE_PICKAXE.asItem(), Material.GOLD_BLOCK.asBlock());"
 		)
 		private Value getBlockBreakingSpeed(Arguments arguments) {
 			ClientPlayerEntity player = this.getPlayer(arguments);
