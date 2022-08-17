@@ -573,7 +573,7 @@ public class PosValue extends GenericValue<Vec3d> {
 		private Value isNear(Arguments arguments) throws CodeError {
 			PosValue thisValue = arguments.getNext(PosValue.class);
 			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
-			return BooleanValue.of(entityValue.value.squaredDistanceTo(thisValue.value) <= 4.5);
+			return BooleanValue.of(entityValue.value.squaredDistanceTo(thisValue.value) <= 4.5 * 4.5);
 		}
 
 		@FunctionDoc(
@@ -590,7 +590,7 @@ public class PosValue extends GenericValue<Vec3d> {
 			PosValue thisValue = arguments.getNext(PosValue.class);
 			EntityValue<?> entityValue = arguments.getNext(EntityValue.class);
 			double distance = arguments.getNextGeneric(NumberValue.class);
-			return BooleanValue.of(entityValue.value.squaredDistanceTo(thisValue.value) <= distance);
+			return BooleanValue.of(entityValue.value.squaredDistanceTo(thisValue.value) <= distance * distance);
 		}
 
 		@FunctionDoc(
