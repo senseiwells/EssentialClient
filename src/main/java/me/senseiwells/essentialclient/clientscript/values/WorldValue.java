@@ -105,7 +105,9 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				MemberFunction.of("getArea", 2, this::getArea, "This function is memory intensive, use '<World>'.getPositions(pos1, pos2)"),
 				MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks, "This function is memory intensive, use '<World>.getBlocks(pos1, pos2)'"),
 				MemberFunction.of("getPositions", 2, this::getPositions),
-				MemberFunction.of("getBlocks", 2, this::getBlocks)
+				MemberFunction.of("getPositions", 6, this::getPositionsFull),
+				MemberFunction.of("getBlocks", 2, this::getBlocks),
+				MemberFunction.of("getBlocks", 6, this::getBlocksFull)
 			);
 		}
 
@@ -642,6 +644,33 @@ public class WorldValue extends GenericValue<ClientWorld> {
 		}
 
 		@FunctionDoc(
+			name = "getPositions",
+			desc = "This gets an iterator for all positions between two positions",
+			params = {
+				NUMBER, "x1", "the first position X",
+				NUMBER, "y1", "the first position Y",
+				NUMBER, "z1", "the first position Z",
+				NUMBER, "x2", "the second position X",
+				NUMBER, "y2", "the second position Y",
+				NUMBER, "z2", "the second position Z"
+			},
+			returns = {ITERATOR, "the iterator for the positions"},
+			example = "foreach (pos : world.getPositions(0, 100, 100, 0, 100, 0));"
+		)
+		private Value getPositionsFull(Arguments arguments) throws RuntimeError {
+			double x = arguments.getNextNumber().value;
+			double y = arguments.getNextNumber().value;
+			double z = arguments.getNextNumber().value;
+			double x2 = arguments.getNextNumber().value;
+			double y2 = arguments.getNextNumber().value;
+			double z2 = arguments.getNextNumber().value;
+			BlockPos posA = new BlockPos(x, y, z);
+			BlockPos posB = new BlockPos(x2, y2, z2);
+			Iterable<BlockPos> posIterable = BlockPos.iterate(posA, posB);
+			return new IteratorValue(() -> new PosIterator(posIterable.iterator()));
+		}
+
+		@FunctionDoc(
 			name = "getBlocks",
 			desc = "This gets an iterator for all blocks (and positions) between two positions",
 			params = {
@@ -655,6 +684,34 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			ClientWorld world = this.getWorld(arguments);
 			BlockPos posA = arguments.getNext(PosValue.class).toBlockPos();
 			BlockPos posB = arguments.getNext(PosValue.class).toBlockPos();
+			Iterable<BlockPos> posIterable = BlockPos.iterate(posA, posB);
+			return new IteratorValue(() -> new PosIterator.Block(world, posIterable.iterator()));
+		}
+
+		@FunctionDoc(
+			name = "getBlocks",
+			desc = "This gets an iterator for all blocks (and positions) between two positions",
+			params = {
+				NUMBER, "x1", "the first position X",
+				NUMBER, "y1", "the first position Y",
+				NUMBER, "z1", "the first position Z",
+				NUMBER, "x2", "the second position X",
+				NUMBER, "y2", "the second position Y",
+				NUMBER, "z2", "the second position Z"
+			},
+			returns = {ITERATOR, "the iterator for the blocks"},
+			example = "foreach (block : world.getBlocks(0, 100, 100, 0, 100, 0));"
+		)
+		private Value getBlocksFull(Arguments arguments) throws CodeError {
+			ClientWorld world = this.getWorld(arguments);
+			double x = arguments.getNextNumber().value;
+			double y = arguments.getNextNumber().value;
+			double z = arguments.getNextNumber().value;
+			double x2 = arguments.getNextNumber().value;
+			double y2 = arguments.getNextNumber().value;
+			double z2 = arguments.getNextNumber().value;
+			BlockPos posA = new BlockPos(x, y, z);
+			BlockPos posB = new BlockPos(x2, y2, z2);
 			Iterable<BlockPos> posIterable = BlockPos.iterate(posA, posB);
 			return new IteratorValue(() -> new PosIterator.Block(world, posIterable.iterator()));
 		}

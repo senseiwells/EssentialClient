@@ -165,7 +165,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				MemberFunction.of("interactBlock", 8, this::interactBlockFull),
 				MemberFunction.of("interactBlock", 4, this::interactBlockFullPos),
 				MemberFunction.of("interactBlock", 5, this::interactBlockFullPosHand),
-				MemberFunction.of("getBlockBreakingSpeed", 1, this::getBlockBreakingSpeed),
+				MemberFunction.of("getBlockBreakingSpeed", 2, this::getBlockBreakingSpeed),
 				MemberFunction.of("swapHands", this::swapHands),
 				MemberFunction.of("swingHand", 1, this::swingHand),
 				MemberFunction.of("clickSlot", 3, this::clickSlot),
