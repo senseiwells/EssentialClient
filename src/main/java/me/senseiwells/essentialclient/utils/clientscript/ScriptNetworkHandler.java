@@ -1,20 +1,26 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import io.netty.buffer.Unpooled;
+import me.senseiwells.arucas.builtin.*;
+import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.arucas.values.*;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.clientscript.definitions.MaterialDef;
+import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
+import me.senseiwells.essentialclient.clientscript.definitions.TextDef;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.TextValue;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 
-import java.util.Locale;
+import java.util.List;
 
 import static me.senseiwells.essentialclient.utils.network.NetworkUtils.*;
 
@@ -39,12 +45,12 @@ public class ScriptNetworkHandler extends NetworkHandler {
 	@Override
 	protected void processData(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
 		PacketParser parser = new PacketParser(packetByteBuf);
-		MinecraftScriptEvents.ON_SCRIPT_PACKET.run(c -> ArucasList.arrayListOf(parser.parseToValues(c)));
+		MinecraftScriptEvents.ON_SCRIPT_PACKET.run(c -> List.of(parser.parseToValues(c)));
 	}
 
 	public void sendScriptPacket(Arguments arguments) {
 		if (this.getNetworkHandler() == null) {
-			throw arguments.getError("Server is not accepting client script packets");
+			throw new RuntimeError("Server is not accepting client script packets");
 		}
 
 		ArgumentParser parser = new ArgumentParser(arguments);
@@ -52,14 +58,14 @@ public class ScriptNetworkHandler extends NetworkHandler {
 	}
 
 	private record PacketParser(PacketByteBuf buf) {
-		private ListValue parseToValues(Context context) {
+		private ClassInstance parseToValues(Interpreter interpreter) {
 			ArucasList list = new ArucasList();
 
 			while (this.buf.readableBytes() > 0) {
-				list.add(context.convertValue(this.readNext()));
+				list.add(interpreter.convertValue(this.readNext()));
 			}
 
-			return new ListValue(list);
+			return interpreter.create(ListDef.class, list);
 		}
 
 		private Object readNext() {
@@ -80,7 +86,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 				case IDENTIFIER -> this.buf.readIdentifier();
 				case ITEM_STACK -> this.buf.readItemStack();
 				case NBT -> this.buf.readNbt();
-				case POS -> new PosValue(this.buf.readDouble(), this.buf.readDouble(), this.buf.readDouble());
+				case POS -> new Vec3d(this.buf.readDouble(), this.buf.readDouble(), this.buf.readDouble());
 				default -> null;
 			};
 		}
@@ -97,70 +103,62 @@ public class ScriptNetworkHandler extends NetworkHandler {
 		}
 
 		private PacketByteBuf parse() {
-			for (Value value : this.arguments.getRemaining()) {
-				if (value instanceof BooleanValue booleanValue) {
+			while (this.arguments.hasNext()) {
+				if (this.arguments.isNext(BooleanDef.class)) {
 					this.buf.writeByte(BOOLEAN);
-					this.buf.writeBoolean(booleanValue.value);
-					continue;
-				}
-				if (value instanceof NumberValue number) {
+					this.buf.writeBoolean(this.arguments.nextPrimitive(BooleanDef.class));
+				} else if (this.arguments.isNext(NumberDef.class)) {
 					this.buf.writeByte(DOUBLE);
-					this.buf.writeDouble(number.value);
-					continue;
-				}
-				if (value instanceof StringValue stringValue) {
+					this.buf.writeDouble(this.arguments.nextPrimitive(NumberDef.class));
+				} else if (this.arguments.isNext(StringDef.class)) {
 					this.buf.writeByte(STRING);
-					this.buf.writeString(stringValue.value);
-					continue;
-				}
-				if (value instanceof TextValue textValue) {
+					this.buf.writeString(this.arguments.nextPrimitive(StringDef.class));
+				} else if (this.arguments.isNext(TextDef.class)) {
 					this.buf.writeByte(TEXT);
-					this.buf.writeText(textValue.value);
-					continue;
-				}
-				if (value instanceof ItemStackValue itemStack) {
+					this.buf.writeText(this.arguments.nextPrimitive(TextDef.class));
+				} else if (this.arguments.isNext(MaterialDef.class)) {
 					this.buf.writeByte(ITEM_STACK);
-					this.buf.writeItemStack(itemStack.value);
-					continue;
-				}
-				if (value instanceof PosValue posValue) {
+					this.buf.writeItemStack(this.arguments.nextPrimitive(MaterialDef.class).asItemStack());
+				} else if (this.arguments.isNext(PosDef.class)) {
+					ScriptPos pos = this.arguments.nextPrimitive(PosDef.class);
 					this.buf.writeByte(POS);
-					this.buf.writeDouble(posValue.value.x);
-					this.buf.writeDouble(posValue.value.y);
-					this.buf.writeDouble(posValue.value.z);
-					continue;
-				}
-				if (value instanceof MapValue map) {
+					this.buf.writeDouble(pos.getX());
+					this.buf.writeDouble(pos.getY());
+					this.buf.writeDouble(pos.getZ());
+				} else if (this.arguments.isNext(MapDef.class)) {
 					this.buf.writeByte(NBT);
-					this.buf.writeNbt(ClientScriptUtils.mapToNbt(this.arguments.getContext(), map.value, 10));
-					continue;
-				}
-				if (value instanceof ListValue list) {
-					this.parseList(list);
+					this.buf.writeNbt(
+						ClientScriptUtils.mapToNbt(this.arguments.getInterpreter(), this.arguments.nextPrimitive(MapDef.class), 10)
+					);
+				} else if (this.arguments.isNext(ListDef.class)) {
+					this.parseList(this.arguments.nextPrimitive(ListDef.class));
+				} else {
+					throw new RuntimeError("Cannot serialize unknown type: '%s'".formatted(this.arguments.next().getDefinition().getName()));
 				}
 			}
 			return this.buf;
 		}
 
-		private void parseList(ListValue listValue) {
-			ArucasList list = listValue.value;
+		private void parseList(ArucasList list) {
 			if (list.isEmpty()) {
 				this.buf.writeLongArray(new long[0]);
 				return;
 			}
 
 			int mod = 0;
-			if (list.get(0) instanceof StringValue string) {
+			ClassInstance first = list.get(0);
+			String integerType = first.getPrimitive(StringDef.class);
+			if (integerType != null) {
 				mod++;
-				switch (string.value.toLowerCase(Locale.ROOT)) {
+				switch (integerType.toLowerCase()) {
 					case "b" -> {
 						byte[] bytes = new byte[list.size() - 1];
 						for (; mod < list.size(); mod++) {
-							Value value = list.get(mod);
-							if (!(value instanceof NumberValue number)) {
-								throw this.arguments.getError("Expected numbers in packet list, got: ", value);
+							Double value = list.get(mod).getPrimitive(NumberDef.class);
+							if (value == null) {
+								throw new RuntimeError("Expected numbers in packet list, got: %s".formatted(value));
 							}
-							bytes[mod - 1] = number.value.byteValue();
+							bytes[mod - 1] = value.byteValue();
 						}
 						this.buf.writeByte(BYTE_ARRAY);
 						this.buf.writeByteArray(bytes);
@@ -169,11 +167,11 @@ public class ScriptNetworkHandler extends NetworkHandler {
 					case "i" -> {
 						int[] ints = new int[list.size() - 1];
 						for (; mod < list.size(); mod++) {
-							Value value = list.get(mod);
-							if (!(value instanceof NumberValue number)) {
-								throw this.arguments.getError("Expected numbers in packet list, got: ", value);
+							Double value = list.get(mod).getPrimitive(NumberDef.class);
+							if (value == null) {
+								throw new RuntimeError("Expected numbers in packet list, got: %s".formatted(value));
 							}
-							ints[mod - 1] = number.value.intValue();
+							ints[mod - 1] = value.intValue();
 						}
 						this.buf.writeByte(INT_ARRAY);
 						this.buf.writeIntArray(ints);
@@ -184,11 +182,11 @@ public class ScriptNetworkHandler extends NetworkHandler {
 
 			long[] longs = new long[list.size() - mod];
 			for (int i = 0; i < list.size() - mod; i++) {
-				Value value = list.get(i);
-				if (!(value instanceof NumberValue number)) {
-					throw this.arguments.getError("Expected numbers in packet list, got: ", value);
+				Double value = list.get(i).getPrimitive(NumberDef.class);
+				if (value == null) {
+					throw new RuntimeError("Expected numbers in packet list, got: %s".formatted(value));
 				}
-				longs[i - mod] = number.value.longValue();
+				longs[i - mod] = value.longValue();
 			}
 			this.buf.writeByte(LONG_ARRAY);
 			this.buf.writeLongArray(longs);

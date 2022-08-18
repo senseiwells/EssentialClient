@@ -51,7 +51,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 
 	@Inject(method = "closeScreen", at = @At("HEAD"))
 	private void onCloseScreen(CallbackInfo ci) {
-		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(c -> ArucasList.arrayListOf(c.convertValue(EssentialUtils.getClient().currentScreen)));
+		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(c -> List.of(c.convertValue(EssentialUtils.getClient().currentScreen)));
 	}
 
 	@Override

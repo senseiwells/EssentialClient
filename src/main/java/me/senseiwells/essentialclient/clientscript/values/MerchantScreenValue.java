@@ -148,7 +148,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			if (InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
 				throw arguments.getError(NOT_IN_GUI);
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -164,7 +164,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), materialLike.asItem());
 			if (index == -1) {
-				return NullValue.NULL;
+				return null;
 			}
 			this.checkVillagerValid(index, arguments);
 			return NumberValue.of(index);
@@ -227,7 +227,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			if (!InventoryUtils.selectTrade(ArucasMinecraftExtension.getClient(), numberValue.value.intValue())) {
 				throw arguments.getError(NOT_IN_GUI);
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -241,7 +241,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			if (!InventoryUtils.clearTrade(ArucasMinecraftExtension.getClient())) {
 				throw arguments.getError(NOT_IN_GUI);
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -255,7 +255,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			if (InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), false)) {
 				throw arguments.getError(NOT_IN_GUI);
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -269,7 +269,7 @@ public class MerchantScreenValue extends ScreenValue<MerchantScreen> {
 			if (InventoryUtils.tradeSelectedRecipe(ArucasMinecraftExtension.getClient(), true)) {
 				throw arguments.getError(NOT_IN_GUI);
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(

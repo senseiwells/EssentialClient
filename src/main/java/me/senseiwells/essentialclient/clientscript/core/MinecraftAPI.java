@@ -138,7 +138,7 @@ public class MinecraftAPI {
 		builder.addConversion(Identifier.class, (i, c) -> StringValue.of(i.toString()));
 		builder.addConversion(Enchantment.class, (e, c) -> {
 			Identifier identifier = Registry.ENCHANTMENT.getId(e);
-			return identifier == null ? NullValue.NULL : StringValue.of(identifier.toString());
+			return identifier == null ? null : StringValue.of(identifier.toString());
 		});
 	}
 }

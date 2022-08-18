@@ -117,7 +117,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 		private Value argument2(Arguments arguments) {
 			StringValue stringValue = arguments.getNextString();
 			StringValue argumentTypeString = arguments.getNextString();
-			return this.argument(arguments.getContext(), arguments.getPosition(), stringValue.value, argumentTypeString.value, NullValue.NULL);
+			return this.argument(arguments.getContext(), arguments.getPosition(), stringValue.value, argumentTypeString.value, null);
 		}
 
 		@FunctionDoc(
@@ -247,7 +247,7 @@ public class CommandBuilderValue extends GenericValue<ArgumentBuilder<ServerComm
 			if (extraSuggestion != null) {
 				argumentBuilder.suggests(extraSuggestion);
 			}
-			if (suggestions != NullValue.NULL) {
+			if (suggestions != null) {
 				if (suggestions instanceof ListValue listValue) {
 					List<String> stringSuggestions = new ArrayList<>();
 					for (Value value : listValue.value.toArray()) {

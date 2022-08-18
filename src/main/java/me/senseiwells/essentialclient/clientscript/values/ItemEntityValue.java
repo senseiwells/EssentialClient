@@ -112,7 +112,7 @@ public class ItemEntityValue extends EntityValue<ItemEntity> {
 			ItemEntityValue itemEntityValue = arguments.getNext(ItemEntityValue.class);
 			UUID throwerUuid = itemEntityValue.value.getThrower();
 			if (throwerUuid == null) {
-				return NullValue.NULL;
+				return null;
 			}
 			return arguments.getContext().convertValue(ThreadSafeUtils.getPlayerByUuid(ArucasMinecraftExtension.getWorld(), throwerUuid));
 		}

@@ -61,7 +61,7 @@ public class MinecraftClientMixin {
 	@Inject(method = "setScreen", at = @At("HEAD"))
 	private void onOpenScreen(Screen screen, CallbackInfo ci) {
 		if (screen != null) {
-			MinecraftScriptEvents.ON_OPEN_SCREEN.run(c -> ArucasList.arrayListOf(c.convertValue(screen)));
+			MinecraftScriptEvents.ON_OPEN_SCREEN.run(c -> List.of(c.convertValue(screen)));
 		}
 	}
 }

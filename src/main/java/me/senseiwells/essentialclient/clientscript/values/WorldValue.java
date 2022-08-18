@@ -193,7 +193,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 					return new OtherPlayerValue(otherClientPlayerEntity);
 				}
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -350,7 +350,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			NumberValue z = arguments.getNextNumber();
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> world.addParticle(defaultParticleType, x.value, y.value, z.value, 0, 0, 0));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -384,7 +384,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				0,
 				0
 			));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -424,7 +424,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				yVelocity.value,
 				zVelocity.value
 			));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -448,7 +448,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			BlockPos blockPos = new BlockPos(x.value, y.value, z.value);
 			client.execute(() -> world.setBlockState(blockPos, blockState));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -468,7 +468,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			BlockPos blockPos = new BlockPos(posValue.value);
 			client.execute(() -> world.setBlockState(blockPos, blockState));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(

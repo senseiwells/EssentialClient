@@ -960,7 +960,7 @@ public abstract class Shape implements IArucasWrappedClass {
 		@ArucasFunction
 		default Value getDirection(Context context) {
 			Direction direction = this.getDirection();
-			return direction == null ? NullValue.NULL : StringValue.of(direction.getName());
+			return direction == null ? null : StringValue.of(direction.getName());
 		}
 	}
 

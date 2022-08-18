@@ -1,11 +1,12 @@
 package me.senseiwells.essentialclient.utils.render;
 
-import me.senseiwells.arucas.utils.Context;
-import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.arucas.values.functions.FunctionValue;
+import me.senseiwells.arucas.builtin.NumberDef;
+import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.utils.ArucasFunction;
+import me.senseiwells.essentialclient.clientscript.definitions.ItemStackDef;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -17,15 +18,17 @@ import net.minecraft.screen.slot.SlotActionType;
 import java.util.List;
 
 public class FakeInventoryScreen extends GenericContainerScreen {
-	private ContextFunction contextFunction = null;
+	private Interpreter interpreter;
+	private ArucasFunction function;
 
 	public FakeInventoryScreen(PlayerInventory inventory, String title, int rows) {
 		super(getHandler(inventory, rows), inventory, Texts.literal(title));
 		super.init(EssentialUtils.getClient(), this.width, this.height);
 	}
 
-	public void setFunctionValue(Context context, FunctionValue functionValue) {
-		this.contextFunction = new ContextFunction(context.createBranch(), functionValue);
+	public void setFunctionValue(Interpreter interpreter, ArucasFunction arucasFunction) {
+		this.interpreter = interpreter;
+		this.function = arucasFunction;
 	}
 
 	public void setStack(int slot, ItemStack stack) {
@@ -44,7 +47,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	}
 
 	public void fakeTick() {
-		if (this.contextFunction == null || !this.contextFunction.context.getThreadHandler().isRunning()) {
+		if (this.interpreter == null || !this.interpreter.getThreadHandler().getRunning()) {
 			this.close();
 		}
 	}
@@ -58,17 +61,18 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
 		final int slotNumber = slot == null ? slotId : slot.id;
 		final String action = actionType.toString();
-		if (this.contextFunction != null && this.contextFunction.context.getThreadHandler().isRunning()) {
+		if (this.interpreter != null && this.interpreter.getThreadHandler().getRunning()) {
 			List<Slot> slots = this.handler.slots;
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
-			Context context = this.contextFunction.context.createBranch();
-			context.getThreadHandler().runAsyncFunctionInThreadPool(context,
-				passedContext -> this.contextFunction.functionValue.call(passedContext, ArucasList.arrayListOf(
-					new ItemStackValue(stack.copy()),
-					NumberValue.of(slotNumber),
-					StringValue.of(action)
-				))
-			);
+			Interpreter branch = this.interpreter.branch();
+			branch.getThreadHandler().runAsync(() -> {
+				this.function.invoke(branch, List.of(
+					branch.create(ItemStackDef.class, new ScriptItemStack(stack.copy())),
+					branch.create(NumberDef.class, (double) slotNumber),
+					branch.create(StringDef.class, action)
+				));
+				return null;
+			});
 		}
 	}
 
@@ -83,6 +87,4 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 			default -> throw new IllegalArgumentException("Invalid number of rows");
 		};
 	}
-
-	private record ContextFunction(Context context, FunctionValue functionValue) { }
 }

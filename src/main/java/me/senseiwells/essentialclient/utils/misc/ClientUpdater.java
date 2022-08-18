@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.misc;
 
 import com.google.gson.*;
-import me.senseiwells.arucas.utils.NetworkUtils;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -27,7 +27,7 @@ public class ClientUpdater {
 	}
 
 	public void tryUpdate() {
-		String content = NetworkUtils.getStringFromUrl(this.RELEASES_URL);
+		String content = Util.Network.INSTANCE.getStringFromUrl(this.RELEASES_URL);
 		if (content == null) {
 			return;
 		}
@@ -72,8 +72,7 @@ public class ClientUpdater {
 		try {
 			FileUtils.copyURLToFile(new URL(url), FabricLoader.getInstance().getGameDir().resolve("mods").resolve(name).toFile(), 1000, 1000);
 			return true;
-		}
-		catch (IOException ioException) {
+		} catch (IOException ioException) {
 			return false;
 		}
 	}

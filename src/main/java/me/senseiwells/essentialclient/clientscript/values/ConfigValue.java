@@ -270,9 +270,9 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			Context branch = arguments.getContext().createBranch();
 			rule.value.addListener(object -> {
 				Context branchContext = branch.createBranch();
-				listener.callSafe(branchContext, () -> ArucasList.arrayListOf(rule));
+				listener.callSafe(branchContext, () -> List.of(rule));
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -283,7 +283,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 		private Value resetToDefault(Arguments arguments) {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			rule.resetToDefault();
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -296,7 +296,7 @@ public class ConfigValue extends GenericValue<ClientRule<?>> {
 			ClientRule<?> rule = arguments.getNextGeneric(ConfigValue.class);
 			Value value = arguments.getNext();
 			rule.setValueFromString(value.getAsString(arguments.getContext()));
-			return NullValue.NULL;
+			return null;
 		}
 	}
 }

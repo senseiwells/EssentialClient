@@ -1,18 +1,50 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.brigadier.suggestion.Suggestions;
 import me.senseiwells.arucas.builtin.*;
+import me.senseiwells.arucas.classes.ClassDefinition;
 import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.classes.EnumDefinition;
+import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
+import me.senseiwells.arucas.utils.ArucasFunction;
 import me.senseiwells.arucas.utils.impl.ArucasCollection;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
+import me.senseiwells.essentialclient.clientscript.definitions.EntityDef;
+import me.senseiwells.essentialclient.clientscript.definitions.ItemStackDef;
+import me.senseiwells.essentialclient.clientscript.definitions.TextDef;
+import me.senseiwells.essentialclient.commands.CommandRegister;
+import me.senseiwells.essentialclient.rule.client.*;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
+import me.senseiwells.essentialclient.utils.command.*;
+import me.senseiwells.essentialclient.utils.misc.FunctionClickEvent;
+import me.senseiwells.essentialclient.utils.render.Texts;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryWrapper;
-import net.minecraft.command.argument.ItemStringReader;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.argument.*;
+import net.minecraft.command.suggestion.SuggestionProviders;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.Direction;
@@ -20,192 +52,27 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RaycastContext;
 import shadow.kotlin.Pair;
 
-import java.util.Collection;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientScriptUtils {
-	/*
-	public static final StringValue
-		NAME = StringValue.of("name"),
-		SUBCOMMANDS = StringValue.of("subcommands"),
-		ARGUMENTS = StringValue.of("arguments"),
-		TYPE = StringValue.of("type"),
-		MIN = StringValue.of("min"),
-		MAX = StringValue.of("max"),
-		SUGGESTS = StringValue.of("suggests"),
-		SUGGESTER = StringValue.of("suggester"),
-		ENUM = StringValue.of("enum"),
-		DESCRIPTION = StringValue.of("description"),
-		OPTIONAL_INFO = StringValue.of("optional_info"),
-		DEFAULT_VALUE = StringValue.of("default_value"),
-		VALUE = StringValue.of("value"),
-		LISTENER = StringValue.of("listener"),
-		CYCLE_VALUES = StringValue.of("cycle_values"),
-		MAX_LENGTH = StringValue.of("max_length");
+	private static final Set<String> WARNED = ConcurrentHashMap.newKeySet();
 
-	public static ConfigValue mapToRule(ArucasMap map, Context context, ISyntax syntaxPosition) {
-		Value value = map.get(context, TYPE);
-		if (!(value instanceof StringValue type)) {
-			throw new RuntimeError("Config map must contain a type that is a string", syntaxPosition, context);
+	public static void ensureMainThread(String name, Interpreter interpreter, Runnable runnable) {
+		MinecraftClient client = EssentialUtils.getClient();
+		if (client.isOnThread()) {
+			runnable.run();
+			return;
 		}
-		value = map.get(context, NAME);
-		if (!(value instanceof StringValue name)) {
-			throw new RuntimeError("Config map must contain a name that is a string", syntaxPosition, context);
+		if (!WARNED.contains(name)) {
+			WARNED.add(name);
+			interpreter.getApi().getOutput().printError(
+				"'%s' was not called inside a '<MinecraftClient>.run' task, this may lead to unexpected behaviour".formatted(name)
+			);
 		}
-
-		value = map.get(context, DESCRIPTION);
-		String description = value instanceof StringValue s ? s.value : null;
-
-		value = map.get(context, OPTIONAL_INFO);
-		String optionalInfo = value instanceof StringValue s ? s.value : null;
-
-		value = map.get(context, VALUE);
-		String currentValue = value != null ? value.getAsString(context) : null;
-
-		value = map.get(context, LISTENER);
-		FunctionValue function = value instanceof FunctionValue f ? f : null;
-
-		value = map.get(context, MAX_LENGTH);
-		int maxLength = value instanceof NumberValue i ? i.value.intValue() : 32;
-
-		Value defaultValue = map.get(context, DEFAULT_VALUE);
-		ClientRule<?> clientRule = switch (type.value.toLowerCase(Locale.ROOT)) {
-			case "boolean" -> {
-				if (defaultValue instanceof BooleanValue booleanValue) {
-					yield new BooleanClientRule(name.value, description, booleanValue.value);
-				}
-				yield new BooleanClientRule(name.value, description);
-			}
-			case "cycle" -> {
-				value = map.get(context, CYCLE_VALUES);
-				if (!(value instanceof ListValue list)) {
-					throw new RuntimeError("'cycle' type must have 'cycle_values' as a list", syntaxPosition, context);
-				}
-
-				List<String> cycles = new ArrayList<>();
-				for (int i = 0; i < list.value.size(); i++) {
-					cycles.add(list.value.get(i).getAsString(context));
-				}
-
-				if (defaultValue instanceof StringValue string) {
-					yield new CycleClientRule(name.value, description, cycles, string.value, null);
-				}
-				yield new CycleClientRule(name.value, description, cycles);
-			}
-			case "double" -> {
-				if (defaultValue instanceof NumberValue number) {
-					yield new DoubleClientRule(name.value, description, number.value);
-				}
-				yield new DoubleClientRule(name.value, description, 0.0D);
-			}
-			case "double_slider" -> {
-				value = map.get(context, MIN);
-				if (!(value instanceof NumberValue min)) {
-					throw new RuntimeError("'double_slider' type must have 'min' as a number", syntaxPosition, context);
-				}
-				value = map.get(context, MAX);
-				if (!(value instanceof NumberValue max)) {
-					throw new RuntimeError("'double_slider' type must have 'max' as a number", syntaxPosition, context);
-				}
-
-				if (defaultValue instanceof NumberValue number) {
-					yield new DoubleSliderClientRule(name.value, description, number.value, min.value, max.value);
-				}
-				yield new DoubleSliderClientRule(name.value, description, 0.0D, min.value, max.value);
-			}
-			case "integer" -> {
-				if (defaultValue instanceof NumberValue number) {
-					yield new IntegerClientRule(name.value, description, number.value.intValue());
-				}
-				yield new IntegerClientRule(name.value, description, 0);
-			}
-			case "integer_slider" -> {
-				value = map.get(context, MIN);
-				if (!(value instanceof NumberValue min)) {
-					throw new RuntimeError("'integer_slider' type must have 'min' as a number", syntaxPosition, context);
-				}
-				value = map.get(context, MAX);
-				if (!(value instanceof NumberValue max)) {
-					throw new RuntimeError("'integer_slider' type must have 'max' as a number", syntaxPosition, context);
-				}
-
-				if (defaultValue instanceof NumberValue number) {
-					yield new IntegerSliderClientRule(name.value, description, number.value.intValue(), min.value.intValue(), max.value.intValue());
-				}
-				yield new IntegerSliderClientRule(name.value, description, 0, min.value.intValue(), max.value.intValue());
-			}
-			case "list" -> {
-				List<String> configData = new ArrayList<>();
-				if (defaultValue instanceof ListValue values) {
-					for (Value listValue : values.value) {
-						configData.add(listValue.getAsString(context));
-					}
-				}
-				ListClientRule listClientRule = new ListClientRule(name.value, description, configData);
-				listClientRule.setMaxLength(maxLength);
-				yield listClientRule;
-			}
-			case "string" -> {
-				StringClientRule stringClientRule = new StringClientRule(name.value, description, defaultValue == null ? "" : defaultValue.getAsString(context));
-				stringClientRule.setMaxLength(maxLength);
-				yield stringClientRule;
-			}
-			default -> throw new RuntimeError("Invalid config type '%s'".formatted(type.value), syntaxPosition, context);
-		};
-
-		ConfigValue configValue = new ConfigValue(clientRule);
-
-		if (function != null) {
-			Context branch = context.createBranch();
-			clientRule.addListener(object -> {
-				Context branchContext = branch.createBranch();
-				function.callSafe(branchContext, () -> ArucasList.arrayListOf(configValue));
-			});
-		}
-		if (currentValue != null) {
-			clientRule.setValueFromString(currentValue);
-		}
-
-		clientRule.setOptionalInfo(optionalInfo);
-		return configValue;
+		client.execute(runnable);
 	}
-
-	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Context context, ISyntax syntaxPosition) {
-		return new CommandParser(arucasMap, context, syntaxPosition).parse();
-	}
-
-	public static ArgumentType<?> parseArgumentType(String string, Context context, ISyntax syntaxPosition) {
-		return switch (string.toLowerCase()) {
-			case "playername", "word" -> StringArgumentType.word();
-			case "double" -> DoubleArgumentType.doubleArg();
-			case "integer" -> IntegerArgumentType.integer();
-			case "boolean" -> BoolArgumentType.bool();
-			case "itemstack" -> ItemStackArgumentType.itemStack(CommandRegister.getRegistryAccess());
-			case "block" -> BlockStateArgumentType.blockState(CommandRegister.getRegistryAccess());
-			case "greedystring" -> StringArgumentType.greedyString();
-			case "entity" -> ClientEntityArgumentType.entity();
-			case "entities" -> ClientEntityArgumentType.entities();
-			case "blockpos" -> BlockPosArgumentType.blockPos();
-			case "pos" -> Vec3ArgumentType.vec3();
-			case "effect" -> StatusEffectArgumentType.statusEffect();
-			case "particle" -> ParticleEffectArgumentType.particleEffect();
-			case "recipeid" -> IdentifierArgumentType.identifier();
-			case "entityid" -> EntityArgumentType.entity();
-			case "enchantmentid" -> EnchantmentArgumentType.enchantment();
-			default -> throw new RuntimeError("Invalid argument type", syntaxPosition, context);
-		};
-	}
-
-	public static Value commandArgumentToValue(Object object, Context context) throws CommandSyntaxException, CodeError {
-		// We check for these two here since they throw CommandSyntaxExceptions
-		if (object instanceof PosArgument posArgument) {
-			return new PosValue(posArgument.toAbsolutePos(new FakeCommandSource(EssentialUtils.getPlayer())));
-		}
-		if (object instanceof ClientEntitySelector selector) {
-			FakeCommandSource source = new FakeCommandSource(EssentialUtils.getPlayer());
-			object = selector.isSingleTarget() ? selector.getEntity(source) : selector.getEntities(source);
-		}
-		return context.convertValue(object);
-	}*/
 
 	/**
 	 * Default direction can be null, in which case a RuntimeError is thrown.
@@ -227,11 +94,68 @@ public class ClientScriptUtils {
 		};
 	}
 
+	public static Formatting stringToFormatting(String string) {
+		Formatting formatting = Formatting.byName(string);
+		if (formatting == null) {
+			throw new RuntimeError("Invalid formatting: %s".formatted(string));
+		}
+		return formatting;
+	}
+
+	public static ClickEvent stringToClickEvent(Interpreter interpreter, String string, ClassInstance object) {
+		return switch (string.toLowerCase()) {
+			case "function", "run_function" -> {
+				ArucasFunction function = object.getPrimitive(FunctionDef.class);
+				if (function == null) {
+					throw new RuntimeError("Invalid function value: %s".formatted(object.toString(interpreter)));
+				}
+				yield new FunctionClickEvent(interpreter, function);
+			}
+			default -> {
+				ClickEvent.Action action = ClickEvent.Action.byName(string.toLowerCase());
+				if (action == null) {
+					throw new RuntimeError("Invalid click event action: %s".formatted(string));
+				}
+				String eventString = object.getPrimitive(StringDef.class);
+				if (eventString == null) {
+					throw new RuntimeError("Invalid event value: %s".formatted(object.toString(interpreter)));
+				}
+				yield new ClickEvent(action, string);
+			}
+		};
+	}
+
+	public static HoverEvent stringToHoverEvent(String string, ClassInstance object) {
+		return switch (string.toLowerCase()) {
+			case "show_text", "text" -> {
+				MutableText text = object.getPrimitive(TextDef.class);
+				if (text == null) {
+					throw new RuntimeError("Expected 'Text' for 'show_text' hover event");
+				}
+				yield new HoverEvent(HoverEvent.Action.SHOW_TEXT, text);
+			}
+			case "show_item", "item" -> {
+				ScriptItemStack stack = object.getPrimitive(ItemStackDef.class);
+				if (stack == null) {
+					throw new RuntimeError("Expected 'ItemStack' for 'show_item' hover event");
+				}
+				yield new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackContent(stack.stack));
+			}
+			case "show_entity", "entity" -> {
+				Entity entity = object.getPrimitive(EntityDef.class);
+				if (entity == null) {
+					throw new RuntimeError("Expected 'Entity' for 'show_entity' hover event");
+				}
+				yield new HoverEvent(HoverEvent.Action.SHOW_ENTITY, new HoverEvent.EntityContent(entity.getType(), entity.getUuid(), entity.getName()));
+			}
+			default -> throw new RuntimeError("Invalid action '%s'".formatted(string));
+		};
+	}
+
 	public static Identifier stringToIdentifier(String string) {
 		try {
 			return new Identifier(string);
-		}
-		catch (InvalidIdentifierException e) {
+		} catch (InvalidIdentifierException e) {
 			throw new RuntimeError("Invalid id '%s'".formatted(string), e);
 		}
 	}
@@ -248,8 +172,7 @@ public class ClientScriptUtils {
 	public static NbtElement stringToNbt(String string) {
 		try {
 			return new StringNbtReader(new StringReader(string)).parseElement();
-		}
-		catch (CommandSyntaxException cse) {
+		} catch (CommandSyntaxException cse) {
 			throw new RuntimeError("'%s' couldn't be parsed".formatted(string));
 		}
 	}
@@ -260,8 +183,7 @@ public class ClientScriptUtils {
 			ItemStack itemStack = new ItemStack(reader.item());
 			itemStack.setNbt(reader.nbt());
 			return itemStack;
-		}
-		catch (CommandSyntaxException cse) {
+		} catch (CommandSyntaxException cse) {
 			NbtElement element = stringToNbt(string);
 			if (element instanceof NbtCompound nbtCompound) {
 				return ItemStack.fromNbt(nbtCompound);
@@ -355,25 +277,243 @@ public class ClientScriptUtils {
 		return NbtString.of(value.toString(interpreter));
 	}
 
-	/*
+	public static Object mapToRule(ArucasMap map, Interpreter interpreter) {
+		String type = getFieldInMap(map, interpreter, "type", StringDef.class);
+		if (type == null) {
+			throw new RuntimeError("Config map must contain 'type' that is a string");
+		}
+		String name = getFieldInMap(map, interpreter, "name", StringDef.class);
+		if (name == null) {
+			throw new RuntimeError("Config map must contain 'name' that is a string");
+		}
+
+		String description = getFieldInMap(map, interpreter, "description", StringDef.class);
+
+		String optionalInfo = getFieldInMap(map, interpreter, "optional_info", StringDef.class);
+
+		String currentValue = getFieldInMap(map, interpreter, "value", StringDef.class);
+
+		ArucasFunction function = getFieldInMap(map, interpreter, "listener", FunctionDef.class);
+
+		int maxLength = Objects.requireNonNullElse(getFieldInMap(map, interpreter, "max_length", NumberDef.class), 32).intValue();
+
+		ClassInstance defaultValue = map.get(interpreter, interpreter.create(StringDef.class, "default_value"));
+		ClientRule<?> clientRule = switch (type.toLowerCase()) {
+			case "boolean" -> {
+				Boolean bool = defaultValue == null ? null : defaultValue.getPrimitive(BooleanDef.class);
+				if (bool != null) {
+					yield new BooleanClientRule(name, description, bool);
+				}
+				yield new BooleanClientRule(name, description);
+			}
+			case "cycle" -> {
+				ArucasList list = getFieldInMap(map, interpreter, "cycle_values", ListDef.class);
+				if (list == null) {
+					throw new RuntimeError("'cycle' type must have 'cycle_values' as a list");
+				}
+
+				List<String> cycles = new ArrayList<>();
+				for (ClassInstance classInstance : list) {
+					cycles.add(classInstance.toString(interpreter));
+				}
+
+				String defaultCycle = defaultValue == null ? null : defaultValue.getPrimitive(StringDef.class);
+				if (defaultCycle != null) {
+					yield new CycleClientRule(name, description, cycles, defaultCycle, null);
+				}
+				yield new CycleClientRule(name, description, cycles);
+			}
+			case "double" -> {
+				Double defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class);
+				if (defaultNumber != null) {
+					yield new DoubleClientRule(name, description, defaultNumber);
+				}
+				yield new DoubleClientRule(name, description, 0.0D);
+			}
+			case "double_slider" -> {
+				Double min = getFieldInMap(map, interpreter, "min", NumberDef.class);
+				if (min == null) {
+					throw new RuntimeError("'double_slider' type must have 'min' as a number");
+				}
+				Double max = getFieldInMap(map, interpreter, "max", NumberDef.class);
+				if (max == null) {
+					throw new RuntimeError("'double_slider' type must have 'max' as a number");
+				}
+
+				Double defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class);
+				if (defaultNumber != null) {
+					yield new DoubleSliderClientRule(name, description, defaultNumber, min, max);
+				}
+				yield new DoubleSliderClientRule(name, description, 0.0D, min, max);
+			}
+			case "integer" -> {
+				Integer defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class).intValue();
+				if (defaultNumber != null) {
+					yield new IntegerClientRule(name, description, defaultNumber);
+				}
+				yield new IntegerClientRule(name, description, 0);
+			}
+			case "integer_slider" -> {
+				Double min = getFieldInMap(map, interpreter, "min", NumberDef.class);
+				if (min == null) {
+					throw new RuntimeError("'integer_slider' type must have 'min' as a number");
+				}
+				Double max = getFieldInMap(map, interpreter, "max", NumberDef.class);
+				if (max == null) {
+					throw new RuntimeError("'integer_slider' type must have 'max' as a number");
+				}
+
+				Integer defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class).intValue();
+				if (defaultNumber != null) {
+					yield new IntegerSliderClientRule(name, description, defaultNumber, min.intValue(), max.intValue());
+				}
+				yield new IntegerSliderClientRule(name, description, 0, min.intValue(), max.intValue());
+			}
+			case "list" -> {
+				List<String> configData = new ArrayList<>();
+				ArucasList defaultList = defaultValue == null ? null : defaultValue.getPrimitive(ListDef.class);
+				if (defaultList != null) {
+					for (ClassInstance listValue : defaultList) {
+						configData.add(listValue.toString(interpreter));
+					}
+				}
+				ListClientRule listClientRule = new ListClientRule(name, description, configData);
+				listClientRule.setMaxLength(maxLength);
+				yield listClientRule;
+			}
+			case "string" -> {
+				StringClientRule stringClientRule = new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.toString(interpreter));
+				stringClientRule.setMaxLength(maxLength);
+				yield stringClientRule;
+			}
+			default -> throw new RuntimeError("Invalid config type '%s'".formatted(type));
+		};
+/* TODO:
+		ConfigValue configValue = new ConfigValue(clientRule);
+
+		if (function != null) {
+			Context branch = context.createBranch();
+			clientRule.addListener(object -> {
+				Context branchContext = branch.createBranch();
+				function.callSafe(branchContext, () -> List.of(configValue));
+			});
+		}
+		if (currentValue != null) {
+			clientRule.setValueFromString(currentValue);
+		}
+
+		clientRule.setOptionalInfo(optionalInfo);
+		return configValue;
+
+ */
+		return null;
+	}
+
+	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Interpreter interpreter) {
+		return new CommandParser(arucasMap, interpreter).parse();
+	}
+
+	public static RequiredArgumentBuilder<ServerCommandSource, ?> parseArgumentType(String argumentName, String typeName, CommandParser.ArgumentGetter getter) {
+		SuggestionProvider<ServerCommandSource> extraSuggestion = null;
+		ArgumentType<?> type = switch (typeName.toLowerCase()) {
+			case "word" -> StringArgumentType.word();
+			case "boolean" -> BoolArgumentType.bool();
+			case "itemstack" -> ItemStackArgumentType.itemStack(CommandRegister.getRegistryAccess());
+			case "block" -> BlockStateArgumentType.blockState(CommandRegister.getRegistryAccess());
+			case "greedystring" -> StringArgumentType.greedyString();
+			case "entity" -> ClientEntityArgumentType.entity();
+			case "entities" -> ClientEntityArgumentType.entities();
+			case "blockpos" -> BlockPosArgumentType.blockPos();
+			case "pos" -> Vec3ArgumentType.vec3();
+			case "effect" -> StatusEffectArgumentType.statusEffect();
+			case "particle" -> ParticleEffectArgumentType.particleEffect();
+			case "enchantmentid" -> EnchantmentArgumentType.enchantment();
+			case "recipeid" -> {
+				extraSuggestion = SuggestionProviders.ALL_RECIPES;
+				yield IdentifierArgumentType.identifier();
+			}
+			case "entityid" -> {
+				extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
+				yield EntitySummonArgumentType.entitySummon();
+			}
+			case "playername" -> {
+				extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
+				yield StringArgumentType.word();
+			}
+			case "double" -> {
+				Double min = getter.get("min", NumberDef.class);
+				if (min != null) {
+					Double max = getter.get("max", NumberDef.class);
+					if (max != null) {
+						yield DoubleArgumentType.doubleArg(min, max);
+					}
+					yield DoubleArgumentType.doubleArg(min);
+				}
+				yield DoubleArgumentType.doubleArg();
+			}
+			case "integer" -> {
+				Double min = getter.get("min", NumberDef.class);
+				if (min != null) {
+					Double max = getter.get("max", NumberDef.class);
+					if (max != null) {
+						yield IntegerArgumentType.integer(min.intValue(), max.intValue());
+					}
+					yield IntegerArgumentType.integer(min.intValue());
+				}
+				yield IntegerArgumentType.integer();
+			}
+			case "enum" -> {
+				ClassDefinition definition = getter.get("enum", TypeDef.class);
+				if (definition instanceof EnumDefinition enumDefinition) {
+					yield DefinitionArgumentType.enumeration(enumDefinition);
+				}
+				throw new RuntimeError("Enum argument type must contain 'enum: <Type>'");
+			}
+			default -> throw new RuntimeError("Invalid argument type");
+		};
+
+		RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = CommandManager.argument(argumentName, type);
+		if (extraSuggestion != null) {
+			argumentBuilder.suggests(extraSuggestion);
+		}
+		return argumentBuilder;
+	}
+
+	public static ClassInstance commandArgumentToValue(Object object, Interpreter interpreter) throws CommandSyntaxException {
+		// We check for these two here since they throw CommandSyntaxExceptions
+		if (object instanceof PosArgument posArgument) {
+			object = posArgument.toAbsolutePos(new FakeCommandSource(EssentialUtils.getPlayer()));
+		}
+		if (object instanceof ClientEntitySelector selector) {
+			FakeCommandSource source = new FakeCommandSource(EssentialUtils.getPlayer());
+			object = selector.isSingleTarget() ? selector.getEntity(source) : selector.getEntities(source);
+		}
+		return interpreter.convertValue(object);
+	}
+
+	private static <T extends PrimitiveDefinition<V>, V> V getFieldInMap(ArucasMap map, Interpreter interpreter, String field, Class<T> type) {
+		ClassInstance instance = map.get(interpreter, interpreter.create(StringDef.class, field));
+		return instance == null ? null : instance.getPrimitive(type);
+	}
+
 	private static class CommandParser {
-		private final Context context;
-		private final ISyntax syntaxPosition;
+		private static final SimpleCommandExceptionType NO_ARGS = new SimpleCommandExceptionType(Texts.literal("Failed to retrieve arguments, see logs for details"));
+
+		private final Interpreter interpreter;
 		private final String commandName;
 		private final ArucasMap subCommandMap;
 		private final ArucasMap argumentMap;
 
-		CommandParser(ArucasMap commandMap, Context context, ISyntax syntaxPosition) {
-			this.context = context.createBranch();
-			this.syntaxPosition = syntaxPosition;
+		CommandParser(ArucasMap commandMap, Interpreter interpreter) {
+			this.interpreter = interpreter.branch();
 
-			if (!(commandMap.get(context, NAME) instanceof StringValue string)) {
-				throw new RuntimeError("Command map must contain 'name: <String>'", syntaxPosition, context);
+			this.commandName = getFieldInMap(commandMap, interpreter, "name", StringDef.class);
+			if (this.commandName == null) {
+				throw new RuntimeError("Command map must contain 'name: <String>'");
 			}
-			this.commandName = string.value;
 
-			this.subCommandMap = commandMap.get(context, SUBCOMMANDS) instanceof MapValue map ? map.value : null;
-			this.argumentMap = commandMap.get(context, ARGUMENTS) instanceof MapValue map ? map.value : null;
+			this.subCommandMap = getFieldInMap(commandMap, interpreter, "subcommands", MapDef.class);
+			this.argumentMap = getFieldInMap(commandMap, interpreter, "arguments", MapDef.class);
 		}
 
 		ArgumentBuilder<ServerCommandSource, ?> parse() {
@@ -385,37 +525,40 @@ public class ClientScriptUtils {
 		}
 
 		private ArgumentBuilder<ServerCommandSource, ?> command(ArgumentBuilder<ServerCommandSource, ?> parent, ArucasMap childMap) {
-			for (ValuePair pair : childMap.pairSet()) {
-				if (!(pair.getKey() instanceof StringValue stringValue)) {
-					throw new RuntimeError("Expected string value in subcommand map", this.syntaxPosition, this.context);
+			for (Pair<ClassInstance, ClassInstance> pair : childMap.pairSet()) {
+				String key = pair.component1().getPrimitive(StringDef.class);
+				if (key == null) {
+					throw new RuntimeError("Expected string value in subcommand map");
 				}
-				if (stringValue.value.isBlank()) {
-					if (!(pair.getValue() instanceof FunctionValue functionValue)) {
-						throw new RuntimeError("Expected function value", this.syntaxPosition, this.context);
+				if (key.isBlank()) {
+					ArucasFunction function = pair.component2().getPrimitive(FunctionDef.class);
+					if (function == null) {
+						throw new RuntimeError("Expected function value");
 					}
 					parent.executes(c -> {
-						this.context.getThreadHandler().runAsyncFunctionInThreadPool(this.context.createBranch(), ctx -> {
-							Collection<ParsedArgument<?, ?>> arguments = CommandHelper.getArguments(c);
-							if (arguments == null) {
-								throw new RuntimeError("Couldn't get arguments for '%s'".formatted(stringValue.value), this.syntaxPosition, ctx);
-							}
-							ArucasList arucasList = new ArucasList();
-							for (ParsedArgument<?, ?> argument : arguments) {
-								arucasList.add(commandArgumentToValue(argument.getResult(), ctx));
-							}
-							functionValue.call(ctx, arucasList);
+						Collection<ParsedArgument<?, ?>> arguments = CommandHelper.getArguments(c);
+						if (arguments == null) {
+							throw NO_ARGS.create();
+						}
+						List<ClassInstance> list = new ArrayList<>(arguments.size());
+						for (ParsedArgument<?, ?> argument : arguments) {
+							list.add(commandArgumentToValue(argument.getResult(), this.interpreter));
+						}
+						this.interpreter.getThreadHandler().runAsync(() -> {
+							function.invoke(this.interpreter.branch(), list);
+							return null;
 						});
 						return 1;
 					});
 					continue;
 				}
-				if (!(pair.getValue() instanceof MapValue map)) {
-					throw new RuntimeError("Expected map value for '%s'".formatted(stringValue.value), this.syntaxPosition, this.context);
+				ArucasMap value = pair.component2().getPrimitive(MapDef.class);
+				if (value == null) {
+					throw new RuntimeError("Expected map value for '%s'".formatted(key));
 				}
-				ArucasMap subMap = map.value;
-				String[] arguments = stringValue.value.split(" ");
+				String[] arguments = key.split(" ");
 				if (arguments.length > 1) {
-					ArgumentBuilder<ServerCommandSource, ?> current = this.subCommand(arguments[arguments.length - 1], subMap);
+					ArgumentBuilder<ServerCommandSource, ?> current = this.subCommand(arguments[arguments.length - 1], value);
 					for (int i = arguments.length - 2; i >= 0; i--) {
 						String name = arguments[i];
 						current = this.connectedCommand(name).then(current);
@@ -423,7 +566,7 @@ public class ClientScriptUtils {
 					parent.then(current);
 					continue;
 				}
-				parent.then(this.subCommand(stringValue.value, subMap));
+				parent.then(this.subCommand(key, value));
 			}
 			return parent;
 		}
@@ -433,10 +576,13 @@ public class ClientScriptUtils {
 				return this.command(CommandManager.literal(string), childMap);
 			}
 			string = string.substring(1, string.length() - 1);
-			if (this.argumentMap != null && this.argumentMap.get(this.context, StringValue.of(string)) instanceof MapValue map) {
-				return this.command(this.getArgument(string, map.value), childMap);
+			if (this.argumentMap != null) {
+				ArucasMap subMap = getFieldInMap(this.argumentMap, this.interpreter, string, MapDef.class);
+				if (subMap != null) {
+					return this.command(this.getArgument(string, subMap), childMap);
+				}
 			}
-			throw new RuntimeError("Expected map value for argument '%s'".formatted(string), this.syntaxPosition, this.context);
+			throw new RuntimeError("Expected map value for argument '%s'".formatted(string));
 		}
 
 		private ArgumentBuilder<ServerCommandSource, ?> connectedCommand(String string) {
@@ -444,112 +590,66 @@ public class ClientScriptUtils {
 				return CommandManager.literal(string);
 			}
 			string = string.substring(1, string.length() - 1);
-			if (this.argumentMap != null && this.argumentMap.get(this.context, StringValue.of(string)) instanceof MapValue map) {
-				return this.getArgument(string, map.value);
+			if (this.argumentMap != null) {
+				ArucasMap subMap = getFieldInMap(this.argumentMap, this.interpreter, string, MapDef.class);
+				if (subMap != null) {
+					return this.getArgument(string, subMap);
+				}
 			}
-			throw new RuntimeError("Expected map value for argument '%s'".formatted(string), this.syntaxPosition, this.context);
+			throw new RuntimeError("Expected map value for argument '%s'".formatted(string));
 		}
 
 		private ArgumentBuilder<ServerCommandSource, ?> getArgument(String name, ArucasMap arguments) {
-			Value argumentValue = arguments.get(this.context, TYPE);
-			if (!(argumentValue instanceof StringValue stringValue)) {
-				throw new RuntimeError("Expected string for 'type' for argument '%s'".formatted(name), this.syntaxPosition, this.context);
+			String argument = getFieldInMap(arguments, this.interpreter, "type", StringDef.class);
+			if (argument == null) {
+				throw new RuntimeError("Expected string for 'type' for argument '%s'".formatted(name));
 			}
-			SuggestionProvider<ServerCommandSource> extraSuggestion = null;
-			String argumentTypeName = stringValue.value;
-			ArgumentType<?> argumentType = switch (argumentTypeName.toLowerCase()) {
-				case "playername" -> {
-					extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
-					yield StringArgumentType.word();
+			RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = parseArgumentType(name, argument, new ArgumentGetter() {
+				@Override
+				public <T extends PrimitiveDefinition<V>, V> V get(String fieldName, Class<T> clazz) {
+					return getFieldInMap(arguments, CommandParser.this.interpreter, fieldName, clazz);
 				}
-				case "double" -> {
-					if (arguments.get(this.context, MIN) instanceof NumberValue minValue) {
-						if (arguments.get(this.context, MAX) instanceof NumberValue maxValue) {
-							yield DoubleArgumentType.doubleArg(minValue.value, maxValue.value);
-						}
-						yield DoubleArgumentType.doubleArg(minValue.value);
-					}
-					yield DoubleArgumentType.doubleArg();
-				}
-				case "integer" -> {
-					if (arguments.get(this.context, MIN) instanceof NumberValue minValue) {
-						if (arguments.get(this.context, MAX) instanceof NumberValue maxValue) {
-							yield IntegerArgumentType.integer(minValue.value.intValue(), maxValue.value.intValue());
-						}
-						yield IntegerArgumentType.integer(minValue.value.intValue());
-					}
-					yield IntegerArgumentType.integer();
-				}
-				case "recipeid" -> {
-					extraSuggestion = SuggestionProviders.ALL_RECIPES;
-					yield IdentifierArgumentType.identifier();
-				}
-				case "entityid" -> {
-					extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
-					yield EntitySummonArgumentType.entitySummon();
-				}
-				case "enum" -> {
-					if (arguments.get(this.context, ENUM) instanceof TypeValue type && type.value instanceof ArucasEnumDefinition definition) {
-						yield DefinitionArgumentType.enumeration(definition);
-					}
-					throw new RuntimeError("Enum argument type must contain 'enum: <Type>'", this.syntaxPosition, this.context);
-				}
-				default -> parseArgumentType(argumentTypeName, this.context, this.syntaxPosition);
-			};
-			RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = CommandManager.argument(name, argumentType);
-			if (extraSuggestion != null) {
-				argumentBuilder.suggests(extraSuggestion);
-			}
-			Value suggestion = arguments.get(this.context, SUGGESTS);
-			if (suggestion instanceof ListValue listValue) {
-				int size = listValue.value.size();
+			});
+
+			ArucasList suggests = getFieldInMap(arguments, this.interpreter, "suggests", ListDef.class);
+			if (suggests != null) {
+				int size = suggests.size();
 				String[] suggestions = new String[size];
-				Value[] values = listValue.value.toArray();
+				ClassInstance[] values = suggests.toArray();
 				for (int i = 0; i < size; i++) {
-					suggestions[i] = values[i].getAsString(this.context);
+					suggestions[i] = values[i].toString(this.interpreter);
 				}
 				argumentBuilder.suggests((c, b) -> CommandSource.suggestMatching(suggestions, b));
 			}
-			else if (suggestion != null) {
-				throw new RuntimeError("Suggestion should be a list", this.syntaxPosition, this.context);
-			}
 
-			Value suggester = arguments.get(this.context, SUGGESTER);
-			if (suggester instanceof FunctionValue function) {
+			ArucasFunction suggester = getFieldInMap(arguments, this.interpreter, "suggester", FunctionDef.class);
+			if (suggester != null) {
 				argumentBuilder.suggests((c, b) -> {
-					try {
-						Context context = this.context.createBranch();
-						Collection<ParsedArgument<?, ?>> commandArguments = CommandHelper.getArguments(c);
-						if (commandArguments == null) {
-							throw new RuntimeError("Couldn't get arguments for suggester '%s'".formatted(function), this.syntaxPosition, context);
-						}
-						List<Value> arucasList = new ArrayList<>();
-						for (ParsedArgument<?, ?> argument : commandArguments) {
-							arucasList.add(commandArgumentToValue(argument.getResult(), context));
-						}
-						Value value = function.call(context, arucasList);
-						if (value instanceof ListValue listValue) {
-							int size = listValue.value.size();
-							String[] suggestions = new String[size];
-							Value[] values = listValue.value.toArray();
-							for (int i = 0; i < size; i++) {
-								suggestions[i] = values[i].getAsString(this.context);
-							}
+					Collection<ParsedArgument<?, ?>> commandArguments = CommandHelper.getArguments(c);
+					if (commandArguments == null) {
+						throw NO_ARGS.create();
+					}
+					Interpreter branch = this.interpreter.branch();
+					List<ClassInstance> list = new ArrayList<>();
+					for (ParsedArgument<?, ?> arg : commandArguments) {
+						list.add(commandArgumentToValue(arg.getResult(), branch));
+					}
+					CompletableFuture<Suggestions> future = branch.getThreadHandler().wrapSafe(() -> {
+						ArucasCollection collection = suggester.invoke(branch, list).getPrimitive(CollectionDef.class);
+						if (collection != null) {
+							List<String> suggestions = collection.asCollection().stream().map(i -> i.toString(branch)).toList();
 							return CommandSource.suggestMatching(suggestions, b);
 						}
-						throw new RuntimeError("Suggester did not return a list", this.syntaxPosition, context);
-					}
-					catch (Throwable throwable) {
-						this.context.getThreadHandler().tryError(this.context, throwable);
-					}
-					return Suggestions.empty();
+						throw new RuntimeError("Suggester did not return a list");
+					});
+					return future == null ? Suggestions.empty() : future;
 				});
-			}
-			else if (suggester != null) {
-				throw new RuntimeError("Suggester should be a function", this.syntaxPosition, this.context);
 			}
 			return argumentBuilder;
 		}
+
+		private interface ArgumentGetter {
+			<T extends PrimitiveDefinition<V>, V> V get(String fieldName, Class<T> clazz);
+		}
 	}
-	 */
 }

@@ -7,34 +7,34 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import me.senseiwells.arucas.values.EnumValue;
-import me.senseiwells.arucas.values.classes.ArucasEnumDefinition;
+import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.classes.EnumDefinition;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DefinitionArgumentType implements ArgumentType<EnumValue> {
+public class DefinitionArgumentType implements ArgumentType<ClassInstance> {
 	static {
 		INVALID_ENUM_EXCEPTION = new DynamicCommandExceptionType(o -> Texts.literal("Enum element not found: " + o.toString()));
 	}
 
 	private static final DynamicCommandExceptionType INVALID_ENUM_EXCEPTION;
 
-	private final ArucasEnumDefinition definition;
+	private final EnumDefinition definition;
 
-	private DefinitionArgumentType(ArucasEnumDefinition definition) {
+	private DefinitionArgumentType(EnumDefinition definition) {
 		this.definition = definition;
 	}
 
-	public static DefinitionArgumentType enumeration(ArucasEnumDefinition enumDefinition) {
+	public static DefinitionArgumentType enumeration(EnumDefinition enumDefinition) {
 		return new DefinitionArgumentType(enumDefinition);
 	}
 
 	@Override
-	public EnumValue parse(StringReader reader) throws CommandSyntaxException {
+	public ClassInstance parse(StringReader reader) throws CommandSyntaxException {
 		String enumName = reader.readString();
-		EnumValue enumValue = this.definition.getEnumValue(enumName);
+		ClassInstance enumValue = this.definition.getEnum(enumName);
 		if (enumValue == null) {
 			throw INVALID_ENUM_EXCEPTION.create(enumName);
 		}
@@ -43,6 +43,6 @@ public class DefinitionArgumentType implements ArgumentType<EnumValue> {
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return CommandSource.suggestMatching(this.definition.names(), builder);
+		return CommandSource.suggestMatching(this.definition.getNames(), builder);
 	}
 }

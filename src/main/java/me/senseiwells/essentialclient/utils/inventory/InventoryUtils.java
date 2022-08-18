@@ -2,7 +2,6 @@ package me.senseiwells.essentialclient.utils.inventory;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.interfaces.IGhostRecipeBookWidget;
@@ -64,8 +63,7 @@ public class InventoryUtils {
 			if (slotType == EquipmentSlot.MAINHAND) {
 				int currentHotbarSlot = playerEntity.getInventory().selectedSlot;
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
-			}
-			else if (slotType == EquipmentSlot.OFFHAND) {
+			} else if (slotType == EquipmentSlot.OFFHAND) {
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, 40, SlotActionType.SWAP, client.player);
 			}
 		}
@@ -175,8 +173,7 @@ public class InventoryUtils {
 		if (slot.hasStack()) {
 			if (canMergeIntoMain(client.player.getInventory(), slot.getStack())) {
 				shiftClickSlot(client, merchantScreen, slot.id);
-			}
-			else {
+			} else {
 				dropStack(client, merchantScreen, slot.id);
 			}
 		}
@@ -266,7 +263,7 @@ public class InventoryUtils {
 		return tradeSlot.getStack().getCount() != 0;
 	}
 
-	public static ItemStack getTrade(MinecraftClient client, int index) throws RuntimeException {
+	public static ItemStack getTrade(MinecraftClient client, int index) {
 		if (!(client.currentScreen instanceof MerchantScreen merchantScreen) || client.interactionManager == null) {
 			throw new RuntimeException();
 		}
@@ -314,7 +311,7 @@ public class InventoryUtils {
 	public static void clearCraftingGridOfItems(MinecraftClient client, ItemStack[] recipe, HandledScreen<? extends ScreenHandler> gui) {
 		final int invSlots = gui.getScreenHandler().slots.size();
 		for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
-			ExceptionUtils.runSafe(() -> Thread.sleep(0, 1));
+			EssentialUtils.throwAsRuntime(() -> Thread.sleep(0, 1));
 			Slot slotTmp = gui.getScreenHandler().getSlot(slotNum);
 			if (slotTmp != null && slotTmp.hasStack() && (!areStacksEqual(recipe[i], slotTmp.getStack()))) {
 				shiftClickSlot(client, gui, slotNum);
@@ -346,30 +343,29 @@ public class InventoryUtils {
 				slotReturn = slotNum;
 			}
 			leftClickSlot(client, gui, slotNum);
-			ItemStack stackCursor = getCursorStack(client);
+			ItemStack stackCursor = getCursorStack();
 			if (areStacksEqual(ingredientReference, stackCursor)) {
 				sizeOrig = stackCursor.getCount();
 				dragSplitItemsIntoSlots(client, gui, targetSlots);
-				stackCursor = getCursorStack(client);
+				stackCursor = getCursorStack();
 				if (!stackCursor.isEmpty()) {
 					if (stackCursor.getCount() >= sizeOrig) {
 						break;
 					}
 					leftClickSlot(client, gui, slotReturn);
-					if (!getCursorStack(client).isEmpty()) {
+					if (!getCursorStack().isEmpty()) {
 						slotReturn = slotNum;
 						leftClickSlot(client, gui, slotReturn);
 					}
 				}
-			}
-			else {
+			} else {
 				break;
 			}
-			if (!getCursorStack(client).isEmpty()) {
+			if (!getCursorStack().isEmpty()) {
 				break;
 			}
 		}
-		if (slotNum >= 0 && !getCursorStack(client).isEmpty()) {
+		if (slotNum >= 0 && !getCursorStack().isEmpty()) {
 			leftClickSlot(client, gui, slotNum);
 		}
 	}
@@ -379,7 +375,7 @@ public class InventoryUtils {
 		if (player == null) {
 			return;
 		}
-		ItemStack stackInCursor = getCursorStack(client);
+		ItemStack stackInCursor = getCursorStack();
 		if (stackInCursor.isEmpty()) {
 			return;
 		}
@@ -431,8 +427,7 @@ public class InventoryUtils {
 			if (item != Items.AIR) {
 				if (mapSlots.containsKey(item)) {
 					mapSlots.get(item).add(i);
-				}
-				else {
+				} else {
 					List<Integer> integerList = new ArrayList<>();
 					integerList.add(i);
 					mapSlots.put(item, integerList);
@@ -475,26 +470,13 @@ public class InventoryUtils {
 		}
 	}
 
-	@SuppressWarnings("unused")
-	public static void dropSingle(MinecraftClient client, HandledScreen<? extends ScreenHandler> screen, int slotNum) {
-		if (client.interactionManager != null) {
-			client.interactionManager.clickSlot(screen.getScreenHandler().syncId, slotNum, 0, SlotActionType.THROW, client.player);
-		}
+	public static ItemStack getCursorStack() {
+		return EssentialUtils.getPlayer().currentScreenHandler.getCursorStack();
 	}
 
-	public static ItemStack getCursorStack(MinecraftClient client) {
-		if (client == null || client.player == null) {
-			return ItemStack.EMPTY;
-		}
-		return client.player.currentScreenHandler.getCursorStack();
-	}
-
-	public static boolean setCursorStack(MinecraftClient client, ItemStack stack) {
-		if (client != null && client.player != null) {
-			client.player.currentScreenHandler.setCursorStack(stack);
-			return true;
-		}
-		return false;
+	public static boolean setCursorStack(ItemStack stack) {
+		EssentialUtils.getPlayer().currentScreenHandler.setCursorStack(stack);
+		return true;
 	}
 
 	public static ItemStack getStackAtSlot(HandledScreen<?> handledScreen, int slotId) {
@@ -531,7 +513,7 @@ public class InventoryUtils {
 			if (slots.get(i).hasStack()) {
 				dropStack(client, handledScreen, i);
 			}
-			ExceptionUtils.runSafe(() -> Thread.sleep(0L, 1));
+			EssentialUtils.throwAsRuntime(() -> Thread.sleep(0L, 1));
 		}
 	}
 
@@ -540,7 +522,7 @@ public class InventoryUtils {
 			int count = craftAll ? 64 : 1;
 			for (int i = 0; i < count; i++) {
 				InventoryUtils.dropStack(client, handledScreen, 0);
-				ExceptionUtils.runSafe(() -> Thread.sleep(2L));
+				EssentialUtils.throwAsRuntime(() -> Thread.sleep(2L));
 			}
 		}, 40L, TimeUnit.MILLISECONDS);
 	}
@@ -554,11 +536,9 @@ public class InventoryUtils {
 		RecipeBookWidget widget;
 		if (handledScreen instanceof InventoryScreen playerScreen) {
 			widget = playerScreen.getRecipeBookWidget();
-		}
-		else if (handledScreen instanceof CraftingScreen craftingScreen) {
+		} else if (handledScreen instanceof CraftingScreen craftingScreen) {
 			widget = craftingScreen.getRecipeBookWidget();
-		}
-		else {
+		} else {
 			// We not in correct screen. Should never happen really but just for the edge case
 			return;
 		}
@@ -583,8 +563,7 @@ public class InventoryUtils {
 
 		if (totalCraftOps == 0 && isGridEmpty(handledScreen, gridLength)) {
 			widget.showGhostRecipe(recipe, player.currentScreenHandler.slots);
-		}
-		else {
+		} else {
 			((IGhostRecipeBookWidget) widget).clearGhostSlots();
 			parseRecipeAndCacheInventory(mc, handledScreen, gridLength, recipe, craftInputIds, craftAll ? totalCraftOps : 1);
 		}
@@ -647,7 +626,7 @@ public class InventoryUtils {
 
 					leftClickSlot(client, handledScreen, slotId);
 					dragSplitItemsIntoGrid(client, handledScreen, craftInputSlotIds, startAt, endAt);
-					if (!getCursorStack(client).isEmpty()) {
+					if (!getCursorStack().isEmpty()) {
 						leftClickSlot(client, handledScreen, slotId);
 					}
 					startAt = endAt;

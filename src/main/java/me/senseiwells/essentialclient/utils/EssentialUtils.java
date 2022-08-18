@@ -198,9 +198,7 @@ public class EssentialUtils {
 		if (!SpawnHelper.canSpawn(location, world, pos, entityType)) {
 			return false;
 		}
-		else {
-			return world.isSpaceEmpty(entityType.createSimpleBoundingBox((double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D));
-		}
+		return world.isSpaceEmpty(entityType.createSimpleBoundingBox((double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D));
 	}
 
 	public static int getMaxChatLength(int fallback) {

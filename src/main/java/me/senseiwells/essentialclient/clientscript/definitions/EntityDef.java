@@ -55,7 +55,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 
 	@Deprecated
 	@Override
-	protected ClassInstance create(Entity value) {
+	public ClassInstance create(Entity value) {
 		return super.create(value);
 	}
 

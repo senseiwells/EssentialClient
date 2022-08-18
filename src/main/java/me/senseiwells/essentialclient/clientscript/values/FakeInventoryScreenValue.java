@@ -109,7 +109,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
 			FunctionValue functionValue = arguments.getNextFunction();
 			fakeScreen.value.setFunctionValue(arguments.getContext(), functionValue);
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -126,7 +126,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			NumberValue slot = arguments.getNextNumber();
 			ItemStackValue stackValue = arguments.getNext(ItemStackValue.class);
 			fakeScreen.value.setStack(slot.value.intValue(), stackValue.value);
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -140,7 +140,7 @@ public class FakeInventoryScreenValue extends ScreenValue<FakeInventoryScreen> {
 			FakeInventoryScreenValue fakeScreen = arguments.getNext(FakeInventoryScreenValue.class);
 			NumberValue slot = arguments.getNextNumber();
 			ItemStack stack = fakeScreen.value.getStack(slot.value.intValue());
-			return stack == null ? NullValue.NULL : new ItemStackValue(stack);
+			return stack == null ? null : new ItemStackValue(stack);
 		}
 
 		@Override

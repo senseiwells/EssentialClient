@@ -1,9 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.events;
 
-import me.senseiwells.arucas.utils.Context;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MinecraftScriptEvents {
 	private static final Map<String, MinecraftScriptEvent> EVENT_MAP = new HashMap<>();
@@ -60,7 +59,7 @@ public class MinecraftScriptEvents {
 		return EVENT_MAP.get(name);
 	}
 
-	public static void clearEventFunctions(Context context) {
-		EVENT_MAP.values().forEach(minecraftScriptEvent -> minecraftScriptEvent.clearRegisteredEvents(context));
+	public static void clearEventFunctions(UUID id) {
+		EVENT_MAP.values().forEach(minecraftScriptEvent -> minecraftScriptEvent.clearRegisteredEvents(id));
 	}
 }

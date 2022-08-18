@@ -3,7 +3,7 @@ package me.senseiwells.essentialclient.clientscript.events;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.essentialclient.clientscript.extensions.GameEventWrapper;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptEvent;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ public class MinecraftScriptEvent {
 	private final String name;
 	private final boolean isCancellable;
 
-	protected final Map<UUID, Set<GameEventWrapper>> REGISTERED_EVENTS = new HashMap<>();
+	protected final Map<UUID, Set<ScriptEvent>> REGISTERED_EVENTS = new HashMap<>();
 
 	public MinecraftScriptEvent(String eventName, boolean isCancellable) {
 		this.name = eventName;
@@ -31,26 +31,26 @@ public class MinecraftScriptEvent {
 		return true;
 	}
 
-	public synchronized void registerEvent(Interpreter interpreter, GameEventWrapper gameEvent) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(interpreter.getProperties().getId(), id -> {
-			interpreter.getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
+	public synchronized void registerEvent(ScriptEvent gameEvent) {
+		Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(gameEvent.getId(), id -> {
+			gameEvent.getInterpreter().getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
 			return new LinkedHashSet<>();
 		});
 		gameEventWrappers.add(gameEvent);
 	}
 
-	public synchronized boolean unregisterEvent(Interpreter interpreter, GameEventWrapper gameEvent) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(interpreter.getProperties().getId());
+	public synchronized boolean unregisterEvent(ScriptEvent gameEvent) {
+		Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.get(gameEvent.getId());
 		return gameEventWrappers != null && gameEventWrappers.remove(gameEvent);
 	}
 
-	public synchronized boolean isEventRegistered(Interpreter interpreter, GameEventWrapper gameEvent) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(interpreter.getProperties().getId());
+	public synchronized boolean isEventRegistered(ScriptEvent gameEvent) {
+		Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.get(gameEvent.getId());
 		return gameEventWrappers != null && gameEventWrappers.contains(gameEvent);
 	}
 
-	public synchronized void clearRegisteredEvents(Interpreter interpreter) {
-		Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(interpreter.getProperties().getId());
+	public synchronized void clearRegisteredEvents(UUID uuid) {
+		Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.get(uuid);
 		if (gameEventWrappers != null) {
 			gameEventWrappers.clear();
 		}
@@ -60,9 +60,9 @@ public class MinecraftScriptEvent {
 		ArucasList argumentList = new ArucasList();
 		argumentList.addAll(List.of(arguments));
 		boolean shouldCancel = false;
-		for (Set<GameEventWrapper> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
-			for (GameEventWrapper gameEvent : gameEventWrappers) {
-				if (gameEvent.callFunction(argumentList)) {
+		for (Set<ScriptEvent> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
+			for (ScriptEvent gameEvent : gameEventWrappers) {
+				if (gameEvent.invoke(argumentList)) {
 					shouldCancel = true;
 				}
 			}
@@ -73,15 +73,15 @@ public class MinecraftScriptEvent {
 	public synchronized boolean run(ArgumentSupplier argumentSupplier) {
 		List<ClassInstance> values = null;
 		boolean shouldCancel = false;
-		for (Set<GameEventWrapper> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
-			for (GameEventWrapper gameEvent : gameEventWrappers) {
+		for (Set<ScriptEvent> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
+			for (ScriptEvent gameEvent : gameEventWrappers) {
 				if (values == null) {
-					values = argumentSupplier.applySafe(gameEvent.getEventContext());
+					values = argumentSupplier.applySafe(gameEvent.getInterpreter());
 					if (values == null) {
 						break;
 					}
 				}
-				if (gameEvent.callFunction(values)) {
+				if (gameEvent.invoke(values)) {
 					shouldCancel = true;
 				}
 			}
@@ -99,13 +99,7 @@ public class MinecraftScriptEvent {
 		List<ClassInstance> apply(Interpreter interpreter);
 
 		default List<ClassInstance> applySafe(Interpreter interpreter) {
-			try {
-				return this.apply(interpreter);
-			}
-			catch (Exception exception) {
-				interpreter.getThreadHandler().handleError(exception);
-				return null;
-			}
+			return interpreter.getThreadHandler().wrapSafe(() -> this.apply(interpreter));
 		}
 	}
 
@@ -133,15 +127,13 @@ public class MinecraftScriptEvent {
 		}
 
 		public synchronized boolean run(UUID uuid, ClassInstance... arguments) {
-			ArucasList argumentList = new ArucasList();
-			argumentList.addAll(List.of(arguments));
 			boolean shouldCancel = false;
-			Set<GameEventWrapper> gameEventWrappers = this.REGISTERED_EVENTS.get(uuid);
+			Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.get(uuid);
 			if (gameEventWrappers == null) {
 				return false;
 			}
-			for (GameEventWrapper gameEvent : gameEventWrappers) {
-				if (gameEvent.callFunction(argumentList)) {
+			for (ScriptEvent gameEvent : gameEventWrappers) {
+				if (gameEvent.invoke(Arrays.asList(arguments))) {
 					shouldCancel = true;
 				}
 			}

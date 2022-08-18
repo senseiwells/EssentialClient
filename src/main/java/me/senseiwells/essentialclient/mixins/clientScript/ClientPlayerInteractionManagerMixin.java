@@ -43,7 +43,7 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "attackEntity", at = @At("HEAD"), cancellable = true)
 	private void onAttackEntity(PlayerEntity player, Entity target, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_ATTACK_ENTITY.run(c -> ArucasList.arrayListOf(c.convertValue(target)))) {
+		if (MinecraftScriptEvents.ON_ATTACK_ENTITY.run(c -> List.of(c.convertValue(target)))) {
 			ci.cancel();
 		}
 	}
@@ -87,7 +87,7 @@ public class ClientPlayerInteractionManagerMixin {
 
 	@Inject(method = "interactEntity", at = @At("HEAD"), cancellable = true)
 	private void onInteractEntity(PlayerEntity player, Entity entity, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		if (MinecraftScriptEvents.ON_INTERACT_ENTITY.run(c -> ArucasList.arrayListOf(c.convertValue(entity), new ItemStackValue(player.getStackInHand(hand))))) {
+		if (MinecraftScriptEvents.ON_INTERACT_ENTITY.run(c -> List.of(c.convertValue(entity), new ItemStackValue(player.getStackInHand(hand))))) {
 			cir.setReturnValue(ActionResult.PASS);
 		}
 	}

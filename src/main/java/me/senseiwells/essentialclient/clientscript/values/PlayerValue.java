@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
-public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
+public class PlayerValue extends LivingEntityValue<T> {
 	public PlayerValue(ClientPlayerEntity player) {
 		super(player);
 	}
@@ -199,7 +199,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				case "once" -> ((MinecraftClientInvoker) client).rightClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into use()");
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -218,7 +218,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				case "once" -> ((MinecraftClientInvoker) client).leftClickMouseAccessor();
 				default -> throw arguments.getError("Must pass 'hold', 'stop' or 'once' into attack()");
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -241,7 +241,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(selectedSlot));
 				player.getInventory().selectedSlot = selectedSlot;
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -252,7 +252,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		)
 		private Value say(Arguments arguments) {
 			EssentialUtils.sendChatMessage(arguments.skip().getNext().getAsString(arguments.getContext()));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -266,7 +266,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Value value = arguments.getNext();
 			Text text = value instanceof TextValue textValue ? textValue.value : Texts.literal(value.getAsString(arguments.getContext()));
 			ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, false));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -280,7 +280,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			Value value = arguments.getNext();
 			Text text = value instanceof TextValue textValue ? textValue.value : Texts.literal(value.getAsString(arguments.getContext()));
 			ArucasMinecraftExtension.getClient().execute(() -> player.sendMessage(text, true));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -303,7 +303,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				client.inGameHud.setTitle(text);
 				client.inGameHud.setSubtitle(subText);
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -315,7 +315,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> client.setScreen(new InventoryScreen(player)));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -332,7 +332,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				throw arguments.getError("Opening handled screens is unsafe");
 			}
 			client.execute(() -> client.setScreen(screenValue.value));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -344,7 +344,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(player::closeHandledScreen);
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -377,7 +377,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BooleanValue booleanValue = arguments.getNextBoolean();
 			ArucasMinecraftExtension.getClient().execute(() -> player.setSprinting(booleanValue.value));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -390,7 +390,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			BooleanValue booleanValue = arguments.getNextBoolean();
 			ArucasMinecraftExtension.getClient().execute(() -> player.dropSelectedItem(booleanValue.value));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -403,7 +403,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			MaterialLike materialLike = arguments.skip().getAnyNext(MaterialLike.class);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> InventoryUtils.dropAllItemType(client.player, materialLike.asItem()));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -416,7 +416,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ItemStack stack = arguments.skip().getNextGeneric(ItemStackValue.class);
 			MinecraftClient client = ArucasMinecraftExtension.getClient();
 			client.execute(() -> InventoryUtils.dropAllItemExact(stack));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -436,7 +436,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				player.setYaw(numberValue.value.floatValue());
 				player.setPitch(numberValue2.value.floatValue());
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -455,7 +455,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			double y = arguments.getNextGeneric(NumberValue.class);
 			double z = arguments.getNextGeneric(NumberValue.class);
 			ArucasMinecraftExtension.getClient().execute(() -> player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, new Vec3d(x, y, z)));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -468,7 +468,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
 			ArucasMinecraftExtension.getClient().execute(() -> player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, posValue.value));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -521,7 +521,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 					player.setOnGround(false);
 				}
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -534,7 +534,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (ArucasMinecraftExtension.getClient().crosshairTarget instanceof EntityHitResult hitResult) {
 				return arguments.getContext().convertValue(hitResult.getEntity());
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -577,7 +577,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			} else {
 				InventoryUtils.swapSlot(client, screenHandler, slot2, firstMapped);
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -647,7 +647,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				default -> throw arguments.getError("Invalid hand '%s'", handAsString);
 			};
 			ArucasMinecraftExtension.getClient().execute(() -> player.swingHand(hand));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -705,7 +705,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			int finalClickData = clickData;
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, slot, finalClickData, slotActionType, player));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -729,7 +729,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			int slot = number.getValue().intValue();
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickCreativeStack(stackValue.value, slot));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -749,7 +749,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			}
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(screenHandler.syncId, number.value.intValue(), 0, SlotActionType.QUICK_MOVE, player));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -769,7 +769,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			}
 			final ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.clickSlot(player.currentScreenHandler.syncId, numberValue.value.intValue(), 1, SlotActionType.THROW, player));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -835,7 +835,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				InventoryUtils.tryMoveItemsToCraftingGridSlots(client, itemStacks, handledScreen);
 				InventoryUtils.shiftClickSlot(client, handledScreen, 0);
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -857,7 +857,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, true);
 				InventoryUtils.shiftClickSlot(client, handledScreen, 0);
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -887,7 +887,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 					InventoryUtils.dropStackScheduled(client, handledScreen, true);
 				}
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -908,7 +908,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, false);
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -933,7 +933,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
 				interactionManager.clickRecipe(handledScreen.getScreenHandler().syncId, recipeValue.value, booleanValue.value);
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -945,7 +945,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private Value logout(Arguments arguments) {
 			String reason = arguments.skip().getNextGeneric(StringValue.class);
 			ArucasMinecraftExtension.getNetworkHandler().onDisconnected(Texts.literal(reason));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -970,7 +970,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			EntityValue<?> entity = arguments.getNext(EntityValue.class);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.attackEntity(player, entity.value));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -995,7 +995,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			EntityValue<?> entity = arguments.getNext(EntityValue.class);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactEntity(player, entity.value, Hand.MAIN_HAND));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1105,7 +1105,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private Value anvilRename(Arguments arguments) {
 			ClientPlayerInteractionManager interactionManager = EssentialUtils.getInteractionManager();
 			if (interactionManager == null) {
-				return NullValue.NULL;
+				return null;
 			}
 			ClientPlayerEntity player = this.getPlayer(arguments);
 			ScreenHandler handler = player.currentScreenHandler;
@@ -1119,7 +1119,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			for (Slot slot : handler.slots) {
 				ItemStack itemStack = slot.getStack();
 				if (!itemStack.getName().getString().equals(newName)) {
-					Value predicateReturn = functionValue.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
+					Value predicateReturn = functionValue.call(arguments.getContext().createBranch(), List.of(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						valid = true;
 						client.execute(() -> interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.QUICK_MOVE, player));
@@ -1222,7 +1222,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				BetterAccurateBlockPlacement.requestedTicks = finalDuration;
 				BetterAccurateBlockPlacement.sendLookPacket(networkHandler, client.player);
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1245,7 +1245,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				player.getInventory().swapSlotWithHotbar(slotToSwap.value.intValue());
 				networkHandler.sendPacket(new PickFromInventoryC2SPacket(slotToSwap.value.intValue()));
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1327,13 +1327,13 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			double z = arguments.getNextGeneric(NumberValue.class);
 			BlockPos blockPos = new BlockPos(x, y, z);
 			if (ArucasMinecraftExtension.getWorld().isAir(blockPos)) {
-				return NullValue.NULL;
+				return null;
 			}
 			ArucasMinecraftExtension.getClient().execute(() -> {
 				interactionManager.updateBlockBreakingProgress(blockPos, Direction.UP);
 				player.swingHand(Hand.MAIN_HAND);
 			});
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1348,11 +1348,11 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			PosValue posValue = arguments.getNext(PosValue.class);
 			BlockPos blockPos = new BlockPos(posValue.value);
 			if (ArucasMinecraftExtension.getWorld().isAir(blockPos)) {
-				return NullValue.NULL;
+				return null;
 			}
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.updateBlockBreakingProgress(blockPos, Direction.UP));
 			player.swingHand(Hand.MAIN_HAND);
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1374,7 +1374,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			StringValue stringValue = arguments.getNextString();
 			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.attackBlock(new BlockPos(x, y, z), direction));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1392,7 +1392,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			StringValue stringValue = arguments.getNextString();
 			Direction direction = ClientScriptUtils.stringToDirection(stringValue.value, Direction.DOWN);
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.attackBlock(new BlockPos(posValue.value), direction));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1414,7 +1414,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			};
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactItem(player, hand));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1438,7 +1438,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			BlockHitResult hitResult = new BlockHitResult(new Vec3d(x, y, z), direction, new BlockPos(x, y, z), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, Hand.MAIN_HAND, hitResult));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1514,7 +1514,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			BlockHitResult hitResult = new BlockHitResult(new Vec3d(px, py, pz), direction, new BlockPos(bx, by, bz), bool);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, Hand.MAIN_HAND, hitResult));
-			return NullValue.NULL;
+			return null;
 		}
 
 		@FunctionDoc(
@@ -1591,14 +1591,14 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			if (InventoryUtils.tradeAllItems(ArucasMinecraftExtension.getClient(), numberValue.value.intValue(), false)) {
 				throw arguments.getError("Not in merchant gui");
 			}
-			return NullValue.NULL;
+			return null;
 		}
 
 		private Value getIndexOfTrade(Arguments arguments) {
 			ItemStackValue itemStackValue = arguments.skip().getNext(ItemStackValue.class);
 			int index = InventoryUtils.getIndexOfItemInMerchant(ArucasMinecraftExtension.getClient(), itemStackValue.value.getItem());
 			if (index == -1) {
-				return NullValue.NULL;
+				return null;
 			}
 			this.checkVillagerValid(index, arguments);
 			return NumberValue.of(index);
@@ -1612,8 +1612,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 					throw arguments.getError("That trade is out of bounds");
 				}
 				return new ItemStackValue(itemStack);
-			}
-			catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 				throw arguments.getError("Not in merchant gui");
 			}
 		}
@@ -1659,7 +1658,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 				}
 				ItemStack itemStack = slot.getStack();
 				if (!firstValid) {
-					Value predicateReturn = predicate1.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
+					Value predicateReturn = predicate1.call(arguments.getContext().createBranch(), List.of(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						firstValid = true;
 						client.execute(() -> {
@@ -1670,7 +1669,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 					}
 				}
 				if (!secondValid) {
-					Value predicateReturn = predicate2.call(arguments.getContext().createBranch(), ArucasList.arrayListOf(new ItemStackValue(itemStack)));
+					Value predicateReturn = predicate2.call(arguments.getContext().createBranch(), List.of(new ItemStackValue(itemStack)));
 					if (predicateReturn instanceof BooleanValue booleanValue && booleanValue.value) {
 						secondValid = true;
 						client.execute(() -> {
@@ -1695,7 +1694,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 			BlockHitResult hitResult = new BlockHitResult(posValue.value, direction, new BlockPos(blockPosValue.value), false);
 			ClientPlayerInteractionManager interactionManager = ArucasMinecraftExtension.getInteractionManager();
 			ArucasMinecraftExtension.getClient().execute(() -> interactionManager.interactBlock(player, hand, hitResult));
-			return NullValue.NULL;
+			return null;
 		}
 
 		private boolean checkVillagerValid(int code, Arguments arguments) {
@@ -1711,7 +1710,7 @@ public class PlayerValue extends AbstractPlayerValue<ClientPlayerEntity> {
 		private NullValue setKey(Arguments arguments, KeyBinding keyBinding) {
 			BooleanValue booleanValue = arguments.skip().getNextBoolean();
 			ArucasMinecraftExtension.getClient().execute(() -> keyBinding.setPressed(booleanValue.value));
-			return NullValue.NULL;
+			return null;
 		}
 
 		private ClientPlayerEntity getPlayer(Arguments arguments) {

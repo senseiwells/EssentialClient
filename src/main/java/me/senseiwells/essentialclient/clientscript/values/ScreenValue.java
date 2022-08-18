@@ -104,7 +104,7 @@ public class ScreenValue<T extends Screen> extends GenericValue<T> {
 				int tabIndex = creativeInventoryScreen.getSelectedTab();
 				return new TextValue(Texts.literal(ItemGroup.GROUPS[tabIndex].getName()));
 			}
-			return title == null ? NullValue.NULL : new TextValue(title.copy());
+			return title == null ? null : new TextValue(title.copy());
 		}
 
 		private Screen getScreen(Arguments arguments) {

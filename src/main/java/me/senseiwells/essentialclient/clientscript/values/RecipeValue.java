@@ -155,7 +155,7 @@ public class RecipeValue extends GenericValue<Recipe<?>> {
 		private Value getCraftingType(Arguments arguments) {
 			RecipeValue thisValue = arguments.getNext(RecipeValue.class);
 			Identifier identifier = Registry.RECIPE_TYPE.getId(thisValue.value.getType());
-			return identifier == null ? NullValue.NULL : StringValue.of(identifier.getPath());
+			return identifier == null ? null : StringValue.of(identifier.getPath());
 		}
 
 		@FunctionDoc(

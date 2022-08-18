@@ -1,11 +1,10 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
-import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
+import me.senseiwells.essentialclient.clientscript.definitions.TextDef;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
-import me.senseiwells.essentialclient.clientscript.values.TextValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
@@ -28,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,9 +84,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Not much we can do about that one
 	@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/message/MessageHandler;onChatMessage(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/network/message/MessageType$Parameters;)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci, Optional<MessageType.Parameters> parameters) {
-		MessageType messageType = parameters.get().type();
+		MessageType messageType = parameters.orElseThrow().type();
 		Identifier typeId = this.registryManager.get(Registry.MESSAGE_TYPE_KEY).getId(messageType);
 		String type = typeId == null ? "unknown" : typeId.getPath();
 		if (this.handleMessage(packet.message().signedHeader().sender(), packet.message().getContent().getString(), type)) {
@@ -107,7 +108,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		Entity entity = this.world.getEntityById(packet.getEntityId());
 		if (entity == this.client.player) {
 			Entity killer = this.world.getEntityById(packet.getKillerId());
-			MinecraftScriptEvents.ON_DEATH.run(c -> ArucasList.arrayListOf(c.convertValue(killer), new TextValue(packet.getMessage().copy())));
+			MinecraftScriptEvents.ON_DEATH.run(c -> List.of(c.convertValue(killer), c.create(TextDef.class, packet.getMessage().copy())));
 		}
 	}
 
@@ -115,18 +116,18 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getId());
 		if (entity instanceof LivingEntity) {
-			MinecraftScriptEvents.ON_MOB_SPAWN.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
+			MinecraftScriptEvents.ON_MOB_SPAWN.run(c -> List.of(c.convertValue(entity)));
 			return;
 		}
 		if (entity != null) {
-			MinecraftScriptEvents.ON_ENTITY_SPAWN.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
+			MinecraftScriptEvents.ON_ENTITY_SPAWN.run(c -> List.of(c.convertValue(entity)));
 		}
 	}
 
 	@Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", shift = At.Shift.BEFORE))
 	private void onEntityRemoved(int entityId, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(entityId);
-		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(c -> ArucasList.arrayListOf(c.convertValue(entity)));
+		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(c -> List.of(c.convertValue(entity)));
 	}
 
 	@Unique

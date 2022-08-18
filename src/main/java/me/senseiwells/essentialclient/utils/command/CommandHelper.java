@@ -10,7 +10,8 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
-import me.senseiwells.arucas.utils.Context;
+import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -71,9 +72,9 @@ public class CommandHelper {
 		return false;
 	}
 
-	public static void addComplexCommand(Context context, LiteralCommandNode<ServerCommandSource> commandNode) {
-		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(context.getContextId(), id -> {
-			context.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
+	public static void addComplexCommand(Interpreter interpreter, LiteralCommandNode<ServerCommandSource> commandNode) {
+		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(interpreter.getProperties().getId(), id -> {
+			interpreter.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
 			return new LinkedHashSet<>();
 		});
 		commandNodeSet.add(commandNode);
@@ -155,7 +156,7 @@ public class CommandHelper {
 			return parsedArgumentMap.values();
 		}
 		catch (Throwable throwable) {
-			throwable.printStackTrace();
+			EssentialClient.LOGGER.error(throwable);
 		}
 		return null;
 	}

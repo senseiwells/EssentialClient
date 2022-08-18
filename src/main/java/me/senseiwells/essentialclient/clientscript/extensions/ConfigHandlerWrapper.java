@@ -10,13 +10,11 @@ import me.senseiwells.arucas.api.wrappers.ArucasClass;
 import me.senseiwells.arucas.api.wrappers.ArucasConstructor;
 import me.senseiwells.arucas.api.wrappers.ArucasFunction;
 import me.senseiwells.arucas.api.wrappers.IArucasWrappedClass;
-import me.senseiwells.arucas.throwables.CodeError;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.essentialclient.clientscript.values.ConfigValue;
-import me.senseiwells.essentialclient.clientscript.values.TextValue;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -197,7 +195,7 @@ public class ConfigHandlerWrapper implements IArucasWrappedClass, Config.CList {
 	@ArucasFunction
 	public synchronized Value getConfig(Context context, StringValue name) {
 		ConfigValue configValue = this.configs.get(name.value);
-		return configValue == null ? NullValue.NULL : configValue;
+		return configValue == null ? null : configValue;
 	}
 
 	@FunctionDoc(
