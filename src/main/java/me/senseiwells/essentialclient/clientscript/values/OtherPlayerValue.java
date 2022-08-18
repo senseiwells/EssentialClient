@@ -255,7 +255,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				STRING, "inventoryType", "all/combined -> includes external, player/main -> player slots, external/other -> excludes player inventory"
 			},
 			returns = {LIST, "the slot numbers of the item, empty list if not found"},
-			example = "otherPlayer.getAllSlotsFor(Material.DIAMOND, false);"
+			example = "otherPlayer.getAllSlotsFor(Material.DIAMOND, 'player');"
 		)
 		private Value getAllSlotsWithOption(Arguments arguments) throws CodeError {
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
