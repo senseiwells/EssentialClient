@@ -72,6 +72,7 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 				MemberFunction.of("getItemForPlayerSlot", 1, this::getItemForPlayerSlot),
 				MemberFunction.of("getSlotFor", 1, this::getSlotFor),
 				MemberFunction.of("getAllSlotsFor", 1, this::getAllSlotsFor),
+				MemberFunction.of("getAllSlotsFor", 2, this::getAllSlotsForBoolean),
 				MemberFunction.of("getAbilities", this::getAbilities),
 				MemberFunction.of("getLevels", this::getLevels),
 				MemberFunction.of("getHunger", this::getHunger),
@@ -236,6 +237,30 @@ public class OtherPlayerValue extends AbstractPlayerValue<OtherClientPlayerEntit
 			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
 			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
 			ScreenHandler screenHandler = playerEntity.currentScreenHandler;
+			ArucasList slotList = new ArucasList();
+			for (Slot slot : screenHandler.slots) {
+				if (slot.getStack().getItem() == materialLike.asItem()) {
+					slotList.add(NumberValue.of(slot.id));
+				}
+			}
+			return new ListValue(slotList);
+		}
+
+		@FunctionDoc(
+			name = "getAllSlotsFor",
+			desc = "This gets all the slot numbers of the specified item in the players combined or player inventory",
+			params = {
+				MATERIAL_LIKE, "materialLike", "the item or material you want to get the slot of",
+				BOOLEAN, "includeExternalInventory", "whether search should include external inventory"
+			},
+			returns = {LIST, "the slot numbers of the item, empty list if not found"},
+			example = "otherPlayer.getAllSlotsFor(Material.DIAMOND, false);"
+		)
+		private Value getAllSlotsForBoolean(Arguments arguments) throws CodeError {
+			AbstractClientPlayerEntity playerEntity = this.getOtherPlayer(arguments);
+			MaterialLike materialLike = arguments.getAnyNext(MaterialLike.class);
+			BooleanValue booleanValue = arguments.getNextBoolean();
+			ScreenHandler screenHandler = booleanValue.value ? playerEntity.currentScreenHandler : playerEntity.playerScreenHandler;
 			ArucasList slotList = new ArucasList();
 			for (Slot slot : screenHandler.slots) {
 				if (slot.getStack().getItem() == materialLike.asItem()) {
