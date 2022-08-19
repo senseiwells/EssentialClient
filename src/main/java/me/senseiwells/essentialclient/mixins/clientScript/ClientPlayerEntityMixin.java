@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import com.mojang.authlib.GameProfile;
-import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptIO;
@@ -20,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {

@@ -288,13 +288,9 @@ public class ClientScriptUtils {
 		}
 
 		String description = getFieldInMap(map, interpreter, "description", StringDef.class);
-
 		String optionalInfo = getFieldInMap(map, interpreter, "optional_info", StringDef.class);
-
 		String currentValue = getFieldInMap(map, interpreter, "value", StringDef.class);
-
 		ArucasFunction function = getFieldInMap(map, interpreter, "listener", FunctionDef.class);
-
 		int maxLength = Objects.requireNonNullElse(getFieldInMap(map, interpreter, "max_length", NumberDef.class), 32).intValue();
 
 		ClassInstance defaultValue = map.get(interpreter, interpreter.create(StringDef.class, "default_value"));
@@ -388,14 +384,15 @@ public class ClientScriptUtils {
 			}
 			default -> throw new RuntimeError("Invalid config type '%s'".formatted(type));
 		};
-/* TODO:
-		ConfigValue configValue = new ConfigValue(clientRule);
 
+		ClassInstance instance = interpreter.convertValue(clientRule);
 		if (function != null) {
-			Context branch = context.createBranch();
+			Interpreter parent = interpreter.branch();
 			clientRule.addListener(object -> {
-				Context branchContext = branch.createBranch();
-				function.callSafe(branchContext, () -> List.of(configValue));
+				parent.getThreadHandler().runAsync(() -> {
+					function.invoke(parent.branch(), List.of(instance));
+					return null;
+				});
 			});
 		}
 		if (currentValue != null) {
@@ -403,17 +400,14 @@ public class ClientScriptUtils {
 		}
 
 		clientRule.setOptionalInfo(optionalInfo);
-		return configValue;
-
- */
-		return null;
+		return instance;
 	}
 
 	public static ArgumentBuilder<ServerCommandSource, ?> mapToCommand(ArucasMap arucasMap, Interpreter interpreter) {
 		return new CommandParser(arucasMap, interpreter).parse();
 	}
 
-	public static RequiredArgumentBuilder<ServerCommandSource, ?> parseArgumentType(String argumentName, String typeName, CommandParser.ArgumentGetter getter) {
+	public static RequiredArgumentBuilder<ServerCommandSource, ?> parseArgument(String argumentName, String typeName, Collection<String> suggests, CommandParser.ArgumentGetter getter) {
 		SuggestionProvider<ServerCommandSource> extraSuggestion = null;
 		ArgumentType<?> type = switch (typeName.toLowerCase()) {
 			case "word" -> StringArgumentType.word();
@@ -441,7 +435,7 @@ public class ClientScriptUtils {
 				yield StringArgumentType.word();
 			}
 			case "double" -> {
-				Double min = getter.get("min", NumberDef.class);
+				Double min = getter == null ? null : getter.get("min", NumberDef.class);
 				if (min != null) {
 					Double max = getter.get("max", NumberDef.class);
 					if (max != null) {
@@ -452,7 +446,7 @@ public class ClientScriptUtils {
 				yield DoubleArgumentType.doubleArg();
 			}
 			case "integer" -> {
-				Double min = getter.get("min", NumberDef.class);
+				Double min = getter == null ? null : getter.get("min", NumberDef.class);
 				if (min != null) {
 					Double max = getter.get("max", NumberDef.class);
 					if (max != null) {
@@ -463,7 +457,7 @@ public class ClientScriptUtils {
 				yield IntegerArgumentType.integer();
 			}
 			case "enum" -> {
-				ClassDefinition definition = getter.get("enum", TypeDef.class);
+				ClassDefinition definition = getter == null ? null : getter.get("enum", TypeDef.class);
 				if (definition instanceof EnumDefinition enumDefinition) {
 					yield DefinitionArgumentType.enumeration(enumDefinition);
 				}
@@ -475,6 +469,9 @@ public class ClientScriptUtils {
 		RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = CommandManager.argument(argumentName, type);
 		if (extraSuggestion != null) {
 			argumentBuilder.suggests(extraSuggestion);
+		}
+		if (suggests != null) {
+			argumentBuilder.suggests((c, b) -> CommandSource.suggestMatching(suggests, b));
 		}
 		return argumentBuilder;
 	}
@@ -496,8 +493,8 @@ public class ClientScriptUtils {
 		return instance == null ? null : instance.getPrimitive(type);
 	}
 
-	private static class CommandParser {
-		private static final SimpleCommandExceptionType NO_ARGS = new SimpleCommandExceptionType(Texts.literal("Failed to retrieve arguments, see logs for details"));
+	public static class CommandParser {
+		public static final SimpleCommandExceptionType NO_ARGS = new SimpleCommandExceptionType(Texts.literal("Failed to retrieve arguments, see logs for details"));
 
 		private final Interpreter interpreter;
 		private final String commandName;
@@ -604,23 +601,18 @@ public class ClientScriptUtils {
 			if (argument == null) {
 				throw new RuntimeError("Expected string for 'type' for argument '%s'".formatted(name));
 			}
-			RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = parseArgumentType(name, argument, new ArgumentGetter() {
+
+			List<String> suggestions = null;
+			ArucasList suggests = getFieldInMap(arguments, this.interpreter, "suggests", ListDef.class);
+			if (suggests != null) {
+				suggestions = suggests.stream().map(i -> i.toString(this.interpreter)).toList();
+			}
+			RequiredArgumentBuilder<ServerCommandSource, ?> argumentBuilder = parseArgument(name, argument, suggestions, new ArgumentGetter() {
 				@Override
 				public <T extends PrimitiveDefinition<V>, V> V get(String fieldName, Class<T> clazz) {
 					return getFieldInMap(arguments, CommandParser.this.interpreter, fieldName, clazz);
 				}
 			});
-
-			ArucasList suggests = getFieldInMap(arguments, this.interpreter, "suggests", ListDef.class);
-			if (suggests != null) {
-				int size = suggests.size();
-				String[] suggestions = new String[size];
-				ClassInstance[] values = suggests.toArray();
-				for (int i = 0; i < size; i++) {
-					suggestions[i] = values[i].toString(this.interpreter);
-				}
-				argumentBuilder.suggests((c, b) -> CommandSource.suggestMatching(suggestions, b));
-			}
 
 			ArucasFunction suggester = getFieldInMap(arguments, this.interpreter, "suggester", FunctionDef.class);
 			if (suggester != null) {
@@ -637,8 +629,8 @@ public class ClientScriptUtils {
 					CompletableFuture<Suggestions> future = branch.getThreadHandler().wrapSafe(() -> {
 						ArucasCollection collection = suggester.invoke(branch, list).getPrimitive(CollectionDef.class);
 						if (collection != null) {
-							List<String> suggestions = collection.asCollection().stream().map(i -> i.toString(branch)).toList();
-							return CommandSource.suggestMatching(suggestions, b);
+							List<String> suggested = collection.asCollection().stream().map(i -> i.toString(branch)).toList();
+							return CommandSource.suggestMatching(suggested, b);
 						}
 						throw new RuntimeError("Suggester did not return a list");
 					});
