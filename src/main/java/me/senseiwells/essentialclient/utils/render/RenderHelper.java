@@ -2,12 +2,8 @@ package me.senseiwells.essentialclient.utils.render;
 
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.senseiwells.essentialclient.clientscript.extensions.BoxShapeWrapper;
-import me.senseiwells.essentialclient.clientscript.extensions.FakeBlockWrapper;
-import me.senseiwells.essentialclient.clientscript.extensions.LineShapeWrapper;
-import me.senseiwells.essentialclient.clientscript.extensions.SphereShapeWrapper;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.clientscript.Shape;
+import me.senseiwells.essentialclient.utils.clientscript.impl.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
@@ -25,6 +21,7 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RenderHelper {
 	@SuppressWarnings("deprecation")
@@ -66,40 +63,37 @@ public class RenderHelper {
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		Vec3d cameraPos = camera.getPos();
 
-		List<BoxShapeWrapper> normalBoxes = BoxShapeWrapper.getNormalBoxes();
-		List<BoxShapeWrapper> renderThrough = BoxShapeWrapper.getThroughBoxes();
-
-		if (!normalBoxes.isEmpty()) {
-			drawBoxOutlines(tessellator, bufferBuilder, matrices, cameraPos, normalBoxes);
-			drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, normalBoxes);
+		if (ScriptBox.hasRegular()) {
+			drawBoxOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachRegular);
+			drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachRegular);
 		}
 
-		if (!renderThrough.isEmpty()) {
+		if (ScriptBox.hasIgnoreDepth()) {
 			RenderSystem.disableDepthTest();
-			drawBoxOutlines(tessellator, bufferBuilder, matrices, cameraPos, renderThrough);
-			drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, renderThrough);
+			drawBoxOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachIgnoreDepth);
+			drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachIgnoreDepth);
 			RenderSystem.enableDepthTest();
 		}
 	}
 
-	private static void drawBoxOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, List<BoxShapeWrapper> boxes) {
+	private static void drawBoxOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptBox>> forEach) {
 		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
 		bufferBuilder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-		for (BoxShapeWrapper box : boxes) {
+		forEach.accept(box -> {
 			if (box.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(box.getOutlineWidth());
 				addBoxToBuffer(bufferBuilder, matrices, camera, box, true);
 			}
-		}
+		});
 		tessellator.draw();
 	}
 
-	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, List<BoxShapeWrapper> boxes) {
+	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptBox>> forEach) {
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		for (BoxShapeWrapper box : boxes) {
+		forEach.accept(box -> {
 			addBoxToBuffer(bufferBuilder, matrices, cameraPos, box, false);
-		}
+		});
 		tessellator.draw();
 	}
 
@@ -107,9 +101,9 @@ public class RenderHelper {
 		return new Vec3d(Math.min(pos1.getX(), pos2.getX()), Math.min(pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
 	}
 
-	private static void addBoxToBuffer(BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, BoxShapeWrapper box, boolean outline) {
-		Vec3d pos1 = box.getPosition();
-		Vec3d pos2 = box.getSecondPosition();
+	private static void addBoxToBuffer(BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, ScriptBox box, boolean outline) {
+		Vec3d pos1 = box.getCornerA();
+		Vec3d pos2 = box.getCornerB();
 
 		int red = box.getRed(), green = box.getGreen(), blue = box.getBlue(), alpha = box.getAlpha();
 		if (outline) {
@@ -211,44 +205,41 @@ public class RenderHelper {
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		Vec3d cameraPos = camera.getPos();
 
-		List<SphereShapeWrapper> normalSpheres = SphereShapeWrapper.getNormalSpheres();
-		List<SphereShapeWrapper> throughSpheres = SphereShapeWrapper.getThroughSpheres();
-
-		if (!normalSpheres.isEmpty()) {
-			drawSpheresOutlines(tessellator, bufferBuilder, matrices, cameraPos, normalSpheres);
-			drawSpheres(tessellator, bufferBuilder, matrices, cameraPos, normalSpheres);
+		if (ScriptSphere.hasRegular()) {
+			drawSpheresOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachRegular);
+			drawSpheres(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachRegular);
 		}
 
-		if (!throughSpheres.isEmpty()) {
+		if (ScriptSphere.hasIgnoreDepth()) {
 			RenderSystem.disableDepthTest();
-			drawSpheresOutlines(tessellator, bufferBuilder, matrices, cameraPos, throughSpheres);
-			drawSpheres(tessellator, bufferBuilder, matrices, cameraPos, throughSpheres);
+			drawSpheresOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachIgnoreDepth);
+			drawSpheres(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachIgnoreDepth);
 			RenderSystem.enableDepthTest();
 		}
 	}
 
-	private static void drawSpheres(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, List<SphereShapeWrapper> spheres) {
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		for (SphereShapeWrapper sphere : spheres) {
-			addSphereToBuffer(bufferBuilder, matrices, cameraPos, sphere, false);
-		}
-		tessellator.draw();
-	}
-
-	private static void drawSpheresOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, List<SphereShapeWrapper> spheres) {
+	private static void drawSpheresOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptSphere>> forEach) {
 		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
 		bufferBuilder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-		for (SphereShapeWrapper sphere : spheres) {
+		forEach.accept(sphere -> {
 			if (sphere.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(sphere.getOutlineWidth());
 				addSphereToBuffer(bufferBuilder, matrices, camera, sphere, true);
 			}
-		}
+		});
 		tessellator.draw();
 	}
 
-	private static void addSphereToBuffer(BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, SphereShapeWrapper sphere, boolean outline) {
+	private static void drawSpheres(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptSphere>> forEach) {
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		forEach.accept(sphere -> {
+			addSphereToBuffer(bufferBuilder, matrices, cameraPos, sphere, false);
+		});
+		tessellator.draw();
+	}
+
+	private static void addSphereToBuffer(BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, ScriptSphere sphere, boolean outline) {
 		Vec3d pos = sphere.getPosition();
 
 		int red = sphere.getRed(), green = sphere.getGreen(), blue = sphere.getBlue(), alpha = sphere.getAlpha();
@@ -338,35 +329,33 @@ public class RenderHelper {
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		Vec3d cameraPos = camera.getPos();
 
-		List<LineShapeWrapper> normalLines = LineShapeWrapper.getNormalLines();
-		List<LineShapeWrapper> throughLines = LineShapeWrapper.getThroughLines();
-		if (!normalLines.isEmpty()) {
+		if (ScriptLine.hasRegular()) {
 			RenderSystem.enableDepthTest();
-			drawLines(tessellator, bufferBuilder, matrices, cameraPos, normalLines);
+			drawLines(tessellator, bufferBuilder, matrices, cameraPos, ScriptLine::forEachRegular);
 		}
 
-		if (!throughLines.isEmpty()) {
+		if (ScriptLine.hasIgnoreDepth()) {
 			RenderSystem.disableDepthTest();
-			drawLines(tessellator, bufferBuilder, matrices, cameraPos, throughLines);
+			drawLines(tessellator, bufferBuilder, matrices, cameraPos, ScriptLine::forEachIgnoreDepth);
 			RenderSystem.enableDepthTest();
 		}
 	}
 
-	private static void drawLines(Tessellator tessellator, BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, List<LineShapeWrapper> lines) {
+	private static void drawLines(Tessellator tessellator, BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptLine>> forEach) {
 		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
 		builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-		for (LineShapeWrapper line : lines) {
+		forEach.accept(line -> {
 			if (line.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(line.getOutlineWidth());
 				addLineToBuffer(builder, matrices, cameraPos, line);
 			}
-		}
+		});
 		tessellator.draw();
 	}
 
-	private static void addLineToBuffer(BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, LineShapeWrapper line) {
-		Vec3d pos1 = line.getPosition();
-		Vec3d pos2 = line.getSecondPosition();
+	private static void addLineToBuffer(BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, ScriptLine line) {
+		Vec3d pos1 = line.getCornerA();
+		Vec3d pos2 = line.getCornerB();
 		int red = line.getRed(), green = line.getGreen(), blue = line.getBlue(), alpha = line.getAlpha();
 
 		matrices.push();
@@ -394,37 +383,37 @@ public class RenderHelper {
 		MinecraftClient client = EssentialUtils.getClient();
 		VertexConsumerProvider.Immediate immediate = client.getBufferBuilders().getEntityVertexConsumers();
 
-		FakeBlockWrapper.getBlocks().forEach(f -> renderFakeBlock(client, matrices, f, immediate));
+		ScriptFakeBlock.forEachRegular(f -> renderFakeBlock(client, matrices, f, immediate));
 		immediate.draw(NO_CULL_BLOCK_LAYER);
 		immediate.draw(CULL_BLOCK_LAYER);
 
 		RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, MinecraftClient.IS_SYSTEM_MAC);
 
-		FakeBlockWrapper.getThroughBlocks().forEach(f -> renderFakeBlock(client, matrices, f, immediate));
+		ScriptFakeBlock.forEachIgnoreDepth(f -> renderFakeBlock(client, matrices, f, immediate));
 		immediate.draw(NO_CULL_BLOCK_LAYER);
 		immediate.draw(CULL_BLOCK_LAYER);
 	}
 
-	private static void renderFakeBlock(MinecraftClient client, MatrixStack matrices, FakeBlockWrapper fakeBlock, VertexConsumerProvider.Immediate immediate) {
+	private static void renderFakeBlock(MinecraftClient client, MatrixStack matrices, ScriptFakeBlock fakeBlock, VertexConsumerProvider.Immediate immediate) {
 		if (client.world == null) {
 			return;
 		}
 
 		Vec3d cameraPos = client.gameRenderer.getCamera().getPos();
+		Vec3d pos = fakeBlock.getPosition();
 
 		matrices.push();
 		matrices.translate(0.5D, 0.5D, 0.5D);
 		matrices.translate(
-			fakeBlock.blockPos.getX() - cameraPos.x,
-			fakeBlock.blockPos.getY() - cameraPos.y,
-			fakeBlock.blockPos.getZ() - cameraPos.z
+			pos.getX() - cameraPos.x,
+			pos.getY() - cameraPos.y,
+			pos.getZ() - cameraPos.z
 		);
-		if (fakeBlock.direction == null) {
+		if (fakeBlock.getDirection() == null) {
 			matrices.multiply(client.gameRenderer.getCamera().getRotation());
 			matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
-		}
-		else {
-			switch (fakeBlock.direction) {
+		} else {
+			switch (fakeBlock.getDirection()) {
 				case SOUTH -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
 				case EAST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(270));
 				case WEST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90));
@@ -437,19 +426,20 @@ public class RenderHelper {
 
 		matrices.translate(-0.5, -0.5, -0.5);
 
+		BlockPos blockPos = new BlockPos(pos);
 		int light = LightmapTextureManager.pack(
-			client.world.getLightLevel(LightType.BLOCK, fakeBlock.blockPos),
-			client.world.getLightLevel(LightType.SKY, fakeBlock.blockPos)
+			client.world.getLightLevel(LightType.BLOCK, blockPos),
+			client.world.getLightLevel(LightType.SKY, blockPos)
 		);
 
 		// client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
 
-		renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, fakeBlock.getAlpha() / 255.0F, light, OverlayTexture.DEFAULT_UV, fakeBlock.cull);
+		renderBlockAsEntity(fakeBlock.getState(), matrices, immediate, fakeBlock.getAlpha() / 255.0F, light, OverlayTexture.DEFAULT_UV, fakeBlock.shouldCull());
 
 		matrices.pop();
 	}
 
-	private static void tilt(MatrixStack matrices, Shape.Tiltable tiltable) {
+	private static void tilt(MatrixStack matrices, ScriptShape tiltable) {
 		if (tiltable.getXTilt() != 0.0F) {
 			matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(tiltable.getXTilt()));
 		}
@@ -461,7 +451,7 @@ public class RenderHelper {
 		}
 	}
 
-	private static void scale(MatrixStack matrices, Shape.Scalable scalable) {
+	private static void scale(MatrixStack matrices, ScriptShape scalable) {
 		matrices.scale(scalable.getXScale(), scalable.getYScale(), scalable.getZScale());
 	}
 
@@ -544,8 +534,7 @@ public class RenderHelper {
 					o = l * fs[k] * red;
 					p = m * fs[k] * green;
 					q = n * fs[k] * blue;
-				}
-				else {
+				} else {
 					o = fs[k] * red;
 					p = fs[k] * green;
 					q = fs[k] * blue;

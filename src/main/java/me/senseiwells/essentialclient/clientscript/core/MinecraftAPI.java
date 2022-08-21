@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.extensions.*;
-import me.senseiwells.essentialclient.clientscript.values.*;
+import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
 import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
@@ -39,7 +39,9 @@ public class MinecraftAPI {
 	public static final String
 		BIOME = "Biome",
 		BOX_SHAPE = "BoxShape",
+		CENTRED_SHAPE = "CentredShape",
 		CONFIG_HANDLER = "ConfigHandler",
+		CORNERED_SHAPE = "CorneredShape",
 		FAKE_BLOCK = "FakeBlock",
 		FAKE_ENTITY = "FakeEntity",
 		GAME_EVENT = "GameEvent",
@@ -60,10 +62,12 @@ public class MinecraftAPI {
 		MINECRAFT_CLIENT = "MinecraftClient",
 		MINECRAFT_TASK = "MinecraftTask",
 		OTHER_PLAYER = "OtherPlayer",
+		OUTLINED_SHAPE = "OutlinedShape",
 		PLAYER = "Player",
 		POS = "Pos",
 		RECIPE = "Recipe",
 		SCREEN = "Screen",
+		SHAPE = "Shape",
 		TEXT = "Text",
 		TRADE = "Trade",
 		WORLD = "World";
