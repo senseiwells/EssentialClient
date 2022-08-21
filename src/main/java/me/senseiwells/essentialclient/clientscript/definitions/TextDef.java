@@ -26,7 +26,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TEXT
 @ClassDoc(
 	name = TEXT,
 	desc = "This class is used to create formatted strings used inside Minecraft.",
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	language = Util.Language.Java
 )
 public class TextDef extends CreatableDefinition<MutableText> {
 	public TextDef(Interpreter interpreter) {

@@ -14,7 +14,6 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.*;
-import me.senseiwells.essentialclient.clientscript.values.ConfigValue;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;

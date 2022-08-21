@@ -60,7 +60,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 @ClassDoc(
 	name = MINECRAFT_CLIENT,
 	desc = "This allows for many core interactions with the MinecraftClient",
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	language = Util.Language.Java
 )
 public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	public final ClassInstance instance = this.create(EssentialUtils.getClient());

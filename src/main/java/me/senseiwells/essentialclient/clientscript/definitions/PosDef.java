@@ -13,6 +13,7 @@ import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ConstructorFunction;
 import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
@@ -31,7 +32,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 @ClassDoc(
 	name = POS,
 	desc = "This class is a wrapper for 3 coordinate points in Minecraft",
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	language = Util.Language.Java
 )
 public class PosDef extends CreatableDefinition<ScriptPos> {
 	public PosDef(Interpreter interpreter) {

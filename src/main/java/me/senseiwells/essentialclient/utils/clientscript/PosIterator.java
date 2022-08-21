@@ -1,42 +1,46 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
-import me.senseiwells.arucas.values.Value;
+import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
-public class PosIterator implements Iterator<Value> {
-	Iterator<BlockPos> posIterable;
+public class PosIterator implements Iterator<ClassInstance> {
+	final Iterator<BlockPos> blockPosIterator;
+	final Function<Object, ClassInstance> converter;
 
-	public PosIterator(Iterator<BlockPos> posIterator) {
-		this.posIterable = posIterator;
+	public PosIterator(Iterator<BlockPos> posIterator, Function<Object, ClassInstance> converter) {
+		this.blockPosIterator = posIterator;
+		this.converter = converter;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return this.posIterable.hasNext();
+		return this.blockPosIterator.hasNext();
 	}
 
 	@Override
-	public Value next() {
-		return new PosValue(this.posIterable.next());
+	public ClassInstance next() {
+		return this.converter.apply(this.blockPosIterator.next());
 	}
 
 	public static class Block extends PosIterator {
-		private final ClientWorld world;
+		private final World world;
 
-		public Block(ClientWorld world, Iterator<BlockPos> posIterator) {
-			super(posIterator);
+		public Block(World world, Iterator<BlockPos> posIterator, Function<Object, ClassInstance> converter) {
+			super(posIterator, converter);
 			this.world = world;
 		}
 
 		@Override
-		public Value next() {
-			BlockPos pos = this.posIterable.next();
+		public ClassInstance next() {
+			BlockPos pos = this.blockPosIterator.next();
 			BlockState state = this.world.getBlockState(pos);
-			return new BlockValue(state, pos);
+			return this.converter.apply(new ScriptBlockState(state, pos));
 		}
 	}
 }

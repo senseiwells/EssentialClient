@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
+import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.builtin.StringDef;
@@ -8,13 +9,9 @@ import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.BuiltInFunction;
-import me.senseiwells.arucas.utils.LocatableTrace;
-import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.*;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
-import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
@@ -41,9 +38,16 @@ import java.util.Optional;
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
+@ClassDoc(
+	name = BLOCK,
+	desc = "This class allows interactions with blocks in Minecraft.",
+	importPath = "Minecraft",
+	superclass = MaterialDef.class,
+	language = Util.Language.Java
+)
 public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	public BlockDef(Interpreter interpreter) {
-		super(MinecraftAPI.BLOCK, interpreter);
+		super(BLOCK, interpreter);
 	}
 
 	@Override

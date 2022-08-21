@@ -1,8 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
-import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.WorldValue;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

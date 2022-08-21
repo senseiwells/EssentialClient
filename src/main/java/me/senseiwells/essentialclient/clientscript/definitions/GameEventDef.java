@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
+import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.BooleanDef;
@@ -10,7 +11,6 @@ import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.*;
-import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
@@ -20,10 +20,17 @@ import shadow.kotlin.Unit;
 import java.util.List;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.GAME_EVENT;
 
+@ClassDoc(
+	name = GAME_EVENT,
+	desc = "This class allows you to register listeners for game events in Minecraft.",
+	importPath = "Minecraft",
+	language = Util.Language.Java
+)
 public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	public GameEventDef(Interpreter interpreter) {
-		super(MinecraftAPI.GAME_EVENT, interpreter);
+		super(GAME_EVENT, interpreter);
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.clientscript.extensions;
 
 import me.senseiwells.arucas.api.ArucasExtension;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.exceptions.RuntimeErrorKt;
+import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.BuiltInFunction;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
@@ -18,7 +18,7 @@ public class ArucasMinecraftExtension implements ArucasExtension {
 	@Override
 	public List<BuiltInFunction> getBuiltInFunctions() {
 		return List.of(
-			BuiltInFunction.of("hold", this::hold, "")
+			BuiltInFunction.of("hold", this::hold)
 		);
 	}
 
@@ -33,7 +33,6 @@ public class ArucasMinecraftExtension implements ArucasExtension {
 			arucasThread.freeze();
 			return null;
 		}
-		RuntimeErrorKt.runtimeError("Thread is not safe to freeze");
-		return null;
+		throw new RuntimeError("Thread is not safe to freeze");
 	}
 }

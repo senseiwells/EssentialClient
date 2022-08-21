@@ -8,7 +8,6 @@ import me.senseiwells.arucas.api.wrappers.*;
 import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.Value;
-import me.senseiwells.essentialclient.clientscript.values.WorldValue;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;

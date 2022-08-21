@@ -2,7 +2,6 @@ package me.senseiwells.essentialclient.clientscript.core;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ArucasAPI;
-import me.senseiwells.arucas.values.NullValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.extensions.*;
 import me.senseiwells.essentialclient.clientscript.values.*;
@@ -59,6 +58,7 @@ public class MinecraftAPI {
 		MATERIAL = "Material",
 		MERCHANT_SCREEN = "MerchantScreen",
 		MINECRAFT_CLIENT = "MinecraftClient",
+		MINECRAFT_TASK = "MinecraftTask",
 		OTHER_PLAYER = "OtherPlayer",
 		PLAYER = "Player",
 		POS = "Pos",

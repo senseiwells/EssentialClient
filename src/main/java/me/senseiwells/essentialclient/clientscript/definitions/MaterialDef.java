@@ -9,6 +9,7 @@ import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.BuiltInFunction;
 import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import net.minecraft.block.Block;
@@ -29,7 +30,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 		"This class represents all possible item and block types",
 		"and allows you to convert them into instances of ItemStacks and Blocks"
 	},
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	language = Util.Language.Java
 )
 public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	public MaterialDef(Interpreter interpreter) {

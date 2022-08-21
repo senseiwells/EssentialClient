@@ -53,11 +53,20 @@ import net.minecraft.world.RaycastContext;
 import shadow.kotlin.Pair;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientScriptUtils {
 	private static final Set<String> WARNED = ConcurrentHashMap.newKeySet();
+
+	public static void warnMainThread(String name, Interpreter interpreter) {
+		MinecraftClient client = EssentialUtils.getClient();
+		if (!client.isOnThread() && !WARNED.contains(name)) {
+			WARNED.add(name);
+			interpreter.logDebug(
+				"'%s' was not called on the Minecraft main thread, this may lead to unexpected behavior".formatted(name)
+			);
+		}
+	}
 
 	public static void ensureMainThread(String name, Interpreter interpreter, Runnable runnable) {
 		MinecraftClient client = EssentialUtils.getClient();
@@ -67,11 +76,17 @@ public class ClientScriptUtils {
 		}
 		if (!WARNED.contains(name)) {
 			WARNED.add(name);
-			interpreter.getApi().getOutput().printError(
-				"'%s' was not called inside a '<MinecraftClient>.run' task, this may lead to unexpected behaviour".formatted(name)
+			interpreter.logDebug(
+				"'%s' was not called on the Minecraft main thread, this may lead to unexpected behavior".formatted(name)
 			);
 		}
-		client.execute(runnable);
+		client.execute(() -> {
+			try {
+				runnable.run();
+			} catch (Exception e) {
+				interpreter.getThreadHandler().handleError(e);
+			}
+		});
 	}
 
 	/**
@@ -277,7 +292,7 @@ public class ClientScriptUtils {
 		return NbtString.of(value.toString(interpreter));
 	}
 
-	public static Object mapToRule(ArucasMap map, Interpreter interpreter) {
+	public static ClassInstance mapToRule(ArucasMap map, Interpreter interpreter) {
 		String type = getFieldInMap(map, interpreter, "type", StringDef.class);
 		if (type == null) {
 			throw new RuntimeError("Config map must contain 'type' that is a string");
@@ -626,7 +641,7 @@ public class ClientScriptUtils {
 					for (ParsedArgument<?, ?> arg : commandArguments) {
 						list.add(commandArgumentToValue(arg.getResult(), branch));
 					}
-					CompletableFuture<Suggestions> future = branch.getThreadHandler().wrapSafe(() -> {
+					return branch.safe(Suggestions.empty(), () -> {
 						ArucasCollection collection = suggester.invoke(branch, list).getPrimitive(CollectionDef.class);
 						if (collection != null) {
 							List<String> suggested = collection.asCollection().stream().map(i -> i.toString(branch)).toList();
@@ -634,7 +649,6 @@ public class ClientScriptUtils {
 						}
 						throw new RuntimeError("Suggester did not return a list");
 					});
-					return future == null ? Suggestions.empty() : future;
 				});
 			}
 			return argumentBuilder;

@@ -9,10 +9,7 @@ import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.BuiltInFunction;
-import me.senseiwells.arucas.utils.LocatableTrace;
-import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.*;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
@@ -46,7 +43,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 @ClassDoc(
 	name = ENTITY,
 	desc = "This class is mostly used to get data about entities.",
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	language = Util.Language.Java
 )
 public class EntityDef extends PrimitiveDefinition<Entity> {
 	public EntityDef(Interpreter interpreter) {

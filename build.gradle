@@ -54,7 +54,7 @@ dependencies {
 		arucasVersion = arucasVersion.substring(0, 10)
 	}
 
-	implementation("com.github.senseiwells:Arucas:${arucasVersion}")
+	include implementation("com.github.senseiwells:Arucas:${arucasVersion}")
 	// include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
 	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
 		transitive = false

@@ -13,10 +13,7 @@ import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ArucasFunction;
-import me.senseiwells.arucas.utils.BuiltInFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.*;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
@@ -34,7 +31,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.COMM
 @ClassDoc(
 	name = COMMAND_BUILDER,
 	desc = "This class allows you to build commands for Minecraft.",
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	language = Util.Language.Java
 )
 public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<ServerCommandSource, ?>> {
 	public CommandBuilderDef(Interpreter interpreter) {

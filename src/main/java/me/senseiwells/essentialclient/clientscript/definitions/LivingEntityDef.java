@@ -8,6 +8,7 @@ import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.LocatableTrace;
 import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import net.minecraft.entity.LivingEntity;
@@ -25,7 +26,9 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LIVI
 		"This class extends Entity and so inherits all of their methods too,",
 		"LivingEntities are any entities that are alive, so all mobs"
 	},
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	superclass = EntityDef.class,
+	language = Util.Language.Java
 )
 public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 	public LivingEntityDef(Interpreter interpreter) {

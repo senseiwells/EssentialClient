@@ -6,6 +6,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.EntityList;
+import net.minecraft.world.World;
 
 import java.util.UUID;
 
@@ -20,11 +21,11 @@ public class ThreadSafeUtils {
 		return ((IEntityList) entityList).getAllEntities();
 	}
 
-	public static PlayerEntity[] getPlayersSafe(ClientWorld world) {
+	public static PlayerEntity[] getPlayersSafe(World world) {
 		return world.getPlayers().toArray(PlayerEntity[]::new);
 	}
 
-	public static PlayerEntity getClosestPlayer(ClientWorld world, Entity entity, double maxDistance) {
+	public static PlayerEntity getClosestPlayer(World world, Entity entity, double maxDistance) {
 		double d = -1.0;
 		double x = entity.getX();
 		double y = entity.getY();
@@ -42,7 +43,7 @@ public class ThreadSafeUtils {
 		return playerEntity;
 	}
 
-	public static PlayerEntity getPlayerByUuid(ClientWorld world, UUID uuid) {
+	public static PlayerEntity getPlayerByUuid(World world, UUID uuid) {
 		for (PlayerEntity player : getPlayersSafe(world)) {
 			if (uuid.equals(player.getUuid())) {
 				return player;

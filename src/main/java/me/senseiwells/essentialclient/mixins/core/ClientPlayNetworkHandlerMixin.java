@@ -5,7 +5,6 @@ import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
-import me.senseiwells.essentialclient.clientscript.values.WorldValue;
 import me.senseiwells.essentialclient.commands.CommandRegister;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;

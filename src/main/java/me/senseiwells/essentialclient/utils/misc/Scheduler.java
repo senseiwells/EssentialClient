@@ -4,16 +4,20 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 public class Scheduler {
-	private static final Int2ObjectOpenHashMap<Queue<Runnable>> TASKS = new Int2ObjectOpenHashMap<>();
+	private static final Int2ObjectOpenHashMap<Queue<FutureTask<?>>> TASKS = new Int2ObjectOpenHashMap<>();
 	private static final Object LOCK = new Object();
 	private static int tickCount = 0;
 
 	static {
 		Events.ON_TICK_POST.register(client -> {
 			synchronized (LOCK) {
-				Queue<Runnable> queue = TASKS.remove(tickCount++);
+				Queue<FutureTask<?>> queue = TASKS.remove(tickCount++);
 				if (queue != null) {
 					queue.forEach(Runnable::run);
 					queue.clear();
@@ -23,11 +27,17 @@ public class Scheduler {
 	}
 
 	public static void schedule(int ticks, Runnable runnable) {
+		schedule(ticks, Executors.callable(runnable));
+	}
+
+	public static <V> Future<V> schedule(int ticks, Callable<V> callable) {
 		synchronized (LOCK) {
 			if (ticks < 0) {
 				throw new IllegalArgumentException("Cannot schedule a task in the past");
 			}
-			TASKS.computeIfAbsent(tickCount + ticks, k -> new ArrayDeque<>()).add(runnable);
+			FutureTask<V> task = new FutureTask<>(callable);
+			addTask(tickCount + ticks, task);
+			return task;
 		}
 	}
 
@@ -37,8 +47,14 @@ public class Scheduler {
 				throw new IllegalArgumentException("Delay, interval or until ticks cannot be negative");
 			}
 			for (int delayModifier = tickCount + delay; delayModifier <= tickCount + until; delayModifier += interval) {
-				TASKS.computeIfAbsent(delayModifier, k -> new ArrayDeque<>()).add(runnable);
+				addTask(delayModifier, new FutureTask<>(runnable, null));
 			}
+		}
+	}
+
+	private static void addTask(int ticks, FutureTask<?> task) {
+		synchronized (LOCK) {
+			TASKS.computeIfAbsent(ticks, k -> new ArrayDeque<>()).add(task);
 		}
 	}
 }

@@ -1,10 +1,8 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
-import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.values.NumberValue;
 import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.RecipeValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;

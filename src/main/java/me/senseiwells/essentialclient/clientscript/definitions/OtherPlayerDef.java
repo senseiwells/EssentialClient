@@ -11,6 +11,7 @@ import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.LocatableTrace;
 import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -35,7 +36,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 		"This class is used to represent all players, mainly other players,",
 		"this class extends LivingEntity and so inherits all of their methods too"
 	},
-	importPath = "Minecraft"
+	importPath = "Minecraft",
+	language = Util.Language.Java
 )
 public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEntity> {
 	public OtherPlayerDef(Interpreter interpreter) {
