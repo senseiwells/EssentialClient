@@ -86,7 +86,7 @@ public class MinecraftAPI {
 			BiomeDef::new,
 			BlockDef::new,
 			BoxShapeDef::new,
-			CenteredShapeDef::new,
+			CentredShapeDef::new,
 			CommandBuilderDef::new,
 			ConfigDef::new,
 			ConfigHandlerDef::new,

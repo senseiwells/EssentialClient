@@ -1,11 +1,13 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
+import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptShape;
@@ -18,9 +20,15 @@ import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.CENTRED_SHAPE;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
-// TODO
-public class CenteredShapeDef extends PrimitiveDefinition<ScriptShape.Centred> {
-	public CenteredShapeDef(Interpreter interpreter) {
+@ClassDoc(
+	name = CENTRED_SHAPE,
+	desc = "This class represents shapes that are positioned centrally with a width",
+	importPath = "Minecraft",
+	superclass = OutlinedShapeDef.class,
+	language = Util.Language.Java
+)
+public class CentredShapeDef extends PrimitiveDefinition<ScriptShape.Centred> {
+	public CentredShapeDef(Interpreter interpreter) {
 		super(CENTRED_SHAPE, interpreter);
 	}
 

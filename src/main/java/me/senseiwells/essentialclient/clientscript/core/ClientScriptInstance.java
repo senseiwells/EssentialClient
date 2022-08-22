@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.ArucasAPI;
+import me.senseiwells.arucas.api.ArucasLibrary;
+import me.senseiwells.arucas.api.ImplArucasLibrary;
 import me.senseiwells.arucas.api.ThreadHandler;
 import me.senseiwells.arucas.api.docs.parser.JsonParser;
 import me.senseiwells.arucas.core.Interpreter;
@@ -21,18 +23,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class ClientScriptInstance {
 	private static final ArucasAPI API;
 
 	static {
+		ArucasLibrary library = new ImplArucasLibrary(
+			ClientScript.INSTANCE.getLibraryDirectory()
+		);
+
 		ArucasAPI.Builder builder = new ArucasAPI.Builder()
 			.addDefault()
 			.setObfuscator(new ClientScriptObfuscator())
 			.setInput(ClientScriptIO.INSTANCE)
-			.setOutput(ClientScriptIO.INSTANCE);
+			.setOutput(ClientScriptIO.INSTANCE)
+			.setLibraryManager(library);
 
 		MinecraftAPI.addMinecraftAPI(builder);
 		// DiscordAPI.addDiscordAPI(BUILDER);
@@ -161,6 +167,8 @@ public class ClientScriptInstance {
 		return this.scriptName;
 	}
 
+	public static void load() { }
+
 	public static void runFromContent(String scriptName, String scriptContent) {
 		ClientScriptInstance instance = new ClientScriptInstance(scriptName, scriptContent, null);
 		instance.toggleScript();
@@ -185,7 +193,7 @@ public class ClientScriptInstance {
 		Util.File.INSTANCE.ensureExists(path);
 
 		EssentialUtils.throwAsRuntime(() -> {
-			return Files.write(path.resolve("AllDocs.json"), Collections.singleton(JsonParser.Companion.of(API).parse()));
+			return Files.writeString(path.resolve("AllDocs.json"), JsonParser.Companion.of(API).parse());
 		});
 	}
 }

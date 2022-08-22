@@ -106,6 +106,11 @@ public enum ClientScript implements Config.CList {
 		return Util.File.INSTANCE.ensureExists(scriptDir);
 	}
 
+	public Path getLibraryDirectory() {
+		Path libDir = this.getScriptDirectory().resolve("libs");
+		return Util.File.INSTANCE.ensureExists(libDir);
+	}
+
 	private File[] getScriptFiles() {
 		Path scriptPath = this.getScriptDirectory();
 		File[] files = scriptPath.toFile().listFiles();

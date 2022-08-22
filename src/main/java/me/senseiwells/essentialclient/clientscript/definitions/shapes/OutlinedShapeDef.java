@@ -1,11 +1,13 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
+import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.MemberFunction;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptShape;
 
 import java.util.List;
@@ -13,7 +15,12 @@ import java.util.List;
 import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.OUTLINED_SHAPE;
 
-// TODO
+@ClassDoc(
+	name = OUTLINED_SHAPE,
+	desc = "This class represents all shapes that can be outlined",
+	superclass = ShapeDef.class,
+	language = Util.Language.Java
+)
 public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> {
 	public OutlinedShapeDef(Interpreter interpreter) {
 		super(OUTLINED_SHAPE, interpreter);

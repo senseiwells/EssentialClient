@@ -650,7 +650,6 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		return this.run(arguments);
 	}
 
-	// TODO: tasks
 	@FunctionDoc(
 		name = "run",
 		desc = "This runs the given function on the main thread",
@@ -658,14 +657,10 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		examples = "client.run(fun() { print('Do something'); });"
 	)
 	private Void run(Arguments arguments) {
-		MinecraftClient client = arguments.nextPrimitive(this);
-		ArucasFunction function = arguments.nextPrimitive(FunctionDef.class);
+		ArucasFunction function = arguments.skip().nextPrimitive(FunctionDef.class);
 		Interpreter branch = arguments.getInterpreter().branch();
-		client.execute(() -> {
-			branch.safe(() -> {
-				function.invoke(branch, List.of());
-				return null;
-			});
+		ClientScriptUtils.ensureMainThread("run", arguments.getInterpreter(), () -> {
+			function.invoke(branch, List.of());
 		});
 		return null;
 	}

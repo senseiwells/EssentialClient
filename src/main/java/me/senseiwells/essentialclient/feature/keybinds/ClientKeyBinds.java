@@ -81,18 +81,16 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		List<InputUtil.Key> keys = new ArrayList<>();
 		if (valueElement.isJsonPrimitive()) {
 			keys.add(InputUtil.fromTranslationKey(valueElement.getAsString()));
-		}
-		else if (valueElement.isJsonArray()) {
+		} else if (valueElement.isJsonArray()) {
 			for (JsonElement element : valueElement.getAsJsonArray()) {
 				keys.add(InputUtil.fromTranslationKey(element.getAsString()));
 			}
-		}
-		else {
+		} else {
 			JsonObject keyData = valueElement.getAsJsonObject();
 			for (JsonElement element : keyData.get("keys").getAsJsonArray()) {
 				keys.add(InputUtil.fromTranslationKey(element.getAsString()));
 			}
-			if (keyData.has("canUseInGui")) {
+			if (existingKeyBind != null && keyData.has("canUseInGui")) {
 				existingKeyBind.setCanUseInGui(keyData.get("canUseInGui").getAsBoolean());
 			}
 		}
@@ -101,8 +99,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 			for (InputUtil.Key inputKey : keys) {
 				existingKeyBind.addKey(inputKey);
 			}
-		}
-		else {
+		} else {
 			this.unregisteredKeyBinds.put(key, keys);
 			EssentialClient.LOGGER.warn("Could not load keybind: {}", key);
 		}
@@ -175,8 +172,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		List<InputUtil.Key> inputKeys = INSTANCE.unregisteredKeyBinds.remove(name);
 		if (inputKeys != null) {
 			inputKeys.forEach(keyBind::addKey);
-		}
-		else {
+		} else {
 			keyBind.addKeys(keys);
 		}
 		keyBind.setCallback(onPressed);

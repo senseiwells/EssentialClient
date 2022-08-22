@@ -28,7 +28,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SPHE
 	name = SPHERE_SHAPE,
 	desc = "This class is used to create a sphere shape which can be rendered in the world.",
 	importPath = "Minecraft",
-	superclass = CenteredShapeDef.class,
+	superclass = CentredShapeDef.class,
 	language = Util.Language.Java
 )
 public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
@@ -38,7 +38,7 @@ public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
 
 	@Override
 	public PrimitiveDefinition<? super ScriptSphere> superclass() {
-		return this.getPrimitiveDef(CenteredShapeDef.class);
+		return this.getPrimitiveDef(CentredShapeDef.class);
 	}
 
 	@Override
