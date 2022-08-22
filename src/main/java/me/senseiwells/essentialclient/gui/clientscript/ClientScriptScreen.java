@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.gui.clientscript;
 
 import me.senseiwells.arucas.core.Arucas;
-import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
@@ -21,6 +20,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,7 +55,7 @@ public class ClientScriptScreen extends ChildScreen {
 		this.renderBackground(matrices);
 		this.scriptWidget.render(matrices, mouseX, mouseY, delta);
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		drawCenteredText(matrices, this.textRenderer, "Arucas Version: %s".formatted(Arucas.VERSION), this.width / 2, 24, 0x949494);
+		drawCenteredText(matrices, this.textRenderer, "Arucas Version: %s".formatted(Arucas.getVERSION()), this.width / 2, 24, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
@@ -81,8 +81,7 @@ public class ClientScriptScreen extends ChildScreen {
 		public void onPress() {
 			if (this.isChecked()) {
 				ClientScript.INSTANCE.removeSelectedInstance(this.scriptName);
-			}
-			else {
+			} else {
 				ClientScript.INSTANCE.addSelectedInstance(this.scriptName);
 			}
 			super.onPress();
@@ -108,12 +107,16 @@ public class ClientScriptScreen extends ChildScreen {
 			this.nameBox.setText(scriptName);
 			this.nameBox.setChangedListener(s -> this.newName = s);
 			this.openBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Open Script"), button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
-			this.deleteBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Delete Script"), button -> ExceptionUtils.runSafe(() -> {
-				this.scriptInstance.delete();
-				this.getParent().scriptWidget.clear();
-				this.getParent().scriptWidget.load(this.client);
-				super.close();
-			}));
+			this.deleteBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Delete Script"), button -> {
+				try {
+					this.scriptInstance.delete();
+					this.getParent().scriptWidget.clear();
+					this.getParent().scriptWidget.load(this.client);
+					super.close();
+				} catch (IOException e) {
+					EssentialClient.LOGGER.error("Failed to delete script", e);
+				}
+			});
 			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
 			this.selectedCheck = new SelectedCheckBox(scriptName);
 			this.newName = "";
@@ -159,8 +162,7 @@ public class ClientScriptScreen extends ChildScreen {
 					this.scriptInstance.renameScript(this.newName, newLocation);
 					Files.move(original, newLocation);
 					this.getParent().refresh();
-				}
-				catch (Exception exception) {
+				} catch (Exception exception) {
 					EssentialClient.LOGGER.error(exception);
 				}
 			}
@@ -227,8 +229,7 @@ public class ClientScriptScreen extends ChildScreen {
 				this.keyBindBox.setMessage(
 					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
-			}
-			else {
+			} else {
 				this.keyBindBox.setMessage(editMessage);
 			}
 

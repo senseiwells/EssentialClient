@@ -2,9 +2,15 @@ package me.senseiwells.essentialclient.utils.inventory;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import me.senseiwells.arucas.builtin.BooleanDef;
+import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
+import me.senseiwells.arucas.utils.ArucasFunction;
+import me.senseiwells.essentialclient.clientscript.definitions.ItemStackDef;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.interfaces.IGhostRecipeBookWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
@@ -20,14 +26,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeMatcher;
 import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.screen.AbstractRecipeScreenHandler;
-import net.minecraft.screen.MerchantScreenHandler;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.recipe.StonecuttingRecipe;
+import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.village.TradeOffer;
@@ -122,7 +127,7 @@ public class InventoryUtils {
 		return false;
 	}
 
-	public static void tryMoveItemsToCraftingGridSlots(MinecraftClient client, ItemStack[] itemStacks, ScreenHandler screenHandler) {
+	public static void tryMoveItemsToCraftingGridSlots(ItemStack[] itemStacks, ScreenHandler screenHandler) {
 		int numSlots = screenHandler.slots.size();
 		if (9 < numSlots) {
 			clearCraftingGridOfItems(itemStacks, screenHandler);
@@ -136,7 +141,7 @@ public class InventoryUtils {
 				for (int s : recipeSlots) {
 					targetSlots.add(s + 1);
 				}
-				fillCraftingGrid(client, screenHandler, slotGridFirst, ingredientReference, targetSlots);
+				fillCraftingGrid(screenHandler, slotGridFirst, ingredientReference, targetSlots);
 			}
 		}
 	}
@@ -155,8 +160,8 @@ public class InventoryUtils {
 		}
 	}
 
-	private static void fillCraftingGrid(MinecraftClient client, ScreenHandler screenHandler, Slot slotGridFirst, ItemStack ingredientReference, List<Integer> targetSlots) {
-		PlayerEntity player = client.player;
+	private static void fillCraftingGrid(ScreenHandler screenHandler, Slot slotGridFirst, ItemStack ingredientReference, List<Integer> targetSlots) {
+		PlayerEntity player = EssentialUtils.getPlayer();
 		if (player == null) {
 			return;
 		}
@@ -273,13 +278,8 @@ public class InventoryUtils {
 		return mapSlots;
 	}
 
-	@SuppressWarnings("UnusedReturnValue")
-	public static boolean swapSlot(MinecraftClient client, ScreenHandler screenHandler, int index, int secondIndex) {
-		if (client.interactionManager != null) {
-			client.execute(() -> client.interactionManager.clickSlot(screenHandler.syncId, index, secondIndex, SlotActionType.SWAP, client.player));
-			return true;
-		}
-		return false;
+	public static void swapSlot(ScreenHandler screenHandler, int index, int secondIndex) {
+		getInteractionManager().clickSlot(screenHandler.syncId, index, secondIndex, SlotActionType.SWAP, getPlayer());
 	}
 
 	public static void shiftClickSlot(ScreenHandler screen, int index) {
@@ -481,6 +481,133 @@ public class InventoryUtils {
 	}
 
 	// ClientScript stuff
+
+	public static void craftRecipe(Recipe<?> recipe, boolean shouldDrop) {
+		ScreenHandler handler = clickRecipe(recipe, true);
+		if (shouldDrop) {
+			InventoryUtils.dropStackScheduled(handler, true);
+		} else {
+			InventoryUtils.shiftClickSlot(handler, 0);
+		}
+	}
+
+	public static ScreenHandler clickRecipe(Recipe<?> recipe, boolean craftAll) {
+		if (!(EssentialUtils.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
+			throw new RuntimeError("Must be in a crafting GUI");
+		}
+		ScreenHandler handler = handledScreen.getScreenHandler();
+		CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+		EssentialUtils.getInteractionManager().clickRecipe(handler.syncId, recipe, craftAll);
+		return handler;
+	}
+
+	public static Object anvil(Interpreter interpreter, ArucasFunction predicate1, ArucasFunction predicate2, boolean takeItems) {
+		ClientPlayerEntity player = getPlayer();
+		if (!(player.currentScreenHandler instanceof AnvilScreenHandler anvilHandler)) {
+			throw new RuntimeError("Not in anvil gui");
+		}
+		interpreter = interpreter.branch();
+		ClientPlayerInteractionManager interactionManager = getInteractionManager();
+		boolean firstValid = false;
+		boolean secondValid = false;
+		for (Slot slot : anvilHandler.slots) {
+			if (firstValid && secondValid) {
+				break;
+			}
+			List<ClassInstance> arguments = List.of(interpreter.create(ItemStackDef.class, new ScriptItemStack(slot.getStack())));
+			if (!firstValid) {
+				Boolean returnValue = predicate1.invoke(interpreter.branch(), arguments).getPrimitive(BooleanDef.class);
+				if (returnValue != null && returnValue) {
+					firstValid = true;
+					interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
+					interactionManager.clickSlot(anvilHandler.syncId, 0, 0, SlotActionType.PICKUP, player);
+					continue;
+				}
+			}
+			if (!secondValid) {
+				Boolean returnValue = predicate2.invoke(interpreter.branch(), arguments).getPrimitive(BooleanDef.class);
+				if (returnValue != null && returnValue) {
+					secondValid = true;
+					interactionManager.clickSlot(anvilHandler.syncId, slot.id, 0, SlotActionType.PICKUP, player);
+					interactionManager.clickSlot(anvilHandler.syncId, 1, 0, SlotActionType.PICKUP, player);
+				}
+			}
+		}
+		anvilHandler.updateResult();
+		if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
+			return anvilHandler.getLevelCost();
+		}
+		boolean successful = firstValid && secondValid && anvilHandler.getSlot(2).hasStack();
+		if (takeItems) {
+			shiftClickSlot(anvilHandler, 2);
+		}
+		return successful;
+	}
+
+	public static Object anvilRename(Interpreter interpreter, String newName, ArucasFunction predicate) {
+		ClientPlayerEntity player = getPlayer();
+		if (!(player.currentScreenHandler instanceof AnvilScreenHandler anvilHandler)) {
+			throw new RuntimeError("Not in anvil gui");
+		}
+		interpreter = interpreter.branch();
+		boolean success = false;
+		for (Slot slot : anvilHandler.slots) {
+			ItemStack itemStack = slot.getStack();
+			if (!itemStack.getName().getString().equals(newName)) {
+				List<ClassInstance> args = List.of(interpreter.create(ItemStackDef.class, new ScriptItemStack(itemStack)));
+				Boolean returnValue = predicate.invoke(interpreter.branch(), args).getPrimitive(BooleanDef.class);
+				if (returnValue != null && returnValue) {
+					success = true;
+					shiftClickSlot(anvilHandler, slot.id);
+					break;
+				}
+			}
+		}
+		if (!success) {
+			return false;
+		}
+		anvilHandler.updateResult();
+		anvilHandler.setNewItemName(newName);
+		getNetworkHandler().sendPacket(new RenameItemC2SPacket(newName));
+		if (anvilHandler.getLevelCost() > player.experienceLevel && !player.isCreative()) {
+			return anvilHandler.getLevelCost();
+		}
+		if (anvilHandler.getSlot(2).hasStack()) {
+			shiftClickSlot(anvilHandler, 2);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean stonecutter(Item input, Item output) {
+		ClientPlayerEntity player = EssentialUtils.getPlayer();
+		if (!(player.currentScreenHandler instanceof StonecutterScreenHandler cutterHandler)) {
+			throw new RuntimeError("Not in stonecutter gui");
+		}
+		boolean valid = false;
+		for (Slot slot : cutterHandler.slots) {
+			if (slot.getStack().getItem() == input) {
+				shiftClickSlot(cutterHandler, slot.id);
+				valid = true;
+				break;
+			}
+		}
+		if (!valid) {
+			return false;
+		}
+		List<StonecuttingRecipe> stonecuttingRecipes = cutterHandler.getAvailableRecipes();
+		for (int i = 0; i < stonecuttingRecipes.size(); i++) {
+			if (stonecuttingRecipes.get(i).getOutput().getItem() == output) {
+				cutterHandler.onButtonClick(getPlayer(), i);
+				getInteractionManager().clickButton(cutterHandler.syncId, i);
+				if (cutterHandler.getSlot(1).hasStack()) {
+					shiftClickSlot(cutterHandler, 1);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public static void tradeAllItems(int index, boolean dropItems) {
 		MerchantScreenHandler handler = checkScreen();

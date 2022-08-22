@@ -41,6 +41,11 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	}
 
 	@Override
+	public Object asJavaValue(ClassInstance instance) {
+		return instance.asPrimitive(this).getVec3d();
+	}
+
+	@Override
 	public List<ConstructorFunction> defineConstructors() {
 		return List.of(
 			ConstructorFunction.of(1, this::construct1),

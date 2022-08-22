@@ -1,8 +1,8 @@
 package me.senseiwells.essentialclient.mixins.betterAccurateBlockPlacement;
 
 import com.mojang.authlib.GameProfile;
-import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.feature.BetterAccurateBlockPlacement;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -58,6 +58,6 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 			clientPlayNetworkHandler.sendPacket(packet);
 			return;
 		}
-		BetterAccurateBlockPlacement.sendLookPacket(clientPlayNetworkHandler, (ClientPlayerEntity) (Object) this);
+		BetterAccurateBlockPlacement.sendLookPacket((ClientPlayerEntity) (Object) this);
 	}
 }

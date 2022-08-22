@@ -2,10 +2,10 @@ package me.senseiwells.essentialclient.clientscript.events;
 
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptEvent;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class MinecraftScriptEvent {
 	private final String name;
@@ -56,32 +56,25 @@ public class MinecraftScriptEvent {
 		}
 	}
 
-	public synchronized boolean run(ClassInstance... arguments) {
-		ArucasList argumentList = new ArucasList();
-		argumentList.addAll(List.of(arguments));
-		boolean shouldCancel = false;
-		for (Set<ScriptEvent> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
-			for (ScriptEvent gameEvent : gameEventWrappers) {
-				if (gameEvent.invoke(argumentList)) {
-					shouldCancel = true;
-				}
+	public synchronized boolean run(Object... args) {
+		return this.run(interpreter -> {
+			List<ClassInstance> eventArgs = new ArrayList<>();
+			for (Object arg : args) {
+				eventArgs.add(interpreter.convertValue(arg));
 			}
-		}
-		return shouldCancel;
+			return eventArgs;
+		});
 	}
 
-	public synchronized boolean run(ArgumentSupplier argumentSupplier) {
-		List<ClassInstance> values = null;
+	public synchronized boolean run(Function<Interpreter, List<ClassInstance>> argumentSupplier) {
 		boolean shouldCancel = false;
 		for (Set<ScriptEvent> gameEventWrappers : this.REGISTERED_EVENTS.values()) {
+			List<ClassInstance> eventArguments = null;
 			for (ScriptEvent gameEvent : gameEventWrappers) {
-				if (values == null) {
-					values = argumentSupplier.applySafe(gameEvent.getInterpreter());
-					if (values == null) {
-						break;
-					}
+				if (eventArguments == null) {
+					eventArguments = argumentSupplier.apply(gameEvent.getInterpreter());
 				}
-				if (gameEvent.invoke(values)) {
+				if (gameEvent.invoke(eventArguments)) {
 					shouldCancel = true;
 				}
 			}
@@ -92,15 +85,6 @@ public class MinecraftScriptEvent {
 	@Override
 	public String toString() {
 		return this.name;
-	}
-
-	@FunctionalInterface
-	public interface ArgumentSupplier {
-		List<ClassInstance> apply(Interpreter interpreter);
-
-		default List<ClassInstance> applySafe(Interpreter interpreter) {
-			return interpreter.getThreadHandler().wrapSafe(() -> this.apply(interpreter));
-		}
 	}
 
 	/**
@@ -142,13 +126,7 @@ public class MinecraftScriptEvent {
 
 		@Deprecated
 		@Override
-		public synchronized boolean run(ClassInstance... arguments) {
-			return false;
-		}
-
-		@Deprecated
-		@Override
-		public synchronized boolean run(ArgumentSupplier argumentSupplier) {
+		public synchronized boolean run(Object... arguments) {
 			return false;
 		}
 	}

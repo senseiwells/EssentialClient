@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import com.google.gson.*;
-import me.senseiwells.arucas.utils.NetworkUtils;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 
 import java.io.BufferedWriter;
@@ -31,7 +31,7 @@ public class ScriptRepositoryManager {
 		if (fromCache && scriptFile.content != null) {
 			return scriptFile.content;
 		}
-		String content = NetworkUtils.getStringFromUrl(scriptFile.downloadUrl);
+		String content = Util.Network.INSTANCE.getStringFromUrl(scriptFile.downloadUrl);
 		if (content == null) {
 			return null;
 		}
@@ -59,8 +59,7 @@ public class ScriptRepositoryManager {
 			try (BufferedWriter writer = Files.newBufferedWriter(newScript)) {
 				writer.write(fileContent);
 				return false;
-			}
-			catch (IOException ignored) {
+			} catch (IOException ignored) {
 
 			}
 		}
@@ -91,7 +90,7 @@ public class ScriptRepositoryManager {
 	}
 
 	private boolean loadChildren(Category category) {
-		String response = NetworkUtils.getStringFromUrl(this.REPOSITORY_URL + "/" + category.toString());
+		String response = Util.Network.INSTANCE.getStringFromUrl(this.REPOSITORY_URL + "/" + category.toString());
 		if (response == null) {
 			return false;
 		}

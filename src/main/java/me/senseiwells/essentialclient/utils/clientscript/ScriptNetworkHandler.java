@@ -45,7 +45,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 	@Override
 	protected void processData(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
 		PacketParser parser = new PacketParser(packetByteBuf);
-		MinecraftScriptEvents.ON_SCRIPT_PACKET.run(c -> List.of(parser.parseToValues(c)));
+		MinecraftScriptEvents.ON_SCRIPT_PACKET.run(i -> List.of(parser.parseToValues(i)));
 	}
 
 	public void sendScriptPacket(Arguments arguments) {

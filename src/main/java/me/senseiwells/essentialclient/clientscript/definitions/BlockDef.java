@@ -56,6 +56,11 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	}
 
 	@Override
+	public Object asJavaValue(ClassInstance instance) {
+		return instance.asPrimitive(this).asDefault();
+	}
+
+	@Override
 	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
 		return "Block{id=" + instance.asPrimitive(this).getId().getPath() + "}";
 	}

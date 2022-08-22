@@ -26,6 +26,8 @@ public class Scheduler {
 		});
 	}
 
+	public static void load() { }
+
 	public static void schedule(int ticks, Runnable runnable) {
 		schedule(ticks, Executors.callable(runnable));
 	}

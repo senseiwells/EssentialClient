@@ -2,11 +2,15 @@ package me.senseiwells.essentialclient.clientscript.core;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ArucasAPI;
-import me.senseiwells.arucas.values.StringValue;
-import me.senseiwells.essentialclient.clientscript.extensions.*;
-import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
-import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
+import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.essentialclient.clientscript.definitions.*;
+import me.senseiwells.essentialclient.clientscript.definitions.shapes.*;
+import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,7 +19,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.enchantment.Enchantment;
@@ -28,11 +31,13 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public class MinecraftAPI {
@@ -78,71 +83,74 @@ public class MinecraftAPI {
 	public static void addMinecraftAPI(ArucasAPI.Builder builder) {
 		builder.addClassDefinitions(
 			IMPORT_NAME,
-			MinecraftClientValue.ArucasMinecraftClientMembers::new,
-			CommandBuilderValue.CommandBuilderClass::new,
-			PlayerValue.ArucasPlayerClass::new,
-			EntityValue.ArucasEntityClass::new,
-			OtherPlayerValue.ArucasAbstractPlayerClass::new,
-			LivingEntityValue.ArucasLivingEntityClass::new,
-			ItemEntityValue.ArucasItemEntityClass::new,
-			BlockValue.ArucasBlockClass::new,
-			ItemStackValue.ArucasItemStackClass::new,
-			WorldValue.ArucasWorldClass::new,
-			BiomeValue.ArucasBiomeClass::new,
-			ScreenValue.ArucasScreenClass::new,
-			FakeInventoryScreenValue.ArucasFakeInventoryScreenClass::new,
-			MerchantScreenValue.ArucasMerchantScreenClass::new,
-			TextValue.ArucasTextClass::new,
-			MaterialValue.ArucasMaterialClass::new,
-			PosValue.ArucasPosClass::new,
-			RecipeValue.ArucasRecipeClass::new,
-			TradeValue.ArucasTradeOfferClass::new,
-			ConfigValue.ArucasConfigValue::new
-		);
-		builder.addWrappers(
-			IMPORT_NAME,
-			GameEventWrapper::new,
-			BoxShapeWrapper::new,
-			SphereShapeWrapper::new,
-			LineShapeWrapper::new,
-			FakeEntityWrapper::new,
-			FakeBlockWrapper::new,
-			KeyBindWrapper::new,
-			ConfigHandlerWrapper::new
+			BiomeDef::new,
+			BlockDef::new,
+			BoxShapeDef::new,
+			CenteredShapeDef::new,
+			CommandBuilderDef::new,
+			ConfigDef::new,
+			ConfigHandlerDef::new,
+			CorneredShapeDef::new,
+			EntityDef::new,
+			FakeEntityDef::new,
+			FakeScreenDef::new,
+			FakeBlockShapeDef::new,
+			GameEventDef::new,
+			ItemEntityDef::new,
+			ItemStackDef::new,
+			KeyBindDef::new,
+			LineShapeDef::new,
+			LivingEntityDef::new,
+			MaterialDef::new,
+			MerchantScreenDef::new,
+			MinecraftClientDef::new,
+			MinecraftTaskDef::new,
+			OtherPlayerDef::new,
+			OutlinedShapeDef::new,
+			PlayerDef::new,
+			PosDef::new,
+			RecipeDef::new,
+			ScreenDef::new,
+			ShapeDef::new,
+			SphereShapeDef::new,
+			TextDef::new,
+			TradeDef::new,
+			WorldDef::new
 		);
 		builder.addBuiltInExtension(new ArucasMinecraftExtension());
 
-		builder.addConversion(MinecraftClient.class, (m, c) -> MinecraftClientValue.INSTANCE);
-		builder.addConversion(ClientPlayerEntity.class, (p, c) -> new PlayerValue(p));
-		builder.addConversion(OtherClientPlayerEntity.class, (p, c) -> new OtherPlayerValue(p));
-		builder.addConversion(LivingEntity.class, (l, c) -> new LivingEntityValue<>(l));
-		builder.addConversion(ItemEntity.class, (i, c) -> new ItemEntityValue(i));
-		builder.addConversion(Entity.class, (e, c) -> EntityValue.of(e));
-		builder.addConversion(Block.class, (b, c) -> new BlockValue(b.getDefaultState()));
-		builder.addConversion(BlockState.class, (b, c) -> new BlockValue(b));
-		builder.addConversion(Item.class, (i, c) -> new MaterialValue(i));
-		builder.addConversion(ItemStack.class, (i, c) -> new ItemStackValue(i));
-		builder.addConversion(ClientWorld.class, (w, c) -> new WorldValue(w));
-		builder.addConversion(Biome.class, (b, c) -> new BiomeValue(b));
-		builder.addConversion(Screen.class, (s, c) -> ScreenValue.of(s));
-		builder.addConversion(FakeInventoryScreen.class, (s, c) -> new FakeInventoryScreenValue(s));
-		builder.addConversion(MerchantScreen.class, (s, c) -> new MerchantScreenValue(s));
-		builder.addConversion(MutableText.class, (t, c) -> new TextValue(t));
-		builder.addConversion(Text.class, (t, c) -> new TextValue(t.copy()));
-		builder.addConversion(Vec3d.class, (p, c) -> new PosValue(p));
-		builder.addConversion(Vec3f.class, (p, c) -> new PosValue(new Vec3d(p)));
-		builder.addConversion(Vec3i.class, (p, c) -> new PosValue(new Vec3d(p.getX(), p.getY(), p.getZ())));
-		builder.addConversion(Recipe.class, (r, c) -> new RecipeValue(r));
-		builder.addConversion(TradeOffer.class, (t, c) -> new TradeValue(t));
-		builder.addConversion(ArgumentBuilder.class, (a, c) -> new CommandBuilderValue(a));
-		builder.addConversion(MultiKeyBind.class, KeyBindWrapper::newKeyBindWrapper);
+		builder.addConversion(MinecraftClient.class, (m, i) -> i.getPrimitive(MinecraftClientDef.class).instance);
+		builder.addConversion(ClientPlayerEntity.class, (p, i) -> i.create(PlayerDef.class, p));
+		builder.addConversion(OtherClientPlayerEntity.class, (p, i) -> i.getPrimitive(OtherPlayerDef.class).create(p));
+		builder.addConversion(LivingEntity.class, (l, i) -> i.getPrimitive(LivingEntityDef.class).create(l));
+		builder.addConversion(ItemEntity.class, (e, i) -> i.getPrimitive(ItemEntityDef.class).create(e));
+		builder.addConversion(Entity.class, (e, i) -> i.getPrimitive(EntityDef.class).create(e));
+		builder.addConversion(Block.class, (b, i) -> i.create(MaterialDef.class, ScriptMaterial.materialOf(b)));
+		builder.addConversion(BlockState.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b, null)));
+		builder.addConversion(Item.class, (m, i) -> i.create(MaterialDef.class, ScriptMaterial.materialOf(m)));
+		builder.addConversion(ItemStack.class, (s, i) -> i.create(ItemStackDef.class, new ScriptItemStack(s)));
+		builder.addConversion(World.class, (w, i) -> i.create(WorldDef.class, w));
+		builder.addConversion(Biome.class, (b, i) -> i.create(BiomeDef.class, b));
+		builder.addConversion(Screen.class, (s, i) -> i.getPrimitive(ScreenDef.class).create(s));
+		builder.addConversion(FakeInventoryScreen.class, (s, i) -> i.create(FakeScreenDef.class, s));
+		builder.addConversion(MerchantScreen.class, (s, i) -> i.create(MerchantScreenDef.class, s));
+		builder.addConversion(MutableText.class, (t, i) -> i.create(TextDef.class, t));
+		builder.addConversion(Text.class, (t, i) -> i.create(TextDef.class, t.copy()));
+		builder.addConversion(Vec3d.class, (p, i) -> i.create(PosDef.class, new ScriptPos(p)));
+		builder.addConversion(Vec3f.class, (p, i) -> i.create(PosDef.class, new ScriptPos(new Vec3d(p))));
+		builder.addConversion(BlockPos.class, (b, i) -> i.create(PosDef.class, new ScriptPos(b)));
+		builder.addConversion(Vec3i.class, (p, i) -> i.create(PosDef.class, new ScriptPos(new Vec3d(p.getX(), p.getY(), p.getZ()))));
+		builder.addConversion(ScriptBlockState.class, (s, i) -> i.create(BlockDef.class, s));
+		builder.addConversion(ScriptItemStack.class, (s, i) -> i.create(ItemStackDef.class, s));
+		builder.addConversion(ScriptPos.class, (p, i) -> i.create(PosDef.class, p));
+		builder.addConversion(ScriptMaterial.class, (m, i) -> i.create(MaterialDef.class, m));
+		builder.addConversion(Recipe.class, (r, i) -> i.create(RecipeDef.class, r));
+		builder.addConversion(TradeOffer.class, (t, i) -> i.create(TradeDef.class, t));
+		builder.addConversion(ArgumentBuilder.class, (a, i) -> i.create(CommandBuilderDef.class, a));
 
-		builder.addConversion(ItemStackArgument.class, (i, c) -> EssentialUtils.throwAsRuntime(() -> new ItemStackValue(i.createStack(1, false))));
-		builder.addConversion(BlockStateArgument.class, (b, c) -> new BlockValue(b.getBlockState()));
-		builder.addConversion(Identifier.class, (i, c) -> StringValue.of(i.toString()));
-		builder.addConversion(Enchantment.class, (e, c) -> {
-			Identifier identifier = Registry.ENCHANTMENT.getId(e);
-			return identifier == null ? null : StringValue.of(identifier.toString());
-		});
+		builder.addConversion(ItemStackArgument.class, (s, i) -> EssentialUtils.throwAsRuntime(() -> i.create(ItemStackDef.class, new ScriptItemStack(s.createStack(1, false)))));
+		builder.addConversion(BlockStateArgument.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b.getBlockState(), null)));
+		builder.addConversion(Identifier.class, (id, i) -> i.create(StringDef.class, id.toString()));
+		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(Registry.ENCHANTMENT.getId(e)));
 	}
 }

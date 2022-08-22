@@ -19,4 +19,9 @@ public class ScriptItemStack implements ScriptMaterial {
 	public ItemStack asItemStack() {
 		return this.stack;
 	}
+
+	@Override
+	public Object asDefault() {
+		return this.stack;
+	}
 }

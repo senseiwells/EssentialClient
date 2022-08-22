@@ -1,7 +1,5 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,11 +31,10 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 	private void onAnvil(PlayerEntity player, ItemStack stack, CallbackInfo ci) {
 		if (player instanceof ClientPlayerEntity) {
 			MinecraftScriptEvents.ON_ANVIL.run(
-				new ItemStackValue(this.input.getStack(0)),
-				new ItemStackValue(this.input.getStack(1)),
-				new ItemStackValue(stack),
-				StringValue.of(this.newItemName),
-				NumberValue.of(this.levelCost.get())
+				this.input.getStack(0),
+				this.input.getStack(1),
+				stack, this.newItemName,
+				this.levelCost.get()
 			);
 		}
 	}

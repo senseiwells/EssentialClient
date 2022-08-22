@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.rule.client;
 
 import com.google.gson.JsonElement;
-import me.senseiwells.arucas.utils.ExceptionUtils;
 
 public class DoubleClientRule extends NumberClientRule<Double> {
 	public DoubleClientRule(String name, String description, Double defaultValue, RuleListener<Double> ruleListener) {
@@ -40,11 +39,10 @@ public class DoubleClientRule extends NumberClientRule<Double> {
 
 	@Override
 	public void setValueFromString(String value) {
-		Double doubleValue = ExceptionUtils.catchAsNull(() -> Double.parseDouble(value));
-		if (doubleValue == null) {
+		try {
+			this.setValue(Double.parseDouble(value));
+		} catch (NumberFormatException e) {
 			this.logCannotSet(value);
-			return;
 		}
-		this.setValue(doubleValue);
 	}
 }

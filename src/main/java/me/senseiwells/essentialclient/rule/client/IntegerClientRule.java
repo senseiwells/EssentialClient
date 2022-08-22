@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.rule.client;
 
 import com.google.gson.JsonElement;
-import me.senseiwells.arucas.utils.ExceptionUtils;
 
 public class IntegerClientRule extends NumberClientRule<Integer> {
 	public IntegerClientRule(String name, String description, int defaultValue, RuleListener<Integer> ruleListener) {
@@ -44,11 +43,10 @@ public class IntegerClientRule extends NumberClientRule<Integer> {
 
 	@Override
 	public void setValueFromString(String value) {
-		Integer intValue = ExceptionUtils.catchAsNull(() -> Integer.parseInt(value));
-		if (intValue == null) {
+		try {
+			this.setValue(Integer.parseInt(value));
+		} catch (NumberFormatException e) {
 			this.logCannotSet(value);
-			return;
 		}
-		this.setValue(intValue);
 	}
 }

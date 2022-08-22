@@ -34,4 +34,9 @@ public class ScriptBlockState implements ScriptMaterial {
 	public BlockState asBlockState() {
 		return this.state;
 	}
+
+	@Override
+	public Object asDefault() {
+		return this.state;
+	}
 }

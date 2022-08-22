@@ -4,6 +4,7 @@ import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.rule.carpet.CarpetClientRule;
 import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
 import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
+import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -29,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.WorldView;
 
@@ -37,6 +39,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
@@ -60,8 +63,7 @@ public class EssentialUtils {
 			WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki");
 			SCRIPT_WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki/ClientScript");
 			Files.createDirectories(ESSENTIAL_CLIENT_PATH);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -149,7 +151,8 @@ public class EssentialUtils {
 		return ESSENTIAL_CONTAINER.getMetadata().getVersion().getFriendlyString();
 	}
 
-	public static boolean canMineBlock(ClientPlayerEntity player, BlockPos pos) {
+	public static boolean canMineBlock(BlockPos pos) {
+		ClientPlayerEntity player = getPlayer();
 		double x = player.getX() - pos.getX() - 0.5;
 		double y = player.getY() - pos.getY() + 1.0;
 		double z = player.getZ() - pos.getZ() - 0.5;
@@ -161,6 +164,15 @@ public class EssentialUtils {
 		}
 		BlockState state = player.world.getBlockState(pos);
 		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(null, null) >= 0;
+	}
+
+	public static void mineBlock(BlockPos pos, CompletableFuture<Void> future) {
+		if (canMineBlock(pos)) {
+			getInteractionManager().attackBlock(pos, Direction.DOWN);
+			Scheduler.schedule(5, () -> mineBlock(pos, future));
+			return;
+		}
+		future.complete(null);
 	}
 
 	public static float getBlockBreakingSpeed(ItemStack itemStack, BlockState blockState, PlayerEntity player) {
@@ -217,8 +229,7 @@ public class EssentialUtils {
 					if (maxLength >= 0) {
 						return maxLength;
 					}
-				}
-				catch (NumberFormatException ignore) {
+				} catch (NumberFormatException ignore) {
 				}
 			}
 		}
@@ -228,8 +239,7 @@ public class EssentialUtils {
 	public static void throwAsRuntime(ThrowableRunnable runnable) {
 		try {
 			runnable.run();
-		}
-		catch (Exception throwable) {
+		} catch (Exception throwable) {
 			throw new RuntimeException(throwable);
 		}
 	}
@@ -237,8 +247,7 @@ public class EssentialUtils {
 	public static <T> T throwAsRuntime(ThrowableSupplier<T> supplier) {
 		try {
 			return supplier.get();
-		}
-		catch (Exception throwable) {
+		} catch (Exception throwable) {
 			throw new RuntimeException(throwable);
 		}
 	}

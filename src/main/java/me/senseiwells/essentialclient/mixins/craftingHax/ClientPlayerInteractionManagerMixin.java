@@ -26,7 +26,7 @@ public class ClientPlayerInteractionManagerMixin {
 	public void onRecipeClick(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
 		if (ClientRules.CRAFTING_HAX.getValue() && CraftingSharedConstants.IS_VANILLA_CLICK.get()) {
 			if (Screen.hasControlDown() && this.client.currentScreen instanceof HandledScreen<?> handledScreen) {
-				InventoryUtils.dropStackScheduled(this.client, handledScreen, craftAll);
+				InventoryUtils.dropStackScheduled(handledScreen.getScreenHandler(), craftAll);
 				CraftingSharedConstants.IS_VANILLA_CLICK.set(false);
 			}
 		}

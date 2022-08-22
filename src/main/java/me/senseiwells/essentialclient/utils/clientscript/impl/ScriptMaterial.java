@@ -42,9 +42,28 @@ public interface ScriptMaterial {
 		return this.asBlock().getDefaultState();
 	}
 
+	Object asDefault();
+
+	static ScriptMaterial materialOf(Block block) {
+		Item item = Item.BLOCK_ITEMS.get(block);
+		if (item == null) {
+			return new BlockMaterial(block);
+		}
+		return materialOf(item);
+	}
+
+	static ScriptMaterial materialOf(Item item) {
+		return new ItemMaterial(item);
+	}
+
 	record ItemMaterial(Item item) implements ScriptMaterial {
 		@Override
 		public Item asItem() {
+			return this.item;
+		}
+
+		@Override
+		public Object asDefault() {
 			return this.item;
 		}
 	}
@@ -62,6 +81,11 @@ public interface ScriptMaterial {
 
 		@Override
 		public Block asBlock() {
+			return this.block;
+		}
+
+		@Override
+		public Object asDefault() {
 			return this.block;
 		}
 	}

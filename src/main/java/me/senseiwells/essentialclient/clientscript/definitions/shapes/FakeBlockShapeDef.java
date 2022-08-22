@@ -4,6 +4,8 @@ import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.BooleanDef;
+import me.senseiwells.arucas.builtin.NullDef;
+import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -14,16 +16,19 @@ import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.definitions.MaterialDef;
 import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptFakeBlock;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import shadow.kotlin.Unit;
 
 import java.util.List;
 
 import static me.senseiwells.arucas.utils.Util.Types.BOOLEAN;
+import static me.senseiwells.arucas.utils.Util.Types.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 @ClassDoc(
@@ -75,7 +80,9 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 			MemberFunction.of("getBlock", this::getBlock),
 			MemberFunction.of("getPos", this::getPos),
 			MemberFunction.of("setCull", 1, this::setCull),
-			MemberFunction.of("shouldCull", this::shouldCull)
+			MemberFunction.of("shouldCull", this::shouldCull),
+			MemberFunction.of("setDirection", 1, this::setDirection),
+			MemberFunction.of("getDirection", this::getDirection)
 		);
 	}
 
@@ -148,5 +155,37 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	private boolean shouldCull(Arguments arguments) {
 		ScriptFakeBlock block = arguments.nextPrimitive(this);
 		return block.shouldCull();
+	}
+
+	@FunctionDoc(
+		name = "setDirection",
+		desc = {
+			"Sets the direction of the fake block,",
+			"this may be null in which case the block will face the player"
+		},
+		params = {STRING, "direction", "The direction of the fake block"},
+		examples = "fakeBlock.setDirection(Direction.UP);"
+	)
+	private Void setDirection(Arguments arguments) {
+		ScriptFakeBlock block = arguments.nextPrimitive(this);
+		if (arguments.isNext(NullDef.class)) {
+			block.setDirection(null);
+		} else {
+			Direction direction = ClientScriptUtils.stringToDirection(arguments.nextPrimitive(StringDef.class), null);
+			block.setDirection(direction);
+		}
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "getDirection",
+		desc = "Gets the direction of the fake block",
+		returns = {STRING, "The direction of the fake block, may be null"},
+		examples = "fakeBlock.getDirection();"
+	)
+	private String getDirection(Arguments arguments) {
+		ScriptFakeBlock block = arguments.nextPrimitive(this);
+		Direction direction = block.getDirection();
+		return direction == null ? null : direction.getName();
 	}
 }

@@ -1,8 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import com.mojang.authlib.GameProfile;
-import me.senseiwells.arucas.values.NumberValue;
-import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptIO;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -20,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, @Nullable PlayerPublicKey publicKey) {
@@ -31,33 +27,33 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	@Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
 	private void onDropItem(boolean dropEntireStack, CallbackInfoReturnable<Boolean> cir) {
 		ItemStack heldItem = this.getMainHandStack();
-		if (MinecraftScriptEvents.ON_DROP_ITEM.run(new ItemStackValue(heldItem))) {
+		if (MinecraftScriptEvents.ON_DROP_ITEM.run(heldItem)) {
 			cir.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
 	public void onChatMessage(String message, Text preview, CallbackInfo ci) {
-		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(StringValue.of(message))) {
+		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "sendCommand(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
 	public void onCommandMessage(String message, Text preview, CallbackInfo ci) {
-		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(StringValue.of(message))) {
+		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "closeScreen", at = @At("HEAD"))
 	private void onCloseScreen(CallbackInfo ci) {
-		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(c -> List.of(c.convertValue(EssentialUtils.getClient().currentScreen)));
+		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(EssentialUtils.getClient().currentScreen);
 	}
 
 	@Override
 	public ItemStack eatFood(World world, ItemStack stack) {
-		MinecraftScriptEvents.ON_EAT.run(new ItemStackValue(stack));
+		MinecraftScriptEvents.ON_EAT.run(stack);
 		return super.eatFood(world, stack);
 	}
 
@@ -76,7 +72,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		if (parameterYaw < -180) {
 			parameterYaw += 360;
 		}
-		if (MinecraftScriptEvents.ON_PLAYER_LOOK.run(NumberValue.of(parameterYaw), NumberValue.of(newPitch))) {
+		if (MinecraftScriptEvents.ON_PLAYER_LOOK.run(parameterYaw, newPitch)) {
 			return;
 		}
 

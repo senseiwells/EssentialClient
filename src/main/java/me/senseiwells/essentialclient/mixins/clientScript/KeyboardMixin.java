@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
-import me.senseiwells.arucas.values.StringValue;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.keyboard.KeyboardHelper;
 import net.minecraft.client.Keyboard;
@@ -19,8 +18,8 @@ public class KeyboardMixin {
 		}
 
 		boolean shouldCancel = switch (i) {
-			case 0 -> MinecraftScriptEvents.ON_KEY_RELEASE.run(StringValue.of(keyName));
-			case 1 -> MinecraftScriptEvents.ON_KEY_PRESS.run(StringValue.of(keyName));
+			case 0 -> MinecraftScriptEvents.ON_KEY_RELEASE.run(keyName);
+			case 1 -> MinecraftScriptEvents.ON_KEY_PRESS.run(keyName);
 			default -> false;
 		};
 		if (shouldCancel) {

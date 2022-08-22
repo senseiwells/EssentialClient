@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.clientscript.definitions;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
@@ -36,6 +37,11 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	public MaterialDef(Interpreter interpreter) {
 		super(MATERIAL, interpreter);
+	}
+
+	@Override
+	public Object asJavaValue(ClassInstance instance) {
+		return instance.asPrimitive(this).asDefault();
 	}
 
 	@Override

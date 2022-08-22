@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.rule.game;
 
-import me.senseiwells.arucas.utils.ExceptionUtils;
 import net.minecraft.world.GameRules;
 
 public class IntegerGameRule extends GameRule<Integer> {
@@ -20,11 +19,11 @@ public class IntegerGameRule extends GameRule<Integer> {
 
 	@Override
 	public Integer getValueFromString(String value) {
-		Integer intValue = ExceptionUtils.catchAsNull(() -> Integer.parseInt(value));
-		if (intValue == null) {
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException e) {
 			this.logCannotSet(value);
 			return null;
 		}
-		return intValue;
 	}
 }

@@ -8,6 +8,8 @@ import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandl
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
+import me.senseiwells.essentialclient.utils.clientscript.ClientTickSyncer;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptNetworkHandler;
 import me.senseiwells.essentialclient.utils.config.Config;
@@ -15,6 +17,7 @@ import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerList;
 import me.senseiwells.essentialclient.utils.misc.Events;
+import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
@@ -63,6 +66,9 @@ public class EssentialClient implements ModInitializer {
 			ClientKeyBinds.load();
 			MinecraftDeobfuscator.load();
 			CraftingSharedConstants.load();
+			ClientScriptUtils.load();
+			Scheduler.load();
+			ClientTickSyncer.load();
 		}, "EssentialClient Init Thread").start();
 	}
 

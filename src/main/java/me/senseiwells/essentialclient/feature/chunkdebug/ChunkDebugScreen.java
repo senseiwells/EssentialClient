@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
@@ -74,8 +73,7 @@ public class ChunkDebugScreen extends ChildScreen {
 			if (hasControlDown()) {
 				ChunkHandler.clearAllChunks();
 				EssentialClient.CHUNK_NET_HANDLER.requestServerRefresh();
-			}
-			else {
+			} else {
 				ChunkHandler.clearAllChunks();
 				EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 			}
@@ -150,8 +148,7 @@ public class ChunkDebugScreen extends ChildScreen {
 		matrices.scale(scale, scale, 0.0F);
 		if (center) {
 			DrawableHelper.drawCenteredText(matrices, this.textRenderer, Texts.literal(text), 0, 0, 0xFFFFFF);
-		}
-		else {
+		} else {
 			DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, Texts.literal(text), 0, 0, 0xFFFFFF);
 		}
 		matrices.pop();
@@ -248,16 +245,17 @@ public class ChunkDebugScreen extends ChildScreen {
 		@Override
 		public void setTextFieldFocused(boolean focused) {
 			if (this.isFocused() && !focused) {
-				Integer newValue = ExceptionUtils.catchAsNull(() -> Integer.parseInt(this.getText()));
-				if (newValue == null) {
+				try {
+					int newValue = Integer.parseInt(this.getText());
+					if (this.lastValidValue != newValue) {
+						this.lastValidValue = newValue;
+						ChunkGrid.instance.setCentre(
+							ChunkDebugScreen.this.xPositionBox.getValue(),
+							ChunkDebugScreen.this.zPositionBox.getValue()
+						);
+					}
+				} catch (NumberFormatException e) {
 					this.setText(String.valueOf(this.lastValidValue));
-				}
-				else if (this.lastValidValue != newValue) {
-					this.lastValidValue = newValue;
-					ChunkGrid.instance.setCentre(
-						ChunkDebugScreen.this.xPositionBox.getValue(),
-						ChunkDebugScreen.this.zPositionBox.getValue()
-					);
 				}
 			}
 			super.setTextFieldFocused(focused);

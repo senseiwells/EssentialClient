@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN" "https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
@@ -41,9 +42,8 @@
         <module name="NeedBraces"/>
 
         <module name="RightCurly">
-            <!-- Consider removing this option in the future -->
             <property name="option" value="alone"/>
-            <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_WHILE"/>
+            <property name="tokens" value="LITERAL_ELSE, METHOD_DEF"/>
         </module>
 
         <!-- Class Design -->
@@ -188,7 +188,8 @@
         <module name="MethodParamPad"/>
 
         <module name="NoLineWrap">
-            <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF, CTOR_DEF, ENUM_DEF, RECORD_DEF, COMPACT_CTOR_DEF"/>
+            <property name="tokens"
+                      value="IMPORT, STATIC_IMPORT, PACKAGE_DEF, CTOR_DEF, ENUM_DEF, RECORD_DEF, COMPACT_CTOR_DEF"/>
         </module>
 
         <module name="NoWhitespaceAfter">
@@ -205,7 +206,8 @@
         <module name="NoWhitespaceBeforeCaseDefaultColon"/>
 
         <module name="OperatorWrap">
-            <property name="tokens" value="ASSIGN, DIV_ASSIGN, PLUS_ASSIGN, MINUS_ASSIGN, STAR_ASSIGN, MOD_ASSIGN, SR_ASSIGN, BSR_ASSIGN, SL_ASSIGN, BXOR_ASSIGN, BOR_ASSIGN, BAND_ASSIGN"/>
+            <property name="tokens"
+                      value="ASSIGN, DIV_ASSIGN, PLUS_ASSIGN, MINUS_ASSIGN, STAR_ASSIGN, MOD_ASSIGN, SR_ASSIGN, BSR_ASSIGN, SL_ASSIGN, BXOR_ASSIGN, BOR_ASSIGN, BAND_ASSIGN"/>
             <property name="option" value="eol"/>
         </module>
 
@@ -224,7 +226,7 @@
         <module name="WhitespaceAfter"/>
 
         <module name="WhitespaceAround">
-            <property name="ignoreEnhancedForColon" value="false" />
+            <property name="ignoreEnhancedForColon" value="false"/>
         </module>
     </module>
 </module>

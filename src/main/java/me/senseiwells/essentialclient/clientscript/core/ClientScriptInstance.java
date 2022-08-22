@@ -29,17 +29,24 @@ public class ClientScriptInstance {
 
 	static {
 		ArucasAPI.Builder builder = new ArucasAPI.Builder()
-			.addDefault();
+			.addDefault()
+			.setObfuscator(new ClientScriptObfuscator())
+			.setInput(ClientScriptIO.INSTANCE)
+			.setOutput(ClientScriptIO.INSTANCE);
 
 		MinecraftAPI.addMinecraftAPI(builder);
 		// DiscordAPI.addDiscordAPI(BUILDER);
 
-		API = builder.build();
-		API.generateNativeFiles(API.getLibraryManager().getImportPath());
-
-		if (EssentialUtils.isDev()) {
-			generateJson();
+		try {
+			API = builder.build();
+		} catch (Exception e) {
+			// We are running off-thread, this is fatal, so we should stop the game here
+			EssentialClient.LOGGER.error("Failed to load Script API", e);
+			EssentialUtils.getClient().scheduleStop();
+			throw e;
 		}
+
+		generate();
 	}
 
 	private final String content;
@@ -107,6 +114,7 @@ public class ClientScriptInstance {
 		}
 		this.isStopping = true;
 		MinecraftScriptEvents.ON_SCRIPT_END.run(this.interpreter.getProperties().getId());
+		this.interpreter.getThreadHandler().stop();
 
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
@@ -121,6 +129,7 @@ public class ClientScriptInstance {
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
 			EssentialUtils.sendMessage("§6Script '%s' has §cFINISHED".formatted(this.scriptName));
 		}
+		this.interpreter = null;
 		this.isStopping = false;
 	}
 
@@ -131,8 +140,7 @@ public class ClientScriptInstance {
 			if (fileContent == null) {
 				throw new IOException("File content was null!");
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			EssentialUtils.sendMessage("§cAn error occurred while trying to read '%s'".formatted(this.scriptName));
 			e.printStackTrace();
 			return;
@@ -156,6 +164,19 @@ public class ClientScriptInstance {
 	public static void runFromContent(String scriptName, String scriptContent) {
 		ClientScriptInstance instance = new ClientScriptInstance(scriptName, scriptContent, null);
 		instance.toggleScript();
+	}
+
+	private static void generate() {
+		try {
+			API.generateNativeFiles(API.getLibraryManager().getImportPath());
+
+			if (EssentialUtils.isDev()) {
+				generateJson();
+			}
+		} catch (Exception e) {
+			// This isn't fatal
+			EssentialClient.LOGGER.error("Failed to generate native files", e);
+		}
 	}
 
 	private static void generateJson() {

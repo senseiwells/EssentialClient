@@ -61,6 +61,11 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	}
 
 	@Override
+	public Object asJavaValue(ClassInstance instance) {
+		return instance.asPrimitive(this).asDefault();
+	}
+
+	@Override
 	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
 		ScriptItemStack stack = other.getPrimitive(this);
 		return stack != null && instance.asPrimitive(this).stack.isItemEqual(stack.stack);

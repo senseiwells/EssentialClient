@@ -25,13 +25,17 @@ import me.senseiwells.essentialclient.clientscript.definitions.EntityDef;
 import me.senseiwells.essentialclient.clientscript.definitions.ItemStackDef;
 import me.senseiwells.essentialclient.clientscript.definitions.TextDef;
 import me.senseiwells.essentialclient.commands.CommandRegister;
+import me.senseiwells.essentialclient.mixins.clientScript.KeyBindingAccessor;
 import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.command.*;
+import me.senseiwells.essentialclient.utils.misc.Events;
 import me.senseiwells.essentialclient.utils.misc.FunctionClickEvent;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.command.CommandRegistryWrapper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
@@ -39,12 +43,15 @@ import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.Direction;
@@ -53,10 +60,25 @@ import net.minecraft.world.RaycastContext;
 import shadow.kotlin.Pair;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 public class ClientScriptUtils {
 	private static final Set<String> WARNED = ConcurrentHashMap.newKeySet();
+	private static final Set<KeyBinding> HELD_KEYS = ConcurrentHashMap.newKeySet();
+
+	static {
+		Events.ON_TICK_POST.register(client -> {
+			for (KeyBinding binding : HELD_KEYS) {
+				InputUtil.Key key = ((KeyBindingAccessor) binding).getBoundKey();
+				KeyBinding.onKeyPressed(key);
+			}
+		});
+	}
+
+	public static void load() { }
 
 	public static void warnMainThread(String name, Interpreter interpreter) {
 		MinecraftClient client = EssentialUtils.getClient();
@@ -68,11 +90,17 @@ public class ClientScriptUtils {
 		}
 	}
 
-	public static void ensureMainThread(String name, Interpreter interpreter, Runnable runnable) {
+	public static Future<Void> ensureMainThread(String name, Interpreter interpreter, Runnable runnable) {
+		return ensureMainThread(name, interpreter, () -> {
+			runnable.run();
+			return null;
+		});
+	}
+
+	public static <V> Future<V> ensureMainThread(String name, Interpreter interpreter, Supplier<V> callable) {
 		MinecraftClient client = EssentialUtils.getClient();
 		if (client.isOnThread()) {
-			runnable.run();
-			return;
+			return CompletableFuture.completedFuture(callable.get());
 		}
 		if (!WARNED.contains(name)) {
 			WARNED.add(name);
@@ -80,13 +108,30 @@ public class ClientScriptUtils {
 				"'%s' was not called on the Minecraft main thread, this may lead to unexpected behavior".formatted(name)
 			);
 		}
-		client.execute(() -> {
+		return client.submit(() -> {
 			try {
-				runnable.run();
+				return callable.get();
 			} catch (Exception e) {
 				interpreter.getThreadHandler().handleError(e);
+				return null;
 			}
 		});
+	}
+
+	public static void holdKey(KeyBinding key) {
+		HELD_KEYS.add(key);
+	}
+
+	public static void releaseKey(KeyBinding key) {
+		HELD_KEYS.remove(key);
+	}
+
+	public static void modifyKey(boolean held, KeyBinding key) {
+		if (held) {
+			holdKey(key);
+		} else {
+			releaseKey(key);
+		}
 	}
 
 	/**
@@ -176,11 +221,32 @@ public class ClientScriptUtils {
 	}
 
 	public static RaycastContext.FluidHandling stringToFluidType(String string) {
-		return switch (string) {
+		return switch (string.toLowerCase()) {
 			case "none" -> RaycastContext.FluidHandling.NONE;
 			case "source", "sources", "sources_only" -> RaycastContext.FluidHandling.SOURCE_ONLY;
 			case "all", "any" -> RaycastContext.FluidHandling.ANY;
 			default -> throw new RuntimeError("'%s' is not a valid fluid type".formatted(string));
+		};
+	}
+
+	public static Hand stringToHand(String string) {
+		return switch (string.toLowerCase()) {
+			case "main", "main_hand" -> Hand.MAIN_HAND;
+			case "off", "off_hand" -> Hand.OFF_HAND;
+			default -> throw new RuntimeError("'%s' is not a valid hand".formatted(string));
+		};
+	}
+
+	public static SlotActionType stringToSlotActionType(String string) {
+		return switch (string.toLowerCase()) {
+			case "click", "pickup" -> SlotActionType.PICKUP;
+			case "shift_click", "quick_move" -> SlotActionType.QUICK_MOVE;
+			case "swap" -> SlotActionType.SWAP;
+			case "middle_click", "clone" -> SlotActionType.CLONE;
+			case "throw" -> SlotActionType.THROW;
+			case "drag", "quick_craft" -> SlotActionType.QUICK_CRAFT;
+			case "double_click", "pickup_all" -> SlotActionType.PICKUP_ALL;
+			default -> throw new RuntimeError("Invalid slotActionType, see Wiki");
 		};
 	}
 
@@ -205,6 +271,11 @@ public class ClientScriptUtils {
 			}
 			throw new RuntimeError("'%s' couldn't be parsed".formatted(string));
 		}
+	}
+
+	public static Text instanceToText(ClassInstance instance, Interpreter interpreter) {
+		Text text = instance.getPrimitive(TextDef.class);
+		return text != null ? text : Texts.literal(instance.toString(interpreter));
 	}
 
 	public static ArucasMap nbtToMap(Interpreter interpreter, NbtCompound compound, int depth) {

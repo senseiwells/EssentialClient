@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import me.senseiwells.essentialclient.clientscript.values.PlayerValue;
 import me.senseiwells.essentialclient.commands.CommandRegister;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -51,7 +50,7 @@ public class ClientPlayNetworkHandlerMixin {
 		if (ClientRules.START_SELECTED_SCRIPTS_ON_JOIN.getValue()) {
 			ClientScript.INSTANCE.startAllInstances();
 		}
-		MinecraftScriptEvents.ON_CONNECT.run(new PlayerValue(EssentialUtils.getPlayer()), new WorldValue(EssentialUtils.getWorld()));
+		MinecraftScriptEvents.ON_CONNECT.run(EssentialUtils.getPlayer(), EssentialUtils.getWorld());
 		if (this.client.getServer() != null) {
 			EssentialClient.GAME_RULE_NET_HANDLER.onHelloSinglePlayer();
 			EssentialClient.GAME_RULE_NET_HANDLER.processRawData(this.client.getServer().getGameRules().toNbt());

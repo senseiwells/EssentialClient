@@ -34,6 +34,12 @@ public class ScreenDef extends PrimitiveDefinition<Screen> {
 		super(MinecraftAPI.SCREEN, interpreter);
 	}
 
+	@Deprecated
+	@Override
+	public ClassInstance create(Screen value) {
+		return super.create(value);
+	}
+
 	@Override
 	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
 		return "Screen{screen=" + ScreenRemapper.getScreenName(instance.asPrimitive(this).getClass()) + "}";

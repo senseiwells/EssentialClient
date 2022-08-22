@@ -55,7 +55,7 @@ public class ScriptEvent {
 			});
 			return false;
 		}
-		Boolean shouldCancel = branch.getThreadHandler().wrapSafe(() -> {
+		return branch.safe(false, () -> {
 			try {
 				this.function.invoke(branch, newArgs);
 				return Boolean.FALSE;
@@ -66,7 +66,5 @@ public class ScriptEvent {
 				throw cancelEvent;
 			}
 		});
-		// It's nullable
-		return shouldCancel == Boolean.TRUE;
 	}
 }

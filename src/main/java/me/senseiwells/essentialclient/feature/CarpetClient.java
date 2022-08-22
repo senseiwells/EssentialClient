@@ -9,8 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.senseiwells.arucas.utils.ExceptionUtils;
-import me.senseiwells.arucas.utils.NetworkUtils;
+import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.rule.carpet.*;
@@ -112,8 +111,7 @@ public class CarpetClient implements Config.CList {
 				rule = this.ALL_RULES.get(name);
 				if (parsedRule != null) {
 					rule = rule == null ? this.parseRuleToClientRule(parsedRule, manager) : this.parseRuleToClientRule(parsedRule, rule.getDescription(), rule.getOptionalInfo(), manager);
-				}
-				else {
+				} else {
 					// We must copy otherwise we will be modifying the global CarpetRule
 					rule = rule != null ? rule.shallowCopy() : new StringCarpetRule(name, this.LOADNT, value);
 				}
@@ -261,11 +259,21 @@ public class CarpetClient implements Config.CList {
 				yield new BooleanCarpetRule(name, description, "true".equals(defaultValue));
 			}
 			case INTEGER -> {
-				Integer intValue = ExceptionUtils.catchAsNull(() -> Integer.parseInt(defaultValue));
-				yield intValue == null ? null : new IntegerCarpetRule(name, description, intValue);
+				Integer integer;
+				try {
+					integer = Integer.parseInt(defaultValue);
+				} catch (NumberFormatException e) {
+					integer = null;
+				}
+				yield integer == null ? null : new IntegerCarpetRule(name, description, integer);
 			}
 			case DOUBLE -> {
-				Double doubleValue = ExceptionUtils.catchAsNull(() -> Double.parseDouble(defaultValue));
+				Double doubleValue;
+				try {
+					doubleValue = Double.parseDouble(defaultValue);
+				} catch (NumberFormatException e) {
+					doubleValue = null;
+				}
 				yield doubleValue == null ? null : new DoubleCarpetRule(name, description, doubleValue);
 			}
 			default -> null;
@@ -282,7 +290,7 @@ public class CarpetClient implements Config.CList {
 	}
 
 	private JsonArray getData(JsonArray fallback) {
-		String content = NetworkUtils.getStringFromUrl(this.DATA_URL);
+		String content = Util.Network.INSTANCE.getStringFromUrl(this.DATA_URL);
 		if (content == null) {
 			EssentialClient.LOGGER.error("Failed to fetch rule data");
 			return fallback;

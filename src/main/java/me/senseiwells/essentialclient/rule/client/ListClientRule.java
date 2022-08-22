@@ -3,7 +3,7 @@ package me.senseiwells.essentialclient.rule.client;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import me.senseiwells.arucas.utils.ExceptionUtils;
+import com.google.gson.JsonSyntaxException;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 
 import java.util.List;
@@ -29,13 +29,13 @@ public class ListClientRule extends ClientRule<List<String>> implements Rule.Lis
 
 	@Override
 	public void setValueFromString(String value) {
-		JsonArray array = ExceptionUtils.catchAsNull(() -> GSON.fromJson(value, JsonArray.class));
-		if (array == null) {
+		try {
+			JsonArray array = GSON.fromJson(value, JsonArray.class);
+			List<String> configs = this.fromJson(array);
+			this.setValue(configs);
+		} catch (JsonSyntaxException e) {
 			this.logCannotSet(value);
-			return;
 		}
-		List<String> configs = this.fromJson(array);
-		this.setValue(configs);
 	}
 
 	@Override

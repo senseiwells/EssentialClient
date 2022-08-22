@@ -1,9 +1,9 @@
 package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.misc.Events;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
@@ -30,23 +30,21 @@ public class BetterAccurateBlockPlacement {
 	public static void load() { }
 
 	private static void accurateBlockPlacementOnPress(MinecraftClient client) {
-		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
 		ClientPlayerEntity playerEntity = client.player;
-		if (playerEntity == null || networkHandler == null) {
+		if (playerEntity == null) {
 			return;
 		}
 		if (requestedTicks > 0) {
 			if (fakeYaw != previousFakeYaw || fakePitch != previousFakePitch) {
-				sendLookPacket(networkHandler, playerEntity);
+				sendLookPacket(playerEntity);
 				previousFakeYaw = fakeYaw;
 				previousFakePitch = fakePitch;
 			}
 			requestedTicks--;
 			return;
 		}
-		else {
-			fakeDirection = null;
-		}
+		fakeDirection = null;
+
 		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			fakeYaw = playerEntity.getYaw();
 			fakePitch = playerEntity.getPitch();
@@ -66,13 +64,12 @@ public class BetterAccurateBlockPlacement {
 					case SOUTH -> fakeYaw = 0;
 				}
 				if (!wasIntoPressed) {
-					sendLookPacket(networkHandler, playerEntity);
+					sendLookPacket(playerEntity);
 					wasIntoPressed = true;
 				}
-			}
-			else if (wasIntoPressed) {
+			} else if (wasIntoPressed) {
 				requestedTicks = 1;
-				sendLookPacket(networkHandler, playerEntity);
+				sendLookPacket(playerEntity);
 				wasIntoPressed = false;
 			}
 			if (ACCURATE_REVERSE.isPressed()) {
@@ -82,14 +79,13 @@ public class BetterAccurateBlockPlacement {
 					case UP, DOWN -> fakePitch = fakePitch < 0 ? fakePitch + 180 : fakePitch - 180;
 				}
 				if (!wasReversePressed) {
-					sendLookPacket(networkHandler, playerEntity);
+					sendLookPacket(playerEntity);
 					wasReversePressed = true;
 				}
 				facing = facing.getOpposite();
-			}
-			else if (wasReversePressed) {
+			} else if (wasReversePressed) {
 				requestedTicks = 1;
-				sendLookPacket(networkHandler, playerEntity);
+				sendLookPacket(playerEntity);
 				wasReversePressed = false;
 			}
 			previousFakeYaw = fakeYaw;
@@ -99,12 +95,8 @@ public class BetterAccurateBlockPlacement {
 		}
 	}
 
-	public static void sendLookPacket(ClientPlayNetworkHandler networkHandler, ClientPlayerEntity playerEntity) {
-		networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(
-			fakeYaw,
-			fakePitch,
-			playerEntity.isOnGround()
-		));
+	public static void sendLookPacket(ClientPlayerEntity player) {
+		EssentialUtils.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(fakeYaw, fakePitch, player.isOnGround()));
 	}
 
 	public static Direction[] getFacingOrder() {
@@ -124,16 +116,12 @@ public class BetterAccurateBlockPlacement {
 			if (yScalar > xScalar) {
 				return listClosest(directionY, directionX, directionZ);
 			}
-			else {
-				return zScalar > yScalar ? listClosest(directionX, directionZ, directionY) : listClosest(directionX, directionY, directionZ);
-			}
+			return zScalar > yScalar ? listClosest(directionX, directionZ, directionY) : listClosest(directionX, directionY, directionZ);
 		}
-		else if (yScalar > zScalar) {
+		if (yScalar > zScalar) {
 			return listClosest(directionY, directionZ, directionX);
 		}
-		else {
-			return xScalar > yScalar ? listClosest(directionZ, directionX, directionY) : listClosest(directionZ, directionY, directionX);
-		}
+		return xScalar > yScalar ? listClosest(directionZ, directionX, directionY) : listClosest(directionZ, directionY, directionX);
 	}
 
 	private static Direction[] listClosest(Direction first, Direction second, Direction third) {

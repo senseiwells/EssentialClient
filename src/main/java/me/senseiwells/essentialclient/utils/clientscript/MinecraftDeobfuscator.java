@@ -2,7 +2,6 @@ package me.senseiwells.essentialclient.utils.clientscript;
 
 import com.google.common.net.UrlEscapers;
 import com.google.gson.Gson;
-import me.senseiwells.arucas.utils.ExceptionUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.fabricmc.mapping.reader.v2.MappingGetter;
@@ -24,7 +23,7 @@ import java.util.Map;
 
 /**
  * Taken mostly from NotEnoughCrashes
- *
+ * <p>
  * Modified to map Yarn -> Intermediary
  */
 public final class MinecraftDeobfuscator {
@@ -49,19 +48,18 @@ public final class MinecraftDeobfuscator {
 		triedLoadingMappings = false;
 
 		MAPPINGS_DIRECTORY = EssentialUtils.getEssentialConfigFile().resolve("Mappings");
-		if (!Files.exists(MAPPINGS_DIRECTORY) && !ExceptionUtils.runSafe(() -> Files.createDirectory(MAPPINGS_DIRECTORY))) {
+		try {
+			if (!Files.exists(MAPPINGS_DIRECTORY)) {
+				Files.createDirectory(MAPPINGS_DIRECTORY);
+			}
+		} catch (IOException e) {
 			EssentialClient.LOGGER.error("Failed to create Mappings directory");
 		}
+
 		CACHED_MAPPINGS = MAPPINGS_DIRECTORY.resolve("mappings-" + EssentialUtils.getMinecraftVersion() + ".tiny");
 
-		Throwable throwable = ExceptionUtils.returnThrowable(() -> {
-			if (!Files.exists(CACHED_MAPPINGS)) {
-				downloadAndCacheMappings();
-			}
-		});
-
-		if (throwable != null) {
-			EssentialClient.LOGGER.error("Failed to load mappings!", throwable);
+		if (Files.exists(CACHED_MAPPINGS)) {
+			downloadAndCacheMappings();
 		}
 	}
 
@@ -88,8 +86,10 @@ public final class MinecraftDeobfuscator {
 	}
 
 	private static void downloadAndCacheMappings() {
-		String yarnVersion = ExceptionUtils.catchAsNull(Yarn::getLatestYarn);
-		if (yarnVersion == null) {
+		String yarnVersion;
+		try {
+			yarnVersion = Yarn.getLatestYarn();
+		} catch (Exception e) {
 			EssentialClient.LOGGER.error("Could not get latest yarn build for version");
 			return;
 		}
@@ -103,16 +103,16 @@ public final class MinecraftDeobfuscator {
 		File jarFile = MAPPINGS_DIRECTORY.resolve("yarn-mappings.jar").toFile();
 		jarFile.deleteOnExit();
 
-		Throwable throwable = ExceptionUtils.returnThrowable(() -> FileUtils.copyURLToFile(new URL(artifactUrl), jarFile));
-		if (throwable != null) {
-			EssentialClient.LOGGER.error("Failed to downloads mappings!", throwable);
+		try {
+			FileUtils.copyURLToFile(new URL(artifactUrl), jarFile);
+		} catch (IOException e) {
+			EssentialClient.LOGGER.error("Failed to downloads mappings!", e);
 			return;
 		}
 
 		try (FileSystem jar = FileSystems.newFileSystem(jarFile.toPath(), (ClassLoader) null)) {
 			Files.copy(jar.getPath(MAPPINGS_JAR_LOCATION), CACHED_MAPPINGS, StandardCopyOption.REPLACE_EXISTING);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			EssentialClient.LOGGER.error("Failed to extract mappings!", e);
 		}
 	}
@@ -126,8 +126,7 @@ public final class MinecraftDeobfuscator {
 		triedLoadingMappings = true;
 		try (BufferedReader mappingReader = Files.newBufferedReader(CACHED_MAPPINGS)) {
 			TinyV2Factory.visit(mappingReader, new TinyVisitorImpl());
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			EssentialClient.LOGGER.error("Could not load mappings", e);
 		}
 	}
@@ -219,8 +218,7 @@ public final class MinecraftDeobfuscator {
 					String version = Arrays.stream(versions).max(Comparator.comparingInt(v -> v.build)).get().version;
 					Files.write(YARN_VERSION, version.getBytes());
 					VERSION_CACHE = version;
-				}
-				else {
+				} else {
 					VERSION_CACHE = new String(Files.readAllBytes(YARN_VERSION));
 				}
 			}

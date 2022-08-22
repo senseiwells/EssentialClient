@@ -13,6 +13,8 @@ public class ClientTickSyncer {
 		Events.ON_TICK_POST.register(c -> ClientTickSyncer.triggerSync());
 	}
 
+	public static void load() { }
+
 	public synchronized static void syncToTick() {
 		if (Thread.currentThread() instanceof ArucasThread arucasThread) {
 			FROZEN_THREADS.add(arucasThread);

@@ -23,6 +23,10 @@ public class MinecraftClientMixin {
 	@Nullable
 	public ClientPlayerEntity player;
 
+	@Shadow
+	@org.jetbrains.annotations.Nullable
+	public Screen currentScreen;
+
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void onTick(CallbackInfo ci) {
 		MinecraftScriptEvents.ON_CLIENT_TICK.run();
@@ -44,7 +48,7 @@ public class MinecraftClientMixin {
 
 	@Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void onPickBlock(CallbackInfo ci, boolean bl, BlockEntity blockEntity, ItemStack itemStack12) {
-		if (MinecraftScriptEvents.ON_PICK_BLOCK.run(new ItemStackValue(itemStack12))) {
+		if (MinecraftScriptEvents.ON_PICK_BLOCK.run(itemStack12)) {
 			ci.cancel();
 		}
 	}
@@ -52,14 +56,16 @@ public class MinecraftClientMixin {
 	@Inject(method = "joinWorld", at = @At("TAIL"))
 	private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
 		if (world != null) {
-			MinecraftScriptEvents.ON_DIMENSION_CHANGE.run(new WorldValue(world));
+			MinecraftScriptEvents.ON_DIMENSION_CHANGE.run(world);
 		}
 	}
 
 	@Inject(method = "setScreen", at = @At("HEAD"))
 	private void onOpenScreen(Screen screen, CallbackInfo ci) {
 		if (screen != null) {
-			MinecraftScriptEvents.ON_OPEN_SCREEN.run(c -> List.of(c.convertValue(screen)));
+			MinecraftScriptEvents.ON_OPEN_SCREEN.run(screen);
+		} else {
+			MinecraftScriptEvents.ON_CLOSE_SCREEN.run(this.currentScreen);
 		}
 	}
 }
