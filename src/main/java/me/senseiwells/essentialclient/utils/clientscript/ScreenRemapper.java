@@ -26,7 +26,9 @@ public class ScreenRemapper {
 		Map.entry(ChatOptionsScreen.class, "ChatOptions"),
 		Map.entry(ChatScreen.class, "Chat"),
 		Map.entry(CommandBlockScreen.class, "CommandBlock"),
-		Map.entry(ConfirmLinkScreen.class, "ConfirmChatLink"),
+		//#if MC >= 11901
+		//$$Map.entry(ConfirmLinkScreen.class, "ConfirmChatLink"),
+		//#endif
 		Map.entry(ConfirmScreen.class, "Confirm"),
 		Map.entry(ConnectScreen.class, "Connect"),
 		Map.entry(ControlsOptionsScreen.class, "ControlOptions"),

@@ -100,7 +100,6 @@ spotless {
 	java {
 		target 'src/main/**/*.java'
 		toggleOffOn()
-		removeUnusedImports()
 		trimTrailingWhitespace()
 		indentWithTabs()
 		endWithNewline()

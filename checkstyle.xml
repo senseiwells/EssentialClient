@@ -119,8 +119,6 @@
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
 
-        <module name="CommentsIndentation"/>
-
         <module name="Indentation">
             <property name="basicOffset" value="8"/>
             <property name="braceAdjustment" value="0"/>
@@ -218,7 +216,7 @@
         </module>
 
         <module name="SingleSpaceSeparator">
-            <property name="validateComments" value="true"/>
+            <property name="validateComments" value="false"/>
         </module>
 
         <module name="TypecastParenPad"/>
