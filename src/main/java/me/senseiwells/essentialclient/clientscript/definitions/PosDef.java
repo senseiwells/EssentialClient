@@ -10,10 +10,7 @@ import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ConstructorFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.*;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
@@ -43,6 +40,22 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@Override
 	public Object asJavaValue(ClassInstance instance) {
 		return instance.asPrimitive(this).getVec3d();
+	}
+
+	@Override
+	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+		ScriptPos pos = other.getPrimitive(this);
+		return pos != null && instance.asPrimitive(this).getVec3d().equals(pos.getVec3d());
+	}
+
+	@Override
+	public int hashCode$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+		return instance.asPrimitive(this).getVec3d().hashCode();
+	}
+
+	@Override
+	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+		return instance.asPrimitive(this).getVec3d().toString();
 	}
 
 	@Override
@@ -140,7 +153,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		examples = "pos.getX();"
 	)
 	private double getX(Arguments arguments) {
-		return arguments.nextPrimitive(this).getY();
+		return arguments.nextPrimitive(this).getX();
 	}
 
 	@FunctionDoc(

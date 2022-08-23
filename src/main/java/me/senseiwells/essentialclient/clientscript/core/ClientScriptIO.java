@@ -66,12 +66,12 @@ public enum ClientScriptIO implements ArucasInput, ArucasOutput {
 
 	@Override
 	public void logln() {
-		this.log("\n");
+		this.log("");
 	}
 
 	@Override
 	public void logln(Object o) {
-		this.log(o + "\n");
+		this.log(o);
 	}
 
 	@Override

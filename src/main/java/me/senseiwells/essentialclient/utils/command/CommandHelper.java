@@ -35,9 +35,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandHelper {
-	private static final Map<UUID, Set<LiteralCommandNode<ServerCommandSource>>> FUNCTION_COMMAND_NODES = new HashMap<>();
+	private static final Map<UUID, Set<LiteralCommandNode<ServerCommandSource>>> FUNCTION_COMMAND_NODES = new ConcurrentHashMap<>();
 	public static final Set<String> CLIENT_COMMANDS = new HashSet<>();
 	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
 
@@ -75,7 +76,7 @@ public class CommandHelper {
 	public static void addComplexCommand(Interpreter interpreter, LiteralCommandNode<ServerCommandSource> commandNode) {
 		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(interpreter.getProperties().getId(), id -> {
 			interpreter.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
-			return new LinkedHashSet<>();
+			return ConcurrentHashMap.newKeySet();
 		});
 		commandNodeSet.add(commandNode);
 	}
@@ -96,11 +97,9 @@ public class CommandHelper {
 		ClientPlayerEntity player = EssentialUtils.getPlayer();
 		try {
 			player.networkHandler.getCommandDispatcher().execute(reader, new FakeCommandSource(player));
-		}
-		catch (CommandException e) {
+		} catch (CommandException e) {
 			EssentialUtils.sendMessage(ChatColour.RED + e.getTextMessage());
-		}
-		catch (CommandSyntaxException e) {
+		} catch (CommandSyntaxException e) {
 			EssentialUtils.sendMessage(ChatColour.RED + e.getMessage());
 			if (e.getInput() != null && e.getCursor() >= 0) {
 				int cursor = Math.min(e.getCursor(), e.getInput().length());
@@ -118,8 +117,7 @@ public class CommandHelper {
 				text.append(Texts.translatable("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
 				EssentialUtils.sendMessage(text);
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			Text error = Texts.literal(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
 			EssentialUtils.getPlayer().sendMessage(Texts.translatable("command.failed")
 				.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
@@ -154,8 +152,7 @@ public class CommandHelper {
 			@SuppressWarnings("unchecked")
 			Map<String, ParsedArgument<?, ?>> parsedArgumentMap = (Map<String, ParsedArgument<?, ?>>) argumentHandle.invokeExact(context);
 			return parsedArgumentMap.values();
-		}
-		catch (Throwable throwable) {
+		} catch (Throwable throwable) {
 			EssentialClient.LOGGER.error(throwable);
 		}
 		return null;

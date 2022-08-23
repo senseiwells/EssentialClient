@@ -3,17 +3,17 @@ package me.senseiwells.essentialclient.utils.clientscript.impl;
 import me.senseiwells.arucas.core.Interpreter;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class ScriptSphere extends ScriptShape.Centred {
-	private static final Map<UUID, Set<ScriptShape>> REGULAR_SPHERES = new LinkedHashMap<>(0);
-	private static final Map<UUID, Set<ScriptShape>> IGNORE_DEPTH_SPHERES = new LinkedHashMap<>(0);
+	private static final Map<UUID, Set<ScriptShape>> REGULAR_SPHERES = new ConcurrentHashMap<>();
+	private static final Map<UUID, Set<ScriptShape>> IGNORE_DEPTH_SPHERES = new ConcurrentHashMap<>();
 
-	private float steps;
+	private float steps = 30;
 
 	public ScriptSphere(Interpreter interpreter, Vec3d position) {
 		super(interpreter, position);
@@ -46,14 +46,10 @@ public class ScriptSphere extends ScriptShape.Centred {
 	}
 
 	public static void forEachRegular(Consumer<ScriptSphere> consumer) {
-		synchronized (REGULAR_SPHERES) {
-			REGULAR_SPHERES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptSphere) s)));
-		}
+		REGULAR_SPHERES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptSphere) s)));
 	}
 
 	public static void forEachIgnoreDepth(Consumer<ScriptSphere> consumer) {
-		synchronized (IGNORE_DEPTH_SPHERES) {
-			IGNORE_DEPTH_SPHERES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptSphere) s)));
-		}
+		IGNORE_DEPTH_SPHERES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptSphere) s)));
 	}
 }

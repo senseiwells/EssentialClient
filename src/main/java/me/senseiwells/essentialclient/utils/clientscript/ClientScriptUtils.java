@@ -73,6 +73,7 @@ public class ClientScriptUtils {
 		Events.ON_TICK_POST.register(client -> {
 			for (KeyBinding binding : HELD_KEYS) {
 				InputUtil.Key key = ((KeyBindingAccessor) binding).getBoundKey();
+				binding.setPressed(true);
 				KeyBinding.onKeyPressed(key);
 			}
 		});
@@ -118,17 +119,19 @@ public class ClientScriptUtils {
 		});
 	}
 
-	public static void holdKey(KeyBinding key) {
+	public static void holdKey(Interpreter interpreter, KeyBinding key) {
 		HELD_KEYS.add(key);
+		interpreter.getThreadHandler().addShutdownEvent(() -> releaseKey(key));
 	}
 
 	public static void releaseKey(KeyBinding key) {
 		HELD_KEYS.remove(key);
+		key.setPressed(false);
 	}
 
-	public static void modifyKey(boolean held, KeyBinding key) {
+	public static void modifyKey(Interpreter interpreter, boolean held, KeyBinding key) {
 		if (held) {
-			holdKey(key);
+			holdKey(interpreter, key);
 		} else {
 			releaseKey(key);
 		}

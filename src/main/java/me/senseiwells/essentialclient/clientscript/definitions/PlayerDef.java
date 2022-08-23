@@ -177,7 +177,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		String action = arguments.skip().nextPrimitive(StringDef.class);
 		MinecraftClient client = EssentialUtils.getClient();
 		switch (action.toLowerCase()) {
-			case "hold" -> ClientScriptUtils.holdKey(client.options.useKey);
+			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.useKey);
 			case "stop" -> ClientScriptUtils.releaseKey(client.options.useKey);
 			case "once" -> ((MinecraftClientInvoker) client).rightClickMouseAccessor();
 			default -> throw new RuntimeError("Must pass 'hold', 'stop' or 'once' into use()");
@@ -198,7 +198,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		String action = arguments.skip().nextPrimitive(StringDef.class);
 		MinecraftClient client = EssentialUtils.getClient();
 		switch (action.toLowerCase()) {
-			case "hold" -> ClientScriptUtils.holdKey(client.options.attackKey);
+			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.attackKey);
 			case "stop" -> ClientScriptUtils.releaseKey(client.options.attackKey);
 			case "once" -> ((MinecraftClientInvoker) client).leftClickMouseAccessor();
 			default -> throw new RuntimeError("Must pass 'hold', 'stop' or 'once' into attack()");
@@ -341,7 +341,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.setWalking(true);"
 	)
 	private Void setWalking(Arguments arguments) {
-		ClientScriptUtils.modifyKey(arguments.skip().nextPrimitive(BooleanDef.class), EssentialUtils.getClient().options.forwardKey);
+		ClientScriptUtils.modifyKey(arguments.getInterpreter(), arguments.skip().nextPrimitive(BooleanDef.class), EssentialUtils.getClient().options.forwardKey);
 		return null;
 	}
 
@@ -352,7 +352,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.setSneaking(true);"
 	)
 	private Void setSneaking(Arguments arguments) {
-		ClientScriptUtils.modifyKey(arguments.skip().nextPrimitive(BooleanDef.class), EssentialUtils.getClient().options.sneakKey);
+		ClientScriptUtils.modifyKey(arguments.getInterpreter(), arguments.skip().nextPrimitive(BooleanDef.class), EssentialUtils.getClient().options.sneakKey);
 		return null;
 	}
 
@@ -1132,8 +1132,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Future<Void> breakBlock(Arguments arguments) {
 		BlockPos blockPos = arguments.skip().nextPrimitive(PosDef.class).getBlockPos();
 		CompletableFuture<Void> future = new CompletableFuture<>();
-		ClientScriptUtils.ensureMainThread("breakBlocks", arguments.getInterpreter(), () -> {
-			EssentialUtils.mineBlock(blockPos, future);
+		ClientScriptUtils.ensureMainThread("breakBlock", arguments.getInterpreter(), () -> {
+			EssentialUtils.mineBlock(blockPos, () -> arguments.getInterpreter().getThreadHandler().getRunning(), future);
 		});
 		return future;
 	}

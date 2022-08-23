@@ -284,8 +284,11 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		Function<Integer, Runnable> keyPartial = action -> () -> client.keyboard.onKey(handler, keyCode, scanCode, action, 0);
 
 		int ticks = MathHelper.ceil(milliseconds / 50.0F);
+		if (ticks < 0) {
+			throw new RuntimeError("Ticks cannot be negative");
+		}
 		ClientScriptUtils.ensureMainThread("holdKey", arguments.getInterpreter(), keyPartial.apply(GLFW.GLFW_PRESS));
-		Scheduler.scheduleLoop(0, 5, ticks, keyPartial.apply(GLFW.GLFW_REPEAT));
+		Scheduler.scheduleLoop(1, 5, ticks, keyPartial.apply(GLFW.GLFW_REPEAT));
 		Scheduler.schedule(ticks, keyPartial.apply(GLFW.GLFW_RELEASE));
 		return null;
 	}
@@ -341,8 +344,9 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			throw new RuntimeError("Expected a literal command builder as root");
 		}
 		CommandHelper.addComplexCommand(arguments.getInterpreter(), literalCommandNode);
-		// This forces main thread any ways
-		EssentialUtils.getPlayer().networkHandler.onCommandTree(CommandHelper.getCommandPacket());
+		ClientScriptUtils.ensureMainThread("addCommand", arguments.getInterpreter(), () -> {
+			EssentialUtils.getPlayer().networkHandler.onCommandTree(CommandHelper.getCommandPacket());
+		});
 		return null;
 	}
 

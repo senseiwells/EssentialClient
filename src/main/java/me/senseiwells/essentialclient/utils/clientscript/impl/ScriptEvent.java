@@ -1,8 +1,9 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
+import me.senseiwells.arucas.builtin.FunctionDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.ArucasFunction;
+import me.senseiwells.arucas.utils.Trace;
 import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -13,10 +14,10 @@ import java.util.UUID;
 public class ScriptEvent {
 	private final Interpreter interpreter;
 	private final MinecraftScriptEvent event;
-	private final ArucasFunction function;
+	private final ClassInstance function;
 	private final boolean cancellable;
 
-	public ScriptEvent(Interpreter interpreter, MinecraftScriptEvent event, ArucasFunction function, boolean cancellable) {
+	public ScriptEvent(Interpreter interpreter, MinecraftScriptEvent event, ClassInstance function, boolean cancellable) {
 		this.interpreter = interpreter.branch();
 		this.event = event;
 		this.function = function;
@@ -45,19 +46,19 @@ public class ScriptEvent {
 
 	public boolean invoke(List<ClassInstance> arguments) {
 		Interpreter branch = this.interpreter.branch();
-		int count = this.function.getCount();
+		int count = this.function.getPrimitive(FunctionDef.class).getCount();
 		List<ClassInstance> newArgs = count < arguments.size() ? arguments.subList(0, count) : arguments;
 
 		if (this.event.isThreadDefinable() && !this.cancellable && EssentialUtils.getClient().isOnThread()) {
 			branch.getThreadHandler().runAsync(() -> {
-				this.function.invoke(branch, newArgs);
+				branch.call(this.function, newArgs, Trace.getINTERNAL());
 				return null;
 			});
 			return false;
 		}
 		return branch.safe(false, () -> {
 			try {
-				this.function.invoke(branch, newArgs);
+				branch.call(this.function, newArgs, Trace.getINTERNAL());
 				return Boolean.FALSE;
 			} catch (CancelEvent cancelEvent) {
 				if (this.event.canCancel() && EssentialUtils.getClient().isOnThread()) {

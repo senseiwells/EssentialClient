@@ -32,6 +32,13 @@ public class Scheduler {
 		schedule(ticks, Executors.callable(runnable));
 	}
 
+	/**
+	 * Schedules a callable to run in the future.
+	 *
+	 * @param ticks    The number of ticks to wait, 0 means next tick and so on.
+	 * @param callable The callable to call.
+	 * @return The future when the callable is competed.
+	 */
 	public static <V> Future<V> schedule(int ticks, Callable<V> callable) {
 		synchronized (LOCK) {
 			if (ticks < 0) {

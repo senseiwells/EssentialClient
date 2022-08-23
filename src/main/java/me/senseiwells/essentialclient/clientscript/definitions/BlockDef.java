@@ -61,6 +61,17 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	}
 
 	@Override
+	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+		ScriptBlockState state = other.getPrimitive(this);
+		return state != null && instance.asPrimitive(this).state.equals(state.state);
+	}
+
+	@Override
+	public int hashCode$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+		return instance.asPrimitive(this).state.hashCode();
+	}
+
+	@Override
 	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
 		return "Block{id=" + instance.asPrimitive(this).getId().getPath() + "}";
 	}

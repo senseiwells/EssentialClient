@@ -86,9 +86,9 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 		int red = arguments.nextPrimitive(NumberDef.class).intValue();
 		int green = arguments.nextPrimitive(NumberDef.class).intValue();
 		int blue = arguments.nextPrimitive(NumberDef.class).intValue();
-		shape.setRed(red);
-		shape.setGreen(green);
-		shape.setBlue(blue);
+		shape.setOutlineRed(red);
+		shape.setOutlineGreen(green);
+		shape.setOutlineBlue(blue);
 		return null;
 	}
 
@@ -101,7 +101,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	private Void setOutlineRed(Arguments arguments) {
 		ScriptShape.Outlined shape = arguments.nextPrimitive(this);
 		int red = arguments.nextPrimitive(NumberDef.class).intValue();
-		shape.setRed(red);
+		shape.setOutlineRed(red);
 		return null;
 	}
 
@@ -114,7 +114,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	private Void setOutlineGreen(Arguments arguments) {
 		ScriptShape.Outlined shape = arguments.nextPrimitive(this);
 		int green = arguments.nextPrimitive(NumberDef.class).intValue();
-		shape.setGreen(green);
+		shape.setOutlineGreen(green);
 		return null;
 	}
 
@@ -127,7 +127,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	private Void setOutlineBlue(Arguments arguments) {
 		ScriptShape.Outlined shape = arguments.nextPrimitive(this);
 		int blue = arguments.nextPrimitive(NumberDef.class).intValue();
-		shape.setBlue(blue);
+		shape.setOutlineBlue(blue);
 		return null;
 	}
 

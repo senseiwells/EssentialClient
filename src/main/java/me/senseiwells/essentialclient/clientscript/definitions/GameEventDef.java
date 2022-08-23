@@ -56,8 +56,10 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 		if (event == null) {
 			throw new RuntimeError("No such event '%s'".formatted(eventName));
 		}
-		ArucasFunction function = arguments.nextPrimitive(FunctionDef.class);
-		instance.setPrimitive(this, new ScriptEvent(arguments.getInterpreter(), event, function, false));
+		ClassInstance function = arguments.next(FunctionDef.class);
+		ScriptEvent scriptEvent = new ScriptEvent(arguments.getInterpreter(), event, function, false);
+		instance.setPrimitive(this, scriptEvent);
+		scriptEvent.register();
 		return null;
 	}
 
@@ -77,9 +79,11 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 		if (event == null) {
 			throw new RuntimeError("No such event '%s'".formatted(eventName));
 		}
-		ArucasFunction function = arguments.nextPrimitive(FunctionDef.class);
+		ClassInstance function = arguments.next(FunctionDef.class);
 		boolean cancellable = arguments.nextPrimitive(BooleanDef.class);
-		instance.setPrimitive(this, new ScriptEvent(arguments.getInterpreter(), event, function, cancellable));
+		ScriptEvent scriptEvent = new ScriptEvent(arguments.getInterpreter(), event, function, cancellable);
+		instance.setPrimitive(this, scriptEvent);
+		scriptEvent.register();
 		return null;
 	}
 

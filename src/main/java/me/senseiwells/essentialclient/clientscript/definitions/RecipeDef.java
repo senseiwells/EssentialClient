@@ -51,16 +51,18 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 			return super.defineStaticFields();
 		}
 
-		SortedMap<String, Recipe<?>> map = new TreeMap<>();
+		SortedMap<String, ClassInstance> map = new TreeMap<>();
 		for (Recipe<?> recipe : networkHandler.getRecipeManager().values()) {
-			map.put(recipe.toString().toUpperCase(), recipe);
+			map.put(recipe.toString().toUpperCase(), this.create(recipe));
 		}
 
+		ArucasList list = new ArucasList();
 		List<Triple<String, Object, Boolean>> fields = new ArrayList<>(map.size());
 		map.forEach((key, value) -> {
+			list.add(value);
 			fields.add(new Triple<>(key, value, false));
 		});
-		fields.add(new Triple<>("ALL", map.values(), false));
+		fields.add(new Triple<>("ALL", list, false));
 		return fields;
 	}
 

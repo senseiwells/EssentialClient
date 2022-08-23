@@ -4,10 +4,10 @@ import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class ScriptShape {
 	private final Interpreter interpreter;
@@ -195,13 +195,11 @@ public abstract class ScriptShape {
 
 	private void addShape() {
 		Map<UUID, Set<ScriptShape>> map = this.getMap();
-		synchronized (map) {
-			Set<ScriptShape> shapes = map.computeIfAbsent(this.interpreter.getProperties().getId(), id -> {
-				this.interpreter.getThreadHandler().addShutdownEvent(() -> map.remove(id));
-				return new LinkedHashSet<>();
-			});
-			shapes.add(this);
-		}
+		Set<ScriptShape> shapes = map.computeIfAbsent(this.interpreter.getProperties().getId(), id -> {
+			this.interpreter.getThreadHandler().addShutdownEvent(() -> map.remove(id));
+			return ConcurrentHashMap.newKeySet();
+		});
+		shapes.add(this);
 	}
 
 	private void removeShape() {

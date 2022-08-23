@@ -18,7 +18,10 @@ public class ArucasMinecraftExtension implements ArucasExtension {
 	@Override
 	public List<BuiltInFunction> getBuiltInFunctions() {
 		return List.of(
-			BuiltInFunction.of("hold", this::hold)
+			BuiltInFunction.of("hold", this::hold),
+			BuiltInFunction.of("uncatchable", a -> {
+				throw new NullPointerException();
+			})
 		);
 	}
 

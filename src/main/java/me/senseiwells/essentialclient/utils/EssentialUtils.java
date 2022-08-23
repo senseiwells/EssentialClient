@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.SpawnHelper;
@@ -40,6 +41,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
@@ -166,10 +168,11 @@ public class EssentialUtils {
 		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(null, null) >= 0;
 	}
 
-	public static void mineBlock(BlockPos pos, CompletableFuture<Void> future) {
-		if (canMineBlock(pos)) {
-			getInteractionManager().attackBlock(pos, Direction.DOWN);
-			Scheduler.schedule(5, () -> mineBlock(pos, future));
+	public static void mineBlock(BlockPos pos, Supplier<Boolean> condition, CompletableFuture<Void> future) {
+		if (canMineBlock(pos) && condition.get()) {
+			getInteractionManager().updateBlockBreakingProgress(pos, Direction.DOWN);
+			getPlayer().swingHand(Hand.MAIN_HAND);
+			Scheduler.schedule(0, () -> mineBlock(pos, condition, future));
 			return;
 		}
 		future.complete(null);

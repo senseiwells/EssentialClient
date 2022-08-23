@@ -7,10 +7,7 @@ import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.BuiltInFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.*;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import net.minecraft.block.Block;
@@ -45,21 +42,39 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	}
 
 	@Override
+	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+		ScriptMaterial material = other.asPrimitive(this);
+		return material != null && instance.asPrimitive(this).asDefault().equals(material.asDefault());
+	}
+
+	@Override
+	public int hashCode$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+		return instance.asPrimitive(this).asDefault().hashCode();
+	}
+
+	@Override
+	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+		return instance.asPrimitive(this).asDefault().toString();
+	}
+
+	@Override
 	public List<Triple<String, Object, Boolean>> defineStaticFields() {
-		SortedMap<String, Object> map = new TreeMap<>();
+		SortedMap<String, ClassInstance> map = new TreeMap<>();
 
 		for (Item item : Registry.ITEM) {
-			map.put(item.toString().toUpperCase(), item);
+			map.put(item.toString().toUpperCase(), this.create(ScriptMaterial.materialOf(item)));
 		}
 		for (Block block : Registry.BLOCK) {
-			map.put(block.toString().toUpperCase(), block);
+			map.computeIfAbsent(block.toString().toUpperCase(), s -> {
+				return this.create(ScriptMaterial.materialOf(block));
+			});
 		}
 
 		List<Triple<String, Object, Boolean>> fields = new ArrayList<>(map.size());
 		map.forEach((key, value) -> {
 			fields.add(new Triple<>(key, value, false));
 		});
-		fields.add(new Triple<>("ALL", map.values(), false));
+		fields.add(new Triple<>("ALL", map.values().stream().toList(), false));
 		return fields;
 	}
 

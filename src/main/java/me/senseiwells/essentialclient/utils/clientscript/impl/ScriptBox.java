@@ -3,15 +3,15 @@ package me.senseiwells.essentialclient.utils.clientscript.impl;
 import me.senseiwells.arucas.core.Interpreter;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class ScriptBox extends ScriptShape.Cornered {
-	private static final Map<UUID, Set<ScriptShape>> REGULAR_BOXES = new LinkedHashMap<>(0);
-	private static final Map<UUID, Set<ScriptShape>> IGNORE_DEPTH_BOXES = new LinkedHashMap<>(0);
+	private static final Map<UUID, Set<ScriptShape>> REGULAR_BOXES = new ConcurrentHashMap<>();
+	private static final Map<UUID, Set<ScriptShape>> IGNORE_DEPTH_BOXES = new ConcurrentHashMap<>();
 
 	public ScriptBox(Interpreter interpreter, Vec3d cornerA, Vec3d cornerB) {
 		super(interpreter, cornerA, cornerB);
@@ -36,14 +36,10 @@ public class ScriptBox extends ScriptShape.Cornered {
 	}
 
 	public static void forEachRegular(Consumer<ScriptBox> consumer) {
-		synchronized (REGULAR_BOXES) {
-			REGULAR_BOXES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptBox) s)));
-		}
+		REGULAR_BOXES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptBox) s)));
 	}
 
 	public static void forEachIgnoreDepth(Consumer<ScriptBox> consumer) {
-		synchronized (IGNORE_DEPTH_BOXES) {
-			IGNORE_DEPTH_BOXES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptBox) s)));
-		}
+		IGNORE_DEPTH_BOXES.values().forEach(set -> set.forEach(s -> consumer.accept((ScriptBox) s)));
 	}
 }
