@@ -1,13 +1,15 @@
 plugins {
 	id "maven-publish"
-	id "fabric-loom" version "0.13-SNAPSHOT"
+	id "fabric-loom" version "0.11-SNAPSHOT"
 	id "com.github.johnrengelman.shadow" version "7.1.2" 
 	id "io.github.juuxel.loom-quiltflower" version "1.7.0" 
 	id "com.replaymod.preprocess" version "897c4096e2"
 	id "com.diffplug.spotless" version "6.8.0"
 }
-preprocess {
-
+int mcVersion = 1
+preprocess{
+	mcVersion = vars.get()["MC"]
+	tabIndentation = true
 }
 repositories {
     mavenCentral()
@@ -30,24 +32,46 @@ repositories {
 configurations {
     shade
 }
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.minecraft_version + "-" + project.mod_version
 group = project.maven_group
 
 
+spotless {
+	format 'misc', {
+		target '**/*.gradle'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+
+	java {
+		target 'src/main/**/*.java'
+		toggleOffOn()
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+}
+loom {
+
+}
+
+shadowJar {
+	configurations = [project.configurations.shade]
+}
 
 dependencies {
 
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "carpet:fabric-carpet:${project.carpet_core_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-
+   
     shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
     annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
 
@@ -70,12 +94,6 @@ dependencies {
 
 }
 
-
-
-shadowJar {
-	configurations = [project.configurations.shade]
-}
-
 processResources {
 	inputs.property "version", project.mod_version
 
@@ -92,21 +110,8 @@ tasks.withType(JavaCompile) {
 	it.options.release = 17
 }
 
-spotless {
-	format 'misc', {
-		target '**/*.gradle'
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
-
-	java {
-		target 'src/main/**/*.java'
-		toggleOffOn()
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
+java {
+	withSourcesJar()
 }
 
 prepareRemapJar {
@@ -114,8 +119,8 @@ prepareRemapJar {
 }
 
 remapJar {
+	remapperIsolation = true
 	inputFile.set shadowJar.archiveFile.get()
-
 	doLast {
 		shadowJar.archiveFile.get().asFile.delete()
 	}
