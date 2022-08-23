@@ -12,8 +12,10 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.network.message.MessageSender;
 import net.minecraft.client.gui.ClientChatListener;
 //#else
+//$$import net.minecraft.network.message.MessageType;
 //$$import net.minecraft.client.network.message.MessageHandler;
 //$$import net.minecraft.network.message.SignedMessage;
+//$$import net.minecraft.text.Text;
 //#endif
 import net.minecraft.network.message.MessageType;
 import net.minecraft.text.Text;
@@ -46,7 +48,7 @@ public class MessageHandlerMixin {
 	}
 	//#else
 	//$$@ModifyExpressionValue(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/message/MessageType$Parameters;applyChatDecoration(Lnet/minecraft/text/Text;)Lnet/minecraft/text/Text;"))
-	//$$private Text modifyChatMessage() {
+	//$$private Text modifyChatMessage(Text text, SignedMessage signedMessage, MessageType.Parameters params) {
 	//$$	if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 	//$$		PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(signedMessage.signedHeader().sender());
 	//$$		if (playerListEntry != null) {
