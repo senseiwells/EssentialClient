@@ -311,11 +311,19 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	)
 	private Text getLatestChatMessage(Arguments arguments) {
 		MinecraftClient client = arguments.nextPrimitive(this);
-		ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+		//#if MC< 11901
+		ChatHudLine<Text>[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+		//#else
+		//$$ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+		//#endif
 		if (chat.length == 0) {
 			return null;
 		}
-		return chat[0].content();
+		//#if MC< 11901
+		return chat[0].getText().copy();
+		//#else
+		//$$return chat[0].content();
+		//#endif
 	}
 
 	@FunctionDoc(
