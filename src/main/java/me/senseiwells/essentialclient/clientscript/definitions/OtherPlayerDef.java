@@ -74,8 +74,11 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 			MemberFunction.of("getItemForPlayerSlot", 1, this::getItemForPlayerSlot),
 			MemberFunction.of("getSlotFor", 1, this::getSlotFor),
 			MemberFunction.of("getAllSlotsFor", 1, this::getAllSlotsFor),
+			MemberFunction.of("getAllSlotsFor", 2, this::getAllSlotsForWithOption),
 			MemberFunction.of("getAbilities", this::getAbilities),
 			MemberFunction.of("getLevels", this::getLevels),
+			MemberFunction.of("getXpProgress", this::getXpProgress),
+			MemberFunction.of("getNextLevelExperience", this::getNextLevelExperience),
 			MemberFunction.of("getHunger", this::getHunger),
 			MemberFunction.of("getSaturation", this::getSaturation),
 			MemberFunction.of("getFishingBobber", this::getFishingBobber)
@@ -249,6 +252,43 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	}
 
 	@FunctionDoc(
+		name = "getAllSlotsFor",
+		desc = "This gets all the slot numbers of the specified item in the players combined inventory",
+		params = {MATERIAL, "materialLike", "the item or material you want to get the slot of",
+			STRING, "inventoryType", "all/combined -> includes external, player/main -> player slots, external/other -> excludes player inventory"},
+		returns = {LIST, "the slot numbers of the item, empty list if not found"},
+		examples = "otherPlayer.getAllSlotsFor(Material.DIAMOND, 'player');"
+	)
+	private ArucasList getAllSlotsForWithOption(Arguments arguments) {
+		AbstractClientPlayerEntity playerEntity = arguments.nextPrimitive(this);
+		ScriptMaterial materialLike = arguments.nextPrimitive(MaterialDef.class);
+		String inventoryArgument = arguments.nextPrimitive(StringDef.class);
+		ScreenHandler screenHandler = playerEntity.currentScreenHandler;
+		ArucasList slotList = new ArucasList();
+		for (Slot slot : screenHandler.slots) {
+			switch (inventoryArgument) {
+				case "all", "combined" -> {
+				}
+				case "player", "main" -> {
+					if (!(slot.inventory instanceof PlayerInventory)) {
+						continue;
+					}
+				}
+				case "external", "other" -> {
+					if (slot.inventory instanceof PlayerInventory) {
+						continue;
+					}
+				}
+				default -> throw new RuntimeError("String argument was not either one of combined / player / other");
+			}
+			if (slot.getStack().getItem() == materialLike.asItem()) {
+				slotList.add(arguments.getInterpreter().create(NumberDef.class, (double) slot.id));
+			}
+		}
+		return slotList;
+	}
+
+	@FunctionDoc(
 		name = "getAbilities",
 		desc = {
 			"This gets the abilities of the player in a map",
@@ -281,6 +321,28 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	private double getLevels(Arguments arguments) {
 		AbstractClientPlayerEntity playerEntity = arguments.nextPrimitive(this);
 		return playerEntity.experienceLevel;
+	}
+
+	@FunctionDoc(
+		name = "getXpProgress",
+		desc = "This gets the number of experience progress the player has",
+		returns = {NUMBER, "the number of experience progress"},
+		examples = "otherPlayer.getXpProgress();"
+	)
+	private double getXpProgress(Arguments arguments) {
+		AbstractClientPlayerEntity playerEntity = arguments.nextPrimitive(this);
+		return playerEntity.experienceProgress;
+	}
+
+	@FunctionDoc(
+		name = "getNextLevelExperience",
+		desc = "This gets the number of experience required to level up for the player",
+		returns = {NUMBER, "the number required to next level"},
+		examples = "otherPlayer.getNextLevelExperience();"
+	)
+	private double getNextLevelExperience(Arguments arguments) {
+		AbstractClientPlayerEntity playerEntity = arguments.nextPrimitive(this);
+		return playerEntity.getNextLevelExperience();
 	}
 
 	@FunctionDoc(
