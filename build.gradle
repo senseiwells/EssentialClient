@@ -1,11 +1,15 @@
 plugins {
 	id "com.replaymod.preprocess" version "897c4096e2"
+    id 'fabric-loom' version '0.11-SNAPSHOT' apply false
+    id 'io.github.juuxel.loom-quiltflower' version '1.7.0' apply false
 }
 
 preprocess {
 	def mc119 = createNode('1.19' , 1_19_00, 'yarn')
 	def mc1192 = createNode('1.19.2' , 1_19_01, 'yarn')
+	mc119.link(mc1192, file('versions/mapping.txt'))
 }
+
 
 
 task buildAndGather {
