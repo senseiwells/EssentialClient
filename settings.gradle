@@ -8,6 +8,21 @@ pluginManagement {
 			name = 'Cotton'
 			url = 'https://server.bbkr.space/artifactory/libs-release/'
 		}
+		maven {
+			name = 'Jitpack'
+			url = "https://jitpack.io"
+		}
+		mavenCentral()
 		gradlePluginPortal()
 	}
+	resolutionStrategy {
+		eachPlugin {
+			switch (requested.id.id) {
+				case "com.replaymod.preprocess": {
+					useModule("com.github.Fallen-Breath:preprocessor:${requested.version}")
+				}
+			}
+		}
+	}
 }
+

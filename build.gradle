@@ -5,6 +5,11 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "io.github.juuxel.loom-quiltflower" version "1.6.0"
 	id "com.diffplug.spotless" version "6.8.0"
+	id "com.replaymod.preprocess" version "897c4096e2"
+}
+
+preprocess {
+
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -43,7 +48,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "carpet:fabric-carpet:1.19.1-${project.carpet_core_version}"
+	modImplementation "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")

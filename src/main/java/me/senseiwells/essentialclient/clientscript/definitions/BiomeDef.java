@@ -15,11 +15,9 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
-import java.util.Optional;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BIOME;
@@ -210,8 +208,8 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	)
 	private String getId(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
-		Optional<RegistryKey<Biome>> biomeKey = BuiltinRegistries.BIOME.getKey(biome);
-		return biomeKey.map(biomeRegistryKey -> biomeRegistryKey.getValue().getPath()).orElse("plains");
+		Identifier biomeIdentifier = BuiltinRegistries.BIOME.getId(biome);
+		return biomeIdentifier == null ? "minecraft:plains" : biomeIdentifier.getPath();
 	}
 
 	@FunctionDoc(

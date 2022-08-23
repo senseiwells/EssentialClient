@@ -14,8 +14,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin {
+
 	@Shadow
-	public abstract boolean sendCommand(String command);
+	public abstract void sendCommand(String command);
 
 	@Inject(method = "sendCommand(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
 	public void onChatMessage(String command, Text preview, CallbackInfo ci) {
