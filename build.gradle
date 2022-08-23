@@ -1,10 +1,4 @@
 plugins {
-	id "java"
-	id "maven-publish"
-	id "fabric-loom" version "0.11-SNAPSHOT"
-	id "com.github.johnrengelman.shadow" version "7.1.2"
-	id "io.github.juuxel.loom-quiltflower" version "1.6.0"
-	id "com.diffplug.spotless" version "6.8.0"
 	id "com.replaymod.preprocess" version "897c4096e2"
 }
 
@@ -13,136 +7,23 @@ preprocess {
 	def mc1192 = createNode('1.19.2' , 1_19_01, 'yarn')
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
 
-archivesBaseName = project.archives_base_name
-version = project.minecraft_version + "-" + project.mod_version
-group = project.maven_group
-
-repositories {
-	mavenCentral()
-	maven {
-		url "https://masa.dy.fi/maven"
-	}
-	maven {
-		url "https://maven.terraformersmc.com/releases/"
-	}
-	maven {
-		url "https://jitpack.io"
-	}
-	maven {
-		url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
-	}
-}
-
-configurations {
-	shade
-}
-
-shadowJar {
-	configurations = [project.configurations.shade]
-}
-
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-
-	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
-	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
-
-	def arucasVersion = project.arucas_version
-	if (arucasVersion.length() > 10) {
-		arucasVersion = arucasVersion.substring(0, 10)
-	}
-
-	include implementation("com.github.senseiwells:Arucas:${arucasVersion}")
-	// include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
-	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
-		transitive = false
-	}
-
-	modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
-
-	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
-	modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
-
-}
-
-processResources {
-	inputs.property "version", project.mod_version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.mod_version
-	}
-}
-
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
-	it.options.release = 17
-}
-
-spotless {
-	format 'misc', {
-		target '**/*.gradle'
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
-
-	java {
-		target 'src/main/**/*.java'
-		toggleOffOn()
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
-}
-
-java {
-	// withSourcesJar()
-}
-
-prepareRemapJar {
-	dependsOn "shadowJar"
-}
-
-remapJar {
-	inputFile.set shadowJar.archiveFile.get()
-
-	doLast {
-		shadowJar.archiveFile.get().asFile.delete()
-	}
-}
-
-shadowJar {
-	from "LICENSE"
-
-	relocate("com.llamalad7", "shadow.llamalad7")
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
-				builtBy remapJar
-			}
-		}
-	}
-
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
-	}
+task buildAndGather {
+    subprojects {
+        dependsOn project.name + ':build'
+    }
+    doFirst {
+        println 'Gathering builds'
+        copy {
+            subprojects {
+                def libDir = project.projectDir.toPath().resolve('build/libs')
+                from(libDir) {
+                    include '*.jar'
+                    exclude '*-dev.jar', '*-sources.jar'
+                }
+                into 'build/libs/'
+                duplicatesStrategy DuplicatesStrategy.INCLUDE
+            }
+        }
+    }
 }
