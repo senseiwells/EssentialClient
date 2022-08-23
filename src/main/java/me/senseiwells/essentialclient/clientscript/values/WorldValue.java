@@ -27,7 +27,10 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.world.biome.Biome;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
@@ -162,7 +165,8 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			NumberValue num2 = arguments.getNextNumber();
 			NumberValue num3 = arguments.getNextNumber();
 			BlockPos blockPos = new BlockPos(num1.value, num2.value, num3.value);
-			return new BiomeValue(world.getBiome(blockPos).value());
+			Map.Entry<Biome, String> entry = this.getBiome(world.getBiome(blockPos));
+			return new BiomeValue(entry.getKey(), entry.getValue());
 		}
 
 		@FunctionDoc(
@@ -175,8 +179,9 @@ public class WorldValue extends GenericValue<ClientWorld> {
 		private Value getBiomeAtPos(Arguments arguments) throws CodeError {
 			ClientWorld world = this.getWorld(arguments);
 			PosValue posValue = arguments.getNext(PosValue.class);
-			BlockPos blockPos = new BlockPos(posValue.value);
-			return new BiomeValue(world.getBiome(blockPos).value());
+			BlockPos blockPos = posValue.toBlockPos();
+			Map.Entry<Biome, String> entry = this.getBiome(world.getBiome(blockPos));
+			return new BiomeValue(entry.getKey(), entry.getValue());
 		}
 
 		@FunctionDoc(
@@ -722,6 +727,10 @@ public class WorldValue extends GenericValue<ClientWorld> {
 				throw arguments.getError("World was null");
 			}
 			return world;
+		}
+
+		private Map.Entry<Biome, String> getBiome(RegistryEntry<Biome> entry) {
+			return Map.entry(entry.value(), entry.getKeyOrValue().map((biomeRegistryKey) -> biomeRegistryKey.getValue().toString(), (notFound) -> "[unknown]"));
 		}
 
 		@Override

@@ -10,19 +10,22 @@ import me.senseiwells.arucas.utils.Context;
 import me.senseiwells.arucas.values.*;
 import me.senseiwells.arucas.values.functions.MemberFunction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 
-import java.util.Optional;
 
 import static me.senseiwells.arucas.utils.ValueTypes.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class BiomeValue extends GenericValue<Biome> {
+	private String identifier = "unknown";
+
 	public BiomeValue(Biome biome) {
 		super(biome);
+	}
+
+	public BiomeValue(Biome biome, String identifier) {
+		super(biome);
+		this.identifier = identifier;
 	}
 
 	@Override
@@ -232,9 +235,8 @@ public class BiomeValue extends GenericValue<Biome> {
 			example = "biome.getId();"
 		)
 		private Value getId(Arguments arguments) throws CodeError {
-			Biome biome = this.getBiome(arguments);
-			Optional<RegistryKey<Biome>> biomeKey = BuiltinRegistries.BIOME.getKey(biome);
-			return biomeKey.map(biomeRegistryKey -> StringValue.of(biomeRegistryKey.getValue().getPath())).orElseGet(() -> StringValue.of(BiomeKeys.PLAINS.getValue().getPath()));
+			BiomeValue value = arguments.getNext(BiomeValue.class);
+			return StringValue.of(value.identifier);
 		}
 
 		@FunctionDoc(
@@ -260,7 +262,7 @@ public class BiomeValue extends GenericValue<Biome> {
 		}
 
 		private Biome getBiome(Arguments arguments) throws CodeError {
-			Biome biome = arguments.getNextGeneric(BiomeValue.class);
+			Biome biome = arguments.getNext(BiomeValue.class).value;
 			if (biome == null) {
 				throw arguments.getError("Biome was null");
 			}
