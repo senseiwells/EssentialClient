@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
-import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
@@ -10,7 +9,11 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+
+//#if MC >= 11901
 import net.minecraft.network.message.MessageType;
+//#endif
+
 import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -20,7 +23,6 @@ import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
@@ -39,8 +40,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private MinecraftClient client;
 
+	//#if MC >= 11901
 	@Shadow
 	private DynamicRegistryManager.Immutable registryManager;
+	//#endif
 
 	@Inject(method = "onHealthUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
@@ -76,32 +79,45 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		MinecraftScriptEvents.ON_RESPAWN.run(this.client.player);
 	}
 
+	//#if MC >= 11901
 	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
-		//#if MC < 11901
-		if (this.handleMessage(Util.NIL_UUID, packet.content().getString(), packet::getMessageType)) {
-		//#else
-		//$$if (this.handleMessage(Util.NIL_UUID, packet.content().getString(), packet.overlay() ? "overlay" : "system")) {
-		//#endif
+		String content = packet.content().getString();
+		String type = packet.overlay() ? "overlay" : "system";
+		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(Util.NIL_UUID.toString(), content, type)) {
 			ci.cancel();
 		}
 	}
 
-	//#if MC < 11901
-	@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/ChatMessageS2CPacket;sender()Lnet/minecraft/network/message/MessageSender;"), cancellable = true)
-	private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci) {
-		if (this.handleMessage(packet.sender().uuid(), packet.getSignedMessage().getContent().getString(), packet::getMessageType)) {
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Not much we can do about that one
+	@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/message/MessageHandler;onChatMessage(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/network/message/MessageType$Parameters;)V", shift = At.Shift.BEFORE), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci, Optional<MessageType.Parameters> parameters) {
+		MessageType messageType = parameters.orElseThrow().type();
+		Identifier typeId = this.registryManager.get(Registry.MESSAGE_TYPE_KEY).getId(messageType);
+		UUID uuid = packet.message().signedHeader().sender();
+		String content = packet.message().getContent().getString();
+		String type = typeId == null ? "unknown" : typeId.getPath();
+		if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(uuid.toString(), content, type)) {
 			ci.cancel();
 		}
 	}
+	//#elseif MC >= 11800
+	//$$@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"), cancellable = true)
+	//$$private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+	//$$	UUID uuid = packet.getSender();
+	//$$	String content = packet.getMessage().getString();
+	//$$	String type = packet.getType().name().toLowerCase(); // getLocation
+	//$$	if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(uuid.toString(), content, type)) {
+	//$$		ci.cancel();
+	//$$	}
+	//$$}
 	//#else
-	//$$@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Not much we can do about that one
-	//$$@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/message/MessageHandler;onChatMessage(Lnet/minecraft/network/message/SignedMessage;Lnet/minecraft/network/message/MessageType$Parameters;)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	//$$private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci, Optional<MessageType.Parameters> parameters) {
-	//$$	MessageType messageType = parameters.orElseThrow().type();
-	//$$	Identifier typeId = this.registryManager.get(Registry.MESSAGE_TYPE_KEY).getId(messageType);
-	//$$	String type = typeId == null ? "unknown" : typeId.getPath();
-	//$$	if (this.handleMessage(packet.message().signedHeader().sender(), packet.message().getContent().getString(), type)) {
+	//$$@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"), cancellable = true)
+	//$$private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+	//$$	UUID uuid = packet.getSender();
+	//$$	String content = packet.getMessage().getString();
+	//$$	String type = packet.getLocation().name().toLowerCase();
+	//$$	if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(uuid.toString(), content, type)) {
 	//$$		ci.cancel();
 	//$$	}
 	//$$}
@@ -140,21 +156,5 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	private void onEntityRemoved(int entityId, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(entityId);
 		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(entity);
-	}
-
-	@Unique
-	private boolean handleMessage(UUID uuid, String content, String messageType) {
-		return MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(uuid.toString(), content, messageType);
-	}
-
-	@Unique
-	private boolean handleMessage(UUID uuid, String content, Function<Registry<MessageType>, MessageType> messageType) {
-		Registry<MessageType> registry = this.registryManager.get(Registry.MESSAGE_TYPE_KEY);
-		Identifier messageTypeId = registry.getId(messageType.apply(registry));
-		return MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(
-			uuid.toString(),
-			content,
-			messageTypeId == null ? "unknown" : messageTypeId.getPath()
-		);
 	}
 }

@@ -14,7 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
+	//#if MC >= 11800
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;clearFog()V", shift = At.Shift.BEFORE))
+	//#else
+	//$$@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;method_23792()V", shift = At.Shift.BEFORE))
+	//#endif
 	private void postRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
 		RenderHelper.renderAllShapes(matrices);
 		// Rendering blocks needs to come after rendering

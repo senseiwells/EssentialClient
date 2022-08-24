@@ -27,9 +27,15 @@ public abstract class MinecraftClientMixin extends ReentrantThreadExecutor<Runna
 	@Shadow
 	private void doItemUse() { }
 
+	//#if MC >= 11800
 	@Shadow
 	protected abstract boolean doAttack();
+	//#else
+	//$$@Shadow
+	//$$private void doAttack() { }
+	//#endif
 
+	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void onTick(CallbackInfo ci) {
 		Events.ON_TICK_POST.trigger((MinecraftClient) (Object) this);
@@ -41,6 +47,7 @@ public abstract class MinecraftClientMixin extends ReentrantThreadExecutor<Runna
 		MinecraftScriptEvents.ON_DISCONNECT.run();
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "close", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/TextureManager;close()V"))
 	private void onClose(CallbackInfo ci) {
 		Events.ON_CLOSE.trigger((MinecraftClient) (Object) this);

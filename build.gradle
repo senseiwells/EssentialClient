@@ -1,37 +1,34 @@
 plugins {
 	id "com.replaymod.preprocess" version "897c4096e2"
-    id 'fabric-loom' version '0.11-SNAPSHOT' apply false
-    id 'io.github.juuxel.loom-quiltflower' version '1.7.0' apply false
+	id 'fabric-loom' version '0.11-SNAPSHOT' apply false
+	id 'io.github.juuxel.loom-quiltflower' version '1.7.0' apply false
 }
 
 preprocess {
-	def mc1171 = createNode('1.17.1' , 1_17_01, 'yarn')
-	def mc1182 = createNode('1.18.2' , 1_18_02, 'yarn')
-	def mc119 = createNode('1.19' , 1_19_00, 'yarn')
-	def mc1192 = createNode('1.19.2' , 1_19_01, 'yarn')
-	mc119.link(mc1192, file('versions/mapping.txt'))
-	mc119.link(mc1171, file('versions/mapping_11900_11701.txt'))
-	mc119.link(mc1182, file('versions/mapping_11900_11802.txt'))
+	def mc117 = createNode("1.17.1", 1_17_01, "yarn")
+	def mc118 = createNode("1.18.2", 1_18_02, "yarn")
+	def mc119 = createNode("1.19.2", 1_19_01, "yarn")
+	mc119.link(mc117, file("versions/mapping-1.17.txt"))
+	mc119.link(mc118, file("versions/mapping-1.18.txt"))
 }
 
 
-
 task buildAndGather {
-    subprojects {
-        dependsOn project.name + ':build'
-    }
-    doFirst {
-        println 'Gathering builds'
-        copy {
-            subprojects {
-                def libDir = project.projectDir.toPath().resolve('build/libs')
-                from(libDir) {
-                    include '*.jar'
-                    exclude '*-dev.jar', '*-sources.jar'
-                }
-                into 'build/libs/'
-                duplicatesStrategy DuplicatesStrategy.INCLUDE
-            }
-        }
-    }
+	subprojects {
+		dependsOn project.name + ":build"
+	}
+	doFirst {
+		println "Gathering builds"
+		copy {
+			subprojects {
+				def libDir = project.projectDir.toPath().resolve("build/libs")
+				from(libDir) {
+					include "*.jar"
+					exclude "*-dev.jar", "*-sources.jar"
+				}
+				into "build/libs/"
+				duplicatesStrategy DuplicatesStrategy.INCLUDE
+			}
+		}
+	}
 }

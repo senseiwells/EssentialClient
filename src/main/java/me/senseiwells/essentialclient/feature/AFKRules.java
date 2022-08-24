@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.misc.Events;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -31,7 +32,7 @@ public class AFKRules {
 			if (playerLocation.equals(prevPlayerLocation) && mouseX == prevMouseX && mouseY == prevMouseY) {
 				ticks++;
 				if (ticks == announceAfk) {
-					playerEntity.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue(), null);
+					EssentialUtils.sendChatMessage(ClientRules.ANNOUNCE_AFK_MESSAGE.getValue());
 					wasAfk = true;
 				}
 				if (logout >= 200 && ticks == logout) {
@@ -46,7 +47,7 @@ public class AFKRules {
 			if (wasAfk) {
 				String message = ClientRules.ANNOUNCE_BACK_MESSAGE.getValue();
 				if (!message.isBlank()) {
-					playerEntity.sendChatMessage(message, null);
+					EssentialUtils.sendChatMessage(message);
 				}
 				wasAfk = false;
 			}

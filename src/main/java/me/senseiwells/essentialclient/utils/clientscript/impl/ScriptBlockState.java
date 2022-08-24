@@ -12,7 +12,7 @@ public class ScriptBlockState implements ScriptMaterial {
 
 	public ScriptBlockState(BlockState state, BlockPos pos) {
 		this.state = state;
-		this.pos = pos;
+		this.pos = pos.toImmutable();
 	}
 
 	@Override

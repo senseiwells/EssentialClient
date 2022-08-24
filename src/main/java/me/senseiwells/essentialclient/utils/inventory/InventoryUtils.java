@@ -550,21 +550,16 @@ public class InventoryUtils {
 			throw new RuntimeError("Not in anvil gui");
 		}
 		interpreter = interpreter.branch();
-		boolean success = false;
 		for (Slot slot : anvilHandler.slots) {
 			ItemStack itemStack = slot.getStack();
 			if (!itemStack.getName().getString().equals(newName)) {
 				List<ClassInstance> args = List.of(interpreter.create(ItemStackDef.class, new ScriptItemStack(itemStack)));
 				Boolean returnValue = predicate.invoke(interpreter.branch(), args).getPrimitive(BooleanDef.class);
 				if (returnValue != null && returnValue) {
-					success = true;
 					shiftClickSlot(anvilHandler, slot.id);
 					break;
 				}
 			}
-		}
-		if (!success) {
-			return false;
 		}
 		anvilHandler.updateResult();
 		anvilHandler.setNewItemName(newName);

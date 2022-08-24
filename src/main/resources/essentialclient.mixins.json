@@ -35,7 +35,7 @@
     "clientScript.NbtListMixin",
     "clientScript.ScreenMixin",
     "clientScript.WorldRendererMixin",
-    "commandSuggestorIgnoresSpaces.CommandSuggestorMixin",
+    "commandSuggestorIgnoresSpaces.ChatInputSuggestorMixin",
     "compat.ClientPlayerInteractionManagerMixin",
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",

@@ -36,8 +36,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.13.1",
-    "carpet": ">=1.4.78",
-    "minecraft": "1.19.x"
+    "carpet": "${carpet_dependency}",
+    "minecraft": "${minecraft_dependency}"
   },
   "custom": {
     "multiconnect": {

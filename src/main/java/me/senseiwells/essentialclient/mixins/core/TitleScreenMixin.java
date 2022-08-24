@@ -39,10 +39,12 @@ public abstract class TitleScreenMixin extends Screen {
 		}
 	}
 
+	//#if MC >= 11800
 	@ModifyArg(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/PressableTextWidget;<init>(IIIILnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;Lnet/minecraft/client/font/TextRenderer;)V"), index = 1)
 	private int onPressableText(int y) {
 		return ClientRules.TITLE_TEXT_TO_TOP.getValue() ? 5 : y;
 	}
+	//#endif
 
 	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"), index = 4)
 	private int onDrawText(int y) {

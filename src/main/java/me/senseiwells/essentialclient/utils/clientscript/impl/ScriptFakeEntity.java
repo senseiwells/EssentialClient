@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
+import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import me.senseiwells.arucas.core.Interpreter;
@@ -143,7 +144,11 @@ public class ScriptFakeEntity {
 				ClientWorld world = EssentialUtils.getWorld();
 				if (ids != null && world != null) {
 					EssentialUtils.getClient().execute(() -> {
+						//#if MC >= 11800
 						ids.forEach(i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
+						//#else
+						//$$ids.forEach((java.util.function.IntConsumer) i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
+						//#endif
 					});
 				}
 			});

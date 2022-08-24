@@ -474,7 +474,11 @@ public class RenderHelper {
 	}
 
 	public static void renderBlock(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockState state, BakedModel bakedModel, float red, float green, float blue, float alpha, int light, int overlay) {
+		//#if MC >= 11900
 		Random random = Random.create();
+		//#else
+		//$$java.util.Random random = new java.util.Random();
+		//#endif
 		long seed = 42L;
 		for (Direction direction : Direction.values()) {
 			random.setSeed(seed);

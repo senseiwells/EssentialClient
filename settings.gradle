@@ -29,16 +29,15 @@ pluginManagement {
 	}
 }
 def versions = Arrays.asList(
-        "1.17.1",
-        "1.18.2",
-        "1.19",
-        "1.19.2"
+	"1.17.1",
+	"1.18.2",
+	"1.19.2"
 )
 
 for (String version : versions) {
-    include(":$version")
+	include(":$version")
 
-    def proj = project(":$version")
-    proj.projectDir = file("versions/$version")
-    proj.buildFileName = "../../common.gradle"
+	def proj = project(":$version")
+	proj.projectDir = file("versions/$version")
+	proj.buildFileName = "../../common.gradle"
 }

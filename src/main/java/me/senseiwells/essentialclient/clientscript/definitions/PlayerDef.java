@@ -19,6 +19,7 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
@@ -881,7 +882,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Void logout(Arguments arguments) {
 		String reason = arguments.skip().nextPrimitive(StringDef.class);
 		ClientScriptUtils.ensureMainThread("logout", arguments.getInterpreter(), () -> {
-			EssentialUtils.getNetworkHandler().onDisconnected(Text.literal(reason));
+			EssentialUtils.getNetworkHandler().onDisconnected(Texts.literal(reason));
 		});
 		return null;
 	}
@@ -1229,7 +1230,11 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		String handAsString = arguments.skip().nextPrimitive(StringDef.class);
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
 		ClientScriptUtils.ensureMainThread("interactItem", arguments.getInterpreter(), () -> {
+			//#if MC >= 11900
 			EssentialUtils.getInteractionManager().interactItem(EssentialUtils.getPlayer(), hand);
+			//#else
+			//$$EssentialUtils.getInteractionManager().interactItem(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), hand);
+			//#endif
 		});
 		return null;
 	}
@@ -1415,10 +1420,15 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	}
 
 	private void interactInternal(Interpreter interpreter, String directionAsString, Hand hand, Vec3d pos, BlockPos blockPos, boolean insideBlock) {
+		Hand finalHand = hand == null ? Hand.MAIN_HAND : hand;
 		Direction direction = ClientScriptUtils.stringToDirection(directionAsString, Direction.DOWN);
 		BlockHitResult hitResult = new BlockHitResult(pos, direction, blockPos, insideBlock);
 		ClientScriptUtils.ensureMainThread("interactBlock", interpreter, () -> {
-			EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), hand, hitResult);
+			//#if MC >= 11900
+			EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), finalHand, hitResult);
+			//#else
+			//$$EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), finalHand, hitResult);
+			//#endif
 		});
 	}
 }

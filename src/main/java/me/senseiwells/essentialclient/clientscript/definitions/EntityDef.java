@@ -440,7 +440,11 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	)
 	private String getBiome(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
+		//#if MC >= 11800
 		Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiome(entity.getBlockPos()).getKey();
+		//#else
+		//$$Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
+		//#endif
 		return biomeKey.map(key -> key.getValue().getPath()).orElse(null);
 	}
 
@@ -452,7 +456,11 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	)
 	private String getFullBiome(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
+		//#if MC >= 11800
 		Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiome(entity.getBlockPos()).getKey();
+		//#else
+		//$$Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
+		//#endif
 		return biomeKey.map(key -> key.getValue().toString()).orElse(null);
 	}
 

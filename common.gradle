@@ -1,37 +1,41 @@
 plugins {
 	id "maven-publish"
 	id "fabric-loom" version "0.11-SNAPSHOT"
-	id "com.github.johnrengelman.shadow" version "7.1.2" 
-	id "io.github.juuxel.loom-quiltflower" version "1.7.0" 
+	id "com.github.johnrengelman.shadow" version "7.1.2"
+	id "io.github.juuxel.loom-quiltflower" version "1.7.0"
 	id "com.replaymod.preprocess" version "897c4096e2"
 	id "com.diffplug.spotless" version "6.8.0"
 }
+
 int mcVersion = 1
-preprocess{
+preprocess {
 	mcVersion = vars.get()["MC"]
 	tabIndentation = true
 }
+
 repositories {
-    mavenCentral()
-    maven {
-        url "https://masa.dy.fi/maven"
-    }
-    maven {
-        url "https://maven.terraformersmc.com/releases/"
-    }
-    maven {
-        url "https://jitpack.io"
-    }
-    maven {
-        url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
-    }
-    maven {
-        url 'https://www.cursemaven.com'
-    }
+	mavenCentral()
+	maven {
+		url "https://masa.dy.fi/maven"
+	}
+	maven {
+		url "https://maven.terraformersmc.com/releases/"
+	}
+	maven {
+		url "https://jitpack.io"
+	}
+	maven {
+		url "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1"
+	}
+	maven {
+		url 'https://www.cursemaven.com'
+	}
 }
+
 configurations {
-    shade
+	shade
 }
+
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
@@ -56,9 +60,6 @@ spotless {
 		endWithNewline()
 	}
 }
-loom {
-
-}
 
 shadowJar {
 	configurations = [project.configurations.shade]
@@ -66,31 +67,31 @@ shadowJar {
 
 dependencies {
 
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "carpet:fabric-carpet:${project.carpet_core_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-   
-    shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
-    annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "carpet:fabric-carpet:${project.carpet_core_version}"
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-    def arucasVersion = project.arucas_version
-    if (arucasVersion.length() > 10) {
-        arucasVersion = arucasVersion.substring(0, 10)
-    }
+	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
 
-    include implementation("com.github.senseiwells:Arucas:${arucasVersion}")
-    // include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
-    include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
-        transitive = false
-    }
+	def arucasVersion = project.arucas_version
+	if (arucasVersion.length() > 10) {
+		arucasVersion = arucasVersion.substring(0, 10)
+	}
 
-    // modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
+	include implementation("com.github.senseiwells:Arucas:${arucasVersion}")
+	// include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
+	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
+		transitive = false
+	}
 
-    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
-    modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
+	// modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
+
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
+	modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
 
 }
 
@@ -98,7 +99,12 @@ processResources {
 	inputs.property "version", project.mod_version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.mod_version
+		def map = [
+			"version"             : project.mod_version,
+			"carpet_dependency"   : project.carpet_dependency,
+			"minecraft_dependency": project.minecraft_dependency
+		]
+		expand map
 	}
 }
 
@@ -142,11 +148,5 @@ publishing {
 				builtBy remapJar
 			}
 		}
-	}
-
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
 	}
 }

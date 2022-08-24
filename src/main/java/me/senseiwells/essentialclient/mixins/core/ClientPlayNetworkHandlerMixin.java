@@ -11,7 +11,11 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+
+//#if MC >= 11901
 import net.minecraft.command.CommandRegistryAccess;
+//#endif
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
@@ -34,15 +38,22 @@ public class ClientPlayNetworkHandlerMixin {
 	@Final
 	private MinecraftClient client;
 
+	//#if MC >= 11901
 	@Shadow
 	private DynamicRegistryManager.Immutable registryManager;
+	//#endif
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "onCommandTree", at = @At("TAIL"))
 	public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
+		//#if MC >= 11901
 		CommandRegistryAccess access = new CommandRegistryAccess(this.registryManager);
 		CommandHelper.setCommandPacket(packet, access);
 		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher, access);
+		//#else
+		//$$CommandHelper.setCommandPacket(packet);
+		//$$CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher);
+		//#endif
 	}
 
 	@Inject(method = "onGameJoin", at = @At("TAIL"))
@@ -57,6 +68,7 @@ public class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
 		for (NetworkHandler networkHandler : EssentialClient.NETWORK_HANDLERS) {

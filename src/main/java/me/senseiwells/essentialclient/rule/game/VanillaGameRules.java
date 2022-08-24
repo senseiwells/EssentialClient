@@ -41,7 +41,11 @@ public class VanillaGameRules {
 		DO_TRADER_SPAWNING = registerBoolean("doTraderSpawning", "Whether wandering traders can spawn", true, GameRules.DO_TRADER_SPAWNING),
 		FORGIVE_DEAD_PLAYERS = registerBoolean("forgiveDeadPlayers", "Makes angered neutral mobs stop being angry when the targeted player dies nearby", true, GameRules.FORGIVE_DEAD_PLAYERS),
 		UNIVERSAL_ANGER = registerBoolean("universalAnger", "Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled", false, GameRules.UNIVERSAL_ANGER),
-		DO_WARDEN_SPAWNING = registerBoolean("doWardenSpawning", "Whether wardens can spawn, this rule is only available for 1.19+", true, GameRules.DO_WARDEN_SPAWNING);
+	//#if MC >= 11900
+	DO_WARDEN_SPAWNING = registerBoolean("doWardenSpawning", "Whether wardens can spawn, this rule is only available for 1.19+", true, GameRules.DO_WARDEN_SPAWNING);
+	//#else
+	//$$DO_WARDEN_SPAWNING = registerBoolean("doWardenSpawning", "Whether wardens can spawn, this rule is only available for 1.19+", true, null);
+	//#endif
 
 	@SuppressWarnings("unused")
 	public static final IntegerGameRule

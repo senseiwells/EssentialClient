@@ -33,11 +33,19 @@ public class MinecraftClientMixin {
 	}
 
 	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
+	//#if MC >= 11800
 	private void onAttack(CallbackInfoReturnable<Boolean> cir) {
 		if (MinecraftScriptEvents.ON_ATTACK.run()) {
 			cir.setReturnValue(false);
 		}
 	}
+	//#else
+	//$$private void onAttack(CallbackInfo ci) {
+	//$$	if (MinecraftScriptEvents.ON_ATTACK.run()) {
+	//$$		ci.cancel();
+	//$$	}
+	//$$}
+	//#endif
 
 	@Inject(method = "doItemUse", at = @At("HEAD"), cancellable = true)
 	private void onUse(CallbackInfo ci) {

@@ -2,13 +2,13 @@ package me.senseiwells.essentialclient.mixins.disableMessages;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.render.Texts;
-//#if MC < 11901
-import net.minecraft.client.gui.hud.InGameHud; //1.19
-import net.minecraft.network.message.MessageSender; //1.19
-import net.minecraft.network.message.MessageType; //1.19
-import net.minecraft.util.registry.BuiltinRegistries; //1.19
+
+//#if MC >= 11901
+import net.minecraft.client.network.message.MessageHandler;
 //#else
-//$$import net.minecraft.client.network.message.MessageHandler; //1.19.1
+//$$import net.minecraft.client.gui.hud.InGameHud;
+//$$import net.minecraft.network.MessageType;
+//$$import java.util.UUID;
 //#endif
 
 import net.minecraft.text.Text;
@@ -17,17 +17,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-//#if MC < 11901
-@Mixin(InGameHud.class) //1.19
+//#if MC >= 11901
+@Mixin(MessageHandler.class)
 //#else
-//$$@Mixin(MessageHandler.class) //1.19.1
+//$$@Mixin(InGameHud.class)
 //#endif
-
 public class MessageHandlerMixin {
-	//#if MC < 11901
-	@Inject(method = "onChatMessage", at = @At("HEAD"), cancellable = true)
-	private void onChatMessage(MessageType type, Text message, MessageSender sender, CallbackInfo ci) {
-		if (type == BuiltinRegistries.MESSAGE_TYPE.get(MessageType.SYSTEM) && ClientRules.DISABLE_OP_MESSAGES.getValue()) {
+	//#if MC >= 11901
+	@Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
+	private void onChatMessage(Text message, boolean overlay, CallbackInfo ci) {
+		if (!overlay && ClientRules.DISABLE_OP_MESSAGES.getValue()) {
 			ci.cancel();
 			return;
 		}
@@ -41,9 +40,9 @@ public class MessageHandlerMixin {
 		}
 	}
 	//#else
-	//$$@Inject(method = "onGameMessage", at = @At("HEAD"), cancellable = true)
-	//$$private void onChatMessage(Text message, boolean overlay, CallbackInfo ci) {
-	//$$	if (!overlay && ClientRules.DISABLE_OP_MESSAGES.getValue()) {
+	//$$@Inject(method = "addChatMessage", at = @At("HEAD"), cancellable = true)
+	//$$private void onChatMessage(MessageType type, Text message, UUID sender, CallbackInfo ci) {
+	//$$	if (type == MessageType.SYSTEM && ClientRules.DISABLE_OP_MESSAGES.getValue()) {
 	//$$		ci.cancel();
 	//$$		return;
 	//$$	}
