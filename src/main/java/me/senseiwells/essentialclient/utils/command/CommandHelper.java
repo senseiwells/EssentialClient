@@ -78,11 +78,13 @@ public class CommandHelper {
 	}
 
 	public static void addComplexCommand(Interpreter interpreter, LiteralCommandNode<ServerCommandSource> commandNode) {
-		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(interpreter.getProperties().getId(), id -> {
-			interpreter.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
-			return ConcurrentHashMap.newKeySet();
-		});
-		commandNodeSet.add(commandNode);
+		if (interpreter.getThreadHandler().getRunning()) {
+			Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(interpreter.getProperties().getId(), id -> {
+				interpreter.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
+				return ConcurrentHashMap.newKeySet();
+			});
+			commandNodeSet.add(commandNode);
+		}
 	}
 
 	public static void registerFunctionCommands(CommandDispatcher<ServerCommandSource> dispatcher) {

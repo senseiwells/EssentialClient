@@ -32,11 +32,13 @@ public class MinecraftScriptEvent {
 	}
 
 	public synchronized void registerEvent(ScriptEvent gameEvent) {
-		Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(gameEvent.getId(), id -> {
-			gameEvent.getInterpreter().getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
-			return new LinkedHashSet<>();
-		});
-		gameEventWrappers.add(gameEvent);
+		if (gameEvent.getInterpreter().getThreadHandler().getRunning()) {
+			Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(gameEvent.getId(), id -> {
+				gameEvent.getInterpreter().getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
+				return new LinkedHashSet<>();
+			});
+			gameEventWrappers.add(gameEvent);
+		}
 	}
 
 	public synchronized boolean unregisterEvent(ScriptEvent gameEvent) {

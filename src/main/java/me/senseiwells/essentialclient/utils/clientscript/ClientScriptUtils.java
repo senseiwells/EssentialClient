@@ -124,8 +124,10 @@ public class ClientScriptUtils {
 	}
 
 	public static void holdKey(Interpreter interpreter, KeyBinding key) {
-		HELD_KEYS.add(key);
-		interpreter.getThreadHandler().addShutdownEvent(() -> releaseKey(key));
+		if (interpreter.getThreadHandler().getRunning()) {
+			HELD_KEYS.add(key);
+			interpreter.getThreadHandler().addShutdownEvent(() -> releaseKey(key));
+		}
 	}
 
 	public static void releaseKey(KeyBinding key) {
