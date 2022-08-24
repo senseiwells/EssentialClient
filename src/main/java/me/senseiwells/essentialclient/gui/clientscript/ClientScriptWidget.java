@@ -72,8 +72,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 					String instanceName = ScriptListEntry.this.name;
 					if (this.isChecked()) {
 						ClientScript.INSTANCE.removeSelectedInstance(instanceName);
-					}
-					else {
+					} else {
 						ClientScript.INSTANCE.addSelectedInstance(instanceName);
 					}
 					super.onPress();

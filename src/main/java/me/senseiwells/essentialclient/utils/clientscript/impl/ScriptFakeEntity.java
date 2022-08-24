@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
-import it.unimi.dsi.fastutil.ints.IntConsumer;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import me.senseiwells.arucas.core.Interpreter;
@@ -35,10 +34,6 @@ public class ScriptFakeEntity {
 		this.world = world;
 		this.pos = Vec3d.ZERO;
 		this.bodyYaw = this.yaw = this.pitch = 0;
-	}
-
-	public void updatePosAndRotation(Vec3d pos, float yaw, float pitch) {
-		this.updatePosAndRotation(pos, yaw, pitch, 0);
 	}
 
 	public void setWorld(ClientWorld world) {
@@ -99,6 +94,10 @@ public class ScriptFakeEntity {
 
 	public float getPitch() {
 		return this.pitch;
+	}
+
+	public void updatePosAndRotation(Vec3d pos, float yaw, float pitch) {
+		this.updatePosAndRotation(pos, yaw, pitch, 0);
 	}
 
 	public void updatePosAndRotation(Vec3d pos, float yaw, float pitch, int interpolation) {

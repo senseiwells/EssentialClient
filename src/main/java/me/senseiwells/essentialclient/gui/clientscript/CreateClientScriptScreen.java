@@ -39,8 +39,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 			}
 			try {
 				Files.createFile(newScriptPath);
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				EssentialClient.LOGGER.error(e);
 				return;
 			}

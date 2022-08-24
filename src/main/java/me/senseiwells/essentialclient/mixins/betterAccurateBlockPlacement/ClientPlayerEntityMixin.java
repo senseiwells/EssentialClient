@@ -62,6 +62,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		));
 	}
 
+	@SuppressWarnings("ConstantConditions")
 	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 5), require = 0)
 	private void onSendPacketLook(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {

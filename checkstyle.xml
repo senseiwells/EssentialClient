@@ -42,8 +42,6 @@
         <module name="NeedBraces"/>
 
         <module name="RightCurly">
-            <property name="option" value="alone"/>
-            <property name="tokens" value="LITERAL_ELSE, METHOD_DEF"/>
         </module>
 
         <!-- Class Design -->

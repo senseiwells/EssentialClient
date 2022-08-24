@@ -94,7 +94,7 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 		params = {
 			FUNCTION, "function", "the callback function"
 		},
-		examples = {
+		examples =
 			"""
 				fakeScreen.onClick(fun(item, slotNum, action) {
 					// action can be any of the following:
@@ -102,7 +102,6 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 					print(action);
 				});
 				"""
-		}
 	)
 	private Void onClick(Arguments arguments) {
 		FakeInventoryScreen fakeScreen = arguments.nextPrimitive(FakeScreenDef.class);

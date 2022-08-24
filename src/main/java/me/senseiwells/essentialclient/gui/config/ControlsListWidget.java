@@ -133,8 +133,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 				this.editButton.setMessage(
 					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
-			}
-			else {
+			} else {
 				this.editButton.setMessage(editMessage);
 			}
 

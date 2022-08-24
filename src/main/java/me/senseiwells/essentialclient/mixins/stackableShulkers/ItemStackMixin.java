@@ -21,12 +21,12 @@ public abstract class ItemStackMixin {
 	@Inject(method = "getMaxCount", at = @At(value = "HEAD"), cancellable = true)
 	public void getMaxCount(CallbackInfoReturnable<Integer> cir) {
 		if (ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES.getValue() && this.getItem() instanceof BlockItem && ((BlockItem) this.getItem()).getBlock() instanceof ShulkerBoxBlock) {
+			@SuppressWarnings("ConstantConditions")
 			ItemStack stack = (ItemStack) (Object) this;
 			if (!InventoryHelper.shulkerBoxHasItems(stack)) {
 				stack.removeSubNbt("BlockEntityTag");
 				cir.setReturnValue(64);
-			}
-			else if (ClientRules.STACKABLE_SHULKERS_WITH_ITEMS.getValue()) {
+			} else if (ClientRules.STACKABLE_SHULKERS_WITH_ITEMS.getValue()) {
 				cir.setReturnValue(64);
 			}
 		}

@@ -91,8 +91,7 @@ public interface Config<T extends JsonElement> {
 		if (Files.isRegularFile(configPath)) {
 			try (BufferedReader reader = Files.newBufferedReader(configPath)) {
 				return this.GSON.fromJson(reader, this.getJsonType());
-			}
-			catch (IOException | JsonParseException e) {
+			} catch (IOException | JsonParseException e) {
 				EssentialClient.LOGGER.error("Failed to read '{}': {}", this.getConfigName(), e);
 			}
 		}
@@ -107,8 +106,7 @@ public interface Config<T extends JsonElement> {
 		Path configPath = this.getConfigPath();
 		try (BufferedWriter writer = Files.newBufferedWriter(configPath)) {
 			this.GSON.toJson(this.getSaveData(), writer);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			EssentialClient.LOGGER.error("Failed to save '{}': {}", this.getConfigName(), e);
 		}
 	}

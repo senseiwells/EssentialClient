@@ -52,8 +52,7 @@ public class RegexArgumentType implements ArgumentType<Pattern> {
 				Pattern pattern = Pattern.compile(text);
 				reader.setCursor(reader.getTotalLength());
 				return pattern;
-			}
-			catch (PatternSyntaxException e) {
+			} catch (PatternSyntaxException e) {
 				reader.setCursor(start);
 				throw EXPECTED_REGEX_EXCEPTION.createWithContext(reader, text);
 			}
@@ -62,8 +61,7 @@ public class RegexArgumentType implements ArgumentType<Pattern> {
 			String text = reader.readUnquotedString();
 			try {
 				return Pattern.compile(text);
-			}
-			catch (PatternSyntaxException e) {
+			} catch (PatternSyntaxException e) {
 				reader.setCursor(start);
 				throw EXPECTED_REGEX_EXCEPTION.createWithContext(reader, text);
 			}
@@ -79,8 +77,7 @@ public class RegexArgumentType implements ArgumentType<Pattern> {
 			String text = reader.readUnquotedString();
 			try {
 				return Pattern.compile(text);
-			}
-			catch (PatternSyntaxException e) {
+			} catch (PatternSyntaxException e) {
 				reader.setCursor(start);
 				throw EXPECTED_REGEX_EXCEPTION.createWithContext(reader, text);
 			}
@@ -101,8 +98,7 @@ public class RegexArgumentType implements ArgumentType<Pattern> {
 					reader.skip();
 					try {
 						return Pattern.compile(regex.toString());
-					}
-					catch (PatternSyntaxException e) {
+					} catch (PatternSyntaxException e) {
 						int end = reader.getCursor();
 						reader.setCursor(start);
 						throw EXPECTED_REGEX_EXCEPTION.createWithContext(reader, reader.getString().substring(start, end));

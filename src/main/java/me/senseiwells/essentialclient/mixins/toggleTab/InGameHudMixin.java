@@ -66,8 +66,7 @@ public class InGameHudMixin {
 				this.tabVisible = !this.tabVisible;
 			}
 			visible = this.tabVisible;
-		}
-		else {
+		} else {
 			this.tabVisible = visible;
 		}
 		this.playerListHud.setVisible(visible);

@@ -25,13 +25,13 @@ public class ScriptTask extends Task {
 	}
 
 	@Override
-	public boolean canModify() {
-		return this.hasRun;
+	public void addTask(ArucasFunction arucasFunction) {
+		this.addTask(0, arucasFunction);
 	}
 
 	@Override
-	public void addTask(ArucasFunction arucasFunction) {
-		this.addTask(0, arucasFunction);
+	public boolean canModify() {
+		return this.hasRun;
 	}
 
 	@Override

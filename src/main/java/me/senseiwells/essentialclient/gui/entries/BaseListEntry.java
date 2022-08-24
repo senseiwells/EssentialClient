@@ -96,8 +96,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 			String info;
 			if (this.ruleWidget.isToggled() && this.rule.getOptionalInfo() != null) {
 				info = "§3Extra Info:§r\n" + this.rule.getOptionalInfo();
-			}
-			else {
+			} else {
 				info = this.rule.getDescription();
 			}
 			if (info != null) {

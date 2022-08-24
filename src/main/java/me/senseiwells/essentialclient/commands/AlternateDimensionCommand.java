@@ -18,7 +18,6 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class AlternateDimensionCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-
 		if (!ClientRules.COMMAND_ALTERNATE_DIMENSION.getValue()) {
 			return;
 		}
@@ -35,13 +34,11 @@ public class AlternateDimensionCommand {
 				dimension = "the_nether";
 				newX = playerEntity.getX() / 8;
 				newZ = playerEntity.getZ() / 8;
-			}
-			else if (playerEntity.world.getRegistryKey() == World.NETHER) {
+			} else if (playerEntity.world.getRegistryKey() == World.NETHER) {
 				dimension = "overworld";
 				newX = playerEntity.getX() * 8;
 				newZ = playerEntity.getZ() * 8;
-			}
-			else {
+			} else {
 				throw new SimpleCommandExceptionType(Texts.literal("You are not in a valid dimension")).create();
 			}
 			MutableText message = Texts.literal("Your %s coordinates are ".formatted(dimension)).formatted(Formatting.GREEN);
@@ -69,13 +66,11 @@ public class AlternateDimensionCommand {
 						dimension = "the_nether";
 						newX = playerEntity.getX() / 8;
 						newZ = playerEntity.getZ() / 8;
-					}
-					else if (playerEntity.world.getRegistryKey() == World.NETHER) {
+					} else if (playerEntity.world.getRegistryKey() == World.NETHER) {
 						dimension = "overworld";
 						newX = playerEntity.getX() * 8;
 						newZ = playerEntity.getZ() * 8;
-					}
-					else {
+					} else {
 						throw new SimpleCommandExceptionType(Texts.literal("You are not in a valid dimension")).create();
 					}
 					EssentialUtils.sendChatMessage("/execute in %s run tp @s %f %f %f".formatted(

@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin {
+	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "updateHealth", at = @At("HEAD"))
 	private void checkHealth(float health, CallbackInfo ci) {
 		int switchToTotemHealth = ClientRules.SWITCH_TO_TOTEM.getValue();

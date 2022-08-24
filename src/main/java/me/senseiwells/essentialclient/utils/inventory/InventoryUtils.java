@@ -669,7 +669,6 @@ public class InventoryUtils {
 		dropStack(handler, slot.id);
 	}
 
-
 	public static boolean checkTradeDisabled(int index) {
 		TradeOfferList tradeOffers = checkScreen().getRecipes();
 		if (index > tradeOffers.size() - 1) {

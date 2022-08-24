@@ -185,6 +185,13 @@ public abstract class ScriptShape {
 		return value;
 	}
 
+	protected final float checkNonNegative(float value) {
+		if (value < 0) {
+			throw new RuntimeError("Value must be non-negative");
+		}
+		return value;
+	}
+
 	protected abstract Map<UUID, Set<ScriptShape>> getRegularDepthMap();
 
 	protected abstract Map<UUID, Set<ScriptShape>> getIgnoreDepthMap();
@@ -210,13 +217,6 @@ public abstract class ScriptShape {
 				shapes.remove(this);
 			}
 		}
-	}
-
-	protected float checkNonNegative(float value) {
-		if (value < 0) {
-			throw new RuntimeError("Value must be non-negative");
-		}
-		return value;
 	}
 
 	public static abstract class Outlined extends ScriptShape {
