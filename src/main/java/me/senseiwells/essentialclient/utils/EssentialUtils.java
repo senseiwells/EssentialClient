@@ -95,11 +95,15 @@ public class EssentialUtils {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
 			client.execute(() -> {
+				//#if MC >= 11900
 				if (message.startsWith("/")) {
 					client.player.sendCommand(message.substring(1));
 					return;
 				}
 				client.player.sendChatMessage(message, null);
+				//#else
+				//$$client.player.sendChatMessage(message);
+				//#endif
 			});
 		}
 	}

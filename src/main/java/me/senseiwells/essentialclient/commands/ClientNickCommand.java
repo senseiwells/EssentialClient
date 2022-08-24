@@ -45,8 +45,7 @@ public class ClientNickCommand {
 						String name = ConfigClientNick.INSTANCE.remove(playerName);
 						if (name == null) {
 							EssentialUtils.sendMessage("%s%s was not renamed".formatted(ChatColour.RED, playerName));
-						}
-						else {
+						} else {
 							EssentialUtils.sendMessage("%s%s will no longer be renamed".formatted(ChatColour.GOLD, playerName));
 						}
 						return 0;
@@ -61,8 +60,7 @@ public class ClientNickCommand {
 						String name = ConfigClientNick.INSTANCE.get(playerName);
 						if (name == null) {
 							EssentialUtils.sendMessage("%s%s is not renamed".formatted(ChatColour.RED, playerName));
-						}
-						else {
+						} else {
 							EssentialUtils.sendMessage("%s%s is renamed to %s".formatted(ChatColour.GOLD, playerName, name));
 						}
 						return 0;

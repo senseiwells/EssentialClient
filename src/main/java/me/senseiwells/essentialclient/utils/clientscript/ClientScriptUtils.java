@@ -36,7 +36,11 @@ import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+
+//#if MC >= 11901
 import net.minecraft.command.CommandRegistryWrapper;
+//#endif
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
@@ -120,8 +124,10 @@ public class ClientScriptUtils {
 	}
 
 	public static void holdKey(Interpreter interpreter, KeyBinding key) {
-		HELD_KEYS.add(key);
-		interpreter.getThreadHandler().addShutdownEvent(() -> releaseKey(key));
+		if (interpreter.getThreadHandler().getRunning()) {
+			HELD_KEYS.add(key);
+			interpreter.getThreadHandler().addShutdownEvent(() -> releaseKey(key));
+		}
 	}
 
 	public static void releaseKey(KeyBinding key) {
@@ -263,10 +269,17 @@ public class ClientScriptUtils {
 
 	public static ItemStack stringToItemStack(String string) {
 		try {
+			//#if MC >= 11901
 			ItemStringReader.ItemResult reader = ItemStringReader.item(CommandRegistryWrapper.of(Registry.ITEM), new StringReader(string));
 			ItemStack itemStack = new ItemStack(reader.item());
 			itemStack.setNbt(reader.nbt());
 			return itemStack;
+			//#else
+			//$$ItemStringReader reader = new ItemStringReader(new StringReader(string), false).consume();
+			//$$ItemStack itemStack = new ItemStack(reader.getItem());
+			//$$itemStack.setNbt(reader.getNbt());
+			//$$return itemStack;
+			//#endif
 		} catch (CommandSyntaxException cse) {
 			NbtElement element = stringToNbt(string);
 			if (element instanceof NbtCompound nbtCompound) {
@@ -501,8 +514,13 @@ public class ClientScriptUtils {
 		ArgumentType<?> type = switch (typeName.toLowerCase()) {
 			case "word" -> StringArgumentType.word();
 			case "boolean" -> BoolArgumentType.bool();
+			//#if MC >= 11901
 			case "itemstack" -> ItemStackArgumentType.itemStack(CommandRegister.getRegistryAccess());
 			case "block" -> BlockStateArgumentType.blockState(CommandRegister.getRegistryAccess());
+			//#else
+			//$$case "itemstack" -> ItemStackArgumentType.itemStack();
+			//$$case "block" -> BlockStateArgumentType.blockState();
+			//#endif
 			case "greedystring" -> StringArgumentType.greedyString();
 			case "entity" -> ClientEntityArgumentType.entity();
 			case "entities" -> ClientEntityArgumentType.entities();

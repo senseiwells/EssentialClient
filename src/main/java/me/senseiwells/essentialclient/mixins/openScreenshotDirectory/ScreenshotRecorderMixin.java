@@ -10,13 +10,6 @@ import java.io.File;
 
 @Mixin(ScreenshotRecorder.class)
 public class ScreenshotRecorderMixin {
-	/* Removed redirect in favor of ModifyReceiver
-	@Redirect(method = "method_1664", at = @At(value = "INVOKE", target = "Ljava/io/File;getAbsolutePath()Ljava/lang/String;", remap = false))
-	private static String onGetFilePath(File instance) {
-		return ClientRules.OPEN_SCREENSHOT_DIRECTORY.getValue() ? instance.getParentFile().getAbsolutePath() : instance.getAbsolutePath();
-	}
-	 */
-
 	@ModifyReceiver(method = "method_1664", at = @At(value = "INVOKE", target = "Ljava/io/File;getAbsolutePath()Ljava/lang/String;", remap = false))
 	private static File onFileGetPath(File instance) {
 		return ClientRules.OPEN_SCREENSHOT_DIRECTORY.getValue() ? instance.getParentFile() : instance;

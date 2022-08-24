@@ -264,7 +264,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 		returns = {LIST, "the RGBA value of the shape as a list in the form [red, green, blue, opacity]"},
 		examples = "r, g, b, a = shape.getRGBAList();"
 	)
-	private ArucasList getRGBAList(Arguments arguments) {
+	private ArucasList getRGBAList(Arguments arguments) { // Checkstyle ignore
 		ScriptShape shape = arguments.nextPrimitive(this);
 		ArucasList list = new ArucasList();
 		Interpreter interpreter = arguments.getInterpreter();

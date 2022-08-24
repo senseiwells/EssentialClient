@@ -163,7 +163,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 		name = "addConfig",
 		desc = "Adds a config to the handler",
 		params = {CONFIG, "config", "The config to add"},
-		examples = {
+		examples =
 			"""
 				config = Config.fromMap({
 					"type": "boolean",
@@ -172,7 +172,6 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 				});
 				configHandler.addConfig(config);
 				"""
-		}
 	)
 	private Void addConfig(Arguments arguments) {
 		arguments.nextPrimitive(this).addConfig(arguments.next(ConfigDef.class));
@@ -187,7 +186,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 			"or a varargs of configs, this is for compatability with older scripts"
 		},
 		params = {CONFIG, "configs...", "The configs to add"},
-		examples = {
+		examples =
 			"""
 				config = Config.fromMap({
 					"type": "boolean",
@@ -196,7 +195,6 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 				});
 				configHandler.addConfigs(config, config);
 				"""
-		}
 	)
 	private Void addConfigs(Arguments arguments) {
 		ScriptConfigHandler handler = arguments.nextPrimitive(this);

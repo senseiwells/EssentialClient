@@ -19,7 +19,8 @@ public class CycleCarpetRule extends CarpetClientRule<String> implements Rule.Cy
 
 	public static CycleCarpetRule commandOf(String name, String description, String defaultValue) {
 		switch (defaultValue) {
-			case "true", "false", "ops" -> { }
+			case "true", "false", "ops" -> {
+			}
 			default -> defaultValue = "false";
 		}
 		return new CycleCarpetRule(name, description, List.of("true", "false", "ops"), defaultValue);

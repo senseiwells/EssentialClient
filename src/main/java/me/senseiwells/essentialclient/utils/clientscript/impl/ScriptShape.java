@@ -185,6 +185,13 @@ public abstract class ScriptShape {
 		return value;
 	}
 
+	protected final float checkNonNegative(float value) {
+		if (value < 0) {
+			throw new RuntimeError("Value must be non-negative");
+		}
+		return value;
+	}
+
 	protected abstract Map<UUID, Set<ScriptShape>> getRegularDepthMap();
 
 	protected abstract Map<UUID, Set<ScriptShape>> getIgnoreDepthMap();
@@ -195,11 +202,13 @@ public abstract class ScriptShape {
 
 	private void addShape() {
 		Map<UUID, Set<ScriptShape>> map = this.getMap();
-		Set<ScriptShape> shapes = map.computeIfAbsent(this.interpreter.getProperties().getId(), id -> {
-			this.interpreter.getThreadHandler().addShutdownEvent(() -> map.remove(id));
-			return ConcurrentHashMap.newKeySet();
-		});
-		shapes.add(this);
+		if (this.interpreter.getThreadHandler().getRunning()) {
+			Set<ScriptShape> shapes = map.computeIfAbsent(this.interpreter.getProperties().getId(), id -> {
+				this.interpreter.getThreadHandler().addShutdownEvent(() -> map.remove(id));
+				return ConcurrentHashMap.newKeySet();
+			});
+			shapes.add(this);
+		}
 	}
 
 	private void removeShape() {
@@ -210,13 +219,6 @@ public abstract class ScriptShape {
 				shapes.remove(this);
 			}
 		}
-	}
-
-	protected float checkNonNegative(float value) {
-		if (value < 0) {
-			throw new RuntimeError("Value must be non-negative");
-		}
-		return value;
 	}
 
 	public static abstract class Outlined extends ScriptShape {

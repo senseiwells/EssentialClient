@@ -311,11 +311,22 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	)
 	private Text getLatestChatMessage(Arguments arguments) {
 		MinecraftClient client = arguments.nextPrimitive(this);
+
+		//#if MC >= 11901
 		ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+		//#else
+		//$$ChatHudLine<Text>[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+		//#endif
+
 		if (chat.length == 0) {
 			return null;
 		}
+
+		//#if MC >= 11901
 		return chat[0].content();
+		//#else
+		//$$return chat[0].getText().copy();
+		//#endif
 	}
 
 	@FunctionDoc(
@@ -626,7 +637,11 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	)
 	private double getClientRenderDistance(Arguments arguments) {
 		MinecraftClient client = arguments.nextPrimitive(this);
+		//#if MC >= 11900
 		return client.options.getViewDistance().getValue();
+		//#else
+		//$$return client.options.viewDistance;
+		//#endif
 	}
 
 	@FunctionDoc(
@@ -637,8 +652,12 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	)
 	private Void setClientRenderDistance(Arguments arguments) {
 		MinecraftClient client = arguments.nextPrimitive(this);
-		double distance = arguments.nextPrimitive(NumberDef.class);
-		client.options.getViewDistance().setValue((int) distance);
+		int distance = arguments.nextPrimitive(NumberDef.class).intValue();
+		//#if MC >= 11900
+		client.options.getViewDistance().setValue(distance);
+		//#else
+		//$$client.options.viewDistance = distance;
+		//#endif
 		client.worldRenderer.scheduleTerrainUpdate();
 		return null;
 	}

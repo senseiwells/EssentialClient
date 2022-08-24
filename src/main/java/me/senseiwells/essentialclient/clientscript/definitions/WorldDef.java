@@ -149,7 +149,11 @@ public class WorldDef extends CreatableDefinition<World> {
 		int y = arguments.nextPrimitive(NumberDef.class).intValue();
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
 		BlockPos blockPos = new BlockPos(x, y, z);
+		//#if MC >= 11800
 		return world.getBiome(blockPos).value();
+		//#else
+		//$$return world.getBiome(blockPos);
+		//#endif
 	}
 
 	@FunctionDoc(
@@ -164,7 +168,11 @@ public class WorldDef extends CreatableDefinition<World> {
 		World world = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
 		BlockPos blockPos = pos.getBlockPos();
+		//#if MC >= 11800
 		return world.getBiome(blockPos).value();
+		//#else
+		//$$return world.getBiome(blockPos);
+		//#endif
 	}
 
 	@FunctionDoc(

@@ -43,8 +43,7 @@ public class IntegerSliderClientRule extends ClientRule<Integer> implements Rule
 		Integer integer;
 		try {
 			integer = Integer.parseInt(value);
-		}
-		catch (NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			integer = null;
 		}
 		if (integer == null || integer > this.getMax() || integer < this.getMin()) {

@@ -2,6 +2,12 @@ package me.senseiwells.essentialclient.mixins.gameRuleSync;
 
 import me.senseiwells.essentialclient.utils.interfaces.IGameRule;
 import me.senseiwells.essentialclient.utils.render.Texts;
+
+//#if MC < 11901
+//$$import net.minecraft.network.MessageType;
+//$$import net.minecraft.util.Util;
+//#endif
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameRules;
@@ -29,7 +35,13 @@ public abstract class RuleMixin<T extends GameRules.Rule<T>> implements IGameRul
 	@Override
 	public void ruleChanged(String ruleName, MinecraftServer server) {
 		Text text = Texts.literal("Set Game Rule %s to %s".formatted(ruleName, this.serialize()));
+		//#if MC >= 11901
 		server.getPlayerManager().broadcast(text, false);
+		//#elseif MC >= 11800
+		//$$server.getPlayerManager().broadcast(text, MessageType.SYSTEM, Util.NIL_UUID);
+		//#else
+		//$$server.getPlayerManager().broadcastChatMessage(text, MessageType.SYSTEM, Util.NIL_UUID);
+		//#endif
 		this.changed(server);
 	}
 }

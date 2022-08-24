@@ -25,8 +25,7 @@ public class KeyboardMixin {
 			boolean isInGui = this.client.currentScreen != null;
 			if (action == GLFW.GLFW_RELEASE) {
 				ClientKeyBinds.onKeyRelease(inputKey, isInGui);
-			}
-			else {
+			} else {
 				ClientKeyBinds.onKeyPress(inputKey, isInGui);
 			}
 		}

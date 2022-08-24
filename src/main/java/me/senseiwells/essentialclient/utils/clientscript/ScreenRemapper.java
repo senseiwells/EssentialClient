@@ -9,78 +9,82 @@ import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.screen.world.EditWorldScreen;
 import net.minecraft.client.realms.gui.screen.DisconnectedRealmsScreen;
+import net.minecraft.util.Util;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ScreenRemapper {
-	private static final Map<Class<? extends Screen>, String> SCREEN_REMAPPER = Map.ofEntries(
-		Map.entry(AccessibilityOptionsScreen.class, "AccessibilityOptions"),
-		Map.entry(AdvancementsScreen.class, "Advancement"),
-		Map.entry(AnvilScreen.class, "Anvil"),
-		Map.entry(BeaconScreen.class, "Beacon"),
-		Map.entry(BlastFurnaceScreen.class, "BlastFurnace"),
-		Map.entry(BookEditScreen.class, "BookEdit"),
-		Map.entry(BookScreen.class, "BookScreen"),
-		Map.entry(BrewingStandScreen.class, "BrewingStand"),
-		Map.entry(CartographyTableScreen.class, "CartographyTable"),
-		Map.entry(ChatOptionsScreen.class, "ChatOptions"),
-		Map.entry(ChatScreen.class, "Chat"),
-		Map.entry(CommandBlockScreen.class, "CommandBlock"),
-		Map.entry(ConfirmLinkScreen.class, "ConfirmChatLink"),
-		Map.entry(ConfirmScreen.class, "Confirm"),
-		Map.entry(ConnectScreen.class, "Connect"),
-		Map.entry(ControlsOptionsScreen.class, "ControlOptions"),
-		Map.entry(CraftingScreen.class, "Crafting"),
-		Map.entry(CreativeInventoryScreen.class, "CreativeInventory"),
-		Map.entry(CreditsScreen.class, "Credits"),
-		Map.entry(DeathScreen.class, "Death"),
-		Map.entry(DialogScreen.class, "Dialog"),
-		Map.entry(DisconnectedRealmsScreen.class, "DisconnectedRealms"),
-		Map.entry(DisconnectedScreen.class, "Disconnected"),
-		Map.entry(EditGameRulesScreen.class, "EditGameRules"),
-		Map.entry(EditWorldScreen.class, "EditWorld"),
-		Map.entry(EnchantmentScreen.class, "Enchantment"),
-		Map.entry(ForgingScreen.class, "Forging"),
-		Map.entry(FurnaceScreen.class, "Furnace"),
-		Map.entry(GameMenuScreen.class, "GameMenu"),
-		Map.entry(GameModeSelectionScreen.class, "GameModeSelection"),
-		Map.entry(GameOptionsScreen.class, "GameOptions"),
-		Map.entry(Generic3x3ContainerScreen.class, "Generic3x3Container"),
-		Map.entry(GenericContainerScreen.class, "GenericContainer"),
-		Map.entry(GrindstoneScreen.class, "Grindstone"),
-		Map.entry(HopperScreen.class, "Hopper"),
-		Map.entry(HorseScreen.class, "Horse"),
-		Map.entry(InventoryScreen.class, "Inventory"),
-		Map.entry(JigsawBlockScreen.class, "JigsawBlock"),
-		Map.entry(LanguageOptionsScreen.class, "LanguageOptions"),
-		Map.entry(LecternScreen.class, "Lectern"),
-		Map.entry(LevelLoadingScreen.class, "LevelLoading"),
-		Map.entry(LoomScreen.class, "LoomScreen"),
-		Map.entry(MerchantScreen.class, "Merchant"),
-		Map.entry(MinecartCommandBlockScreen.class, "MinecrartCommandBlock"),
-		Map.entry(MouseOptionsScreen.class, "MouseOptions"),
-		Map.entry(SimpleOptionsScreen.class, "SimpleOptions"),
-		Map.entry(NoticeScreen.class, "Notice"),
-		Map.entry(OpenToLanScreen.class, "OpenToLan"),
-		Map.entry(OptionsScreen.class, "Options"),
-		Map.entry(OutOfMemoryScreen.class, "OutOfMemory"),
-		Map.entry(PackScreen.class, "Pack"),
-		Map.entry(PresetsScreen.class, "Presets"),
-		Map.entry(ProgressScreen.class, "Progress"),
-		Map.entry(MessageScreen.class, "SaveLevel"),
-		Map.entry(ShulkerBoxScreen.class, "ShulkerBox"),
-		Map.entry(SignEditScreen.class, "SignEdit"),
-		Map.entry(SkinOptionsScreen.class, "SkinOptions"),
-		Map.entry(SleepingChatScreen.class, "SleepingChat"),
-		Map.entry(SmithingScreen.class, "Smithing"),
-		Map.entry(SmokerScreen.class, "Smoker"),
-		Map.entry(SocialInteractionsScreen.class, "SocialInteractions"),
-		Map.entry(SoundOptionsScreen.class, "SoundOptions"),
-		Map.entry(StatsScreen.class, "Stats"),
-		Map.entry(StonecutterScreen.class, "Stonecutter"),
-		Map.entry(StructureBlockScreen.class, "StructureBlock"),
-		Map.entry(VideoOptionsScreen.class, "VideoOptions")
-	);
+	private static final Map<Class<? extends Screen>, String> SCREEN_REMAPPER = Util.make(new LinkedHashMap<>(), map -> {
+		map.put(AccessibilityOptionsScreen.class, "AccessibilityOptions");
+		map.put(AdvancementsScreen.class, "Advancement");
+		map.put(AnvilScreen.class, "Anvil");
+		map.put(BeaconScreen.class, "Beacon");
+		map.put(BlastFurnaceScreen.class, "BlastFurnace");
+		map.put(BookEditScreen.class, "BookEdit");
+		map.put(BookScreen.class, "BookScreen");
+		map.put(BrewingStandScreen.class, "BrewingStand");
+		map.put(CartographyTableScreen.class, "CartographyTable");
+		map.put(ChatOptionsScreen.class, "ChatOptions");
+		map.put(ChatScreen.class, "Chat");
+		map.put(CommandBlockScreen.class, "CommandBlock");
+		//#if MC >= 11901
+		//$$map.put(ConfirmLinkScreen.class, "ConfirmChatLink");
+		//#endif
+		map.put(ConfirmScreen.class, "Confirm");
+		map.put(ConnectScreen.class, "Connect");
+		map.put(ControlsOptionsScreen.class, "ControlOptions");
+		map.put(CraftingScreen.class, "Crafting");
+		map.put(CreativeInventoryScreen.class, "CreativeInventory");
+		map.put(CreditsScreen.class, "Credits");
+		map.put(DeathScreen.class, "Death");
+		map.put(DialogScreen.class, "Dialog");
+		map.put(DisconnectedRealmsScreen.class, "DisconnectedRealms");
+		map.put(DisconnectedScreen.class, "Disconnected");
+		map.put(EditGameRulesScreen.class, "EditGameRules");
+		map.put(EditWorldScreen.class, "EditWorld");
+		map.put(EnchantmentScreen.class, "Enchantment");
+		map.put(ForgingScreen.class, "Forging");
+		map.put(FurnaceScreen.class, "Furnace");
+		map.put(GameMenuScreen.class, "GameMenu");
+		map.put(GameModeSelectionScreen.class, "GameModeSelection");
+		map.put(GameOptionsScreen.class, "GameOptions");
+		map.put(Generic3x3ContainerScreen.class, "Generic3x3Container");
+		map.put(GenericContainerScreen.class, "GenericContainer");
+		map.put(GrindstoneScreen.class, "Grindstone");
+		map.put(HopperScreen.class, "Hopper");
+		map.put(HorseScreen.class, "Horse");
+		map.put(InventoryScreen.class, "Inventory");
+		map.put(JigsawBlockScreen.class, "JigsawBlock");
+		map.put(LanguageOptionsScreen.class, "LanguageOptions");
+		map.put(LecternScreen.class, "Lectern");
+		map.put(LevelLoadingScreen.class, "LevelLoading");
+		map.put(LoomScreen.class, "LoomScreen");
+		map.put(MerchantScreen.class, "Merchant");
+		map.put(MinecartCommandBlockScreen.class, "MinecrartCommandBlock");
+		map.put(MouseOptionsScreen.class, "MouseOptions");
+		map.put(SimpleOptionsScreen.class, "SimpleOptions");
+		map.put(NoticeScreen.class, "Notice");
+		map.put(OpenToLanScreen.class, "OpenToLan");
+		map.put(OptionsScreen.class, "Options");
+		map.put(OutOfMemoryScreen.class, "OutOfMemory");
+		map.put(PackScreen.class, "Pack");
+		map.put(PresetsScreen.class, "Presets");
+		map.put(ProgressScreen.class, "Progress");
+		map.put(MessageScreen.class, "SaveLevel");
+		map.put(ShulkerBoxScreen.class, "ShulkerBox");
+		map.put(SignEditScreen.class, "SignEdit");
+		map.put(SkinOptionsScreen.class, "SkinOptions");
+		map.put(SleepingChatScreen.class, "SleepingChat");
+		map.put(SmithingScreen.class, "Smithing");
+		map.put(SmokerScreen.class, "Smoker");
+		map.put(SocialInteractionsScreen.class, "SocialInteractions");
+		map.put(SoundOptionsScreen.class, "SoundOptions");
+		map.put(StatsScreen.class, "Stats");
+		map.put(StonecutterScreen.class, "Stonecutter");
+		map.put(StructureBlockScreen.class, "StructureBlock");
+		map.put(VideoOptionsScreen.class, "VideoOptions");
+	});
 
 	public static String getScreenName(Class<? extends Screen> screen) {
 		String screenName = SCREEN_REMAPPER.get(screen);

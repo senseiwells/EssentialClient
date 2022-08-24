@@ -18,7 +18,11 @@ import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
+
+//#if MC >= 11901
 import net.minecraft.command.CommandRegistryAccess;
+//#endif
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
@@ -74,11 +78,13 @@ public class CommandHelper {
 	}
 
 	public static void addComplexCommand(Interpreter interpreter, LiteralCommandNode<ServerCommandSource> commandNode) {
-		Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(interpreter.getProperties().getId(), id -> {
-			interpreter.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
-			return ConcurrentHashMap.newKeySet();
-		});
-		commandNodeSet.add(commandNode);
+		if (interpreter.getThreadHandler().getRunning()) {
+			Set<LiteralCommandNode<ServerCommandSource>> commandNodeSet = FUNCTION_COMMAND_NODES.computeIfAbsent(interpreter.getProperties().getId(), id -> {
+				interpreter.getThreadHandler().addShutdownEvent(() -> FUNCTION_COMMAND_NODES.remove(id));
+				return ConcurrentHashMap.newKeySet();
+			});
+			commandNodeSet.add(commandNode);
+		}
 	}
 
 	public static void registerFunctionCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -125,11 +131,19 @@ public class CommandHelper {
 		}
 	}
 
+	//#if MC >= 11901
 	public static void setCommandPacket(CommandTreeS2CPacket packet, CommandRegistryAccess registryAccess) {
 		if (packet == null) {
 			return;
 		}
 		Collection<CommandNode<CommandSource>> commandNodes = packet.getCommandTree(registryAccess).getChildren();
+		//#else
+		//$$public static void setCommandPacket(CommandTreeS2CPacket packet) {
+		//$$	if (packet == null) {
+		//$$		return;
+		//$$	}
+		//$$	Collection<CommandNode<CommandSource>> commandNodes = packet.getCommandTree().getChildren();
+		//#endif
 		RootCommandNode<CommandSource> newRootCommandNode = new RootCommandNode<>();
 		for (CommandNode<CommandSource> commandNode : commandNodes) {
 			newRootCommandNode.addChild(commandNode);

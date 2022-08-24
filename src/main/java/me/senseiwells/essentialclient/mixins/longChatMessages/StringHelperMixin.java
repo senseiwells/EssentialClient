@@ -8,8 +8,10 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(StringHelper.class)
 public class StringHelperMixin {
+	//#if MC >= 11901
 	@ModifyConstant(method = "truncateChat", constant = @Constant(intValue = 256))
 	private static int getMaxLength(int original) {
 		return EssentialUtils.getMaxChatLength(original);
 	}
+	//#endif
 }

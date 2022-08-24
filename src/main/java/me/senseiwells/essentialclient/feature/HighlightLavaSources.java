@@ -39,8 +39,7 @@ public class HighlightLavaSources implements SimpleSynchronousResourceReloadList
 				registry.register(STILL_SPRITE_ID);
 			});
 			ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new HighlightLavaSources());
-		}
-		else {
+		} else {
 			EssentialClient.LOGGER.info("HighlightLavaSources not functional - no Fabric API");
 		}
 	}

@@ -29,7 +29,7 @@ public class ClientPlayerInteractionManagerMixin {
 	@Unique
 	private List<ItemStack> cachedList;
 
-	@Redirect(method = "clickSlot", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayListWithCapacity(I)Ljava/util/ArrayList;"))
+	@Redirect(method = "clickSlot", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayListWithCapacity(I)Ljava/util/ArrayList;", remap = false))
 	private <E> ArrayList<E> onCreateList(int initialArraySize) {
 		return (ArrayList<E>) (this.cachedList = Lists.newArrayListWithCapacity(initialArraySize));
 	}

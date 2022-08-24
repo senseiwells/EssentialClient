@@ -22,7 +22,14 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.server.command.ServerCommandSource;
+
+//#if MC >= 11800
 import net.minecraft.tag.TagKey;
+//#else
+//$$import net.minecraft.tag.EntityTypeTags;
+//$$import net.minecraft.tag.Tag;
+//#endif
+
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -95,8 +102,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 
 			try {
 				parser.parse();
-			}
-			catch (CommandSyntaxException ignore) {
+			} catch (CommandSyntaxException ignore) {
 			}
 
 			Collection<String> suggestions = source.getPlayerNames();
@@ -150,8 +156,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 
 			if (this.reader.canRead() && this.reader.peek() == '@') {
 				this.parseAtSelector();
-			}
-			else {
+			} else {
 				this.parsePlayerNameOrUuid();
 			}
 
@@ -166,8 +171,8 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 				double yMax = (yNeg || this.boxY == null ? 0 : this.boxY) + 1;
 				double zMax = (zNeg || this.boxZ == null ? 0 : this.boxZ) + 1;
 				this.addFilter((origin, entity) -> entity.getX() - origin.x >= xMin && entity.getX() - origin.x < xMax
-						&& entity.getY() - origin.y >= yMin && entity.getY() - origin.y < yMax
-						&& entity.getZ() - origin.z >= zMin && entity.getZ() - origin.z < zMax);
+					&& entity.getY() - origin.y >= yMin && entity.getY() - origin.y < yMax
+					&& entity.getZ() - origin.z >= zMin && entity.getZ() - origin.z < zMax);
 			}
 			if (this.playersOnly || this.playersOnlyForced) {
 				this.addFilter((origin, entity) -> entity instanceof PlayerEntity);
@@ -193,8 +198,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 				this.filter = (origin, entity) -> entity.getUuid().equals(uuid);
 				this.limit = 1;
 				return;
-			}
-			catch (IllegalArgumentException ignore) {
+			} catch (IllegalArgumentException ignore) {
 				// we don't have an uuid, check player names
 			}
 
@@ -301,8 +305,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 				if (delimiter == ',') {
 					this.suggestor = this::suggestOption;
 					this.reader.skipWhitespace();
-				}
-				else {
+				} else {
 					this.suggestor = EntitySelectorReader.DEFAULT_SUGGESTION_PROVIDER;
 					break;
 				}
@@ -374,8 +377,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						if (parser.reader.canRead() && parser.reader.peek() == '/') {
 							Pattern regex = RegexArgumentType.parseSlashyRegex(parser.reader);
 							parser.addFilter((origin, entity) -> regex.matcher(entity.getName().getString()).matches() != neg);
-						}
-						else {
+						} else {
 							String name = parser.reader.readString();
 							parser.addFilter((origin, entity) -> entity.getName().getString().equals(name) != neg);
 						}
@@ -481,8 +483,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						float max = range.getMax() == null ? 359 : range.getMax();
 						if (max < min) {
 							parser.addFilter((origin, entity) -> entity.getPitch() >= min || entity.getPitch() <= max);
-						}
-						else {
+						} else {
 							parser.addFilter((origin, entity) -> entity.getPitch() >= min && entity.getPitch() <= max);
 						}
 						parser.hasXRotation = true;
@@ -501,8 +502,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						float max = range.getMax() == null ? 359 : range.getMax();
 						if (max < min) {
 							parser.addFilter((origin, entity) -> entity.getYaw() >= min || entity.getYaw() <= max);
-						}
-						else {
+						} else {
 							parser.addFilter((origin, entity) -> entity.getYaw() >= min && entity.getYaw() <= max);
 						}
 						parser.hasYRotation = true;
@@ -560,10 +560,18 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 					void apply(Parser parser) throws CommandSyntaxException {
 						parser.suggestor = (builder, playerNameSuggest) -> {
 							CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.getIds(), builder, "!");
+							//#if MC >= 11800
 							CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.streamTags().map(TagKey::id), builder, "!#");
+							//#else
+							//$$CommandSource.suggestIdentifiers(EntityTypeTags.getTagGroup().getTagIds(), builder, "!#");
+							//#endif
 							if (!parser.hasType) {
 								CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.getIds(), builder);
+								//#if MC >= 11800
 								CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.streamTags().map(TagKey::id), builder, String.valueOf('#'));
+								//#else
+								//$$CommandSource.suggestIdentifiers(EntityTypeTags.getTagGroup().getTagIds(), builder, String.valueOf('#'));
+								//#endif
 							}
 							return builder.buildFuture();
 						};
@@ -572,10 +580,22 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						boolean neg = parser.readNegationCharacter();
 
 						if (parser.readTagCharacter()) {
+							//#if MC >= 11800
 							TagKey<EntityType<?>> tagKey = TagKey.of(Registry.ENTITY_TYPE_KEY, Identifier.fromCommandInput(parser.reader));
 							parser.addFilter((origin, entity) -> entity.getType().isIn(tagKey) != neg);
-						}
-						else {
+							//#else
+							//$$Identifier typeId = Identifier.fromCommandInput(parser.reader);
+							//$$parser.addFilter((origin, entity) -> {
+							//$$	try {
+							//$$		Tag<EntityType<?>> tag = entity.getEntityWorld().getTagManager().getTag(Registry.ENTITY_TYPE_KEY, typeId, id -> new IllegalArgumentException());
+							//$$		return tag.contains(entity.getType()) != neg;
+							//$$	}
+							//$$	catch (IllegalArgumentException e) {
+							//$$		return neg;
+							//$$	}
+							//$$});
+							//#endif
+						} else {
 							Identifier typeId = Identifier.fromCommandInput(parser.reader);
 							EntityType<?> type = Registry.ENTITY_TYPE.getOrEmpty(typeId).orElseThrow(() -> {
 								parser.reader.setCursor(cursor);

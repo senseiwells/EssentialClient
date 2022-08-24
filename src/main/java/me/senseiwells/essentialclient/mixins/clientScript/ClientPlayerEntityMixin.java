@@ -7,7 +7,11 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+
+//#if MC >= 11901
 import net.minecraft.network.encryption.PlayerPublicKey;
+//#endif
+
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -20,9 +24,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
+	//#if MC >= 11901
 	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, @Nullable PlayerPublicKey publicKey) {
 		super(world, pos, yaw, gameProfile, publicKey);
 	}
+	//#else
+	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
+	//$$	super(world, pos, yaw, profile);
+	//$$}
+	//#endif
 
 	@Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
 	private void onDropItem(boolean dropEntireStack, CallbackInfoReturnable<Boolean> cir) {
@@ -32,6 +42,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		}
 	}
 
+	//#if MC > 11901
 	@Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
 	public void onChatMessage(String message, Text preview, CallbackInfo ci) {
 		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
@@ -45,6 +56,14 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 			ci.cancel();
 		}
 	}
+	//#else
+	//$$@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
+	//$$public void onChatMessage(String message, CallbackInfo ci) {
+	//$$	if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
+	//$$		ci.cancel();
+	//$$	}
+	//$$}
+	//#endif
 
 	@Inject(method = "closeScreen", at = @At("HEAD"))
 	private void onCloseScreen(CallbackInfo ci) {

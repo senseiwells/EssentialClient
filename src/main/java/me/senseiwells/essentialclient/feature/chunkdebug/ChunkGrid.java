@@ -56,8 +56,7 @@ public class ChunkGrid {
 			String playerDimension = player.world.getRegistryKey().getValue().getPath();
 			int dimensionIndex = this.dimensions.indexOf(playerDimension);
 			this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
-		}
-		else {
+		} else {
 			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(0, 0));
 		}
 		this.cornerPoint.mainPoint.y += 5;
@@ -140,8 +139,7 @@ public class ChunkGrid {
 			}
 			this.drawSelectionBox(tessellator, bufferBuilder, drawingPoint, thisX, thisY);
 			this.updateSelectionInfo();
-		}
-		else {
+		} else {
 			this.selectionText = null;
 		}
 
@@ -278,8 +276,7 @@ public class ChunkGrid {
 			if (oldSelectionPoint != null && oldSelectionPoint.mainPoint.equals(newSelectionPoint)) {
 				this.setSelectionPoint(null);
 				this.selectionText = null;
-			}
-			else if (newSelectionPoint != null) {
+			} else if (newSelectionPoint != null) {
 				this.setSelectionPoint(new DraggablePoint(newSelectionPoint));
 				this.updateSelectionInfo();
 			}
@@ -293,8 +290,7 @@ public class ChunkGrid {
 			int changeY = (int) (mouseY - this.mouseDown.getY()) / this.scale;
 			if (!this.panning && changeX * changeX + changeY * changeY > 2) {
 				this.panning = true;
-			}
-			else if (this.panning) {
+			} else if (this.panning) {
 				int dragX = this.cornerPoint.dragPoint.x - changeX;
 				int dragY = this.cornerPoint.dragPoint.y - changeY;
 				this.cornerPoint.setLocation(dragX, dragY);

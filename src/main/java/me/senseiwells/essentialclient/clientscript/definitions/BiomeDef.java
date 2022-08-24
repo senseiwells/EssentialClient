@@ -15,11 +15,9 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
-import java.util.Optional;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BIOME;
@@ -78,7 +76,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		int y = arguments.nextPrimitive(NumberDef.class).intValue();
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
 		BlockPos blockPos = new BlockPos(x, y, z);
-		return !biome.doesNotSnow(blockPos);
+		return biome.isCold(blockPos);
 	}
 
 	@FunctionDoc(
@@ -91,7 +89,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	private boolean canSnowPos(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		return !biome.doesNotSnow(pos.getBlockPos());
+		return biome.isCold(pos.getBlockPos());
 	}
 
 	@FunctionDoc(
@@ -110,7 +108,11 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		int x = arguments.nextPrimitive(NumberDef.class).intValue();
 		int y = arguments.nextPrimitive(NumberDef.class).intValue();
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
+		//#if MC >= 11800
 		return biome.isHot(new BlockPos(x, y, z));
+		//#else
+		//$$return biome.getTemperature(new BlockPos(x, y, z)) > 1.0F;
+		//#endif
 	}
 
 	@FunctionDoc(
@@ -123,7 +125,11 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	private boolean isHotPos(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		//#if MC >= 11800
 		return biome.isHot(pos.getBlockPos());
+		//#else
+		//$$return biome.getTemperature(pos.getBlockPos()) > 1.0F;
+		//#endif
 	}
 
 	@FunctionDoc(
@@ -210,8 +216,8 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	)
 	private String getId(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
-		Optional<RegistryKey<Biome>> biomeKey = BuiltinRegistries.BIOME.getKey(biome);
-		return biomeKey.map(biomeRegistryKey -> biomeRegistryKey.getValue().getPath()).orElse("plains");
+		Identifier biomeIdentifier = BuiltinRegistries.BIOME.getId(biome);
+		return biomeIdentifier == null ? "minecraft:plains" : biomeIdentifier.getPath();
 	}
 
 	@FunctionDoc(

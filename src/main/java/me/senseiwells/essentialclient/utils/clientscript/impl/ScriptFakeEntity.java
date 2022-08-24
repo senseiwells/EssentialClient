@@ -36,10 +36,6 @@ public class ScriptFakeEntity {
 		this.bodyYaw = this.yaw = this.pitch = 0;
 	}
 
-	public void updatePosAndRotation(Vec3d pos, float yaw, float pitch) {
-		this.updatePosAndRotation(pos, yaw, pitch, 0);
-	}
-
 	public void setWorld(ClientWorld world) {
 		this.world = world;
 	}
@@ -100,6 +96,10 @@ public class ScriptFakeEntity {
 		return this.pitch;
 	}
 
+	public void updatePosAndRotation(Vec3d pos, float yaw, float pitch) {
+		this.updatePosAndRotation(pos, yaw, pitch, 0);
+	}
+
 	public void updatePosAndRotation(Vec3d pos, float yaw, float pitch, int interpolation) {
 		this.pos = pos;
 		this.entity.setHeadYaw(yaw);
@@ -143,7 +143,11 @@ public class ScriptFakeEntity {
 				ClientWorld world = EssentialUtils.getWorld();
 				if (ids != null && world != null) {
 					EssentialUtils.getClient().execute(() -> {
+						//#if MC >= 11800
 						ids.forEach(i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
+						//#else
+						//$$ids.forEach((java.util.function.IntConsumer) i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
+						//#endif
 					});
 				}
 			});

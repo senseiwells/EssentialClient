@@ -21,6 +21,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.BlockTags;
@@ -485,7 +486,12 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		ScriptBlockState blockState = this.ensurePosition(arguments);
 		BlockEntity blockEntity = EssentialUtils.getWorld().getBlockEntity(blockState.pos);
 		if (blockEntity != null) {
-			return ClientScriptUtils.nbtToMap(arguments.getInterpreter(), blockEntity.createNbt(), 10);
+			//#if MC >= 11800
+			NbtCompound compound = blockEntity.createNbt();
+			//#else
+			//$$NbtCompound compound = blockEntity.writeNbt(new NbtCompound());
+			//#endif
+			return ClientScriptUtils.nbtToMap(arguments.getInterpreter(), compound, 10);
 		}
 		return null;
 	}

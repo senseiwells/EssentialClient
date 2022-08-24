@@ -49,8 +49,8 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 	}
 
 	@ConstructorDoc(
-		desc = {"This creates a new empty Minecraft task"},
-		examples = {"task = new MinecraftTask();"}
+		desc = "This creates a new empty Minecraft task",
+		examples = "task = new MinecraftTask();"
 	)
 	private Unit construct(Arguments arguments) {
 		ClassInstance instance = arguments.next();
@@ -79,14 +79,13 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 			FUNCTION, "function", "the function to run after the delay"
 		},
 		returns = {TASK, "the task, this allows for chaining"},
-		examples = {
+		examples =
 			"""
 				task = new MinecraftTask()
 					.then(fun() print("hello"))
 					.waitThen(5, fun() print("world"));
 				task.run(); // prints 'hello', waits 5 ticks, prints 'world'
 				"""
-		}
 	)
 	private ClassInstance waitThen(Arguments arguments) {
 		ClassInstance instance = arguments.next();
@@ -107,7 +106,7 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 			"the return value for the future"
 		},
 		returns = {FUTURE, "the future value that can be awaited"},
-		examples = {
+		examples =
 			"""
 				task = new MinecraftTask()
 					.then(fun() print("hello"))
@@ -117,7 +116,6 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 				f = task.run(); // prints 'hello world'
 				print(f.await()); // prints 10
 				"""
-		}
 	)
 	private Future<ClassInstance> run(Arguments arguments) {
 		return arguments.nextPrimitive(this).run();
