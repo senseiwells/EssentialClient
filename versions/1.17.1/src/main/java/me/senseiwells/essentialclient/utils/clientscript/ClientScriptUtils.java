@@ -315,7 +315,7 @@ public class ClientScriptUtils {
 		if (element instanceof AbstractNbtNumber nbtNumber) {
 			return interpreter.create(NumberDef.class, nbtNumber.doubleValue());
 		}
-		if (element == NbtEnd.INSTANCE) {
+		if (element instanceof NbtNull) {
 			return interpreter.getNull();
 		}
 		return interpreter.create(StringDef.class, element.asString());
@@ -357,7 +357,7 @@ public class ClientScriptUtils {
 			return NbtDouble.of((double) primitive);
 		}
 		if (value == interpreter.getNull()) {
-			return NbtEnd.INSTANCE;
+			return NbtNull.INSTANCE;
 		}
 		return NbtString.of(value.toString(interpreter));
 	}
