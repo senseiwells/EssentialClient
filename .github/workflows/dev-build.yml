@@ -17,4 +17,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Artifacts from ${{ github.sha }}
-          path: build/libs
+          path: versions/*/build/libs/
