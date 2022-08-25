@@ -3,14 +3,14 @@ package me.senseiwells.essentialclient.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 
-//#if MC >= 11901
+//#if MC >= 11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 
 import net.minecraft.server.command.ServerCommandSource;
 
 public class CommandRegister {
-	//#if MC >= 11901
+	//#if MC >= 11900
 	private static CommandRegistryAccess registryAccess;
 
 	public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess access) {
@@ -30,7 +30,7 @@ public class CommandRegister {
 		CommandHelper.registerFunctionCommands(dispatcher);
 	}
 
-	//#if MC >= 11901
+	//#if MC >= 11900
 	public static CommandRegistryAccess getRegistryAccess() {
 		return registryAccess;
 	}

@@ -12,7 +12,7 @@ import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
-//#if MC >= 11901
+//#if MC >= 11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 
@@ -38,7 +38,7 @@ public class ClientPlayNetworkHandlerMixin {
 	@Final
 	private MinecraftClient client;
 
-	//#if MC >= 11901
+	//#if MC >= 11900
 	@Shadow
 	private DynamicRegistryManager.Immutable registryManager;
 	//#endif
@@ -46,7 +46,7 @@ public class ClientPlayNetworkHandlerMixin {
 	@SuppressWarnings("unchecked")
 	@Inject(method = "onCommandTree", at = @At("TAIL"))
 	public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
-		//#if MC >= 11901
+		//#if MC >= 11900
 		CommandRegistryAccess access = new CommandRegistryAccess(this.registryManager);
 		CommandHelper.setCommandPacket(packet, access);
 		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher, access);

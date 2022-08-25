@@ -8,7 +8,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 
-//#if MC >= 11901
+//#if MC >= 11900
 import net.minecraft.network.encryption.PlayerPublicKey;
 //#endif
 
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
-	//#if MC >= 11901
+	//#if MC >= 11900
 	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, @Nullable PlayerPublicKey publicKey) {
 		super(world, pos, yaw, gameProfile, publicKey);
 	}

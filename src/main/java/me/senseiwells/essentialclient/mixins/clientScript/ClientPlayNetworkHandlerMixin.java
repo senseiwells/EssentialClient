@@ -10,8 +10,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 
-//#if MC >= 11901
+//#if MC >= 11900
 import net.minecraft.network.message.MessageType;
+import java.util.function.Function;
 //#endif
 
 import net.minecraft.network.packet.s2c.play.*;
@@ -40,7 +41,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private MinecraftClient client;
 
-	//#if MC >= 11901
+	//#if MC >= 11900
 	@Shadow
 	private DynamicRegistryManager.Immutable registryManager;
 	//#endif
@@ -101,6 +102,27 @@ public abstract class ClientPlayNetworkHandlerMixin {
 			ci.cancel();
 		}
 	}
+
+	//#elseif MC >= 11900
+	//$$@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
+	//$$private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
+	//$$	Registry<MessageType> registry = this.registryManager.get(Registry.MESSAGE_TYPE_KEY);
+	//$$    Function<Registry<MessageType>, MessageType> messageType = packet::getMessageType;
+	//$$	Identifier messageTypeId = registry.getId(messageType.apply(registry));
+	//$$	if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(Util.NIL_UUID, packet.content().getString(), messageTypeId == null ? "unknown" : messageTypeId.getPath())) {
+	//$$		ci.cancel();
+	//$$	}
+	//$$}
+
+	//$$@Inject(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/ChatMessageS2CPacket;sender()Lnet/minecraft/network/message/MessageSender;"), cancellable = true)
+	//$$private void onChatMessage(ChatMessageS2CPacket packet, CallbackInfo ci) {
+	//$$	Registry<MessageType> registry = this.registryManager.get(Registry.MESSAGE_TYPE_KEY);
+	//$$    Function<Registry<MessageType>, MessageType> messageType = packet::getMessageType;
+	//$$	Identifier messageTypeId = registry.getId(messageType.apply(registry));
+	//$$	if (MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(Util.NIL_UUID, packet.getSignedMessage().getContent().getString(), messageTypeId == null ? "unknown" : messageTypeId.getPath())) {
+	//$$		ci.cancel();
+	//$$	}
+	//$$}
 	//#elseif MC >= 11800
 	//$$@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;addChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"), cancellable = true)
 	//$$private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {

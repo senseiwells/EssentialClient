@@ -3,11 +3,14 @@ package me.senseiwells.essentialclient.mixins.gameRuleSync;
 import me.senseiwells.essentialclient.utils.interfaces.IGameRule;
 import me.senseiwells.essentialclient.utils.render.Texts;
 
-//#if MC < 11901
+//#if MC < 11900
 //$$import net.minecraft.network.MessageType;
+//#elseif MC <= 11900
+//$$import net.minecraft.network.message.MessageType;
+//#endif
+//#if MC < 11901
 //$$import net.minecraft.util.Util;
 //#endif
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.world.GameRules;
@@ -37,6 +40,8 @@ public abstract class RuleMixin<T extends GameRules.Rule<T>> implements IGameRul
 		Text text = Texts.literal("Set Game Rule %s to %s".formatted(ruleName, this.serialize()));
 		//#if MC >= 11901
 		server.getPlayerManager().broadcast(text, false);
+		//#elseif MC >= 11900
+		//$$server.getPlayerManager().broadcast(text, MessageType.SYSTEM);
 		//#elseif MC >= 11800
 		//$$server.getPlayerManager().broadcast(text, MessageType.SYSTEM, Util.NIL_UUID);
 		//#else

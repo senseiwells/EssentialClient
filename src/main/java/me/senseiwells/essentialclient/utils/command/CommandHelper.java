@@ -19,7 +19,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
 
-//#if MC >= 11901
+//#if MC >= 11900
 import net.minecraft.command.CommandRegistryAccess;
 //#endif
 
@@ -131,7 +131,7 @@ public class CommandHelper {
 		}
 	}
 
-	//#if MC >= 11901
+	//#if MC >= 11900
 	public static void setCommandPacket(CommandTreeS2CPacket packet, CommandRegistryAccess registryAccess) {
 		if (packet == null) {
 			return;

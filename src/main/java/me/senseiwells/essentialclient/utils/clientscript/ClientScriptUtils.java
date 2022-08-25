@@ -37,7 +37,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
-//#if MC >= 11901
+//#if MC >= 11900
 import net.minecraft.command.CommandRegistryWrapper;
 //#endif
 
@@ -269,7 +269,7 @@ public class ClientScriptUtils {
 
 	public static ItemStack stringToItemStack(String string) {
 		try {
-			//#if MC >= 11901
+			//#if MC >= 11900
 			ItemStringReader.ItemResult reader = ItemStringReader.item(CommandRegistryWrapper.of(Registry.ITEM), new StringReader(string));
 			ItemStack itemStack = new ItemStack(reader.item());
 			itemStack.setNbt(reader.nbt());
@@ -514,7 +514,7 @@ public class ClientScriptUtils {
 		ArgumentType<?> type = switch (typeName.toLowerCase()) {
 			case "word" -> StringArgumentType.word();
 			case "boolean" -> BoolArgumentType.bool();
-			//#if MC >= 11901
+			//#if MC >= 11900
 			case "itemstack" -> ItemStackArgumentType.itemStack(CommandRegister.getRegistryAccess());
 			case "block" -> BlockStateArgumentType.blockState(CommandRegister.getRegistryAccess());
 			//#else

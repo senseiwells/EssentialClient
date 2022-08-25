@@ -11,6 +11,11 @@ import net.minecraft.client.network.PlayerListEntry;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.network.message.MessageHandler;
 import net.minecraft.network.message.SignedMessage;
+//#elseif MC >= 11900
+//$$import net.minecraft.client.gui.hud.InGameHud;
+//$$import net.minecraft.network.message.MessageSender;
+//$$import net.minecraft.client.gui.ClientChatListener;
+//$$import org.spongepowered.asm.mixin.injection.Redirect;
 //#else
 //$$import net.minecraft.client.gui.hud.InGameHud;
 //$$import net.minecraft.client.gui.ClientChatListener;
@@ -44,6 +49,20 @@ public class MessageHandlerMixin {
 		}
 		return text;
 	}
+	//#elseif MC >= 11900
+	//$$@Redirect(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ClientChatListener;onChatMessage(Lnet/minecraft/network/message/MessageType;Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSender;)V"))
+	//$$private void onChatMessage(ClientChatListener instance, MessageType messageType, Text text, MessageSender messageSender) {
+	//$$	if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
+	//$$		PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(messageSender.uuid());
+	//$$		if (playerListEntry != null) {
+	//$$			String newName = ConfigClientNick.INSTANCE.get(playerListEntry.getProfile().getName());
+	//$$			String message = TextVisitFactory.removeFormattingCodes(text);
+	//$$			String oldName = StringUtils.substringBetween(message, "<", ">");
+	//$$			text = newName != null && oldName != null ? Texts.literal(message.replaceAll(oldName, newName)) : text;
+	//$$		}
+	//$$	}
+	//$$	instance.onChatMessage(messageType, text, messageSender);
+	//$$}
 	//#else
 	//$$@Redirect(method = "addChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ClientChatListener;onChatMessage(Lnet/minecraft/network/MessageType;Lnet/minecraft/text/Text;Ljava/util/UUID;)V"))
 	//$$private void onChatMessage(ClientChatListener clientChatListener, MessageType messageType, Text text, UUID sender) {
