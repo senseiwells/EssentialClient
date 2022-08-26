@@ -31,10 +31,12 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
+import java.util.Locale;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
@@ -88,6 +90,8 @@ public class WorldDef extends CreatableDefinition<World> {
 			MemberFunction.of("getEmittedRedstonePower", 2, this::getEmittedRedstonePowerPos),
 			MemberFunction.of("getLight", 3, this::getLight),
 			MemberFunction.of("getLight", 1, this::getLightPos),
+			MemberFunction.of("getSkyLight", 1, this::getSkyLight),
+			MemberFunction.of("getBlockLight", 1, this::getBlockLight),
 			MemberFunction.of("getArea", 2, this::getArea, "This function is memory intensive, use '<World>'.getPositions(pos1, pos2)"),
 			MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks, "This function is memory intensive, use '<World>.getBlocks(pos1, pos2)'"),
 			MemberFunction.of("getPositions", 2, this::getPositions),
@@ -578,13 +582,13 @@ public class WorldDef extends CreatableDefinition<World> {
 
 	@FunctionDoc(
 		name = "getLight",
-		desc = "Gets the light level at the given position",
+		desc = "Gets the light level at the given position, takes the max of either sky light of block light",
 		params = {
 			NUMBER, "x", "the x position of the block",
 			NUMBER, "y", "the y position of the block",
 			NUMBER, "z", "the z position of the block"
 		},
-		returns = {NUMBER, "the light level"},
+		returns = {NUMBER, "the light level between 0 - 15"},
 		examples = "world.getLight(0, 100, 0);"
 	)
 	private int getLight(Arguments arguments) {
@@ -598,9 +602,9 @@ public class WorldDef extends CreatableDefinition<World> {
 
 	@FunctionDoc(
 		name = "getLight",
-		desc = "Gets the light level at the given position",
+		desc = "Gets the light level at the given position, takes the max of either sky light of block light",
 		params = {POS, "pos", "the position of the block"},
-		returns = {NUMBER, "the light level"},
+		returns = {NUMBER, "the light level between 0 - 15"},
 		examples = "world.getLight(new Pos(0, 100, 0));"
 	)
 	private int getLightPos(Arguments arguments) {
@@ -608,6 +612,34 @@ public class WorldDef extends CreatableDefinition<World> {
 		World world = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
 		return world.getLightLevel(pos.getBlockPos());
+	}
+
+	@FunctionDoc(
+		name = "getSkyLight",
+		desc = "Gets the sky light at the given position ignoring block light",
+		params = {POS, "pos", "the position of the block"},
+		returns = {NUMBER, "the light level between 0 - 15"},
+		examples = "world.getSkyLight(new Pos(0, 0, 0));"
+	)
+	private int getSkyLight(Arguments arguments) {
+		warnMainThread("getSkyLight", arguments.getInterpreter());
+		World world = arguments.nextPrimitive(this);
+		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		return world.getLightLevel(LightType.SKY, pos.getBlockPos());
+	}
+
+	@FunctionDoc(
+		name = "getBlockLight",
+		desc = "Gets the block light at the given position ignoring sky light",
+		params = {POS, "pos", "the position of the block"},
+		returns = {NUMBER, "the light level between 0 - 15"},
+		examples = "world.getBlockLight(new Pos(0, 0, 0));"
+	)
+	private int getBlockLight(Arguments arguments) {
+		warnMainThread("getBlockLight", arguments.getInterpreter());
+		World world = arguments.nextPrimitive(this);
+		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		return world.getLightLevel(LightType.SKY, pos.getBlockPos());
 	}
 
 	@FunctionDoc(
