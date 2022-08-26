@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 17
-      - run: ./gradlew spotlessApply --no-daemon
+      - run: ./gradlew spotlessApply --stacktrace --no-daemon
       - run: ./gradlew build --stacktrace --no-daemon
       - uses: actions/upload-artifact@v2
         with:
