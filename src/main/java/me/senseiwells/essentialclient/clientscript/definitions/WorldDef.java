@@ -95,7 +95,9 @@ public class WorldDef extends CreatableDefinition<World> {
 			MemberFunction.of("getArea", 2, this::getArea, "This function is memory intensive, use '<World>'.getPositions(pos1, pos2)"),
 			MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks, "This function is memory intensive, use '<World>.getBlocks(pos1, pos2)'"),
 			MemberFunction.of("getPositions", 2, this::getPositions),
-			MemberFunction.of("getBlocks", 2, this::getBlocks)
+			MemberFunction.of("getBlocks", 2, this::getBlocks),
+			MemberFunction.of("getPositionsFromCentre", 2, this::getPositionsFromCentre),
+			MemberFunction.of("getBlocksFromCentre", 2, this::getBlocksFromCentre)
 		);
 	}
 
@@ -723,6 +725,55 @@ public class WorldDef extends CreatableDefinition<World> {
 		BlockPos posA = arguments.nextPrimitive(PosDef.class).getBlockPos();
 		BlockPos posB = arguments.nextPrimitive(PosDef.class).getBlockPos();
 		Iterable<BlockPos> posIterable = BlockPos.iterate(posA, posB);
+		return () -> new PosIterator.Block(world, posIterable.iterator(), o -> arguments.getInterpreter().convertValue(o));
+	}
+
+	@FunctionDoc(
+		name = "getPositionsFromCentre",
+		desc = {
+			"This gets an iterator for all positions between two positions.",
+			"The iterator iterates from the centre outwards"
+		},
+		params = {
+			POS, "centre", "the central position",
+			NUMBER, "xRange", "how far to iterate on the x axis",
+			NUMBER, "yRange", "how far to iterate on the y axis",
+			NUMBER, "zRange", "how far to iterate on the z axis"
+		},
+		returns = {ITERABLE, "the iterator for the positions"},
+		examples = "foreach (pos : world.getPositionsFromCentre(new Pos(0, 100, 100), 10, 10, 10));"
+	)
+	private ArucasIterable getPositionsFromCentre(Arguments arguments) {
+		BlockPos posA = arguments.skip().nextPrimitive(PosDef.class).getBlockPos();
+		int x = arguments.nextPrimitive(NumberDef.class).intValue();
+		int y = arguments.nextPrimitive(NumberDef.class).intValue();
+		int z = arguments.nextPrimitive(NumberDef.class).intValue();
+		Iterable<BlockPos> posIterable = BlockPos.iterateOutwards(posA, x, y, z);
+		return () -> new PosIterator(posIterable.iterator(), o -> arguments.getInterpreter().convertValue(o));
+	}
+
+	@FunctionDoc(
+		name = "getBlocksFromCentre",
+		desc = {
+			"This gets an iterator for all blocks (and positions) between two positions.",
+			"The iterator iterates from the centre outwards"
+		},
+		params = {
+			POS, "centre", "the central position",
+			NUMBER, "xRange", "how far to iterate on the x axis",
+			NUMBER, "yRange", "how far to iterate on the y axis",
+			NUMBER, "zRange", "how far to iterate on the z axis"
+		},
+		returns = {ITERABLE, "the iterator for the blocks"},
+		examples = "foreach (block : world.getBlocksFromCentre(new Pos(0, 100, 100), 10, 5, 60));"
+	)
+	private ArucasIterable getBlocksFromCentre(Arguments arguments) {
+		World world = arguments.nextPrimitive(this);
+		BlockPos posA = arguments.nextPrimitive(PosDef.class).getBlockPos();
+		int x = arguments.nextPrimitive(NumberDef.class).intValue();
+		int y = arguments.nextPrimitive(NumberDef.class).intValue();
+		int z = arguments.nextPrimitive(NumberDef.class).intValue();
+		Iterable<BlockPos> posIterable = BlockPos.iterateOutwards(posA, x, y, z);
 		return () -> new PosIterator.Block(world, posIterable.iterator(), o -> arguments.getInterpreter().convertValue(o));
 	}
 }
