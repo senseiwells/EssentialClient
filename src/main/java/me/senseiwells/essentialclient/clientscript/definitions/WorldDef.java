@@ -639,7 +639,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		warnMainThread("getBlockLight", arguments.getInterpreter());
 		World world = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		return world.getLightLevel(LightType.SKY, pos.getBlockPos());
+		return world.getLightLevel(LightType.BLOCK, pos.getBlockPos());
 	}
 
 	@FunctionDoc(
