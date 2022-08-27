@@ -25,6 +25,7 @@ import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientTickSyncer;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.interfaces.ChatHudAccessor;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
@@ -36,11 +37,13 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -120,6 +123,10 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			MemberFunction.of("pressKey", 1, this::pressKey),
 			MemberFunction.of("releaseKey", 1, this::releaseKey),
 			MemberFunction.of("holdKey", 2, this::holdKey),
+			MemberFunction.of("editSign", 2, this::editSignSingle),
+			MemberFunction.of("editSign", 3, this::editSignDouble),
+			MemberFunction.of("editSign", 4, this::editSignTriple),
+			MemberFunction.of("editSign", 5, this::editSignFull),
 			MemberFunction.of("clearChat", this::clearChat),
 			MemberFunction.of("getLatestChatMessage", this::getLatestChatMessage),
 			MemberFunction.of("addCommand", 1, this::addCommand),
@@ -290,6 +297,108 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		ClientScriptUtils.ensureMainThread("holdKey", arguments.getInterpreter(), keyPartial.apply(GLFW.GLFW_PRESS));
 		Scheduler.scheduleLoop(1, 5, ticks, keyPartial.apply(GLFW.GLFW_REPEAT));
 		Scheduler.schedule(ticks, keyPartial.apply(GLFW.GLFW_RELEASE));
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "editSign",
+		desc = {
+			"This allows you to edit sign at certain position with given string(lines), max at 4.",
+			"This function does not check if sign is in position."
+		},
+		params = {
+			POS, "position", "the position of sign",
+			STRING, "milliseconds", "the number of milliseconds you want it held for"
+		},
+		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
+	)
+	private Void editSignSingle(Arguments arguments) {
+		MinecraftClient client = arguments.nextPrimitive(this);
+		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		String string1 = arguments.nextPrimitive(StringDef.class);
+		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+		if (networkHandler == null) {
+			throw new RuntimeError("NetworkHandler was null!");
+		}
+		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, "", "", ""));
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "editSign",
+		desc = {
+			"This allows you to edit sign at certain position with given string(lines), max at 4.",
+			"This function does not check if sign is in position."
+		},
+		params = {
+			POS, "position", "the position of sign",
+			STRING, "milliseconds", "the number of milliseconds you want it held for"
+		},
+		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
+	)
+	private Void editSignDouble(Arguments arguments) {
+		MinecraftClient client = arguments.nextPrimitive(this);
+		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		String string1 = arguments.nextPrimitive(StringDef.class);
+		String string2 = arguments.nextPrimitive(StringDef.class);
+		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+		if (networkHandler == null) {
+			throw new RuntimeError("NetworkHandler was null!");
+		}
+		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, string2, "", ""));
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "editSign",
+		desc = {
+			"This allows you to edit sign at certain position with given string(lines), max at 4.",
+			"This function does not check if sign is in position."
+		},
+		params = {
+			POS, "position", "the position of sign",
+			STRING, "milliseconds", "the number of milliseconds you want it held for"
+		},
+		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
+	)
+	private Void editSignTriple(Arguments arguments) {
+		MinecraftClient client = arguments.nextPrimitive(this);
+		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		String string1 = arguments.nextPrimitive(StringDef.class);
+		String string2 = arguments.nextPrimitive(StringDef.class);
+		String string3 = arguments.nextPrimitive(StringDef.class);
+		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+		if (networkHandler == null) {
+			throw new RuntimeError("NetworkHandler was null!");
+		}
+		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, string2, string3, ""));
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "editSign",
+		desc = {
+			"This allows you to edit sign at certain position with given string(lines), max at 4.",
+			"This function does not check if sign is in position."
+		},
+		params = {
+			POS, "position", "the position of sign",
+			STRING, "milliseconds", "the number of milliseconds you want it held for"
+		},
+		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
+	)
+	private Void editSignFull(Arguments arguments) {
+		MinecraftClient client = arguments.nextPrimitive(this);
+		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		String string1 = arguments.nextPrimitive(StringDef.class);
+		String string2 = arguments.nextPrimitive(StringDef.class);
+		String string3 = arguments.nextPrimitive(StringDef.class);
+		String string4 = arguments.nextPrimitive(StringDef.class);
+		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+		if (networkHandler == null) {
+			throw new RuntimeError("NetworkHandler was null!");
+		}
+		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, string2, string3, string4));
 		return null;
 	}
 
