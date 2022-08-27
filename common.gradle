@@ -87,7 +87,7 @@ dependencies {
 		transitive = false
 	}
 
-	// modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
+	modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
 
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)

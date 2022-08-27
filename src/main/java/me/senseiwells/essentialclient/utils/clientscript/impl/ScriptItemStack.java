@@ -24,4 +24,9 @@ public class ScriptItemStack implements ScriptMaterial {
 	public Object asDefault() {
 		return this.stack;
 	}
+
+	@Override
+	public String asString() {
+		return this.stack.toString();
+	}
 }

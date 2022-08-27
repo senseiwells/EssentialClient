@@ -54,7 +54,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 
 	@Override
 	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
-		return instance.asPrimitive(this).asDefault().toString();
+		return instance.asPrimitive(this).asString();
 	}
 
 	@Override
@@ -65,7 +65,8 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 			map.put(item.toString().toUpperCase(), this.create(ScriptMaterial.materialOf(item)));
 		}
 		for (Block block : Registry.BLOCK) {
-			map.computeIfAbsent(block.toString().toUpperCase(), s -> {
+			Identifier identifier = Registry.BLOCK.getId(block);
+			map.computeIfAbsent(identifier.getPath().toUpperCase(), s -> {
 				return this.create(ScriptMaterial.materialOf(block));
 			});
 		}

@@ -44,6 +44,8 @@ public interface ScriptMaterial {
 
 	Object asDefault();
 
+	String asString();
+
 	static ScriptMaterial materialOf(Block block) {
 		Item item = Item.BLOCK_ITEMS.get(block);
 		if (item == null) {
@@ -66,6 +68,11 @@ public interface ScriptMaterial {
 		public Object asDefault() {
 			return this.item;
 		}
+
+		@Override
+		public String asString() {
+			return this.item.toString();
+		}
 	}
 
 	record BlockMaterial(Block block) implements ScriptMaterial {
@@ -87,6 +94,11 @@ public interface ScriptMaterial {
 		@Override
 		public Object asDefault() {
 			return this.block;
+		}
+
+		@Override
+		public String asString() {
+			return Registry.BLOCK.getId(this.block).getPath();
 		}
 	}
 }
