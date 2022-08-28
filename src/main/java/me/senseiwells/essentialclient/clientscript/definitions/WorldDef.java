@@ -64,6 +64,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		return List.of(
 			MemberFunction.of("getBlockAt", 3, this::getBlockAt),
 			MemberFunction.of("getBlockAt", 1, this::getBlockAtPos),
+			MemberFunction.of("isLoaded", 1, this::isLoaded),
 			MemberFunction.of("getBiomeAt", 3, this::getBiomeAt),
 			MemberFunction.of("getBiomeAt", 1, this::getBiomeAtPos),
 			MemberFunction.of("getPlayer", 1, this::getPlayer),
@@ -135,6 +136,21 @@ public class WorldDef extends CreatableDefinition<World> {
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
 		BlockPos blockPos = pos.getBlockPos();
 		return new ScriptBlockState(world.getBlockState(blockPos), blockPos);
+	}
+
+	@FunctionDoc(
+		name = "isLoaded",
+		desc = "This function returns loaded state of given coordinates(client side)",
+		params = {POS, "pos", "the position"},
+		returns = {BOOLEAN, "whether the block is loaded at the given coordinates"},
+		examples = "world.isLoaded(new Pos(0, 100, 0));"
+	)
+	private boolean isLoaded(Arguments arguments) {
+		warnMainThread("isLoaded", arguments.getInterpreter());
+		World world = arguments.nextPrimitive(this);
+		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+		BlockPos blockPos = pos.getBlockPos();
+		return world.isChunkLoaded(blockPos);
 	}
 
 	@FunctionDoc(
