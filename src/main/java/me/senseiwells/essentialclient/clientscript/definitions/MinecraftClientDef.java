@@ -300,12 +300,12 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	@FunctionDoc(
 		name = "editSign",
 		desc = {
-			"This allows you to edit sign at certain position with given string(lines), max at 4.",
-			"This function does not check if sign is in position / sign is editable."
+			"This allows you to edit sign at certain position with given string(lines), up to 4 lines.",
+			"This function does not check if sign is editable / is in position."
 		},
 		params = {
 			POS, "position", "the position of sign",
-			STRING, "string", "the string you want to put"
+			STRING, "string...", "the lines for the sign, requires 1 string and up to 4 strings"
 		},
 		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
 	)
