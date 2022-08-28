@@ -123,10 +123,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			MemberFunction.of("pressKey", 1, this::pressKey),
 			MemberFunction.of("releaseKey", 1, this::releaseKey),
 			MemberFunction.of("holdKey", 2, this::holdKey),
-			MemberFunction.of("editSign", 2, this::editSignSingle),
-			MemberFunction.of("editSign", 3, this::editSignDouble),
-			MemberFunction.of("editSign", 4, this::editSignTriple),
-			MemberFunction.of("editSign", 5, this::editSignFull),
+			MemberFunction.arb("editSign", this::editSignFull),
 			MemberFunction.of("clearChat", this::clearChat),
 			MemberFunction.of("getLatestChatMessage", this::getLatestChatMessage),
 			MemberFunction.of("addCommand", 1, this::addCommand),
@@ -304,86 +301,11 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		name = "editSign",
 		desc = {
 			"This allows you to edit sign at certain position with given string(lines), max at 4.",
-			"This function does not check if sign is in position."
+			"This function does not check if sign is in position / sign is editable."
 		},
 		params = {
 			POS, "position", "the position of sign",
-			STRING, "milliseconds", "the number of milliseconds you want it held for"
-		},
-		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
-	)
-	private Void editSignSingle(Arguments arguments) {
-		MinecraftClient client = arguments.nextPrimitive(this);
-		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		String string1 = arguments.nextPrimitive(StringDef.class);
-		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-		if (networkHandler == null) {
-			throw new RuntimeError("NetworkHandler was null!");
-		}
-		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, "", "", ""));
-		return null;
-	}
-
-	@FunctionDoc(
-		name = "editSign",
-		desc = {
-			"This allows you to edit sign at certain position with given string(lines), max at 4.",
-			"This function does not check if sign is in position."
-		},
-		params = {
-			POS, "position", "the position of sign",
-			STRING, "milliseconds", "the number of milliseconds you want it held for"
-		},
-		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
-	)
-	private Void editSignDouble(Arguments arguments) {
-		MinecraftClient client = arguments.nextPrimitive(this);
-		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		String string1 = arguments.nextPrimitive(StringDef.class);
-		String string2 = arguments.nextPrimitive(StringDef.class);
-		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-		if (networkHandler == null) {
-			throw new RuntimeError("NetworkHandler was null!");
-		}
-		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, string2, "", ""));
-		return null;
-	}
-
-	@FunctionDoc(
-		name = "editSign",
-		desc = {
-			"This allows you to edit sign at certain position with given string(lines), max at 4.",
-			"This function does not check if sign is in position."
-		},
-		params = {
-			POS, "position", "the position of sign",
-			STRING, "milliseconds", "the number of milliseconds you want it held for"
-		},
-		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
-	)
-	private Void editSignTriple(Arguments arguments) {
-		MinecraftClient client = arguments.nextPrimitive(this);
-		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		String string1 = arguments.nextPrimitive(StringDef.class);
-		String string2 = arguments.nextPrimitive(StringDef.class);
-		String string3 = arguments.nextPrimitive(StringDef.class);
-		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-		if (networkHandler == null) {
-			throw new RuntimeError("NetworkHandler was null!");
-		}
-		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, string2, string3, ""));
-		return null;
-	}
-
-	@FunctionDoc(
-		name = "editSign",
-		desc = {
-			"This allows you to edit sign at certain position with given string(lines), max at 4.",
-			"This function does not check if sign is in position."
-		},
-		params = {
-			POS, "position", "the position of sign",
-			STRING, "milliseconds", "the number of milliseconds you want it held for"
+			STRING, "string", "the string you want to put"
 		},
 		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
 	)
@@ -391,9 +313,9 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		MinecraftClient client = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
 		String string1 = arguments.nextPrimitive(StringDef.class);
-		String string2 = arguments.nextPrimitive(StringDef.class);
-		String string3 = arguments.nextPrimitive(StringDef.class);
-		String string4 = arguments.nextPrimitive(StringDef.class);
+		String string2 = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		String string3 = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		String string4 = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
 		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
 		if (networkHandler == null) {
 			throw new RuntimeError("NetworkHandler was null!");
