@@ -47,7 +47,7 @@ public class ScriptEvent {
 	public boolean invoke(List<ClassInstance> arguments) {
 		Interpreter branch = this.interpreter.branch();
 		int count = this.function.getPrimitive(FunctionDef.class).getCount();
-		List<ClassInstance> newArgs = count < arguments.size() ? arguments.subList(0, count) : arguments;
+		List<ClassInstance> newArgs = count >= 0 && count < arguments.size() ? arguments.subList(0, count) : arguments;
 
 		if (this.event.isThreadDefinable() && !this.cancellable && EssentialUtils.getClient().isOnThread()) {
 			branch.getThreadHandler().runAsync(() -> {
