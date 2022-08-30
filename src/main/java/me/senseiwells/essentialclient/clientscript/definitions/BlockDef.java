@@ -16,6 +16,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -269,7 +270,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		examples = "block.getX();"
 	)
 	private Object getBlockX(Arguments arguments) {
-		return arguments.nextPrimitive(this).pos == null ? null : arguments.nextPrimitive(this).pos.getX();
+		BlockPos pos = arguments.nextPrimitive(this).pos;
+		return pos == null ? null : pos.getX();
 	}
 
 	@FunctionDoc(
@@ -279,7 +281,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		examples = "block.getY();"
 	)
 	private Object getBlockY(Arguments arguments) {
-		return arguments.nextPrimitive(this).pos == null ? null : arguments.nextPrimitive(this).pos.getY();
+		BlockPos pos = arguments.nextPrimitive(this).pos;
+		return pos == null ? null : pos.getY();
 	}
 
 	@FunctionDoc(
@@ -289,7 +292,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		examples = "block.getZ();"
 	)
 	private Object getBlockZ(Arguments arguments) {
-		return arguments.nextPrimitive(this).pos == null ? null : arguments.nextPrimitive(this).pos.getZ();
+		BlockPos pos = arguments.nextPrimitive(this).pos;
+		return pos == null ? null : pos.getZ();
 	}
 
 	@FunctionDoc(
