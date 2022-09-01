@@ -37,7 +37,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotRecorder;
@@ -310,17 +309,12 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
 	)
 	private Void editSignFull(Arguments arguments) {
-		MinecraftClient client = arguments.nextPrimitive(this);
-		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		String string1 = arguments.nextPrimitive(StringDef.class);
-		String string2 = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
-		String string3 = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
-		String string4 = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
-		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
-		if (networkHandler == null) {
-			throw new RuntimeError("NetworkHandler was null!");
-		}
-		client.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), string1, string2, string3, string4));
+		ScriptPos pos = arguments.skip().nextPrimitive(PosDef.class);
+		String first = arguments.nextPrimitive(StringDef.class);
+		String second = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		String third = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		String fourth = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		EssentialUtils.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), first, second, third, fourth));
 		return null;
 	}
 

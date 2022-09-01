@@ -17,13 +17,9 @@ public class MouseMixin {
 	@Final
 	private MinecraftClient client;
 
-	@Inject(method = "onMouseScroll", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/MinecraftClient;getOverlay()Lnet/minecraft/client/gui/screen/Overlay;"), locals = LocalCapture.CAPTURE_FAILHARD,
-		cancellable = true)
+	@Inject(method = "onMouseScroll", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/MinecraftClient;getOverlay()Lnet/minecraft/client/gui/screen/Overlay;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private void mouseScroll(long window, double horizontal, double vertical, CallbackInfo ci, double d) {
-		if (window != this.client.getWindow().getHandle()) {
-			return;
-		}
-		if (MinecraftScriptEvents.ON_MOUSE_SCROLL.run(d)) {
+		if (window == this.client.getWindow().getHandle() && MinecraftScriptEvents.ON_MOUSE_SCROLL.run(d)) {
 			ci.cancel();
 		}
 	}
