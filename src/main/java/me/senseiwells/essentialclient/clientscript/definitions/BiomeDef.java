@@ -18,6 +18,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
+import java.util.WeakHashMap;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BIOME;
@@ -30,6 +31,8 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 	language = Util.Language.Java
 )
 public class BiomeDef extends CreatableDefinition<Biome> {
+	public static final WeakHashMap<Biome, String> BIOME_TO_ID_MAP = new WeakHashMap<>();
+
 	public BiomeDef(Interpreter interpreter) {
 		super(MinecraftAPI.BIOME, interpreter);
 	}
@@ -210,14 +213,18 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 
 	@FunctionDoc(
 		name = "getId",
-		desc = "This function returns Fog color of the biome",
+		desc = "This function returns the Id of the biome",
 		returns = {STRING, "id of the biome"},
 		examples = "biome.getId();"
 	)
 	private String getId(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
-		Identifier biomeIdentifier = BuiltinRegistries.BIOME.getId(biome);
-		return biomeIdentifier == null ? "minecraft:plains" : biomeIdentifier.getPath();
+		//#if MC <= 11800
+		//$$Identifier biomeIdentifier = BuiltinRegistries.BIOME.getId(biome);
+		//$$return biomeIdentifier == null ? "minecraft:plains" : biomeIdentifier.getPath();
+		//#else
+		return BIOME_TO_ID_MAP.getOrDefault(biome, "minecraft:plains");
+		//#endif
 	}
 
 	@FunctionDoc(
