@@ -47,7 +47,8 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 			MemberFunction.of("getMaxUses", this::getMaxUses),
 			MemberFunction.of("getUses", this::getUses),
 			MemberFunction.of("getSpecialPrice", this::getSpecialPrice),
-			MemberFunction.of("getPriceMultiplier", this::getPriceMultiplier)
+			MemberFunction.of("getPriceMultiplier", this::getPriceMultiplier),
+			MemberFunction.of("getXpReward", this::getXpReward)
 		);
 	}
 
@@ -137,5 +138,19 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	public float getPriceMultiplier(Arguments arguments) {
 		TradeOffer offer = arguments.nextPrimitive(this);
 		return offer.getPriceMultiplier();
+	}
+
+	@FunctionDoc(
+		name = "getXpReward",
+		desc = {
+			"Returns the amount of xp the villager will get, which",
+			"goes towards them levelling up, from trading this offer"
+		},
+		returns = {NUMBER, "the amount of xp"},
+		examples = "trade.getXpReward"
+	)
+	private int getXpReward(Arguments arguments) {
+		TradeOffer offer = arguments.nextPrimitive(this);
+		return offer.getMerchantExperience();
 	}
 }

@@ -11,7 +11,6 @@ import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.arucas.utils.impl.ArucasList;
-import me.senseiwells.essentialclient.mixins.clientScript.MerchantScreenHandlerMixin;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
@@ -19,6 +18,7 @@ import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.village.Merchant;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
@@ -56,7 +56,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			MemberFunction.of("getTradeList", this::getTradeList),
 			MemberFunction.of("getTradeListSize", this::getTradeListSize),
 			MemberFunction.of("getVillagerLevel", this::getVillagerLevel),
-			MemberFunction.of("getVillagerProfession", this::getVillagerProfession),
+			MemberFunction.of("getVillagerXpBar", this::getVillagerXpBar),
 			MemberFunction.of("tradeIndex", 1, this::tradeIndex),
 			MemberFunction.of("getIndexOfTradeItem", 1, this::getIndexOfTradeItem),
 			MemberFunction.of("getTradeItemForIndex", 1, this::getTradeItemForIndex),
@@ -103,34 +103,36 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 		name = "getVillagerLevel",
 		desc = {
 			"This gets the level of the villager, this will",
-			"throw an error if you are not trading with a villager"
+			"throw an error if you are not trading with a villager.",
+			"The level can be between 1 - 5 from Novice to Master"
 		},
 		returns = {NUMBER, "the level of the villager"},
 		examples = "screen.getVillagerLevel();"
 	)
 	private int getVillagerLevel(Arguments arguments) {
-		MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
-		Merchant merchant = ((MerchantScreenHandlerMixin) merchantScreen.getScreenHandler()).getMerchant();
-		if (merchant instanceof VillagerEntity villagerEntity) {
-			return villagerEntity.getVillagerData().getLevel();
+		MerchantScreenHandler handler = this.checkIsCurrentScreen(arguments).getScreenHandler();
+		if (handler.isLeveled()) {
+			return handler.getLevelProgress();
 		}
 		throw new RuntimeError("Merchant isn't a villager");
 	}
 
 	@FunctionDoc(
-		name = "getVillagerProfession",
+		name = "getVillagerXp",
 		desc = {
-			"This gets the profession of the villager, this will",
-			"throw an error if you are not trading with a villager"
+			"This gets the amount of xp in the villagers xp bar,",
+			"The total amount of xp is hardcoded for each level.",
+			"Level 2 requires 10 xp, 3 requires 70 (60 xp from 2 -> 3),",
+			"4 requires 150 (80 xp from 3 -> 4), 5 requires 250",
+			"(100 xp from 4 -> 5). 250 is the max xp a villager can have"
 		},
-		returns = {STRING, "the profession of the villager, for example: 'armorer', 'mason', 'weaponsmith'"},
-		examples = "screen.getVillagerProfession();"
+		returns = {NUMBER, "the amount of xp"},
+		examples = "screen.getVillagerXpBar"
 	)
-	private String getVillagerProfession(Arguments arguments) {
-		MerchantScreen merchantScreen = this.checkIsCurrentScreen(arguments);
-		Merchant merchant = ((MerchantScreenHandlerMixin) merchantScreen.getScreenHandler()).getMerchant();
-		if (merchant instanceof VillagerEntity villagerEntity) {
-			return villagerEntity.getVillagerData().getProfession().toString();
+	private int getVillagerXpBar(Arguments arguments) {
+		MerchantScreenHandler handler = this.checkIsCurrentScreen(arguments).getScreenHandler();
+		if (handler.isLeveled()) {
+			return handler.getExperience();
 		}
 		throw new RuntimeError("Merchant isn't a villager");
 	}
