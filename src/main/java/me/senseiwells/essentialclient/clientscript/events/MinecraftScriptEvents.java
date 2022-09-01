@@ -36,6 +36,7 @@ public class MinecraftScriptEvents {
 		ON_PICK_BLOCK = new MinecraftScriptEvent("onPickBlock", true),
 		ON_ATTACK = new MinecraftScriptEvent("onAttack", true),
 		ON_USE = new MinecraftScriptEvent("onUse", true),
+		ON_MOUSE_SCROLL = new MinecraftScriptEvent("onMouseScroll", true),
 		ON_KEY_PRESS = new MinecraftScriptEvent("onKeyPress", true),
 		ON_KEY_RELEASE = new MinecraftScriptEvent("onKeyRelease", true),
 		ON_DROP_ITEM = new MinecraftScriptEvent("onDropItem", true),

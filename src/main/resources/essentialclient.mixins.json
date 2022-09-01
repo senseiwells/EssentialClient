@@ -32,6 +32,7 @@
     "clientScript.MerchantScreenHandlerMixin",
     "clientScript.MinecraftClientAccessor",
     "clientScript.MinecraftClientMixin",
+    "clientScript.MouseMixin",
     "clientScript.NbtListMixin",
     "clientScript.ScreenMixin",
     "clientScript.WorldRendererMixin",
