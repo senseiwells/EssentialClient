@@ -31,14 +31,12 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
-//#if MC > 11800
-import net.minecraft.util.registry.RegistryEntry;
-//#endif
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
+import java.util.Locale;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
@@ -193,9 +191,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
 		BlockPos blockPos = pos.getBlockPos();
 		//#if MC >= 11800
-		RegistryEntry<Biome> biomeEntry = world.getBiome(blockPos);
-		BiomeDef.BIOME_TO_ID_MAP.put(biomeEntry.value(), biomeEntry.getKeyOrValue().map((biomeRegistryKey) -> biomeRegistryKey.getValue().toString(), (notFound) -> "[unknown]"));
-		return biomeEntry.value();
+		return world.getBiome(blockPos).value();
 		//#else
 		//$$return world.getBiome(blockPos);
 		//#endif
