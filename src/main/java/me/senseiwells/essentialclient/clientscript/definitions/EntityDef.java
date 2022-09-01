@@ -118,7 +118,6 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			MemberFunction.of("getDimension", this::getDimension),
 			MemberFunction.of("getWorld", this::getWorld),
 			MemberFunction.of("getBiome", this::getBiome),
-			MemberFunction.of("getFullBiome", this::getFullBiome),
 			MemberFunction.of("getFullId", this::getFullId),
 			MemberFunction.of("getId", this::getId),
 			MemberFunction.of("isOf", 1, this::isOf),
@@ -434,34 +433,17 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 
 	@FunctionDoc(
 		name = "getBiome",
-		desc = "This gets the biome of the entity, this only returns the path, so for examples 'plains'",
-		returns = {STRING, "the biome id of the biome the entity is in"},
+		desc = "This gets the biome of the entity",
+		returns = {BIOME, "the biome the entity is in"},
 		examples = "entity.getBiome();"
 	)
-	private String getBiome(Arguments arguments) {
+	private Biome getBiome(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		//#if MC >= 11800
-		Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiome(entity.getBlockPos()).getKey();
+		return entity.getEntityWorld().getBiome(entity.getBlockPos()).value();
 		//#else
-		//$$Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
+		//$$return entity.getEntityWorld().getBiome(entity.getBlockPos());
 		//#endif
-		return biomeKey.map(key -> key.getValue().getPath()).orElse(null);
-	}
-
-	@FunctionDoc(
-		name = "getFullBiome",
-		desc = "This gets the biome of the entity, this returns the full biome id, so for examples 'minecraft:plains'",
-		returns = {STRING, "the biome id of the biome the entity is in"},
-		examples = "entity.getFullBiome();"
-	)
-	private String getFullBiome(Arguments arguments) {
-		Entity entity = arguments.nextPrimitive(this);
-		//#if MC >= 11800
-		Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiome(entity.getBlockPos()).getKey();
-		//#else
-		//$$Optional<RegistryKey<Biome>> biomeKey = entity.getEntityWorld().getBiomeKey(entity.getBlockPos());
-		//#endif
-		return biomeKey.map(key -> key.getValue().toString()).orElse(null);
 	}
 
 	@FunctionDoc(

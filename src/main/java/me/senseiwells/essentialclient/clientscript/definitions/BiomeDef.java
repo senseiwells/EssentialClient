@@ -11,10 +11,12 @@ import me.senseiwells.arucas.utils.LocatableTrace;
 import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
@@ -210,14 +212,14 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 
 	@FunctionDoc(
 		name = "getId",
-		desc = "This function returns Fog color of the biome",
+		desc = "This function returns the path id of the biome, e.g. 'plains'",
 		returns = {STRING, "id of the biome"},
 		examples = "biome.getId();"
 	)
 	private String getId(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
-		Identifier biomeIdentifier = BuiltinRegistries.BIOME.getId(biome);
-		return biomeIdentifier == null ? "minecraft:plains" : biomeIdentifier.getPath();
+		Identifier id = EssentialUtils.getNetworkHandler().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+		return id == null ? "plains" : id.getPath();
 	}
 
 	@FunctionDoc(

@@ -36,7 +36,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
-import java.util.Locale;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
