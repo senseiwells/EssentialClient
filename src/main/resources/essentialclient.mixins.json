@@ -29,7 +29,6 @@
     "clientScript.KeyBindingAccessor",
     "clientScript.KeyboardMixin",
     "clientScript.LivingEntityMixin",
-    "clientScript.MerchantScreenHandlerMixin",
     "clientScript.MinecraftClientAccessor",
     "clientScript.MinecraftClientMixin",
     "clientScript.NbtListMixin",
