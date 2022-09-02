@@ -25,6 +25,7 @@ import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientTickSyncer;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
+import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.interfaces.ChatHudAccessor;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
@@ -41,6 +42,7 @@ import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -120,6 +122,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			MemberFunction.of("pressKey", 1, this::pressKey),
 			MemberFunction.of("releaseKey", 1, this::releaseKey),
 			MemberFunction.of("holdKey", 2, this::holdKey),
+			MemberFunction.arb("editSign", this::editSignFull),
 			MemberFunction.of("clearChat", this::clearChat),
 			MemberFunction.of("getLatestChatMessage", this::getLatestChatMessage),
 			MemberFunction.of("addCommand", 1, this::addCommand),
@@ -290,6 +293,28 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		ClientScriptUtils.ensureMainThread("holdKey", arguments.getInterpreter(), keyPartial.apply(GLFW.GLFW_PRESS));
 		Scheduler.scheduleLoop(1, 5, ticks, keyPartial.apply(GLFW.GLFW_REPEAT));
 		Scheduler.schedule(ticks, keyPartial.apply(GLFW.GLFW_RELEASE));
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "editSign",
+		desc = {
+			"This allows you to edit sign at certain position with given string(lines), up to 4 lines.",
+			"This function does not check if sign is editable / is in position."
+		},
+		params = {
+			POS, "position", "the position of sign",
+			STRING, "string...", "the lines for the sign, requires 1 string and up to 4 strings"
+		},
+		examples = "client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');"
+	)
+	private Void editSignFull(Arguments arguments) {
+		ScriptPos pos = arguments.skip().nextPrimitive(PosDef.class);
+		String first = arguments.nextPrimitive(StringDef.class);
+		String second = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		String third = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		String fourth = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
+		EssentialUtils.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), first, second, third, fourth));
 		return null;
 	}
 
