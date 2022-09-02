@@ -276,7 +276,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	)
 	private boolean isTradeDisabled(Arguments arguments) {
 		warnMainThread("isTradeDisabled", arguments.getInterpreter());
-		int index = arguments.nextPrimitive(NumberDef.class).intValue();
+		int index = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		return InventoryUtils.checkTradeDisabled(index);
 	}
 
