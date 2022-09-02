@@ -17,9 +17,7 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.MerchantScreen;
-import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.screen.MerchantScreenHandler;
-import net.minecraft.village.Merchant;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
@@ -147,7 +145,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 		examples = "screen.tradeIndex(0);"
 	)
 	private Void tradeIndex(Arguments arguments) {
-		int index = arguments.nextPrimitive(NumberDef.class).intValue();
+		int index = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		ensureMainThread("tradeIndex", arguments.getInterpreter(), () -> {
 			InventoryUtils.tradeAllItems(index, false);
 		});
@@ -166,7 +164,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	)
 	private int getIndexOfTradeItem(Arguments arguments) {
 		warnMainThread("getIndexOfTradeItem", arguments.getInterpreter());
-		ScriptMaterial material = arguments.nextPrimitive(MaterialDef.class);
+		ScriptMaterial material = arguments.skip().nextPrimitive(MaterialDef.class);
 		return InventoryUtils.getIndexOfItemInMerchant(material.asItem());
 	}
 
@@ -182,7 +180,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	)
 	private ScriptItemStack getTradeItemForIndex(Arguments arguments) {
 		warnMainThread("getTradeItemForIndex", arguments.getInterpreter());
-		int index = arguments.nextPrimitive(NumberDef.class).intValue();
+		int index = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		return new ScriptItemStack(InventoryUtils.getTrade(index));
 	}
 
@@ -198,7 +196,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	)
 	private boolean doesVillagerHaveTrade(Arguments arguments) {
 		warnMainThread("doesVillagerHaveTrade", arguments.getInterpreter());
-		ScriptMaterial material = arguments.nextPrimitive(MaterialDef.class);
+		ScriptMaterial material = arguments.skip().nextPrimitive(MaterialDef.class);
 		return InventoryUtils.checkHasTrade(material.asItem());
 	}
 
