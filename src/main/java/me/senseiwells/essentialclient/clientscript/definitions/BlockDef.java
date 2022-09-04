@@ -23,11 +23,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
@@ -237,9 +239,10 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		ScriptBlockState blockState = arguments.nextPrimitive(this);
 		ArucasMap propertyMap = new ArucasMap();
 		Interpreter interpreter = arguments.getInterpreter();
-		for (Map.Entry<Property<?>, Comparable<?>> entry : blockState.state.getEntries().entrySet()) {
-			propertyMap.put(interpreter, interpreter.create(StringDef.class, entry.getKey().getName()), interpreter.convertValue(entry.getValue()));
-		}
+		blockState.state.getEntries().forEach((p, c) -> {
+			Object value = p instanceof EnumProperty<?> ? ((StringIdentifiable) c).asString() : c;
+			propertyMap.put(interpreter, interpreter.create(StringDef.class, p.getName()), interpreter.convertValue(value));
+		});
 		return propertyMap;
 	}
 
