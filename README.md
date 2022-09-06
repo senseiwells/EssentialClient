@@ -5,14 +5,6 @@
 
 EssentialClient is a client side only mod originally forked from [Carpet Client for 1.15.2](https://github.com/gnembon/carpet-client) that implements new client side features.
 
-This mod is currently supporting 1.17.1, and 1.18.1
-
-1.16.5 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.35.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.44+.
-
-1.17.1 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.40.1+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.57+.
-
-1.18.1 requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api) v0.44.0+ and [Carpet Mod](https://www.curseforge.com/minecraft/mc-mods/carpet) v1.4.57+.
-
 To access the Essential Client menu you must join a world, then it will be accessible to you when you press
 `ESC`, you can enable menu access from the title screen by enabling [essentialClientButton](#essentialclientbutton).
 
