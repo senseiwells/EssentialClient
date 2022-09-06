@@ -171,6 +171,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		MultiKeyBind keyBind = new MultiKeyBind(name, category);
 		List<InputUtil.Key> inputKeys = INSTANCE.unregisteredKeyBinds.remove(name);
 		if (inputKeys != null) {
+			keyBind.clearKey();
 			inputKeys.forEach(keyBind::addKey);
 		} else {
 			keyBind.addKeys(keys);
