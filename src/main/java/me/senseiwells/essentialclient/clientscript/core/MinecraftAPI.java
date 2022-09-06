@@ -6,6 +6,7 @@ import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.essentialclient.clientscript.definitions.*;
 import me.senseiwells.essentialclient.clientscript.definitions.shapes.*;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
+import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
@@ -147,6 +148,7 @@ public class MinecraftAPI {
 		builder.addConversion(Recipe.class, (r, i) -> i.create(RecipeDef.class, r));
 		builder.addConversion(TradeOffer.class, (t, i) -> i.create(TradeDef.class, t));
 		builder.addConversion(ArgumentBuilder.class, (a, i) -> i.create(CommandBuilderDef.class, a));
+		builder.addConversion(ClientRule.class, (c, i) -> i.create(ConfigDef.class, c));
 
 		builder.addConversion(ItemStackArgument.class, (s, i) -> EssentialUtils.throwAsRuntime(() -> i.create(ItemStackDef.class, new ScriptItemStack(s.createStack(1, false)))));
 		builder.addConversion(BlockStateArgument.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b.getBlockState(), null)));
