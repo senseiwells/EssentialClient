@@ -78,7 +78,7 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 			NUMBER, "ticks", "the amount of ticks delay before the function runs",
 			FUNCTION, "function", "the function to run after the delay"
 		},
-		returns = {TASK, "the task, this allows for chaining"},
+		returns = {MINECRAFT_TASK, "the task, this allows for chaining"},
 		examples =
 			"""
 				task = new MinecraftTask()
@@ -95,6 +95,45 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 		}
 		ArucasFunction function = arguments.nextPrimitive(FunctionDef.class);
 		instance.asPrimitive(this).addTask(ticks, function);
+		return instance;
+	}
+	
+	@FunctionDoc(
+		name = "waitLoopIf",
+		desc = {
+			"This loops waits a certain number of ticks before running the function,",
+			"if the function returns true then the task will call 'task.run' on itself"
+		},
+		params = {
+			NUMBER, "ticks", "the number of ticks to wait",
+			FUNCTION, "boolSupplier", "whether the task should be looped"
+		},
+		returns = {MINECRAFT_TASK, "the task, this allows for chaining"},
+		examples =
+			"""
+				task = new MinecraftTask()
+					.then(fun() print("hello"))
+					.waitThen(5, fun() print("world"))
+					.waitLoopIf(5, fun() true); // Waits 5 ticks then loops
+				"""
+	)
+	private ClassInstance waitLoopIf(Arguments arguments) {
+		ClassInstance instance = arguments.next();
+		int ticks = arguments.nextPrimitive(NumberDef.class).intValue();
+		if (ticks < 0) {
+			throw new RuntimeError("Cannot have a negative delay");
+		}
+		ArucasFunction supplier = arguments.nextPrimitive(FunctionDef.class);
+		MinecraftTask task = instance.asPrimitive(this);
+		task.addTask(ticks, BuiltInFunction.of("$lambda", args -> {
+			Boolean shouldRun = supplier.invoke(it.interpreter, listOf()).getPrimitive(BooleanDef::class)
+			if (shouldRun == null) {
+				throw new RuntimeError("'loopIf' check should return type 'Boolean'");
+			}
+			if (shouldRun) {
+				task.run()
+			}
+		});
 		return instance;
 	}
 
