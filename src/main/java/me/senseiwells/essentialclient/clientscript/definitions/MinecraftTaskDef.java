@@ -62,6 +62,7 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 	public List<MemberFunction> defineMethods() {
 		return List.of(
 			MemberFunction.of("waitThen", 2, this::waitThen),
+			MemberFunction.of("waitLoopIf", 2, this::waitLoopIf),
 			MemberFunction.of("run", this::run)
 		);
 	}
