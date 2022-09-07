@@ -127,12 +127,12 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 		ArucasFunction supplier = arguments.nextPrimitive(FunctionDef.class);
 		MinecraftTask task = instance.asPrimitive(this);
 		task.addTask(ticks, BuiltInFunction.of("$lambda", args -> {
-			Boolean shouldRun = supplier.invoke(it.interpreter, listOf()).getPrimitive(BooleanDef::class)
+			Boolean shouldRun = supplier.invoke(it.interpreter, List.of()).getPrimitive(BooleanDef.class);
 			if (shouldRun == null) {
 				throw new RuntimeError("'loopIf' check should return type 'Boolean'");
 			}
 			if (shouldRun) {
-				task.run()
+				task.run();
 			}
 		});
 		return instance;
