@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.utils.impl.ArucasIterator;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -9,7 +10,7 @@ import net.minecraft.world.World;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class PosIterator implements Iterator<ClassInstance> {
+public class PosIterator implements ArucasIterator {
 	final Iterator<BlockPos> blockPosIterator;
 	final Function<Object, ClassInstance> converter;
 
