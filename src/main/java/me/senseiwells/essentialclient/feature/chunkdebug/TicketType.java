@@ -3,7 +3,7 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 public enum TicketType implements Colourable {
 	START("Spawn", 0xBFFF00), // Lime green
 	DRAGON("Dragon", 0xCC00CC), // Magenta
-	PLAYER("Player", 0x198C19), // Green
+	PLAYER("Player", -1), // Green
 	FORCED("Forced", 0x336FFF), // Blue
 	LIGHT("Light", -1),
 	PORTAL("Portal", 0x472483), // Purple
