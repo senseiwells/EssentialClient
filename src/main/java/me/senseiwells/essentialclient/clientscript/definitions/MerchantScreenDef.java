@@ -292,7 +292,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	)
 	private int getPriceForIndex(Arguments arguments) {
 		warnMainThread("getPriceForIndex", arguments.getInterpreter());
-		int index = arguments.nextPrimitive(NumberDef.class).intValue();
+		int index = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		return InventoryUtils.checkPriceForTrade(index);
 	}
 
