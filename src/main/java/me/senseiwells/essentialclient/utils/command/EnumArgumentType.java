@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
 	static {
-		INVALID_ELEMENT_EXCEPTION = new DynamicCommandExceptionType(object -> Texts.literal("Enumeration element not found: " + object.toString()));
+		INVALID_ELEMENT_EXCEPTION = new DynamicCommandExceptionType(Texts.ENUM_NOT_FOUND::generate);
 	}
 
 	private static final DynamicCommandExceptionType INVALID_ELEMENT_EXCEPTION;

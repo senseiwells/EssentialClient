@@ -7,7 +7,6 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.apache.commons.io.FileUtils;
 
@@ -40,11 +39,11 @@ public class ClientUpdater {
 			int code = this.compareUpdates(essentialClientVersion, version);
 			switch (code) {
 				case -1 -> {
-					EssentialUtils.sendMessage("You have an unknown version of EssentialClient, can't update!");
+					EssentialUtils.sendMessage(Texts.UNKNOWN_UPDATE);
 					return;
 				}
 				case 0 -> {
-					EssentialUtils.sendMessage("You are already up to date with EssentialClient!");
+					EssentialUtils.sendMessage(Texts.UP_TO_DATE);
 					return;
 				}
 			}
@@ -55,17 +54,18 @@ public class ClientUpdater {
 				if (!assetName.equals("essential-client-%s-%s.jar".formatted(minecraftVersion, version))) {
 					continue;
 				}
-				Text message = this.tryDownloadUrl(assetObject.get("browser_download_url").getAsString(), assetName) ?
-					Texts.literal("Successfully downloaded '%s' to your mods folder. Please remove the old version.\n".formatted(assetName)).append(
-						Texts.literal("[Click here to open mods folder]").formatted(Formatting.GOLD, Formatting.BOLD).styled(style -> style.withClickEvent(
-							new ClickEvent(ClickEvent.Action.OPEN_FILE, FabricLoader.getInstance().getGameDir().resolve("mods").toString()))
-						)
-					) : Texts.literal("Failed to download '%s'".formatted(assetName));
-				EssentialUtils.sendMessage(message);
+				if (!this.tryDownloadUrl(assetObject.get("browser_download_url").getAsString(), assetName)) {
+					EssentialUtils.sendMessage(Texts.FAILED_TO_DOWNLOAD.generate(assetName));
+					return;
+				}
+				EssentialUtils.sendMessage(Texts.SUCCESSFULLY_DOWNLOADED.generate(assetName));
+				EssentialUtils.sendMessage(Texts.literal("[").append(Texts.OPEN_MODS_FOLDER).append("]").formatted().formatted(Formatting.GOLD, Formatting.BOLD).styled(style -> style.withClickEvent(
+					new ClickEvent(ClickEvent.Action.OPEN_FILE, FabricLoader.getInstance().getGameDir().resolve("mods").toString()))
+				));
 				return;
 			}
 		}
-		EssentialUtils.sendMessage("Could not find any version to update to");
+		EssentialUtils.sendMessage(Texts.NO_VERSIONS);
 	}
 
 	private boolean tryDownloadUrl(String url, String name) {

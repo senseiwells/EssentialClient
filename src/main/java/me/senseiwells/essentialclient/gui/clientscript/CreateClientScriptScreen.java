@@ -15,15 +15,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static me.senseiwells.essentialclient.utils.render.Texts.*;
+
 public class CreateClientScriptScreen extends ChildScreen {
 	private final TextFieldWidget nameBox;
 	private final ButtonWidget createButton;
 	private final ButtonWidget cancelButton;
 
 	public CreateClientScriptScreen(ClientScriptScreen parent) {
-		super(Texts.literal("Create New ClientScript"), parent);
-		this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, Texts.literal("ScriptName"));
-		this.createButton = new ButtonWidget(0, 0, 80, 20, Texts.literal("Create"), button -> {
+		super(CREATE_NEW_SCRIPT, parent);
+		this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, SCRIPT_NAME);
+		this.createButton = new ButtonWidget(0, 0, 80, 20, Texts.CREATE, button -> {
 			String name = this.nameBox.getText();
 			Path scriptPath = ClientScript.INSTANCE.getScriptDirectory();
 			Path newScriptPath = scriptPath.resolve(name + ".arucas");
@@ -47,7 +49,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 			parent.refresh();
 			parent.openScriptConfigScreen(instance);
 		});
-		this.cancelButton = new ButtonWidget(0, 0, 80, 20, Texts.literal("Cancel"), button -> this.close());
+		this.cancelButton = new ButtonWidget(0, 0, 80, 20, CANCEL, button -> this.close());
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackgroundTexture(0);
-		this.textRenderer.draw(matrices, "Script Name", this.width / 2.0F - 100, this.height / 2.0F - 33, 0x949494);
+		this.textRenderer.draw(matrices, SCRIPT_NAME, this.width / 2.0F - 100, this.height / 2.0F - 33, 0x949494);
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 		super.render(matrices, mouseX, mouseY, delta);
 	}

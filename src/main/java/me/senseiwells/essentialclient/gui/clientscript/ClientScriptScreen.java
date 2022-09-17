@@ -32,7 +32,7 @@ public class ClientScriptScreen extends ChildScreen {
 	private ClientScriptWidget scriptWidget;
 
 	public ClientScriptScreen(Screen parent) {
-		super(Texts.literal("Client Script Options"), parent);
+		super(SCRIPT_SCREEN, parent);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ClientScriptScreen extends ChildScreen {
 		this.renderBackground(matrices);
 		this.scriptWidget.render(matrices, mouseX, mouseY, delta);
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		drawCenteredText(matrices, this.textRenderer, "Arucas Version: %s".formatted(Arucas.getVERSION()), this.width / 2, 24, 0x949494);
+		drawCenteredText(matrices, this.textRenderer, ARUCAS_VERSION.generate(Arucas.getVERSION()), this.width / 2, 24, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
@@ -73,7 +73,7 @@ public class ClientScriptScreen extends ChildScreen {
 		private final String scriptName;
 
 		public SelectedCheckBox(String scriptName) {
-			super(0, 0, 20, 20, Texts.literal("Selected"), ClientScript.INSTANCE.isSelected(scriptName));
+			super(0, 0, 20, 20, SELECTED, ClientScript.INSTANCE.isSelected(scriptName));
 			this.scriptName = scriptName;
 		}
 
@@ -100,14 +100,14 @@ public class ClientScriptScreen extends ChildScreen {
 		private String newName;
 
 		ScriptConfigScreen(ClientScriptScreen parent, ClientScriptInstance scriptInstance) {
-			super(Texts.literal("Script Config for '%s'".formatted(scriptInstance.getName())), parent);
+			super(SCRIPT_CONFIG.generate(scriptInstance.getName()), parent);
 			this.scriptInstance = scriptInstance;
 			String scriptName = scriptInstance.getName();
-			this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, Texts.literal("ScriptName"));
+			this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, SCRIPT_NAME);
 			this.nameBox.setText(scriptName);
 			this.nameBox.setChangedListener(s -> this.newName = s);
-			this.openBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Open Script"), button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
-			this.deleteBox = new ButtonWidget(0, 0, 200, 20, Texts.literal("Delete Script"), button -> {
+			this.openBox = new ButtonWidget(0, 0, 200, 20, OPEN_SCRIPT, button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
+			this.deleteBox = new ButtonWidget(0, 0, 200, 20, DELETE_SCRIPT, button -> {
 				try {
 					this.scriptInstance.delete();
 					this.getParent().scriptWidget.clear();
@@ -214,8 +214,8 @@ public class ClientScriptScreen extends ChildScreen {
 		@Override
 		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 			this.renderBackgroundTexture(0);
-			this.textRenderer.draw(matrices, "Script Name", this.width / 2.0F - 100, this.height / 2.0F - 68, 0x949494);
-			this.textRenderer.draw(matrices, "KeyBind", this.width / 2.0F - 100, this.height / 2.0F + 30, 0xE0E0E0);
+			this.textRenderer.draw(matrices, SCRIPT_NAME, this.width / 2.0F - 100, this.height / 2.0F - 68, 0x949494);
+			this.textRenderer.draw(matrices, KEYBIND, this.width / 2.0F - 100, this.height / 2.0F + 30, 0xE0E0E0);
 			drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
@@ -237,7 +237,7 @@ public class ClientScriptScreen extends ChildScreen {
 				String display = keyBinding.getDisplay();
 				List<Text> textList = List.of(
 					Texts.literal(keyBinding.getName()).formatted(Formatting.GOLD),
-					Texts.literal(display.isEmpty() ? "No binding" : display)
+					display.isEmpty() ? NO_KEYBINDING : Texts.literal(display)
 				);
 				this.renderTooltip(matrices, textList, mouseX, mouseY);
 			}

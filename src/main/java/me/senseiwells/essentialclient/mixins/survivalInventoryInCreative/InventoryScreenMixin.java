@@ -38,7 +38,7 @@ public class InventoryScreenMixin extends Screen implements IScreenInventory {
 	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addSelectableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"))
 	private void onInit(CallbackInfo ci) {
 		if (ClientRules.SURVIVAL_INVENTORY_IN_CREATIVE.getValue() && this.client != null && this.client.interactionManager != null && this.client.player != null && this.client.interactionManager.hasCreativeInventory()) {
-			this.addDrawableChild(new ButtonWidget(5, 5, 100, 20, Texts.literal("Swap Inventory"), button -> {
+			this.addDrawableChild(new ButtonWidget(5, 5, 100, 20, Texts.SWAP_INVENTORY, button -> {
 				CreativeInventoryScreen screen = new CreativeInventoryScreen(this.client.player);
 				((IScreenInventory) screen).setForced();
 				this.client.setScreen(screen);

@@ -39,10 +39,10 @@ public class AlternateDimensionCommand {
 				newX = playerEntity.getX() * 8;
 				newZ = playerEntity.getZ() * 8;
 			} else {
-				throw new SimpleCommandExceptionType(Texts.literal("You are not in a valid dimension")).create();
+				throw new SimpleCommandExceptionType(Texts.INVALID_DIMENSION).create();
 			}
-			MutableText message = Texts.literal("Your %s coordinates are ".formatted(dimension)).formatted(Formatting.GREEN);
-			MutableText clickable = Texts.literal("[%s, %s, %s]".formatted(
+			MutableText message = Texts.COORDINATES.generate(dimension).formatted(Formatting.GREEN);
+			MutableText clickable = Texts.literal(" [%s, %s, %s]".formatted(
 				CommandHelper.DECIMAL_FORMAT.format(newX),
 				CommandHelper.DECIMAL_FORMAT.format(playerEntity.getY()),
 				CommandHelper.DECIMAL_FORMAT.format(newZ)
@@ -71,7 +71,7 @@ public class AlternateDimensionCommand {
 						newX = playerEntity.getX() * 8;
 						newZ = playerEntity.getZ() * 8;
 					} else {
-						throw new SimpleCommandExceptionType(Texts.literal("You are not in a valid dimension")).create();
+						throw new SimpleCommandExceptionType(Texts.INVALID_DIMENSION).create();
 					}
 					EssentialUtils.sendChatMessage("/execute in %s run tp @s %f %f %f".formatted(
 						dimension,

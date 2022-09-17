@@ -33,7 +33,7 @@ public abstract class TitleScreenMixin extends Screen {
 				this.width / 2 - 100,
 				this.height / 4 + 120,
 				200, 20,
-				Texts.literal("Essential Client Menu"),
+				Texts.CLIENT_MENU,
 				b -> this.client.setScreen(new ConfigScreen(this))
 			));
 		}

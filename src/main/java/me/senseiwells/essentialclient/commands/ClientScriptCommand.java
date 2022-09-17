@@ -11,17 +11,17 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.command.EnumArgumentType;
-import me.senseiwells.essentialclient.utils.render.ChatColour;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 
 import static me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager.Category;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class ClientScriptCommand {
-	private static final DynamicCommandExceptionType NO_SUCH_SCRIPT = new DynamicCommandExceptionType(o -> Texts.literal("Script with name '%s' doesn't exist".formatted(o)));
+	private static final DynamicCommandExceptionType NO_SUCH_SCRIPT = new DynamicCommandExceptionType(Texts.NO_SCRIPT::generate);
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		CommandHelper.CLIENT_COMMANDS.add("clientscript");
@@ -73,7 +73,7 @@ public class ClientScriptCommand {
 					if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, false)) {
 						throw NO_SUCH_SCRIPT.create(scriptName);
 					}
-					EssentialUtils.sendMessage(ChatColour.GOLD + "Successfully downloaded: " + ChatColour.GREEN + scriptName);
+					EssentialUtils.sendMessage(Texts.DOWNLOAD_SUCCESS.generate(scriptName).formatted(Formatting.GOLD));
 					return 1;
 				})
 				.then(argument("shouldoverwrite", BoolArgumentType.bool())
@@ -84,7 +84,7 @@ public class ClientScriptCommand {
 						if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, shouldOverwrite)) {
 							throw NO_SUCH_SCRIPT.create(scriptName);
 						}
-						EssentialUtils.sendMessage(ChatColour.GOLD + "Successfully downloaded: " + ChatColour.GREEN + scriptName);
+						EssentialUtils.sendMessage(Texts.DOWNLOAD_SUCCESS.generate(scriptName).formatted(Formatting.GOLD));
 						return 1;
 					})
 				)

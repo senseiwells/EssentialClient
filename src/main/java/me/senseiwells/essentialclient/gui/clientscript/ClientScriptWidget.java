@@ -14,8 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.List;
 
-import static me.senseiwells.essentialclient.utils.render.Texts.START;
-import static me.senseiwells.essentialclient.utils.render.Texts.STOP;
+import static me.senseiwells.essentialclient.utils.render.Texts.*;
 
 public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.ScriptListEntry> {
 	private final ClientScriptScreen parent;
@@ -50,7 +49,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 			this.name = instance.getName();
 			this.scriptInstance = instance;
 			boolean isTemporary = instance.isTemporary();
-			this.configButton = new ButtonWidget(0, 0, 45, 20, Texts.literal(isTemporary ? "Remove" : "Config"), buttonWidget -> {
+			this.configButton = new ButtonWidget(0, 0, 45, 20, isTemporary ? REMOVE : CONFIG, buttonWidget -> {
 				if (!isTemporary) {
 					ClientScriptWidget.this.parent.openScriptConfigScreen(this.scriptInstance);
 					return;
@@ -66,7 +65,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 				}
 				this.scriptInstance.toggleScript();
 			});
-			this.checkButton = new CheckboxWidget(0, 0, 20, 20, Texts.literal(""), ClientScript.INSTANCE.isSelected(this.name)) {
+			this.checkButton = new CheckboxWidget(0, 0, 20, 20, EMPTY, ClientScript.INSTANCE.isSelected(this.name)) {
 				@Override
 				public void onPress() {
 					String instanceName = ScriptListEntry.this.name;

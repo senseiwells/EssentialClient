@@ -3,10 +3,13 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -41,7 +44,7 @@ public class ChunkGrid {
 
 	private boolean panning = false;
 	private int dimensionIndex = 0;
-	private String selectionText = null;
+	private Text selectionText = null;
 	private Minimap minimapMode = Minimap.NONE;
 
 	public ChunkGrid(MinecraftClient client, int width, int height) {
@@ -350,19 +353,19 @@ public class ChunkGrid {
 			Optional<ChunkHandler.ChunkData> chunkData = Arrays.stream(ChunkHandler.getChunks(this.getDimension()))
 				.filter(c -> c.equals(filterData)).findFirst();
 			boolean isEmpty = chunkData.isEmpty();
-			String selectionText = "Selected Chunk: X: %d, Z: %s || Status: %s".formatted(
-				chunkPos.x,
-				chunkPos.z,
-				isEmpty ? "Unloaded" : chunkData.get().getChunkType().getName()
-			);
+			MutableText selection = Texts.SELECTED_CHUNK.generate("X: " + chunkPos.x + ", Z: " + chunkPos.z);
+			selection.append(" || ");
+			selection.append(Texts.CHUNK_STATUS.generate((isEmpty ? ChunkType.UNLOADED : chunkData.get().getChunkType()).getName()));
 			if (!isEmpty) {
 				ChunkHandler.ChunkData data = chunkData.get();
 				if (data.hasTicketType()) {
-					selectionText += " || Type: %s".formatted(data.getTicketType().getName());
+					selection.append(" || ");
+					selection.append(Texts.CHUNK_TICKET.generate(data.getTicketType().getName()));
 				}
-				selectionText += " || Stage: %s".formatted(data.getChunkStatus().getName());
+				selection.append(" || ");
+				selection.append(Texts.CHUNK_STAGE.generate(data.getChunkStatus().getName()));
 			}
-			this.selectionText = selectionText;
+			this.selectionText = selection;
 		}
 	}
 
@@ -394,16 +397,16 @@ public class ChunkGrid {
 		this.dimensionPoints.put(this.getDimension(), newPoint);
 	}
 
-	public String getSelectionText() {
+	public Text getSelectionText() {
 		return this.selectionText;
 	}
 
-	public String getPrettyDimension() {
+	public Text getPrettyDimension() {
 		return switch (this.getDimension()) {
-			case "overworld" -> "The Overworld";
-			case "the_nether" -> "The Nether";
-			case "the_end" -> "The End";
-			default -> "Unknown";
+			case "overworld" -> Texts.OVERWORLD;
+			case "the_nether" -> Texts.NETHER;
+			case "the_end" -> Texts.END;
+			default -> Texts.UNKNOWN;
 		};
 	}
 
@@ -480,13 +483,13 @@ public class ChunkGrid {
 	}
 
 	public enum Minimap {
-		NONE("None"),
-		STATIC("Static"),
-		FOLLOW("Follow");
+		NONE(Texts.MINIMAP_NONE),
+		STATIC(Texts.MINIMAP_STATIC),
+		FOLLOW(Texts.MINIMAP_FOLLOW);
 
-		public final String prettyName;
+		public final Text prettyName;
 
-		Minimap(String prettyName) {
+		Minimap(Text prettyName) {
 			this.prettyName = prettyName;
 		}
 

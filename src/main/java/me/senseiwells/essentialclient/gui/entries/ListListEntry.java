@@ -10,8 +10,8 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 public class ListListEntry extends BaseListEntry<ButtonWidget> {
 	public ListListEntry(Rule.ListRule rule, MinecraftClient client, RulesScreen rulesScreen) {
 		super(rule, client, rulesScreen, () -> {
-			return new ButtonWidget(0, 0, 100, 20, Texts.literal("Edit List"), buttonWidget -> {
-				client.setScreen(new ListScreen(Texts.literal("Editing List: " + rule.getName()), rulesScreen, rule));
+			return new ButtonWidget(0, 0, 100, 20, Texts.EDIT_LIST, buttonWidget -> {
+				client.setScreen(new ListScreen(Texts.EDITING_LIST.generate(rule.getName()), rulesScreen, rule));
 			});
 		});
 	}

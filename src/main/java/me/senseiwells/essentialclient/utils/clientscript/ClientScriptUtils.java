@@ -601,7 +601,7 @@ public class ClientScriptUtils {
 	}
 
 	public static class CommandParser {
-		public static final SimpleCommandExceptionType NO_ARGS = new SimpleCommandExceptionType(Texts.literal("Failed to retrieve arguments, see logs for details"));
+		public static final SimpleCommandExceptionType NO_ARGS = new SimpleCommandExceptionType(Texts.NO_ARGUMENTS);
 
 		private final Interpreter interpreter;
 		private final String commandName;

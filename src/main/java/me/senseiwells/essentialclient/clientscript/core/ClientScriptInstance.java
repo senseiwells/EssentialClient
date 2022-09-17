@@ -15,6 +15,7 @@ import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.InputUtil;
@@ -133,7 +134,7 @@ public class ClientScriptInstance {
 		}
 
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
-			EssentialUtils.sendMessage("§6Script '%s' has §cFINISHED".formatted(this.scriptName));
+			EssentialUtils.sendMessage(Texts.SCRIPT_STATUS.generate(this.scriptName, Texts.FINISHED));
 		}
 		this.interpreter = null;
 		this.isStopping = false;
@@ -147,7 +148,7 @@ public class ClientScriptInstance {
 				throw new IOException("File content was null!");
 			}
 		} catch (IOException e) {
-			EssentialUtils.sendMessage("§cAn error occurred while trying to read '%s'".formatted(this.scriptName));
+			EssentialUtils.sendMessage(Texts.READ_ERROR.generate(this.scriptName));
 			e.printStackTrace();
 			return;
 		}
@@ -159,7 +160,7 @@ public class ClientScriptInstance {
 		threadHandler.executeAsync();
 
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
-			EssentialUtils.sendMessage("§6Script '%s' has §aSTARTED".formatted(this.scriptName));
+			EssentialUtils.sendMessage(Texts.SCRIPT_STATUS.generate(this.scriptName, Texts.STARTED));
 		}
 	}
 

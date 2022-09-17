@@ -30,7 +30,6 @@ public abstract class GameMenuScreenMixin extends Screen {
 		if (this.client == null || !ClientRules.ESSENTIAL_CLIENT_BUTTON.getValue()) {
 			return;
 		}
-		ButtonWidget buttonWidget = this.addDrawableChild(new ButtonWidget(this.width / 2 - 102, this.height / 4 + 120 - 16, 204, 20, Texts.literal("Essential Client Menu"), (b) -> this.client.setScreen(new ConfigScreen(this))));
-		buttonWidget.active = true;
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 102, this.height / 4 + 120 - 16, 204, 20, Texts.CLIENT_MENU, (b) -> this.client.setScreen(new ConfigScreen(this))));
 	}
 }

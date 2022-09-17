@@ -6,8 +6,9 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
-import me.senseiwells.essentialclient.utils.render.ChatColour;
+import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -31,7 +32,7 @@ public class ClientNickCommand {
 							String playerName2 = context.getArgument("playername2", String.class);
 							playerName2 = playerName2.replaceAll("&", "§") + "§r";
 							ConfigClientNick.INSTANCE.set(playerName1, playerName2);
-							EssentialUtils.sendMessage("%s%s will now be displayed as %s".formatted(ChatColour.GREEN, playerName1, playerName2));
+							EssentialUtils.sendMessage(Texts.NEW_DISPLAY.generate(playerName1, playerName2).formatted(Formatting.GREEN));
 							return 0;
 						})
 					)
@@ -44,9 +45,9 @@ public class ClientNickCommand {
 						String playerName = context.getArgument("playername", String.class);
 						String name = ConfigClientNick.INSTANCE.remove(playerName);
 						if (name == null) {
-							EssentialUtils.sendMessage("%s%s was not renamed".formatted(ChatColour.RED, playerName));
+							EssentialUtils.sendMessage(Texts.NOT_RENAMED.generate(playerName).formatted(Formatting.RED));
 						} else {
-							EssentialUtils.sendMessage("%s%s will no longer be renamed".formatted(ChatColour.GOLD, playerName));
+							EssentialUtils.sendMessage(Texts.NO_LONGER_RENAMED.generate(playerName).formatted(Formatting.GOLD));
 						}
 						return 0;
 					})
@@ -59,9 +60,9 @@ public class ClientNickCommand {
 						String playerName = context.getArgument("playername", String.class);
 						String name = ConfigClientNick.INSTANCE.get(playerName);
 						if (name == null) {
-							EssentialUtils.sendMessage("%s%s is not renamed".formatted(ChatColour.RED, playerName));
+							EssentialUtils.sendMessage(Texts.IS_NOT_RENAMED.generate(playerName).formatted(Formatting.RED));
 						} else {
-							EssentialUtils.sendMessage("%s%s is renamed to %s".formatted(ChatColour.GOLD, playerName, name));
+							EssentialUtils.sendMessage(Texts.IS_RENAMED_TO.generate(playerName, name).formatted(Formatting.GOLD));
 						}
 						return 0;
 					})

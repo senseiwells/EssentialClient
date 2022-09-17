@@ -1,15 +1,18 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
-public enum ChunkType implements Colourable {
-	UNLOADED("Unloaded", 0x404040), // Dark grey
-	BORDER("Border", 0x4FC3F7), // Light blue
-	LAZY("Lazy", 0xFFA219), // Orange-yellow
-	ENTITY_TICKING("Entity Ticking", 0x198C19); // Green
+import me.senseiwells.essentialclient.utils.render.Texts;
+import net.minecraft.text.Text;
 
-	private final String prettyName;
+public enum ChunkType implements Colourable {
+	UNLOADED(Texts.UNLOADED, 0x404040), // Dark grey
+	BORDER(Texts.BORDER, 0x4FC3F7), // Light blue
+	LAZY(Texts.LAZY, 0xFFA219), // Orange-yellow
+	ENTITY_TICKING(Texts.ENTITY_TICKING, 0x198C19); // Green
+
+	private final Text prettyName;
 	private final int colour;
 
-	ChunkType(String prettyName, int colour) {
+	ChunkType(Text prettyName, int colour) {
 		this.prettyName = prettyName;
 		this.colour = colour;
 	}
@@ -32,7 +35,7 @@ public enum ChunkType implements Colourable {
 	}
 
 	@Override
-	public String getName() {
+	public Text getName() {
 		return this.prettyName;
 	}
 }

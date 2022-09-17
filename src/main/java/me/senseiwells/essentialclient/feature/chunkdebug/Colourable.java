@@ -1,11 +1,13 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
+import net.minecraft.text.Text;
+
 public interface Colourable {
 	int getColour();
 
 	int getPriority();
 
-	String getName();
+	Text getName();
 
 	default boolean hasColour() {
 		return this.getColour() >= 0;

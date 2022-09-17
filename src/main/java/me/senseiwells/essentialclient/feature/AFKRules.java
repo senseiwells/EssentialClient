@@ -36,7 +36,7 @@ public class AFKRules {
 					wasAfk = true;
 				}
 				if (logout >= 200 && ticks == logout) {
-					playerEntity.networkHandler.onDisconnected(Texts.literal("You've been lazy! (AFK Logout)"));
+					playerEntity.networkHandler.onDisconnected(Texts.AFK);
 				}
 				return;
 			}

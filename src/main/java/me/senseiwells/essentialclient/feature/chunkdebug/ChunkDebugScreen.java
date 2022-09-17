@@ -40,16 +40,16 @@ public class ChunkDebugScreen extends ChildScreen {
 		EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 		int buttonWidth = (this.width - FOOTER_ROW_PADDING * 4) / 3;
 		int buttonHeight = this.height - FOOTER_ROW_HEIGHT * 3 + FOOTER_ROW_PADDING * 2;
-		Text dimensionText = Texts.literal(ChunkGrid.instance.getPrettyDimension());
+		Text dimensionText = ChunkGrid.instance.getPrettyDimension();
 		ButtonWidget dimensionButton = this.addDrawableChild(new ButtonWidget(FOOTER_ROW_PADDING, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, dimensionText, button -> {
 			ChunkGrid.instance.cycleDimension();
-			button.setMessage(Texts.literal(ChunkGrid.instance.getPrettyDimension()));
+			button.setMessage(ChunkGrid.instance.getPrettyDimension());
 			EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 		}));
-		this.addDrawableChild(new ButtonWidget(buttonWidth + FOOTER_ROW_PADDING * 2, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.literal("Return to player"), button -> {
+		this.addDrawableChild(new ButtonWidget(buttonWidth + FOOTER_ROW_PADDING * 2, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.RETURN_TO_PLAYER, button -> {
 			if (this.client.player != null) {
 				ChunkGrid.instance.setDimension(this.client.player.world);
-				dimensionButton.setMessage(Texts.literal(ChunkGrid.instance.getPrettyDimension()));
+				dimensionButton.setMessage(ChunkGrid.instance.getPrettyDimension());
 				int chunkX = this.client.player.getChunkPos().x;
 				int chunkZ = this.client.player.getChunkPos().z;
 				ChunkGrid.instance.setCentre(chunkX, chunkZ);
@@ -58,18 +58,17 @@ public class ChunkDebugScreen extends ChildScreen {
 				EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 			}
 		}));
-		Text initialMinimapText = Texts.literal("Minimap: %s".formatted(ChunkGrid.instance.getMinimapMode().prettyName));
+		Text initialMinimapText = ChunkGrid.instance.getMinimapMode().prettyName;
 		this.addDrawableChild(new ButtonWidget(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, initialMinimapText, button -> {
 			ChunkGrid.instance.cycleMinimap();
-			Text minimapText = Texts.literal("Minimap: %s".formatted(ChunkGrid.instance.getMinimapMode().prettyName));
-			button.setMessage(minimapText);
+			button.setMessage(ChunkGrid.instance.getMinimapMode().prettyName);
 		}));
 		buttonHeight = this.height - FOOTER_ROW_HEIGHT * 2 + FOOTER_ROW_PADDING * 3;
-		this.xPositionBox = new NumberFieldWidget(this.textRenderer, FOOTER_ROW_PADDING + 28, buttonHeight, buttonWidth - 30, 20, Texts.literal("X"));
+		this.xPositionBox = new NumberFieldWidget(this.textRenderer, FOOTER_ROW_PADDING + 28, buttonHeight, buttonWidth - 30, 20, Texts.X);
 		this.xPositionBox.setInitialValue(ChunkGrid.instance.getCentreX());
-		this.zPositionBox = new NumberFieldWidget(this.textRenderer, buttonWidth + FOOTER_ROW_PADDING * 2 + 28, buttonHeight, buttonWidth - 30, 20, Texts.literal("Z"));
+		this.zPositionBox = new NumberFieldWidget(this.textRenderer, buttonWidth + FOOTER_ROW_PADDING * 2 + 28, buttonHeight, buttonWidth - 30, 20, Texts.Z);
 		this.zPositionBox.setInitialValue(ChunkGrid.instance.getCentreZ());
-		this.addDrawableChild(new ButtonWidget(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.literal("Refresh"), button -> {
+		this.addDrawableChild(new ButtonWidget(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.REFRESH, button -> {
 			if (hasControlDown()) {
 				ChunkHandler.clearAllChunks();
 				EssentialClient.CHUNK_NET_HANDLER.requestServerRefresh();
@@ -124,7 +123,7 @@ public class ChunkDebugScreen extends ChildScreen {
 			this.zPositionBox.setText(String.valueOf(ChunkGrid.instance.getCentreZ()));
 		}
 
-		this.drawText(matrices, "Chunk Debug Map", this.width / 2, 8, 1, true);
+		this.drawText(matrices, Texts.CHUNK_SCREEN, this.width / 2, 8, 1, true);
 		if (ChunkGrid.instance.getSelectionText() != null) {
 			this.drawText(matrices, ChunkGrid.instance.getSelectionText(), this.width / 2, 30, 1, true);
 		}
@@ -136,20 +135,20 @@ public class ChunkDebugScreen extends ChildScreen {
 		int xOffset = FOOTER_ROW_PADDING + 10;
 		int zOffset = this.xPositionBox.getWidth() + 50;
 
-		this.drawText(matrices, "X", xOffset, textHeight, 1.5F, false);
-		this.drawText(matrices, "Z", zOffset, textHeight, 1.5F, false);
+		this.drawText(matrices, Texts.X, xOffset, textHeight, 1.5F, false);
+		this.drawText(matrices, Texts.Z, zOffset, textHeight, 1.5F, false);
 
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
-	private void drawText(MatrixStack matrices, String text, int x, int y, float scale, boolean center) {
+	private void drawText(MatrixStack matrices, Text text, int x, int y, float scale, boolean center) {
 		matrices.push();
 		matrices.translate(x, y, 0.0D);
 		matrices.scale(scale, scale, 0.0F);
 		if (center) {
-			DrawableHelper.drawCenteredText(matrices, this.textRenderer, Texts.literal(text), 0, 0, 0xFFFFFF);
+			DrawableHelper.drawCenteredText(matrices, this.textRenderer, text, 0, 0, 0xFFFFFF);
 		} else {
-			DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, Texts.literal(text), 0, 0, 0xFFFFFF);
+			DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, text, 0, 0, 0xFFFFFF);
 		}
 		matrices.pop();
 	}

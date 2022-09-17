@@ -16,6 +16,7 @@ import me.senseiwells.essentialclient.utils.config.ConfigPlayerList;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +25,10 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class PlayerListCommand {
-	public static final DynamicCommandExceptionType EXISTS = new DynamicCommandExceptionType(o -> Texts.literal("List %s already exists".formatted(o)));
-	public static final DynamicCommandExceptionType NOT_EXIST = new DynamicCommandExceptionType(o -> Texts.literal("List %s doesn't exist".formatted(o)));
-	public static final DynamicCommandExceptionType EMPTY = new DynamicCommandExceptionType(o -> Texts.literal("%s is empty".formatted(o)));
-	public static final Dynamic2CommandExceptionType HAS_PLAYER = new Dynamic2CommandExceptionType((o, p) -> Texts.literal("%s is already in %s".formatted(o, p)));
+	public static final DynamicCommandExceptionType EXISTS = new DynamicCommandExceptionType(Texts.LIST_EXISTS::generate);
+	public static final DynamicCommandExceptionType NOT_EXIST = new DynamicCommandExceptionType(Texts.LIST_NOT_EXISTS::generate);
+	public static final DynamicCommandExceptionType EMPTY = new DynamicCommandExceptionType(Texts.LIST_EMPTY::generate);
+	public static final Dynamic2CommandExceptionType HAS_PLAYER = new Dynamic2CommandExceptionType(Texts.LIST_HAS_PLAYER::generate);
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		if (!ClientRules.COMMAND_PLAYER_LIST.getValue() || !ClientRules.COMMAND_PLAYER_CLIENT.getValue()) {
@@ -83,7 +84,7 @@ public class PlayerListCommand {
 			throw EXISTS.create(listName);
 		}
 		ConfigPlayerList.INSTANCE.set(listName, new ArrayList<>());
-		EssentialUtils.sendMessage("§a%s has been created".formatted(listName));
+		EssentialUtils.sendMessage(Texts.LIST_CREATED.generate(listName).formatted(Formatting.GREEN));
 		return 1;
 	}
 
@@ -93,7 +94,7 @@ public class PlayerListCommand {
 		if (players == null) {
 			throw NOT_EXIST.create(listName);
 		}
-		EssentialUtils.sendMessage("§6%s has been deleted".formatted(listName));
+		EssentialUtils.sendMessage(Texts.LIST_DELETED.generate(listName).formatted(Formatting.RED));
 		return 1;
 	}
 
@@ -112,7 +113,7 @@ public class PlayerListCommand {
 			throw HAS_PLAYER.create(playerName, listName);
 		}
 		players.add(playerName);
-		EssentialUtils.sendMessage("§6%s has been added to %s".formatted(playerName, listName));
+		EssentialUtils.sendMessage(Texts.LIST_PLAYER_ADDED.generate(playerName, listName).formatted(Formatting.GOLD));
 		return 1;
 	}
 

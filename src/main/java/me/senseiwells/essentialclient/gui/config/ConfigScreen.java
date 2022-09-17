@@ -17,12 +17,8 @@ import net.minecraft.util.Util;
 import static me.senseiwells.essentialclient.utils.render.Texts.*;
 
 public class ConfigScreen extends ChildScreen {
-	private static final Text
-		WIKI = Texts.literal("Wiki Page"),
-		CONFIG = Texts.literal("Open Config File");
-
 	public ConfigScreen(Screen parent) {
-		super(Texts.literal("Essential Client Options"), parent);
+		super(CLIENT_SCREEN, parent);
 	}
 
 	@Override
@@ -39,8 +35,8 @@ public class ConfigScreen extends ChildScreen {
 		this.addDrawableChild(new ButtonWidget(width, height + 96, 200, 20, CONTROLS_SCREEN, button -> this.client.setScreen(new ControlsScreen(this))));
 		this.addDrawableChild(new ButtonWidget(width, height + 120, 200, 20, CHUNK_SCREEN, button -> this.client.setScreen(new ChunkDebugScreen(this)))).active = EssentialClient.CHUNK_NET_HANDLER.isAvailable();
 		this.addDrawableChild(new ButtonWidget(width, this.height - 27, 200, 20, DONE, button -> this.close()));
-		this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, WIKI, button -> Util.getOperatingSystem().open(EssentialUtils.WIKI_URL)));
-		this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, CONFIG, button -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
+		this.addDrawableChild(new ButtonWidget(this.width - 110, this.height - 27, 100, 20, WIKI_PAGE, button -> Util.getOperatingSystem().open(EssentialUtils.WIKI_URL)));
+		this.addDrawableChild(new ButtonWidget(9, this.height - 27, 100, 20, CONFIG_FOLDER, button -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
 	}
 
 	@Override
@@ -48,8 +44,8 @@ public class ConfigScreen extends ChildScreen {
 		this.renderBackground(matrices);
 		int width = this.width / 2;
 		TextRenderer renderer = this.textRenderer;
-		drawCenteredText(matrices, renderer, "Essential Client", width, 8, 0xFFFFFF);
-		drawCenteredText(matrices, renderer, "Version: " + EssentialClient.VERSION, width, 8 + renderer.fontHeight + 8, 0x949494);
+		drawCenteredText(matrices, renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
+		drawCenteredText(matrices, renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
@@ -74,7 +70,7 @@ public class ConfigScreen extends ChildScreen {
 			int width = this.width / 4;
 			matrices.push();
 			matrices.scale(2.0F, 2.0F, 2.0F);
-			drawCenteredText(matrices, this.textRenderer, "Nothing to see here...", width, 8, 0xFFFFFF);
+			drawCenteredText(matrices, this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
 			matrices.pop();
 		}
 	}

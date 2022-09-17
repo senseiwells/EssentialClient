@@ -33,17 +33,18 @@ public class ClientScriptThreadHandler extends ThreadHandler {
 
 	@Override
 	protected void handleFatalError(Throwable throwable) {
-		EssentialUtils.sendMessage("\n§cAn error occurred while running '%s'".formatted(this.getInterpreter().getName()));
+		Text error = Texts.literal("\n").formatted(Formatting.RED).append(Texts.FATAL_ERROR.generate(this.getInterpreter().getName()));
+		EssentialUtils.sendMessage(error);
 
 		String path = this.writeCrashReport(this.getInterpreter(), throwable).toAbsolutePath().toString();
-		Text crashReport = Texts.literal("§cA crash report has been saved to:\n").append(
-			Texts.literal(path + "\n")
+		Text crashReport = Texts.CRASH_REPORT.generate(
+			Texts.literal("\n" + path + "\n")
 				.formatted(Formatting.UNDERLINE)
 				.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path)))
-		);
+		).formatted(Formatting.RED);
 		EssentialUtils.sendMessage(crashReport);
 
-		EssentialUtils.sendMessage("§cIf you believe this is a bug please report it, please include the crash report:");
+		EssentialUtils.sendMessage(Texts.CRASH_BUG);
 		Text issueTracker = Texts.literal(ISSUE_TRACKER + "\n")
 			.formatted(Formatting.UNDERLINE)
 			.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, ISSUE_TRACKER)));

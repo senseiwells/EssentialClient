@@ -62,7 +62,7 @@ public class ControlsScreen extends ChildScreen {
 			String display = this.hoveredKeyBinding.getDisplay();
 			List<Text> textList = List.of(
 				Texts.literal(this.hoveredKeyBinding.getName()).formatted(Formatting.GOLD),
-				Texts.literal(display.isEmpty() ? "No binding" : display)
+				display.isEmpty() ? Texts.NO_KEYBINDING : Texts.literal(display)
 			);
 			this.renderTooltip(matrices, textList, mouseX, mouseY);
 			this.hoveredKeyBinding = null;

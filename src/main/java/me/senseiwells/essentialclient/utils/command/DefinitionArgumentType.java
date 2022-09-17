@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class DefinitionArgumentType implements ArgumentType<ClassInstance> {
 	static {
-		INVALID_ENUM_EXCEPTION = new DynamicCommandExceptionType(o -> Texts.literal("Enum element not found: " + o.toString()));
+		INVALID_ENUM_EXCEPTION = new DynamicCommandExceptionType(Texts.ENUM_NOT_FOUND::generate);
 	}
 
 	private static final DynamicCommandExceptionType INVALID_ENUM_EXCEPTION;

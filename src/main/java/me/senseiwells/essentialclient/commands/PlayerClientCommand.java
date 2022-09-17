@@ -22,6 +22,7 @@ import net.minecraft.command.argument.RotationArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -32,8 +33,8 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class PlayerClientCommand {
-	public static final DynamicCommandExceptionType NO_PLAYER = new DynamicCommandExceptionType(o -> Texts.literal("%s doesn't exist in your config".formatted(o)));
-	public static final Dynamic2CommandExceptionType WRONG_GAMEMODE = new Dynamic2CommandExceptionType((o, p) -> Texts.literal("You are in %s but %s is required".formatted(o, p)));
+	public static final DynamicCommandExceptionType NO_PLAYER = new DynamicCommandExceptionType(Texts.NO_CONFIG::generate);
+	public static final Dynamic2CommandExceptionType WRONG_GAMEMODE = new Dynamic2CommandExceptionType(Texts.WRONG_GAMEMODE::generate);
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		if (!ClientRules.COMMAND_PLAYER_CLIENT.getValue()) {
@@ -99,9 +100,10 @@ public class PlayerClientCommand {
 			.suggests((context, builder) -> ConfigPlayerClient.INSTANCE.suggestPlayer(builder))
 			.executes(context -> {
 				String playerName = context.getArgument("playername", String.class);
-				EssentialUtils.sendMessage(ConfigPlayerClient.INSTANCE.remove(playerName) == null ?
-					"§cThat player is not in your config" : "§6That player has been removed from your config"
-				);
+				if (ConfigPlayerClient.INSTANCE.remove(playerName) == null) {
+					throw NO_PLAYER.create(playerName);
+				}
+				EssentialUtils.sendMessage(Texts.REMOVED_CONFIG.generate(playerName).formatted(Formatting.GOLD));
 				return 0;
 			})
 		).build();

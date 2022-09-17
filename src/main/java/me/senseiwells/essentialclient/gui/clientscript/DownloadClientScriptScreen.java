@@ -11,7 +11,7 @@ public class DownloadClientScriptScreen extends ChildScreen.Typed<ClientScriptSc
 	private DownloadClientScriptWidget widget;
 
 	public DownloadClientScriptScreen(ClientScriptScreen parent) {
-		super(Texts.literal("Download Scripts"), parent);
+		super(Texts.DOWNLOAD_SCRIPT, parent);
 	}
 
 	@Override

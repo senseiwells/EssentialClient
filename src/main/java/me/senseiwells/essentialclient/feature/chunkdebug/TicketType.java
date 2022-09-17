@@ -1,20 +1,23 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
-public enum TicketType implements Colourable {
-	START("Spawn", 0xBFFF00), // Lime green
-	DRAGON("Dragon", 0xCC00CC), // Magenta
-	PLAYER("Player", -1), // Green
-	FORCED("Forced", 0x336FFF), // Blue
-	LIGHT("Light", -1),
-	PORTAL("Portal", 0x472483), // Purple
-	POST_TELEPORT("Teleport", 0xFF6600), // Orange
-	CHONK("Chonk", 0x72FF13), // Light Green
-	UNKNOWN("Unknown", -1);
+import me.senseiwells.essentialclient.utils.render.Texts;
+import net.minecraft.text.Text;
 
-	private final String prettyName;
+public enum TicketType implements Colourable {
+	START(Texts.TICKET_SPAWN, 0xBFFF00), // Lime green
+	DRAGON(Texts.DRAGON, 0xCC00CC), // Magenta
+	PLAYER(Texts.PLAYER, -1), // Green
+	FORCED(Texts.FORCED, 0x336FFF), // Blue
+	LIGHT(Texts.LIGHT, -1),
+	PORTAL(Texts.PORTAL, 0x472483), // Purple
+	POST_TELEPORT(Texts.TELEPORT, 0xFF6600), // Orange
+	CHONK(Texts.CHONK, 0x72FF13), // Light Green
+	UNKNOWN(Texts.TICKET_UNKNOWN, -1);
+
+	private final Text prettyName;
 	private final int colour;
 
-	TicketType(String prettyName, int colour) {
+	TicketType(Text prettyName, int colour) {
 		this.prettyName = prettyName;
 		this.colour = colour;
 	}
@@ -30,7 +33,7 @@ public enum TicketType implements Colourable {
 	}
 
 	@Override
-	public String getName() {
+	public Text getName() {
 		return this.prettyName;
 	}
 

@@ -3,6 +3,8 @@ package me.senseiwells.essentialclient.utils.clientscript;
 import com.google.gson.*;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
+import me.senseiwells.essentialclient.utils.render.Texts;
+import net.minecraft.text.Text;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -140,23 +142,18 @@ public class ScriptRepositoryManager {
 	}
 
 	public enum Category {
-		AUTOMATION("Automation"),
-		UTILITIES("Utilities"),
-		MISCELLANEOUS("Miscellaneous");
+		AUTOMATION(Texts.AUTOMATION),
+		UTILITIES(Texts.UTILITIES),
+		MISCELLANEOUS(Texts.MISCELLANEOUS);
 
-		private final String prettyName;
+		private final Text prettyName;
 
-		Category(String prettyName) {
+		Category(Text prettyName) {
 			this.prettyName = prettyName;
 		}
 
-		public String getPrettyName() {
+		public Text getPrettyName() {
 			return this.prettyName;
-		}
-
-		@Override
-		public String toString() {
-			return this.prettyName.toLowerCase();
 		}
 	}
 }

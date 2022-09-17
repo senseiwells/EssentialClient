@@ -34,7 +34,7 @@ public abstract class RuleMixin<T extends GameRules.Rule<T>> implements IGameRul
 	 */
 	@Override
 	public void ruleChanged(String ruleName, MinecraftServer server) {
-		Text text = Texts.literal("Set Game Rule %s to %s".formatted(ruleName, this.serialize()));
+		Text text = Texts.SET_GAME_RULE.generate(ruleName, this.serialize());
 		//#if MC >= 11901
 		server.getPlayerManager().broadcast(text, false);
 		//#elseif MC >= 11800

@@ -27,7 +27,7 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		this.downloadScreen = downloadScreen;
 
 		for (Category category : Category.values()) {
-			this.addEntry(new CategoryEntry(Texts.literal(category.getPrettyName())));
+			this.addEntry(new CategoryEntry(category.getPrettyName()));
 			for (String script : ScriptRepositoryManager.INSTANCE.getChildrenNames(category)) {
 				int length = script.length();
 				if (length > this.maxScriptNameLength) {
@@ -73,21 +73,21 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 
 		ScriptListEntry(Category category, String scriptName) {
 			this.scriptName = scriptName;
-			this.viewButton = new ButtonWidget(0, 0, 50, 20, Texts.literal("View"), button -> {
+			this.viewButton = new ButtonWidget(0, 0, 50, 20, Texts.VIEW, button -> {
 				Util.getOperatingSystem().open(ScriptRepositoryManager.INSTANCE.getViewableLink(category, scriptName));
 			});
-			this.downloadButton = new ButtonWidget(0, 0, 60, 20, Texts.literal("Download").formatted(Formatting.DARK_GREEN), button -> {
+			this.downloadButton = new ButtonWidget(0, 0, 60, 20, Texts.DOWNLOAD.copy().formatted(Formatting.DARK_GREEN), button -> {
 				ToastManager toastManager = DownloadClientScriptWidget.this.client.getToastManager();
 				if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, true)) {
 					SystemToast.show(
 						toastManager, SystemToast.Type.PACK_COPY_FAILURE,
-						Texts.literal("Download Failed"), null
+						Texts.DOWNLOAD_FAILED, null
 					);
 					return;
 				}
 				SystemToast.show(
 					toastManager, SystemToast.Type.WORLD_BACKUP,
-					Texts.literal("Download Successful"), null
+					Texts.DOWNLOAD_SUCCESSFUL, null
 				);
 				DownloadClientScriptWidget.this.downloadScreen.getParent().refresh();
 			});
