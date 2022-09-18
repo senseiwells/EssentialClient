@@ -16,10 +16,7 @@ import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 	public static final ClientRules INSTANCE = new ClientRules();

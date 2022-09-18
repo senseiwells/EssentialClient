@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.utils;
 
 import me.senseiwells.essentialclient.feature.CarpetClient;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.rule.carpet.CarpetClientRule;
 import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
 import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
@@ -11,6 +12,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.MinecraftVersion;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -26,6 +28,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
@@ -155,6 +159,17 @@ public class EssentialUtils {
 
 	public static String getEssentialVersion() {
 		return ESSENTIAL_CONTAINER.getMetadata().getVersion().getFriendlyString();
+	}
+
+	public static boolean isStackableShulkers(Item item) {
+		if (getClient().isInSingleplayer() && ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES.getValue() || CarpetClient.INSTANCE.getRule("stackableShulkersInPlayerInventories").getValue() instanceof Boolean b && b) {
+			return item instanceof BlockItem b && b.getBlock() instanceof ShulkerBoxBlock;
+		}
+		return false;
+	}
+
+	public static boolean isStackableShulkerWithItems() {
+		return getClient().isInSingleplayer() && ClientRules.STACKABLE_SHULKERS_WITH_ITEMS.getValue() || CarpetClient.INSTANCE.getRule("stackableShulkersWithItems").getValue() instanceof Boolean b && b;
 	}
 
 	public static boolean canMineBlock(BlockPos pos) {
