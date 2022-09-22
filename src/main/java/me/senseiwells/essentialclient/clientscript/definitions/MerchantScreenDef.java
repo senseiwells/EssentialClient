@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.clientscript.definitions;
 
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -64,8 +65,8 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			MemberFunction.of("selectTrade", 1, this::selectTrade),
 			MemberFunction.of("clearTrade", this::clearTrade),
 			MemberFunction.of("isTradeSelected", this::isTradeSelected),
-			MemberFunction.of("tradeSelected", this::tradeSelected),
-			MemberFunction.of("tradeSelectedAndThrow", this::tradeSelectedAndThrow)
+			MemberFunction.arb("tradeSelected", this::tradeSelected),
+			MemberFunction.arb("tradeSelectedAndThrow", this::tradeSelectedAndThrow)
 		);
 	}
 
@@ -234,12 +235,14 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 		name = "tradeSelected",
 		desc = {
 			"This trades the currently selected trade.",
+			"This function accepts optional boolean to simulate click action even if screen is not synced or filled.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
 		examples = "screen.tradeSelected();"
 	)
 	private Void tradeSelected(Arguments arguments) {
-		ensureMainThread("tradeSelected", arguments.getInterpreter(), () -> InventoryUtils.tradeSelectedRecipe(false));
+		boolean force = arguments.skip().hasNext() ? arguments.nextPrimitive(BooleanDef.class) : false;
+		ensureMainThread("tradeSelected", arguments.getInterpreter(), () -> InventoryUtils.tradeSelectedRecipe(false, force));
 		return null;
 	}
 
@@ -247,12 +250,14 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 		name = "tradeSelectedAndThrow",
 		desc = {
 			"This trades the currently selected trade and throws the items that were traded.",
+			"This function accepts optional boolean to simulate click action even if screen is not synced or filled.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
 		examples = "screen.tradeSelectedAndThrow();"
 	)
 	private Void tradeSelectedAndThrow(Arguments arguments) {
-		ensureMainThread("tradeSelectedAndThrow", arguments.getInterpreter(), () -> InventoryUtils.tradeSelectedRecipe(true));
+		boolean force = arguments.skip().hasNext() ? arguments.nextPrimitive(BooleanDef.class) : false;
+		ensureMainThread("tradeSelectedAndThrow", arguments.getInterpreter(), () -> InventoryUtils.tradeSelectedRecipe(true, force));
 		return null;
 	}
 

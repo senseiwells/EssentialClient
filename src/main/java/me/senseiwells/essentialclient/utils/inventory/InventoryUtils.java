@@ -648,6 +648,20 @@ public class InventoryUtils {
 		shiftClickSlot(screenHandler, 2);
 	}
 
+	public static void tradeSelectedRecipe(boolean drop, boolean force) {
+		if (!force) {
+			tradeSelectedRecipe(drop);
+			return;
+		}
+		MerchantScreenHandler screenHandler = checkScreen();
+		Slot tradeSlot = screenHandler.getSlot(2);
+		if (drop) {
+			getInteractionManager().clickSlot(screenHandler.syncId, 2, 1, SlotActionType.THROW, getPlayer());
+			return;
+		}
+		shiftClickSlot(screenHandler, 2);
+	}
+
 	public static void clearTradeInputSlot(MerchantScreenHandler handler) {
 		ClientPlayerEntity player = EssentialUtils.getPlayer();
 		Slot slot = handler.getSlot(0);
