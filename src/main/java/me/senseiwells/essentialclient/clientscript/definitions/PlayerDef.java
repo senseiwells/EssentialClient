@@ -110,6 +110,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			MemberFunction.of("messageActionBar", 1, this::messageActionBar),
 			MemberFunction.of("showTitle", 1, this::showTitle),
 			MemberFunction.of("openInventory", this::openInventory),
+			MemberFunction.of("selectTrade", 1, this::selectTrade, "Use <MerchantScreen>.selectTrade(int) for normal uses"),
 			MemberFunction.of("openScreen", 1, this::openScreen),
 			MemberFunction.of("closeScreen", this::closeScreen),
 			MemberFunction.of("setWalking", 1, this::setWalking),
@@ -236,6 +237,20 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private Void say(Arguments arguments) {
 		EssentialUtils.sendChatMessage(arguments.skip().next().toString(arguments.getInterpreter()));
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "selectTrade",
+		desc = "This allows you to player send trade select packet, maybe while screen is being opened.",
+		params = {NUMBER, "index", "the trade index to send"},
+		examples = "player.selectTrade(0);"
+	)
+	private Void selectTrade(Arguments arguments) {
+		int index = arguments.skip().nextPrimitive(NumberDef.class).intValue();
+		ClientScriptUtils.ensureMainThread("selectTradeUnsafe", arguments.getInterpreter(), () -> {
+			InventoryUtils.selectTradeUnsafe(index);
+		});
 		return null;
 	}
 

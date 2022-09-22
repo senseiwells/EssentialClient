@@ -635,6 +635,10 @@ public class InventoryUtils {
 		EssentialUtils.getNetworkHandler().sendPacket(new SelectMerchantTradeC2SPacket(index));
 	}
 
+	public static void selectTradeUnsafe(int index) {
+		EssentialUtils.getNetworkHandler().sendPacket(new SelectMerchantTradeC2SPacket(index));
+	}
+
 	public static void tradeSelectedRecipe(boolean drop) {
 		MerchantScreenHandler screenHandler = checkScreen();
 		Slot tradeSlot = screenHandler.getSlot(2);
