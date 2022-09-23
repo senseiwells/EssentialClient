@@ -5,6 +5,8 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.rule.carpet.CarpetClientRule;
 import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
 import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
+import me.senseiwells.essentialclient.rule.client.BooleanClientRule;
+import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
@@ -162,14 +164,23 @@ public class EssentialUtils {
 	}
 
 	public static boolean isStackableShulkers(Item item) {
-		if (getClient().isInSingleplayer() && ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES.getValue() || CarpetClient.INSTANCE.getRule("stackableShulkersInPlayerInventories").getValue() instanceof Boolean b && b) {
+		if (isRuleWithCarpet(ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES)) {
 			return item instanceof BlockItem b && b.getBlock() instanceof ShulkerBoxBlock;
 		}
 		return false;
 	}
 
 	public static boolean isStackableShulkerWithItems() {
-		return getClient().isInSingleplayer() && ClientRules.STACKABLE_SHULKERS_WITH_ITEMS.getValue() || CarpetClient.INSTANCE.getRule("stackableShulkersWithItems").getValue() instanceof Boolean b && b;
+		return isRuleWithCarpet(ClientRules.STACKABLE_SHULKERS_WITH_ITEMS);
+	}
+
+	public static boolean isRuleWithCarpet(BooleanClientRule rule) {
+		return getClient().isInSingleplayer() && rule.getValue() || isCarpetRuleTrue(rule.getName());
+	}
+
+	private static boolean isCarpetRuleTrue(String string) {
+		CarpetClientRule<?> rule = CarpetClient.INSTANCE.getRule(string);
+		return rule != null && rule.getValue() instanceof Boolean b && b;
 	}
 
 	public static boolean canMineBlock(BlockPos pos) {
