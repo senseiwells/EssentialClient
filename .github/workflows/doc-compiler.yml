@@ -1,0 +1,28 @@
+name: Doc Compiler
+on:
+  push:
+    branches: [ '*' ]
+jobs:
+  compile-docs:
+    name: Generate Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout EssentialClient
+        uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Generate Documentations
+        run: ./gradlew runClient --args="-- -scriptDocGenerate generated" --stacktrace --no-daemon
+      # - name: Concatenate Docs
+      #  run: ./gradlew run --args="-cmdLine false -run .github/scripts/ConcatenateDocs.arucas" --stacktrace --no-daemon
+      - name: Commit Changes
+        continue-on-error: true
+        run: |
+          git config --global user.name 'github-actions-bot'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Update generated documentation" || exit 0
+          git push

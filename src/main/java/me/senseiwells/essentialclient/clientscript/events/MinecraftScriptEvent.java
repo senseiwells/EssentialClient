@@ -9,18 +9,34 @@ import java.util.function.Function;
 
 public class MinecraftScriptEvent {
 	private final String name;
+	private final String description;
+	private final String[] parameters;
 	private final boolean isCancellable;
 
 	protected final Map<UUID, Set<ScriptEvent>> REGISTERED_EVENTS = new HashMap<>();
 
-	public MinecraftScriptEvent(String eventName, boolean isCancellable) {
+	public MinecraftScriptEvent(String eventName, String description, String[] parameters, boolean isCancellable) {
 		this.name = eventName;
+		this.description = description;
+		this.parameters = parameters;
 		this.isCancellable = isCancellable;
 		MinecraftScriptEvents.addEventToMap(eventName, this);
 	}
 
-	public MinecraftScriptEvent(String eventName) {
-		this(eventName, false);
+	public MinecraftScriptEvent(String eventName, String description, String... parameters) {
+		this(eventName, description, parameters, false);
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public String[] getParameters() {
+		return this.parameters;
 	}
 
 	public boolean canCancel() {
@@ -98,13 +114,13 @@ public class MinecraftScriptEvent {
 	public static class Unique extends MinecraftScriptEvent {
 		private final boolean isThreadDefinable;
 
-		public Unique(String eventName, boolean isThreadDefinable) {
-			super(eventName);
+		public Unique(String name, String description, String[] parameters, boolean isThreadDefinable) {
+			super(name, description, parameters);
 			this.isThreadDefinable = isThreadDefinable;
 		}
 
-		public Unique(String eventName) {
-			this(eventName, false);
+		public Unique(String name, String description, String... parameters) {
+			this(name, description, parameters, false);
 		}
 
 		@Override

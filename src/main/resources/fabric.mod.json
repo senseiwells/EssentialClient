@@ -25,7 +25,8 @@
       "me.senseiwells.essentialclient.feature.MixinExtraSupport::load"
     ],
     "main": [
-      "me.senseiwells.essentialclient.EssentialClient"
+      "me.senseiwells.essentialclient.EssentialClient",
+      "me.senseiwells.essentialclient.utils.clientscript.DocGenerator"
     ],
     "modmenu": [
       "me.senseiwells.essentialclient.gui.modmenu.ModMenuImpl"

@@ -52,8 +52,6 @@ public class ClientScriptInstance {
 			EssentialUtils.getClient().scheduleStop();
 			throw e;
 		}
-
-		generate();
 	}
 
 	private final String content;
@@ -168,7 +166,13 @@ public class ClientScriptInstance {
 		return this.scriptName;
 	}
 
-	public static void load() { }
+	public static void load() {
+		generate();
+	}
+
+	public static ArucasAPI getApi() {
+		return API;
+	}
 
 	public static void runFromContent(String scriptName, String scriptContent) {
 		ClientScriptInstance instance = new ClientScriptInstance(scriptName, scriptContent, null);
@@ -178,23 +182,9 @@ public class ClientScriptInstance {
 	private static void generate() {
 		try {
 			API.generateNativeFiles(API.getLibraryManager().getImportPath());
-
-			if (EssentialUtils.isDev()) {
-				generateJson();
-			}
 		} catch (Exception e) {
 			// This isn't fatal
 			EssentialClient.LOGGER.error("Failed to generate native files", e);
 		}
-	}
-
-	private static void generateJson() {
-		EssentialClient.LOGGER.info("Generating Documentation...");
-		Path path = ClientScript.INSTANCE.getScriptDirectory().resolve("json");
-		Util.File.INSTANCE.ensureExists(path);
-
-		EssentialUtils.throwAsRuntime(() -> {
-			return Files.writeString(path.resolve("AllDocs.json"), JsonParser.Companion.of(API).parse());
-		});
 	}
 }
