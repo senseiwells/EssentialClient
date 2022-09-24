@@ -5,14 +5,17 @@
   "name": "Essential Client",
   "description": "A client mod that provides utilities and client support for carpet rules",
   "authors": [
-    "DeadlyMC",
-    "Gnembon",
-    "Sensei",
-    "SuperSanta",
+    "Sensei"
+  ],
+  "contributors": [
+    "AngelBottomless",
+    "BvngeeCord",
     "Crec0",
-    "Pixeils",
+    "EarthComputer",
     "HardCoded",
-    "BvngeeCord"
+    "Pixeils",
+    "Stove",
+    "SuperSanta"
   ],
   "contact": {
     "homepage": "https://github.com/senseiwells/EssentialClient"
