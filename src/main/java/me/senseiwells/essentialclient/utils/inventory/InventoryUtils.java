@@ -626,12 +626,14 @@ public class InventoryUtils {
 
 	private static void selectTrade(MerchantScreenHandler handler, int index) {
 		handler.setRecipeIndex(index);
+		handler.switchTo(index);
 		EssentialUtils.getNetworkHandler().sendPacket(new SelectMerchantTradeC2SPacket(index));
 	}
 
 	public static void selectTrade(int index) {
 		MerchantScreenHandler handler = checkScreen();
 		handler.setRecipeIndex(index);
+		handler.switchTo(index);
 		EssentialUtils.getNetworkHandler().sendPacket(new SelectMerchantTradeC2SPacket(index));
 	}
 
