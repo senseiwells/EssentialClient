@@ -1,0 +1,1274 @@
+/* Native, implemented in Kotlin
+ * This is the boolean type, representing either true or false.
+ * This class cannot be instantiated, or extended
+ * This class does not need to be imported.
+ */
+class Boolean {
+}
+
+/* Native, implemented in Kotlin
+ * This class is used to represent a collection of objects,
+ * this class is used internally as the parent of maps, lists, and sets.
+ * This cannot be instantiated directly.
+ * All collections inherit Iterable, and thus can be iterated over
+ * This class does not need to be imported.
+ */
+class Collection: Iterable {
+    /*
+     * This creates a collection, this cannot be called directly, only from child classes
+     */
+    Collection();
+
+    /*
+     * This allows you to check if the collection is empty
+     * Returns - Boolean: true if the collection is empty
+     */
+    fun isEmpty(): Boolean;
+
+    /*
+     * This allows you to get the size of the collection
+     * Returns - Number: the size of the list
+     */
+    fun size(): Number;
+}
+
+/* Native, implemented in Kotlin
+ * This class is the super class of all enums in Arucas.
+ * Enums cannot be instantiated or extended
+ * This class does not need to be imported.
+ */
+class Enum {
+    /*
+     * This allows you to get the name of an enum value
+     * Returns - String: the name of the enum value
+     */
+    fun getName(): String;
+
+    /*
+     * This allows you to get the ordinal of the enum value
+     * Returns - Number: the ordinal of the enum value
+     */
+    fun ordinal(): Number;
+}
+
+/* Native, implemented in Kotlin
+ * This class is used for errors, and this is the only type that can be thrown.
+ * You are able to extend this class to create your own error types
+ * This class does not need to be imported.
+ */
+class Error {
+    /*
+     * This creates a new Error value with no message
+     */
+    Error();
+
+    /*
+     * This creates a new Error value with the given details as a message
+     * Parameter - String (details): the details of the error
+     */
+    Error(details: String);
+
+    /*
+     * This creates a new Error value with the given details as a message and the given value
+     * Parameter - String (details): the details of the error
+     * Parameter - Object (value): the value that is related to the error
+     */
+    Error(details: String, value: Object);
+
+    /*
+     * This returns the raw message of the error
+     * Returns - String: the details of the error
+     */
+    fun getDetails(): String;
+
+    /*
+     * This returns the value that is related to the error
+     * Returns - Object: the value that is related to the error
+     */
+    fun getValue(): Object;
+}
+
+/* Native, implemented in Kotlin
+ * This class allows you to read and write files
+ * This class does not need to be imported.
+ */
+class File {
+    /*
+     * This creates a new File object with set path
+     * Parameter - String (path): the path of the file
+     */
+    File(path: String);
+
+    /*
+     * This creates all parent directories of the file if they don't already exist
+     * Returns - Boolean: true if the directories were created
+     */
+    fun createDirectory(): Boolean;
+
+    /*
+     * This deletes the file
+     * Returns - Boolean: true if the file was deleted
+     */
+    fun delete(): Boolean;
+
+    /*
+     * This returns if the file exists
+     * Returns - Boolean: true if the file exists
+     */
+    fun exists(): Boolean;
+
+    /*
+     * This returns the absolute path of the file
+     * Returns - String: the absolute path of the file
+     */
+    fun getAbsolutePath(): String;
+
+    /*
+     * This returns the name of the file
+     * Returns - String: the name of the file
+     */
+    fun getName(): String;
+
+    /*
+     * This returns the path of the file
+     * Returns - String: the path of the file
+     */
+    fun getPath(): String;
+
+    /*
+     * This returns a list of all the sub files in the directory
+     * Returns - List: a list of all the sub files in the directory
+     */
+    fun getSubFiles(): List;
+
+    /*
+     * This opens the file (as in opens it on your os)
+     */
+    fun open(): Null;
+
+    /*
+     * This reads the file and returns the contents as a string
+     * Returns - String: the contents of the file
+     */
+    fun read(): String;
+
+    /*
+     * This gets a resolves file object from the current one
+     * Parameter - String (filePath): the relative file path
+     * Returns - File: the resolved file
+     */
+    fun resolve(filePath: String): File;
+
+    /*
+     * This writes a string to a file
+     * Parameter - String (string): the string to write to the file
+     */
+    fun write(string: String): Null;
+
+    /*
+     * This returns the file of the working directory
+     * Returns - File: the file of the working directory
+     */
+    static fun getDirectory(): File;
+}
+
+/* Native, implemented in Kotlin
+ * This class is used for functions, and this is the only type that can be called.
+ * You are able to extend this class and implement an 'invoke' method to create
+ * your own function types, this class cannot be instantiated directly
+ * This class does not need to be imported.
+ */
+class Function {
+    /*
+     * This creates a function, this cannot be called directly, only from child classes
+     */
+    Function();
+}
+
+/* Native, implemented in Kotlin
+ * This class is used to represent values that are in the future.
+ * More precisely values that are being evaluated on another thread,
+ * this allows you to access those values once they've been processed
+ * This class does not need to be imported.
+ */
+class Future {
+    /*
+     * This blocks the current thread until the future has
+     * been completed and then returns the value of the future
+     * Returns - Object: The value of the future
+     */
+    fun await(): Object;
+
+    /*
+     * This returns whether the future has been completed
+     * Returns - Boolean: Whether the future has been completed
+     */
+    fun isComplete(): Boolean;
+
+    /*
+     * This returns a future that with a complete value
+     * Parameter - Object (value): The value to complete the future with
+     * Returns - Future: The future that has been completed with the value
+     */
+    static fun completed(value: Object): Future;
+}
+
+/* Native, implemented in Kotlin
+ * This class represents an object that can be iterated over.
+ * This class is used internally to denote whether an object can be
+ * iterated over inside a foreach loop
+ * This class does not need to be imported.
+ */
+class Iterable {
+    /*
+     * This creates an iterable, this cannot be called directly, only from child classes
+     */
+    Iterable();
+
+    /*
+     * This gets the generated iterator
+     * Returns - Iterator: the generated iterator
+     */
+    fun iterator(): Iterator;
+}
+
+/* Native, implemented in Kotlin
+ * This class represents an object that iterates.
+ * This is what is used internally to iterate in a
+ * foreach loop and you can create your own iterators
+ * to use be able to use them inside a foreach
+ * This class does not need to be imported.
+ */
+class Iterator {
+    /*
+     * This creates an iterator, this cannot be called directly, only from child classes
+     */
+    Iterator();
+
+    /*
+     * Checks whether the iterator has a next item to iterate
+     * Returns - Boolean: whether there are items left to iterate
+     */
+    fun hasNext(): Boolean;
+
+    /*
+     * Gets the next item in the iterator, may throw if there is no next item
+     * Returns - Object: the next item
+     */
+    fun next(): Object;
+}
+
+/* Native, implemented in Kotlin
+ * This class is used for collections of ordered elements
+ * This class does not need to be imported.
+ */
+class List: Collection {
+    /*
+     * This creates a list, this cannot be called directly, only from child classes
+     */
+    List();
+
+    /*
+     * This allows you to add all the values in another collection to the list
+     * Parameter - Collection (collection): the collection you want to add to the list
+     * Returns - List: the list
+     */
+    fun addAll(collection: Collection): List;
+
+    /*
+     * This allows you to append a value to the end of the list
+     * Parameter - Object (value): the value you want to append
+     * Returns - List: the list
+     */
+    fun append(value: Object): List;
+
+    /*
+     * This allows you to clear the list
+     */
+    fun clear(): Null;
+
+    /*
+     * This allows you to check if the list contains a specific value
+     * Parameter - Object (value): the value you want to check
+     * Returns - Boolean: true if the list contains the value
+     */
+    fun contains(value: Object): Boolean;
+
+    /*
+     * This allows you to check if the list contains all the values in another collection
+     * Parameter - Collection (collection): the collection you want to check agains
+     * Returns - Boolean: true if the list contains all the values in the collection
+     */
+    fun containsAll(collection: Collection): Boolean;
+
+    /*
+     * This filters the list using the predicate, a function that either returns
+     * true or false, based on the element on whether it should be kept or not,
+     * and returns a new list with the filtered elements
+     * Parameter - Function (predicate): a function that takes a value and returns Boolean
+     * Returns - List: the filtered collection
+     */
+    fun filter(predicate: Function): List;
+
+    /*
+     * If there are any objects in the list that are collections they will
+     * be expanded and added to the list. However collections inside those
+     * collections will not be flattened, this is returned as a new list
+     * Returns - List: the flattened list
+     */
+    fun flatten(): List;
+
+    /*
+     * This allows you to get the value at a specific index, alternative to bracket accessor,
+     * this will throw an erroor if the index given is out of bounds
+     * Parameter - Number (index): the index of the value you want to get
+     * Returns - Object: the value at the index
+     */
+    fun get(index: Number): Object;
+
+    /*
+     * This allows you to get the index of a specific value
+     * Parameter - Object (value): the value you want to get the index of
+     * Returns - Number: the index of the value
+     */
+    fun indexOf(value: Object): Number;
+
+    /*
+     * This allows you to insert a value at a specific index, this will throw an error if the index is out of bounds
+     * Parameter - Object (value): the value you want to insert
+     * Parameter - Number (index): the index you want to insert the value at
+     * Returns - List: the list
+     */
+    fun insert(value: Object, index: Number): List;
+
+    /*
+     * This allows you to get the last index of a specific value
+     * Parameter - Object (value): the value you want to get the last index of
+     * Returns - Number: the last index of the value
+     */
+    fun lastIndexOf(value: Object): Number;
+
+    /*
+     * This maps the list using the mapper, a function that takes a value and
+     * returns a new value, and returns a new list with the mapped elements
+     * Parameter - Function (mapper): a function that takes a value and returns a new value
+     * Returns - List: the mapped collection
+     */
+    fun map(mapper: Function): List;
+
+    /*
+     * This allows you to prepend a value to the beginning of the list
+     * Parameter - Object (value): the value you want to prepend
+     * Returns - List: the list
+     */
+    fun prepend(value: Object): List;
+
+    /*
+     * This reduces the list using the reducer, a function that takes an
+     * accumulated value and a new value and returns the next accumulated value
+     * Parameter - Function (reducer): a function that takes a value and returns a new value
+     * Returns - Object: the reduced value
+     */
+    fun reduce(reducer: Function): Object;
+
+    /*
+     * This allows you to remove the value at a specific index, alternative to bracket assignment.
+     * This will throw an error if the index is out of bounds
+     * Parameter - Number (index): the index of the value you want to remove
+     * Returns - Object: the value that was removed
+     */
+    fun remove(index: Number): Object;
+
+    /*
+     * This allows you to remove all the values in another collection from the list
+     * Parameter - Collection (collection): the collection you want to remove from the list
+     * Returns - List: the list
+     */
+    fun removeAll(collection: Collection): List;
+
+    /*
+     * This allows you to retain only the values that are in both lists
+     * Parameter - List (list): the list you want to retain values from
+     * Returns - List: the list
+     */
+    fun retainAll(list: List): List;
+
+    /*
+     * This allows you to reverse the list
+     * Returns - List: the reversed list
+     */
+    fun reverse(): List;
+
+    /*
+     * This allows you to set the value at a specific index, alternative to bracket assignment,
+     * this will throw an erroor if the index given is out of bounds
+     * Parameter - Object (value): the value you want to set
+     * Parameter - Number (index): the index you want to set the value at
+     * Returns - List: the list
+     */
+    fun set(value: Object, index: Number): List;
+
+    /*
+     * This allows you to shuffle the list
+     * Returns - List: the shuffled list
+     */
+    fun shuffle(): List;
+
+    /*
+     * This allows you to sort the list using the elements compare method
+     * Returns - List: the sorted list
+     */
+    fun sort(): List;
+
+    /*
+     * This allows you to sort the list using a comparator function
+     * Parameter - Function (comparator): the comparator function
+     * Returns - List: the sorted list
+     */
+    fun sort(comparator: Function): List;
+}
+
+/* Native, implemented in Kotlin
+ * This class is used to create a map of objects, using keys and values.
+ * This class cannot be directly instantiated, but can be extended to create a map of your own type.
+ * This class does not need to be imported.
+ */
+class Map: Collection {
+    /*
+     * This creates an empty map, this cannot be called directly, only from child classes
+     */
+    Map();
+
+    /*
+     * This allows you to clear the map of all the keys and values
+     */
+    fun clear(): Null;
+
+    /*
+     * This allows you to check if the map contains a specific key
+     * Parameter - Object (key): the key you want to check
+     * Returns - Boolean: true if the map contains the key, false otherwise
+     */
+    fun containsKey(key: Object): Boolean;
+
+    /*
+     * This allows you to check if the map contains a specific value
+     * Parameter - Object (value): the value you want to check
+     * Returns - Boolean: true if the map contains the value, false otherwise
+     */
+    fun containsValue(value: Object): Boolean;
+
+    /*
+     * This allows you to get the value of a key in the map
+     * Parameter - Object (key): the key you want to get the value of
+     * Returns - Object: the value of the key, will return null if non-existent
+     */
+    fun get(key: Object): Object;
+
+    /*
+     * This allows you to get the keys in the map
+     * Returns - List: a complete list of all the keys
+     */
+    fun getKeys(): List;
+
+    /*
+     * This allows you to get the values in the map
+     * Returns - List: a complete list of all the values
+     */
+    fun getValues(): List;
+
+    /*
+     * This allows you to map the values in the map and returns a new map
+     * Parameter - Function (remapper): the function you want to map the values with
+     * Returns - Map: a new map with the mapped values
+     */
+    fun map(remapper: Function): Map;
+
+    /*
+     * This allows you to put a key and value in the map
+     * Parameter - Object (key): the key you want to put
+     * Parameter - Object (value): the value you want to put
+     * Returns - Object: the previous value associated with the key, null if none
+     */
+    fun put(key: Object, value: Object): Object;
+
+    /*
+     * This allows you to put all the keys and values of another map into this map
+     * Parameter - Map (another map): the map you want to merge into this map
+     */
+    fun putAll(another map: Map): Null;
+
+    /*
+     * This allows you to put a key and value in the map if it doesn't exist
+     * Parameter - Object (key): the key you want to put
+     * Parameter - Object (value): the value you want to put
+     */
+    fun putIfAbsent(key: Object, value: Object): Null;
+
+    /*
+     * This allows you to remove a key and its value from the map
+     * Parameter - Object (key): the key you want to remove
+     * Returns - Object: the value associated with the key, null if none
+     */
+    fun remove(key: Object): Object;
+
+    /*
+     * This function allows you to create an unordered map
+     * Returns - Map: an unordered map
+     */
+    static fun unordered(): Map;
+}
+
+/* Native, implemented in Kotlin
+ * Provides many basic math functions. This is a utility class, and cannot be constructed
+ * This class does not need to be imported.
+ */
+class Math {
+    /*
+     * The value of e
+     * This field is not assignable
+     */
+    static var e: Number;
+    /*
+     * The value of pi
+     * This field is not assignable
+     */
+    static var pi: Number;
+    /*
+     * The value of root 2
+     * This field is not assignable
+     */
+    static var root2: Number;
+
+    /*
+     * Returns the absolute value of a number
+     * Parameter - Number (num): the number to get the absolute value of
+     * Returns - Number: the absolute value of the number
+     */
+    static fun abs(num: Number): Number;
+
+    /*
+     * Returns the arc cosine of a number
+     * Parameter - Number (num): the number to get the arc cosine of
+     * Returns - Number: the arc cosine of the number
+     */
+    static fun arccos(num: Number): Number;
+
+    /*
+     * Returns the arc sine of a number
+     * Parameter - Number (num): the number to get the arc sine of
+     * Returns - Number: the arc sine of the number
+     */
+    static fun arcsin(num: Number): Number;
+
+    /*
+     * Returns the arc tangent of a number
+     * Parameter - Number (num): the number to get the arc tangent of
+     * Returns - Number: the arc tangent of the number
+     */
+    static fun arctan(num: Number): Number;
+
+    /*
+     * Returns the angle theta of the polar coordinates (r, theta) that correspond to the rectangular
+     * coordinates (x, y) by computing the arc tangent of the value y / x
+     * Parameter - Number (y): the ordinate coordinate
+     * Parameter - Number (x): the abscissa coordinate
+     * Returns - Number: the theta component of the point (r, theta)
+     */
+    static fun arctan2(y: Number, x: Number): Number;
+
+    /*
+     * Rounds a number up to the nearest integer
+     * Parameter - Number (num): the number to round
+     * Returns - Number: the rounded number
+     */
+    static fun ceil(num: Number): Number;
+
+    /*
+     * Clamps a value between a minimum and maximum
+     * Parameter - Number (value): the value to clamp
+     * Parameter - Number (min): the minimum
+     * Parameter - Number (max): the maximum
+     * Returns - Number: the clamped value
+     */
+    static fun clamp(value: Number, min: Number, max: Number): Number;
+
+    /*
+     * Returns the cosine of a number
+     * Parameter - Number (num): the number to get the cosine of
+     * Returns - Number: the cosine of the number
+     */
+    static fun cos(num: Number): Number;
+
+    /*
+     * Returns the cosecant of a number
+     * Parameter - Number (num): the number to get the cosecant of
+     * Returns - Number: the cosecant of the number
+     */
+    static fun cosec(num: Number): Number;
+
+    /*
+     * Returns the cotangent of a number
+     * Parameter - Number (num): the number to get the cotangent of
+     * Returns - Number: the cotangent of the number
+     */
+    static fun cot(num: Number): Number;
+
+    /*
+     * Rounds a number down to the nearest integer
+     * Parameter - Number (num): the number to round
+     * Returns - Number: the rounded number
+     */
+    static fun floor(num: Number): Number;
+
+    /*
+     * Linear interpolation between two numbers
+     * Parameter - Number (start): the first number
+     * Parameter - Number (end): the second number
+     * Parameter - Number (delta): the interpolation factor
+     * Returns - Number: the interpolated number
+     */
+    static fun lerp(start: Number, end: Number, delta: Number): Number;
+
+    /*
+     * Returns the natural logarithm of a number
+     * Parameter - Number (num): the number to get the logarithm of
+     * Returns - Number: the natural logarithm of the number
+     */
+    static fun ln(num: Number): Number;
+
+    /*
+     * Returns the logarithm of a number with a specified base
+     * Parameter - Number (base): the base
+     * Parameter - Number (num): the number to get the logarithm of
+     * Returns - Number: the logarithm of the number
+     */
+    static fun log(base: Number, num: Number): Number;
+
+    /*
+     * Returns the base 10 logarithm of a number
+     * Parameter - Number (num): the number to get the logarithm of
+     * Returns - Number: the base 10 logarithm of the number
+     */
+    static fun log10(num: Number): Number;
+
+    /*
+     * Returns the largest number
+     * Parameter - Number (num1): the first number to compare
+     * Parameter - Number (num2): the second number to compare
+     * Returns - Number: the largest number
+     */
+    static fun max(num1: Number, num2: Number): Number;
+
+    /*
+     * Returns the smallest number
+     * Parameter - Number (num1): the first number to compare
+     * Parameter - Number (num2): the second number to compare
+     * Returns - Number: the smallest number
+     */
+    static fun min(num1: Number, num2: Number): Number;
+
+    /*
+     * Returns the modulus of a division
+     * Parameter - Number (num1): the number to divide
+     * Parameter - Number (num2): the divisor
+     * Returns - Number: the modulus of the division
+     */
+    static fun mod(num1: Number, num2: Number): Number;
+
+    /*
+     * Returns the remainder of a division
+     * Parameter - Number (num1): the number to divide
+     * Parameter - Number (num2): the divisor
+     * Returns - Number: the remainder of the division
+     */
+    static fun rem(num1: Number, num2: Number): Number;
+
+    /*
+     * Rounds a number to the nearest integer
+     * Parameter - Number (num): the number to round
+     * Returns - Number: the rounded number
+     */
+    static fun round(num: Number): Number;
+
+    /*
+     * Returns the secant of a number
+     * Parameter - Number (num): the number to get the secant of
+     * Returns - Number: the secant of the number
+     */
+    static fun sec(num: Number): Number;
+
+    /*
+     * Returns the sign of a number, 1 if the number is positive,
+     * -1 if the number is negative, and 0 if the number is 0
+     * Parameter - Number (num): the number to get the sign of
+     * Returns - Number: the sign of the number
+     */
+    static fun signum(num: Number): Number;
+
+    /*
+     * Returns the sine of a number
+     * Parameter - Number (num): the number to get the sine of
+     * Returns - Number: the sine of the number
+     */
+    static fun sin(num: Number): Number;
+
+    /*
+     * Returns the square root of a number
+     * Parameter - Number (num): the number to square root
+     * Returns - Number: the square root of the number
+     */
+    static fun sqrt(num: Number): Number;
+
+    /*
+     * Returns the tangent of a number
+     * Parameter - Number (num): the number to get the tangent of
+     * Returns - Number: the tangent of the number
+     */
+    static fun tan(num: Number): Number;
+
+    /*
+     * Converts a number from radians to degrees
+     * Parameter - Number (num): the number to convert
+     * Returns - Number: the number in degrees
+     */
+    static fun toDegrees(num: Number): Number;
+
+    /*
+     * Converts a number from degrees to radians
+     * Parameter - Number (num): the number to convert
+     * Returns - Number: the number in radians
+     */
+    static fun toRadians(num: Number): Number;
+}
+
+/* Native, implemented in Kotlin
+ * Allows you to do http requests. This is a utility class and cannot be constructed.
+ * Import with 'import Network from util.Network'
+ */
+class Network {
+    /*
+     * Downloads a file from an url to a file
+     * Parameter - String (url): the url to download from
+     * Parameter - File (file): the file to download to
+     * Returns - Boolean: whether the download was successful
+     */
+    static fun downloadFile(url: String, file: File): Boolean;
+
+    /*
+     * Opens an url in the default browser
+     * Parameter - String (url): the url to open
+     */
+    static fun openUrl(url: String): Null;
+
+    /*
+     * Requests an url and returns the response
+     * Parameter - String (url): the url to request
+     * Returns - String: the response from the url
+     */
+    static fun requestUrl(url: String): String;
+}
+
+/* Native, implemented in Kotlin
+ * This class is used for the null object,
+ * this cannot be instantiated or extended
+ * This class does not need to be imported.
+ */
+class Null {
+}
+
+/* Native, implemented in Kotlin
+ * This class cannot be constructed as it has a literal representation.
+ * For math related functions see the Math class.
+ * This class does not need to be imported.
+ */
+class Number {
+    /*
+     * This allows you to round a number up to the nearest integer
+     * Returns - Number: the rounded number
+     */
+    fun ceil(): Number;
+
+    /*
+     * This allows you to round a number down to the nearest integer
+     * Returns - Number: the rounded number
+     */
+    fun floor(): Number;
+
+    /*
+     * This allows you to check if a number is infinite
+     * Returns - Boolean: true if the number is infinite
+     */
+    fun isInfinite(): Boolean;
+
+    /*
+     * This allows you to check if a number is not a number
+     * Returns - Boolean: true if the number is not a number
+     */
+    fun isNaN(): Boolean;
+
+    /*
+     * This allows you to round a number to the nearest integer
+     * Returns - Number: the rounded number
+     */
+    fun round(): Number;
+}
+
+/* Native, implemented in Kotlin
+ * This is the base class for every other class in Arucas.
+ * This class cannot be instantiated from, you can extend it
+ * however every class already extends this class by default
+ * This class does not need to be imported.
+ */
+class Object {
+    /*
+     * This returns a copy of the value if implemented.
+     * Some objects that are immutable, such as Strings and Numbers
+     * will not be copied, and will return the same instance.
+     * Any object that has not implemented the copy method will also
+     * return the same instance
+     * Returns - Object: a copy of the value
+     */
+    fun copy(): Object;
+
+    /*
+     * This returns the hash code of the value, mainly used for maps and sets
+     * the hash code of an object must remain consistent for objects to be able
+     * to be used as keys in a map or set. If two objects are equal, they must
+     * have the same hash code
+     * Returns - Number: the hash code of the value
+     */
+    fun hashCode(): Number;
+
+    /*
+     * This returns true if the value is an instance of the given type
+     * Parameter - Type (type): the type to check against
+     * Returns - Boolean: true if the value is an instance of the given type
+     */
+    fun instanceOf(type: Type): Boolean;
+
+    /*
+     * This returns the string representation of the value
+     * Returns - String: the string representation of the value
+     */
+    fun toString(): String;
+
+    /*
+     * This returns the unique hash of the value, this is different for every instance of a value
+     * Returns - Number: the unique hash of the value
+     */
+    fun uniqueHash(): Number;
+}
+
+/* Native, implemented in Kotlin
+ * Sets are collections of unique values. Similar to maps, without the values.
+ * An instance of the class can be created by using `Set.of(values...)`
+ * This class does not need to be imported.
+ */
+class Set: Collection {
+    /*
+     * This creates an empty set
+     */
+    Set();
+
+    /*
+     * This allows you to add a value to the set
+     * Parameter - Object (value): the value you want to add to the set
+     * Returns - Boolean: whether the value was successfully added to the set
+     */
+    fun add(value: Object): Boolean;
+
+    /*
+     * This allows you to add all the values in a collection into the set
+     * Parameter - Collection (collection): the collection of values you want to add
+     * Returns - Set: the modified set
+     */
+    fun addAll(collection: Collection): Set;
+
+    /*
+     * This removes all values from inside the set
+     */
+    fun clear(): Null;
+
+    /*
+     * This allows you to check whether a value is in the set
+     * Parameter - Object (value): the value that you want to check in the set
+     * Returns - Boolean: whether the value is in the set
+     */
+    fun contains(value: Object): Boolean;
+
+    /*
+     * This allows you to check whether a collection of values are all in the set
+     * Parameter - Collection (collection): the collection of values you want to check in the set
+     * Returns - Boolean: whether all the values are in the set
+     */
+    fun containsAll(collection: Collection): Boolean;
+
+    /*
+     * This allows you to filter the set
+     * Parameter - Function (function): the function you want to filter the set by
+     * Returns - Set: the filtered set
+     */
+    fun filter(function: Function): Set;
+
+    /*
+     * This allows you to get a value from in the set.
+     * The reason this might be useful is if you want to retrieve something
+     * from the set that will have the same hashcode but be in a different state
+     * as the value you are passing in
+     * Parameter - Object (value): the value you want to get from the set
+     * Returns - Object: the value you wanted to get, null if it wasn't in the set
+     */
+    fun get(value: Object): Object;
+
+    /*
+     * This allows you to map the set
+     * Parameter - Function (function): the function you want to map the set by
+     * Returns - Set: the mapped set
+     */
+    fun map(function: Function): Set;
+
+    /*
+     * This allows you to reduce the set
+     * Parameter - Function (function): the function you want to reduce the set by
+     * Returns - Object: the reduced set
+     */
+    fun reduce(function: Function): Object;
+
+    /*
+     * This allows you to remove a value from the set
+     * Parameter - Object (value): the value you want to remove from the set
+     * Returns - Boolean: whether the value was removed from the set
+     */
+    fun remove(value: Object): Boolean;
+
+    /*
+     * This allows you to remove all values in a collection from the set
+     * Parameter - Collection (value): the values you want to remove from the set
+     * Returns - Set: the set with the values removed
+     */
+    fun removeAll(value: Collection): Set;
+
+    /*
+     * This returns a list of all the values in the set
+     * Returns - List: the list of values in the set
+     */
+    fun toList(): List;
+
+    /*
+     * This allows you to create a set with an arbitrary number of values
+     * Parameter - Object (values...): the values you want to add to the set
+     * Returns - Set: the set you created
+     */
+    static fun of(values...: Object): Set;
+
+    /*
+     * This creates an unordered set
+     * Returns - Set: the unordered set
+     */
+    static fun unordered(): Set;
+}
+
+/* Native, implemented in Kotlin
+ * This class represents an array of characters to form a string.
+ * This class cannot be instantiated directly, instead use the literal
+ * by using quotes. Strings are immutable in Arucas.
+ * This class does not need to be imported.
+ */
+class String {
+    /*
+     * This creates a new string object, not from the string pool, with the given string.
+     * This cannot be called directly, only from child classes
+     */
+    String();
+
+    /*
+     * This returns the string in capitalized form
+     * Returns - String: the string in capitalized form
+     */
+    fun capitalize(): String;
+
+    /*
+     * This makes a list of all the characters in the string
+     * Returns - List: the list of characters
+     */
+    fun chars(): List;
+
+    /*
+     * This returns whether the string contains the given string
+     * Parameter - String (string): the string to check
+     * Returns - Boolean: whether the string contains the given string
+     */
+    fun contains(string: String): Boolean;
+
+    /*
+     * This returns whether the string ends with the given string
+     * Parameter - String (string): the string to check
+     * Returns - Boolean: whether the string ends with the given string
+     */
+    fun endsWith(string: String): Boolean;
+
+    /*
+     * This finds all matches of the regex in the string,
+     * this does not find groups, for that use `<String>.findGroups(regex)`
+     * Parameter - String (regex): the regex to search the string with
+     * Returns - List: the list of all instances of the regex in the string
+     */
+    fun find(regex: String): List;
+
+    /*
+     * This finds all matches and groups of a regex in the matches in the string
+     * the first group of each match will be the complete match and following
+     * will be the groups of the regex, a group may be empty if it doesn't exist
+     * Parameter - String (regex): the regex to search the string with
+     * Returns - List: the list of lists containg the matches
+     */
+    fun findAll(regex: String): List;
+
+    /*
+     * This formats the string using the given arguments.
+     * This internally uses the Java String.format() method.
+     * For how to use see here: https://www.javatpoint.com/java-string-format
+     * Parameter - Object (objects...): the objects to insert
+     * Returns - String: the formatted string
+     */
+    fun format(objects...: Object): String;
+
+    /*
+     * This returns the length of the string
+     * Returns - Number: the length of the string
+     */
+    fun length(): Number;
+
+    /*
+     * This returns the string in lowercase
+     * Returns - String: the string in lowercase
+     */
+    fun lowercase(): String;
+
+    /*
+     * This returns whether the string matches the given regex
+     * Parameter - String (regex): the regex to match the string with
+     * Returns - Boolean: whether the string matches the given regex
+     */
+    fun matches(regex: String): Boolean;
+
+    /*
+     * This replaces all the instances of a regex with the replace string
+     * Parameter - String (regex): the regex you want to replace
+     * Parameter - String (replacement): the string you want to replace it with
+     * Returns - String: the modified string
+     */
+    fun replaceAll(regex: String, replacement: String): String;
+
+    /*
+     * This replaces the first instance of a regex with the replace string
+     * Parameter - String (regex): the regex you want to replace
+     * Parameter - String (replacement): the string you want to replace it with
+     * Returns - String: the modified string
+     */
+    fun replaceFirst(regex: String, replacement: String): String;
+
+    /*
+     * This returns the string in reverse
+     * Returns - String: the string in reverse
+     */
+    fun reverse(): String;
+
+    /*
+     * This splits the string into a list of strings based on a regex
+     * Parameter - String (regex): the regex to split the string with
+     * Returns - List: the list of strings
+     */
+    fun split(regex: String): List;
+
+    /*
+     * This returns whether the string starts with the given string
+     * Parameter - String (string): the string to check
+     * Returns - Boolean: whether the string starts with the given string
+     */
+    fun startsWith(string: String): Boolean;
+
+    /*
+     * This strips the whitespace from the string
+     * Returns - String: the stripped string
+     */
+    fun strip(): String;
+
+    /*
+     * This returns a substring of the string
+     * Parameter - Number (from): the start index (inclusive)
+     * Parameter - Number (to): the end index (exclusive)
+     * Returns - String: the substring
+     */
+    fun subString(from: Number, to: Number): String;
+
+    /*
+     * Deprecated: Use '<String>.chars()' instead
+     * This makes a list of all the characters in the string
+     * Returns - List: the list of characters
+     */
+    fun toList(): List;
+
+    /*
+     * This tries to convert the string to a number.
+     * This method can convert hex or denary into numbers.
+     * If the string is not a number, it will throw an error
+     * Returns - Number: the number
+     */
+    fun toNumber(): Number;
+
+    /*
+     * This returns the string in uppercase
+     * Returns - String: the string in uppercase
+     */
+    fun uppercase(): String;
+}
+
+/* Native, implemented in Kotlin
+ * This class is used to create tasks that can be chained and
+ * run asynchronously. Tasks can be executed as many times as needed
+ * and chained tasks will be executed in the order they are created.
+ * This class does not need to be imported.
+ */
+class Task {
+    /*
+     * This creates a new empty task
+     */
+    Task();
+
+    /*
+     * This loops the task, essentially just calling 'task.run', the
+     * task will run async from the original task, the loop will continue
+     * if the function provided returns true
+     * Parameter - Function (boolSupplier): the function to check if the loop should run
+     * Returns - Task: the task, this allows for chaining
+     */
+    fun loopIf(boolSupplier: Function): Task;
+
+    /*
+     * This runs the task asynchronously and returns a future which can be awaited.
+     * The last function in the task will be used as the return value for the future
+     * Returns - Future: the future value that can be awaited
+     */
+    fun run(): Future;
+
+    /*
+     * This adds a function to the end of the current task.
+     * If this is the last function in the task then the return
+     * value of the function will be the return value of the task.
+     * Parameter - Function (function): the function to run at the end of the task
+     * Returns - Task: the task, this allows for chaining
+     */
+    fun then(function: Function): Task;
+}
+
+/* Native, implemented in Kotlin
+ * This class allows to to create threads for async executions.
+ * This class cannot be instantiated or extended. To create a new
+ * thread use the static method 'Thread.runThreaded()'
+ * This class does not need to be imported.
+ */
+class Thread {
+    /*
+     * This serves the same purpose as 'Thread.freeze()' however this works on the current
+     * thread instance, unlike 'Thread.freeze()' this cannot throw an error.
+     */
+    fun freeze(): Null;
+
+    /*
+     * This gets the age of the thread in milliseconds
+     * Returns - Number: the age of the thread
+     */
+    fun getAge(): Number;
+
+    /*
+     * This gets the name of the thread
+     * Returns - String: the name of the thread
+     */
+    fun getName(): String;
+
+    /*
+     * This checks if the thread is alive (still running)
+     * Returns - Boolean: true if the thread is alive, false if not
+     */
+    fun isAlive(): Boolean;
+
+    /*
+     * This stops the thread from executing, anything that was running will be instantly stopped.
+     * This method will fail if the thread is not alive
+     */
+    fun stop(): Null;
+
+    /*
+     * This will thaw the thread from its frozen state, if the thread is not frozen then an
+     * error will be thrown
+     */
+    fun thaw(): Null;
+
+    /*
+     * This freezes the current thread, stops anything else from executing on the thread.
+     * This may fail if you try to freeze a non Arucas Thread in which case an error will be thrown
+     */
+    static fun freeze(): Null;
+
+    /*
+     * This gets the current thread that the code is running on,
+     * this may throw an error if the thread is not safe to get,
+     * which happens when running outside of Arucas Threads
+     * Returns - Thread: the current thread
+     */
+    static fun getCurrentThread(): Thread;
+
+    /*
+     * This starts a new thread and runs a function on it, the thread will
+     * terminate when it finishes executing the function, threads will stop automatically
+     * when the program stops, you are also able to stop threads by using the Thread object
+     * Parameter - Function (function): the function you want to run on a new thread
+     * Returns - Thread: the new thread
+     */
+    static fun runThreaded(function: Function): Thread;
+
+    /*
+     * This starts a new thread with a specific name and runs a function on it
+     * Parameter - String (name): the name of the thread
+     * Parameter - Function (function): the function you want to run on a new thread
+     * Returns - Thread: the new thread
+     */
+    static fun runThreaded(name: String, function: Function): Thread;
+}
+
+/* Native, implemented in Kotlin
+ * This class lets you get the type of another class
+ * This class does not need to be imported.
+ */
+class Type {
+    /*
+     * This gets the name of the type
+     * Returns - String: the name of the type
+     */
+    fun getName(): String;
+
+    /*
+     * This checks whether a type is a subtype of another type
+     * Parameter - Type (type): the other type you want to check against
+     * Returns - Boolean: whether the type is of that type
+     */
+    fun inheritsFrom(type: Type): Boolean;
+
+    /*
+     * Deprecated: Use '<Type>.inheritsFrom(type)'
+     * This checks whether a type is a subtype of another type
+     * Parameter - Type (type): the other type you want to check against
+     * Returns - Boolean: whether the type is of that type
+     */
+    fun instanceOf(type: Type): Boolean;
+
+    /*
+     * This gets the specific type of a value
+     * Parameter - Object (value): the value you want to get the type of
+     * Returns - Type: the type of the value
+     */
+    static fun of(value: Object): Type;
+}
+
