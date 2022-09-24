@@ -27,12 +27,12 @@ public class ClientScriptThreadHandler extends ThreadHandler {
 	}
 
 	@Override
-	protected void handleFatalError(FatalError fatalError) {
-		this.handleFatalError((Throwable) fatalError);
+	protected void handleFatalError(FatalError fatalError, Interpreter interpreter) {
+		this.handleFatalError((Throwable) fatalError, interpreter);
 	}
 
 	@Override
-	protected void handleFatalError(Throwable throwable) {
+	protected void handleFatalError(Throwable throwable, Interpreter interpreter) {
 		Text error = Texts.literal("\n").formatted(Formatting.RED).append(Texts.FATAL_ERROR.generate(this.getInterpreter().getName()));
 		EssentialUtils.sendMessage(error);
 
