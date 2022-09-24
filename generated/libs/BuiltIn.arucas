@@ -82,6 +82,12 @@ class Error {
     fun getDetails(): String;
 
     /*
+     * This prints the stack trace of this error
+     * Returns - String: the stack trace converted to a string
+     */
+    fun getStackTraceString(): String;
+
+    /*
      * This returns the value that is related to the error
      * Returns - Object: the value that is related to the error
      */
@@ -320,7 +326,7 @@ class List: Collection {
 
     /*
      * This allows you to get the value at a specific index, alternative to bracket accessor,
-     * this will throw an erroor if the index given is out of bounds
+     * this will throw an error if the index given is out of bounds
      * Parameter - Number (index): the index of the value you want to get
      * Returns - Object: the value at the index
      */
@@ -608,6 +614,13 @@ class Math {
     static fun cosec(num: Number): Number;
 
     /*
+     * Returns the hyperbolic cosine of a number
+     * Parameter - Number (num): the number to get the hyperbolic cosine of
+     * Returns - Number: the hyperbolic cosine of the number
+     */
+    static fun cosh(num: Number): Number;
+
+    /*
      * Returns the cotangent of a number
      * Parameter - Number (num): the number to get the cotangent of
      * Returns - Number: the cotangent of the number
@@ -714,6 +727,13 @@ class Math {
     static fun sin(num: Number): Number;
 
     /*
+     * Returns the hyperbolic sine of a number
+     * Parameter - Number (num): the number to get the hyperbolic sine of
+     * Returns - Number: the hyperbolic sine of the number
+     */
+    static fun sinh(num: Number): Number;
+
+    /*
      * Returns the square root of a number
      * Parameter - Number (num): the number to square root
      * Returns - Number: the square root of the number
@@ -726,6 +746,13 @@ class Math {
      * Returns - Number: the tangent of the number
      */
     static fun tan(num: Number): Number;
+
+    /*
+     * Returns the hyperbolic tangent of a number
+     * Parameter - Number (num): the number to get the hyperbolic tangent of
+     * Returns - Number: the hyperbolic tangent of the number
+     */
+    static fun tanh(num: Number): Number;
 
     /*
      * Converts a number from radians to degrees
@@ -1021,7 +1048,7 @@ class String {
      * the first group of each match will be the complete match and following
      * will be the groups of the regex, a group may be empty if it doesn't exist
      * Parameter - String (regex): the regex to search the string with
-     * Returns - List: the list of lists containg the matches
+     * Returns - List: a list of match groups, which is a list containing matches
      */
     fun findAll(regex: String): List;
 

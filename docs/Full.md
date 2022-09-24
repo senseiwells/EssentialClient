@@ -4166,6 +4166,14 @@ new Error('This is an error', [1, 2, 3]);
 error.getDetails();
 ```
 
+### `<Error>.getStackTraceString()`
+- Description: This prints the stack trace of this error
+- Returns - String: the stack trace converted to a string
+- Example:
+```kotlin
+error.getStackTraceString();
+```
+
 ### `<Error>.getValue()`
 - Description: This returns the value that is related to the error
 - Returns - Object: the value that is related to the error
@@ -5761,7 +5769,7 @@ collections will not be flattened, this is returned as a new list
 
 ### `<List>.get(index)`
 - Description: This allows you to get the value at a specific index, alternative to bracket accessor,
-this will throw an erroor if the index given is out of bounds
+this will throw an error if the index given is out of bounds
 - Parameter - Number (`index`): the index of the value you want to get
 - Returns - Object: the value at the index
 - Example:
@@ -6269,6 +6277,15 @@ Math.cos(Math.pi);
 Math.cosec(Math.pi);
 ```
 
+### `Math.cosh(num)`
+- Description: Returns the hyperbolic cosine of a number
+- Parameter - Number (`num`): the number to get the hyperbolic cosine of
+- Returns - Number: the hyperbolic cosine of the number
+- Example:
+```kotlin
+Math.cosh(1);
+```
+
 ### `Math.cot(num)`
 - Description: Returns the cotangent of a number
 - Parameter - Number (`num`): the number to get the cotangent of
@@ -6409,6 +6426,15 @@ Math.signum(3);
 Math.sin(Math.pi);
 ```
 
+### `Math.sinh(num)`
+- Description: Returns the hyperbolic sine of a number
+- Parameter - Number (`num`): the number to get the hyperbolic sine of
+- Returns - Number: the hyperbolic sine of the number
+- Example:
+```kotlin
+Math.sinh(1);
+```
+
 ### `Math.sqrt(num)`
 - Description: Returns the square root of a number
 - Parameter - Number (`num`): the number to square root
@@ -6425,6 +6451,15 @@ Math.sqrt(9);
 - Example:
 ```kotlin
 Math.tan(Math.pi);
+```
+
+### `Math.tanh(num)`
+- Description: Returns the hyperbolic tangent of a number
+- Parameter - Number (`num`): the number to get the hyperbolic tangent of
+- Returns - Number: the hyperbolic tangent of the number
+- Example:
+```kotlin
+Math.tanh(1);
 ```
 
 ### `Math.toDegrees(num)`
@@ -8605,7 +8640,7 @@ Set.of('object').containsAll(Set.of('object', 81, 96, 'case'));
 - Returns - Set: the filtered set
 - Example:
 ```kotlin
-Set.of(-9, 81, 96, 15).filter(function(value) { return value > 80; });
+Set.of(-9, 81, 96, 15).filter(fun(value) { return value > 80; });
 ```
 
 ### `<Set>.get(value)`
@@ -8626,7 +8661,7 @@ Set.of('object').get('object');
 - Returns - Set: the mapped set
 - Example:
 ```kotlin
-Set.of(-9, 81, 96, 15).map(function(value) { return value * 2; });
+Set.of(-9, 81, 96, 15).map(fun(value) { return value * 2; });
 ```
 
 ### `<Set>.reduce(function)`
@@ -8635,7 +8670,7 @@ Set.of(-9, 81, 96, 15).map(function(value) { return value * 2; });
 - Returns - Object: the reduced set
 - Example:
 ```kotlin
-Set.of(-9, 81, 96, 15).reduce(function(value, next) { return value + next; });
+Set.of(-9, 81, 96, 15).reduce(fun(value, next) { return value + next; });
 ```
 
 ### `<Set>.remove(value)`
@@ -9036,7 +9071,7 @@ class ChildString: String {
 - Returns - List: the list of characters
 - Example:
 ```kotlin
-'hello'.chars(); // [h, e, l, l, o]
+'hello'.chars(); // ['h', 'e', 'l', 'l', 'o']
 ```
 
 ### `<String>.contains(string)`
@@ -9072,10 +9107,10 @@ this does not find groups, for that use `<String>.findGroups(regex)`
 the first group of each match will be the complete match and following
 will be the groups of the regex, a group may be empty if it doesn't exist
 - Parameter - String (`regex`): the regex to search the string with
-- Returns - List: the list of lists containg the matches
+- Returns - List: a list of match groups, which is a list containing matches
 - Example:
 ```kotlin
-'102i 1i'.find('([\\d+])i'); // [['2i', '2', 'i'], ['1i', '1', 'i']]
+'102i 1i'.findAll('([\\d+])i'); // [['2i', '2'], ['1i', '1']]
 ```
 
 ### `<String>.format(objects...)`
@@ -9187,7 +9222,7 @@ For how to use see here: https://www.javatpoint.com/java-string-format
 - Returns - List: the list of characters
 - Example:
 ```kotlin
-'hello'.toList(); // [h, e, l, l, o]
+'hello'.toList(); // ['h', 'e', 'l', 'l', 'o']
 ```
 
 ### `<String>.toNumber()`

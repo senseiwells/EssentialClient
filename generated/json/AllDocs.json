@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "extensions": {
     "BuiltInExtension": [
       {
@@ -2961,6 +2961,20 @@
           ]
         },
         {
+          "name": "getStackTraceString",
+          "is_arbitrary": false,
+          "desc": [
+            "This prints the stack trace of this error"
+          ],
+          "returns": {
+            "type": "String",
+            "desc": "the stack trace converted to a string"
+          },
+          "examples": [
+            "error.getStackTraceString();"
+          ]
+        },
+        {
           "name": "getValue",
           "is_arbitrary": false,
           "desc": [
@@ -5893,7 +5907,7 @@
           "is_arbitrary": false,
           "desc": [
             "This allows you to get the value at a specific index, alternative to bracket accessor,",
-            "this will throw an erroor if the index given is out of bounds"
+            "this will throw an error if the index given is out of bounds"
           ],
           "params": [
             {
@@ -6865,6 +6879,27 @@
           ]
         },
         {
+          "name": "cosh",
+          "is_arbitrary": false,
+          "desc": [
+            "Returns the hyperbolic cosine of a number"
+          ],
+          "params": [
+            {
+              "name": "num",
+              "type": "Number",
+              "desc": "the number to get the hyperbolic cosine of"
+            }
+          ],
+          "returns": {
+            "type": "Number",
+            "desc": "the hyperbolic cosine of the number"
+          },
+          "examples": [
+            "Math.cosh(1);"
+          ]
+        },
+        {
           "name": "cot",
           "is_arbitrary": false,
           "desc": [
@@ -7195,6 +7230,27 @@
           ]
         },
         {
+          "name": "sinh",
+          "is_arbitrary": false,
+          "desc": [
+            "Returns the hyperbolic sine of a number"
+          ],
+          "params": [
+            {
+              "name": "num",
+              "type": "Number",
+              "desc": "the number to get the hyperbolic sine of"
+            }
+          ],
+          "returns": {
+            "type": "Number",
+            "desc": "the hyperbolic sine of the number"
+          },
+          "examples": [
+            "Math.sinh(1);"
+          ]
+        },
+        {
           "name": "sqrt",
           "is_arbitrary": false,
           "desc": [
@@ -7234,6 +7290,27 @@
           },
           "examples": [
             "Math.tan(Math.pi);"
+          ]
+        },
+        {
+          "name": "tanh",
+          "is_arbitrary": false,
+          "desc": [
+            "Returns the hyperbolic tangent of a number"
+          ],
+          "params": [
+            {
+              "name": "num",
+              "type": "Number",
+              "desc": "the number to get the hyperbolic tangent of"
+            }
+          ],
+          "returns": {
+            "type": "Number",
+            "desc": "the hyperbolic tangent of the number"
+          },
+          "examples": [
+            "Math.tanh(1);"
           ]
         },
         {
@@ -11402,7 +11479,7 @@
             "desc": "the filtered set"
           },
           "examples": [
-            "Set.of(-9, 81, 96, 15).filter(function(value) { return value > 80; });"
+            "Set.of(-9, 81, 96, 15).filter(fun(value) { return value > 80; });"
           ]
         },
         {
@@ -11447,7 +11524,7 @@
             "desc": "the mapped set"
           },
           "examples": [
-            "Set.of(-9, 81, 96, 15).map(function(value) { return value * 2; });"
+            "Set.of(-9, 81, 96, 15).map(fun(value) { return value * 2; });"
           ]
         },
         {
@@ -11468,7 +11545,7 @@
             "desc": "the reduced set"
           },
           "examples": [
-            "Set.of(-9, 81, 96, 15).reduce(function(value, next) { return value + next; });"
+            "Set.of(-9, 81, 96, 15).reduce(fun(value, next) { return value + next; });"
           ]
         },
         {
@@ -12198,7 +12275,7 @@
             "desc": "the list of characters"
           },
           "examples": [
-            "'hello'.chars(); // [h, e, l, l, o]"
+            "'hello'.chars(); // ['h', 'e', 'l', 'l', 'o']"
           ]
         },
         {
@@ -12282,10 +12359,10 @@
           ],
           "returns": {
             "type": "List",
-            "desc": "the list of lists containg the matches"
+            "desc": "a list of match groups, which is a list containing matches"
           },
           "examples": [
-            "'102i 1i'.find('([\\\\d+])i'); // [['2i', '2', 'i'], ['1i', '1', 'i']]"
+            "'102i 1i'.findAll('([\\\\d+])i'); // [['2i', '2'], ['1i', '1']]"
           ]
         },
         {
@@ -12522,7 +12599,7 @@
             "desc": "the list of characters"
           },
           "examples": [
-            "'hello'.toList(); // [h, e, l, l, o]"
+            "'hello'.toList(); // ['h', 'e', 'l', 'l', 'o']"
           ]
         },
         {
