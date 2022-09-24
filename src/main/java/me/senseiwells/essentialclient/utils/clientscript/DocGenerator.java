@@ -39,15 +39,23 @@ public class DocGenerator implements ModInitializer {
 		Path jsonPath = file.ensureExists(path.resolve("json"));
 		Path mdPath = file.ensureExists(path.resolve("markdown"));
 		Path libPath = file.ensureExists(path.resolve("libs"));
+		Path docPath = file.ensureExists(path.getParent().resolve("docs"));
 		try {
 			Files.writeString(jsonPath.resolve("AllDocs.json"), ScriptJsonParser.scriptOf(api).parse());
+			api.generateNativeFiles(libPath);
 
 			ScriptMarkdownParser markdownParser = ScriptMarkdownParser.scriptOf(api);
-			Files.writeString(mdPath.resolve("Extensions.md"), markdownParser.parseExtensions());
-			Files.writeString(mdPath.resolve("Classes.md"), markdownParser.parseClasses());
-			Files.writeString(mdPath.resolve("Events.md"), markdownParser.parseEvents());
-
-			api.generateNativeFiles(libPath);
+			String extensions = markdownParser.parseExtensions();
+			String classes = markdownParser.parseClasses();
+			String events = markdownParser.parseEvents();
+			Files.writeString(mdPath.resolve("Extensions.md"), extensions);
+			Files.writeString(mdPath.resolve("Classes.md"), classes);
+			Files.writeString(mdPath.resolve("Events.md"), events);
+			String full = Util.Network.INSTANCE.getStringFromUrl("https://raw.githubusercontent.com/senseiwells/Arucas/main/docs/FullLang.md");
+			full += "\n\n" + extensions;
+			full += "\n\n" + classes;
+			full += "\n\n" + events;
+			Files.writeString(docPath.resolve("Full.md"), full);
 		} catch (IOException e) {
 			LogManager.getLogger("DocGenerator").info("Failed to generate docs", e);
 		}
