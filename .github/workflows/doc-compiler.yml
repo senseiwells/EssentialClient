@@ -15,7 +15,7 @@ jobs:
         with:
           java-version: 17
       - name: Generate Documentations
-        run: ./gradlew runClient --args="-- -scriptDocGenerate generated" --stacktrace --no-daemon
+        run: ./gradlew runClient --args="--scriptDocGenerate ../generated" --stacktrace --no-daemon
       # - name: Concatenate Docs
       #  run: ./gradlew run --args="-cmdLine false -run .github/scripts/ConcatenateDocs.arucas" --stacktrace --no-daemon
       - name: Commit Changes
