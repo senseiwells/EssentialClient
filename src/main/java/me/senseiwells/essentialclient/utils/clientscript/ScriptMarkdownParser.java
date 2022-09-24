@@ -13,14 +13,13 @@ public class ScriptMarkdownParser extends MarkdownParser {
 
 	public String parseEvents() {
 		StringBuilder builder = new StringBuilder("# Events\n\n");
-		builder.append(
+		builder.append("""
+			Events are triggers for certain events that happen in the game.
+			ClientScript provides a way to hook into these triggers to be able to run your code.
+			You can register multiple functions to an event and they will all get called.
+			See [here]() on how to register and unregister events.
+			Each event will run async by default but you are able to run it on the main game thread.
 			"""
-				Events are triggers for certain events that happen in the game.
-				ClientScript provides a way to hook into these triggers to be able to run your code.
-				You can register multiple functions to an event and they will all get called.
-				See [here]() on how to register and unregister events.
-				Each event will run async by default but you are able to run it on the main game thread.
-				"""
 		);
 		MinecraftScriptEvents.forEachEvent(e -> {
 			builder.append("\n\n");

@@ -6,8 +6,6 @@ import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import shadow.google.gson.*;
 
 public class ScriptJsonParser extends JsonParser {
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
 	public static JsonParser scriptOf(ArucasAPI api) {
 		ScriptJsonParser parser = new ScriptJsonParser();
 		parser.fromApi(api);
@@ -15,10 +13,10 @@ public class ScriptJsonParser extends JsonParser {
 	}
 
 	@Override
-	public String parse() {
-		JsonObject json = this.toJson();
-		json.add("events", this.getEventsAsJson());
-		return GSON.toJson(json);
+	public JsonObject toJson() {
+		JsonObject object = super.toJson();
+		object.add("events", this.getEventsAsJson());
+		return object;
 	}
 
 	private JsonElement getEventsAsJson() {
