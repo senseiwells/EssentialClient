@@ -37,6 +37,7 @@ jobs:
         with:
           source_file: generated/snippets/arucas.json
           destination_repo: senseiwells/Arucas-VSCode-Extension
+          destination_folder: snippets
           user_email: senseiwells@users.noreply.github.com
           user_name: senseiwells
           commit_message: Snippets update from upstream
