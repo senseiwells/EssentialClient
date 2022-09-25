@@ -30,3 +30,13 @@ jobs:
           webhook_id: ${{ secrets.ZENO_WEBHOOK_ID }}
           webhook_token: ${{ secrets.ZENO_WEBHOOK_TOKEN }}
           message: Update the documentation!
+      - name: Update Arucas Snippets
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: generated/snippets/arucas.json
+          destination_repo: senseiwells/Arucas-VSCode-Extension
+          user_email: senseiwells@users.noreply.github.com
+          user_name: senseiwells
+          commit_message: Snippets update from upstream

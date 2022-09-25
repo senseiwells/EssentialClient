@@ -39,10 +39,13 @@ public class DocGenerator implements ModInitializer {
 		Path jsonPath = file.ensureExists(path.resolve("json"));
 		Path mdPath = file.ensureExists(path.resolve("markdown"));
 		Path libPath = file.ensureExists(path.resolve("libs"));
+		Path snippetPath = file.ensureExists(path.resolve("snippets"));
 		Path docPath = file.ensureExists(path.getParent().resolve("docs"));
 		try {
 			Files.writeString(jsonPath.resolve("AllDocs.json"), ScriptJsonParser.scriptOf(api).parse());
 			api.generateNativeFiles(libPath);
+
+			Files.writeString(snippetPath.resolve("arucas.json"), ScriptSnippetParser.scriptOf(api).parse());
 
 			ScriptMarkdownParser markdownParser = ScriptMarkdownParser.scriptOf(api);
 			String extensions = markdownParser.parseExtensions();
