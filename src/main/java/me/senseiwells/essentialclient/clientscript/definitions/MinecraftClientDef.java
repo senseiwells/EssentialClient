@@ -152,6 +152,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			MemberFunction.of("getClientRenderDistance", this::getClientRenderDistance),
 			MemberFunction.of("setClientRenderDistance", 1, this::setClientRenderDistance),
 			MemberFunction.of("runOnMainThread", 1, this::runOnMainThread, "Use 'client.run(func)'"),
+			MemberFunction.of("run", 1, this::run),
 			MemberFunction.of("tick", this::tick),
 
 			MemberFunction.of("canSendScriptPacket", this::canSendScriptPacket),
