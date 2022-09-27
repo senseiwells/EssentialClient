@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.mixins.carpet;
 
-import carpet.CarpetSettings;
 import carpet.network.ClientNetworkHandler;
 import io.netty.buffer.Unpooled;
 import me.senseiwells.essentialclient.feature.CarpetClient;
@@ -20,15 +19,6 @@ public class ClientNetworkHandlerMixin {
 	private static NbtCompound onGetRuleNBT(NbtCompound original) {
 		CarpetClient.INSTANCE.syncCarpetRule(original);
 		return original;
-	}
-
-	@Inject(method = "respondHello", at = @At("HEAD"), cancellable = true)
-	private static void onHello(CallbackInfo ci) {
-		EssentialUtils.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
-			carpet.network.CarpetClient.CARPET_CHANNEL,
-			new PacketByteBuf(Unpooled.buffer()).writeVarInt(carpet.network.CarpetClient.HELLO).writeString(CarpetSettings.carpetVersion)
-		));
-		ci.cancel();
 	}
 
 	@Inject(method = "clientCommand", at = @At("HEAD"), cancellable = true)
