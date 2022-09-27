@@ -3872,10 +3872,7 @@
       "\t$0",
       "}"
     ],
-    "description": [
-      "Template for a singluar if statement",
-      "wow"
-    ]
+    "description": "Template for a singluar if statement"
   },
   "If Else": {
     "prefix": "ifelse",
