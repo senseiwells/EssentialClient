@@ -9973,7 +9973,6 @@ world.isAir(0, 100, 0);
 ```
 
 ### `<World>.isLoaded(pos)`
-- Deprecated: This does nothing, it will always return true
 - Description: This function returns loaded state of given coordinates(client side)
 - Parameter - Pos (`pos`): the position
 - Returns - Boolean: whether the block is loaded at the given coordinates
