@@ -4,7 +4,6 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "io.github.juuxel.loom-quiltflower" version "1.7.0"
 	id "com.replaymod.preprocess" version "897c4096e2"
-	id "com.diffplug.spotless" version "6.8.0"
 }
 
 int mcVersion = 1
@@ -43,24 +42,6 @@ archivesBaseName = project.archives_base_name
 version = project.minecraft_version + "-" + project.mod_version
 group = project.maven_group
 
-
-spotless {
-	format 'misc', {
-		target '**/*.gradle'
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
-
-	java {
-		target 'src/main/**/*.java'
-		toggleOffOn()
-		trimTrailingWhitespace()
-		indentWithTabs()
-		endWithNewline()
-	}
-}
-
 shadowJar {
 	configurations = [project.configurations.shade]
 }
@@ -92,7 +73,6 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
 	modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
-
 }
 
 processResources {
