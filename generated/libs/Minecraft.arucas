@@ -1364,6 +1364,13 @@ class ItemStack: Material {
     fun setNbt(nbtMap: Map): ItemStack;
 
     /*
+     * This sets the NBT data of the ItemStack from an NBT string
+     * Parameter - String (nbtString): the NBT data of the ItemStack as a string
+     * Returns - ItemStack: the ItemStack with the new NBT data
+     */
+    fun setNbtFromString(nbtString: String): ItemStack;
+
+    /*
      * This sets the stack size of the ItemStack
      * Parameter - Number (stackSize): the stack size of the ItemStack
      * Returns - ItemStack: the ItemStack with the new stack size
@@ -2761,6 +2768,12 @@ class Pos {
     fun multiply(x: Number, y: Number, z: Number): Pos;
 
     /*
+     * Normalizes the vector to have a magnitude of 1
+     * Returns - Pos: the normalized position
+     */
+    fun normalize(): Pos;
+
+    /*
      * This returns a new Pos with the current pos z incremented by 1
      * Returns - Pos: the new Pos
      */
@@ -3500,6 +3513,7 @@ class World {
     fun isAir(x: Number, y: Number, z: Number): Boolean;
 
     /*
+     * Deprecated: This does nothing, it will always return true
      * This function returns loaded state of given coordinates(client side)
      * Parameter - Pos (pos): the position
      * Returns - Boolean: whether the block is loaded at the given coordinates

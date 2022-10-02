@@ -4384,6 +4384,27 @@
           ]
         },
         {
+          "name": "setNbtFromString",
+          "is_arbitrary": false,
+          "desc": [
+            "This sets the NBT data of the ItemStack from an NBT string"
+          ],
+          "params": [
+            {
+              "name": "nbtString",
+              "type": "String",
+              "desc": "the NBT data of the ItemStack as a string"
+            }
+          ],
+          "returns": {
+            "type": "ItemStack",
+            "desc": "the ItemStack with the new NBT data"
+          },
+          "examples": [
+            "itemStack.setNbtFromString(\"{\\\"Lore\\\": []}\");"
+          ]
+        },
+        {
           "name": "setStackSize",
           "is_arbitrary": false,
           "desc": [
@@ -10931,6 +10952,20 @@
           ]
         },
         {
+          "name": "normalize",
+          "is_arbitrary": false,
+          "desc": [
+            "Normalizes the vector to have a magnitude of 1"
+          ],
+          "returns": {
+            "type": "Pos",
+            "desc": "the normalized position"
+          },
+          "examples": [
+            "pos.normalize();"
+          ]
+        },
+        {
           "name": "north",
           "is_arbitrary": false,
           "desc": [
@@ -13983,6 +14018,9 @@
         {
           "name": "isLoaded",
           "is_arbitrary": false,
+          "deprecated": [
+            "This does nothing, it will always return true"
+          ],
           "desc": [
             "This function returns loaded state of given coordinates(client side)"
           ],

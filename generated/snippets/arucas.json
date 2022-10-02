@@ -1134,6 +1134,11 @@
     "body": ".setNbt($nbtMap)",
     "description": "<ItemStack>.setNbt(nbtMap)\nThis sets the NBT data of the ItemStack\n- Parameter - Map (`nbtMap`): the NBT data of the ItemStack as a map\n"
   },
+  "Method <ItemStack>.setNbtFromString(nbtString)": {
+    "prefix": ".setNbtFromString($nbtString)",
+    "body": ".setNbtFromString($nbtString)",
+    "description": "<ItemStack>.setNbtFromString(nbtString)\nThis sets the NBT data of the ItemStack from an NBT string\n- Parameter - String (`nbtString`): the NBT data of the ItemStack as a string\n"
+  },
   "Method <ItemStack>.setStackSize(stackSize)": {
     "prefix": ".setStackSize($stackSize)",
     "body": ".setStackSize($stackSize)",
@@ -2783,6 +2788,11 @@
     "prefix": ".multiply($x, $y, $z)",
     "body": ".multiply($x, $y, $z)",
     "description": "<Pos>.multiply(x, y, z)\nThis returns a new Pos with the current pos x, y, and z multiplied by the given x, y, and z\n- Parameter - Number (`x`): the x multiplier\n- Parameter - Number (`y`): the y multiplier\n- Parameter - Number (`z`): the z multiplier\n"
+  },
+  "Method <Pos>.normalize()": {
+    "prefix": ".normalize()",
+    "body": ".normalize()",
+    "description": "<Pos>.normalize()\nNormalizes the vector to have a magnitude of 1\n"
   },
   "Method <Pos>.north()": {
     "prefix": ".north()",

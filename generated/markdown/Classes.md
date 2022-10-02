@@ -2268,6 +2268,15 @@ itemStack.setItemLore([
 itemStack.setNbt({'Lore': []});
 ```
 
+### `<ItemStack>.setNbtFromString(nbtString)`
+- Description: This sets the NBT data of the ItemStack from an NBT string
+- Parameter - String (`nbtString`): the NBT data of the ItemStack as a string
+- Returns - ItemStack: the ItemStack with the new NBT data
+- Example:
+```kotlin
+itemStack.setNbtFromString("{\"Lore\": []}");
+```
+
 ### `<ItemStack>.setStackSize(stackSize)`
 - Description: This sets the stack size of the ItemStack
 - Parameter - Number (`stackSize`): the stack size of the ItemStack
@@ -5657,6 +5666,14 @@ pos.multiply(new Pos(2, 3, 5));
 pos.multiply(2, 3, 5);
 ```
 
+### `<Pos>.normalize()`
+- Description: Normalizes the vector to have a magnitude of 1
+- Returns - Pos: the normalized position
+- Example:
+```kotlin
+pos.normalize();
+```
+
 ### `<Pos>.north()`
 - Description: This returns a new Pos with the current pos z incremented by 1
 - Returns - Pos: the new Pos
@@ -7247,6 +7264,7 @@ world.isAir(0, 100, 0);
 ```
 
 ### `<World>.isLoaded(pos)`
+- Deprecated: This does nothing, it will always return true
 - Description: This function returns loaded state of given coordinates(client side)
 - Parameter - Pos (`pos`): the position
 - Returns - Boolean: whether the block is loaded at the given coordinates
