@@ -69,7 +69,7 @@ public class ClientPlayNetworkHandlerMixin {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "onCustomPayload", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;getChannel()Lnet/minecraft/util/Identifier;"), cancellable = true)
 	private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
 		for (NetworkHandler networkHandler : EssentialClient.NETWORK_HANDLERS) {
 			if (networkHandler.getNetworkChannel().equals(packet.getChannel())) {

@@ -16,10 +16,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Taken mostly from NotEnoughCrashes
@@ -58,7 +55,7 @@ public final class MinecraftDeobfuscator {
 
 		CACHED_MAPPINGS = MAPPINGS_DIRECTORY.resolve("mappings-" + EssentialUtils.getMinecraftVersion() + ".tiny");
 
-		if (Files.exists(CACHED_MAPPINGS)) {
+		if (!Files.exists(CACHED_MAPPINGS)) {
 			downloadAndCacheMappings();
 		}
 	}
@@ -71,7 +68,7 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = OBFUSCATION_MAPPINGS.get(name);
-		// EssentialClient.LOGGER.info("Obfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		EssentialClient.LOGGER.info("Obfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
 		return mapped == null ? name : mapped;
 	}
 
@@ -81,7 +78,7 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = CLASS_DEOBFUSCATION_MAPPINGS.get(name);
-		// EssentialClient.LOGGER.info("Deobfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		EssentialClient.LOGGER.info("Deobfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
 		return mapped == null ? name : mapped;
 	}
 

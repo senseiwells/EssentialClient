@@ -158,6 +158,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			MemberFunction.of("setCustomName", 1, this::setCustomName),
 			MemberFunction.of("setStackSize", 1, this::setStackSize),
 			MemberFunction.of("setItemLore", 1, this::setLore),
+			MemberFunction.of("setNbtFromString", 1, this::setNbtFromString),
 			MemberFunction.of("setNbt", 1, this::setNbt)
 		);
 	}
@@ -419,6 +420,24 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		ItemStack itemStack = instance.asPrimitive(this).stack;
 		itemStack.getOrCreateSubNbt("display").put("Lore", NbtListMixin.createNbtList(textList, (byte) 8));
 		return instance;
+	}
+
+	@FunctionDoc(
+		name = "setNbtFromString",
+		desc = "This sets the NBT data of the ItemStack from an NBT string",
+		params = {STRING, "nbtString", "the NBT data of the ItemStack as a string"},
+		returns = {ITEM_STACK, "the ItemStack with the new NBT data"},
+		examples = "itemStack.setNbtFromString(\"{\\\"Lore\\\": []}\");"
+	)
+	private Void setNbtFromString(Arguments arguments) {
+		ItemStack itemStack = arguments.nextPrimitive(this).stack;
+		String nbtString = arguments.nextPrimitive(StringDef.class);
+		NbtElement nbt = ClientScriptUtils.stringToNbt(nbtString);
+		if (!(nbt instanceof NbtCompound compound)) {
+			throw new RuntimeError("'%s' cannot be converted into an nbt compound".formatted(nbtString));
+		}
+		itemStack.setNbt(compound);
+		return null;
 	}
 
 	@FunctionDoc(
