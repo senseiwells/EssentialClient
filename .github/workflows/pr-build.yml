@@ -12,5 +12,4 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 17
-      - run: ./gradlew spotlessApply --stacktrace
       - run: ./gradlew build --stacktrace --no-daemon
