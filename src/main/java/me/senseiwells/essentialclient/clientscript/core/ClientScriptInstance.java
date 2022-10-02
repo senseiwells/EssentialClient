@@ -6,6 +6,7 @@ import me.senseiwells.arucas.api.ImplArucasLibrary;
 import me.senseiwells.arucas.api.ThreadHandler;
 import me.senseiwells.arucas.api.docs.parser.JsonParser;
 import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.utils.Properties;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
@@ -39,7 +40,12 @@ public class ClientScriptInstance {
 			.setObfuscator(new ClientScriptObfuscator())
 			.setInput(ClientScriptIO.INSTANCE)
 			.setOutput(ClientScriptIO.INSTANCE)
-			.setLibraryManager(library);
+			.setLibraryManager(library)
+			.setInterpreterProperties(() -> {
+				Properties properties = new Properties();
+				properties.setLogDeprecated(true);
+				return properties;
+			});
 
 		MinecraftAPI.addMinecraftAPI(builder);
 		// DiscordAPI.addDiscordAPI(BUILDER);

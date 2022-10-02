@@ -5,7 +5,6 @@ import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.NumberDef;
-import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.core.Interpreter;
@@ -142,7 +141,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 			MemberFunction.of("isNear", 1, this::isNear),
 			MemberFunction.of("isWithin", 2, this::isWithin),
 			MemberFunction.of("distanceTo", 1, this::distanceTo),
-			MemberFunction.of("distanceTo", 3, this::distanceTo1)
+			MemberFunction.of("distanceTo", 3, this::distanceTo1),
+			MemberFunction.of("normalize", 0, this::normalize)
 		);
 	}
 
@@ -333,7 +333,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	)
 	private Vec3d offset(Arguments arguments) {
 		ScriptPos pos = arguments.nextPrimitive(this);
-		String string = arguments.nextPrimitive(StringDef.class);
+		String string = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(string, null);
 		return pos.getVec3d().add(direction.getOffsetX(), direction.getOffsetY(), direction.getOffsetZ());
 	}
@@ -350,7 +350,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	)
 	private Vec3d offset1(Arguments arguments) {
 		ScriptPos pos = arguments.nextPrimitive(this);
-		String string = arguments.nextPrimitive(StringDef.class);
+		String string = arguments.nextConstant();
 		double distance = arguments.nextPrimitive(NumberDef.class);
 		Direction direction = ClientScriptUtils.stringToDirection(string, null);
 		return pos.getVec3d().add(
@@ -513,7 +513,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	)
 	private Vec3d getSidePos(Arguments arguments) {
 		ScriptPos pos = arguments.nextPrimitive(this);
-		String string = arguments.nextPrimitive(StringDef.class);
+		String string = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(string, null);
 		return Vec3d.ofCenter(pos.getBlockPos()).add(Vec3d.of(direction.getVector()).multiply(0.5));
 	}
@@ -589,5 +589,16 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		double y = arguments.nextPrimitive(NumberDef.class);
 		double z = arguments.nextPrimitive(NumberDef.class);
 		return pos.getVec3d().distanceTo(new Vec3d(x, y, z));
+	}
+
+	@FunctionDoc(
+		name = "normalize",
+		desc = "Normalizes the vector to have a magnitude of 1",
+		returns = {POS, "the normalized position"},
+		examples = "pos.normalize();"
+	)
+	private Vec3d normalize(Arguments arguments) {
+		ScriptPos pos = arguments.nextPrimitive(this);
+		return pos.getVec3d().normalize();
 	}
 }

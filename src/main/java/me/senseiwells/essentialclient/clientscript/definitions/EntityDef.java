@@ -292,7 +292,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	private ScriptBlockState getLookingAtBlock2(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		double maxDistance = arguments.nextPrimitive(NumberDef.class);
-		String fluidString = arguments.nextPrimitive(StringDef.class);
+		String fluidString = arguments.nextConstant();
 		RaycastContext.FluidHandling fluidType = ClientScriptUtils.stringToFluidType(fluidString);
 		Vec3d camera = entity.getCameraPosVec(0.0F);
 		Vec3d rotation = entity.getRotationVec(0.0F);

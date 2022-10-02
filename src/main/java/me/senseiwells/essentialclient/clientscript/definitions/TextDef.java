@@ -113,7 +113,7 @@ public class TextDef extends CreatableDefinition<MutableText> {
 	private ClassInstance withClickEvent(Arguments arguments) {
 		ClassInstance instance = arguments.next(this);
 		MutableText text = instance.asPrimitive(this);
-		String actionAsString = arguments.nextPrimitive(StringDef.class);
+		String actionAsString = arguments.nextConstant();
 		ClickEvent clickEvent = ClientScriptUtils.stringToClickEvent(arguments.getInterpreter(), actionAsString, arguments.next());
 		text.styled(style -> style.withClickEvent(clickEvent));
 		return instance;
@@ -143,7 +143,7 @@ public class TextDef extends CreatableDefinition<MutableText> {
 	private ClassInstance withHoverEvent(Arguments arguments) {
 		ClassInstance instance = arguments.next(this);
 		MutableText text = instance.asPrimitive(this);
-		String action = arguments.nextPrimitive(StringDef.class);
+		String action = arguments.nextConstant();
 		HoverEvent hoverEvent = ClientScriptUtils.stringToHoverEvent(action, arguments.next());
 		text.styled(style -> style.withHoverEvent(hoverEvent));
 		return instance;
@@ -163,7 +163,7 @@ public class TextDef extends CreatableDefinition<MutableText> {
 	private ClassInstance formatText(Arguments arguments) {
 		ClassInstance instance = arguments.next(this);
 		MutableText text = instance.asPrimitive(this);
-		String string = arguments.nextPrimitive(StringDef.class);
+		String string = arguments.nextConstant();
 		Formatting formatting = ClientScriptUtils.stringToFormatting(string);
 		text.formatted(formatting);
 		return instance;

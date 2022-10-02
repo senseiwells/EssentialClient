@@ -5,7 +5,6 @@ import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.NullDef;
-import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -171,7 +170,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 		if (arguments.isNext(NullDef.class)) {
 			block.setDirection(null);
 		} else {
-			Direction direction = ClientScriptUtils.stringToDirection(arguments.nextPrimitive(StringDef.class), null);
+			Direction direction = ClientScriptUtils.stringToDirection(arguments.nextConstant(), null);
 			block.setDirection(direction);
 		}
 		return null;

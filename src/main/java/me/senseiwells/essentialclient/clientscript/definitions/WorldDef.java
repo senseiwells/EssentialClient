@@ -63,7 +63,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		return List.of(
 			MemberFunction.of("getBlockAt", 3, this::getBlockAt),
 			MemberFunction.of("getBlockAt", 1, this::getBlockAtPos),
-			MemberFunction.of("isLoaded", 1, this::isLoaded),
+			MemberFunction.of("isLoaded", 1, this::isLoaded, "This function is redundant, it will always return true"),
 			MemberFunction.of("getBiomeAt", 3, this::getBiomeAt),
 			MemberFunction.of("getBiomeAt", 1, this::getBiomeAtPos),
 			MemberFunction.of("getPlayer", 1, this::getPlayer),
@@ -138,6 +138,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	}
 
 	@FunctionDoc(
+		deprecated = "This does nothing, it will always return true",
 		name = "isLoaded",
 		desc = "This function returns loaded state of given coordinates(client side)",
 		params = {POS, "pos", "the position"},
@@ -572,7 +573,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		int x = arguments.nextPrimitive(NumberDef.class).intValue();
 		int y = arguments.nextPrimitive(NumberDef.class).intValue();
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
-		String stringDirection = arguments.nextPrimitive(StringDef.class);
+		String stringDirection = arguments.nextConstant();
 		BlockPos blockPos = new BlockPos(x, y, z);
 		Direction direction = ClientScriptUtils.stringToDirection(stringDirection, Direction.DOWN);
 		return world.getEmittedRedstonePower(blockPos, direction);
@@ -592,7 +593,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		warnMainThread("getEmittedRedstonePower", arguments.getInterpreter());
 		World world = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		String stringDirection = arguments.nextPrimitive(StringDef.class);
+		String stringDirection = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(stringDirection, Direction.DOWN);
 		return world.getEmittedRedstonePower(pos.getBlockPos(), direction);
 	}

@@ -409,7 +409,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	)
 	private Object sideCoversSmallSquare(Arguments arguments) {
 		ScriptBlockState state = arguments.nextPrimitive(this);
-		String stringDirection = arguments.nextPrimitive(StringDef.class);
+		String stringDirection = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(stringDirection, Direction.DOWN);
 		boolean isSmallSquare = direction != Direction.DOWN || !state.state.isIn(BlockTags.UNSTABLE_BOTTOM_CENTER);
 		return isSmallSquare && state.state.isSideSolid(EmptyBlockView.INSTANCE, BlockPos.ORIGIN, direction, SideShapeType.CENTER);
@@ -424,7 +424,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	)
 	private Object isSideSolidFullSquare(Arguments arguments) {
 		ScriptBlockState state = arguments.nextPrimitive(this);
-		String stringDirection = arguments.nextPrimitive(StringDef.class);
+		String stringDirection = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(stringDirection, Direction.DOWN);
 		return state.state.isSideSolidFullSquare(EmptyBlockView.INSTANCE, BlockPos.ORIGIN, direction);
 	}

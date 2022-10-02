@@ -676,17 +676,7 @@ public class ClientScriptUtils {
 		}
 
 		private ArgumentBuilder<ServerCommandSource, ?> subCommand(String string, ArucasMap childMap) {
-			if (string.charAt(0) != '<' || string.charAt(string.length() - 1) != '>') {
-				return this.command(CommandManager.literal(string), childMap);
-			}
-			string = string.substring(1, string.length() - 1);
-			if (this.argumentMap != null) {
-				ArucasMap subMap = getFieldInMap(this.argumentMap, this.interpreter, string, MapDef.class);
-				if (subMap != null) {
-					return this.command(this.getArgument(string, subMap), childMap);
-				}
-			}
-			throw new RuntimeError("Expected map value for argument '%s'".formatted(string));
+			return this.command(this.connectedCommand(string), childMap);
 		}
 
 		private ArgumentBuilder<ServerCommandSource, ?> connectedCommand(String string) {

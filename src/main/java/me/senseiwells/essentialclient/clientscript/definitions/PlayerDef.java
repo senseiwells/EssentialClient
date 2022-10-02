@@ -634,7 +634,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.swingHand('main_hand');"
 	)
 	private Void swingHand(Arguments arguments) {
-		String handAsString = arguments.skip().nextPrimitive(StringDef.class);
+		String handAsString = arguments.skip().nextConstant();
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
 		ClientScriptUtils.ensureMainThread("swingHand", arguments.getInterpreter(), () -> {
 			EssentialUtils.getPlayer().swingHand(hand);
@@ -671,7 +671,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		} else {
 			throw new RuntimeError("Invalid clickData must be 'left' or 'right' or a number");
 		}
-		String action = arguments.nextPrimitive(StringDef.class);
+		String action = arguments.nextConstant();
 		SlotActionType slotActionType = ClientScriptUtils.stringToSlotActionType(action);
 		ClientScriptUtils.ensureMainThread("clickSlot", arguments.getInterpreter(), () -> {
 			ClientPlayerEntity player = EssentialUtils.getPlayer();
@@ -1088,7 +1088,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Void fakeLook(Arguments arguments) {
 		float yaw = arguments.skip().nextPrimitive(NumberDef.class).floatValue();
 		float pitch = arguments.nextPrimitive(NumberDef.class).floatValue();
-		String directionAsString = arguments.nextPrimitive(StringDef.class);
+		String directionAsString = arguments.nextConstant();
 		int ticks = arguments.nextPrimitive(NumberDef.class).intValue();
 		Direction direction = ClientScriptUtils.stringToDirection(directionAsString, Direction.DOWN);
 		ClientScriptUtils.ensureMainThread("fakeLook", arguments.getInterpreter(), () -> {
@@ -1193,7 +1193,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		double x = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		double y = arguments.nextPrimitive(NumberDef.class).intValue();
 		double z = arguments.nextPrimitive(NumberDef.class).intValue();
-		String stringDirection = arguments.nextPrimitive(StringDef.class);
+		String stringDirection = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(stringDirection, Direction.DOWN);
 		ClientScriptUtils.ensureMainThread("attackBlock", arguments.getInterpreter(), () -> {
 			EssentialUtils.getInteractionManager().attackBlock(new BlockPos(x, y, z), direction);
@@ -1212,7 +1212,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private Void attackBlockPos(Arguments arguments) {
 		BlockPos pos = arguments.skip().nextPrimitive(PosDef.class).getBlockPos();
-		String stringDirection = arguments.nextPrimitive(StringDef.class);
+		String stringDirection = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(stringDirection, Direction.DOWN);
 		ClientScriptUtils.ensureMainThread("attackBlock", arguments.getInterpreter(), () -> {
 			EssentialUtils.getInteractionManager().attackBlock(pos, direction);
@@ -1227,7 +1227,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.interactItem('main');"
 	)
 	private Void interactItem(Arguments arguments) {
-		String handAsString = arguments.skip().nextPrimitive(StringDef.class);
+		String handAsString = arguments.skip().nextConstant();
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
 		ClientScriptUtils.ensureMainThread("interactItem", arguments.getInterpreter(), () -> {
 			//#if MC >= 11900
@@ -1254,7 +1254,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		double x = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		double y = arguments.nextPrimitive(NumberDef.class).intValue();
 		double z = arguments.nextPrimitive(NumberDef.class).intValue();
-		String directionAsString = arguments.nextPrimitive(StringDef.class);
+		String directionAsString = arguments.nextConstant();
 		this.interactInternal(
 			arguments.getInterpreter(),
 			directionAsString,
@@ -1277,7 +1277,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private Void interactBlockPos(Arguments arguments) {
 		ScriptPos pos = arguments.skip().nextPrimitive(PosDef.class);
-		String direction = arguments.nextPrimitive(StringDef.class);
+		String direction = arguments.nextConstant();
 		this.interactInternal(
 			arguments.getInterpreter(),
 			direction,
@@ -1301,8 +1301,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private Void interactBlockPosHand(Arguments arguments) {
 		ScriptPos pos = arguments.skip().nextPrimitive(PosDef.class);
-		String direction = arguments.nextPrimitive(StringDef.class);
-		String handAsString = arguments.nextPrimitive(StringDef.class);
+		String direction = arguments.nextConstant();
+		String handAsString = arguments.nextConstant();
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
 		this.interactInternal(
 			arguments.getInterpreter(),
@@ -1339,7 +1339,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		double px = arguments.skip().nextPrimitive(NumberDef.class);
 		double py = arguments.nextPrimitive(NumberDef.class);
 		double pz = arguments.nextPrimitive(NumberDef.class);
-		String direction = arguments.nextPrimitive(StringDef.class);
+		String direction = arguments.nextConstant();
 		double bx = arguments.nextPrimitive(NumberDef.class);
 		double by = arguments.nextPrimitive(NumberDef.class);
 		double bz = arguments.nextPrimitive(NumberDef.class);
@@ -1373,7 +1373,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private Void interactBlockFullPos(Arguments arguments) {
 		Vec3d pos = arguments.skip().nextPrimitive(PosDef.class).getVec3d();
-		String direction = arguments.nextPrimitive(StringDef.class);
+		String direction = arguments.nextConstant();
 		BlockPos blockPos = arguments.nextPrimitive(PosDef.class).getBlockPos();
 		this.interactInternal(arguments.getInterpreter(), direction, EssentialUtils.getPlayer().getActiveHand(), pos, blockPos, false);
 		return null;
@@ -1398,8 +1398,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private Void interactBlockFullPosHand(Arguments arguments) {
 		Vec3d pos = arguments.nextPrimitive(PosDef.class).getVec3d();
-		String direction = arguments.nextPrimitive(StringDef.class);
-		String handAsString = arguments.nextPrimitive(StringDef.class);
+		String direction = arguments.nextConstant();
+		String handAsString = arguments.nextConstant();
 		BlockPos blockPos = arguments.nextPrimitive(PosDef.class).getBlockPos();
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
 		this.interactInternal(arguments.getInterpreter(), direction, hand, pos, blockPos, false);
