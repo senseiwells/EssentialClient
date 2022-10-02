@@ -149,7 +149,7 @@ public class InventoryUtils {
 	public static void clearCraftingGridOfItems(ItemStack[] recipe, ScreenHandler handler) {
 		final int invSlots = handler.slots.size();
 		for (int i = 0, slotNum = 1; i < 9 && slotNum < invSlots; i++, slotNum++) {
-			EssentialUtils.throwAsRuntime(() -> Thread.sleep(0, 1));
+			EssentialUtils.throwAsUnchecked(() -> Thread.sleep(0, 1));
 			Slot slotTmp = handler.getSlot(slotNum);
 			if (slotTmp != null && slotTmp.hasStack() && (!areStacksEqual(recipe[i], slotTmp.getStack()))) {
 				shiftClickSlot(handler, slotNum);
@@ -347,7 +347,7 @@ public class InventoryUtils {
 			if (slots.get(i).hasStack()) {
 				dropStack(screenHandler, i);
 			}
-			throwAsRuntime(() -> Thread.sleep(0L, 1));
+			EssentialUtils.throwAsUnchecked(() -> Thread.sleep(0L, 1));
 		}
 	}
 
@@ -356,7 +356,7 @@ public class InventoryUtils {
 			int count = craftAll ? 64 : 1;
 			for (int i = 0; i < count; i++) {
 				getClient().execute(() -> dropStack(screenHandler, 0));
-				throwAsRuntime(() -> Thread.sleep(2L));
+				EssentialUtils.throwAsUnchecked(() -> Thread.sleep(2L));
 			}
 		}, 40L, TimeUnit.MILLISECONDS);
 	}

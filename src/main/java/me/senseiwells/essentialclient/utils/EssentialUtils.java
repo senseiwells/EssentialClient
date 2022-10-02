@@ -6,7 +6,6 @@ import me.senseiwells.essentialclient.rule.carpet.CarpetClientRule;
 import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
 import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
 import me.senseiwells.essentialclient.rule.client.BooleanClientRule;
-import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
@@ -256,7 +255,6 @@ public class EssentialUtils {
 				}
 			}
 			if (rule instanceof StringCarpetRule stringRule) {
-
 				try {
 					int maxLength = Integer.parseInt(stringRule.getValue());
 					if (maxLength >= 0) {
@@ -269,19 +267,24 @@ public class EssentialUtils {
 		return fallback;
 	}
 
-	public static void throwAsRuntime(ThrowableRunnable runnable) {
+	@SuppressWarnings("unchecked")
+	public static <T extends Throwable, V> V throwUnchecked(Throwable throwable) throws T {
+		throw (T) throwable;
+	}
+
+	public static void throwAsUnchecked(ThrowableRunnable runnable) {
 		try {
 			runnable.run();
 		} catch (Exception throwable) {
-			throw new RuntimeException(throwable);
+			throwUnchecked(throwable);
 		}
 	}
 
-	public static <T> T throwAsRuntime(ThrowableSupplier<T> supplier) {
+	public static <T> T throwAsUnchecked(ThrowableSupplier<T> supplier) {
 		try {
 			return supplier.get();
 		} catch (Exception throwable) {
-			throw new RuntimeException(throwable);
+			return throwUnchecked(throwable);
 		}
 	}
 

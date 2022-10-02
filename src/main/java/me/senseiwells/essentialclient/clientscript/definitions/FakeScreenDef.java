@@ -70,7 +70,7 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 		if (rows < 1 || rows > 6) {
 			throw new RuntimeError("Rows must be between 1 and 6");
 		}
-		FakeInventoryScreen screen = new FakeInventoryScreen(EssentialUtils.getPlayer().getInventory(), name, rows);
+		FakeInventoryScreen screen = new FakeInventoryScreen(arguments.getInterpreter(), EssentialUtils.getPlayer().getInventory(), name, rows);
 		instance.setPrimitive(this, screen);
 		return null;
 	}

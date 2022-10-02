@@ -21,9 +21,10 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	private Interpreter interpreter;
 	private ArucasFunction function;
 
-	public FakeInventoryScreen(PlayerInventory inventory, String title, int rows) {
+	public FakeInventoryScreen(Interpreter interpreter, PlayerInventory inventory, String title, int rows) {
 		super(getHandler(inventory, rows), inventory, Texts.literal(title));
 		super.init(EssentialUtils.getClient(), this.width, this.height);
+		this.interpreter = interpreter;
 	}
 
 	public void setFunctionValue(Interpreter interpreter, ArucasFunction arucasFunction) {

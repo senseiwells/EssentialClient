@@ -150,7 +150,7 @@ public class MinecraftAPI {
 		builder.addConversion(ArgumentBuilder.class, (a, i) -> i.create(CommandBuilderDef.class, a));
 		builder.addConversion(ClientRule.class, (c, i) -> i.create(ConfigDef.class, c));
 
-		builder.addConversion(ItemStackArgument.class, (s, i) -> EssentialUtils.throwAsRuntime(() -> i.create(ItemStackDef.class, new ScriptItemStack(s.createStack(1, false)))));
+		builder.addConversion(ItemStackArgument.class, (s, i) -> EssentialUtils.throwAsUnchecked(() -> i.create(ItemStackDef.class, new ScriptItemStack(s.createStack(1, false)))));
 		builder.addConversion(BlockStateArgument.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b.getBlockState(), null)));
 		builder.addConversion(Identifier.class, (id, i) -> i.create(StringDef.class, id.toString()));
 		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(Registry.ENCHANTMENT.getId(e)));

@@ -5,7 +5,6 @@ import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.FunctionDef;
-import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.core.Interpreter;
@@ -18,6 +17,7 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptEvent;
 import shadow.kotlin.Unit;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.GAME_EVENT;
@@ -51,7 +51,7 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	)
 	private Unit construct2(Arguments arguments) {
 		ClassInstance instance = arguments.next();
-		String eventName = arguments.nextPrimitive(StringDef.class);
+		String eventName = arguments.nextConstant();
 		MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
 		if (event == null) {
 			throw new RuntimeError("No such event '%s'".formatted(eventName));
@@ -74,7 +74,7 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	)
 	private Unit construct3(Arguments arguments) {
 		ClassInstance instance = arguments.next();
-		String eventName = arguments.nextPrimitive(StringDef.class);
+		String eventName = arguments.nextConstant();
 		MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
 		if (event == null) {
 			throw new RuntimeError("No such event '%s'".formatted(eventName));
@@ -91,7 +91,8 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	public List<BuiltInFunction> defineStaticMethods() {
 		return List.of(
 			BuiltInFunction.of("cancel", this::cancel),
-			BuiltInFunction.of("unregisterAll", this::unregisterAll)
+			BuiltInFunction.of("unregisterAll", this::unregisterAll),
+			BuiltInFunction.of("future", 1, this::future)
 		);
 	}
 
@@ -117,6 +118,22 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	private Void unregisterAll(Arguments arguments) {
 		MinecraftScriptEvents.clearEventFunctions(arguments.getInterpreter().getProperties().getId());
 		return null;
+	}
+
+	@FunctionDoc(
+		isStatic = true,
+		name = "future",
+		desc = "This returns a future that allows you to wait for an event to occur",
+		returns = {FUTURE, "the future, will complete once the event has occurred"},
+		examples = "GameEvent.future('onClientTick').await();"
+	)
+	private Future<ClassInstance> future(Arguments arguments) {
+		String eventName = arguments.nextConstant();
+		MinecraftScriptEvent event = MinecraftScriptEvents.getEvent(eventName);
+		if (event == null) {
+			throw new RuntimeError("No such event '%s'".formatted(eventName));
+		}
+		return event.registerWaitingEvent(arguments.getInterpreter());
 	}
 
 	@Override

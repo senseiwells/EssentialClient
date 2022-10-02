@@ -1,11 +1,12 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
+import me.senseiwells.arucas.api.ArucasObfuscator;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
 
 import java.util.Objects;
 
-public class ClientScriptObfuscator implements me.senseiwells.arucas.api.ArucasObfuscator {
+public class ClientScriptObfuscator implements ArucasObfuscator {
 	@Override
 	public boolean shouldObfuscate() {
 		return !EssentialUtils.isDev();
@@ -56,7 +57,7 @@ public class ClientScriptObfuscator implements me.senseiwells.arucas.api.ArucasO
 
 	@Override
 	public String deobfuscateClass(Class<?> aClass) {
-		return null;
+		return this.shouldObfuscate() ? MinecraftDeobfuscator.deobfuscateClass(aClass.getName()) : aClass.getName();
 	}
 
 	private static String obfuscateMethod(Class<?> clazz, String name) {

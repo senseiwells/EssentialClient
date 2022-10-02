@@ -58,11 +58,11 @@ public class MinecraftScriptEvents {
 		ON_SCRIPT_END = registerUnique("onScriptEnd", "This event is fired when the script is ends");
 
 	protected static void addEventToMap(String name, MinecraftScriptEvent minecraftScriptEvent) {
-		EVENT_MAP.put(name, minecraftScriptEvent);
+		EVENT_MAP.put(name.toLowerCase(), minecraftScriptEvent);
 	}
 
 	public static MinecraftScriptEvent getEvent(String name) {
-		return EVENT_MAP.get(name);
+		return EVENT_MAP.get(name.toLowerCase());
 	}
 
 	public static void clearEventFunctions(UUID id) {

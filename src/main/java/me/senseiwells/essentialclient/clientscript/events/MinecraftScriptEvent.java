@@ -1,10 +1,15 @@
 package me.senseiwells.essentialclient.clientscript.events;
 
+import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptEvent;
+import me.senseiwells.essentialclient.utils.clientscript.impl.WaitingEvent;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 
 public class MinecraftScriptEvent {
@@ -14,6 +19,7 @@ public class MinecraftScriptEvent {
 	private final boolean isCancellable;
 
 	protected final Map<UUID, Set<ScriptEvent>> REGISTERED_EVENTS = new HashMap<>();
+	protected final Map<UUID, Set<WaitingEvent>> WAITING_EVENTS = new HashMap<>();
 
 	public MinecraftScriptEvent(String eventName, String description, String[] parameters, boolean isCancellable) {
 		this.name = eventName;
@@ -50,6 +56,7 @@ public class MinecraftScriptEvent {
 	public synchronized void registerEvent(ScriptEvent gameEvent) {
 		if (gameEvent.getInterpreter().getThreadHandler().getRunning()) {
 			Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(gameEvent.getId(), id -> {
+				// Possible leak?
 				gameEvent.getInterpreter().getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
 				return new LinkedHashSet<>();
 			});
@@ -72,6 +79,16 @@ public class MinecraftScriptEvent {
 		if (gameEventWrappers != null) {
 			gameEventWrappers.clear();
 		}
+	}
+
+	public synchronized Future<ClassInstance> registerWaitingEvent(Interpreter interpreter) {
+		CompletableFuture<ClassInstance> future = new CompletableFuture<>();
+		Set<WaitingEvent> futures = this.WAITING_EVENTS.computeIfAbsent(interpreter.getProperties().getId(), id -> {
+			interpreter.getThreadHandler().addShutdownEvent(() -> this.WAITING_EVENTS.remove(id));
+			return new LinkedHashSet<>();
+		});
+		futures.add(new WaitingEvent(interpreter, future));
+		return future;
 	}
 
 	public synchronized boolean run(Object... args) {
@@ -97,6 +114,16 @@ public class MinecraftScriptEvent {
 				}
 			}
 		}
+		for (Set<WaitingEvent> events : this.WAITING_EVENTS.values()) {
+			List<ClassInstance> eventArguments = null;
+			for (WaitingEvent event : events) {
+				if (eventArguments == null) {
+					eventArguments = argumentSupplier.apply(event.interpreter());
+				}
+				event.future().complete(event.interpreter().create(ListDef.class, new ArucasList(eventArguments)));
+			}
+		}
+		this.WAITING_EVENTS.clear();
 		return shouldCancel;
 	}
 
