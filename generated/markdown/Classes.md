@@ -2048,6 +2048,14 @@ if called on a non-cancellable event, or not on an event, this will throw an err
 GameEvent.cancel();
 ```
 
+### `GameEvent.future()`
+- Description: This returns a future that allows you to wait for an event to occur
+- Returns - Future: the future, will complete once the event has occurred
+- Example:
+```kotlin
+GameEvent.future('onClientTick').await();
+```
+
 ### `GameEvent.unregisterAll()`
 - Description: This unregisters all events registered by this script
 - Example:

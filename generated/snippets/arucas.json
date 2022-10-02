@@ -984,6 +984,11 @@
     "body": "GameEvent.cancel()",
     "description": "GameEvent.cancel()\nIf called on a cancellable event, this will stop execution and cancel the event,\nif called on a non-cancellable event, or not on an event, this will throw an error\n"
   },
+  "Static Method GameEvent.future()": {
+    "prefix": "GameEvent.future()",
+    "body": "GameEvent.future()",
+    "description": "GameEvent.future()\nThis returns a future that allows you to wait for an event to occur\n"
+  },
   "Static Method GameEvent.unregisterAll()": {
     "prefix": "GameEvent.unregisterAll()",
     "body": "GameEvent.unregisterAll()",
@@ -3644,215 +3649,215 @@
     "body": ".setGhostBlock($block, $x, $y, $z)",
     "description": "<World>.setGhostBlock(block, x, y, z)\nThis sets a ghost block in the world as if it were a real block, may cause issues\n- Parameter - Block (`block`): the block to set\n- Parameter - Number (`x`): the x position of the block\n- Parameter - Number (`y`): the y position of the block\n- Parameter - Number (`z`): the z position of the block\n"
   },
-  "Game Event: onAttackBlock": {
-    "prefix": "new GameEvent(\"onAttackBlock\", fun(block) { })",
-    "body": "new GameEvent(\"onAttackBlock\", fun($block) {\n\t$0\n})",
-    "description": "This event is fired when the player attacks a block\n\n- Argument - Block (`block`): the block that was attacked\n"
-  },
-  "Game Event: onDimensionChange": {
-    "prefix": "new GameEvent(\"onDimensionChange\", fun(world) { })",
-    "body": "new GameEvent(\"onDimensionChange\", fun($world) {\n\t$0\n})",
-    "description": "This event is fired when the player changes their dimension\n\n- Argument - World (`world`): the new world\n"
-  },
-  "Game Event: onSendMessage": {
-    "prefix": "new GameEvent(\"onSendMessage\", fun(message) { })",
-    "body": "new GameEvent(\"onSendMessage\", fun($message) {\n\t$0\n})",
-    "description": "This event is fired when the player sends a message in chat\n\n- Argument - String (`message`): the message that was sent\n"
-  },
-  "Game Event: onRespawn": {
-    "prefix": "new GameEvent(\"onRespawn\", fun(player) { })",
-    "body": "new GameEvent(\"onRespawn\", fun($player) {\n\t$0\n})",
-    "description": "This event is fired when the player respawns\n\n- Argument - Player (`player`): the respawned player entity\n"
-  },
-  "Game Event: onPlayerLeave": {
-    "prefix": "new GameEvent(\"onPlayerLeave\", fun(name) { })",
-    "body": "new GameEvent(\"onPlayerLeave\", fun($name) {\n\t$0\n})",
-    "description": "This event is fired when a player leaves the server\n\n- Argument - String (`name`): the player's name\n"
-  },
-  "Game Event: onKeyPress": {
-    "prefix": "new GameEvent(\"onKeyPress\", fun(key) { })",
-    "body": "new GameEvent(\"onKeyPress\", fun($key) {\n\t$0\n})",
-    "description": "This event is fired when a key is pressed\n\n- Argument - String (`key`): the key that was pressed\n"
-  },
-  "Game Event: onCloseScreen": {
-    "prefix": "new GameEvent(\"onCloseScreen\", fun(screen) { })",
-    "body": "new GameEvent(\"onCloseScreen\", fun($screen) {\n\t$0\n})",
-    "description": "This event is fired when the player closes a screen\n\n- Argument - Screen (`screen`): the screen that was just closed\n"
-  },
-  "Game Event: onInteractItem": {
-    "prefix": "new GameEvent(\"onInteractItem\", fun(itemStack) { })",
-    "body": "new GameEvent(\"onInteractItem\", fun($itemStack) {\n\t$0\n})",
-    "description": "This event is fired when the player interacts with an item\n\n- Argument - ItemStack (`itemStack`): the item stack that was interacted with\n"
-  },
-  "Game Event: onEntityRemoved": {
-    "prefix": "new GameEvent(\"onEntityRemoved\", fun(entity) { })",
-    "body": "new GameEvent(\"onEntityRemoved\", fun($entity) {\n\t$0\n})",
-    "description": "This event is fired when an entity is removed\n\n- Argument - Entity (`entity`): the entity that was removed\n"
-  },
-  "Game Event: onClickSlot": {
-    "prefix": "new GameEvent(\"onClickSlot\", fun(slot, action) { })",
-    "body": "new GameEvent(\"onClickSlot\", fun($slot, $action) {\n\t$0\n})",
-    "description": "This event is fired when the player clicks on a slot in their inventory\n\n- Argument - Number (`slot`): the slot number that was clicked\n- Argument - String (`action`): ths action that was used\n"
-  },
-  "Game Event: onBlockBroken": {
-    "prefix": "new GameEvent(\"onBlockBroken\", fun(block) { })",
-    "body": "new GameEvent(\"onBlockBroken\", fun($block) {\n\t$0\n})",
-    "description": "This event is fired when the player breaks a new block\n\n- Argument - Block (`block`): the block that was broken\n"
-  },
-  "Game Event: onInteractBlock": {
-    "prefix": "new GameEvent(\"onInteractBlock\", fun(block, itemStack) { })",
-    "body": "new GameEvent(\"onInteractBlock\", fun($block, $itemStack) {\n\t$0\n})",
-    "description": "This event is fired when the player interacts with a block\n\n- Argument - Block (`block`): the block the player is interacting with\n- Argument - ItemStack (`itemStack`): the item stack that was interacted with\n"
-  },
-  "Game Event: onKeyRelease": {
-    "prefix": "new GameEvent(\"onKeyRelease\", fun(key) { })",
-    "body": "new GameEvent(\"onKeyRelease\", fun($key) {\n\t$0\n})",
-    "description": "This event is fired when a key is released\n\n- Argument - String (`key`): the key that was released\n"
-  },
-  "Game Event: onClickRecipe": {
-    "prefix": "new GameEvent(\"onClickRecipe\", fun(recipe) { })",
-    "body": "new GameEvent(\"onClickRecipe\", fun($recipe) {\n\t$0\n})",
-    "description": "This event is fired when the player clicks on a recipe in the recipe book\n\n- Argument - Recipe (`recipe`): the recipe that was clicked\n"
-  },
-  "Game Event: onConnect": {
-    "prefix": "new GameEvent(\"onConnect\", fun(player, world) { })",
-    "body": "new GameEvent(\"onConnect\", fun($player, $world) {\n\t$0\n})",
-    "description": "The event is fired when the player connects to a server\n\n- Argument - Player (`player`): the player entity\n- Argument - World (`world`): the world the player joined\n"
-  },
-  "Game Event: onClientTick": {
-    "prefix": "new GameEvent(\"onClientTick\", fun() { })",
-    "body": "new GameEvent(\"onClientTick\", fun() {\n\t$0\n})",
-    "description": "The event is fired on every client tick\n\n"
-  },
-  "Game Event: onHealthUpdate": {
-    "prefix": "new GameEvent(\"onHealthUpdate\", fun(health) { })",
-    "body": "new GameEvent(\"onHealthUpdate\", fun($health) {\n\t$0\n})",
-    "description": "This event is fired when the player's health changes\n\n- Argument - Number (`health`): the new health\n"
-  },
-  "Game Event: onMobSpawn": {
-    "prefix": "new GameEvent(\"onMobSpawn\", fun(mob) { })",
-    "body": "new GameEvent(\"onMobSpawn\", fun($mob) {\n\t$0\n})",
-    "description": "This event is fired when a mob spawns\n\n- Argument - LivingEntity (`mob`): the mob that was spawned\n"
+  "Game Event: onAttackEntity": {
+    "prefix": "new GameEvent(\"onAttackEntity\", fun(entity) { })",
+    "body": "new GameEvent(\"onAttackEntity\", fun($entity) {\n\t$0\n})",
+    "description": "This event is fired when the player attacks an entity\n\n- Argument - Entity (`entity`): the entity that was attacked\n"
   },
   "Game Event: onScriptPacket": {
     "prefix": "new GameEvent(\"onScriptPacket\", fun(packet) { })",
     "body": "new GameEvent(\"onScriptPacket\", fun($packet) {\n\t$0\n})",
     "description": "This event is fired when a script packet is received from scarpet on the server\n\n- Argument - List (`packet`): a list of data that was received\n"
   },
-  "Game Event: onAttack": {
-    "prefix": "new GameEvent(\"onAttack\", fun() { })",
-    "body": "new GameEvent(\"onAttack\", fun() {\n\t$0\n})",
-    "description": "This event is fired when the player attacks\n\n"
-  },
-  "Game Event: onPlayerLook": {
-    "prefix": "new GameEvent(\"onPlayerLook\", fun(yaw, pitch) { })",
-    "body": "new GameEvent(\"onPlayerLook\", fun($yaw, $pitch) {\n\t$0\n})",
-    "description": "This event is fired when the player changes their yaw and/or pitch\n\n- Argument - Number (`yaw`): the player's yaw\n- Argument - Number (`pitch`): the player's pitch\n"
-  },
-  "Game Event: onBlockUpdate": {
-    "prefix": "new GameEvent(\"onBlockUpdate\", fun(block) { })",
-    "body": "new GameEvent(\"onBlockUpdate\", fun($block) {\n\t$0\n})",
-    "description": "This event is fired when a block update is recieved on the client\n\n- Argument - Block (`block`): the block that was updated\n"
-  },
-  "Game Event: onInteractEntity": {
-    "prefix": "new GameEvent(\"onInteractEntity\", fun(entity, itemStack) { })",
-    "body": "new GameEvent(\"onInteractEntity\", fun($entity, $itemStack) {\n\t$0\n})",
-    "description": "This event is fired when the player interacts with an entity\n\n- Argument - Entity (`entity`): the entity that was interacted with\n- Argument - ItemStack (`itemStack`): the item stack that was interacted with\n"
-  },
-  "Game Event: onDisconnect": {
-    "prefix": "new GameEvent(\"onDisconnect\", fun() { })",
-    "body": "new GameEvent(\"onDisconnect\", fun() {\n\t$0\n})",
-    "description": "This event is fired when the player disconnects from a server\n\n"
-  },
-  "Game Event: onOpenScreen": {
-    "prefix": "new GameEvent(\"onOpenScreen\", fun(screen) { })",
-    "body": "new GameEvent(\"onOpenScreen\", fun($screen) {\n\t$0\n})",
-    "description": "This event is fired when the player opens a screen\n\n- Argument - Screen (`screen`): the screen that was just opened\n"
-  },
-  "Game Event: onGamemodeChange": {
-    "prefix": "new GameEvent(\"onGamemodeChange\", fun(gamemode) { })",
-    "body": "new GameEvent(\"onGamemodeChange\", fun($gamemode) {\n\t$0\n})",
-    "description": "This event is fired when the player changes their gamemode\n\n- Argument - String (`gamemode`): the new gamemode\n"
-  },
-  "Game Event: onDeath": {
-    "prefix": "new GameEvent(\"onDeath\", fun(entity, message) { })",
-    "body": "new GameEvent(\"onDeath\", fun($entity, $message) {\n\t$0\n})",
-    "description": "This event is fired when the player dies\n\n- Argument - Entity (`entity`): the entity that killed the player, may be null\n- Argument - Text (`message`): the death message\n"
-  },
-  "Game Event: onPickBlock": {
-    "prefix": "new GameEvent(\"onPickBlock\", fun(itemStack) { })",
-    "body": "new GameEvent(\"onPickBlock\", fun($itemStack) {\n\t$0\n})",
-    "description": "This event is fired when the player picks a block with middle mouse\n\n- Argument - ItemStack (`itemStack`): the item stack that was picked\n"
+  "Game Event: onCloseScreen": {
+    "prefix": "new GameEvent(\"onCloseScreen\", fun(screen) { })",
+    "body": "new GameEvent(\"onCloseScreen\", fun($screen) {\n\t$0\n})",
+    "description": "This event is fired when the player closes a screen\n\n- Argument - Screen (`screen`): the screen that was just closed\n"
   },
   "Game Event: onUse": {
     "prefix": "new GameEvent(\"onUse\", fun() { })",
     "body": "new GameEvent(\"onUse\", fun() {\n\t$0\n})",
     "description": "This event is fired when the player uses\n\n"
   },
-  "Game Event: onMouseScroll": {
-    "prefix": "new GameEvent(\"onMouseScroll\", fun(direction) { })",
-    "body": "new GameEvent(\"onMouseScroll\", fun($direction) {\n\t$0\n})",
-    "description": "This event is fired when the player scrolls\n\n- Argument - Number (`direction`): either -1 or 1 depending on the scroll direction\n"
+  "Game Event: onClientTick": {
+    "prefix": "new GameEvent(\"onClientTick\", fun() { })",
+    "body": "new GameEvent(\"onClientTick\", fun() {\n\t$0\n})",
+    "description": "The event is fired on every client tick\n\n"
   },
-  "Game Event: onDropItem": {
-    "prefix": "new GameEvent(\"onDropItem\", fun(itemStack) { })",
-    "body": "new GameEvent(\"onDropItem\", fun($itemStack) {\n\t$0\n})",
-    "description": "This event is fired when the player tries to drop an item\n\n- Argument - ItemStack (`itemStack`): the item that is trying to be dropped\n"
+  "Game Event: onAttack": {
+    "prefix": "new GameEvent(\"onAttack\", fun() { })",
+    "body": "new GameEvent(\"onAttack\", fun() {\n\t$0\n})",
+    "description": "This event is fired when the player attacks\n\n"
   },
-  "Game Event: onPlayerJoin": {
-    "prefix": "new GameEvent(\"onPlayerJoin\", fun(name) { })",
-    "body": "new GameEvent(\"onPlayerJoin\", fun($name) {\n\t$0\n})",
-    "description": "This event is fired when a player joins the server\n\n- Argument - String (`name`): the player's name\n"
+  "Game Event: onConnect": {
+    "prefix": "new GameEvent(\"onConnect\", fun(player, world) { })",
+    "body": "new GameEvent(\"onConnect\", fun($player, $world) {\n\t$0\n})",
+    "description": "The event is fired when the player connects to a server\n\n- Argument - Player (`player`): the player entity\n- Argument - World (`world`): the world the player joined\n"
   },
-  "Game Event: onAttackEntity": {
-    "prefix": "new GameEvent(\"onAttackEntity\", fun(entity) { })",
-    "body": "new GameEvent(\"onAttackEntity\", fun($entity) {\n\t$0\n})",
-    "description": "This event is fired when the player attacks an entity\n\n- Argument - Entity (`entity`): the entity that was attacked\n"
+  "Game Event: onDimensionChange": {
+    "prefix": "new GameEvent(\"onDimensionChange\", fun(world) { })",
+    "body": "new GameEvent(\"onDimensionChange\", fun($world) {\n\t$0\n})",
+    "description": "This event is fired when the player changes their dimension\n\n- Argument - World (`world`): the new world\n"
   },
-  "Game Event: onEntitySpawn": {
-    "prefix": "new GameEvent(\"onEntitySpawn\", fun(entity) { })",
-    "body": "new GameEvent(\"onEntitySpawn\", fun($entity) {\n\t$0\n})",
-    "description": "This event is fired when an entity spawns, this doesn't include mobs\n\n- Argument - Entity (`entity`): the entity that was spawned\n"
+  "Game Event: onKeyRelease": {
+    "prefix": "new GameEvent(\"onKeyRelease\", fun(key) { })",
+    "body": "new GameEvent(\"onKeyRelease\", fun($key) {\n\t$0\n})",
+    "description": "This event is fired when a key is released\n\n- Argument - String (`key`): the key that was released\n"
   },
-  "Game Event: onPickUpItem": {
-    "prefix": "new GameEvent(\"onPickUpItem\", fun(itemStack) { })",
-    "body": "new GameEvent(\"onPickUpItem\", fun($itemStack) {\n\t$0\n})",
-    "description": "This event is fired when the player picks up an item\n\n- Argument - ItemStack (`itemStack`): the item\n"
+  "Game Event: onDeath": {
+    "prefix": "new GameEvent(\"onDeath\", fun(entity, message) { })",
+    "body": "new GameEvent(\"onDeath\", fun($entity, $message) {\n\t$0\n})",
+    "description": "This event is fired when the player dies\n\n- Argument - Entity (`entity`): the entity that killed the player, may be null\n- Argument - Text (`message`): the death message\n"
+  },
+  "Game Event: onInteractItem": {
+    "prefix": "new GameEvent(\"onInteractItem\", fun(itemStack) { })",
+    "body": "new GameEvent(\"onInteractItem\", fun($itemStack) {\n\t$0\n})",
+    "description": "This event is fired when the player interacts with an item\n\n- Argument - ItemStack (`itemStack`): the item stack that was interacted with\n"
+  },
+  "Game Event: onDisconnect": {
+    "prefix": "new GameEvent(\"onDisconnect\", fun() { })",
+    "body": "new GameEvent(\"onDisconnect\", fun() {\n\t$0\n})",
+    "description": "This event is fired when the player disconnects from a server\n\n"
+  },
+  "Game Event: onInteractEntity": {
+    "prefix": "new GameEvent(\"onInteractEntity\", fun(entity, itemStack) { })",
+    "body": "new GameEvent(\"onInteractEntity\", fun($entity, $itemStack) {\n\t$0\n})",
+    "description": "This event is fired when the player interacts with an entity\n\n- Argument - Entity (`entity`): the entity that was interacted with\n- Argument - ItemStack (`itemStack`): the item stack that was interacted with\n"
   },
   "Game Event: onEat": {
     "prefix": "new GameEvent(\"onEat\", fun(food) { })",
     "body": "new GameEvent(\"onEat\", fun($food) {\n\t$0\n})",
     "description": "This event is fired when the player eats something\n\n- Argument - ItemStack (`food`): the item stack that was eaten\n"
   },
-  "Game Event: onReceiveMessage": {
-    "prefix": "new GameEvent(\"onReceiveMessage\", fun(uuid, message) { })",
-    "body": "new GameEvent(\"onReceiveMessage\", fun($uuid, $message) {\n\t$0\n})",
-    "description": "This event is fired when the player receives a message in chat\n\n- Argument - String (`uuid`): the sender's UUID\n- Argument - String (`message`): the message that was received\n"
+  "Game Event: onEntitySpawn": {
+    "prefix": "new GameEvent(\"onEntitySpawn\", fun(entity) { })",
+    "body": "new GameEvent(\"onEntitySpawn\", fun($entity) {\n\t$0\n})",
+    "description": "This event is fired when an entity spawns, this doesn't include mobs\n\n- Argument - Entity (`entity`): the entity that was spawned\n"
   },
-  "Game Event: onFishBite": {
-    "prefix": "new GameEvent(\"onFishBite\", fun(entity) { })",
-    "body": "new GameEvent(\"onFishBite\", fun($entity) {\n\t$0\n})",
-    "description": "This event is fired when a fish bites the player's fishing rod\n\n- Argument - Entity (`entity`): the fishing bobber entity\n"
-  },
-  "Game Event: onAnvil": {
-    "prefix": "new GameEvent(\"onAnvil\", fun(first, second, result, newName, levelCost) { })",
-    "body": "new GameEvent(\"onAnvil\", fun($first, $second, $result, $newName, $levelCost) {\n\t$0\n})",
-    "description": "This event is fired when the player anvils an item\n\n- Argument - ItemStack (`first`): the first input\n- Argument - ItemStack (`second`): the second input\n- Argument - ItemStack (`result`): the result of the first and second input\n- Argument - String (`newName`): the new name of the item stack\n- Argument - Number (`levelCost`): the amount of xp required\n"
+  "Game Event: onAttackBlock": {
+    "prefix": "new GameEvent(\"onAttackBlock\", fun(block) { })",
+    "body": "new GameEvent(\"onAttackBlock\", fun($block) {\n\t$0\n})",
+    "description": "This event is fired when the player attacks a block\n\n- Argument - Block (`block`): the block that was attacked\n"
   },
   "Game Event: onTotem": {
     "prefix": "new GameEvent(\"onTotem\", fun() { })",
     "body": "new GameEvent(\"onTotem\", fun() {\n\t$0\n})",
     "description": "This event is fired when the player uses a totem\n\n"
   },
+  "Game Event: onPlayerLook": {
+    "prefix": "new GameEvent(\"onPlayerLook\", fun(yaw, pitch) { })",
+    "body": "new GameEvent(\"onPlayerLook\", fun($yaw, $pitch) {\n\t$0\n})",
+    "description": "This event is fired when the player changes their yaw and/or pitch\n\n- Argument - Number (`yaw`): the player's yaw\n- Argument - Number (`pitch`): the player's pitch\n"
+  },
+  "Game Event: onAnvil": {
+    "prefix": "new GameEvent(\"onAnvil\", fun(first, second, result, newName, levelCost) { })",
+    "body": "new GameEvent(\"onAnvil\", fun($first, $second, $result, $newName, $levelCost) {\n\t$0\n})",
+    "description": "This event is fired when the player anvils an item\n\n- Argument - ItemStack (`first`): the first input\n- Argument - ItemStack (`second`): the second input\n- Argument - ItemStack (`result`): the result of the first and second input\n- Argument - String (`newName`): the new name of the item stack\n- Argument - Number (`levelCost`): the amount of xp required\n"
+  },
+  "Game Event: onDropItem": {
+    "prefix": "new GameEvent(\"onDropItem\", fun(itemStack) { })",
+    "body": "new GameEvent(\"onDropItem\", fun($itemStack) {\n\t$0\n})",
+    "description": "This event is fired when the player tries to drop an item\n\n- Argument - ItemStack (`itemStack`): the item that is trying to be dropped\n"
+  },
+  "Game Event: onClickSlot": {
+    "prefix": "new GameEvent(\"onClickSlot\", fun(slot, action) { })",
+    "body": "new GameEvent(\"onClickSlot\", fun($slot, $action) {\n\t$0\n})",
+    "description": "This event is fired when the player clicks on a slot in their inventory\n\n- Argument - Number (`slot`): the slot number that was clicked\n- Argument - String (`action`): ths action that was used\n"
+  },
+  "Game Event: onInteractBlock": {
+    "prefix": "new GameEvent(\"onInteractBlock\", fun(block, itemStack) { })",
+    "body": "new GameEvent(\"onInteractBlock\", fun($block, $itemStack) {\n\t$0\n})",
+    "description": "This event is fired when the player interacts with a block\n\n- Argument - Block (`block`): the block the player is interacting with\n- Argument - ItemStack (`itemStack`): the item stack that was interacted with\n"
+  },
+  "Game Event: onSendMessage": {
+    "prefix": "new GameEvent(\"onSendMessage\", fun(message) { })",
+    "body": "new GameEvent(\"onSendMessage\", fun($message) {\n\t$0\n})",
+    "description": "This event is fired when the player sends a message in chat\n\n- Argument - String (`message`): the message that was sent\n"
+  },
+  "Game Event: onHealthUpdate": {
+    "prefix": "new GameEvent(\"onHealthUpdate\", fun(health) { })",
+    "body": "new GameEvent(\"onHealthUpdate\", fun($health) {\n\t$0\n})",
+    "description": "This event is fired when the player's health changes\n\n- Argument - Number (`health`): the new health\n"
+  },
+  "Game Event: onFishBite": {
+    "prefix": "new GameEvent(\"onFishBite\", fun(entity) { })",
+    "body": "new GameEvent(\"onFishBite\", fun($entity) {\n\t$0\n})",
+    "description": "This event is fired when a fish bites the player's fishing rod\n\n- Argument - Entity (`entity`): the fishing bobber entity\n"
+  },
+  "Game Event: onEntityRemoved": {
+    "prefix": "new GameEvent(\"onEntityRemoved\", fun(entity) { })",
+    "body": "new GameEvent(\"onEntityRemoved\", fun($entity) {\n\t$0\n})",
+    "description": "This event is fired when an entity is removed\n\n- Argument - Entity (`entity`): the entity that was removed\n"
+  },
+  "Game Event: onOpenScreen": {
+    "prefix": "new GameEvent(\"onOpenScreen\", fun(screen) { })",
+    "body": "new GameEvent(\"onOpenScreen\", fun($screen) {\n\t$0\n})",
+    "description": "This event is fired when the player opens a screen\n\n- Argument - Screen (`screen`): the screen that was just opened\n"
+  },
+  "Game Event: onPlayerJoin": {
+    "prefix": "new GameEvent(\"onPlayerJoin\", fun(name) { })",
+    "body": "new GameEvent(\"onPlayerJoin\", fun($name) {\n\t$0\n})",
+    "description": "This event is fired when a player joins the server\n\n- Argument - String (`name`): the player's name\n"
+  },
   "Game Event: onBlockPlaced": {
     "prefix": "new GameEvent(\"onBlockPlaced\", fun(block) { })",
     "body": "new GameEvent(\"onBlockPlaced\", fun($block) {\n\t$0\n})",
     "description": "This event is fired when the player places a block\n\n- Argument - Block (`block`): the block that was placed\n"
   },
+  "Game Event: onMobSpawn": {
+    "prefix": "new GameEvent(\"onMobSpawn\", fun(mob) { })",
+    "body": "new GameEvent(\"onMobSpawn\", fun($mob) {\n\t$0\n})",
+    "description": "This event is fired when a mob spawns\n\n- Argument - LivingEntity (`mob`): the mob that was spawned\n"
+  },
+  "Game Event: onKeyPress": {
+    "prefix": "new GameEvent(\"onKeyPress\", fun(key) { })",
+    "body": "new GameEvent(\"onKeyPress\", fun($key) {\n\t$0\n})",
+    "description": "This event is fired when a key is pressed\n\n- Argument - String (`key`): the key that was pressed\n"
+  },
+  "Game Event: onClickRecipe": {
+    "prefix": "new GameEvent(\"onClickRecipe\", fun(recipe) { })",
+    "body": "new GameEvent(\"onClickRecipe\", fun($recipe) {\n\t$0\n})",
+    "description": "This event is fired when the player clicks on a recipe in the recipe book\n\n- Argument - Recipe (`recipe`): the recipe that was clicked\n"
+  },
   "Game Event: onScriptEnd": {
     "prefix": "new GameEvent(\"onScriptEnd\", fun() { })",
     "body": "new GameEvent(\"onScriptEnd\", fun() {\n\t$0\n})",
     "description": "This event is fired when the script is ends\n\n"
+  },
+  "Game Event: onMouseScroll": {
+    "prefix": "new GameEvent(\"onMouseScroll\", fun(direction) { })",
+    "body": "new GameEvent(\"onMouseScroll\", fun($direction) {\n\t$0\n})",
+    "description": "This event is fired when the player scrolls\n\n- Argument - Number (`direction`): either -1 or 1 depending on the scroll direction\n"
+  },
+  "Game Event: onPickBlock": {
+    "prefix": "new GameEvent(\"onPickBlock\", fun(itemStack) { })",
+    "body": "new GameEvent(\"onPickBlock\", fun($itemStack) {\n\t$0\n})",
+    "description": "This event is fired when the player picks a block with middle mouse\n\n- Argument - ItemStack (`itemStack`): the item stack that was picked\n"
+  },
+  "Game Event: onReceiveMessage": {
+    "prefix": "new GameEvent(\"onReceiveMessage\", fun(uuid, message) { })",
+    "body": "new GameEvent(\"onReceiveMessage\", fun($uuid, $message) {\n\t$0\n})",
+    "description": "This event is fired when the player receives a message in chat\n\n- Argument - String (`uuid`): the sender's UUID\n- Argument - String (`message`): the message that was received\n"
+  },
+  "Game Event: onGamemodeChange": {
+    "prefix": "new GameEvent(\"onGamemodeChange\", fun(gamemode) { })",
+    "body": "new GameEvent(\"onGamemodeChange\", fun($gamemode) {\n\t$0\n})",
+    "description": "This event is fired when the player changes their gamemode\n\n- Argument - String (`gamemode`): the new gamemode\n"
+  },
+  "Game Event: onPlayerLeave": {
+    "prefix": "new GameEvent(\"onPlayerLeave\", fun(name) { })",
+    "body": "new GameEvent(\"onPlayerLeave\", fun($name) {\n\t$0\n})",
+    "description": "This event is fired when a player leaves the server\n\n- Argument - String (`name`): the player's name\n"
+  },
+  "Game Event: onPickUpItem": {
+    "prefix": "new GameEvent(\"onPickUpItem\", fun(itemStack) { })",
+    "body": "new GameEvent(\"onPickUpItem\", fun($itemStack) {\n\t$0\n})",
+    "description": "This event is fired when the player picks up an item\n\n- Argument - ItemStack (`itemStack`): the item\n"
+  },
+  "Game Event: onBlockBroken": {
+    "prefix": "new GameEvent(\"onBlockBroken\", fun(block) { })",
+    "body": "new GameEvent(\"onBlockBroken\", fun($block) {\n\t$0\n})",
+    "description": "This event is fired when the player breaks a new block\n\n- Argument - Block (`block`): the block that was broken\n"
+  },
+  "Game Event: onBlockUpdate": {
+    "prefix": "new GameEvent(\"onBlockUpdate\", fun(block) { })",
+    "body": "new GameEvent(\"onBlockUpdate\", fun($block) {\n\t$0\n})",
+    "description": "This event is fired when a block update is recieved on the client\n\n- Argument - Block (`block`): the block that was updated\n"
+  },
+  "Game Event: onRespawn": {
+    "prefix": "new GameEvent(\"onRespawn\", fun(player) { })",
+    "body": "new GameEvent(\"onRespawn\", fun($player) {\n\t$0\n})",
+    "description": "This event is fired when the player respawns\n\n- Argument - Player (`player`): the respawned player entity\n"
   },
   "True": {
     "prefix": "true",

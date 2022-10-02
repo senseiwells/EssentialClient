@@ -1205,6 +1205,12 @@ class GameEvent {
     static fun cancel(): Null;
 
     /*
+     * This returns a future that allows you to wait for an event to occur
+     * Returns - Future: the future, will complete once the event has occurred
+     */
+    static fun future(): Future;
+
+    /*
      * This unregisters all events registered by this script
      */
     static fun unregisterAll(): Null;

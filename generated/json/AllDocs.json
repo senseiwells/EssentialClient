@@ -4001,6 +4001,20 @@
           ]
         },
         {
+          "name": "future",
+          "is_arbitrary": false,
+          "desc": [
+            "This returns a future that allows you to wait for an event to occur"
+          ],
+          "returns": {
+            "type": "Future",
+            "desc": "the future, will complete once the event has occurred"
+          },
+          "examples": [
+            "GameEvent.future('onClientTick').await();"
+          ]
+        },
+        {
           "name": "unregisterAll",
           "is_arbitrary": false,
           "desc": [
@@ -14230,76 +14244,28 @@
   },
   "events": [
     {
-      "name": "onAttackBlock",
-      "description": "This event is fired when the player attacks a block",
+      "name": "onAttackEntity",
+      "description": "This event is fired when the player attacks an entity",
       "params": [
         {
-          "name": "block",
-          "type": "Block",
-          "desc": "the block that was attacked"
+          "name": "entity",
+          "type": "Entity",
+          "desc": "the entity that was attacked"
         }
       ],
       "cancellable": true
     },
     {
-      "name": "onDimensionChange",
-      "description": "This event is fired when the player changes their dimension",
+      "name": "onScriptPacket",
+      "description": "This event is fired when a script packet is received from scarpet on the server",
       "params": [
         {
-          "name": "world",
-          "type": "World",
-          "desc": "the new world"
+          "name": "packet",
+          "type": "List",
+          "desc": "a list of data that was received"
         }
       ],
       "cancellable": false
-    },
-    {
-      "name": "onSendMessage",
-      "description": "This event is fired when the player sends a message in chat",
-      "params": [
-        {
-          "name": "message",
-          "type": "String",
-          "desc": "the message that was sent"
-        }
-      ],
-      "cancellable": true
-    },
-    {
-      "name": "onRespawn",
-      "description": "This event is fired when the player respawns",
-      "params": [
-        {
-          "name": "player",
-          "type": "Player",
-          "desc": "the respawned player entity"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onPlayerLeave",
-      "description": "This event is fired when a player leaves the server",
-      "params": [
-        {
-          "name": "name",
-          "type": "String",
-          "desc": "the player's name"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onKeyPress",
-      "description": "This event is fired when a key is pressed",
-      "params": [
-        {
-          "name": "key",
-          "type": "String",
-          "desc": "the key that was pressed"
-        }
-      ],
-      "cancellable": true
     },
     {
       "name": "onCloseScreen",
@@ -14314,97 +14280,18 @@
       "cancellable": false
     },
     {
-      "name": "onInteractItem",
-      "description": "This event is fired when the player interacts with an item",
-      "params": [
-        {
-          "name": "itemStack",
-          "type": "ItemStack",
-          "desc": "the item stack that was interacted with"
-        }
-      ],
+      "name": "onUse",
+      "description": "This event is fired when the player uses",
       "cancellable": true
     },
     {
-      "name": "onEntityRemoved",
-      "description": "This event is fired when an entity is removed",
-      "params": [
-        {
-          "name": "entity",
-          "type": "Entity",
-          "desc": "the entity that was removed"
-        }
-      ],
+      "name": "onClientTick",
+      "description": "The event is fired on every client tick",
       "cancellable": false
     },
     {
-      "name": "onClickSlot",
-      "description": "This event is fired when the player clicks on a slot in their inventory",
-      "params": [
-        {
-          "name": "slot",
-          "type": "Number",
-          "desc": "the slot number that was clicked"
-        },
-        {
-          "name": "action",
-          "type": "String",
-          "desc": "ths action that was used"
-        }
-      ],
-      "cancellable": true
-    },
-    {
-      "name": "onBlockBroken",
-      "description": "This event is fired when the player breaks a new block",
-      "params": [
-        {
-          "name": "block",
-          "type": "Block",
-          "desc": "the block that was broken"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onInteractBlock",
-      "description": "This event is fired when the player interacts with a block",
-      "params": [
-        {
-          "name": "block",
-          "type": "Block",
-          "desc": "the block the player is interacting with"
-        },
-        {
-          "name": "itemStack",
-          "type": "ItemStack",
-          "desc": "the item stack that was interacted with"
-        }
-      ],
-      "cancellable": true
-    },
-    {
-      "name": "onKeyRelease",
-      "description": "This event is fired when a key is released",
-      "params": [
-        {
-          "name": "key",
-          "type": "String",
-          "desc": "the key that was released"
-        }
-      ],
-      "cancellable": true
-    },
-    {
-      "name": "onClickRecipe",
-      "description": "This event is fired when the player clicks on a recipe in the recipe book",
-      "params": [
-        {
-          "name": "recipe",
-          "type": "Recipe",
-          "desc": "the recipe that was clicked"
-        }
-      ],
+      "name": "onAttack",
+      "description": "This event is fired when the player attacks",
       "cancellable": true
     },
     {
@@ -14425,78 +14312,61 @@
       "cancellable": false
     },
     {
-      "name": "onClientTick",
-      "description": "The event is fired on every client tick",
-      "cancellable": false
-    },
-    {
-      "name": "onHealthUpdate",
-      "description": "This event is fired when the player's health changes",
+      "name": "onDimensionChange",
+      "description": "This event is fired when the player changes their dimension",
       "params": [
         {
-          "name": "health",
-          "type": "Number",
-          "desc": "the new health"
+          "name": "world",
+          "type": "World",
+          "desc": "the new world"
         }
       ],
       "cancellable": false
     },
     {
-      "name": "onMobSpawn",
-      "description": "This event is fired when a mob spawns",
+      "name": "onKeyRelease",
+      "description": "This event is fired when a key is released",
       "params": [
         {
-          "name": "mob",
-          "type": "LivingEntity",
-          "desc": "the mob that was spawned"
+          "name": "key",
+          "type": "String",
+          "desc": "the key that was released"
         }
       ],
-      "cancellable": false
-    },
-    {
-      "name": "onScriptPacket",
-      "description": "This event is fired when a script packet is received from scarpet on the server",
-      "params": [
-        {
-          "name": "packet",
-          "type": "List",
-          "desc": "a list of data that was received"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onAttack",
-      "description": "This event is fired when the player attacks",
       "cancellable": true
     },
     {
-      "name": "onPlayerLook",
-      "description": "This event is fired when the player changes their yaw and/or pitch",
+      "name": "onDeath",
+      "description": "This event is fired when the player dies",
       "params": [
         {
-          "name": "yaw",
-          "type": "Number",
-          "desc": "the player's yaw"
+          "name": "entity",
+          "type": "Entity",
+          "desc": "the entity that killed the player, may be null"
         },
         {
-          "name": "pitch",
-          "type": "Number",
-          "desc": "the player's pitch"
+          "name": "message",
+          "type": "Text",
+          "desc": "the death message"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onInteractItem",
+      "description": "This event is fired when the player interacts with an item",
+      "params": [
+        {
+          "name": "itemStack",
+          "type": "ItemStack",
+          "desc": "the item stack that was interacted with"
         }
       ],
       "cancellable": true
     },
     {
-      "name": "onBlockUpdate",
-      "description": "This event is fired when a block update is recieved on the client",
-      "params": [
-        {
-          "name": "block",
-          "type": "Block",
-          "desc": "the block that was updated"
-        }
-      ],
+      "name": "onDisconnect",
+      "description": "This event is fired when the player disconnects from a server",
       "cancellable": false
     },
     {
@@ -14517,115 +14387,16 @@
       "cancellable": true
     },
     {
-      "name": "onDisconnect",
-      "description": "This event is fired when the player disconnects from a server",
-      "cancellable": false
-    },
-    {
-      "name": "onOpenScreen",
-      "description": "This event is fired when the player opens a screen",
+      "name": "onEat",
+      "description": "This event is fired when the player eats something",
       "params": [
         {
-          "name": "screen",
-          "type": "Screen",
-          "desc": "the screen that was just opened"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onGamemodeChange",
-      "description": "This event is fired when the player changes their gamemode",
-      "params": [
-        {
-          "name": "gamemode",
-          "type": "String",
-          "desc": "the new gamemode"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onDeath",
-      "description": "This event is fired when the player dies",
-      "params": [
-        {
-          "name": "entity",
-          "type": "Entity",
-          "desc": "the entity that killed the player, may be null"
-        },
-        {
-          "name": "message",
-          "type": "Text",
-          "desc": "the death message"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onPickBlock",
-      "description": "This event is fired when the player picks a block with middle mouse",
-      "params": [
-        {
-          "name": "itemStack",
+          "name": "food",
           "type": "ItemStack",
-          "desc": "the item stack that was picked"
-        }
-      ],
-      "cancellable": true
-    },
-    {
-      "name": "onUse",
-      "description": "This event is fired when the player uses",
-      "cancellable": true
-    },
-    {
-      "name": "onMouseScroll",
-      "description": "This event is fired when the player scrolls",
-      "params": [
-        {
-          "name": "direction",
-          "type": "Number",
-          "desc": "either -1 or 1 depending on the scroll direction"
-        }
-      ],
-      "cancellable": true
-    },
-    {
-      "name": "onDropItem",
-      "description": "This event is fired when the player tries to drop an item",
-      "params": [
-        {
-          "name": "itemStack",
-          "type": "ItemStack",
-          "desc": "the item that is trying to be dropped"
-        }
-      ],
-      "cancellable": true
-    },
-    {
-      "name": "onPlayerJoin",
-      "description": "This event is fired when a player joins the server",
-      "params": [
-        {
-          "name": "name",
-          "type": "String",
-          "desc": "the player's name"
+          "desc": "the item stack that was eaten"
         }
       ],
       "cancellable": false
-    },
-    {
-      "name": "onAttackEntity",
-      "description": "This event is fired when the player attacks an entity",
-      "params": [
-        {
-          "name": "entity",
-          "type": "Entity",
-          "desc": "the entity that was attacked"
-        }
-      ],
-      "cancellable": true
     },
     {
       "name": "onEntitySpawn",
@@ -14640,57 +14411,38 @@
       "cancellable": false
     },
     {
-      "name": "onPickUpItem",
-      "description": "This event is fired when the player picks up an item",
+      "name": "onAttackBlock",
+      "description": "This event is fired when the player attacks a block",
       "params": [
         {
-          "name": "itemStack",
-          "type": "ItemStack",
-          "desc": "the item"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onEat",
-      "description": "This event is fired when the player eats something",
-      "params": [
-        {
-          "name": "food",
-          "type": "ItemStack",
-          "desc": "the item stack that was eaten"
-        }
-      ],
-      "cancellable": false
-    },
-    {
-      "name": "onReceiveMessage",
-      "description": "This event is fired when the player receives a message in chat",
-      "params": [
-        {
-          "name": "uuid",
-          "type": "String",
-          "desc": "the sender's UUID"
-        },
-        {
-          "name": "message",
-          "type": "String",
-          "desc": "the message that was received"
+          "name": "block",
+          "type": "Block",
+          "desc": "the block that was attacked"
         }
       ],
       "cancellable": true
     },
     {
-      "name": "onFishBite",
-      "description": "This event is fired when a fish bites the player's fishing rod",
+      "name": "onTotem",
+      "description": "This event is fired when the player uses a totem",
+      "cancellable": false
+    },
+    {
+      "name": "onPlayerLook",
+      "description": "This event is fired when the player changes their yaw and/or pitch",
       "params": [
         {
-          "name": "entity",
-          "type": "Entity",
-          "desc": "the fishing bobber entity"
+          "name": "yaw",
+          "type": "Number",
+          "desc": "the player's yaw"
+        },
+        {
+          "name": "pitch",
+          "type": "Number",
+          "desc": "the player's pitch"
         }
       ],
-      "cancellable": false
+      "cancellable": true
     },
     {
       "name": "onAnvil",
@@ -14725,8 +14477,121 @@
       "cancellable": false
     },
     {
-      "name": "onTotem",
-      "description": "This event is fired when the player uses a totem",
+      "name": "onDropItem",
+      "description": "This event is fired when the player tries to drop an item",
+      "params": [
+        {
+          "name": "itemStack",
+          "type": "ItemStack",
+          "desc": "the item that is trying to be dropped"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onClickSlot",
+      "description": "This event is fired when the player clicks on a slot in their inventory",
+      "params": [
+        {
+          "name": "slot",
+          "type": "Number",
+          "desc": "the slot number that was clicked"
+        },
+        {
+          "name": "action",
+          "type": "String",
+          "desc": "ths action that was used"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onInteractBlock",
+      "description": "This event is fired when the player interacts with a block",
+      "params": [
+        {
+          "name": "block",
+          "type": "Block",
+          "desc": "the block the player is interacting with"
+        },
+        {
+          "name": "itemStack",
+          "type": "ItemStack",
+          "desc": "the item stack that was interacted with"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onSendMessage",
+      "description": "This event is fired when the player sends a message in chat",
+      "params": [
+        {
+          "name": "message",
+          "type": "String",
+          "desc": "the message that was sent"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onHealthUpdate",
+      "description": "This event is fired when the player's health changes",
+      "params": [
+        {
+          "name": "health",
+          "type": "Number",
+          "desc": "the new health"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onFishBite",
+      "description": "This event is fired when a fish bites the player's fishing rod",
+      "params": [
+        {
+          "name": "entity",
+          "type": "Entity",
+          "desc": "the fishing bobber entity"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onEntityRemoved",
+      "description": "This event is fired when an entity is removed",
+      "params": [
+        {
+          "name": "entity",
+          "type": "Entity",
+          "desc": "the entity that was removed"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onOpenScreen",
+      "description": "This event is fired when the player opens a screen",
+      "params": [
+        {
+          "name": "screen",
+          "type": "Screen",
+          "desc": "the screen that was just opened"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onPlayerJoin",
+      "description": "This event is fired when a player joins the server",
+      "params": [
+        {
+          "name": "name",
+          "type": "String",
+          "desc": "the player's name"
+        }
+      ],
       "cancellable": false
     },
     {
@@ -14742,8 +14607,157 @@
       "cancellable": false
     },
     {
+      "name": "onMobSpawn",
+      "description": "This event is fired when a mob spawns",
+      "params": [
+        {
+          "name": "mob",
+          "type": "LivingEntity",
+          "desc": "the mob that was spawned"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onKeyPress",
+      "description": "This event is fired when a key is pressed",
+      "params": [
+        {
+          "name": "key",
+          "type": "String",
+          "desc": "the key that was pressed"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onClickRecipe",
+      "description": "This event is fired when the player clicks on a recipe in the recipe book",
+      "params": [
+        {
+          "name": "recipe",
+          "type": "Recipe",
+          "desc": "the recipe that was clicked"
+        }
+      ],
+      "cancellable": true
+    },
+    {
       "name": "onScriptEnd",
       "description": "This event is fired when the script is ends",
+      "cancellable": false
+    },
+    {
+      "name": "onMouseScroll",
+      "description": "This event is fired when the player scrolls",
+      "params": [
+        {
+          "name": "direction",
+          "type": "Number",
+          "desc": "either -1 or 1 depending on the scroll direction"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onPickBlock",
+      "description": "This event is fired when the player picks a block with middle mouse",
+      "params": [
+        {
+          "name": "itemStack",
+          "type": "ItemStack",
+          "desc": "the item stack that was picked"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onReceiveMessage",
+      "description": "This event is fired when the player receives a message in chat",
+      "params": [
+        {
+          "name": "uuid",
+          "type": "String",
+          "desc": "the sender's UUID"
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "desc": "the message that was received"
+        }
+      ],
+      "cancellable": true
+    },
+    {
+      "name": "onGamemodeChange",
+      "description": "This event is fired when the player changes their gamemode",
+      "params": [
+        {
+          "name": "gamemode",
+          "type": "String",
+          "desc": "the new gamemode"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onPlayerLeave",
+      "description": "This event is fired when a player leaves the server",
+      "params": [
+        {
+          "name": "name",
+          "type": "String",
+          "desc": "the player's name"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onPickUpItem",
+      "description": "This event is fired when the player picks up an item",
+      "params": [
+        {
+          "name": "itemStack",
+          "type": "ItemStack",
+          "desc": "the item"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onBlockBroken",
+      "description": "This event is fired when the player breaks a new block",
+      "params": [
+        {
+          "name": "block",
+          "type": "Block",
+          "desc": "the block that was broken"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onBlockUpdate",
+      "description": "This event is fired when a block update is recieved on the client",
+      "params": [
+        {
+          "name": "block",
+          "type": "Block",
+          "desc": "the block that was updated"
+        }
+      ],
+      "cancellable": false
+    },
+    {
+      "name": "onRespawn",
+      "description": "This event is fired when the player respawns",
+      "params": [
+        {
+          "name": "player",
+          "type": "Player",
+          "desc": "the respawned player entity"
+        }
+      ],
       "cancellable": false
     }
   ]
