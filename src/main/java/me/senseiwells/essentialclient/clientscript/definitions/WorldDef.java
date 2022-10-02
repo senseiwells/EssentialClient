@@ -63,7 +63,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		return List.of(
 			MemberFunction.of("getBlockAt", 3, this::getBlockAt),
 			MemberFunction.of("getBlockAt", 1, this::getBlockAtPos),
-			MemberFunction.of("isLoaded", 1, this::isLoaded, "This function is redundant, it will always return true"),
+			MemberFunction.of("isLoaded", 1, this::isLoaded),
 			MemberFunction.of("getBiomeAt", 3, this::getBiomeAt),
 			MemberFunction.of("getBiomeAt", 1, this::getBiomeAtPos),
 			MemberFunction.of("getPlayer", 1, this::getPlayer),
@@ -150,7 +150,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		World world = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
 		BlockPos blockPos = pos.getBlockPos();
-		return world.isChunkLoaded(blockPos);
+		return world.getChunkManager().isChunkLoaded(blockPos.getX() >> 4, blockPos.getZ() >> 4);
 	}
 
 	@FunctionDoc(
