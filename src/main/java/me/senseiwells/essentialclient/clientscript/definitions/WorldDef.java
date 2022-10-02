@@ -138,7 +138,6 @@ public class WorldDef extends CreatableDefinition<World> {
 	}
 
 	@FunctionDoc(
-		deprecated = "This does nothing, it will always return true",
 		name = "isLoaded",
 		desc = "This function returns loaded state of given coordinates(client side)",
 		params = {POS, "pos", "the position"},
