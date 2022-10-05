@@ -96,6 +96,7 @@ public class ClientKeyBinds extends MappedStringConfig<ClientKeyBind> {
 		}
 
 		if (existingKeyBind != null) {
+			existingKeyBind.clearKey();
 			for (InputUtil.Key inputKey : keys) {
 				existingKeyBind.addKey(inputKey);
 			}
