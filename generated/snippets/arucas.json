@@ -3454,11 +3454,6 @@
     "body": ".inheritsFrom($type)",
     "description": "<Type>.inheritsFrom(type)\nThis checks whether a type is a subtype of another type\n- Parameter - Type (`type`): the other type you want to check against\n"
   },
-  "Method <Type>.instanceOf(type)": {
-    "prefix": ".instanceOf($type)",
-    "body": ".instanceOf($type)",
-    "description": "<Type>.instanceOf(type)\nThis checks whether a type is a subtype of another type\n- Parameter - Type (`type`): the other type you want to check against\n"
-  },
   "World Class": {
     "prefix": "World",
     "body": "World",

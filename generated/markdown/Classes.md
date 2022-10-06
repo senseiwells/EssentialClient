@@ -6942,16 +6942,6 @@ String.type.getName();
 String.type.inheritsFrom(Number.type);
 ```
 
-### `<Type>.instanceOf(type)`
-- Deprecated: Use '<Type>.inheritsFrom(type)'
-- Description: This checks whether a type is a subtype of another type
-- Parameter - Type (`type`): the other type you want to check against
-- Returns - Boolean: whether the type is of that type
-- Example:
-```kotlin
-String.type.instanceOf(Number.type);
-```
-
 ## Static Methods
 
 ### `Type.of(value)`
