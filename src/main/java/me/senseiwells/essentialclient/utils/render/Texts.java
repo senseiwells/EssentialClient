@@ -72,10 +72,10 @@ public class Texts {
 	public static final Text MINIMAP_STATIC = translatable("essentialclient.chunkDebug.minimapStatic");
 	public static final Text MINIMAP_FOLLOW = translatable("essentialclient.chunkDebug.minimapFollow");
 	public static final Text RETURN_TO_PLAYER = translatable("essentialclient.chunkDebug.returnToPlayer");
-	public static final TextGenerator SELECTED_CHUNK = o -> translatable("essentialclient.chunkDebug.selectedChunk");
-	public static final TextGenerator CHUNK_STATUS = o -> translatable("essentialclient.chunkDebug.status");
-	public static final TextGenerator CHUNK_TICKET = o -> translatable("essentialclient.chunkDebug.ticket");
-	public static final TextGenerator CHUNK_STAGE = o -> translatable("essentialclient.chunkDebug.stage");
+	public static final TextGenerator SELECTED_CHUNK = o -> translatable("essentialclient.chunkDebug.selectedChunk", o);
+	public static final TextGenerator CHUNK_STATUS = o -> translatable("essentialclient.chunkDebug.status", o);
+	public static final TextGenerator CHUNK_TICKET = o -> translatable("essentialclient.chunkDebug.ticket", o);
+	public static final TextGenerator CHUNK_STAGE = o -> translatable("essentialclient.chunkDebug.stage", o);
 	public static final Text UNLOADED = translatable("essentialclient.chunkDebug.type.unloaded");
 	public static final Text BORDER = translatable("essentialclient.chunkDebug.type.border");
 	public static final Text LAZY = translatable("essentialclient.chunkDebug.type.lazy");
