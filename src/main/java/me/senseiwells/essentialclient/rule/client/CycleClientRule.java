@@ -11,7 +11,7 @@ public class CycleClientRule extends ClientRule<String> implements Rule.Cycle {
 	private int index;
 
 	public CycleClientRule(String name, String description, List<String> cycleValues, String defaultValue, String category, RuleListener<String> ruleListener) {
-		super(name, description, defaultValue);
+		super(name, description, defaultValue, category);
 		this.addListener(ruleListener);
 		this.cycleValues = cycleValues;
 		this.index = cycleValues.indexOf(defaultValue);
