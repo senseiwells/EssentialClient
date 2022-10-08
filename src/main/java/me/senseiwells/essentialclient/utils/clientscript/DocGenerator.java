@@ -6,6 +6,7 @@ import joptsimple.OptionSpec;
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
+import me.senseiwells.essentialclient.utils.misc.WikiParser;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,7 @@ public class DocGenerator implements ModInitializer {
 
 		// Prepare an OptionParser for our parameters
 		OptionParser parser = new OptionParser();
-		OptionSpec<String> pathSpec = parser.accepts("scriptDocGenerate").withRequiredArg();
+		OptionSpec<String> pathSpec = parser.accepts("generate").withRequiredArg();
 
 		// Minecraft may need more stuff later that we don't want to special-case
 		parser.allowsUnrecognizedOptions();
@@ -54,6 +55,9 @@ public class DocGenerator implements ModInitializer {
 			Files.writeString(mdPath.resolve("Extensions.md"), extensions);
 			Files.writeString(mdPath.resolve("Classes.md"), classes);
 			Files.writeString(mdPath.resolve("Events.md"), events);
+
+			Files.writeString(file.ensureParentExists(docPath.resolve("wiki/Home.md")), WikiParser.generateWiki());
+
 			String full = Util.Network.INSTANCE.getStringFromUrl("https://raw.githubusercontent.com/senseiwells/Arucas/main/docs/FullLang.md");
 			full += "\n\n" + extensions;
 			full += "\n\n" + classes;

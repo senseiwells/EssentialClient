@@ -2396,15 +2396,6 @@ class Player: OtherPlayer {
 
     /*
      * This allows you to interact with a block at a position and direction
-     * Parameter - Number (x): the x position
-     * Parameter - Number (y): the y position
-     * Parameter - Number (z): the z position
-     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
-     */
-    fun interactBlock(x: Number, y: Number, z: Number, direction: String): Null;
-
-    /*
-     * This allows you to interact with a block at a position and direction
      * This function is for very specific cases where there needs to be extra precision
      * like when placing stairs or slabs in certain directions, so the first set of
      * coords is the exact position of the block, and the second set of coords is the position
@@ -2414,6 +2405,15 @@ class Player: OtherPlayer {
      * Parameter - Boolean (insideBlock): whether the player is inside the block
      */
     fun interactBlock(pos: Pos, direction: String, blockPos: Pos, insideBlock: Boolean): Null;
+
+    /*
+     * This allows you to interact with a block at a position and direction
+     * Parameter - Number (x): the x position
+     * Parameter - Number (y): the y position
+     * Parameter - Number (z): the z position
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     */
+    fun interactBlock(x: Number, y: Number, z: Number, direction: String): Null;
 
     /*
      * This allows you to interact with a block at a position and direction

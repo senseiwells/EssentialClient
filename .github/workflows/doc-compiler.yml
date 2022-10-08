@@ -15,7 +15,7 @@ jobs:
         with:
           java-version: 17
       - name: Generate Documentations
-        run: ./gradlew :1.19.2:runClient --args="--scriptDocGenerate ../generated" --stacktrace --no-daemon
+        run: ./gradlew :1.19.2:runClient --args="--generate ../generated" --stacktrace --no-daemon
       - name: Commit Changes
         continue-on-error: true
         run: |
@@ -41,3 +41,10 @@ jobs:
           user_email: senseiwells@users.noreply.github.com
           user_name: senseiwells
           commit_message: Snippets update from upstream
+      - name: Update Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v3
+        env:
+          WIKI_DIR: docs/wiki/
+          GH_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
+          GH_MAIL: senseiwells@users.noreply.github.com
+          GH_NAME: senseiwells
