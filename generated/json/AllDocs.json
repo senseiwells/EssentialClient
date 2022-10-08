@@ -13276,30 +13276,6 @@
           "examples": [
             "String.type.inheritsFrom(Number.type);"
           ]
-        },
-        {
-          "name": "instanceOf",
-          "is_arbitrary": false,
-          "deprecated": [
-            "Use '<Type>.inheritsFrom(type)'"
-          ],
-          "desc": [
-            "This checks whether a type is a subtype of another type"
-          ],
-          "params": [
-            {
-              "name": "type",
-              "type": "Type",
-              "desc": "the other type you want to check against"
-            }
-          ],
-          "returns": {
-            "type": "Boolean",
-            "desc": "whether the type is of that type"
-          },
-          "examples": [
-            "String.type.instanceOf(Number.type);"
-          ]
         }
       ],
       "static_methods": [

@@ -1284,14 +1284,6 @@ class Type {
     fun inheritsFrom(type: Type): Boolean;
 
     /*
-     * Deprecated: Use '<Type>.inheritsFrom(type)'
-     * This checks whether a type is a subtype of another type
-     * Parameter - Type (type): the other type you want to check against
-     * Returns - Boolean: whether the type is of that type
-     */
-    fun instanceOf(type: Type): Boolean;
-
-    /*
      * This gets the specific type of a value
      * Parameter - Object (value): the value you want to get the type of
      * Returns - Type: the type of the value
