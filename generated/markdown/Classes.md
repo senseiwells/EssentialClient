@@ -695,6 +695,14 @@ config.addListener(function(newValue) {
 });
 ```
 
+### `<Config>.getCategory()`
+- Description: Gets the category of the config
+- Returns - String: The category of the config
+- Example:
+```kotlin
+config.getCategory();
+```
+
 ### `<Config>.getDefaultValue()`
 - Description: Gets the default value of the config
 - Returns - Object: The default value of the config
@@ -800,6 +808,7 @@ And can optionally contain the following keys:
 'description' which is a description of the config,
 'optional_info' which is an optional info for the config,
 'default_value' which is the default value of the config,
+'category' which is the category of the config,
 'value' which is the current value of the config, 
 'listener' which is a function that will be called when the config changes, this must have 1 parameter which is the rule that was changed,
 'max_length' which is the max length for the input of the config, this must be an integer > 0, default is 32
@@ -816,6 +825,7 @@ configMap = {
     "type": "string",
     "name": "My Config",
     "description": "This is my config",
+    "category": "Useful",
     "optional_info": "This is an optional info",
     "default_value": "foo",
     "value": "bar",

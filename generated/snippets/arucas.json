@@ -322,12 +322,17 @@
   "Static Method Config.fromMap(map)": {
     "prefix": "Config.fromMap(map)",
     "body": "Config.fromMap($map)",
-    "description": "Config.fromMap(map)\nCreates a config from a map\nThe map must contain the following keys:\n'type' which is the type of the config which can be 'boolean', 'cycle', 'double', 'double_slider', 'integer', 'integer_slider', 'list', or 'string',\n'name' which is the name of the config\nAnd can optionally contain the following keys:\n'description' which is a description of the config,\n'optional_info' which is an optional info for the config,\n'default_value' which is the default value of the config,\n'value' which is the current value of the config, \n'listener' which is a function that will be called when the config changes, this must have 1 parameter which is the rule that was changed,\n'max_length' which is the max length for the input of the config, this must be an integer > 0, default is 32\nAnd 'cycle' types must contain the following keys:\n'cycle_values' which is a list of values that the config can cycle through.\nAnd slider types must contain the following keys:\n'min' which is the minimum value of the slider,\n'max' which is the maximum value of the slider\n- Parameter - Map (`map`): The map to create the config from\n"
+    "description": "Config.fromMap(map)\nCreates a config from a map\nThe map must contain the following keys:\n'type' which is the type of the config which can be 'boolean', 'cycle', 'double', 'double_slider', 'integer', 'integer_slider', 'list', or 'string',\n'name' which is the name of the config\nAnd can optionally contain the following keys:\n'description' which is a description of the config,\n'optional_info' which is an optional info for the config,\n'default_value' which is the default value of the config,\n'category' which is the category of the config,\n'value' which is the current value of the config, \n'listener' which is a function that will be called when the config changes, this must have 1 parameter which is the rule that was changed,\n'max_length' which is the max length for the input of the config, this must be an integer > 0, default is 32\nAnd 'cycle' types must contain the following keys:\n'cycle_values' which is a list of values that the config can cycle through.\nAnd slider types must contain the following keys:\n'min' which is the minimum value of the slider,\n'max' which is the maximum value of the slider\n- Parameter - Map (`map`): The map to create the config from\n"
   },
   "Method <Config>.addListener(listener)": {
     "prefix": ".addListener($listener)",
     "body": ".addListener($listener)",
     "description": "<Config>.addListener(listener)\nAdds a listener to the config, the listener will be called when the config is changed\nThe listener must have one parameter, this is the new value that was set\n- Parameter - Function (`listener`): The listener to add\n"
+  },
+  "Method <Config>.getCategory()": {
+    "prefix": ".getCategory()",
+    "body": ".getCategory()",
+    "description": "<Config>.getCategory()\nGets the category of the config\n"
   },
   "Method <Config>.getDefaultValue()": {
     "prefix": ".getDefaultValue()",

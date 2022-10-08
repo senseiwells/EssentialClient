@@ -1630,6 +1630,20 @@
           ]
         },
         {
+          "name": "getCategory",
+          "is_arbitrary": false,
+          "desc": [
+            "Gets the category of the config"
+          ],
+          "returns": {
+            "type": "String",
+            "desc": "The category of the config"
+          },
+          "examples": [
+            "config.getCategory();"
+          ]
+        },
+        {
           "name": "getDefaultValue",
           "is_arbitrary": false,
           "desc": [
@@ -1789,6 +1803,7 @@
             "'description' which is a description of the config,",
             "'optional_info' which is an optional info for the config,",
             "'default_value' which is the default value of the config,",
+            "'category' which is the category of the config,",
             "'value' which is the current value of the config, ",
             "'listener' which is a function that will be called when the config changes, this must have 1 parameter which is the rule that was changed,",
             "'max_length' which is the max length for the input of the config, this must be an integer > 0, default is 32",
@@ -1810,7 +1825,7 @@
             "desc": "The config created from the map"
           },
           "examples": [
-            "configMap = {\n    \"type\": \"string\",\n    \"name\": \"My Config\",\n    \"description\": \"This is my config\",\n    \"optional_info\": \"This is an optional info\",\n    \"default_value\": \"foo\",\n    \"value\": \"bar\",\n    \"listener\": fun(newValue) { },\n    \"max_length\": 64\n};\nconfig = Config.fromMap(configMap);"
+            "configMap = {\n    \"type\": \"string\",\n    \"name\": \"My Config\",\n    \"description\": \"This is my config\",\n    \"category\": \"Useful\",\n    \"optional_info\": \"This is an optional info\",\n    \"default_value\": \"foo\",\n    \"value\": \"bar\",\n    \"listener\": fun(newValue) { },\n    \"max_length\": 64\n};\nconfig = Config.fromMap(configMap);"
           ]
         }
       ]
