@@ -3519,7 +3519,6 @@ class World {
     fun isAir(x: Number, y: Number, z: Number): Boolean;
 
     /*
-     * Deprecated: This does nothing, it will always return true
      * This function returns loaded state of given coordinates(client side)
      * Parameter - Pos (pos): the position
      * Returns - Boolean: whether the block is loaded at the given coordinates

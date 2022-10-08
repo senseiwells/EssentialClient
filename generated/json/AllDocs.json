@@ -14008,9 +14008,6 @@
         {
           "name": "isLoaded",
           "is_arbitrary": false,
-          "deprecated": [
-            "This does nothing, it will always return true"
-          ],
           "desc": [
             "This function returns loaded state of given coordinates(client side)"
           ],
