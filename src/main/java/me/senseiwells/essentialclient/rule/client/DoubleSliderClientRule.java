@@ -10,8 +10,8 @@ public class DoubleSliderClientRule extends ClientRule<Double> implements Rule.S
 	private final double minValue;
 	private final double maxValue;
 
-	public DoubleSliderClientRule(String name, String description, double defaultValue, double min, double max) {
-		super(name, description, defaultValue);
+	public DoubleSliderClientRule(String name, String description, double defaultValue, String category, double min, double max) {
+		super(name, description, defaultValue, category);
 		this.minValue = min;
 		this.maxValue = max;
 	}
@@ -36,7 +36,7 @@ public class DoubleSliderClientRule extends ClientRule<Double> implements Rule.S
 
 	@Override
 	public ClientRule<Double> shallowCopy() {
-		return new DoubleSliderClientRule(this.getName(), this.getDescription(), this.getDefaultValue(), this.getMin(), this.getMax());
+		return new DoubleSliderClientRule(this.getName(), this.getDescription(), this.getDefaultValue(), this.getCategory(), this.getMin(), this.getMax());
 	}
 
 	@Override

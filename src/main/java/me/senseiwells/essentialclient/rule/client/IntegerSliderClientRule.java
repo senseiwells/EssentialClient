@@ -9,8 +9,8 @@ public class IntegerSliderClientRule extends ClientRule<Integer> implements Rule
 	private final int minValue;
 	private final int maxValue;
 
-	public IntegerSliderClientRule(String name, String description, int defaultValue, int minValue, int maxValue) {
-		super(name, description, defaultValue);
+	public IntegerSliderClientRule(String name, String description, int defaultValue, String category, int minValue, int maxValue) {
+		super(name, description, defaultValue, category);
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 	}
@@ -35,7 +35,7 @@ public class IntegerSliderClientRule extends ClientRule<Integer> implements Rule
 
 	@Override
 	public ClientRule<Integer> shallowCopy() {
-		return new IntegerSliderClientRule(this.getName(), this.getDescription(), this.getDefaultValue(), this.getMin(), this.getMax());
+		return new IntegerSliderClientRule(this.getName(), this.getDescription(), this.getDefaultValue(), this.getCategory(), this.getMin(), this.getMax());
 	}
 
 	@Override

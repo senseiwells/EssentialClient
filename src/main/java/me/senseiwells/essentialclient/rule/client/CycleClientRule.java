@@ -10,7 +10,7 @@ public class CycleClientRule extends ClientRule<String> implements Rule.Cycle {
 	private final List<String> cycleValues;
 	private int index;
 
-	public CycleClientRule(String name, String description, List<String> cycleValues, String defaultValue, RuleListener<String> ruleListener) {
+	public CycleClientRule(String name, String description, List<String> cycleValues, String defaultValue, String category, RuleListener<String> ruleListener) {
 		super(name, description, defaultValue);
 		this.addListener(ruleListener);
 		this.cycleValues = cycleValues;
@@ -20,12 +20,12 @@ public class CycleClientRule extends ClientRule<String> implements Rule.Cycle {
 		}
 	}
 
-	public CycleClientRule(String name, String description, List<String> cycleValues, RuleListener<String> stringRuleListener) {
-		this(name, description, cycleValues, cycleValues.get(0), stringRuleListener);
+	public CycleClientRule(String name, String description, List<String> cycleValues, String category, RuleListener<String> stringRuleListener) {
+		this(name, description, cycleValues, cycleValues.get(0), category, stringRuleListener);
 	}
 
-	public CycleClientRule(String name, String description, List<String> cycleValues) {
-		this(name, description, cycleValues, null);
+	public CycleClientRule(String name, String description, List<String> cycleValues, String category) {
+		this(name, description, cycleValues, category, null);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class CycleClientRule extends ClientRule<String> implements Rule.Cycle {
 
 	@Override
 	public CycleClientRule shallowCopy() {
-		CycleClientRule rule = new CycleClientRule(this.getName(), this.getDescription(), this.getCycleValues());
+		CycleClientRule rule = new CycleClientRule(this.getName(), this.getDescription(), this.getCycleValues(), this.getCategory());
 		if (this.getListeners() != null) {
 			for (RuleListener<String> listener : this.getListeners()) {
 				rule.addListener(listener);

@@ -7,10 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ClientRule<T> extends SimpleRule<T> {
+	private final String category;
+
 	private List<RuleListener<T>> listeners;
 
 	public ClientRule(String name, String description, T defaultValue) {
+		this(name, description, defaultValue, null);
+	}
+
+	public ClientRule(String name, String description, T defaultValue, String category) {
 		super(name, description, defaultValue);
+		this.category = category;
 	}
 
 	public abstract String getTypeAsString();
@@ -33,6 +40,11 @@ public abstract class ClientRule<T> extends SimpleRule<T> {
 
 	@Override
 	public abstract ClientRule<T> shallowCopy();
+
+	@Override
+	public String getCategory() {
+		return this.category;
+	}
 
 	@Override
 	public void addListener(RuleListener<T> ruleListener) {

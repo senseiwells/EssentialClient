@@ -8,6 +8,7 @@ import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.definitions.ConfigDef;
 import me.senseiwells.essentialclient.gui.RulesScreen;
+import me.senseiwells.essentialclient.gui.entries.BaseListEntry;
 import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.Config;
@@ -15,10 +16,7 @@ import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.text.Text;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -46,10 +44,22 @@ public class ScriptConfigHandler implements Config.CList {
 	}
 
 	public RulesScreen createScreen(Text title, boolean alphabetical) {
-		return new RulesScreen(title, EssentialUtils.getClient().currentScreen, () -> true, () -> {
-			Collection<? extends Rule<?>> rules = this.configs.values().stream().map(i -> i.getPrimitive(ConfigDef.class)).toList();
-			return alphabetical ? Rule.sortRulesAlphabetically(rules) : rules;
-		});
+		return new RulesScreen(title, EssentialUtils.getClient().currentScreen) {
+			@Override
+			public Collection<? extends Rule<?>> getRules() {
+				return ScriptConfigHandler.this.configs.values().stream().map(i -> i.getPrimitive(ConfigDef.class)).toList();
+			}
+
+			@Override
+			public Comparator<BaseListEntry<?>> entryComparator() {
+				return alphabetical ? super.entryComparator() : (a, b) -> 0;
+			}
+
+			@Override
+			public boolean shouldCategorise() {
+				return true;
+			}
+		};
 	}
 
 	public void addConfig(ClassInstance instance) {
@@ -142,9 +152,12 @@ public class ScriptConfigHandler implements Config.CList {
 		objectElement = object.get("max_length");
 		int maxLength = objectElement != null && objectElement.isJsonPrimitive() ? objectElement.getAsInt() : 32;
 
+		objectElement = object.get("category");
+		String category = objectElement != null && objectElement.isJsonPrimitive() ? objectElement.getAsString() : null;
+
 		JsonElement defaultValue = object.get("default_value");
 		ClientRule<T> rule = (ClientRule<T>) switch (type) {
-			case "boolean" -> new BooleanClientRule(name, description, defaultValue != null && defaultValue.getAsBoolean());
+			case "boolean" -> new BooleanClientRule(name, description, defaultValue != null && defaultValue.getAsBoolean(), category);
 			case "cycle" -> {
 				JsonArray cycleValues = object.getAsJsonArray("cycle_values");
 
@@ -154,21 +167,21 @@ public class ScriptConfigHandler implements Config.CList {
 				}
 
 				if (defaultValue != null) {
-					yield new CycleClientRule(name, description, cycles, defaultValue.getAsString(), null);
+					yield new CycleClientRule(name, description, cycles, defaultValue.getAsString(), category, null);
 				}
-				yield new CycleClientRule(name, description, cycles);
+				yield new CycleClientRule(name, description, cycles, category);
 			}
-			case "double" -> new DoubleClientRule(name, description, defaultValue == null ? 0.0D : defaultValue.getAsDouble());
+			case "double" -> new DoubleClientRule(name, description, defaultValue == null ? 0.0D : defaultValue.getAsDouble(), category);
 			case "double_slider" -> {
 				double min = object.get("min").getAsDouble();
 				double max = object.get("max").getAsDouble();
-				yield new DoubleSliderClientRule(name, description, defaultValue == null ? 0.0D : defaultValue.getAsDouble(), min, max);
+				yield new DoubleSliderClientRule(name, description, defaultValue == null ? 0.0D : defaultValue.getAsDouble(), category, min, max);
 			}
-			case "integer" -> new IntegerClientRule(name, description, defaultValue == null ? 0 : defaultValue.getAsInt());
+			case "integer" -> new IntegerClientRule(name, description, defaultValue == null ? 0 : defaultValue.getAsInt(), category);
 			case "integer_slider" -> {
 				int min = object.get("min").getAsInt();
 				int max = object.get("max").getAsInt();
-				yield new IntegerSliderClientRule(name, description, defaultValue == null ? 0 : defaultValue.getAsInt(), min, max);
+				yield new IntegerSliderClientRule(name, description, defaultValue == null ? 0 : defaultValue.getAsInt(), category, min, max);
 			}
 			case "list" -> {
 				List<String> configData = new ArrayList<>();
@@ -177,16 +190,16 @@ public class ScriptConfigHandler implements Config.CList {
 						configData.add(element.getAsString());
 					}
 				}
-				ListClientRule listClientRule = new ListClientRule(name, description, configData);
+				ListClientRule listClientRule = new ListClientRule(name, description, configData, category);
 				listClientRule.setMaxLength(maxLength);
 				yield listClientRule;
 			}
 			case "string" -> {
-				StringClientRule stringClientRule = new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.getAsString());
+				StringClientRule stringClientRule = new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.getAsString(), category);
 				stringClientRule.setMaxLength(maxLength);
 				yield stringClientRule;
 			}
-			default -> throw new RuntimeException("Invalid config type '%s'".formatted(type));
+			default -> throw new IllegalArgumentException("Invalid config type '%s'".formatted(type));
 		};
 
 		if (value != null) {

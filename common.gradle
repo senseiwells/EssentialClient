@@ -67,12 +67,13 @@ dependencies {
 	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
 		transitive = false
 	}
+	
+	modImplementation fabricApi.module("fabric-textures-v0", project.fabric_version)
+	modImplementation fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
 
 	modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
 
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-	modCompileOnly fabricApi.module("fabric-textures-v0", project.fabric_version)
-	modCompileOnly fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
 }
 
 processResources {

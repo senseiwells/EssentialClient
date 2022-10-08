@@ -14,7 +14,7 @@ public abstract class ChatInputSuggestorMixin {
 		int current = textFieldWidget.getCursor();
 		boolean hasSpace = false;
 		String message = textFieldWidget.getText();
-		if (current == 0 || !message.startsWith("/") || !ClientRules.COMMAND_SUGGESTOR_IGNORES_SPACES.getValue()) {
+		if (current == 0 || !message.startsWith("/") || !ClientRules.COMMAND_SUGGESTER_IGNORES_SPACES.getValue()) {
 			return current;
 		}
 		current--;

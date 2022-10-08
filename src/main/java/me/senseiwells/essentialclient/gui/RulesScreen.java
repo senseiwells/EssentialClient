@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.gui;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.gui.config.ConfigListWidget;
+import me.senseiwells.essentialclient.gui.entries.BaseListEntry;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.rule.game.VanillaGameRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -18,36 +19,25 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class RulesScreen extends ChildScreen {
+public abstract class RulesScreen extends ChildScreen {
 	private final List<TextFieldWidget> textFields;
-	private final Supplier<Boolean> canModify;
-	private final Supplier<Collection<? extends Rule<?>>> ruleGetter;
 	private List<OrderedText> tooltip;
 	private ConfigListWidget widget;
 	private TextFieldWidget searchBox;
 	private boolean invalid;
 	private boolean isEmpty;
 
-	public RulesScreen(Text screenName, Screen parent, Supplier<Boolean> canModify, Supplier<Collection<? extends Rule<?>>> ruleGetter) {
+	public RulesScreen(Text screenName, Screen parent) {
 		super(screenName, parent);
 		this.textFields = new ArrayList<>();
-		this.canModify = canModify;
-		this.ruleGetter = ruleGetter;
 	}
 
 	public String getSearchBoxText() {
 		return this.searchBox.getText();
-	}
-
-	public boolean canModify() {
-		return this.canModify.get();
-	}
-
-	public Collection<? extends Rule<?>> getRules() {
-		return this.ruleGetter.get();
 	}
 
 	public void setTooltip(List<OrderedText> tooltip) {
@@ -72,6 +62,20 @@ public class RulesScreen extends ChildScreen {
 
 	public void refreshScroll() {
 		this.widget.setScrollAmount(0);
+	}
+
+	public abstract Collection<? extends Rule<?>> getRules();
+
+	public Comparator<BaseListEntry<?>> entryComparator() {
+		return Comparator.comparing(a -> a.getRule().getName());
+	}
+
+	public boolean canModify() {
+		return true;
+	}
+
+	public boolean shouldCategorise() {
+		return ClientRules.DISPLAY_RULE_TYPE.getValue().equals("Categories");
 	}
 
 	@Override
@@ -131,18 +135,44 @@ public class RulesScreen extends ChildScreen {
 	}
 
 	public static RulesScreen getClientRulesScreen(Screen parent) {
-		return new RulesScreen(Texts.CLIENT_SCREEN, parent, () -> true, ClientRules::getCurrentClientRules);
+		return new RulesScreen(Texts.CLIENT_SCREEN, parent) {
+			@Override
+			public Collection<? extends Rule<?>> getRules() {
+				return ClientRules.getClientRules();
+			}
+		};
 	}
 
 	public static RulesScreen getCarpetRulesScreen(Screen parent) {
-		Supplier<Boolean> canModify = () -> {
-			return EssentialUtils.getClient().isInSingleplayer() || (CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
+		return new RulesScreen(Texts.SERVER_SCREEN, parent) {
+			@Override
+			public Collection<? extends Rule<?>> getRules() {
+				return CarpetClient.INSTANCE.getCurrentCarpetRules();
+			}
+
+			@Override
+			public boolean canModify() {
+				return EssentialUtils.getClient().isInSingleplayer() || (CarpetClient.INSTANCE.isServerCarpet() && EssentialUtils.playerHasOp());
+			}
 		};
-		return new RulesScreen(Texts.SERVER_SCREEN, parent, canModify, () -> Rule.sortRulesAlphabetically(CarpetClient.INSTANCE.getCurrentCarpetRules()));
 	}
 
 	public static RulesScreen getGameRulesScreen(Screen parent) {
-		Supplier<Boolean> canModify = EssentialClient.GAME_RULE_NET_HANDLER::canModifyRules;
-		return new RulesScreen(Texts.GAME_RULE_SCREEN, parent, canModify, () -> Rule.sortRulesAlphabetically(VanillaGameRules.getGameRules()));
+		return new RulesScreen(Texts.GAME_RULE_SCREEN, parent) {
+			@Override
+			public Collection<? extends Rule<?>> getRules() {
+				return VanillaGameRules.getGameRules();
+			}
+
+			@Override
+			public boolean canModify() {
+				return EssentialClient.GAME_RULE_NET_HANDLER.canModifyRules();
+			}
+
+			@Override
+			public boolean shouldCategorise() {
+				return true;
+			}
+		};
 	}
 }

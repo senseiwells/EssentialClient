@@ -3,16 +3,16 @@ package me.senseiwells.essentialclient.rule.client;
 import com.google.gson.JsonElement;
 
 public class IntegerClientRule extends NumberClientRule<Integer> {
-	public IntegerClientRule(String name, String description, int defaultValue, RuleListener<Integer> ruleListener) {
-		super(name, description, defaultValue, ruleListener);
+	public IntegerClientRule(String name, String description, int defaultValue, String category, RuleListener<Integer> ruleListener) {
+		super(name, description, defaultValue, category, ruleListener);
 	}
 
-	public IntegerClientRule(String name, String description, int defaultValue) {
-		this(name, description, defaultValue, null);
+	public IntegerClientRule(String name, String description, int defaultValue, String category) {
+		this(name, description, defaultValue, category, null);
 	}
 
-	public IntegerClientRule(String name, String description) {
-		this(name, description, 0);
+	public IntegerClientRule(String name, String description, String category) {
+		this(name, description, 0, category);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class IntegerClientRule extends NumberClientRule<Integer> {
 
 	@Override
 	public IntegerClientRule shallowCopy() {
-		IntegerClientRule rule = new IntegerClientRule(this.getName(), this.getDescription(), this.getDefaultValue());
+		IntegerClientRule rule = new IntegerClientRule(this.getName(), this.getDescription(), this.getDefaultValue(), this.getCategory());
 		if (this.getListeners() != null) {
 			for (RuleListener<Integer> listener : this.getListeners()) {
 				rule.addListener(listener);

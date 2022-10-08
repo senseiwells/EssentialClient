@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.rule.game;
 import com.google.gson.JsonElement;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.impl.SimpleRule;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.world.GameRules;
 
 import java.util.List;
@@ -37,6 +38,11 @@ public abstract class GameRule<T> extends SimpleRule<T> {
 
 	@Override
 	public abstract GameRule<T> shallowCopy();
+
+	@Override
+	public String getCategory() {
+		return this.gameRuleKey == null ? "Unknown" : I18n.translate(this.gameRuleKey.getCategory().getCategory());
+	}
 
 	public abstract T getValueFromString(String value);
 

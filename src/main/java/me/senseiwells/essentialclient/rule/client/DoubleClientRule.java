@@ -3,12 +3,12 @@ package me.senseiwells.essentialclient.rule.client;
 import com.google.gson.JsonElement;
 
 public class DoubleClientRule extends NumberClientRule<Double> {
-	public DoubleClientRule(String name, String description, Double defaultValue, RuleListener<Double> ruleListener) {
-		super(name, description, defaultValue, ruleListener);
+	public DoubleClientRule(String name, String description, Double defaultValue, String category, RuleListener<Double> ruleListener) {
+		super(name, description, defaultValue, category, ruleListener);
 	}
 
-	public DoubleClientRule(String name, String description, Double defaultValue) {
-		this(name, description, defaultValue, null);
+	public DoubleClientRule(String name, String description, Double defaultValue, String category) {
+		this(name, description, defaultValue, category, null);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class DoubleClientRule extends NumberClientRule<Double> {
 
 	@Override
 	public DoubleClientRule shallowCopy() {
-		DoubleClientRule rule = new DoubleClientRule(this.getName(), this.getDescription(), this.getDefaultValue());
+		DoubleClientRule rule = new DoubleClientRule(this.getName(), this.getDescription(), this.getDefaultValue(), this.getCategory());
 		if (this.getListeners() != null) {
 			for (RuleListener<Double> listener : this.getListeners()) {
 				rule.addListener(listener);

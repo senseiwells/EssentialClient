@@ -2,12 +2,12 @@ package me.senseiwells.essentialclient.gui.config;
 
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.gui.entries.*;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ElementListWidget;
 
-import java.util.Collection;
-import java.util.Locale;
+import java.util.*;
 
 public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> {
 	public static final int LENGTH = 136;
@@ -21,6 +21,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 		this.clearEntries();
 		Collection<? extends Rule<?>> rules = rulesScreen.getRules();
 
+		SortedMap<String, Set<BaseListEntry<?>>> sortedEntries = new TreeMap<>();
 		rules.forEach(rule -> {
 			String ruleName = rule.getName();
 			if (filter != null && !ruleName.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
@@ -35,7 +36,19 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 				case LIST -> new ListListEntry((Rule.ListRule) rule, this.client, rulesScreen);
 				default -> throw new IllegalStateException("Unexpected value: " + rule.getType());
 			};
-			this.addEntry(entry);
+
+			String category = rule.getCategory() == null ? ClientRules.MISCELLANEOUS : rule.getCategory();
+			Set<BaseListEntry<?>> set = sortedEntries.computeIfAbsent(category, k -> new HashSet<>());
+			set.add(entry);
+		});
+
+		if (sortedEntries.size() == 1 || !rulesScreen.shouldCategorise()) {
+			sortedEntries.values().stream().flatMap(Collection::stream).sorted(rulesScreen.entryComparator()).forEach(this::addEntry);
+			return;
+		}
+		sortedEntries.forEach((category, entries) -> {
+			this.addEntry(new CategoryEntry(category));
+			entries.stream().sorted(rulesScreen.entryComparator()).forEach(this::addEntry);
 		});
 	}
 

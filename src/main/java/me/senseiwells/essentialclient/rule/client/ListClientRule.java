@@ -12,14 +12,14 @@ public class ListClientRule extends ClientRule<List<String>> implements Rule.Lis
 	private static final Gson GSON = new Gson();
 	private int maxLength;
 
-	public ListClientRule(String name, String description, List<String> defaultValue, RuleListener<List<String>> ruleListener) {
-		super(name, description, defaultValue);
+	public ListClientRule(String name, String description, List<String> defaultValue, String category, RuleListener<List<String>> ruleListener) {
+		super(name, description, defaultValue, category);
 		this.addListener(ruleListener);
 		this.maxLength = 32;
 	}
 
-	public ListClientRule(String name, String description, List<String> listValues) {
-		this(name, description, listValues, null);
+	public ListClientRule(String name, String description, List<String> listValues, String category) {
+		this(name, description, listValues, category, null);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ListClientRule extends ClientRule<List<String>> implements Rule.Lis
 
 	@Override
 	public ListClientRule shallowCopy() {
-		ListClientRule rule = new ListClientRule(this.getName(), this.getDescription(), this.getValue());
+		ListClientRule rule = new ListClientRule(this.getName(), this.getDescription(), this.getValue(), this.getCategory());
 		if (this.getListeners() != null) {
 			for (RuleListener<List<String>> listener : this.getListeners()) {
 				rule.addListener(listener);

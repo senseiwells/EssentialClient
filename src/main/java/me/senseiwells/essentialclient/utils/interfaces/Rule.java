@@ -35,6 +35,10 @@ public interface Rule<T> {
 
 	void setOptionalInfo(String optionalInfo);
 
+	default String getCategory() {
+		return null;
+	}
+
 	default boolean changeable() {
 		return true;
 	}
@@ -86,14 +90,6 @@ public interface Rule<T> {
 
 	default void logCannotSet(Object value) {
 		EssentialClient.LOGGER.error("Cannot set the value '{}' for rule {}", value, this.getName());
-	}
-
-	static <T extends Rule<?>> Collection<T> sortRulesAlphabetically(Collection<T> rules) {
-		SortedMap<String, T> sortedMap = new TreeMap<>();
-		for (T rule : rules) {
-			sortedMap.put(rule.getName().toLowerCase(), rule);
-		}
-		return sortedMap.values();
 	}
 
 	interface Bool extends Rule<Boolean> {

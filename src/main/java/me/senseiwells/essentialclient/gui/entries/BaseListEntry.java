@@ -74,6 +74,10 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		return this.ruleWidget.isHovered((int) mouseX, (int) mouseY) && mouseY > 32 && mouseY < this.rulesScreen.height - 32;
 	}
 
+	public Rule<?> getRule() {
+		return this.rule;
+	}
+
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		if (button == 0 && this.isRuleWidgetHovered(mouseX, mouseY)) {

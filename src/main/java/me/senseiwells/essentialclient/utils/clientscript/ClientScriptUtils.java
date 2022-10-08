@@ -392,6 +392,7 @@ public class ClientScriptUtils {
 		String description = getFieldInMap(map, interpreter, "description", StringDef.class);
 		String optionalInfo = getFieldInMap(map, interpreter, "optional_info", StringDef.class);
 		String currentValue = getFieldInMap(map, interpreter, "value", StringDef.class);
+		String category = getFieldInMap(map, interpreter, "category", StringDef.class);
 		ArucasFunction function = getFieldInMap(map, interpreter, "listener", FunctionDef.class);
 		int maxLength = Objects.requireNonNullElse(getFieldInMap(map, interpreter, "max_length", NumberDef.class), 32).intValue();
 
@@ -400,9 +401,9 @@ public class ClientScriptUtils {
 			case "boolean" -> {
 				Boolean bool = defaultValue == null ? null : defaultValue.getPrimitive(BooleanDef.class);
 				if (bool != null) {
-					yield new BooleanClientRule(name, description, bool);
+					yield new BooleanClientRule(name, description, bool, category);
 				}
-				yield new BooleanClientRule(name, description);
+				yield new BooleanClientRule(name, description, category);
 			}
 			case "cycle" -> {
 				ArucasList list = getFieldInMap(map, interpreter, "cycle_values", ListDef.class);
@@ -417,16 +418,16 @@ public class ClientScriptUtils {
 
 				String defaultCycle = defaultValue == null ? null : defaultValue.getPrimitive(StringDef.class);
 				if (defaultCycle != null) {
-					yield new CycleClientRule(name, description, cycles, defaultCycle, null);
+					yield new CycleClientRule(name, description, cycles, defaultCycle, category, null);
 				}
-				yield new CycleClientRule(name, description, cycles);
+				yield new CycleClientRule(name, description, cycles, category);
 			}
 			case "double" -> {
 				Double defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class);
 				if (defaultNumber != null) {
-					yield new DoubleClientRule(name, description, defaultNumber);
+					yield new DoubleClientRule(name, description, defaultNumber, category);
 				}
-				yield new DoubleClientRule(name, description, 0.0D);
+				yield new DoubleClientRule(name, description, 0.0D, category);
 			}
 			case "double_slider" -> {
 				Double min = getFieldInMap(map, interpreter, "min", NumberDef.class);
@@ -440,16 +441,16 @@ public class ClientScriptUtils {
 
 				Double defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class);
 				if (defaultNumber != null) {
-					yield new DoubleSliderClientRule(name, description, defaultNumber, min, max);
+					yield new DoubleSliderClientRule(name, description, defaultNumber, category, min, max);
 				}
-				yield new DoubleSliderClientRule(name, description, 0.0D, min, max);
+				yield new DoubleSliderClientRule(name, description, 0.0D, category, min, max);
 			}
 			case "integer" -> {
 				Integer defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class).intValue();
 				if (defaultNumber != null) {
-					yield new IntegerClientRule(name, description, defaultNumber);
+					yield new IntegerClientRule(name, description, defaultNumber, category);
 				}
-				yield new IntegerClientRule(name, description, 0);
+				yield new IntegerClientRule(name, description, 0, category);
 			}
 			case "integer_slider" -> {
 				Double min = getFieldInMap(map, interpreter, "min", NumberDef.class);
@@ -463,9 +464,9 @@ public class ClientScriptUtils {
 
 				Integer defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class).intValue();
 				if (defaultNumber != null) {
-					yield new IntegerSliderClientRule(name, description, defaultNumber, min.intValue(), max.intValue());
+					yield new IntegerSliderClientRule(name, description, defaultNumber, category, min.intValue(), max.intValue());
 				}
-				yield new IntegerSliderClientRule(name, description, 0, min.intValue(), max.intValue());
+				yield new IntegerSliderClientRule(name, description, 0, category, min.intValue(), max.intValue());
 			}
 			case "list" -> {
 				List<String> configData = new ArrayList<>();
@@ -475,12 +476,12 @@ public class ClientScriptUtils {
 						configData.add(listValue.toString(interpreter));
 					}
 				}
-				ListClientRule listClientRule = new ListClientRule(name, description, configData);
+				ListClientRule listClientRule = new ListClientRule(name, description, configData, category);
 				listClientRule.setMaxLength(maxLength);
 				yield listClientRule;
 			}
 			case "string" -> {
-				StringClientRule stringClientRule = new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.toString(interpreter));
+				StringClientRule stringClientRule = new StringClientRule(name, description, defaultValue == null ? "" : defaultValue.toString(interpreter), category);
 				stringClientRule.setMaxLength(maxLength);
 				yield stringClientRule;
 			}
