@@ -163,13 +163,13 @@ This allows you to craft items with the mouse
 
 # customClientCape
 This allows you to select a Minecraft cape to wear, this only appears client side
-- Category: null
+- Category: Rendering
 - Type: Cycle
 - Default Value: None
 
 # disableArmourRendering
 This allows you to disable armour rendering for entities
-- Category: null
+- Category: Rendering
 - Type: Cycle
 - Default Value: None
 
@@ -247,7 +247,7 @@ Disables the tutorial toast from showing
 
 # displayRuleType
 This allows you to choose the order you want rules to be displayed
-- Category: null
+- Category: Miscellaneous
 - Type: Cycle
 - Default Value: Alphabetical
 
