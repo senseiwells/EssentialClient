@@ -92,6 +92,7 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 
 	@SuppressWarnings("unused")
 	public static final CycleClientRule
+		CLIENT_SCRIPT_FONT = register(new CycleClientRule("clientScriptFont", "This allows you to change the font for client script errors", List.of("Minecraft", "Jetbrains"), RENDERING)),
 		CUSTOM_CLIENT_CAPE = register(new CycleClientRule("customClientCape", "This allows you to select a Minecraft cape to wear, this only appears client side", CustomClientCape.getCapeNames(), RENDERING, ClientRules::refreshCape)),
 		DISABLE_ARMOUR_RENDERING = register(new CycleClientRule("disableArmourRendering", "This allows you to disable armour rendering for entities", List.of("None", "You", "Players", "Entities"), RENDERING)),
 		DISPLAY_RULE_TYPE = register(new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type", "Categories"), MISCELLANEOUS, ClientRules::refreshScreen));

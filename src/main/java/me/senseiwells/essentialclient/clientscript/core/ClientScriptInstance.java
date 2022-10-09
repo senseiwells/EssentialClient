@@ -43,6 +43,7 @@ public class ClientScriptInstance {
 			.setLibraryManager(library)
 			.setInterpreterProperties(() -> {
 				Properties properties = new Properties();
+				properties.setErrorMaxLength(40);
 				properties.setLogDeprecated(true);
 				return properties;
 			});

@@ -4,6 +4,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 //#if MC < 11900
 //$$import net.minecraft.text.LiteralText;
@@ -150,6 +151,9 @@ public class Texts {
 
 	public static final TextGenerator CURRENT_REGION = o -> translatable("essentialclient.region.currentRegion", o);
 	public static final TextGenerator DISTANT_REGION = o -> translatable("essentialclient.region.distantRegion", o);
+
+	public static final Identifier JETBRAINS_MONO = new Identifier("essentialclient", "jetbrainsmono");
+	public static final Identifier MINECRAFT_MONO = new Identifier("essentialclient", "monocraft");
 
 	// These allow for easy porting to later versions
 	public static MutableText literal(String message) {

@@ -1,0 +1,16 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "essentialclient:monocraft.ttf",
+      "shift": [
+        -0.5,
+        1.2
+      ],
+      "size": 9,
+      "oversample": 4.0,
+      "skip": "",
+      "legal": "https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL"
+    }
+  ]
+}

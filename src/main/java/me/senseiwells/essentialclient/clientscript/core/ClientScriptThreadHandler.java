@@ -3,14 +3,17 @@ package me.senseiwells.essentialclient.clientscript.core;
 import me.senseiwells.arucas.api.ThreadHandler;
 import me.senseiwells.arucas.core.Arucas;
 import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.exceptions.ArucasError;
 import me.senseiwells.arucas.exceptions.FatalError;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.IOException;
@@ -24,6 +27,16 @@ public class ClientScriptThreadHandler extends ThreadHandler {
 
 	public ClientScriptThreadHandler(Interpreter interpreter) {
 		super(interpreter);
+	}
+
+	@Override
+	protected void handleArucasError(ArucasError arucasError, Interpreter interpreter) {
+		Identifier identifier = switch (ClientRules.CLIENT_SCRIPT_FONT.getValue()) {
+			case "Minecraft" -> Texts.MINECRAFT_MONO;
+			case "Jetbrains" -> Texts.JETBRAINS_MONO;
+			default -> null;
+		};
+		EssentialUtils.sendMessage(Texts.literal(arucasError.format(interpreter)).styled(s -> s.withFont(identifier).withColor(Formatting.RED)));
 	}
 
 	@Override
