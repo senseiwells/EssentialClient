@@ -119,6 +119,12 @@ This messages in chat when a script starts and finishes
 - Type: Boolean
 - Default Value: true
 
+# clientScriptFont
+This allows you to change the font for client script errors
+- Category: Rendering
+- Type: Cycle
+- Default Value: Minecraft
+
 # commandAlternateDimension
 This command calculates the coordinates of the alternate dimension
 - Category: Commands
