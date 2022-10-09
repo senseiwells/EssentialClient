@@ -155,5 +155,10 @@ public class ScriptRepositoryManager {
 		public Text getPrettyName() {
 			return this.prettyName;
 		}
+
+		@Override
+		public String toString() {
+			return this.name().toLowerCase();
+		}
 	}
 }

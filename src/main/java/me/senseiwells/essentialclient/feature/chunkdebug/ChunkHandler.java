@@ -50,6 +50,7 @@ public class ChunkHandler {
 		for (int i = 0; i < size; i++) {
 			long position = chunkPositions[i];
 			ChunkPos chunkPos = new ChunkPos(position);
+			// EssentialClient.LOGGER.info("Chunk at {} updated", chunkPos);
 			ChunkType chunkType = ChunkType.decodeChunkType(levelTypes[i]);
 			TicketType ticketType = TicketType.decodeTicketType(ticketTypes[i]);
 			ChunkStatus status = ChunkStatus.decodeChunkStatus(statusTypes[i]);
@@ -65,8 +66,6 @@ public class ChunkHandler {
 				chunks.data.add(chunkData);
 			}
 		}
-
-		EssentialClient.LOGGER.info("Chunk clusters: {}", chunks.cluster.count());
 	}
 
 	public static class ChunkData {
