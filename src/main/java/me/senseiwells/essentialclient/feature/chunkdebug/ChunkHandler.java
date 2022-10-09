@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ChunkHandler {
-	private static final Map<String, Set<ChunkData>> CHUNK_DATA_MAP = new HashMap<>();
+	private static final Map<String, Chunks> CHUNK_DATA_MAP = new HashMap<>();
 
 	static {
 		Events.ON_DISCONNECT.register(v -> {
@@ -21,39 +21,52 @@ public class ChunkHandler {
 		});
 	}
 
-	public synchronized static ChunkData[] getChunks(String world) {
-		Set<ChunkData> chunkDataSet = CHUNK_DATA_MAP.get(world);
-		if (chunkDataSet == null) {
+	public static ChunkData[] getChunks(String world) {
+		Chunks chunks = CHUNK_DATA_MAP.get(world);
+		if (chunks == null) {
 			return new ChunkData[0];
 		}
-		return chunkDataSet.toArray(ChunkData[]::new);
+		return chunks.data.toArray(ChunkData[]::new);
 	}
 
-	public synchronized static void clearAllChunks() {
+	public static void clearAllChunks() {
 		CHUNK_DATA_MAP.forEach((s, chunkData) -> chunkData.clear());
 	}
 
-	public synchronized static void deserializeAndProcess(String world, long[] chunkPositions, byte[] levelTypes, byte[] statusTypes, byte[] ticketTypes) {
+	public static ChunkCluster getChunkCluster(String world) {
+		Chunks chunks = CHUNK_DATA_MAP.get(world);
+		return chunks == null ? null : chunks.cluster;
+	}
+
+	public static void deserializeAndProcess(String world, long[] chunkPositions, byte[] levelTypes, byte[] statusTypes, byte[] ticketTypes) {
 		int size = chunkPositions.length;
 		if (size != levelTypes.length || size != ticketTypes.length || size != statusTypes.length) {
 			EssentialClient.LOGGER.error("Chunk debug received bad packet!");
 			return;
 		}
 
-		CHUNK_DATA_MAP.putIfAbsent(world, new HashSet<>());
-		Set<ChunkData> chunkDataSet = CHUNK_DATA_MAP.get(world);
+		Chunks chunks = CHUNK_DATA_MAP.computeIfAbsent(world, k -> new Chunks());
 
 		for (int i = 0; i < size; i++) {
-			ChunkPos chunkPos = new ChunkPos(chunkPositions[i]);
+			long position = chunkPositions[i];
+			ChunkPos chunkPos = new ChunkPos(position);
 			ChunkType chunkType = ChunkType.decodeChunkType(levelTypes[i]);
 			TicketType ticketType = TicketType.decodeTicketType(ticketTypes[i]);
 			ChunkStatus status = ChunkStatus.decodeChunkStatus(statusTypes[i]);
 			ChunkData chunkData = new ChunkData(chunkPos, chunkType, status, ticketType);
-			chunkDataSet.remove(chunkData);
-			if (chunkType != ChunkType.UNLOADED || ClientRules.CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS.getValue()) {
-				chunkDataSet.add(chunkData);
+			chunks.data.remove(chunkData);
+			if (chunkType != ChunkType.UNLOADED) {
+				chunks.cluster.addChunk(position);
+				chunks.data.add(chunkData);
+				continue;
+			}
+			chunks.cluster.removeChunk(position);
+			if (ClientRules.CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS.getValue()) {
+				chunks.data.add(chunkData);
 			}
 		}
+
+		EssentialClient.LOGGER.info("Chunk clusters: {}", chunks.cluster.count());
 	}
 
 	public static class ChunkData {
@@ -112,6 +125,21 @@ public class ChunkHandler {
 				return this.chunkPos.equals(otherChunk.chunkPos);
 			}
 			return false;
+		}
+	}
+
+	private static class Chunks {
+		final Set<ChunkData> data;
+		final ChunkCluster cluster;
+
+		Chunks() {
+			this.data = new HashSet<>();
+			this.cluster = new ChunkCluster();
+		}
+
+		public void clear() {
+			this.data.clear();
+			this.cluster.clear();
 		}
 	}
 }

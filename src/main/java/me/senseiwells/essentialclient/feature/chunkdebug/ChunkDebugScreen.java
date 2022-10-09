@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -17,7 +18,7 @@ import net.minecraft.text.Text;
 
 public class ChunkDebugScreen extends ChildScreen {
 	public static final int
-		HEADER_HEIGHT = 20,
+		HEADER_HEIGHT = 30,
 		FOOTER_ROW_HEIGHT = 20,
 		FOOTER_ROW_PADDING = 5,
 		FOOTER_ROW_COUNT = 2,
@@ -77,6 +78,9 @@ public class ChunkDebugScreen extends ChildScreen {
 				EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 			}
 		}));
+		this.addDrawableChild(new ButtonWidget(5, 5, 90, 20, Texts.CHUNK_CLUSTER_SCREEN, button -> {
+			this.client.setScreen(new ChunkClusterScreen(ChunkHandler.getChunkCluster(ChunkGrid.instance.getDimension()), this));
+		}));
 
 		this.addDrawableChild(this.xPositionBox);
 		this.addDrawableChild(this.zPositionBox);
@@ -123,9 +127,9 @@ public class ChunkDebugScreen extends ChildScreen {
 			this.zPositionBox.setText(String.valueOf(ChunkGrid.instance.getCentreZ()));
 		}
 
-		this.drawText(matrices, Texts.CHUNK_SCREEN, this.width / 2, 8, 1, true);
+		RenderHelper.drawScaledText(matrices, Texts.CHUNK_SCREEN, this.width / 2, 12, 1.5F, true);
 		if (ChunkGrid.instance.getSelectionText() != null) {
-			this.drawText(matrices, ChunkGrid.instance.getSelectionText(), this.width / 2, 30, 1, true);
+			RenderHelper.drawScaledText(matrices, ChunkGrid.instance.getSelectionText(), this.width / 2, HEADER_HEIGHT + 10, 1, true);
 		}
 
 		this.xPositionBox.render(matrices, mouseX, mouseY, delta);
@@ -135,22 +139,10 @@ public class ChunkDebugScreen extends ChildScreen {
 		int xOffset = FOOTER_ROW_PADDING + 10;
 		int zOffset = this.xPositionBox.getWidth() + 50;
 
-		this.drawText(matrices, Texts.X, xOffset, textHeight, 1.5F, false);
-		this.drawText(matrices, Texts.Z, zOffset, textHeight, 1.5F, false);
+		RenderHelper.drawScaledText(matrices, Texts.X, xOffset, textHeight, 1.5F, false);
+		RenderHelper.drawScaledText(matrices, Texts.Z, zOffset, textHeight, 1.5F, false);
 
 		super.render(matrices, mouseX, mouseY, delta);
-	}
-
-	private void drawText(MatrixStack matrices, Text text, int x, int y, float scale, boolean center) {
-		matrices.push();
-		matrices.translate(x, y, 0.0D);
-		matrices.scale(scale, scale, 0.0F);
-		if (center) {
-			DrawableHelper.drawCenteredText(matrices, this.textRenderer, text, 0, 0, 0xFFFFFF);
-		} else {
-			DrawableHelper.drawTextWithShadow(matrices, this.textRenderer, text, 0, 0, 0xFFFFFF);
-		}
-		matrices.pop();
 	}
 
 	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {

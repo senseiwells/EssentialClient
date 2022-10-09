@@ -6,12 +6,14 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
@@ -28,6 +30,19 @@ public class RenderHelper {
 	public static final Identifier BLOCK_ATLAS_TEXTURE = SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
 	public static final RenderLayer CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucentCull(BLOCK_ATLAS_TEXTURE);
 	public static final RenderLayer NO_CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucent(BLOCK_ATLAS_TEXTURE);
+
+	public static void drawScaledText(MatrixStack matrices, Text text, int x, int y, float scale, boolean center) {
+		MinecraftClient client = EssentialUtils.getClient();
+		matrices.push();
+		matrices.translate(x, y, 0.0D);
+		matrices.scale(scale, scale, 0.0F);
+		if (center) {
+			DrawableHelper.drawCenteredText(matrices, client.textRenderer, text, 0, 0, 0xFFFFFF);
+		} else {
+			DrawableHelper.drawTextWithShadow(matrices, client.textRenderer, text, 0, 0, 0xFFFFFF);
+		}
+		matrices.pop();
+	}
 
 	public static void renderAllShapes(MatrixStack matrices) {
 		setupArucasRendering();

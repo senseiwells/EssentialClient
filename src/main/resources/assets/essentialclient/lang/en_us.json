@@ -6,6 +6,7 @@
   "essentialclient.gameOptions": "Game Rule Options",
   "essentialclient.scriptOptions": "Client Script Options",
   "essentialclient.chunkDebugMap": "Chunk Debug Map",
+  "essentialclient.chunkClusters": "Chunk Clusters",
   "essentialclient.controls": "Client Keybinds",
   "essentialclient.version": "Version: %s",
   "essentialclient.topSecret": "Nothing to see here...",

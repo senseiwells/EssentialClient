@@ -50,7 +50,7 @@ Since everything is saved to a config you are able to manually modify this and a
 
 An example config would look like this:
 
-```
+```json
 {
   "SleepBot": {
     "z": 3784.51,

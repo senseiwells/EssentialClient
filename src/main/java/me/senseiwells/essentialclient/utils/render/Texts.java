@@ -19,6 +19,7 @@ public class Texts {
 	public static final Text GAME_RULE_SCREEN = translatable("essentialclient.gameOptions");
 	public static final Text SCRIPT_SCREEN = translatable("essentialclient.scriptOptions");
 	public static final Text CHUNK_SCREEN = translatable("essentialclient.chunkDebugMap");
+	public static final Text CHUNK_CLUSTER_SCREEN = translatable("essentialclient.chunkClusters");
 	public static final Text CONTROLS_SCREEN = translatable("essentialclient.controls");
 	public static final Text TOP_SECRET = translatable("essentialclient.topSecret");
 	public static final TextGenerator VERSION = o -> translatable("essentialclient.version", o);
