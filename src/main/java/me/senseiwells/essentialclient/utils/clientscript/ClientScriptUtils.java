@@ -10,6 +10,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
+import kotlin.Pair;
 import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.ClassDefinition;
 import me.senseiwells.arucas.classes.ClassInstance;
@@ -61,7 +62,6 @@ import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RaycastContext;
-import shadow.kotlin.Pair;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;

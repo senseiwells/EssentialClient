@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
+import kotlin.Unit;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
@@ -18,7 +19,6 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptConfigHandler;
 import me.senseiwells.essentialclient.utils.render.Texts;
-import shadow.kotlin.Unit;
 
 import java.util.List;
 

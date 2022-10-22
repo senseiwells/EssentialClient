@@ -1,6 +1,6 @@
 plugins {
 	id "maven-publish"
-	id "fabric-loom" version "0.11-SNAPSHOT"
+	id "fabric-loom" version "1.0-SNAPSHOT"
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "io.github.juuxel.loom-quiltflower" version "1.7.0"
 	id "com.replaymod.preprocess" version "897c4096e2"
@@ -35,9 +35,6 @@ configurations {
 	shade
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
-
 archivesBaseName = project.archives_base_name
 version = project.minecraft_version + "-" + project.mod_version
 group = project.maven_group
@@ -47,30 +44,34 @@ shadowJar {
 }
 
 dependencies {
-
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
 	modImplementation "carpet:fabric-carpet:${project.carpet_core_version}"
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
-	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
+	// Required for Arucas
+	include implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
+	include implementation("com.github.senseiwells:Arucas:${project.arucas_version.length() > 10 ? project.arucas_version.substring(0, 10) : project.arucas_version}")
 
-	def arucasVersion = project.arucas_version
-	if (arucasVersion.length() > 10) {
-		arucasVersion = arucasVersion.substring(0, 10)
-	}
+	// include "net.dv8tion:JDA:5.0.0-alpha.19"
+	// include implementation("com.github.senseiwells:ArucasDiscordAPI:${project.arucas_discord_api_version.length() > 10 ? project.arucas_discord_api_version.substring(0, 10) : project.arucas_discord_api_version}")
 
-	include implementation("com.github.senseiwells:Arucas:${arucasVersion}")
-	// include implementation("com.github.senseiwells:ArucasDiscordAPI:v${project.arucas_discord_api_version}")
+	// Multiconnect API
 	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
 		transitive = false
 	}
-	
+
+	// Mixin Extras
+	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
+
+	// Runtime Fabric API
 	modImplementation fabricApi.module("fabric-textures-v0", project.fabric_version)
 	modImplementation fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
 
+	// Account authentication at runtime
 	modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
 
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"

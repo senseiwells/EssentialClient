@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
+import kotlin.Unit;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
@@ -14,7 +15,6 @@ import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBox;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.math.Vec3d;
-import shadow.kotlin.Unit;
 
 import java.util.List;
 

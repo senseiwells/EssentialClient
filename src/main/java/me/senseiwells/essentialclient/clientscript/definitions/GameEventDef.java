@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
+import kotlin.Unit;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
@@ -14,7 +15,6 @@ import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptEvent;
-import shadow.kotlin.Unit;
 
 import java.util.List;
 import java.util.concurrent.Future;

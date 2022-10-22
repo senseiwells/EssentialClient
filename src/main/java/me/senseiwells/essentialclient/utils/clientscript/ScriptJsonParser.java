@@ -1,9 +1,11 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.api.docs.parser.JsonParser;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import shadow.google.gson.*;
 
 public class ScriptJsonParser extends JsonParser {
 	public static JsonParser scriptOf(ArucasAPI api) {

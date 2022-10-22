@@ -70,8 +70,9 @@ public class EssentialClient implements ModInitializer {
 			ClientScriptUtils.load();
 			Scheduler.load();
 			ClientTickSyncer.load();
-			ClientScriptInstance.load();
 		}, "EssentialClient Init Thread").start();
+
+		Scheduler.schedule(0, ClientScriptInstance::load);
 	}
 
 	public static void registerConfigs() {

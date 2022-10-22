@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
+import kotlin.Triple;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.StringDef;
@@ -15,7 +16,6 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import shadow.kotlin.Triple;
 
 import java.util.*;
 
@@ -43,7 +43,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 
 	@Override
 	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
-		ScriptMaterial material = other.asPrimitive(this);
+		ScriptMaterial material = other.getPrimitive(this);
 		return material != null && instance.asPrimitive(this).asDefault().equals(material.asDefault());
 	}
 

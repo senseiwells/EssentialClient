@@ -4,11 +4,10 @@ import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.api.ArucasLibrary;
 import me.senseiwells.arucas.api.ImplArucasLibrary;
 import me.senseiwells.arucas.api.ThreadHandler;
-import me.senseiwells.arucas.api.docs.parser.JsonParser;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Properties;
-import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.clientscript.api.ClientScriptAPI;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
@@ -25,41 +24,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ClientScriptInstance {
-	private static final ArucasAPI API;
-
-	static {
-		ArucasLibrary library = new ImplArucasLibrary(
-			ClientScript.INSTANCE.getLibraryDirectory()
-		);
-
-		ArucasAPI.Builder builder = new ArucasAPI.Builder()
-			.addDefault()
-			.setObfuscator(new ClientScriptObfuscator())
-			.setInput(ClientScriptIO.INSTANCE)
-			.setOutput(ClientScriptIO.INSTANCE)
-			.setLibraryManager(library)
-			.setInterpreterProperties(() -> {
-				Properties properties = new Properties();
-				properties.setErrorMaxLength(40);
-				properties.setLogDeprecated(true);
-				return properties;
-			});
-
-		MinecraftAPI.addMinecraftAPI(builder);
-		// DiscordAPI.addDiscordAPI(BUILDER);
-
-		try {
-			API = builder.build();
-		} catch (Exception e) {
-			// We are running off-thread, this is fatal, so we should stop the game here
-			EssentialClient.LOGGER.error("Failed to load Script API", e);
-			EssentialUtils.getClient().scheduleStop();
-			throw e;
-		}
-	}
+	private static List<ClientScriptAPI> APIS = new LinkedList<>();
+	private static ArucasAPI API;
 
 	private final String content;
 	private Path fileLocation;
@@ -174,11 +144,48 @@ public class ClientScriptInstance {
 	}
 
 	public static void load() {
+		ArucasLibrary library = new ImplArucasLibrary(
+			ClientScript.INSTANCE.getLibraryDirectory()
+		);
+
+		ArucasAPI.Builder builder = new ArucasAPI.Builder()
+			.addDefault()
+			.setObfuscator(new ClientScriptObfuscator())
+			.setInput(ClientScriptIO.INSTANCE)
+			.setOutput(ClientScriptIO.INSTANCE)
+			.setLibraryManager(library)
+			.setInterpreterProperties(() -> {
+				Properties properties = new Properties();
+				properties.setErrorMaxLength(40);
+				properties.setLogDeprecated(true);
+				return properties;
+			});
+
+		MinecraftAPI.addMinecraftAPI(builder);
+
+		APIS.forEach(a -> a.apply(builder));
+		APIS = null;
+
+		try {
+			API = builder.build();
+		} catch (Exception e) {
+			EssentialClient.LOGGER.error("Failed to load Script API", e);
+			EssentialUtils.getClient().scheduleStop();
+			throw e;
+		}
+
 		generate();
 	}
 
 	public static ArucasAPI getApi() {
 		return API;
+	}
+
+	public static void addApi(ClientScriptAPI api) {
+		if (APIS == null) {
+			throw new IllegalStateException("ClientScript API has been locked, register your api earlier");
+		}
+		APIS.add(api);
 	}
 
 	public static void runFromContent(String scriptName, String scriptContent) {

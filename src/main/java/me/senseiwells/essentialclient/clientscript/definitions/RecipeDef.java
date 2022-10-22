@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
+import kotlin.Triple;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.ListDef;
@@ -19,7 +20,6 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import shadow.kotlin.Triple;
 
 import java.util.*;
 

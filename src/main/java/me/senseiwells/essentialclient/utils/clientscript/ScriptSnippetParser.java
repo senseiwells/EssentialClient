@@ -1,14 +1,13 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import kotlin.Pair;
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.api.docs.parser.SnippetParser;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
-import shadow.google.gson.Gson;
-import shadow.google.gson.JsonElement;
-import shadow.google.gson.JsonObject;
-import shadow.kotlin.Pair;
-import shadow.kotlin.TuplesKt;
 
 import java.util.*;
 
@@ -61,8 +60,8 @@ public class ScriptSnippetParser extends SnippetParser {
 			paramNames.add(name);
 			description.append("- Argument - ").append(type).append(" (`").append(name).append("`): ").append(desc).append('\n');
 		}
-
-		return TuplesKt.to(paramNames, description.toString());
+		
+		return new Pair<>(paramNames, description.toString());
 	}
 
 	private String listToString(List<String> list) {

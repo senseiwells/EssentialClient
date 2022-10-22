@@ -62,7 +62,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType) {
 		final int slotNumber = slot == null ? slotId : slot.id;
 		final String action = actionType.toString();
-		if (this.interpreter != null && this.interpreter.getThreadHandler().getRunning()) {
+		if (this.interpreter != null && this.function != null && this.interpreter.getThreadHandler().getRunning()) {
 			List<Slot> slots = this.handler.slots;
 			ItemStack stack = slotNumber < slots.size() && slotNumber >= 0 ? slots.get(slotNumber).getStack() : ItemStack.EMPTY;
 			Interpreter branch = this.interpreter.branch();

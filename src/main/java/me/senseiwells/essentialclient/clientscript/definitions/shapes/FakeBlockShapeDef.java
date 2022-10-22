@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
+import kotlin.Unit;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.ConstructorDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
@@ -22,7 +23,6 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import shadow.kotlin.Unit;
 
 import java.util.List;
 
