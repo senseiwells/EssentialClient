@@ -38,15 +38,15 @@ task publishToMavenLocalGather {
 		dependsOn project.name + ":publishToMavenLocal"
 	}
 	doFirst {
-		println(VERSION)
+		def tag = System.getenv("VERSION")
 		copy {
 			subprojects {
-				def dir = project.projectDir.listFiles()[0]
+				def dir = project.projectDir.toPath().resolve(tag)
 				println(dir)
-				def p = project.projectDir.parentFile.toPath().resolve(dir.getName())
-				println(p)
+				def newDir = project.projectDir.parentFile.toPath().resolve(tag)
+				println(newDir)
 				from(dir)
-				into p
+				into newDir
 				duplicatesStrategy DuplicatesStrategy.INCLUDE
 			}
 		}
