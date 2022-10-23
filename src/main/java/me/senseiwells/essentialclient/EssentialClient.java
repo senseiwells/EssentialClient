@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient;
 
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
-import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.feature.GameRuleNetworkHandler;
@@ -71,8 +70,6 @@ public class EssentialClient implements ModInitializer {
 			Scheduler.load();
 			ClientTickSyncer.load();
 		}, "EssentialClient Init Thread").start();
-
-		Scheduler.schedule(0, ClientScriptInstance::load);
 	}
 
 	public static void registerConfigs() {
