@@ -2603,6 +2603,18 @@ other wise it will print the contents without a new line
 print('Hello World', 'This is a test', 123);
 ```
 
+### `printDebug(printValue)`
+- Description: This logs something to the debug output.
+It only prints if debug mode is enabled: `debug(true)`
+- Parameter - Object (`printValue`): the value to print
+- Example:
+```kotlin
+debug(true); // Enable debug for testing
+if (true) {
+    printDebug("Inside if statement");
+}
+```
+
 ### `random(bound)`
 - Description: This is used to generate a random integer between 0 and the bound
 - Parameter - Number (`bound`): the maximum bound (exclusive)

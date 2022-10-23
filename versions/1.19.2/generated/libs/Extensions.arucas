@@ -95,6 +95,13 @@ fun print(printValue: Object): Null;
 fun print(printValue...: Object): Null;
 
 /*
+ * This logs something to the debug output.
+ * It only prints if debug mode is enabled: `debug(true)`
+ * Parameter - Object (printValue): the value to print
+ */
+fun printDebug(printValue: Object): Null;
+
+/*
  * This is used to generate a random integer between 0 and the bound
  * Parameter - Number (bound): the maximum bound (exclusive)
  * Returns - Number: the random integer
