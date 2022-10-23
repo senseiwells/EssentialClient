@@ -32,23 +32,3 @@ task buildAndGather {
 		}
 	}
 }
-
-task publishToMavenLocalGather {
-	subprojects {
-		dependsOn project.name + ":publishToMavenLocal"
-	}
-	doFirst {
-		def tag = System.getenv("VERSION")
-		copy {
-			subprojects {
-				def dir = project.projectDir.toPath().resolve(tag)
-				println(dir)
-				def newDir = project.projectDir.parentFile.toPath().resolve(tag)
-				println(newDir)
-				from(dir)
-				into newDir
-				duplicatesStrategy DuplicatesStrategy.INCLUDE
-			}
-		}
-	}
-}
