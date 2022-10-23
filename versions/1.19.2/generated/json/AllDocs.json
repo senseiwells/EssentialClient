@@ -231,6 +231,24 @@
         ]
       },
       {
+        "name": "printDebug",
+        "is_arbitrary": false,
+        "desc": [
+          "This logs something to the debug output.",
+          "It only prints if debug mode is enabled: `debug(true)`"
+        ],
+        "params": [
+          {
+            "name": "printValue",
+            "type": "Object",
+            "desc": "the value to print"
+          }
+        ],
+        "examples": [
+          "debug(true); // Enable debug for testing\nif (true) {\n    printDebug(\"Inside if statement\");\n}"
+        ]
+      },
+      {
         "name": "random",
         "is_arbitrary": false,
         "desc": [
