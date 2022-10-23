@@ -1,0 +1,54 @@
+/* Native, implemented in Kotlin
+ * This class allows you to create and manipulate JSON objects.
+ * This class cannot be instantiated or extended
+ * Import with 'import Json from util.Json'
+ */
+class Json {
+    /*
+     * This converts the Json back into an object
+     * Returns - Object: the Value parsed from the Json
+     */
+    fun getValue(): Object;
+
+    /*
+     * This writes the Json to a file
+     * if the file given is a directory or cannot be
+     * written to, an error will be thrown
+     * Parameter - File (file): the file that you want to write to
+     */
+    fun writeToFile(file: File): Null;
+
+    /*
+     * This will read a file and parse it into a Json
+     * Parameter - File (file): the file that you want to parse into a Json
+     * Returns - Json: the Json parsed from the file
+     */
+    static fun fromFile(file: File): Json;
+
+    /*
+     * This converts a list into a Json, an important thing to note is that
+     * any values that are not Numbers, Booleans, Lists, Maps, or Null will use their
+     * toString() member to convert them to a string
+     * Parameter - List (list): the list that you want to parse into a Json
+     * Returns - Json: the Json parsed from the list
+     */
+    static fun fromList(list: List): Json;
+
+    /*
+     * This converts a map into a Json, an important thing to note is that
+     * any values that are not Numbers, Booleans, Lists, Maps, or Null will use their
+     * toString() member to convert them to a string
+     * Parameter - Map (map): the map that you want to parse into a Json
+     * Returns - Json: the Json parsed from the map
+     */
+    static fun fromMap(map: Map): Json;
+
+    /*
+     * This converts a string into a Json provided it is formatted correctly,
+     * otherwise throwing an error
+     * Parameter - String (string): the string that you want to parse into a Json
+     * Returns - Json: the Json parsed from the string
+     */
+    static fun fromString(string: String): Json;
+}
+
