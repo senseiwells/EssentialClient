@@ -24,7 +24,7 @@ task buildAndGather {
 				def libDir = project.projectDir.toPath().resolve("build/libs")
 				from(libDir) {
 					include "*.jar"
-					exclude "*-dev.jar", "*-sources.jar"
+					exclude "*-dev.jar", "*-sources.jar", "*-all.jar"
 				}
 				into "build/libs/"
 				duplicatesStrategy DuplicatesStrategy.INCLUDE
