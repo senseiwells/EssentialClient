@@ -178,7 +178,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		String action = arguments.skip().nextPrimitive(StringDef.class);
 		MinecraftClient client = EssentialUtils.getClient();
 		switch (action.toLowerCase()) {
-			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.useKey);
+			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.useKey, 3);
 			case "stop" -> ClientScriptUtils.releaseKey(client.options.useKey);
 			case "once" -> ((MinecraftClientInvoker) client).rightClickMouseAccessor();
 			default -> throw new RuntimeError("Must pass 'hold', 'stop' or 'once' into use()");
@@ -199,7 +199,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		String action = arguments.skip().nextPrimitive(StringDef.class);
 		MinecraftClient client = EssentialUtils.getClient();
 		switch (action.toLowerCase()) {
-			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.attackKey);
+			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.attackKey, 1);
 			case "stop" -> ClientScriptUtils.releaseKey(client.options.attackKey);
 			case "once" -> ((MinecraftClientInvoker) client).leftClickMouseAccessor();
 			default -> throw new RuntimeError("Must pass 'hold', 'stop' or 'once' into attack()");

@@ -31,6 +31,7 @@ public class ScriptConfigHandler implements Config.CList {
 		this.configs = new ConcurrentHashMap<>();
 		this.interpreter = interpreter;
 		this.name = name;
+		this.save = true;
 
 		if (read) {
 			this.readConfig();

@@ -71,14 +71,12 @@ import java.util.function.Supplier;
 
 public class ClientScriptUtils {
 	private static final Set<String> WARNED = ConcurrentHashMap.newKeySet();
-	private static final Set<KeyBinding> HELD_KEYS = ConcurrentHashMap.newKeySet();
+	private static final Map<String, TickedKey> HELD_KEYS = new ConcurrentHashMap<>();
 
 	static {
 		Events.ON_TICK_POST.register(client -> {
-			for (KeyBinding binding : HELD_KEYS) {
-				InputUtil.Key key = ((KeyBindingAccessor) binding).getBoundKey();
-				binding.setPressed(true);
-				KeyBinding.onKeyPressed(key);
+			for (TickedKey key : HELD_KEYS.values()) {
+				key.tick();
 			}
 		});
 	}
@@ -123,21 +121,21 @@ public class ClientScriptUtils {
 		});
 	}
 
-	public static void holdKey(Interpreter interpreter, KeyBinding key) {
+	public static void holdKey(Interpreter interpreter, KeyBinding key, int interval) {
 		if (interpreter.getThreadHandler().getRunning()) {
-			HELD_KEYS.add(key);
+			HELD_KEYS.put(key.getTranslationKey(), new TickedKey(key, interval));
 			interpreter.getThreadHandler().addShutdownEvent(() -> releaseKey(key));
 		}
 	}
 
 	public static void releaseKey(KeyBinding key) {
-		HELD_KEYS.remove(key);
+		HELD_KEYS.remove(key.getTranslationKey());
 		key.setPressed(false);
 	}
 
 	public static void modifyKey(Interpreter interpreter, boolean held, KeyBinding key) {
 		if (held) {
-			holdKey(interpreter, key);
+			holdKey(interpreter, key, 0);
 		} else {
 			releaseKey(key);
 		}
@@ -599,6 +597,26 @@ public class ClientScriptUtils {
 	private static <T extends PrimitiveDefinition<V>, V> V getFieldInMap(ArucasMap map, Interpreter interpreter, String field, Class<T> type) {
 		ClassInstance instance = map.get(interpreter, interpreter.create(StringDef.class, field));
 		return instance == null ? null : instance.getPrimitive(type);
+	}
+
+	public static class TickedKey {
+		private final KeyBinding binding;
+		private final int interval;
+		private int tick = 0;
+
+		public TickedKey(KeyBinding binding, int interval) {
+			this.binding = binding;
+			this.interval = interval;
+		}
+
+		void tick() {
+			if (this.tick++ >= this.interval) {
+				this.binding.setPressed(true);
+				InputUtil.Key key = ((KeyBindingAccessor) this.binding).getBoundKey();
+				KeyBinding.onKeyPressed(key);
+				this.tick = 0;
+			}
+		}
 	}
 
 	public static class CommandParser {

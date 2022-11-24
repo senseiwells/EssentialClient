@@ -1,12 +1,15 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
+import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +29,10 @@ public class MinecraftClientMixin {
 	@Shadow
 	@org.jetbrains.annotations.Nullable
 	public Screen currentScreen;
+
+	@Shadow
+	@Final
+	public GameOptions options;
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void onTick(CallbackInfo ci) {
@@ -74,6 +81,12 @@ public class MinecraftClientMixin {
 			MinecraftScriptEvents.ON_OPEN_SCREEN.run(screen);
 		} else {
 			MinecraftScriptEvents.ON_CLOSE_SCREEN.run(this.currentScreen);
+
+			Scheduler.schedule(0, () -> {
+				// Needed for attack("hold")
+				// Also needs to happen after this may have been set to true
+				this.options.attackKey.setPressed(false);
+			});
 		}
 	}
 }
