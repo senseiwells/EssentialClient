@@ -19,7 +19,7 @@ class Json {
     fun writeToFile(file: File): Null;
 
     /*
-     * This will read a file and parse it into a Json
+     * This will read a file and parse it into a Json, this will throw an error if the file cannot be read
      * Parameter - File (file): the file that you want to parse into a Json
      * Returns - Json: the Json parsed from the file
      */

@@ -897,7 +897,7 @@
   "Static Method File.getDirectory()": {
     "prefix": "File.getDirectory()",
     "body": "File.getDirectory()",
-    "description": "File.getDirectory()\nThis returns the file of the working directory\n"
+    "description": "File.getDirectory()\nThis returns the file of user directory\n"
   },
   "Method <File>.createDirectory()": {
     "prefix": ".createDirectory()",
@@ -1377,7 +1377,7 @@
   "Static Method Json.fromFile(file)": {
     "prefix": "Json.fromFile(file)",
     "body": "Json.fromFile($file)",
-    "description": "Json.fromFile(file)\nThis will read a file and parse it into a Json\n- Parameter - File (`file`): the file that you want to parse into a Json\n"
+    "description": "Json.fromFile(file)\nThis will read a file and parse it into a Json, this will throw an error if the file cannot be read\n- Parameter - File (`file`): the file that you want to parse into a Json\n"
   },
   "Static Method Json.fromList(list)": {
     "prefix": "Json.fromList(list)",

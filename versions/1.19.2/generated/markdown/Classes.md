@@ -1925,7 +1925,7 @@ file.write('Hello World!');
 ## Static Methods
 
 ### `File.getDirectory()`
-- Description: This returns the file of the working directory
+- Description: This returns the file of user directory
 - Returns - File: the file of the working directory
 - Example:
 ```kotlin
@@ -2867,7 +2867,7 @@ json.writeToFile(new File('D:/cool/realDirectory'));
 ## Static Methods
 
 ### `Json.fromFile(file)`
-- Description: This will read a file and parse it into a Json
+- Description: This will read a file and parse it into a Json, this will throw an error if the file cannot be read
 - Parameter - File (`file`): the file that you want to parse into a Json
 - Returns - Json: the Json parsed from the file
 - Example:

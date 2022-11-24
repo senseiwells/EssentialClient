@@ -172,7 +172,7 @@ class File {
     fun write(string: String): Null;
 
     /*
-     * This returns the file of the working directory
+     * This returns the file of user directory
      * Returns - File: the file of the working directory
      */
     static fun getDirectory(): File;

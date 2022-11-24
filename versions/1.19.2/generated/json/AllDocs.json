@@ -3829,7 +3829,7 @@
           "name": "getDirectory",
           "is_arbitrary": false,
           "desc": [
-            "This returns the file of the working directory"
+            "This returns the file of user directory"
           ],
           "returns": {
             "type": "File",
@@ -5547,7 +5547,7 @@
           "name": "fromFile",
           "is_arbitrary": false,
           "desc": [
-            "This will read a file and parse it into a Json"
+            "This will read a file and parse it into a Json, this will throw an error if the file cannot be read"
           ],
           "params": [
             {
