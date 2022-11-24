@@ -64,8 +64,8 @@ dependencies {
 	}
 
 	// Mixin Extras
-	shade implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
-	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
+	shade implementation("com.github.LlamaLad7:MixinExtras:0.1.1")
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.1.1"
 
 	// Runtime Fabric API
 	modImplementation fabricApi.module("fabric-textures-v0", project.fabric_version)
