@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientNick;
 
+import com.mojang.authlib.GameProfile;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
@@ -37,7 +38,11 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MessageHandlerMixin {
 	//#if MC >= 11901
 	@ModifyExpressionValue(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/message/MessageType$Parameters;applyChatDecoration(Lnet/minecraft/text/Text;)Lnet/minecraft/text/Text;"))
-	private Text modifyChatMessage(Text text, SignedMessage signedMessage, MessageType.Parameters params) {
+	//#if MC >= 11903
+	private Text modifyChatMessage(Text text, SignedMessage signedMessage, GameProfile profile, MessageType.Parameters params) {
+		//#else
+		//$$private Text modifyChatMessage(Text text, SignedMessage signedMessage, MessageType.Parameters params) {
+		//#endif
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			//#if MC >= 11903
 			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(signedMessage.getSender());
