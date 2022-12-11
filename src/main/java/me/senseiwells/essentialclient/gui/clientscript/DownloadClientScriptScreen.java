@@ -1,8 +1,8 @@
 package me.senseiwells.essentialclient.gui.clientscript;
 
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 import static me.senseiwells.essentialclient.utils.render.Texts.DONE;
@@ -21,7 +21,7 @@ public class DownloadClientScriptScreen extends ChildScreen.Typed<ClientScriptSc
 		}
 		this.widget = new DownloadClientScriptWidget(this.client, this);
 		this.addSelectableChild(this.widget);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, DONE, button -> this.close()));
+		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, DONE, button -> this.close()));
 	}
 
 	@Override

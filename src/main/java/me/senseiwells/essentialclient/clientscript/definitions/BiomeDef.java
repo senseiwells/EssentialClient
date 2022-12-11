@@ -11,12 +11,10 @@ import me.senseiwells.arucas.utils.LocatableTrace;
 import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
@@ -38,8 +36,8 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 
 	@Override
 	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
-		Identifier key = BuiltinRegistries.BIOME.getId(instance.asPrimitive(this));
-		return "Biome{id=" + (key == null ? "plains" : key.getPath()) + "}";
+		Identifier id = RegistryHelper.getBiomeRegistry().getId(instance.asPrimitive(this));
+		return "Biome{id=" + (id == null ? "plains" : id.getPath()) + "}";
 	}
 
 	@Override
@@ -218,7 +216,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	)
 	private String getId(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
-		Identifier id = EssentialUtils.getNetworkHandler().getRegistryManager().get(Registry.BIOME_KEY).getId(biome);
+		Identifier id = RegistryHelper.getBiomeRegistry().getId(biome);
 		return id == null ? "plains" : id.getPath();
 	}
 

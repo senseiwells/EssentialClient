@@ -2,10 +2,10 @@ package me.senseiwells.essentialclient.mixins.core;
 
 import me.senseiwells.essentialclient.gui.config.ConfigScreen;
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
@@ -29,7 +29,7 @@ public abstract class TitleScreenMixin extends Screen {
 	@Inject(method = "initWidgetsNormal", at = @At("TAIL"))
 	private void onInit(CallbackInfo ci) {
 		if (this.client != null && ClientRules.ESSENTIAL_CLIENT_BUTTON.getValue()) {
-			this.addDrawableChild(new ButtonWidget(
+			this.addDrawableChild(WidgetHelper.newButton(
 				this.width / 2 - 100,
 				this.height / 4 + 120,
 				200, 20,

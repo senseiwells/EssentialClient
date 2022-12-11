@@ -16,17 +16,20 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
-	//#if MC >= 11901
-	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, @Nullable PlayerPublicKey publicKey) {
-		super(world, pos, yaw, gameProfile, publicKey);
+	//#if MC >= 11903
+	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+		super(world, pos, yaw, gameProfile);
 	}
+	//#elseif MC >= 11901
+	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, PlayerPublicKey publicKey) {
+	//$$	super(world, pos, yaw, gameProfile, publicKey);
+	//$$}
 	//#else
 	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
 	//$$	super(world, pos, yaw, profile);

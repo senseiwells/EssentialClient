@@ -16,6 +16,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -25,14 +26,18 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.EmptyBlockView;
+
+//#if MC >= 11903
+import net.minecraft.registry.tag.BlockTags;
+//#else
+//$$import net.minecraft.tag.BlockTags;
+//#endif
 
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +101,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	private BlockState of(Arguments arguments) {
 		if (arguments.isNext(StringDef.class)) {
 			String id = arguments.nextPrimitive(StringDef.class);
-			return Registry.BLOCK.getOrEmpty(ClientScriptUtils.stringToIdentifier(id)).orElseThrow(
+			return RegistryHelper.getBlockRegistry().getOrEmpty(ClientScriptUtils.stringToIdentifier(id)).orElseThrow(
 				() -> new RuntimeError("'%s' is not a value block".formatted(id))
 			).getDefaultState();
 		}

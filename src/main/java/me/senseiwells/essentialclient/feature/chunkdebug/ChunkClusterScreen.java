@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -28,7 +29,7 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 		super.init();
 		this.chunkWidget = new ChunkListWidget();
 		this.addSelectableChild(this.chunkWidget);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
+		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 			//#else
 			//$$this.around = new ChunkPos(group.stream().findAny().orElse(0L));
 			//#endif
-			this.viewButton = new ButtonWidget(0, 0, 75, 20, Texts.VIEW, button -> {
+			this.viewButton = WidgetHelper.newButton(0, 0, 75, 20, Texts.VIEW, button -> {
 				ChunkGrid.instance.setCentre(this.around.x, this.around.z);
 				EssentialUtils.getClient().setScreen(new ChunkDebugScreen(parent.getParent().getParent()));
 			});
@@ -91,8 +92,7 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 		@Override
 		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			EssentialUtils.getClient().textRenderer.draw(matrices, "Cluster of " + this.group.size() + " chunks around " + this.around, x - 30, y + entryHeight / 2.0F - 9 / 2.0F, 0xFFFFFF);
-			this.viewButton.x = x + 190;
-			this.viewButton.y = y;
+			WidgetHelper.setPosition(this.viewButton, x + 190, y);
 
 			this.viewButton.render(matrices, mouseX, mouseY, tickDelta);
 		}

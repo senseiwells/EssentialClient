@@ -12,6 +12,7 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,12 +35,16 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+
+//#if MC >= 11903
+import org.joml.Vector3f;
+//#else
+//$$import net.minecraft.util.math.Vec3f;
+//#endif
 
 public class MinecraftAPI {
 	public static final String
@@ -138,7 +143,11 @@ public class MinecraftAPI {
 		builder.addConversion(MutableText.class, (t, i) -> i.create(TextDef.class, t));
 		builder.addConversion(Text.class, (t, i) -> i.create(TextDef.class, t.copy()));
 		builder.addConversion(Vec3d.class, (p, i) -> i.create(PosDef.class, new ScriptPos(p)));
-		builder.addConversion(Vec3f.class, (p, i) -> i.create(PosDef.class, new ScriptPos(new Vec3d(p))));
+		//#if MC >= 11903
+		builder.addConversion(Vector3f.class, (p, i) -> i.create(PosDef.class, new ScriptPos(new Vec3d(p))));
+		//#else
+		//$$builder.addConversion(Vec3f.class, (p, i) -> i.create(PosDef.class, new ScriptPos(new Vec3d(p))));
+		//#endif
 		builder.addConversion(BlockPos.class, (b, i) -> i.create(PosDef.class, new ScriptPos(b)));
 		builder.addConversion(Vec3i.class, (p, i) -> i.create(PosDef.class, new ScriptPos(new Vec3d(p.getX(), p.getY(), p.getZ()))));
 		builder.addConversion(ScriptBlockState.class, (s, i) -> i.create(BlockDef.class, s));
@@ -153,6 +162,6 @@ public class MinecraftAPI {
 		builder.addConversion(ItemStackArgument.class, (s, i) -> EssentialUtils.throwAsUnchecked(() -> i.create(ItemStackDef.class, new ScriptItemStack(s.createStack(1, false)))));
 		builder.addConversion(BlockStateArgument.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b.getBlockState(), null)));
 		builder.addConversion(Identifier.class, (id, i) -> i.create(StringDef.class, id.toString()));
-		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(Registry.ENCHANTMENT.getId(e)));
+		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(RegistryHelper.getEnchantmentRegistry().getId(e)));
 	}
 }

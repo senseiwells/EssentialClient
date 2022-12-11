@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
@@ -43,11 +44,11 @@ public class ClientScriptScreen extends ChildScreen {
 		int height = this.height - 27;
 		this.scriptWidget = new ClientScriptWidget(this.client, this);
 		this.addSelectableChild(this.scriptWidget);
-		this.addDrawableChild(new ButtonWidget(10, height, 100, 20, REFRESH, button -> this.refresh()));
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, height, 200, 20, DONE, button -> this.close()));
-		this.addDrawableChild(new ButtonWidget(this.width - 110, height, 100, 20, DOCUMENTATION, button -> Util.getOperatingSystem().open(EssentialUtils.SCRIPT_WIKI_URL)));
-		this.addDrawableChild(new ButtonWidget(10, 10, 80, 20, NEW, button -> this.client.setScreen(new CreateClientScriptScreen(this))));
-		this.addDrawableChild(new ButtonWidget(this.width - 90, 10, 80, 20, DOWNLOAD, button -> this.client.setScreen(new DownloadClientScriptScreen(this))));
+		this.addDrawableChild(WidgetHelper.newButton(10, height, 100, 20, REFRESH, button -> this.refresh()));
+		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, height, 200, 20, DONE, button -> this.close()));
+		this.addDrawableChild(WidgetHelper.newButton(this.width - 110, height, 100, 20, DOCUMENTATION, button -> Util.getOperatingSystem().open(EssentialUtils.SCRIPT_WIKI_URL)));
+		this.addDrawableChild(WidgetHelper.newButton(10, 10, 80, 20, NEW, button -> this.client.setScreen(new CreateClientScriptScreen(this))));
+		this.addDrawableChild(WidgetHelper.newButton(this.width - 90, 10, 80, 20, DOWNLOAD, button -> this.client.setScreen(new DownloadClientScriptScreen(this))));
 	}
 
 	@Override
@@ -106,8 +107,8 @@ public class ClientScriptScreen extends ChildScreen {
 			this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, SCRIPT_NAME);
 			this.nameBox.setText(scriptName);
 			this.nameBox.setChangedListener(s -> this.newName = s);
-			this.openBox = new ButtonWidget(0, 0, 200, 20, OPEN_SCRIPT, button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
-			this.deleteBox = new ButtonWidget(0, 0, 200, 20, DELETE_SCRIPT, button -> {
+			this.openBox = WidgetHelper.newButton(0, 0, 200, 20, OPEN_SCRIPT, button -> Util.getOperatingSystem().open(this.scriptInstance.getFileLocation().toFile()));
+			this.deleteBox = WidgetHelper.newButton(0, 0, 200, 20, DELETE_SCRIPT, button -> {
 				try {
 					this.scriptInstance.delete();
 					this.getParent().scriptWidget.clear();
@@ -117,7 +118,7 @@ public class ClientScriptScreen extends ChildScreen {
 					EssentialClient.LOGGER.error("Failed to delete script", e);
 				}
 			});
-			this.keyBindBox = new ButtonWidget(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
+			this.keyBindBox = WidgetHelper.newButton(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
 			this.selectedCheck = new SelectedCheckBox(scriptName);
 			this.newName = "";
 		}
@@ -126,20 +127,17 @@ public class ClientScriptScreen extends ChildScreen {
 		protected void init() {
 			int halfHeight = this.height / 2;
 			int halfWidth = this.width / 2;
-			this.nameBox.x = this.openBox.x = this.deleteBox.x = halfWidth - 100;
-			this.keyBindBox.x = halfWidth - 50;
-			this.selectedCheck.x = this.keyBindBox.x + 80;
-			this.nameBox.y = halfHeight - 55;
-			this.openBox.y = halfHeight - 25;
-			this.deleteBox.y = halfHeight;
-			this.keyBindBox.y = halfHeight + 25;
-			this.selectedCheck.y = halfHeight + 25;
+			WidgetHelper.setPosition(this.nameBox, halfWidth - 100, halfHeight - 55);
+			WidgetHelper.setPosition(this.openBox, halfHeight - 100, halfHeight - 25);
+			WidgetHelper.setPosition(this.deleteBox, halfHeight - 100, halfHeight);
+			WidgetHelper.setPosition(this.keyBindBox, halfWidth - 50, halfHeight + 25);
+			WidgetHelper.setPosition(this.selectedCheck, WidgetHelper.getX(this.keyBindBox) + 80, halfHeight + 25);
 			this.addDrawableChild(this.nameBox);
 			this.addDrawableChild(this.openBox);
 			this.addDrawableChild(this.deleteBox);
 			this.addDrawableChild(this.keyBindBox);
 			this.addDrawableChild(this.selectedCheck);
-			this.addDrawableChild(new ButtonWidget(halfWidth - 100, this.height - 27, 200, 20, DONE, button -> this.close()));
+			this.addDrawableChild(WidgetHelper.newButton(halfWidth - 100, this.height - 27, 200, 20, DONE, button -> this.close()));
 			this.setFocused(this.nameBox);
 			super.init();
 		}

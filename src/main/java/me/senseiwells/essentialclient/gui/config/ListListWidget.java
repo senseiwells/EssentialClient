@@ -1,6 +1,7 @@
 package me.senseiwells.essentialclient.gui.config;
 
 import com.google.common.collect.ImmutableList;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -78,12 +79,12 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 			this.textField.setMaxLength(maxLength);
 			this.textField.setText(value);
 
-			this.addButton = new ButtonWidget(0, 0, 20, 20, Text.of("+"), button -> {
+			this.addButton = WidgetHelper.newButton(0, 0, 20, 20, Text.of("+"), button -> {
 				ListListWidget.this.listScreen.saveEntries();
 				ListListWidget.this.listScreen.getValues().add(index, "");
 				ListListWidget.this.reloadEntries();
 			});
-			this.removeButton = new ButtonWidget(0, 0, 20, 20, Text.of("-"), button -> {
+			this.removeButton = WidgetHelper.newButton(0, 0, 20, 20, Text.of("-"), button -> {
 				ListListWidget.this.listScreen.saveEntries();
 				ListListWidget.this.listScreen.getValues().remove(index - 1);
 				ListListWidget.this.reloadEntries();
@@ -114,12 +115,9 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 
 			font.draw(matrices, String.valueOf(this.index), fontX, fontY, 0xFFFFFF);
 
-			this.textField.x = x + 65;
-			this.textField.y = y;
-
-			this.addButton.y = this.removeButton.y = y;
-			this.addButton.x = x + 235;
-			this.removeButton.x = x + 255;
+			WidgetHelper.setPosition(this.textField, x + 65, y);
+			WidgetHelper.setPosition(this.addButton, x + 235, y);
+			WidgetHelper.setPosition(this.removeButton, x + 255, y);
 
 			this.textField.render(matrices, mouseX, mouseY, delta);
 			this.addButton.render(matrices, mouseX, mouseY, delta);

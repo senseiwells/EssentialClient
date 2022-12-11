@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelectorOptions;
@@ -21,20 +22,28 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.predicate.NumberRange;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.ServerCommandSource;
 
-//#if MC >= 11800
-import net.minecraft.tag.TagKey;
+//#if MC >= 11903
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
+//#elseif MC >= 11800
+//$$import net.minecraft.tag.TagKey;
 //#else
 //$$import net.minecraft.tag.EntityTypeTags;
 //$$import net.minecraft.tag.Tag;
+//#endif
+
+//#if MC < 11903
+//$$import net.minecraft.util.registry.Registry;
 //#endif
 
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -559,16 +568,20 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 					@Override
 					void apply(Parser parser) throws CommandSyntaxException {
 						parser.suggestor = (builder, playerNameSuggest) -> {
-							CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.getIds(), builder, "!");
+							Registry<EntityType<?>> entityTypes = RegistryHelper.getEntityTypeRegistry();
+
+							CommandSource.suggestIdentifiers(entityTypes.getIds(), builder, "!");
+
 							//#if MC >= 11800
-							CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.streamTags().map(TagKey::id), builder, "!#");
+							CommandSource.suggestIdentifiers(entityTypes.streamTags().map(TagKey::id), builder, "!#");
 							//#else
 							//$$CommandSource.suggestIdentifiers(EntityTypeTags.getTagGroup().getTagIds(), builder, "!#");
 							//#endif
+
 							if (!parser.hasType) {
-								CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.getIds(), builder);
+								CommandSource.suggestIdentifiers(entityTypes.getIds(), builder);
 								//#if MC >= 11800
-								CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.streamTags().map(TagKey::id), builder, String.valueOf('#'));
+								CommandSource.suggestIdentifiers(entityTypes.streamTags().map(TagKey::id), builder, String.valueOf('#'));
 								//#else
 								//$$CommandSource.suggestIdentifiers(EntityTypeTags.getTagGroup().getTagIds(), builder, String.valueOf('#'));
 								//#endif
@@ -580,8 +593,14 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						boolean neg = parser.readNegationCharacter();
 
 						if (parser.readTagCharacter()) {
+							//#if MC >= 11903
+							RegistryKey<Registry<EntityType<?>>> keyEntityTypes = RegistryKeys.ENTITY_TYPE;
+							//#else
+							//$$RegistryKey<Registry<EntityType<?>>> keyEntityTypes = Registry.ENTITY_TYPE_KEY;
+							//#endif
+
 							//#if MC >= 11800
-							TagKey<EntityType<?>> tagKey = TagKey.of(Registry.ENTITY_TYPE_KEY, Identifier.fromCommandInput(parser.reader));
+							TagKey<EntityType<?>> tagKey = TagKey.of(keyEntityTypes, Identifier.fromCommandInput(parser.reader));
 							parser.addFilter((origin, entity) -> entity.getType().isIn(tagKey) != neg);
 							//#else
 							//$$Identifier typeId = Identifier.fromCommandInput(parser.reader);
@@ -596,8 +615,10 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 							//$$});
 							//#endif
 						} else {
+							Registry<EntityType<?>> entityTypes = RegistryHelper.getEntityTypeRegistry();
+
 							Identifier typeId = Identifier.fromCommandInput(parser.reader);
-							EntityType<?> type = Registry.ENTITY_TYPE.getOrEmpty(typeId).orElseThrow(() -> {
+							EntityType<?> type = entityTypes.getOrEmpty(typeId).orElseThrow(() -> {
 								parser.reader.setCursor(cursor);
 								return EntitySelectorOptions.INVALID_TYPE_EXCEPTION.createWithContext(parser.reader, typeId);
 							});

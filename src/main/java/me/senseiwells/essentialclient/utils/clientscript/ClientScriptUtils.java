@@ -38,14 +38,22 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
-//#if MC >= 11901
-import net.minecraft.command.CommandRegistryWrapper;
+//#if MC >= 11903
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
+//#elseif MC >= 11901
+//$$import net.minecraft.command.CommandRegistryWrapper;
+//#endif
+
+//#if MC < 11903
+//$$import net.minecraft.util.registry.Registry;
 //#endif
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.screen.slot.SlotActionType;
@@ -60,7 +68,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.RaycastContext;
 
 import java.util.*;
@@ -267,8 +274,14 @@ public class ClientScriptUtils {
 
 	public static ItemStack stringToItemStack(String string) {
 		try {
+			//#if MC >= 11903
+			RegistryWrapper<Item> wrapper = CommandRegister.getRegistryAccess().createWrapper(RegistryKeys.ITEM);
+			//#elseif MC >= 11901
+			//$$RegistryWrapper<Item> wrapper = CommandRegistryWrapper.of(Registry.ITEM);
+			//#endif
+
 			//#if MC >= 11901
-			ItemStringReader.ItemResult reader = ItemStringReader.item(CommandRegistryWrapper.of(Registry.ITEM), new StringReader(string));
+			ItemStringReader.ItemResult reader = ItemStringReader.item(wrapper, new StringReader(string));
 			ItemStack itemStack = new ItemStack(reader.item());
 			itemStack.setNbt(reader.nbt());
 			return itemStack;
@@ -525,17 +538,28 @@ public class ClientScriptUtils {
 			case "entities" -> ClientEntityArgumentType.entities();
 			case "blockpos" -> BlockPosArgumentType.blockPos();
 			case "pos" -> Vec3ArgumentType.vec3();
-			case "effect" -> StatusEffectArgumentType.statusEffect();
-			case "particle" -> ParticleEffectArgumentType.particleEffect();
-			case "enchantmentid" -> EnchantmentArgumentType.enchantment();
+			//#if MC >= 11903
+			case "effect" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.STATUS_EFFECT);
+			case "particle" -> ParticleEffectArgumentType.particleEffect(CommandRegister.getRegistryAccess());
+			case "enchantmentid" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENCHANTMENT);
+			//#else
+			//$$case "effect" -> StatusEffectArgumentType.statusEffect();
+			//$$case "particle" -> ParticleEffectArgumentType.particleEffect();
+			//$$case "enchantmentid" -> EnchantmentArgumentType.enchantment();
+			//#endif
+			case "entityid" -> {
+				extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
+				//#if MC >= 11903
+				yield RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENTITY_TYPE);
+				//#else
+				//$$yield EntitySummonArgumentType.entitySummon();
+				//#endif
+			}
 			case "recipeid" -> {
 				extraSuggestion = SuggestionProviders.ALL_RECIPES;
 				yield IdentifierArgumentType.identifier();
 			}
-			case "entityid" -> {
-				extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
-				yield EntitySummonArgumentType.entitySummon();
-			}
+
 			case "playername" -> {
 				extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
 				yield StringArgumentType.word();

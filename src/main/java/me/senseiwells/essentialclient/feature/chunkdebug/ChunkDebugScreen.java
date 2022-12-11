@@ -3,12 +3,12 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -42,12 +42,12 @@ public class ChunkDebugScreen extends ChildScreen {
 		int buttonWidth = (this.width - FOOTER_ROW_PADDING * 4) / 3;
 		int buttonHeight = this.height - FOOTER_ROW_HEIGHT * 3 + FOOTER_ROW_PADDING * 2;
 		Text dimensionText = ChunkGrid.instance.getPrettyDimension();
-		ButtonWidget dimensionButton = this.addDrawableChild(new ButtonWidget(FOOTER_ROW_PADDING, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, dimensionText, button -> {
+		ButtonWidget dimensionButton = this.addDrawableChild(WidgetHelper.newButton(FOOTER_ROW_PADDING, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, dimensionText, button -> {
 			ChunkGrid.instance.cycleDimension();
 			button.setMessage(ChunkGrid.instance.getPrettyDimension());
 			EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 		}));
-		this.addDrawableChild(new ButtonWidget(buttonWidth + FOOTER_ROW_PADDING * 2, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.RETURN_TO_PLAYER, button -> {
+		this.addDrawableChild(WidgetHelper.newButton(buttonWidth + FOOTER_ROW_PADDING * 2, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.RETURN_TO_PLAYER, button -> {
 			if (this.client.player != null) {
 				ChunkGrid.instance.setDimension(this.client.player.world);
 				dimensionButton.setMessage(ChunkGrid.instance.getPrettyDimension());
@@ -60,7 +60,7 @@ public class ChunkDebugScreen extends ChildScreen {
 			}
 		}));
 		Text initialMinimapText = ChunkGrid.instance.getMinimapMode().prettyName;
-		this.addDrawableChild(new ButtonWidget(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, initialMinimapText, button -> {
+		this.addDrawableChild(WidgetHelper.newButton(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, initialMinimapText, button -> {
 			ChunkGrid.instance.cycleMinimap();
 			button.setMessage(ChunkGrid.instance.getMinimapMode().prettyName);
 		}));
@@ -69,7 +69,7 @@ public class ChunkDebugScreen extends ChildScreen {
 		this.xPositionBox.setInitialValue(ChunkGrid.instance.getCentreX());
 		this.zPositionBox = new NumberFieldWidget(this.textRenderer, buttonWidth + FOOTER_ROW_PADDING * 2 + 28, buttonHeight, buttonWidth - 30, 20, Texts.Z);
 		this.zPositionBox.setInitialValue(ChunkGrid.instance.getCentreZ());
-		this.addDrawableChild(new ButtonWidget(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.REFRESH, button -> {
+		this.addDrawableChild(WidgetHelper.newButton(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.REFRESH, button -> {
 			if (hasControlDown()) {
 				ChunkHandler.clearAllChunks();
 				EssentialClient.CHUNK_NET_HANDLER.requestServerRefresh();
@@ -78,7 +78,7 @@ public class ChunkDebugScreen extends ChildScreen {
 				EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 			}
 		}));
-		this.addDrawableChild(new ButtonWidget(5, 5, 90, 20, Texts.CHUNK_CLUSTER_SCREEN, button -> {
+		this.addDrawableChild(WidgetHelper.newButton(5, 5, 90, 20, Texts.CHUNK_CLUSTER_SCREEN, button -> {
 			this.client.setScreen(new ChunkClusterScreen(ChunkHandler.getChunkCluster(ChunkGrid.instance.getDimension()), this));
 		}));
 
@@ -168,7 +168,7 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	private void drawHeaderAndFooterTexture(Tessellator tessellator, BufferBuilder bufferBuilder) {
-		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
 		RenderSystem.setShaderTexture(0, OPTIONS_BACKGROUND_TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.enableTexture();

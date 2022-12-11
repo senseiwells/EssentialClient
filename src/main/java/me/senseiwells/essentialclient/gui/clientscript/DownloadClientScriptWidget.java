@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.gui.clientscript;
 import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager.Category;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -73,10 +74,10 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 
 		ScriptListEntry(Category category, String scriptName) {
 			this.scriptName = scriptName;
-			this.viewButton = new ButtonWidget(0, 0, 50, 20, Texts.VIEW, button -> {
+			this.viewButton = WidgetHelper.newButton(0, 0, 50, 20, Texts.VIEW, button -> {
 				Util.getOperatingSystem().open(ScriptRepositoryManager.INSTANCE.getViewableLink(category, scriptName));
 			});
-			this.downloadButton = new ButtonWidget(0, 0, 60, 20, Texts.DOWNLOAD.copy().formatted(Formatting.DARK_GREEN), button -> {
+			this.downloadButton = WidgetHelper.newButton(0, 0, 60, 20, Texts.DOWNLOAD.copy().formatted(Formatting.DARK_GREEN), button -> {
 				ToastManager toastManager = DownloadClientScriptWidget.this.client.getToastManager();
 				if (ScriptRepositoryManager.INSTANCE.downloadScript(category, scriptName, true)) {
 					SystemToast.show(
@@ -97,9 +98,8 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			float width = x - 20 - DownloadClientScriptWidget.this.maxScriptNameLength;
 			DownloadClientScriptWidget.this.client.textRenderer.draw(matrices, this.scriptName, width, y + entryHeight / 2.0F - 9 / 2.0F, 0xFFFFFF);
-			this.downloadButton.x = x + 155;
-			this.viewButton.x = x + 100;
-			this.downloadButton.y = this.viewButton.y = y;
+			WidgetHelper.setPosition(this.downloadButton, x + 155, y);
+			WidgetHelper.setPosition(this.viewButton, x + 100, y);
 			this.viewButton.render(matrices, mouseX, mouseY, tickDelta);
 			this.downloadButton.render(matrices, mouseX, mouseY, tickDelta);
 		}

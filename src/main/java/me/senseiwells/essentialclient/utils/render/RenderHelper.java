@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.utils.render;
 
-import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.*;
@@ -18,13 +17,19 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LightType;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import java.util.function.Consumer;
+
+//#if MC >= 11903
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+//#endif
 
 public class RenderHelper {
 	@SuppressWarnings("deprecation")
@@ -70,7 +75,7 @@ public class RenderHelper {
 		RenderSystem.depthMask(true);
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 	}
 
 	private static void renderBoxes(MatrixStack matrices) {
@@ -93,7 +98,7 @@ public class RenderHelper {
 	}
 
 	private static void drawBoxOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptBox>> forEach) {
-		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
 		bufferBuilder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 		forEach.accept(box -> {
 			if (box.getOutlineWidth() >= 1) {
@@ -105,7 +110,7 @@ public class RenderHelper {
 	}
 
 	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptBox>> forEach) {
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		forEach.accept(box -> {
 			addBoxToBuffer(bufferBuilder, matrices, cameraPos, box, false);
@@ -235,7 +240,7 @@ public class RenderHelper {
 	}
 
 	private static void drawSpheresOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptSphere>> forEach) {
-		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
 		bufferBuilder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 		forEach.accept(sphere -> {
 			if (sphere.getOutlineWidth() >= 1) {
@@ -247,7 +252,7 @@ public class RenderHelper {
 	}
 
 	private static void drawSpheres(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptSphere>> forEach) {
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		forEach.accept(sphere -> {
 			addSphereToBuffer(bufferBuilder, matrices, cameraPos, sphere, false);
@@ -291,9 +296,15 @@ public class RenderHelper {
 					float x = radius * MathHelper.sin(phi) * MathHelper.cos(theta);
 					float z = radius * MathHelper.sin(phi) * MathHelper.sin(theta);
 					float y = radius * MathHelper.cos(phi);
-					Vec3f normalVector = new Vec3f(x, y, z);
+					//#if MC >= 11903
+					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
-					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.getX(), normalVector.getY(), normalVector.getZ()).next();
+					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.x, normalVector.y, normalVector.z).next();
+					//#else
+					//$$Vec3f normalVector = new Vec3f(x, y, z);
+					//$$normalVector.normalize();
+					//$$builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.getX(), normalVector.getY(), normalVector.getZ()).next();
+					//#endif
 				}
 			}
 			for (int j = 0; j <= totalSteps; j++) {
@@ -303,9 +314,15 @@ public class RenderHelper {
 					float x = radius * MathHelper.sin(phi) * MathHelper.cos(theta);
 					float z = radius * MathHelper.sin(phi) * MathHelper.sin(theta);
 					float y = radius * MathHelper.cos(phi);
-					Vec3f normalVector = new Vec3f(x, y, z);
+					//#if MC >= 11903
+					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
-					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.getX(), normalVector.getY(), normalVector.getZ()).next();
+					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.x, normalVector.y, normalVector.z).next();
+					//#else
+					//$$Vec3f normalVector = new Vec3f(x, y, z);
+					//$$normalVector.normalize();
+					//$$builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.getX(), normalVector.getY(), normalVector.getZ()).next();
+					//#endif
 				}
 			}
 			return;
@@ -358,7 +375,7 @@ public class RenderHelper {
 	}
 
 	private static void drawLines(Tessellator tessellator, BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptLine>> forEach) {
-		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
 		builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 		forEach.accept(line -> {
 			if (line.getOutlineWidth() >= 1) {
@@ -377,22 +394,46 @@ public class RenderHelper {
 		matrices.push();
 		matrices.translate(-cameraPos.getX(), -cameraPos.getY(), -cameraPos.getZ());
 		tilt(matrices, line);
-		addLineVertices(builder, matrices, new Vec3f(pos1), new Vec3f(pos2), red / 255.0F, green / 255.0F, blue / 255.0F, alpha / 255.0F);
+		addLineVertices(
+			builder, matrices,
+			//#if MC >= 11903
+			pos1.toVector3f(), pos2.toVector3f(),
+			//#else
+			//$$new Vec3f(pos1), new Vec3f(pos2),
+			//#endif
+			red / 255.0F,
+			green / 255.0F,
+			blue / 255.0F,
+			alpha / 255.0F
+		);
 		matrices.pop();
 	}
 
-	private static void addLineVertices(BufferBuilder builder, MatrixStack matrices, Vec3f pos1, Vec3f pos2, float red, float green, float blue, float alpha) {
-		float dx = pos1.getX() - pos2.getX();
-		float dy = pos1.getY() - pos2.getY();
-		float dz = pos1.getZ() - pos2.getZ();
-		Vec3f normalVec = new Vec3f(dx, dy, dz);
+	//#if MC >= 11903
+	private static void addLineVertices(BufferBuilder builder, MatrixStack matrices, Vector3f pos1, Vector3f pos2, float red, float green, float blue, float alpha) {
+		float dx = pos1.x - pos2.x;
+		float dy = pos1.y - pos2.y;
+		float dz = pos1.z - pos2.z;
+		Vector3f normalVec = new Vector3f(dx, dy, dz);
+		//#else
+		//$$private static void addLineVertices(BufferBuilder builder, MatrixStack matrices, Vec3f pos1, Vec3f pos2, float red, float green, float blue, float alpha) {
+		//$$float dx = pos1.getX() - pos2.getX();
+		//$$float dy = pos1.getY() - pos2.getY();
+		//$$float dz = pos1.getZ() - pos2.getZ();
+		//$$Vec3f normalVec = new Vec3f(dx, dy, dz);
+		//#endif
 		normalVec.normalize();
 
 		MatrixStack.Entry entry = matrices.peek();
 		Matrix4f model = entry.getPositionMatrix();
 		Matrix3f normal = entry.getNormalMatrix();
-		builder.vertex(model, pos1.getX(), pos1.getY(), pos1.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
-		builder.vertex(model, pos2.getX(), pos2.getY(), pos2.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
+		//#if MC >= 11903
+		builder.vertex(model, pos1.x, pos1.y, pos1.z).color(red, green, blue, alpha).normal(normal, normalVec.x, normalVec.y, normalVec.z).next();
+		builder.vertex(model, pos2.x, pos2.y, pos2.z).color(red, green, blue, alpha).normal(normal, normalVec.x, normalVec.y, normalVec.z).next();
+		//#else
+		//$$builder.vertex(model, pos1.getX(), pos1.getY(), pos1.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
+		//$$builder.vertex(model, pos2.getX(), pos2.getY(), pos2.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
+		//#endif
 	}
 
 	public static void renderBlocks(MatrixStack matrices) {
@@ -428,14 +469,26 @@ public class RenderHelper {
 		);
 		if (fakeBlock.getDirection() == null) {
 			matrices.multiply(client.gameRenderer.getCamera().getRotation());
-			matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+			//#if MC >= 11903
+			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+			//#else
+			//$$matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+			//#endif
 		} else {
 			switch (fakeBlock.getDirection()) {
-				case SOUTH -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
-				case EAST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(270));
-				case WEST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90));
-				case UP -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
-				case DOWN -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+				//#if MC >= 11903
+				case SOUTH -> matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+				case EAST -> matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(270));
+				case WEST -> matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
+				case UP -> matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
+				case DOWN -> matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
+				//#else
+				//$$case SOUTH -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+				//$$case EAST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(270));
+				//$$case WEST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90));
+				//$$case UP -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+				//$$case DOWN -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+				//#endif
 			}
 		}
 		tilt(matrices, fakeBlock);
@@ -457,15 +510,27 @@ public class RenderHelper {
 	}
 
 	private static void tilt(MatrixStack matrices, ScriptShape tiltable) {
+		//#if MC >= 11903
 		if (tiltable.getXTilt() != 0.0F) {
-			matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(tiltable.getXTilt()));
+			matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(tiltable.getXTilt()));
 		}
 		if (tiltable.getYTilt() != 0.0F) {
-			matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(tiltable.getYTilt()));
+			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(tiltable.getYTilt()));
 		}
 		if (tiltable.getZTilt() != 0.0F) {
-			matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(tiltable.getZTilt()));
+			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(tiltable.getZTilt()));
 		}
+		//#else
+		//$$if (tiltable.getXTilt() != 0.0F) {
+		//$$	matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(tiltable.getXTilt()));
+		//$$}
+		//$$if (tiltable.getYTilt() != 0.0F) {
+		//$$	matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(tiltable.getYTilt()));
+		//$$}
+		//$$if (tiltable.getZTilt() != 0.0F) {
+		//$$	matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(tiltable.getZTilt()));
+		//$$}
+		//#endif
 	}
 
 	private static void scale(MatrixStack matrices, ScriptShape scalable) {
@@ -529,9 +594,14 @@ public class RenderHelper {
 		int[] is = {lights[0], lights[1], lights[2], lights[3]};
 		int[] js = quad.getVertexData();
 		Vec3i vec3i = quad.getFace().getVector();
-		Vec3f vec3f = new Vec3f(vec3i.getX(), vec3i.getY(), vec3i.getZ());
+		//#if MC >= 11903
 		Matrix4f matrix4f = matrixEntry.getPositionMatrix();
-		vec3f.transform(matrixEntry.getNormalMatrix());
+		Vector3f vec3f = matrixEntry.getNormalMatrix().transform(new Vector3f(vec3i.getX(), vec3i.getY(), vec3i.getZ()));
+		//#else
+		//$$Vec3f vec3f = new Vec3f(vec3i.getX(), vec3i.getY(), vec3i.getZ());
+		//$$Matrix4f matrix4f = matrixEntry.getPositionMatrix();
+		//$$vec3f.transform(matrixEntry.getNormalMatrix());
+		//#endif
 		int i = 8;
 		int j = js.length / i;
 		try (MemoryStack memoryStack = MemoryStack.stackPush()) {
@@ -563,9 +633,14 @@ public class RenderHelper {
 				int r = is[k];
 				m = byteBuffer.getFloat(16);
 				n = byteBuffer.getFloat(20);
-				Vector4f vector4f = new Vector4f(f, g, h, 1.0f);
-				vector4f.transform(matrix4f);
-				consumer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), o, p, q, alpha, m, n, overlay, r, vec3f.getX(), vec3f.getY(), vec3f.getZ());
+				//#if MC >= 11903
+				Vector4f vector4f = matrix4f.transform(new Vector4f(f, g, h, 1.0F));
+				consumer.vertex(vector4f.x, vector4f.y, vector4f.z, o, p, q, alpha, m, n, overlay, r, vec3f.x, vec3f.y, vec3f.z);
+				//#else
+				//$$Vector4f vector4f = new Vector4f(f, g, h, 1.0f);
+				//$$vector4f.transform(matrix4f);
+				//$$consumer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), o, p, q, alpha, m, n, overlay, r, vec3f.getX(), vec3f.getY(), vec3f.getZ());
+				//#endif
 			}
 		}
 	}

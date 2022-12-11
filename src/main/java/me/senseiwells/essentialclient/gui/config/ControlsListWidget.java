@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.gui.config;
 import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -91,10 +92,10 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 		KeyBindEntry(ClientKeyBind keyBind, Text text) {
 			this.keyBind = keyBind;
 			this.bindingText = text;
-			this.editButton = new ButtonWidget(0, 0, 75, 20, text, button -> {
+			this.editButton = WidgetHelper.newButton(0, 0, 75, 20, text, button -> {
 				ControlsListWidget.this.controlsScreen.setFocusedKeyBinding(this.keyBind);
 			});
-			this.resetButton = new ButtonWidget(0, 0, 50, 20, Texts.RESET, button -> {
+			this.resetButton = WidgetHelper.newButton(0, 0, 50, 20, Texts.RESET, button -> {
 				this.keyBind.clearKey();
 				this.keyBind.resetKey();
 			});
@@ -116,12 +117,10 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 			boolean focused = ControlsListWidget.this.controlsScreen.isBindingFocused(this.keyBind);
 			float width = x + 90 - ControlsListWidget.this.maxKeyNameLength;
 			ControlsListWidget.this.client.textRenderer.draw(matrices, this.bindingText, width, y + entryHeight / 2.0F - 9 / 2.0F, 0xFFFFFF);
-			this.resetButton.x = x + 190;
-			this.resetButton.y = y;
+			WidgetHelper.setPosition(this.resetButton, x + 190, y);
 			this.resetButton.active = !this.keyBind.isDefault();
 			this.resetButton.render(matrices, mouseX, mouseY, tickDelta);
-			this.editButton.x = x + 105;
-			this.editButton.y = y;
+			WidgetHelper.setPosition(this.editButton, x + 105, y);
 
 			MutableText editMessage = Texts.literal(this.keyBind.getDisplay());
 			int textWidth = ControlsListWidget.this.client.textRenderer.getWidth(editMessage);

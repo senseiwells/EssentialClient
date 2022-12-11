@@ -20,6 +20,7 @@ import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
@@ -34,7 +35,6 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +102,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		if (arguments.isNext(StringDef.class)) {
 			String id = arguments.nextPrimitive(StringDef.class);
 			Identifier identifier = ClientScriptUtils.stringToIdentifier(id);
-			return Registry.ITEM.getOrEmpty(identifier).orElseThrow(
+			return RegistryHelper.getItemRegistry().getOrEmpty(identifier).orElseThrow(
 				() -> new RuntimeError("'%s' is not a valid item stack".formatted(id))
 			).getDefaultStack();
 		}
@@ -219,7 +219,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		Interpreter interpreter = arguments.getInterpreter();
 		ArucasMap enchantmentMap = new ArucasMap();
 		for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.fromNbt(nbtList).entrySet()) {
-			Identifier enchantmentId = Registry.ENCHANTMENT.getId(entry.getKey());
+			Identifier enchantmentId = RegistryHelper.getEnchantmentRegistry().getId(entry.getKey());
 			enchantmentMap.put(
 				interpreter,
 				enchantmentId == null ? interpreter.getNull() : interpreter.create(StringDef.class, enchantmentId.getPath()),

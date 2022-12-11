@@ -1,7 +1,12 @@
 package me.senseiwells.essentialclient.utils.command;
 
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+
+//#if MC >= 11903
+import net.minecraft.registry.RegistryKey;
+//#else
+//$$import net.minecraft.util.registry.RegistryKey;
+//#endif
 
 public enum WorldEnum {
 	OVERWORLD(World.OVERWORLD),

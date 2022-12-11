@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.gui.entries;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
@@ -63,8 +64,9 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 
 	@Override
 	protected void renderEditButton(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
-		int xi = this.editButton.x = x + 182;
-		int yi = this.editButton.y = y + 3;
+		int xi = x + 182;
+		int yi = y + 3;
+		WidgetHelper.setPosition(this.editButton, xi, yi);
 		this.editButton.setEditableColor(this.invalid ? 16733525 : 16777215);
 		if (this.invalid) {
 			DiffuseLighting.enableGuiDepthLighting();

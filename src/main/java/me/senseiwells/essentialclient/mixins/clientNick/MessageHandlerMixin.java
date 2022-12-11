@@ -4,8 +4,13 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.render.Texts;
-import net.minecraft.client.font.TextVisitFactory;
 import net.minecraft.client.network.PlayerListEntry;
+
+//#if MC >= 11903
+import net.minecraft.text.TextVisitFactory;
+//#else
+//$$import net.minecraft.client.font.TextVisitFactory;
+//#endif
 
 //#if MC >= 11901
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -34,7 +39,11 @@ public class MessageHandlerMixin {
 	@ModifyExpressionValue(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/message/MessageType$Parameters;applyChatDecoration(Lnet/minecraft/text/Text;)Lnet/minecraft/text/Text;"))
 	private Text modifyChatMessage(Text text, SignedMessage signedMessage, MessageType.Parameters params) {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
-			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(signedMessage.signedHeader().sender());
+			//#if MC >= 11903
+			PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(signedMessage.getSender());
+			//#else
+			//$$PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(signedMessage.signedHeader().sender());
+			//#endif
 			if (playerListEntry != null) {
 				String newName = ConfigClientNick.INSTANCE.get(playerListEntry.getProfile().getName());
 				String message = TextVisitFactory.removeFormattingCodes(text);

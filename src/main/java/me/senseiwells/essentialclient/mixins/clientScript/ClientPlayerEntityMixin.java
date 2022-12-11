@@ -1,21 +1,24 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import com.mojang.authlib.GameProfile;
-import me.senseiwells.essentialclient.clientscript.core.ClientScriptIO;
+
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-//#if MC >= 11901
-import net.minecraft.network.encryption.PlayerPublicKey;
+//#if MC >= 11901 && MC < 11903
+//$$import net.minecraft.network.encryption.PlayerPublicKey;
+//$$import net.minecraft.text.Text;
 //#endif
 
-import net.minecraft.text.Text;
+//#if MC < 11903
+//$$import me.senseiwells.essentialclient.clientscript.core.ClientScriptIO;
+//#endif
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,10 +27,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
-	//#if MC >= 11901
-	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, @Nullable PlayerPublicKey publicKey) {
-		super(world, pos, yaw, gameProfile, publicKey);
+	//#if MC >= 11903
+	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+		super(world, pos, yaw, gameProfile);
 	}
+	//#elseif MC >= 11901
+	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, PlayerPublicKey publicKey) {
+	//$$	super(world, pos, yaw, gameProfile, publicKey);
+	//$$}
 	//#else
 	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
 	//$$	super(world, pos, yaw, profile);
@@ -42,21 +49,20 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		}
 	}
 
-	//#if MC > 11901
-	@Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
-	public void onChatMessage(String message, Text preview, CallbackInfo ci) {
-		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
-			ci.cancel();
-		}
-	}
-
-	@Inject(method = "sendCommand(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
-	public void onCommandMessage(String message, Text preview, CallbackInfo ci) {
-		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
-			ci.cancel();
-		}
-	}
-	//#else
+	//#if MC == 11902
+	//$$@Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
+	//$$public void onChatMessage(String message, Text preview, CallbackInfo ci) {
+	//$$	if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
+	//$$		ci.cancel();
+	//$$	}
+	//$$}
+	//$$@Inject(method = "sendCommand(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
+	//$$public void onCommandMessage(String message, Text preview, CallbackInfo ci) {
+	//$$	if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
+	//$$		ci.cancel();
+	//$$	}
+	//$$}
+	//#elseif MC < 11902
 	//$$@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
 	//$$public void onChatMessage(String message, CallbackInfo ci) {
 	//$$	if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {

@@ -14,12 +14,12 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.*;
 
@@ -136,7 +136,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	)
 	private String getCraftingType(Arguments arguments) {
 		Recipe<?> recipe = arguments.nextPrimitive(this);
-		Identifier identifier = Registry.RECIPE_TYPE.getId(recipe.getType());
+		Identifier identifier = RegistryHelper.getRecipeTypeRegistry().getId(recipe.getType());
 		return identifier == null ? null : identifier.getPath();
 	}
 

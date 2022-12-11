@@ -4,6 +4,7 @@ import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -25,7 +26,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 	public CreateClientScriptScreen(ClientScriptScreen parent) {
 		super(CREATE_NEW_SCRIPT, parent);
 		this.nameBox = new TextFieldWidget(EssentialUtils.getClient().textRenderer, 0, 0, 200, 20, SCRIPT_NAME);
-		this.createButton = new ButtonWidget(0, 0, 80, 20, Texts.CREATE, button -> {
+		this.createButton = WidgetHelper.newButton(0, 0, 80, 20, Texts.CREATE, button -> {
 			String name = this.nameBox.getText();
 			Path scriptPath = ClientScript.INSTANCE.getScriptDirectory();
 			Path newScriptPath = scriptPath.resolve(name + ".arucas");
@@ -49,7 +50,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 			parent.refresh();
 			parent.openScriptConfigScreen(instance);
 		});
-		this.cancelButton = new ButtonWidget(0, 0, 80, 20, CANCEL, button -> this.close());
+		this.cancelButton = WidgetHelper.newButton(0, 0, 80, 20, CANCEL, button -> this.close());
 	}
 
 	@Override
@@ -59,11 +60,9 @@ public class CreateClientScriptScreen extends ChildScreen {
 		}
 		int halfHeight = this.height / 2;
 		int halfWidth = this.width / 2;
-		this.nameBox.x = halfWidth - 100;
-		this.createButton.x = halfWidth + 5;
-		this.cancelButton.x = halfWidth - 85;
-		this.nameBox.y = halfHeight - 20;
-		this.createButton.y = this.cancelButton.y = halfHeight + 10;
+		WidgetHelper.setPosition(this.nameBox, halfWidth - 100, halfHeight - 20);
+		WidgetHelper.setPosition(this.createButton, halfWidth + 5, halfHeight + 10);
+		WidgetHelper.setPosition(this.cancelButton, halfWidth - 85, halfHeight + 10);
 		this.addDrawableChild(this.nameBox);
 		this.addDrawableChild(this.createButton);
 		this.addDrawableChild(this.cancelButton);

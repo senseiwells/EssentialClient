@@ -32,7 +32,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.FluidTags;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -47,6 +47,13 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+
+//#if MC >= 11903
+import net.minecraft.registry.tag.FluidTags;
+//#else
+//$$import net.minecraft.tag.FluidTags;
+//$$import net.minecraft.util.registry.Registry;
+//#endif
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
@@ -100,12 +107,18 @@ public class EssentialUtils {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
 			client.execute(() -> {
-				//#if MC >= 11900
+				//#if MC >= 11903
 				if (message.startsWith("/")) {
-					client.player.sendCommand(message.substring(1));
+					client.player.networkHandler.sendCommand(message.substring(1));
 					return;
 				}
-				client.player.sendChatMessage(message, null);
+				client.player.networkHandler.sendChatMessage(message);
+				//#elseif MC >= 11900
+				//$$if (message.startsWith("/")) {
+				//$$	client.player.sendCommand(message.substring(1));
+				//$$	return;
+				//$$}
+				//$$client.player.sendChatMessage(message, null);
 				//#else
 				//$$client.player.sendChatMessage(message);
 				//#endif
@@ -135,6 +148,10 @@ public class EssentialUtils {
 
 	public static ClientPlayNetworkHandler getNetworkHandler() {
 		return getClient().getNetworkHandler();
+	}
+
+	public static DynamicRegistryManager getRegistryManager() {
+		return getNetworkHandler().getRegistryManager();
 	}
 
 	public static PlayerListEntry getPlayerListEntry() {

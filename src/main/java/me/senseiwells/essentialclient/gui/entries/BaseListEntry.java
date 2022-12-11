@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.gui.config.ConfigListWidget;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.RuleWidget;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -38,7 +39,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		this.ruleName = rule.getName();
 		this.ruleWidget = new RuleWidget(this.ruleName, 190, 15);
 		this.editButton = editButton.get();
-		this.resetButton = new ButtonWidget(0, 0, 50, 20, Texts.RESET, button -> {
+		this.resetButton = WidgetHelper.newButton(0, 0, 50, 20, Texts.RESET, button -> {
 			this.resetConsumer.accept(button);
 		});
 		this.resetConsumer = buttonWidget -> {
@@ -53,8 +54,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	}
 
 	protected void renderEditButton(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
-		this.editButton.x = x + 180;
-		this.editButton.y = y;
+		WidgetHelper.setPosition(this.editButton, x + 180, y);
 		this.editButton.render(matrices, mouseX, mouseY, delta);
 	}
 
@@ -105,11 +105,10 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 			}
 			if (info != null) {
 				lines.addAll(this.client.textRenderer.wrapLines(StringVisitable.plain(info.replace("\r", "")), 220));
-				this.rulesScreen.setTooltip(lines);
+				this.rulesScreen.setCurrentTooltip(lines);
 			}
 		}
-		this.resetButton.x = x + 290;
-		this.resetButton.y = y;
+		WidgetHelper.setPosition(this.resetButton, x + 290, y);
 		this.resetButton.active = this.rule.isAvailable() && this.rule.changeable() && this.rule.isNotDefault();
 		this.resetButton.render(matrices, mouseX, mouseY, delta);
 

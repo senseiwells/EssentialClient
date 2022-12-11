@@ -2,11 +2,11 @@ package me.senseiwells.essentialclient.mixins.survivalInventoryInCreative;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.interfaces.IScreenInventory;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,8 +38,14 @@ public class InventoryScreenMixin extends Screen implements IScreenInventory {
 	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addSelectableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"))
 	private void onInit(CallbackInfo ci) {
 		if (ClientRules.SURVIVAL_INVENTORY_IN_CREATIVE.getValue() && this.client != null && this.client.interactionManager != null && this.client.player != null && this.client.interactionManager.hasCreativeInventory()) {
-			this.addDrawableChild(new ButtonWidget(5, 5, 100, 20, Texts.SWAP_INVENTORY, button -> {
-				CreativeInventoryScreen screen = new CreativeInventoryScreen(this.client.player);
+			this.addDrawableChild(WidgetHelper.newButton(5, 5, 100, 20, Texts.SWAP_INVENTORY, button -> {
+				CreativeInventoryScreen screen = new CreativeInventoryScreen(
+					//#if MC >= 11903
+					this.client.player, this.client.player.networkHandler.getEnabledFeatures(), this.client.options.getOperatorItemsTab().getValue()
+					//#else
+					//$$this.client.player
+					//#endif
+				);
 				((IScreenInventory) screen).setForced();
 				this.client.setScreen(screen);
 			}));

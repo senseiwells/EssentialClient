@@ -32,6 +32,7 @@ import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.keyboard.KeyboardHelper;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.network.MojangAPI;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -48,7 +49,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
@@ -596,7 +596,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		String soundId = arguments.skip().nextPrimitive(StringDef.class);
 		Double volume = arguments.nextPrimitive(NumberDef.class);
 		Double pitch = arguments.nextPrimitive(NumberDef.class);
-		SoundEvent soundEvent = Registry.SOUND_EVENT.get(ClientScriptUtils.stringToIdentifier(soundId));
+		SoundEvent soundEvent = RegistryHelper.getSoundEventRegistry().get(ClientScriptUtils.stringToIdentifier(soundId));
 		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
 		return null;
 	}

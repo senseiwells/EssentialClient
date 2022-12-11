@@ -8,10 +8,10 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.rule.game.VanillaGameRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Supplier;
 
 public abstract class RulesScreen extends ChildScreen {
 	private final List<TextFieldWidget> textFields;
@@ -40,7 +39,7 @@ public abstract class RulesScreen extends ChildScreen {
 		return this.searchBox.getText();
 	}
 
-	public void setTooltip(List<OrderedText> tooltip) {
+	public void setCurrentTooltip(List<OrderedText> tooltip) {
 		this.tooltip = tooltip;
 	}
 
@@ -92,7 +91,7 @@ public abstract class RulesScreen extends ChildScreen {
 		this.widget = new ConfigListWidget(this, this.client, this.searchBox.getText());
 		this.addSelectableChild(this.widget);
 		this.addDrawableChild(this.searchBox);
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
+		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
 		this.setInitialFocus(this.searchBox);
 	}
 

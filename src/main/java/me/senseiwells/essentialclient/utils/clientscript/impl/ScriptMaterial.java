@@ -1,17 +1,17 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
 import me.senseiwells.arucas.exceptions.RuntimeError;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public interface ScriptMaterial {
 	default Identifier getId() {
-		return Registry.ITEM.getId(this.asItem());
+		return RegistryHelper.getItemRegistry().getId(this.asItem());
 	}
 
 	default String getTranslationKey() {
@@ -78,7 +78,7 @@ public interface ScriptMaterial {
 	record BlockMaterial(Block block) implements ScriptMaterial {
 		@Override
 		public Identifier getId() {
-			return Registry.BLOCK.getId(this.block);
+			return RegistryHelper.getBlockRegistry().getId(this.block);
 		}
 
 		@Override
@@ -98,7 +98,7 @@ public interface ScriptMaterial {
 
 		@Override
 		public String asString() {
-			return Registry.BLOCK.getId(this.block).getPath();
+			return this.getId().getPath();
 		}
 	}
 }

@@ -17,6 +17,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
+import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
@@ -29,13 +30,10 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.biome.Biome;
 
 import java.util.List;
-import java.util.Optional;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
@@ -59,7 +57,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 
 	@Override
 	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
-		return "Entity{id=%s}".formatted(Registry.ENTITY_TYPE.getId(instance.getPrimitive(this).getType()));
+		return "Entity{id=%s}".formatted(RegistryHelper.getEntityTypeRegistry().getId(instance.getPrimitive(this).getType()));
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		ClientWorld world = EssentialUtils.getWorld();
 		String string = arguments.nextPrimitive(StringDef.class);
 		return arguments.getInterpreter().convertValue(
-			Registry.ENTITY_TYPE.getOrEmpty(ClientScriptUtils.stringToIdentifier(string)).orElseThrow(
+			RegistryHelper.getEntityTypeRegistry().getOrEmpty(ClientScriptUtils.stringToIdentifier(string)).orElseThrow(
 				() -> new RuntimeError("'%s' is not a valid entity".formatted(string))
 			).create(world)
 		);
@@ -457,7 +455,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		examples = "entity.getFullId();"
 	)
 	private String getFullId(Arguments arguments) {
-		return Registry.ENTITY_TYPE.getId(arguments.nextPrimitive(this).getType()).toString();
+		return RegistryHelper.getEntityTypeRegistry().getId(arguments.nextPrimitive(this).getType()).toString();
 	}
 
 	@FunctionDoc(
@@ -467,7 +465,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		examples = "entity.getId();"
 	)
 	private String getId(Arguments arguments) {
-		return Registry.ENTITY_TYPE.getId(arguments.nextPrimitive(this).getType()).getPath();
+		return RegistryHelper.getEntityTypeRegistry().getId(arguments.nextPrimitive(this).getType()).getPath();
 	}
 
 	@FunctionDoc(
@@ -480,7 +478,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	private boolean isOf(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		String id = arguments.nextPrimitive(StringDef.class);
-		EntityType<?> type = Registry.ENTITY_TYPE.getOrEmpty(ClientScriptUtils.stringToIdentifier(id)).orElse(null);
+		EntityType<?> type = RegistryHelper.getEntityTypeRegistry().getOrEmpty(ClientScriptUtils.stringToIdentifier(id)).orElse(null);
 		return entity.getType() == type;
 	}
 

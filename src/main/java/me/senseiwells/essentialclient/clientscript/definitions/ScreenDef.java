@@ -72,10 +72,12 @@ public class ScreenDef extends PrimitiveDefinition<Screen> {
 	private MutableText getTitle(Arguments arguments) {
 		Screen screen = arguments.nextPrimitive(this);
 		Text title = screen.getTitle();
-		if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
-			int tabIndex = creativeInventoryScreen.getSelectedTab();
-			return Texts.literal(ItemGroup.GROUPS[tabIndex].getName());
-		}
+		//#if MC < 11903
+		//$$if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
+		//$$	int tabIndex = creativeInventoryScreen.getSelectedTab();
+		//$$	return Texts.literal(ItemGroup.GROUPS[tabIndex].getName());
+		//$$}
+		//#endif
 		return title == null ? null : title.copy();
 	}
 }

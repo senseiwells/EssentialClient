@@ -3,7 +3,7 @@ package me.senseiwells.essentialclient.gui.clientscript;
 import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
-import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -49,7 +49,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 			this.name = instance.getName();
 			this.scriptInstance = instance;
 			boolean isTemporary = instance.isTemporary();
-			this.configButton = new ButtonWidget(0, 0, 45, 20, isTemporary ? REMOVE : CONFIG, buttonWidget -> {
+			this.configButton = WidgetHelper.newButton(0, 0, 45, 20, isTemporary ? REMOVE : CONFIG, buttonWidget -> {
 				if (!isTemporary) {
 					ClientScriptWidget.this.parent.openScriptConfigScreen(this.scriptInstance);
 					return;
@@ -58,7 +58,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 				ClientScriptWidget.this.clear();
 				ClientScriptWidget.this.load(this.client);
 			});
-			this.startButton = new ButtonWidget(0, 0, 45, 20, instance.isScriptRunning() ? STOP : START, buttonWidget -> {
+			this.startButton = WidgetHelper.newButton(0, 0, 45, 20, instance.isScriptRunning() ? STOP : START, buttonWidget -> {
 				if (this.scriptInstance.isScriptRunning()) {
 					this.scriptInstance.stopScript();
 					return;
@@ -95,10 +95,9 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 			TextRenderer font = this.client.textRenderer;
 			float fontY = (float) (y + height / 2 - 9 / 2);
 			font.draw(matrices, this.name, (float) x - 50, fontY, 16777215);
-			this.checkButton.x = x + width - 20;
-			this.startButton.x = x + width - 70;
-			this.configButton.x = x + width - 120;
-			this.configButton.y = this.startButton.y = this.checkButton.y = y;
+			WidgetHelper.setPosition(this.checkButton, x + width - 20, y);
+			WidgetHelper.setPosition(this.startButton, x + width - 70, y);
+			WidgetHelper.setPosition(this.configButton, x + width - 120, y);
 			this.startButton.active = this.client.player != null;
 			this.startButton.setMessage(this.scriptInstance.isScriptRunning() ? STOP : START);
 			this.configButton.render(matrices, mouseX, mouseY, tickDelta);
