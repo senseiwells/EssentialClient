@@ -1,0 +1,174 @@
+/* Natively implemented on the JVM
+ * These functions are treated as if
+ * they were defined in the global scope.
+ * These do not need to be imported
+ */
+
+/* BuiltInExtension */
+/*
+ * This is used to enable or disable debug mode
+ * Parameter - Boolean (bool): true to enable debug mode, false to disable debug mode
+ */
+fun debug(bool: Boolean): Null;
+
+/*
+ * This is used to evaluate a string as code.
+ * This will not inherit imports that are in the parent script
+ * Parameter - String (code): the code to evaluate
+ * Returns - Object: the result of the evaluation
+ */
+fun eval(code: String): Object;
+
+/*
+ * This is used to enable or disable experimental mode
+ * Parameter - Boolean (bool): true to enable experimental mode, false to disable experimental mode
+ */
+fun experimental(bool: Boolean): Null;
+
+/*
+ * This is used to get the version of Arucas that is currently running
+ * Returns - String: the version of Arucas that is currently running
+ */
+fun getArucasVersion(): String;
+
+/*
+ * This is used to get the current date formatted with dd/MM/yyyy in your local time
+ * Returns - String: the current date formatted with dd/MM/yyyy
+ */
+fun getDate(): String;
+
+/*
+ * This is used to get the current time in milliseconds
+ * Returns - Number: the current time in milliseconds
+ */
+fun getMilliTime(): Number;
+
+/*
+ * This is used to get the current time in nanoseconds
+ * Returns - Number: the current time in nanoseconds
+ */
+fun getNanoTime(): Number;
+
+/*
+ * This is used to get the current time formatted with HH:mm:ss in your local time
+ * Returns - String: the current time formatted with HH:mm:ss
+ */
+fun getTime(): String;
+
+/*
+ * This is used to get the current time in seconds since the Unix epoch
+ * Returns - Number: the current time in seconds since the Unix epoch
+ */
+fun getUnixTime(): Number;
+
+/*
+ * This is used to take an input from the user
+ * Parameter - String (prompt): the prompt to show the user
+ * Returns - String: the input from the user
+ */
+fun input(prompt: String): String;
+
+/*
+ * This is used to check whether the script is the main script
+ * Returns - Boolean: true if the script is the main script, false if it is not
+ */
+fun isMain(): Boolean;
+
+/*
+ * This is used to get the length of a collection or string
+ * Parameter - String (sizable): the collection or string
+ */
+fun len(sizable: String): Null;
+
+/*
+ * This prints a value to the output handler
+ * Parameter - Object (printValue): the value to print
+ */
+fun print(printValue: Object): Null;
+
+/*
+ * This prints a number of values to the console
+ * If there are no arguments then this will print a new line,
+ * other wise it will print the contents without a new line
+ * Parameter - Object (printValue...): the value to print
+ */
+fun print(printValue...: Object): Null;
+
+/*
+ * This logs something to the debug output.
+ * It only prints if debug mode is enabled: `debug(true)`
+ * Parameter - Object (printValue): the value to print
+ */
+fun printDebug(printValue: Object): Null;
+
+/*
+ * This is used to generate a random integer between 0 and the bound
+ * Parameter - Number (bound): the maximum bound (exclusive)
+ * Returns - Number: the random integer
+ */
+fun random(bound: Number): Number;
+
+/*
+ * This is used to generate a range of integers starting from 0, incrementing by 1
+ * Parameter - Number (bound): the maximum bound (exclusive)
+ * Returns - Iterable: an iterable object that returns the range of integers
+ */
+fun range(bound: Number): Iterable;
+
+/*
+ * This is used to generate a range of numbers starting
+ * from a start value and ending at a bound value incrementing by 1
+ * Parameter - Number (start): the start value
+ * Parameter - Number (bound): the maximum bound (exclusive)
+ * Returns - Iterable: an iterable object that returns the range of integers
+ */
+fun range(start: Number, bound: Number): Iterable;
+
+/*
+ * This is used to generate a range of numbers starting from a
+ * start value and ending at a bound value incrementing by a step value
+ * Parameter - Number (start): the start value
+ * Parameter - Number (bound): the maximum bound (exclusive)
+ * Parameter - Number (step): the step value
+ * Returns - Iterable: an iterable object that returns the range of integers
+ */
+fun range(start: Number, bound: Number, step: Number): Iterable;
+
+/*
+ * This is used to run a .arucas file, you can use on script to run other scripts
+ * Parameter - String (path): as a file path
+ * Returns - Object: any value that the file returns
+ */
+fun run(path: String): Object;
+
+/*
+ * Deprecated: This should be replaced with 'eval(code)'
+ * This is used to evaluate a string as code.
+ * This will not inherit imports that are in the parent script
+ * Parameter - String (code): the code to run
+ */
+fun runFromString(code: String): Null;
+
+/*
+ * This pauses your program for a certain amount of milliseconds
+ * Parameter - Number (milliseconds): milliseconds to sleep
+ */
+fun sleep(milliseconds: Number): Null;
+
+/*
+ * This is used to stop a script
+ */
+fun stop(): Null;
+
+/*
+ * This is used to enable or disable suppressing deprecation warnings
+ * Parameter - Boolean (bool): true to enable, false to disable warnings
+ */
+fun suppressDeprecated(bool: Boolean): Null;
+
+/* MinecraftExtension */
+/*
+ * This freezes the current thread and halts execution, same functionality as 'Thread.freeze()'
+ */
+fun hold(): Null;
+

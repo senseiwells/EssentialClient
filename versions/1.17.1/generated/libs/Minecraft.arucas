@@ -1,0 +1,3597 @@
+/* Native, implemented in Java
+ * This class represents biomes, and allows you to interact with things inside of them.
+ * Import with 'import Biome from Minecraft'
+ */
+class Biome {
+    /*
+     * This function calculates wheter snow will fall at given coordinates
+     * Parameter - Pos (pos): the position
+     * Returns - Boolean: whether snow will fall at given position
+     */
+    fun canSnow(pos: Pos): Boolean;
+
+    /*
+     * This function calculates wheter snow will fall at given coordinates
+     * Parameter - Number (x): the x coordinate
+     * Parameter - Number (y): the y coordinate
+     * Parameter - Number (z): the z coordinate
+     * Returns - Boolean: whether snow will fall at given position
+     */
+    fun canSnow(x: Number, y: Number, z: Number): Boolean;
+
+    /*
+     * This function returns Fog color of the biome
+     * Returns - Number: fog color of the biome
+     */
+    fun getFogColor(): Number;
+
+    /*
+     * This function returns the path id of the biome, e.g. 'plains'
+     * Returns - String: id of the biome
+     */
+    fun getId(): String;
+
+    /*
+     * This function returns sky color of the biome
+     * Returns - Number: sky color of the biome
+     */
+    fun getSkyColor(): Number;
+
+    /*
+     * This function returns temperature of the biome
+     * Returns - Number: temperature of the biome
+     */
+    fun getTemperature(): Number;
+
+    /*
+     * This function returns Fog color of the biome
+     * Returns - Number: fog color of the biome
+     */
+    fun getWaterColor(): Number;
+
+    /*
+     * This function returns water fog color of the biome
+     * Returns - Number: water fog color of the biome
+     */
+    fun getWaterFogColor(): Number;
+
+    /*
+     * This function returns if biome has high humidity
+     * Returns - Boolean: whether biome has high humidity
+     */
+    fun hasHighHumidity(): Boolean;
+
+    /*
+     * This function calculates wheter biome is cold at given position
+     * Parameter - Pos (pos): the position
+     * Returns - Boolean: whether temperature is cold at given position
+     */
+    fun isCold(pos: Pos): Boolean;
+
+    /*
+     * This function calculates wheter biome is cold at given position
+     * Parameter - Number (x): the x coordinate
+     * Parameter - Number (y): the y coordinate
+     * Parameter - Number (z): the z coordinate
+     * Returns - Boolean: whether temperature is cold at given position
+     */
+    fun isCold(x: Number, y: Number, z: Number): Boolean;
+
+    /*
+     * This function calculates wheter biome is hot at given position
+     * Parameter - Pos (pos): the position
+     * Returns - Boolean: whether temperature is hot at given position
+     */
+    fun isHot(pos: Pos): Boolean;
+
+    /*
+     * This function calculates wheter biome is hot at given position
+     * Parameter - Number (x): the x coordinate
+     * Parameter - Number (y): the y coordinate
+     * Parameter - Number (z): the z coordinate
+     * Returns - Boolean: whether temperature is hot at given position
+     */
+    fun isHot(x: Number, y: Number, z: Number): Boolean;
+}
+
+/* Native, implemented in Java
+ * This class allows interactions with blocks in Minecraft.
+ * Import with 'import Block from Minecraft'
+ */
+class Block: Material {
+    /*
+     * This gets the blast resistance of the Block
+     * Returns - Number: the blast resistance of the Block
+     */
+    fun getBlastResistance(): Number;
+
+    /*
+     * This gets the NBT of the Block
+     * Returns - Map: the NBT of the Block, may be null if the Block has no NBT
+     */
+    fun getBlockNbt(): Map;
+
+    /*
+     * This gets the properties of the Block
+     * You can find a list of all block properties
+     * [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)
+     * Returns - Map: the properties of the Block, may be empty if there are no properties
+     */
+    fun getBlockProperties(): Map;
+
+    /*
+     * This gets the default state of the block, it will conserve any positions
+     * Returns - Block: default state of the Block
+     */
+    fun getDefaultState(): Block;
+
+    /*
+     * This gets the hardness of the Block
+     * Returns - Number: the hardness of the Block
+     */
+    fun getHardness(): Number;
+
+    /*
+     * This gets the luminance of the Block
+     * Returns - Number: the luminance of the Block
+     */
+    fun getLuminance(): Number;
+
+    /*
+     * This gets the map colour of the Block, can also be called with 'getMapColor'
+     * Returns - List: a list with the map colour of the Block as RGB values
+     */
+    fun getMapColour(): List;
+
+    /*
+     * This gets the material of the Block
+     * Returns - Material: the material of the Block
+     */
+    fun getMaterial(): Material;
+
+    /*
+     * This gets the position of the Block
+     * Returns - Pos: the position of the Block, may be null if the Block has no position
+     */
+    fun getPos(): Pos;
+
+    /*
+     * This gets the X position of the Block
+     * Returns - Number: the X position of the Block, may be null if the Block has no position
+     */
+    fun getX(): Number;
+
+    /*
+     * This gets the Y position of the Block
+     * Returns - Number: the Y position of the Block, may be null if the Block has no position
+     */
+    fun getY(): Number;
+
+    /*
+     * This gets the Z position of the Block
+     * Returns - Number: the Z position of the Block, may be null if the Block has no position
+     */
+    fun getZ(): Number;
+
+    /*
+     * This checks if the Block has a position or not
+     * Returns - Boolean: true if the Block has a position
+     */
+    fun hasBlockPosition(): Boolean;
+
+    /*
+     * This checks if the Block is a BlockEntity
+     * Returns - Boolean: true if the Block is a BlockEntity
+     */
+    fun isBlockEntity(): Boolean;
+
+    /*
+     * This checks if the Block is a fluid
+     * Returns - Boolean: true if the Block is a fluid
+     */
+    fun isFluid(): Boolean;
+
+    /*
+     * This checks if the Block is a fluid source
+     * Returns - Boolean: true if the Block is a fluid source
+     */
+    fun isFluidSource(): Boolean;
+
+    /*
+     * This checks if the Block is replaceable
+     * Returns - Boolean: true if the Block is replaceable
+     */
+    fun isReplaceable(): Boolean;
+
+    /*
+     * This checks if the Block is solid on the full square
+     * Parameter - String (side): the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'
+     * Returns - Boolean: true if the Block is solid on the full square
+     */
+    fun isSideSolidFullSquare(side: String): Boolean;
+
+    /*
+     * This checks if the Block is a solid block
+     * Returns - Boolean: true if the Block is a solid block
+     */
+    fun isSolidBlock(): Boolean;
+
+    /*
+     * This checks if the Block is spawnable in the case of zombies
+     * Returns - Boolean: true if the Block is spawnable in the case of zombies
+     */
+    fun isSpawnable(): Boolean;
+
+    /*
+     * This checks if the Block allows spawning for given entity
+     * Parameter - Entity (entity): the entity to check
+     * Returns - Boolean: true if the Block allows spawning for given entity
+     */
+    fun isSpawnable(entity: Entity): Boolean;
+
+    /*
+     * This checks if the Block is transparent
+     * Returns - Boolean: true if the Block is transparent
+     */
+    fun isTransparent(): Boolean;
+
+    /*
+     * This mirrors the Block around the front and back
+     * Returns - Block: the mirrored Block
+     */
+    fun mirrorFrontBack(): Block;
+
+    /*
+     * This mirrors the Block around the left and right
+     * Returns - Block: the mirrored Block
+     */
+    fun mirrorLeftRight(): Block;
+
+    /*
+     * This rotates the Block 90 degrees clockwise
+     * Returns - Block: the rotated Block
+     */
+    fun rotateYClockwise(): Block;
+
+    /*
+     * This rotates the Block 90 degrees counter-clockwise
+     * Returns - Block: the rotated Block
+     */
+    fun rotateYCounterClockwise(): Block;
+
+    /*
+     * This checks if the Block covers a small square
+     * Parameter - String (side): the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'
+     * Returns - Boolean: true if the Block covers a small square
+     */
+    fun sideCoversSmallSquare(side: String): Boolean;
+
+    /*
+     * This gets modified block with a property value, conserving positions
+     * Parameter - String (property): property name, such as 'facing', 'extended'
+     * Parameter - String (value): value name, such as 'north', 'true'
+     * Returns - Block: new state of the Block
+     */
+    fun with(property: String, value: String): Block;
+
+    /*
+     * This creates a Block from a material or string
+     * Parameter - Material (material): the material, item stack, block, or string to create the Block from
+     * Returns - Block: the Block created from the material or string
+     */
+    static fun of(material: Material): Block;
+}
+
+/* Native, implemented in Java
+ * This class allows you to create box shapes that can be rendered in the world.
+ * Import with 'import BoxShape from Minecraft'
+ */
+class BoxShape: CorneredShape {
+    /*
+     * Creates a new box shape, this is used to render boxes
+     * Parameter - Pos (pos): The position which will be used for the first and second corner of the box
+     */
+    BoxShape(pos: Pos);
+
+    /*
+     * Creates a new box shape, this is used to render boxes
+     * Parameter - Pos (pos1): The position of the first corner of the box
+     * Parameter - Pos (pos2): The position of the second corner of the box
+     */
+    BoxShape(pos1: Pos, pos2: Pos);
+
+    /*
+     * Creates a new box shape, this is used to render boxes
+     * Parameter - Number (x): The x position which will be used for the first and second corner of the box
+     * Parameter - Number (y): The y position which will be used for the first and second corner of the box
+     * Parameter - Number (z): The z position which will be used for the first and second corner of the box
+     */
+    BoxShape(x: Number, y: Number, z: Number);
+
+    /*
+     * Creates a new box shape, this is used to render boxes
+     * Parameter - Number (x1): The x position of the first corner of the box
+     * Parameter - Number (y1): The y position of the first corner of the box
+     * Parameter - Number (z1): The z position of the first corner of the box
+     * Parameter - Number (x2): The x position of the second corner of the box
+     * Parameter - Number (y2): The y position of the second corner of the box
+     * Parameter - Number (z2): The z position of the second corner of the box
+     */
+    BoxShape(x1: Number, y1: Number, z1: Number, x2: Number, y2: Number, z2: Number);
+}
+
+/* Native, implemented in Java
+ * This class represents shapes that are positioned centrally with a width
+ * Import with 'import CentredShape from Minecraft'
+ */
+class CentredShape: OutlinedShape {
+    /*
+     * This centres the positions of the shape
+     */
+    fun centrePositions(): Null;
+
+    /*
+     * This gets the central position of the shape
+     * Returns - Pos: the central position of the shape
+     */
+    fun getPos(): Pos;
+
+    /*
+     * This gets the width of the shape
+     * Returns - Number: the width of the shape
+     */
+    fun getWidth(): Number;
+
+    /*
+     * This sets the central position of the shape
+     * Parameter - Pos (pos): the central position of the shape
+     */
+    fun setPos(pos: Pos): Null;
+
+    /*
+     * This sets the width of the shape
+     * Parameter - Number (width): the width of the shape
+     */
+    fun setWidth(width: Number): Null;
+}
+
+/* Native, implemented in Java
+ * This class allows you to build commands for Minecraft.
+ * Import with 'import CommandBuilder from Minecraft'
+ */
+class CommandBuilder {
+    /*
+     * This sets the function to be executed when the command is executed,
+     * this should have the correct amount of parameters for the command
+     * Parameter - CommandBuilder (function): the function to execute
+     * Returns - CommandBuilder: the parent command builder
+     */
+    fun executes(function: CommandBuilder): CommandBuilder;
+
+    /*
+     * This adds a child CommandBuilder to your command builder
+     * Parameter - CommandBuilder (childBuilder): the child command builder to add
+     * Returns - CommandBuilder: the parent command builder
+     */
+    fun then(childBuilder: CommandBuilder): CommandBuilder;
+
+    /*
+     * Creates an argument builder with a specific argument type, and a name
+     * to see all the different types refer to CommandBuilder.fromMap(...)
+     * Parameter - String (argumentName): the name of the argument
+     * Parameter - String (argumentType): the type of the argument
+     * Returns - CommandBuilder: the argument builder
+     */
+    static fun argument(argumentName: String, argumentType: String): CommandBuilder;
+
+    /*
+     * Creates an argument builder with a specific argument type, a name, and a default value
+     * to see all the different types refer to CommandBuilder.fromMap(...)
+     * Parameter - String (argumentName): the name of the argument
+     * Parameter - String (argumentType): the type of the argument
+     * Parameter - List (suggestions): a list of strings for the suggestions for the argument
+     * Returns - CommandBuilder: the argument builder
+     */
+    static fun argument(argumentName: String, argumentType: String, suggestions: List): CommandBuilder;
+
+    /*
+     * Creates an argument builder from a map.
+     * The map must contain a 'name' key as a String that is the name of the command,
+     * the map then can contain 'subcommands' as a map which contains the subcommands,
+     * the key of the subcommands is the name of the subcommand, and the value is a map,
+     * if the name is encased in '<' and '>' it will be treated as an argument, otherwise it will be treated as a literal.
+     * You can chain arguments by leaving a space in the name like: 'literal <arg>'.
+     * If the key has no name and is just an empty string the value will be used as the function
+     * which will be executed when the command is executed, the function should have the appropriate
+     * number of parameters, the number of parameters is determined by the number of arguments.
+     * Argument types are defined in the main map under the key 'arguments' with the value of a map
+     * the keys of this map should be the names of your arguments used in your subcommands,
+     * this should be a map and must have the key 'type' which should be a string that is the type of the argument.
+     * Optionally if the type is of 'integer' or 'double' you can also have the key 'min' and 'max' with numbers as the value,
+     * and if the type is of 'enum' you must have the key 'enum' with the enum class type as the value: 'enum': MyEnum.type.
+     * You can also optionally have 'suggests' which has the value of a list of strings that are suggestions for the argument.
+     * You can also optionally have 'suggester' which has the value of a function that will be called to get suggestions for the argument,
+     * this function should have arbitrary number of parameters which will be the arguments that the user has entered so far.
+     * The possible argument types are: 'PlayerName', 'Word', 'GreedyString', 'Double', 'Integer', 'Boolean', 'Enum',
+     * 'ItemStack', 'Particle', 'RecipeId', 'EntityId', 'EnchantmentId'
+     * Parameter - Map (argumentMap): the map of arguments
+     * Returns - CommandBuilder: the argument builder
+     */
+    static fun fromMap(argumentMap: Map): CommandBuilder;
+
+    /*
+     * Creates a literal argument with just a string
+     * Parameter - String (argument): the literal argument
+     * Returns - CommandBuilder: the argument builder
+     */
+    static fun literal(argument: String): CommandBuilder;
+}
+
+/* Native, implemented in Java
+ * This class allows you to create configs for your scripts
+ * Import with 'import Config from Minecraft'
+ */
+class Config {
+    /*
+     * Adds a listener to the config, the listener will be called when the config is changed
+     * The listener must have one parameter, this is the new value that was set
+     * Parameter - Function (listener): The listener to add
+     */
+    fun addListener(listener: Function): Null;
+
+    /*
+     * Gets the category of the config
+     * Returns - String: The category of the config
+     */
+    fun getCategory(): String;
+
+    /*
+     * Gets the default value of the config
+     * Returns - Object: The default value of the config
+     */
+    fun getDefaultValue(): Object;
+
+    /*
+     * Gets the description of the config
+     * Returns - String: The description of the config
+     */
+    fun getDescription(): String;
+
+    /*
+     * Gets the name of the config
+     * Returns - String: The name of the config
+     */
+    fun getName(): String;
+
+    /*
+     * Gets the optional info of the config
+     * Returns - String: The optional info of the config
+     */
+    fun getOptionalInfo(): String;
+
+    /*
+     * Gets the type of the config
+     * Returns - String: The type of the config
+     */
+    fun getType(): String;
+
+    /*
+     * Gets the value of the config
+     * Returns - Object: The value of the config
+     */
+    fun getValue(): Object;
+
+    /*
+     * Resets the config to the default value
+     */
+    fun resetToDefault(): Null;
+
+    /*
+     * Sets the value of the config, if the value is invalid it will not be changed
+     * Parameter - Object (value): The new value of the config
+     */
+    fun setValue(value: Object): Null;
+
+    /*
+     * Converts the config into a json value, this will not keep the listeners
+     * Returns - Json: The config as a json value
+     */
+    fun toJson(): Json;
+
+    /*
+     * Creates a config from a list of config maps
+     * Parameter - List (list): The list of config maps
+     * Returns - List: A list of configs created from the list of config maps
+     */
+    static fun fromListOfMap(list: List): List;
+
+    /*
+     * Creates a config from a map
+     * The map must contain the following keys:
+     * 'type' which is the type of the config which can be 'boolean', 'cycle', 'double', 'double_slider', 'integer', 'integer_slider', 'list', or 'string',
+     * 'name' which is the name of the config
+     * And can optionally contain the following keys:
+     * 'description' which is a description of the config,
+     * 'optional_info' which is an optional info for the config,
+     * 'default_value' which is the default value of the config,
+     * 'category' which is the category of the config,
+     * 'value' which is the current value of the config, 
+     * 'listener' which is a function that will be called when the config changes, this must have 1 parameter which is the rule that was changed,
+     * 'max_length' which is the max length for the input of the config, this must be an integer > 0, default is 32
+     * And 'cycle' types must contain the following keys:
+     * 'cycle_values' which is a list of values that the config can cycle through.
+     * And slider types must contain the following keys:
+     * 'min' which is the minimum value of the slider,
+     * 'max' which is the maximum value of the slider
+     * Parameter - Map (map): The map to create the config from
+     * Returns - Config: The config created from the map
+     */
+    static fun fromMap(map: Map): Config;
+}
+
+/* Native, implemented in Java
+ * This class allows you to easily read and write config files.
+ * Import with 'import ConfigHandler from Minecraft'
+ */
+class ConfigHandler {
+    /*
+     * Creates a new ConfigHandler, this is used to read and save configs
+     * Parameter - String (name): The name of the config, this will also be the name of the config file
+     */
+    ConfigHandler(name: String);
+
+    /*
+     * Creates a new ConfigHandler, this is used to read and save configs
+     * Parameter - String (name): The name of the config, this will also be the name of the config file
+     * Parameter - Boolean (read): Whether or not to read the config on creation
+     */
+    ConfigHandler(name: String, read: Boolean);
+
+    /*
+     * Adds a config to the handler
+     * Parameter - Config (config): The config to add
+     */
+    fun addConfig(config: Config): Null;
+
+    /*
+     * Adds multiple configs to the handler, you can pass in a list of configs
+     * or a varargs of configs, this is for compatability with older scripts
+     * Parameter - Config (configs...): The configs to add
+     */
+    fun addConfigs(configs...: Config): Null;
+
+    /*
+     * Creates a new config screen containing all of the configs in the handler, in alphabetical order.
+     * The screen name will be the default, the same as the name of the config handler
+     * Returns - Screen: The new config screen
+     */
+    fun createScreen(): Screen;
+
+    /*
+     * Creates a new config screen containing all of the configs in the handler, in alphabetical order
+     * Parameter - Text (title): The title of the screen
+     * Returns - Screen: The new config screen
+     */
+    fun createScreen(title: Text): Screen;
+
+    /*
+     * Creates a new config screen containing all of the configs in the handler
+     * Parameter - Text (title): The title of the screen
+     * Parameter - Boolean (alphabetical): Whether or not to sort the configs alphabetically
+     * Returns - Screen: The new config screen
+     */
+    fun createScreen(title: Text, alphabetical: Boolean): Screen;
+
+    /*
+     * Gets all the configs in the handler
+     * Returns - List: All the configs in the handler
+     */
+    fun getAllConfigs(): List;
+
+    /*
+     * Gets a config from the handler
+     * Parameter - String (name): The name of the config
+     * Returns - Config: The config
+     */
+    fun getConfig(name: String): Config;
+
+    /*
+     * Gets the name of the config
+     * Returns - String: The name of the config
+     */
+    fun getName(): String;
+
+    /*
+     * Reads the all the configs from the file
+     * If configs are already in the handler, only the values
+     * will be overwritten
+     */
+    fun read(): Null;
+
+    /*
+     * Removes a config from the handler
+     * Parameter - String (name): The name of the config to remove
+     */
+    fun removeConfig(name: String): Null;
+
+    /*
+     * Resets all configs to their default values
+     */
+    fun resetAllToDefault(): Null;
+
+    /*
+     * Saves the configs to the file
+     */
+    fun save(): Null;
+
+    /*
+     * Sets whether or not the configs should be saved when the script ends, by default this is true
+     * Parameter - Boolean (saveOnClose): Whether or not the configs should be saved when the script ends
+     */
+    fun setSaveOnClose(saveOnClose: Boolean): Null;
+
+    /*
+     * Sets the path to save the configs to, this shouldn't include the file name
+     * Parameter - File (savePath): The path to save the configs to
+     */
+    fun setSavePath(savePath: File): Null;
+
+    /*
+     * Gets whether or not the configs will be saved when the script ends
+     * Returns - Boolean: Whether or not the configs will be saved when the script ends
+     */
+    fun willSaveOnClose(): Boolean;
+}
+
+/* Native, implemented in Java
+ * This class represents all shapes that use 2 corners to dictate their position
+ * Import with 'import CorneredShape from Minecraft'
+ */
+class CorneredShape: OutlinedShape {
+    /*
+     * This centres the positions of the shape
+     */
+    fun centrePositions(): Null;
+
+    /*
+     * This gets the first position of the shape
+     * Returns - Pos: the first position of the shape
+     */
+    fun getPos1(): Pos;
+
+    /*
+     * This gets the second position of the shape
+     * Returns - Pos: the second position of the shape
+     */
+    fun getPos2(): Pos;
+
+    /*
+     * This sets the first position of the shape
+     * Parameter - Pos (pos1): the first position of the shape
+     */
+    fun setPos1(pos1: Pos): Null;
+
+    /*
+     * This sets the second position of the shape
+     * Parameter - Pos (pos2): the second position of the shape
+     */
+    fun setPos2(pos2: Pos): Null;
+}
+
+/* Native, implemented in Java
+ * This class is mostly used to get data about entities.
+ * Import with 'import Entity from Minecraft'
+ */
+class Entity {
+    /*
+     * This checks whether the entity can spawn at given position with regard to light and hitbox
+     * Parameter - Pos (pos): the position to check
+     * Returns - Boolean: whether entity type can spawn at given position
+     */
+    fun canSpawnAt(pos: Pos): Boolean;
+
+    /*
+     * This checks whether the entity collides with a block at a given position
+     * Parameter - Pos (pos): the position to check
+     * Parameter - Block (block): the block to check
+     * Returns - Boolean: whether the entity collides with the block
+     */
+    fun collidesWith(pos: Pos, block: Block): Boolean;
+
+    /*
+     * This gets the age of the entity in ticks
+     * Returns - Number: the age of the entity in ticks
+     */
+    fun getAge(): Number;
+
+    /*
+     * This gets the biome of the entity
+     * Returns - Biome: the biome the entity is in
+     */
+    fun getBiome(): Biome;
+
+    /*
+     * This gets the custom name of the entity if it has one
+     * Returns - String: the custom name of the entity if it has one, otherwise null
+     */
+    fun getCustomName(): String;
+
+    /*
+     * This gets the dimension of the entity
+     * Returns - String: the dimension id of dimension the entity is in
+     */
+    fun getDimension(): String;
+
+    /*
+     * This gets the distance between the entity and the other entity
+     * Parameter - Entity (otherEntity): the other entity
+     * Returns - Number: the distance between the entities
+     */
+    fun getDistanceTo(otherEntity: Entity): Number;
+
+    /*
+     * This gets the entity id number of the entity
+     * Returns - Number: the entity id number
+     */
+    fun getEntityIdNumber(): Number;
+
+    /*
+     * This gets the uuid of the entity
+     * Returns - String: the uuid of the entity
+     */
+    fun getEntityUuid(): String;
+
+    /*
+     * This gets the full id of the entity, this returns the full id, so for example
+     * 'minecraft:cow' you can find all entityNames on
+     * [Joa's Entity Property Encyclopedia](https://joakimthorsen.github.io/MCPropertyEncyclopedia/entities.html)
+     * Returns - String: the full id of the entity
+     */
+    fun getFullId(): String;
+
+    /*
+     * This gets the hitbox of the entity in a list containing the two corners of the hitbox, the minimum point and the maximum point
+     * Returns - List: the hitbox of the entity
+     */
+    fun getHitbox(): List;
+
+    /*
+     * This gets the id of the entity, this returns the id, so for examples 'cow'
+     * Returns - String: the id of the entity
+     */
+    fun getId(): String;
+
+    /*
+     * This gets the block that the entity is currently looking at
+     * with a max range of 20 blocks, if there is no block then it will return air
+     * Returns - Block: the block that the entity is looking at, containing the position
+     */
+    fun getLookingAtBlock(): Block;
+
+    /*
+     * This gets the block that the entity is currently looking at
+     * with a specific max range, if there is no block then it will return air
+     * Parameter - Number (maxDistance): the max range to ray cast
+     * Returns - Block: the block that the entity is looking at, containing the position
+     */
+    fun getLookingAtBlock(maxDistance: Number): Block;
+
+    /*
+     * This gets the block that the entity is currently looking at
+     * with a specific max range, and optionally whether fluids should
+     * be included, if there is no block then it will return air
+     * Parameter - Number (maxDistance): the max range to ray cast
+     * Parameter - String (fluidType): the types of fluids to include, either 'none', 'sources', or 'all'
+     * Returns - Block: the block that the entity is looking at, containing the position
+     */
+    fun getLookingAtBlock(maxDistance: Number, fluidType: String): Block;
+
+    /*
+     * This gets the position that the entity is currently looking at with a specific max range
+     * Parameter - Number (maxDistance): the max range to ray cast
+     * Returns - Pos: the position that the entity is looking at, containing the x, y, and z
+     */
+    fun getLookingAtPos(maxDistance: Number): Pos;
+
+    /*
+     * This gets the nbt of the entity as a map
+     * Returns - Map: the nbt of the entity
+     */
+    fun getNbt(): Map;
+
+    /*
+     * This gets the pitch of the entity (vertical head rotation)
+     * Returns - Number: the pitch of the entity, between -90 and 90
+     */
+    fun getPitch(): Number;
+
+    /*
+     * This gets the position of the entity
+     * Returns - Pos: the position of the entity
+     */
+    fun getPos(): Pos;
+
+    /*
+     * This gets the squared distance between the entity and the other entity
+     * Parameter - Entity (otherEntity): the other entity
+     * Returns - Number: the squared distance between the entities
+     */
+    fun getSquaredDistanceTo(otherEntity: Entity): Number;
+
+    /*
+     * This gets the translated name of the entity, for examples 'minecraft:pig' would return 'Pig' if your language is in english
+     * Returns - String: the translated name of the entity
+     */
+    fun getTranslatedName(): String;
+
+    /*
+     * This gets the velocity of the entity in a list in the form [x, y, z]
+     * Returns - List: the velocity of the entity
+     */
+    fun getVelocity(): List;
+
+    /*
+     * This gets the world the entity is in
+     * Returns - World: the world the entity is in
+     */
+    fun getWorld(): World;
+
+    /*
+     * This gets the x position of the entity
+     * Returns - Number: the x position of the entity
+     */
+    fun getX(): Number;
+
+    /*
+     * This gets the y position of the entity
+     * Returns - Number: the y position of the entity
+     */
+    fun getY(): Number;
+
+    /*
+     * This gets the yaw of the entity (horizontal head rotation)
+     * Returns - Number: the yaw of the entity, between -180 and 180
+     */
+    fun getYaw(): Number;
+
+    /*
+     * This gets the z position of the entity
+     * Returns - Number: the z position of the entity
+     */
+    fun getZ(): Number;
+
+    /*
+     * Returns true if the entity is falling
+     * Returns - Boolean: true if the entity is falling, false if not
+     */
+    fun isFalling(): Boolean;
+
+    /*
+     * Returns true if the entity is glowing
+     * Returns - Boolean: true if the entity is glowing, false if not
+     */
+    fun isGlowing(): Boolean;
+
+    /*
+     * Returns true if the entity is in lava
+     * Returns - Boolean: true if the entity is in lava, false if not
+     */
+    fun isInLava(): Boolean;
+
+    /*
+     * This checks if the entity is of the given entity id
+     * Parameter - String (entityId): the entity id to check
+     * Returns - Boolean: true if the entity is of the given entity id
+     */
+    fun isOf(entityId: String): Boolean;
+
+    /*
+     * Returns true if the entity is on fire
+     * Returns - Boolean: true if the entity is on fire, false if not
+     */
+    fun isOnFire(): Boolean;
+
+    /*
+     * Returns true if the entity is on the ground
+     * Returns - Boolean: true if the entity is on the ground, false if not
+     */
+    fun isOnGround(): Boolean;
+
+    /*
+     * Returns true if the player is sneaking
+     * Returns - Boolean: true if the player is sneaking, false if not
+     */
+    fun isSneaking(): Boolean;
+
+    /*
+     * Returns true if the player is sprinting
+     * Returns - Boolean: true if the player is sprinting, false if not
+     */
+    fun isSprinting(): Boolean;
+
+    /*
+     * Returns true if the entity is submerged in water
+     * Returns - Boolean: true if the entity is submerged in water, false if not
+     */
+    fun isSubmergedInWater(): Boolean;
+
+    /*
+     * Returns true if the entity is touching water
+     * Returns - Boolean: true if the entity is touching water, false if not
+     */
+    fun isTouchingWater(): Boolean;
+
+    /*
+     * Returns true if the entity is touching water or rain
+     * Returns - Boolean: true if the entity is touching water or rain, false if not
+     */
+    fun isTouchingWaterOrRain(): Boolean;
+
+    /*
+     * This sets the entity to either start glowing or stop glowing on the client
+     * Parameter - Boolean (glowing): the glowing state
+     */
+    fun setGlowing(glowing: Boolean): Null;
+
+    /*
+     * This converts an entityId into an entity instance.
+     * This will throw an error if the id is not valid.
+     * Parameter - String (entityId): the entityId to convert to an entity
+     * Returns - Entity: the entity instance from the id
+     */
+    static fun of(entityId: String): Entity;
+}
+
+/* Native, implemented in Java
+ * This class can be used to create fake blocks which can be rendered in the world.
+ * Import with 'import FakeBlock from Minecraft'
+ */
+class FakeBlock: Shape {
+    /*
+     * Creates a fake block with the given block and position
+     * Parameter - Block (block): The block to use
+     * Parameter - Pos (pos): The position of the block
+     */
+    FakeBlock(block: Block, pos: Pos);
+
+    /*
+     * Gets the current block type of the fake block
+     * Returns - Block: The block type of the fake block
+     */
+    fun getBlock(): Block;
+
+    /*
+     * Gets the direction of the fake block
+     * Returns - String: The direction of the fake block, may be null
+     */
+    fun getDirection(): String;
+
+    /*
+     * Gets the position of the fake block
+     * Returns - Pos: The position of the fake block
+     */
+    fun getPos(): Pos;
+
+    /*
+     * Sets the block type to render of the fake block
+     * Parameter - Block (block): The block to render
+     */
+    fun setBlock(block: Block): Null;
+
+    /*
+     * Sets whether the fake block should be culled
+     * Parameter - Boolean (cull): Whether the fake block should be culled
+     */
+    fun setCull(cull: Boolean): Null;
+
+    /*
+     * Sets the direction of the fake block,
+     * this may be null in which case the block will face the player
+     * Parameter - String (direction): The direction of the fake block
+     */
+    fun setDirection(direction: String): Null;
+
+    /*
+     * Sets the position of the fake block
+     * Parameter - Pos (pos): The position of the fake block
+     */
+    fun setPos(pos: Pos): Null;
+
+    /*
+     * Gets whether the fake block should be culled
+     * Returns - Boolean: Whether the fake block should be culled
+     */
+    fun shouldCull(): Boolean;
+}
+
+/* Native, implemented in Java
+ * This allows you to create a fake entity which can be rendered in the world.
+ * Import with 'import FakeEntity from Minecraft'
+ */
+class FakeEntity {
+    /*
+     * Creates a new fake entity
+     * Parameter - Entity (entity): The entity that you want to create into a fake entity
+     * Parameter - World (world): The world that the entity is being rendered in
+     */
+    FakeEntity(entity: Entity, world: World);
+
+    /*
+     * Despawns the entity (makes it not render in the world)
+     */
+    fun despawn(): Null;
+
+    /*
+     * Gets the body yaw of the entity
+     * Returns - Number: The body yaw of the entity
+     */
+    fun getBodyYaw(): Number;
+
+    /*
+     * Gets the pitch of the entity
+     * Returns - Number: The pitch of the entity
+     */
+    fun getPitch(): Number;
+
+    /*
+     * Gets the position of the entity
+     * Returns - Pos: The position of the entity
+     */
+    fun getPos(): Pos;
+
+    /*
+     * Gets the world that the entity is being rendered in
+     * Returns - World: The world that the entity is being rendered in
+     */
+    fun getWorld(): World;
+
+    /*
+     * Gets the yaw of the entity
+     * Returns - Number: The yaw of the entity
+     */
+    fun getYaw(): Number;
+
+    /*
+     * Sets the body yaw of the entity with no interpolation
+     * Parameter - Number (bodyYaw): The new body yaw of the entity
+     */
+    fun setBodyYaw(bodyYaw: Number): Null;
+
+    /*
+     * Sets the body yaw of the entity
+     * Parameter - Number (bodyYaw): The new body yaw of the entity
+     * Parameter - Number (interpolationSteps): The number of interpolation steps to take
+     */
+    fun setBodyYaw(bodyYaw: Number, interpolationSteps: Number): Null;
+
+    /*
+     * Sets the pitch of the entity with no interpolation
+     * Parameter - Number (pitch): The new pitch of the entity
+     */
+    fun setPitch(pitch: Number): Null;
+
+    /*
+     * Sets the pitch of the entity
+     * Parameter - Number (pitch): The new pitch of the entity
+     * Parameter - Number (interpolationSteps): The number of interpolation steps to take
+     */
+    fun setPitch(pitch: Number, interpolationSteps: Number): Null;
+
+    /*
+     * Sets the position of the entity with no interpolation
+     * Parameter - Pos (pos): The new position of the entity
+     */
+    fun setPos(pos: Pos): Null;
+
+    /*
+     * Sets the position of the entity
+     * Parameter - Pos (pos): The new position of the entity
+     * Parameter - Number (interpolationSteps): The number of interpolation steps to take
+     */
+    fun setPos(pos: Pos, interpolationSteps: Number): Null;
+
+    /*
+     * Sets the world that the entity is being rendered in
+     * Parameter - World (world): The world that the entity is being rendered in
+     */
+    fun setWorld(world: World): Null;
+
+    /*
+     * Sets the yaw of the entity with no interpolation
+     * Parameter - Number (yaw): The new yaw of the entity
+     */
+    fun setYaw(yaw: Number): Null;
+
+    /*
+     * Sets the yaw of the entity
+     * Parameter - Number (yaw): The new yaw of the entity
+     * Parameter - Number (interpolationSteps): The number of interpolation steps to take
+     */
+    fun setYaw(yaw: Number, interpolationSteps: Number): Null;
+
+    /*
+     * Spawns the entity (makes it render in the world)
+     */
+    fun spawn(): Null;
+
+    /*
+     * Updates the position and rotation of the entity with no interpolation
+     * Parameter - Pos (pos): The new position of the entity
+     * Parameter - Number (yaw): The new yaw of the entity
+     * Parameter - Number (pitch): The new pitch of the entity
+     */
+    fun updatePosAndRotation(pos: Pos, yaw: Number, pitch: Number): Null;
+
+    /*
+     * Updates the position and rotation of the entity
+     * Parameter - Pos (pos): The new position of the entity
+     * Parameter - Number (yaw): The new yaw of the entity
+     * Parameter - Number (pitch): The new pitch of the entity
+     * Parameter - Number (interpolationSteps): The number of interpolation steps to take
+     */
+    fun updatePosAndRotation(pos: Pos, yaw: Number, pitch: Number, interpolationSteps: Number): Null;
+}
+
+/* Native, implemented in Java
+ * This class extends Screen and so inherits all of their methods too,
+ * this class is used to create client side inventory screens.
+ * Import with 'import FakeScreen from Minecraft'
+ */
+class FakeScreen: Screen {
+    /*
+     * Creates a FakeScreen instance with given name and given amount of rows,
+     * this will throw an error if the rows are not between 1 and 6
+     * Parameter - String (name): the name of the screen
+     * Parameter - Number (rows): the number of rows between 1 - 6
+     */
+    FakeScreen(name: String, rows: Number);
+
+    /*
+     * Gets the stack for the given slot, if the slot is out of bounds it returns null
+     * Parameter - Number (slotNum): the slot number
+     * Returns - ItemStack: the stack for the given slot
+     */
+    fun getStackForSlot(slotNum: Number): ItemStack;
+
+    /*
+     * This sets the callback for when a slot is clicked in the inventory.
+     * The callback must have 3 parameters, the first is the item stack that was clicked,
+     * then second is the slot number, third is the action as a string
+     * Parameter - Function (function): the callback function
+     */
+    fun onClick(function: Function): Null;
+
+    /*
+     * Sets the stack for the given slot, if the slot is out of bounds it won't be set
+     * Parameter - Number (slotNum): the slot number
+     * Parameter - ItemStack (stack): the stack to set
+     */
+    fun setStackForSlot(slotNum: Number, stack: ItemStack): Null;
+}
+
+/* Native, implemented in Java
+ * This class allows you to register listeners for game events in Minecraft.
+ * Import with 'import GameEvent from Minecraft'
+ */
+class GameEvent {
+    /*
+     * This creates a new GameEvent, that is not cancellable
+     * Parameter - String (eventName): The name of the event, you can find these on the GameEvents page
+     * Parameter - Function (onEvent): The function to run when the event is called, some events may have parameters
+     */
+    GameEvent(eventName: String, onEvent: Function);
+
+    /*
+     * This creates a new GameEvent
+     * Parameter - String (eventName): The name of the event, you can find these on the GameEvents page
+     * Parameter - Function (onEvent): The function to run when the event is called, some events may have parameters
+     * Parameter - Boolean (cancellable): Whether or not the event is cancellable, if it is then it will run on the main thread
+     */
+    GameEvent(eventName: String, onEvent: Function, cancellable: Boolean);
+
+    /*
+     * This returns whether or not the event is registered
+     * Returns - Boolean: Whether or not the event is registered
+     */
+    fun isRegistered(): Boolean;
+
+    /*
+     * This registers the event
+     */
+    fun register(): Null;
+
+    /*
+     * This unregisters the event
+     */
+    fun unregister(): Null;
+
+    /*
+     * If called on a cancellable event, this will stop execution and cancel the event,
+     * if called on a non-cancellable event, or not on an event, this will throw an error
+     */
+    static fun cancel(): Null;
+
+    /*
+     * This returns a future that allows you to wait for an event to occur
+     * Returns - Future: the future, will complete once the event has occurred
+     */
+    static fun future(): Future;
+
+    /*
+     * This unregisters all events registered by this script
+     */
+    static fun unregisterAll(): Null;
+}
+
+/* Native, implemented in Java
+ * This class extends Entity and so inherits all of their methods too,
+ * ItemEntities are entities that are dropped items.
+ * Import with 'import ItemEntity from Minecraft'
+ */
+class ItemEntity: Entity {
+    /*
+     * This method returns the custom name of the ItemEntity
+     * Returns - String: the custom name of the entity
+     */
+    fun getCustomName(): String;
+
+    /*
+     * This method returns the age of the ItemEntity
+     * this is increased every tick and the item entity despawns after 6000 ticks
+     * Returns - Number: the age of the entity
+     */
+    fun getItemAge(): Number;
+
+    /*
+     * This method returns the ItemStack that is held in the ItemEntity
+     * Returns - ItemStack: the ItemStack that the entity holds
+     */
+    fun getItemStack(): ItemStack;
+
+    /*
+     * This method returns the player that threw the ItemEntity, null if not thrown by a player or player not found
+     * Returns - Player: the player that threw the entity
+     */
+    fun getThrower(): Player;
+}
+
+/* Native, implemented in Java
+ * This class represents an item stack. It can be used to create new item stacks, or to modify existing ones.
+ * Import with 'import ItemStack from Minecraft'
+ */
+class ItemStack: Material {
+    /*
+     * This creates an item entity with the item
+     * Returns - ItemEntity: the entity of the ItemStack
+     */
+    fun asEntity(): ItemEntity;
+
+    /*
+     * This gets the count of the ItemStack, the amount of items in the stack
+     * Returns - Number: the count of the ItemStack
+     */
+    fun getCount(): Number;
+
+    /*
+     * This gets the custom name of the ItemStack
+     * Returns - String: the custom name of the ItemStack
+     */
+    fun getCustomName(): String;
+
+    /*
+     * This gets the durability of the item
+     * Returns - Number: the durability of the item
+     */
+    fun getDurability(): Number;
+
+    /*
+     * This gets the enchantments of the item, in a map containing the
+     * id of the enchantment as the key and the level of the enchantment as the value
+     * Returns - Map: the enchantments of the item, map may be empty
+     */
+    fun getEnchantments(): Map;
+
+    /*
+     * This gets the material of the ItemStack
+     * Returns - Material: the material of the ItemStack
+     */
+    fun getMaterial(): Material;
+
+    /*
+     * This gets the max stack size of the ItemStack
+     * Returns - Number: the max stack size of the ItemStack
+     */
+    fun getMaxCount(): Number;
+
+    /*
+     * This gets the max durability of the item
+     * Returns - Number: the max durability of the item
+     */
+    fun getMaxDurability(): Number;
+
+    /*
+     * This gets the mining speed multiplier of the ItemStack for the given Block,
+     * for example a diamond pickaxe on stone would have a higher multiplier than air on stone
+     * Parameter - Block (block): the Block to get the mining speed multiplier for
+     * Returns - Number: the mining speed multiplier of the ItemStack for the given Block
+     */
+    fun getMiningSpeedMultiplier(block: Block): Number;
+
+    /*
+     * This gets the NBT data of the ItemStack as a Map
+     * Returns - Map: the NBT data of the ItemStack
+     */
+    fun getNbt(): Map;
+
+    /*
+     * This gets the NBT data of the ItemStack as a String
+     * Returns - String: the NBT data of the ItemStack
+     */
+    fun getNbtAsString(): String;
+
+    /*
+     * This gets the translated name of the ItemStack, for example
+     * 'diamond_sword' would return 'Diamond Sword' if your language is English
+     * Returns - String: the translated name of the ItemStack
+     */
+    fun getTranslatedName(): String;
+
+    /*
+     * This checks if the ItemStack can be placed as a block
+     * Returns - Boolean: true if the ItemStack can be placed as a block, false otherwise
+     */
+    fun isBlockItem(): Boolean;
+
+    /*
+     * This checks if the ItemStack has the same NBT data as the other given ItemStack
+     * Parameter - ItemStack (itemStack): the other ItemStack to compare to
+     * Returns - Boolean: true if the ItemStack has the same NBT data as the other given ItemStack
+     */
+    fun isNbtEqual(itemStack: ItemStack): Boolean;
+
+    /*
+     * This checks if the ItemStack is stackable
+     * Returns - Boolean: true if the ItemStack is stackable, false otherwise
+     */
+    fun isStackable(): Boolean;
+
+    /*
+     * This sets the custom name of the ItemStack
+     * Parameter - Text (customName): the custom name of the ItemStack, this can be text or string
+     * Returns - ItemStack: the ItemStack with the new custom name
+     */
+    fun setCustomName(customName: Text): ItemStack;
+
+    /*
+     * This sets the lore of the ItemStack
+     * Parameter - List (lore): the lore of the ItemStack as a list of Text
+     * Returns - ItemStack: the ItemStack with the new lore
+     */
+    fun setItemLore(lore: List): ItemStack;
+
+    /*
+     * This sets the NBT data of the ItemStack
+     * Parameter - Map (nbtMap): the NBT data of the ItemStack as a map
+     * Returns - ItemStack: the ItemStack with the new NBT data
+     */
+    fun setNbt(nbtMap: Map): ItemStack;
+
+    /*
+     * This sets the NBT data of the ItemStack from an NBT string
+     * Parameter - String (nbtString): the NBT data of the ItemStack as a string
+     * Returns - ItemStack: the ItemStack with the new NBT data
+     */
+    fun setNbtFromString(nbtString: String): ItemStack;
+
+    /*
+     * This sets the stack size of the ItemStack
+     * Parameter - Number (stackSize): the stack size of the ItemStack
+     * Returns - ItemStack: the ItemStack with the new stack size
+     */
+    fun setStackSize(stackSize: Number): ItemStack;
+
+    /*
+     * This creates an ItemStack from a material or a string
+     * Parameter - Material (material): the material, item stack, block, or string to create the ItemStack from
+     * Returns - ItemStack: the new ItemStack instance
+     */
+    static fun of(material: Material): ItemStack;
+
+    /*
+     * This creates an ItemStack from a NBT string, this can be in the form of a map
+     * or an ItemStack NBT, or like the item stack command format
+     * Parameter - String (nbtString): the NBT string to create the ItemStack from
+     * Returns - ItemStack: the new ItemStack instance
+     */
+    static fun parse(nbtString: String): ItemStack;
+}
+
+/* Native, implemented in Java
+ * This class allows you to create key binds that can be used, everything is
+ * handled for you internally so you just need to regers the key bind and
+ * the function you want to run when it is pressed.
+ * This class does not need to be imported.
+ */
+class KeyBind {
+    /*
+     * Creates a new key bind
+     * Parameter - String (keyName): the name of the key
+     */
+    KeyBind(keyName: String);
+
+    /*
+     * Gets the key bind's first key
+     * Returns - String: the key bind's key
+     */
+    fun getKey(): String;
+
+    /*
+     * Gets the all of the keys in the key bind
+     * Returns - List: list of strings of all the keys
+     */
+    fun getKeys(): List;
+
+    /*
+     * Sets the callback function for the key bind
+     * Parameter - Function (callback): the callback function
+     */
+    fun setCallback(callback: Function): Null;
+
+    /*
+     * Sets the key bind to a new key
+     * Parameter - String (keyName): the name of the key
+     */
+    fun setKey(keyName: String): Null;
+
+    /*
+     * Sets the key bind to new keys, you may also pass
+     * in a list as the parameter, this is to keep compatability
+     * Parameter - String (keyNames...): the names of keys
+     */
+    fun setKeys(keyNames...: String): Null;
+}
+
+/* Native, implemented in Java
+ * This class allows you to create a line shape which can be used to draw lines in the world.
+ * Import with 'import LineShape from Minecraft'
+ */
+class LineShape: CorneredShape {
+    /*
+     * Creates a new line shape
+     * Parameter - Pos (pos1): The starting position of the line
+     * Parameter - Pos (pos2): The ending position of the line
+     */
+    LineShape(pos1: Pos, pos2: Pos);
+
+    /*
+     * Creates a new line shape
+     * Parameter - Number (x1): The x position of the starting position of the line
+     * Parameter - Number (y1): The y position of the starting position of the line
+     * Parameter - Number (z1): The z position of the starting position of the line
+     * Parameter - Number (x2): The x position of the ending position of the line
+     * Parameter - Number (y2): The y position of the ending position of the line
+     * Parameter - Number (z2): The z position of the ending position of the line
+     */
+    LineShape(x1: Number, y1: Number, z1: Number, x2: Number, y2: Number, z2: Number);
+}
+
+/* Native, implemented in Java
+ * This class extends Entity and so inherits all of their methods too,
+ * LivingEntities are any entities that are alive, so all mobs
+ * Import with 'import LivingEntity from Minecraft'
+ */
+class LivingEntity: Entity {
+    /*
+     * This gets the LivingEntity's current health
+     * Returns - Number: the LivingEntity's health
+     */
+    fun getHealth(): Number;
+
+    /*
+     * This gets the LivingEntity's status effects, you can find
+     * a list of all the ids of the status effects
+     * [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects)
+     * Returns - List: a list of status effects, may be empty
+     */
+    fun getStatusEffects(): List;
+
+    /*
+     * This checks if the LivingEntity is fly falling (gliding with elytra)
+     * Returns - Boolean: true if the LivingEntity is fly falling
+     */
+    fun isFlyFalling(): Boolean;
+}
+
+/* Native, implemented in Java
+ * This class represents all possible item and block types
+ * and allows you to convert them into instances of ItemStacks and Blocks
+ * Import with 'import Material from Minecraft'
+ */
+class Material {
+    /*
+     * This converts the material into a Block.
+     * If it cannot be converted an error will be thrown
+     * Returns - Block: the Block representation of the material
+     */
+    fun asBlock(): Block;
+
+    /*
+     * This converts the material into an ItemStack.
+     * If it cannot be converted an error will be thrown
+     * Returns - ItemStack: the ItemStack representation of the material
+     */
+    fun asItemStack(): ItemStack;
+
+    /*
+     * This returns the full id of the material, for example: 'minecraft:diamond'
+     * Returns - String: the full id representation of the material
+     */
+    fun getFullId(): String;
+
+    /*
+     * This returns the id of the material, for example: 'diamond'
+     * Returns - String: the id representation of the material
+     */
+    fun getId(): String;
+
+    /*
+     * This gets the translated name of the ItemStack, for example: 
+     * Material.DIAMOND_SWORD would return 'Diamond Sword' if your language is English
+     * Returns - String: the translated name of the Material
+     */
+    fun getTranslatedName(): String;
+
+    /*
+     * This converts a block or item id into a Material.
+     * This method will throw an error if the id is invalid
+     * Parameter - String (id): the id of the block or item
+     * Returns - Material: the material instance from the id
+     */
+    static fun of(id: String): Material;
+}
+
+/* Native, implemented in Java
+ * This class extends Screen and so inherits all of their methods too,
+ * this class is used to add functionality to trading screens.
+ * Import with 'import MerchantScreen from Minecraft'
+ */
+class MerchantScreen: Screen {
+    /*
+     * This clears the currently selected trade.
+     * You must be inside the merchant GUI or an error will be thrown
+     */
+    fun clearTrade(): Null;
+
+    /*
+     * This checks if the villager has a trade for a certain item.
+     * You must be inside the merchant GUI or an error will be thrown
+     * Parameter - Material (materialLike): the item or material to check for
+     * Returns - Boolean: true if the villager has a trade for the item, false otherwise
+     */
+    fun doesVillagerHaveTrade(materialLike: Material): Boolean;
+
+    /*
+     * This gets the index of a trade for a certain item.
+     * You must be inside the merchant GUI or an error will be thrown
+     * Parameter - Material (material): the item to get the index of
+     * Returns - Number: the index of the trade
+     */
+    fun getIndexOfTradeItem(material: Material): Number;
+
+    /*
+     * This gets the price of a trade at a certain index.
+     * You must be inside the merchant GUI or an error will be thrown
+     * Parameter - Number (index): the index of the trade
+     * Returns - Number: the price of the trade
+     */
+    fun getPriceForIndex(index: Number): Number;
+
+    /*
+     * This gets the item stack of a trade at a certain index.
+     * You must be inside the merchant GUI or an error will be thrown
+     * Parameter - Number (index): the index of the trade
+     * Returns - ItemStack: the item stack of the trade
+     */
+    fun getTradeItemForIndex(index: Number): ItemStack;
+
+    /*
+     * This gets a list of all the merchant's trades
+     * Returns - List: the list of all the Trades
+     */
+    fun getTradeList(): List;
+
+    /*
+     * This gets the size of all the trades available
+     * Returns - Number: the size of the trade list
+     */
+    fun getTradeListSize(): Number;
+
+    /*
+     * This gets the level of the villager, this will
+     * throw an error if you are not trading with a villager.
+     * The level can be between 1 - 5 from Novice to Master
+     * Returns - Number: the level of the villager
+     */
+    fun getVillagerLevel(): Number;
+
+    /*
+     * This gets the amount of xp in the villagers xp bar,
+     * The total amount of xp is hardcoded for each level.
+     * Level 2 requires 10 xp, 3 requires 70 (60 xp from 2 -> 3),
+     * 4 requires 150 (80 xp from 3 -> 4), 5 requires 250
+     * (100 xp from 4 -> 5). 250 is the max xp a villager can have
+     * Returns - Number: the amount of xp
+     */
+    fun getVillagerXp(): Number;
+
+    /*
+     * This returns true if a trade is disabled at an index
+     * Parameter - Number (index): the index of the trade
+     * Returns - Boolean: true if a trade is disabled
+     */
+    fun isTradeDisabled(index: Number): Boolean;
+
+    /*
+     * This returns true if a trade is selected
+     * Returns - Boolean: true if a trade is selected
+     */
+    fun isTradeSelected(): Boolean;
+
+    /*
+     * This selects the currently selected trade, as if you were to click it.
+     * You must be inside the merchant GUI or an error will be thrown
+     * Parameter - Number (index): the index of the trade
+     */
+    fun selectTrade(index: Number): Null;
+
+    /*
+     * This makes your player trade with the merchant at a certain index.
+     * You must be inside the merchant GUI or an error will be thrown
+     * Parameter - Number (index): the index of the trade
+     */
+    fun tradeIndex(index: Number): Null;
+
+    /*
+     * This trades the currently selected trade.
+     * You must be inside the merchant GUI or an error will be thrown
+     */
+    fun tradeSelected(): Null;
+
+    /*
+     * This trades the currently selected trade and throws the items that were traded.
+     * You must be inside the merchant GUI or an error will be thrown
+     */
+    fun tradeSelectedAndThrow(): Null;
+}
+
+/* Native, implemented in Java
+ * This allows for many core interactions with the MinecraftClient
+ * Import with 'import MinecraftClient from Minecraft'
+ */
+class MinecraftClient {
+    /*
+     * This allows you to register your own client side command in game
+     * Parameter - Map (command): a command map or a command builder
+     */
+    fun addCommand(command: Map): Null;
+
+    /*
+     * Returns whether the server supports client script packets
+     * Returns - Boolean: Whether the client can send packets to the server
+     */
+    fun canSendScriptPacket(): Boolean;
+
+    /*
+     * This will clear the chat hud
+     */
+    fun clearChat(): Null;
+
+    /*
+     * This allows you to edit sign at certain position with given string(lines), up to 4 lines.
+     * This function does not check if sign is editable / is in position.
+     * Parameter - Pos (position): the position of sign
+     * Parameter - String (string...): the lines for the sign, requires 1 string and up to 4 strings
+     */
+    fun editSign(position: Pos, string...: String): Null;
+
+    /*
+     * This returns the current render distance set on the client
+     * Returns - Number: the render distance
+     */
+    fun getClientRenderDistance(): Number;
+
+    /*
+     * This returns the item stack that is currently being held by the cursor
+     * Returns - ItemStack: the item stack, will be Air if there is nothing
+     */
+    fun getCursorStack(): ItemStack;
+
+    /*
+     * This gets the value of the given client rule.
+     * This will throw an error if the rule name is invalid
+     * Parameter - String (ruleName): the client rule
+     * Returns - Object: the value of the client rule
+     */
+    fun getEssentialClientValue(ruleName: String): Object;
+
+    /*
+     * This gets the current fps
+     * Returns - Number: the fps
+     */
+    fun getFps(): Number;
+
+    /*
+     * This will return the latest chat message
+     * Returns - Text: the latest chat message, null if there is none
+     */
+    fun getLatestChatMessage(): Text;
+
+    /*
+     * This gets a list of all the mod ids of the mods installed
+     * Returns - List: the mod ids
+     */
+    fun getModList(): List;
+
+    /*
+     * This gets the current connected server's ping.
+     * This will throw an error if the client is not connected to a server
+     * Returns - Number: the server ping in milliseconds
+     */
+    fun getPing(): Number;
+
+    /*
+     * This returns the current player on the client
+     * Returns - Player: the main player
+     */
+    fun getPlayer(): Player;
+
+    /*
+     * Returns the directory where the client is running
+     * Returns - File: the Minecraft run directory
+     */
+    fun getRunDirectory(): File;
+
+    /*
+     * This gets the script directory path, this is where all scripts are stored
+     * Returns - String: the script directory path
+     */
+    fun getScriptsPath(): String;
+
+    /*
+     * This will return the server ip
+     * Returns - String: The server ip, null if in single player
+     */
+    fun getServerIp(): String;
+
+    /*
+     * This gets the current connected server's name that you have set it to in the multiplayer screen
+     * Returns - String: the server name
+     */
+    fun getServerName(): String;
+
+    /*
+     * This returns the current version of Minecraft you are playing
+     * Returns - String: the version for example: '1.17.1'
+     */
+    fun getVersion(): String;
+
+    /*
+     * This returns the world that is currently being played on
+     * Returns - World: the world
+     */
+    fun getWorld(): World;
+
+    /*
+     * This allows you to simulate a key being held inside of Minecraft, this will press, hold, and release.
+     * This will throw an error if the given key is unknown
+     * Parameter - String (key): the key to hold
+     * Parameter - Number (milliseconds): the number of milliseconds you want it held for
+     */
+    fun holdKey(key: String, milliseconds: Number): Null;
+
+    /*
+     * This will return true if the client is in single player mode
+     * Returns - Boolean: true if the client is in single player mode
+     */
+    fun isInSinglePlayer(): Boolean;
+
+    /*
+     * This parses a string and turns it into a Nbt compound
+     * Parameter - String (string): the string to parse
+     * Returns - Object: the nbt compound as a value
+     */
+    fun parseStringToNbt(string: String): Object;
+
+    /*
+     * This plays the given sound with the given volume and pitch around the player
+     * sound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events)
+     * Parameter - String (soundId): the sound id you want to play
+     * Parameter - Number (volume): the volume of the sound
+     * Parameter - Number (pitch): the pitch of the sound
+     */
+    fun playSound(soundId: String, volume: Number, pitch: Number): Null;
+
+    /*
+     * This will return the player name from the given uuid
+     * Parameter - String (uuid): the uuid as a string
+     * Returns - String: the player name, null if the uuid is not found
+     */
+    fun playerNameFromUuid(uuid: String): String;
+
+    /*
+     * This allows you to simulate a key press inside of Minecraft, this will only press the key down.
+     * This will throw an error if the key is unknown
+     * Parameter - String (key): the key to press
+     */
+    fun pressKey(key: String): Null;
+
+    /*
+     * This allows you to simulate a key release inside of Minecraft, this
+     * is useful for keys that only work on release, for example `F3`, this
+     * will throw an error if the key is unknown
+     * Parameter - String (key): the key to release
+     */
+    fun releaseKey(key: String): Null;
+
+    /*
+     * This renders an item in front of the player using the totem of undying animation
+     * Parameter - Material (material): the material to render
+     */
+    fun renderFloatingItem(material: Material): Null;
+
+    /*
+     * This resets the given client rule to its default value.
+     * This will throw an error if the rule name is invalid
+     * Parameter - String (ruleName): the client rule
+     */
+    fun resetEssentialClientRule(ruleName: String): Null;
+
+    /*
+     * This runs the given function on the main thread
+     * Parameter - Function (function): the function to run
+     */
+    fun run(function: Function): Null;
+
+    /*
+     * Deprecated: Use 'client.run(task)' instead
+     * This runs the given function on the main thread
+     * Parameter - Function (function): the function to run
+     */
+    fun runOnMainThread(function: Function): Null;
+
+    /*
+     * This makes the client take a screenshot
+     */
+    fun screenshot(): Null;
+
+    /*
+     * This makes the client take a screenshot and saves it with a given name
+     * Parameter - String (name): the name of the file
+     */
+    fun screenshot(name: String): Null;
+
+    /*
+     * This sends a script packet to the server
+     * You can send the follow types of values:
+     * Boolean, Number, String, List (of numbers), Text, ItemStack, Pos, and NbtMaps
+     * You can send byte, int, and long arrays by using the strings 'b', 'i', and 'l' at the start of the list
+     * Parameter - Object (values...): the data you want to send to the server
+     */
+    fun sendScriptPacket(values...: Object): Null;
+
+    /*
+     * This sets the render distance on the client
+     * Parameter - Number (number): the render distance
+     */
+    fun setClientRenderDistance(number: Number): Null;
+
+    /*
+     * Deprecated: You should use 'fakeInventoryScreen.setCursorStack(item)' instead
+     * This sets the item stack that is currently being held by the cursor, this does not work
+     * in normal screens only in FakeScreens, this does not actually pick up an item just display like you have
+     * Parameter - ItemStack (itemStack): the item stack to set
+     */
+    fun setCursorStack(itemStack: ItemStack): Null;
+
+    /*
+     * This sets the given client rule to the given value.
+     * This may throw an error if the name is invalid or the rule cannot be set
+     * Parameter - String (ruleName): the client rule
+     * Parameter - Object (value): the new value for the rule
+     */
+    fun setEssentialClientRule(ruleName: String, value: Object): Null;
+
+    /*
+     * This strips the formatting from the given string
+     * Parameter - String (string): the string to strip
+     * Returns - String: the stripped string
+     */
+    fun stripFormatting(string: String): String;
+
+    /*
+     * Synchronizes the current thread in Arucas to the next game tick
+     */
+    fun syncToTick(): Null;
+
+    /*
+     * This ticks the client
+     */
+    fun tick(): Null;
+
+    /*
+     * This will return the uuid from the given player name
+     * Parameter - String (name): the player name
+     * Returns - String: the uuid, null if the player name is not found
+     */
+    fun uuidFromPlayerName(name: String): String;
+
+    /*
+     * Returns the MinecraftClient instance
+     * Returns - MinecraftClient: the MinecraftClient instance
+     */
+    static fun get(): MinecraftClient;
+
+    /*
+     * Returns the MinecraftClient instance
+     * Returns - MinecraftClient: the MinecraftClient instance
+     */
+    static fun getClient(): MinecraftClient;
+}
+
+/* Native, implemented in Java
+ * This class is used to create tasks that can be chained and
+ * run on the main Minecraft thread. This ensures that all
+ * behaviors work as intended.
+ * This class does not need to be imported.
+ */
+class MinecraftTask: Task {
+    /*
+     * This creates a new empty Minecraft task
+     */
+    MinecraftTask();
+
+    /*
+     * This runs the task on the main Minecraft thread. It returns a future
+     * which can be awaited, the last function in the chain will be used as
+     * the return value for the future
+     * Returns - Future: the future value that can be awaited
+     */
+    fun run(): Future;
+
+    /*
+     * This adds a delay (in ticks) then runs the given task.
+     * This delay is will also affect all following chained function
+     * delays. If this is the last function in the chain, then the
+     * return value will be determined by this function
+     * Parameter - Number (ticks): the amount of ticks delay before the function runs
+     * Parameter - Function (function): the function to run after the delay
+     * Returns - MinecraftTask: the task, this allows for chaining
+     */
+    fun waitThen(ticks: Number, function: Function): MinecraftTask;
+}
+
+/* Native, implemented in Java
+ * This class is used to represent all players, mainly other players,
+ * this class extends LivingEntity and so inherits all of their methods too
+ * Import with 'import OtherPlayer from Minecraft'
+ */
+class OtherPlayer {
+    /*
+     * This gets the abilities of the player in a map
+     * For example:
+     * `{"invulnerable": false, "canFly": true, "canBreakBlocks": true, "isCreative": true, "walkSpeed": 1.0, "flySpeed": 1.2}`
+     * Returns - Map: the abilities of the player
+     */
+    fun getAbilities(): Map;
+
+    /*
+     * This gets all the slot numbers of the specified item in the players combined inventory
+     * Parameter - Material (materialLike): the item or material you want to get the slot of
+     * Returns - List: the slot numbers of the item, empty list if not found
+     */
+    fun getAllSlotsFor(materialLike: Material): List;
+
+    /*
+     * This gets all the slot numbers of the specified item in the players combined inventory
+     * Parameter - Material (materialLike): the item or material you want to get the slot of
+     * Parameter - String (inventoryType): all/combined -> includes external, player/main -> player slots, external/other -> excludes player inventory
+     * Returns - List: the slot numbers of the item, empty list if not found
+     */
+    fun getAllSlotsFor(materialLike: Material, inventoryType: String): List;
+
+    /*
+     * This gets the players currently selected slot
+     * Returns - Number: the currently selected slot number
+     */
+    fun getCurrentSlot(): Number;
+
+    /*
+     * This gets the fishing bobber that the player has
+     * Returns - Entity: the fishing bobber entity, null if the player isn't fishing
+     */
+    fun getFishingBobber(): Entity;
+
+    /*
+     * This gets the players gamemode, may be null if not known
+     * Returns - String: the players gamemode as a string, for example 'creative', 'survival', 'spectator'
+     */
+    fun getGamemode(): String;
+
+    /*
+     * This gets the players currently selected item, in their main hand
+     * Returns - ItemStack: the currently selected item
+     */
+    fun getHeldItem(): ItemStack;
+
+    /*
+     * This gets the hunger level of the player
+     * Returns - Number: the hunger level
+     */
+    fun getHunger(): Number;
+
+    /*
+     * This gets the item in the specified slot, in the players inventory, not including inventories of open containers.
+     * This will throw an error if the slot is out of bounds
+     * Parameter - Number (slotNum): the slot number you want to get
+     * Returns - ItemStack: the item in the specified slot
+     */
+    fun getItemForPlayerSlot(slotNum: Number): ItemStack;
+
+    /*
+     * This gets the item in the specified slot, in the total players inventory, including inventories of open containers.
+     * This will throw an error if the index is out of bounds
+     * Parameter - Number (slotNum): the slot number you want to get
+     * Returns - ItemStack: the item in the specified slot
+     */
+    fun getItemForSlot(slotNum: Number): ItemStack;
+
+    /*
+     * This gets the number of experience levels the player has
+     * Returns - Number: the number of experience levels
+     */
+    fun getLevels(): Number;
+
+    /*
+     * This gets the number of experience required to level up for the player
+     * Returns - Number: the number required to next level
+     */
+    fun getNextLevelExperience(): Number;
+
+    /*
+     * This gets the players name
+     * Returns - String: the players name
+     */
+    fun getPlayerName(): String;
+
+    /*
+     * This gets the saturation level of the player
+     * Returns - Number: the saturation level
+     */
+    fun getSaturation(): Number;
+
+    /*
+     * This gets the slot number of the specified item in the players combined inventory
+     * Parameter - Material (materialLike): the item or material you want to get the slot of
+     * Returns - Number: the slot number of the item, null if not found
+     */
+    fun getSlotFor(materialLike: Material): Number;
+
+    /*
+     * This gets the players total inventory slots
+     * Returns - Number: the players total inventory slots
+     */
+    fun getTotalSlots(): Number;
+
+    /*
+     * This gets the number of experience progress the player has
+     * Returns - Number: the number of experience progress
+     */
+    fun getXpProgress(): Number;
+
+    /*
+     * This gets whether the players inventory is full
+     * Returns - Boolean: whether the inventory is full
+     */
+    fun isInventoryFull(): Boolean;
+
+    /*
+     * This gets inventory type (player / other) for given slot numbers.
+     * This will throw an error if the index is out of bounds
+     * Parameter - Number (slotNum): the slot number you want to get
+     * Returns - Boolean: whether slot was player inventory or not
+     */
+    fun isPlayerSlot(slotNum: Number): Boolean;
+}
+
+/* Native, implemented in Java
+ * This class represents all shapes that can be outlined
+ * This class does not need to be imported.
+ */
+class OutlinedShape: Shape {
+    /*
+     * This gets the outline blue value of the shape
+     * Returns - Number: the blue value of the outline
+     */
+    fun getOutlineBlue(): Number;
+
+    /*
+     * This gets the outline green value of the shape
+     * Returns - Number: the green value of the outline
+     */
+    fun getOutlineGreen(): Number;
+
+    /*
+     * This gets the outline red value of the shape
+     * Returns - Number: the red value of the outline
+     */
+    fun getOutlineRed(): Number;
+
+    /*
+     * This gets the outline width of the shape
+     * Returns - Number: the width of the outline
+     */
+    fun getOutlineWidth(): Number;
+
+    /*
+     * This sets the outline blue value of the shape, using a single value
+     * Parameter - Number (blue): the amount of blue between 0 - 255
+     */
+    fun setOutlineBlue(blue: Number): Null;
+
+    /*
+     * This sets the width of the shape, using a single value, this function
+     * also has a sibling named `setOutlineColor()` that has the same functionality.
+     * The colour generally should be hexadecimal in the form 0xRRGGBB
+     * Parameter - Number (colour): the colour you want to set
+     */
+    fun setOutlineColour(colour: Number): Null;
+
+    /*
+     * This sets the outline colour of the shape, using three values, this function
+     * also has a sibling named `setOutlineColor()` that has the same functionality.
+     * If the colours are not between 0 and 255 an error will be thrown
+     * Parameter - Number (red): the amount of red 0 - 255
+     * Parameter - Number (green): the amount of green 0 - 255
+     * Parameter - Number (blue): the amount of blue 0 - 255
+     */
+    fun setOutlineColour(red: Number, green: Number, blue: Number): Null;
+
+    /*
+     * This sets the outline green value of the shape, using a single value
+     * Parameter - Number (green): the amount of green between 0 - 255
+     */
+    fun setOutlineGreen(green: Number): Null;
+
+    /*
+     * This sets the outline red value of the shape, using a single value
+     * Parameter - Number (red): the amount of red between 0 - 255
+     */
+    fun setOutlineRed(red: Number): Null;
+
+    /*
+     * This sets the outline width of the shape, this should not be negative
+     * Parameter - Number (width): the width of the outline
+     */
+    fun setOutlineWidth(width: Number): Null;
+}
+
+/* Native, implemented in Java
+ * This class is used to interact with the main player, this extends OtherPlayer
+ * and so inherits all methods from that class.
+ * Import with 'import Player from Minecraft'
+ */
+class Player: OtherPlayer {
+    /*
+     * This allows you to combine two items in an anvil
+     * Parameter - Function (predicate1): a function determining whether the first ItemStack meets a criteria
+     * Parameter - Function (predicate2): a function determining whether the second ItemStack meets a criteria
+     * Returns - Future: whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost
+     */
+    fun anvil(predicate1: Function, predicate2: Function): Future;
+
+    /*
+     * This allows you to combine two items in an anvil
+     * Parameter - Function (predicate1): a function determining whether the first ItemStack meets a criteria
+     * Parameter - Function (predicate2): a function determining whether the second ItemStack meets a criteria
+     * Parameter - Boolean (take): whether you should take the item after putting items in the anvil
+     * Returns - Future: whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost
+     */
+    fun anvil(predicate1: Function, predicate2: Function, take: Boolean): Future;
+
+    /*
+     * This allows you to name an item in an anvil
+     * Parameter - String (name): the name you want to give the item
+     * Parameter - Function (predicate): whether the ItemStack meets a certain criteria
+     * Returns - Future: whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost
+     */
+    fun anvilRename(name: String, predicate: Function): Future;
+
+    /*
+     * This allows you to make your player attack, you must
+     * pass 'hold', 'stop', or 'once' otherwise an error will be thrown
+     * Parameter - String (action): the type of action, either 'hold', 'stop', or 'once'
+     */
+    fun attack(action: String): Null;
+
+    /*
+     * This allows you to attack a block at a position and direction
+     * Parameter - Pos (pos): the position of the block
+     * Parameter - String (direction): the direction of the attack, e.g. 'up', 'north', 'east', etc.
+     */
+    fun attackBlock(pos: Pos, direction: String): Null;
+
+    /*
+     * This allows you to attack a block at a position and direction
+     * Parameter - Number (x): the x position
+     * Parameter - Number (y): the y position
+     * Parameter - Number (z): the z position
+     * Parameter - String (direction): the direction of the attack, e.g. 'up', 'north', 'east', etc.
+     */
+    fun attackBlock(x: Number, y: Number, z: Number, direction: String): Null;
+
+    /*
+     * This makes your player attack an entity without
+     * having to be looking at it or clicking on the entity
+     * Parameter - Entity (entity): the entity to attack
+     */
+    fun attackEntity(entity: Entity): Null;
+
+    /*
+     * This breaks a block at a given position, if it is able to be broken
+     * Parameter - Pos (pos): the position of the block
+     * Returns - Future: the future will be completed when the block is broken
+     */
+    fun breakBlock(pos: Pos): Future;
+
+    /*
+     * Checks block can be placed at given position
+     * Parameter - Pos (pos): the position to check
+     */
+    fun canPlaceBlockAt(pos: Pos): Null;
+
+    /*
+     * Checks block can be placed at given position
+     * Parameter - Block (block): the block to check for
+     * Parameter - Number (x): the x coordinate of the position
+     * Parameter - Number (y): the y coordinate of the position
+     * Parameter - Number (z): the z coordinate of the position
+     */
+    fun canPlaceBlockAt(block: Block, x: Number, y: Number, z: Number): Null;
+
+    /*
+     * This allows you to click Creative stack, but requires sync with server
+     * Parameter - ItemStack (itemStack): Stack to click
+     * Parameter - Number (slot): the slot to click
+     */
+    fun clickCreativeStack(itemStack: ItemStack, slot: Number): Null;
+
+    /*
+     * This allows you to click a predefined recipe
+     * Parameter - Recipe (recipe): the recipe you want to select
+     */
+    fun clickRecipe(recipe: Recipe): Null;
+
+    /*
+     * This allows you to click a predefined recipe
+     * Parameter - Recipe (recipe): the recipe you want to select
+     * Parameter - Boolean (boolean): whether to shift click the recipe
+     */
+    fun clickRecipe(recipe: Recipe, boolean: Boolean): Null;
+
+    /*
+     * This allows you to click a slot with either right or left click
+     * and a slot action, the click must be either 'left' or 'right' or a number (for swap).
+     * The action must be either 'click', 'shift_click', 'swap', 'middle_click',
+     * 'throw', 'drag', or 'double_click' or an error will be thrown
+     * Parameter - Number (slot): the slot to click
+     * Parameter - String (click): the click type, this should be either 'left' or 'right'
+     * Parameter - String (action): the action to perform
+     */
+    fun clickSlot(slot: Number, click: String, action: String): Null;
+
+    /*
+     * This closes the current screen
+     */
+    fun closeScreen(): Null;
+
+    /*
+     * This allows you to craft a recipe, this can be 2x2 or 3x3
+     * The list you pass in must contain Materials or ItemStacks
+     * Most of the time you should use craftRecipe instead. You must
+     * be in an appropriate gui for the crafting recipe or an error will be thrown
+     * Parameter - List (recipe): a list of materials making up the recipe you want to craft including air
+     */
+    fun craft(recipe: List): Null;
+
+    /*
+     * This allows you to craft a predefined recipe
+     * Parameter - Recipe (recipe): the recipe you want to craft
+     */
+    fun craftRecipe(recipe: Recipe): Null;
+
+    /*
+     * This allows you to craft a predefined recipe
+     * Parameter - Recipe (recipe): the recipe you want to craft
+     * Parameter - Boolean (boolean): whether result should be dropped or not
+     */
+    fun craftRecipe(recipe: Recipe, boolean: Boolean): Null;
+
+    /*
+     * This drops all items of a given type in the player's inventory
+     * Parameter - Material (material): the item stack, or material type to drop
+     */
+    fun dropAll(material: Material): Null;
+
+    /*
+     * This drops all the items that have the same nbt as a given stack
+     * Parameter - ItemStack (itemStack): the stack with nbt to drop
+     */
+    fun dropAllExact(itemStack: ItemStack): Null;
+
+    /*
+     * This drops the item(s) in the player's main hand
+     * Parameter - Boolean (dropAll): if true, all items in the player's main hand will be dropped
+     */
+    fun dropItemInHand(dropAll: Boolean): Null;
+
+    /*
+     * This allows you to drop the items in a slot
+     * Parameter - Number (slot): the slot to drop
+     */
+    fun dropSlot(slot: Number): Null;
+
+    /*
+     * This makes the player 'fake' looking in a direction, this can be
+     * used to place blocks in unusual orientations without moving the camera
+     * Parameter - Number (yaw): the yaw to look at
+     * Parameter - Number (pitch): the pitch to look at
+     * Parameter - String (direction): the direction to look at
+     * Parameter - Number (duration): the duration of the look in ticks
+     */
+    fun fakeLook(yaw: Number, pitch: Number, direction: String, duration: Number): Null;
+
+    /*
+     * This returns the block breaking speed of the player on a block including enchanements and effects
+     * Parameter - ItemStack (itemStack): item to test with
+     * Parameter - Block (block): the block to get the speed of
+     */
+    fun getBlockBreakingSpeed(itemStack: ItemStack, block: Block): Null;
+
+    /*
+     * This gets the current screen the player is in
+     * Returns - Screen: the screen the player is in, if the player is not in a screen it will return null
+     */
+    fun getCurrentScreen(): Screen;
+
+    /*
+     * This gets the entity that the player is currently looking at
+     * Returns - Entity: the entity that the player is looking at
+     */
+    fun getLookingAtEntity(): Entity;
+
+    /*
+     * This will get the next empty slot in the hotbar starting from the current slot
+     * going right, and if it reaches the end of the hotbar it will start from the beginning.
+     * If there is no empty slot it will return any slot that doesn't have an item with
+     * an enchantment that is in the hotbar, again going from the current slot
+     * if there is no such slot it will return the current selected slot
+     * Returns - Number: the slot that is swappable
+     */
+    fun getSwappableHotbarSlot(): Number;
+
+    /*
+     * This allows you to interact with a block at a position and direction
+     * Parameter - Pos (pos): the position of the block
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     */
+    fun interactBlock(pos: Pos, direction: String): Null;
+
+    /*
+     * This allows you to interact with a block at a position, direction, and hand
+     * Parameter - Pos (pos): the position of the block
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
+     */
+    fun interactBlock(pos: Pos, direction: String, hand: String): Null;
+
+    /*
+     * This allows you to interact with a block at a position and direction
+     * Parameter - Number (x): the x position
+     * Parameter - Number (y): the y position
+     * Parameter - Number (z): the z position
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     */
+    fun interactBlock(x: Number, y: Number, z: Number, direction: String): Null;
+
+    /*
+     * This allows you to interact with a block at a position and direction
+     * This function is for very specific cases where there needs to be extra precision
+     * like when placing stairs or slabs in certain directions, so the first set of
+     * coords is the exact position of the block, and the second set of coords is the position
+     * Parameter - Pos (pos): the exact position of the block
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Parameter - Pos (blockPos): the position of the block
+     * Parameter - Boolean (insideBlock): whether the player is inside the block
+     */
+    fun interactBlock(pos: Pos, direction: String, blockPos: Pos, insideBlock: Boolean): Null;
+
+    /*
+     * This allows you to interact with a block at a position and direction
+     * This function is for very specific cases where there needs to be extra precision
+     * like when placing stairs or slabs in certain directions, so the first set of
+     * coords is the exact position of the block, and the second set of coords is the position
+     * Parameter - Pos (pos): the exact position of the block
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
+     * Parameter - Pos (blockPos): the position of the block
+     * Parameter - Boolean (insideBlock): whether the player is inside the block
+     */
+    fun interactBlock(pos: Pos, direction: String, hand: String, blockPos: Pos, insideBlock: Boolean): Null;
+
+    /*
+     * This allows you to interact with a block at a position and direction
+     * This function is for very specific cases where there needs to be extra precision
+     * like when placing stairs or slabs in certain directions, so the first set of
+     * coords is the exact position of the block, and the second set of coords is the position
+     * Parameter - Number (x): the exact x position
+     * Parameter - Number (y): the exact y position
+     * Parameter - Number (z): the exact z position
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Parameter - Number (blockX): the x position of the block
+     * Parameter - Number (blockY): the y position of the block
+     * Parameter - Number (blockZ): the z position of the block
+     * Parameter - Boolean (insideBlock): whether the player is inside the block
+     */
+    fun interactBlock(x: Number, y: Number, z: Number, direction: String, blockX: Number, blockY: Number, blockZ: Number, insideBlock: Boolean): Null;
+
+    /*
+     * This allows you to interact item with given Hand
+     * Parameter - String (hand):  Hand to use, either 'main' or 'offhand'
+     */
+    fun interactItem(hand: String): Null;
+
+    /*
+     * This allows your player to interact with an entity without
+     * having to be looking at it or clicking on the entity
+     * Parameter - Entity (entity): the entity to interact with
+     */
+    fun interactWithEntity(entity: Entity): Null;
+
+    /*
+     * This will make the player jump if they are on the ground
+     */
+    fun jump(): Null;
+
+    /*
+     * This forces the player to leave the world
+     * Parameter - String (message): the message to display to the player on the logout screen
+     */
+    fun logout(message: String): Null;
+
+    /*
+     * This sets the player's look direction
+     * Parameter - Number (yaw): the yaw of the player's look direction
+     * Parameter - Number (pitch): the pitch of the player's look direction
+     */
+    fun look(yaw: Number, pitch: Number): Null;
+
+    /*
+     * This makes your player look towards a position
+     * Parameter - Pos (pos): the position to look at
+     */
+    fun lookAtPos(pos: Pos): Null;
+
+    /*
+     * This makes your player look towards a position
+     * Parameter - Number (x): the x coordinate of the position
+     * Parameter - Number (y): the y coordinate of the position
+     * Parameter - Number (z): the z coordinate of the position
+     */
+    fun lookAtPos(x: Number, y: Number, z: Number): Null;
+
+    /*
+     * This allows you to send a message to your player, only they will see this, purely client side
+     * Parameter - Text (message): the message to send, can also be string
+     */
+    fun message(message: Text): Null;
+
+    /*
+     * This allows you to set the current memssage displaying on the action bar
+     * Parameter - Text (message): the message to send, can also be string
+     */
+    fun messageActionBar(message: Text): Null;
+
+    /*
+     * This opens the player's inventory
+     */
+    fun openInventory(): Null;
+
+    /*
+     * This opens a screen for the player, this cannot open server side screens.
+     * This will throw an error if you are trying to open a handled screen
+     * Parameter - Screen (screen): the screen to open
+     */
+    fun openScreen(screen: Screen): Null;
+
+    /*
+     * This allows you to make your player send a message in chat, this includes commands
+     * Parameter - String (message): the message to send
+     */
+    fun say(message: String): Null;
+
+    /*
+     * This allows you to set the slot number your player is holding.
+     * If the number is not between 0 and 8 an error will be thrown
+     * Parameter - Number (slot): the slot number, must be between 0 - 8
+     */
+    fun setSelectedSlot(slot: Number): Null;
+
+    /*
+     * This sets the player's sneaking state
+     * Parameter - Boolean (sneaking): the sneaking state
+     */
+    fun setSneaking(sneaking: Boolean): Null;
+
+    /*
+     * This sets the player's sprinting state
+     * Parameter - Boolean (sprinting): the sprinting state
+     */
+    fun setSprinting(sprinting: Boolean): Null;
+
+    /*
+     * This sets the player's walking state
+     * Parameter - Boolean (walking): the walking state
+     */
+    fun setWalking(walking: Boolean): Null;
+
+    /*
+     * This allows you to shift click a slot
+     * Parameter - Number (slot): the slot to click
+     */
+    fun shiftClickSlot(slot: Number): Null;
+
+    /*
+     * THis allows you to show a title and subtitle to the player
+     * Parameter - Text (title): the title to show, can be string or null
+     * Parameter - Text (subtitle): the subtitle to show, can be string or null
+     */
+    fun showTitle(title: Text, subtitle: Text): Null;
+
+    /*
+     * This allows you to teleport to any entity as long as you are in spectator mode
+     * Parameter - Entity (entity): the entity to teleport to
+     */
+    fun spectatorTeleport(entity: Entity): Null;
+
+    /*
+     * This allows you to use the stonecutter
+     * Parameter - Material (itemInput): the item or material you want to input
+     * Parameter - Material (itemOutput): the item or material you want to craft
+     * Returns - Future: whether the result was successful
+     */
+    fun stonecutter(itemInput: Material, itemOutput: Material): Future;
+
+    /*
+     * This will swap the player's main hand with the off hand
+     */
+    fun swapHands(): Null;
+
+    /*
+     * This allows you to swap a slot in the player's inventory with the hotbar
+     * Parameter - Number (slot): the slot to swap
+     */
+    fun swapPlayerSlotWithHotbar(slot: Number): Null;
+
+    /*
+     * The allows you to swap two slots with one another.
+     * A note about slot order is that slots go from top to bottom.
+     * This will throw an errof if the slots are out of bounds
+     * Parameter - Number (slot1): the slot to swap with slot2
+     * Parameter - Number (slot2): the slot to swap with slot1
+     */
+    fun swapSlots(slot1: Number, slot2: Number): Null;
+
+    /*
+     * This will play the player's hand swing animation for a given hand
+     * Parameter - String (hand): the hand to swing, this should be either 'main_hand' or 'off_hand'
+     */
+    fun swingHand(hand: String): Null;
+
+    /*
+     * Deprecated: Consider using other alternatives for breaking blocks, e.g. <Player>.breakBlock
+     * This allows you to update your block breaking progress at a position
+     * Parameter - Pos (pos): the position of the block
+     */
+    fun updateBreakingBlock(pos: Pos): Null;
+
+    /*
+     * Deprecated: Consider using other alternatives for breaking blocks, e.g. <Player>.breakBlock
+     * This allows you to update your block breaking progress at a position
+     * Parameter - Number (x): the x position
+     * Parameter - Number (y): the y position
+     * Parameter - Number (z): the z position
+     */
+    fun updateBreakingBlock(x: Number, y: Number, z: Number): Null;
+
+    /*
+     * This allows you to make your player use, you must
+     * pass 'hold', 'stop', or 'once' otherwise an error will be thrown
+     * Parameter - String (action): the type of action, either 'hold', 'stop', or 'once'
+     */
+    fun use(action: String): Null;
+
+    /*
+     * This gets the main player
+     * Returns - Player: The main player
+     */
+    static fun get(): Player;
+}
+
+/* Native, implemented in Java
+ * This class is a wrapper for 3 coordinate points in Minecraft
+ * Import with 'import Pos from Minecraft'
+ */
+class Pos {
+    /*
+     * Creates a new Pos object with the given coordinates in a list
+     * Parameter - List (list): the list containing three coordinates
+     */
+    Pos(list: List);
+
+    /*
+     * This creates a new Pos with the given x, y, and z
+     * Parameter - Number (x): the x position
+     * Parameter - Number (y): the y position
+     * Parameter - Number (z): the z position
+     */
+    Pos(x: Number, y: Number, z: Number);
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z added by the given pos x, y, and z
+     * Parameter - Pos (pos): the Pos to add by
+     * Returns - Pos: the new Pos
+     */
+    fun add(pos: Pos): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z added by the given x, y, and z
+     * Parameter - Number (x): the x adder
+     * Parameter - Number (y): the y adder
+     * Parameter - Number (z): the z adder
+     * Returns - Pos: the new Pos
+     */
+    fun add(x: Number, y: Number, z: Number): Pos;
+
+    /*
+     * This returns center value of the position
+     * Returns - Pos: the center of the position
+     */
+    fun asCentre(): Pos;
+
+    /*
+     * This returns the cross product of the current pos and the given pos
+     * Parameter - Pos (pos): the Pos to cross product with
+     * Returns - Pos: the cross product
+     */
+    fun crossProduct(pos: Pos): Pos;
+
+    /*
+     * This returns distance to other position
+     * Parameter - Pos (other): other position
+     * Returns - Number: distance to other position
+     */
+    fun distanceTo(other: Pos): Number;
+
+    /*
+     * This returns distance to other x, y, z position
+     * Parameter - Number (x): other position x
+     * Parameter - Number (y): other position y
+     * Parameter - Number (z): other position z
+     * Returns - Number: distance to other position
+     */
+    fun distanceTo(x: Number, y: Number, z: Number): Number;
+
+    /*
+     * This returns the dot product of the current pos and the given pos
+     * Parameter - Pos (pos): the Pos to dot product with
+     * Returns - Number: the dot product
+     */
+    fun dotProduct(pos: Pos): Number;
+
+    /*
+     * This returns a new Pos with the current pos y decremented by 1
+     * Returns - Pos: the new Pos
+     */
+    fun down(): Pos;
+
+    /*
+     * This returns a new Pos with the current pos y decremented by the given number
+     * Parameter - Number (number): the number to decrement by
+     * Returns - Pos: the new Pos
+     */
+    fun down(number: Number): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x incremented by 1
+     * Returns - Pos: the new Pos
+     */
+    fun east(): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x incremented by the given number
+     * Parameter - Number (number): the number to increment by
+     * Returns - Pos: the new Pos
+     */
+    fun east(number: Number): Pos;
+
+    /*
+     * This returns side position value of position
+     * Parameter - String (direction): the direction, can be: north, south, east, west, up, down
+     * Returns - Pos: the side of the position
+     */
+    fun getSidePos(direction: String): Pos;
+
+    /*
+     * This returns the x position of the Pos
+     * Returns - Number: the x position
+     */
+    fun getX(): Number;
+
+    /*
+     * This returns the y position of the Pos
+     * Returns - Number: the y position
+     */
+    fun getY(): Number;
+
+    /*
+     * This returns the z position of the Pos
+     * Returns - Number: the z position
+     */
+    fun getZ(): Number;
+
+    /*
+     * This returns whether position to entity is less than 4.5
+     * Parameter - Entity (entity): the entity you want to check
+     * Returns - Boolean: whether entity is within 4.5 block distance
+     */
+    fun isNear(entity: Entity): Boolean;
+
+    /*
+     * This returns whether position to entity is less than given distance
+     * Parameter - Entity (entity): the entity you want to check
+     * Parameter - Number (distance): the distance you want to check
+     * Returns - Boolean: whether entity is within given distance
+     */
+    fun isWithin(entity: Entity, distance: Number): Boolean;
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z multiplied by the given pos x, y, and z
+     * Parameter - Pos (pos): the Pos to multiply by
+     * Returns - Pos: the new Pos
+     */
+    fun multiply(pos: Pos): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z multiplied by the given x, y, and z
+     * Parameter - Number (x): the x multiplier
+     * Parameter - Number (y): the y multiplier
+     * Parameter - Number (z): the z multiplier
+     * Returns - Pos: the new Pos
+     */
+    fun multiply(x: Number, y: Number, z: Number): Pos;
+
+    /*
+     * Normalizes the vector to have a magnitude of 1
+     * Returns - Pos: the normalized position
+     */
+    fun normalize(): Pos;
+
+    /*
+     * This returns a new Pos with the current pos z incremented by 1
+     * Returns - Pos: the new Pos
+     */
+    fun north(): Pos;
+
+    /*
+     * This returns a new Pos with the current pos z incremented by the given number
+     * Parameter - Number (number): the number to increment by
+     * Returns - Pos: the new Pos
+     */
+    fun north(number: Number): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z offset by a direction
+     * Parameter - String (direction): the direction to offset by, must be one of: north, south, east, west, up, down
+     * Returns - Pos: the new Pos
+     */
+    fun offset(direction: String): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z offset by a direction and a distance
+     * Parameter - String (direction): the direction to offset by, must be one of: north, south, east, west, up, down
+     * Parameter - Number (distance): the distance to offset by
+     * Returns - Pos: the new Pos
+     */
+    fun offset(direction: String, distance: Number): Pos;
+
+    /*
+     * This returns a new Pos with the current pos z decremented by 1
+     * Returns - Pos: the new Pos
+     */
+    fun south(): Pos;
+
+    /*
+     * This returns a new Pos with the current pos z decremented by the given number
+     * Parameter - Number (number): the number to decrement by
+     * Returns - Pos: the new Pos
+     */
+    fun south(number: Number): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z subtracted by the given pos x, y, and z
+     * Parameter - Pos (pos): the Pos to subtract by
+     * Returns - Pos: the new Pos
+     */
+    fun subtract(pos: Pos): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x, y, and z subtracted by the given x, y, and z
+     * Parameter - Number (x): the x subtractor
+     * Parameter - Number (y): the y subtractor
+     * Parameter - Number (z): the z subtractor
+     * Returns - Pos: the new Pos
+     */
+    fun subtract(x: Number, y: Number, z: Number): Pos;
+
+    /*
+     * This floors all of the positions values to the nearest block
+     * Returns - Pos: the new Pos
+     */
+    fun toBlockPos(): Pos;
+
+    /*
+     * This returns the Pos as a List containing the x, y, and z positions in order
+     * Returns - List: the Pos as a List
+     */
+    fun toList(): List;
+
+    /*
+     * This returns a new Pos with the current pos y incremented by 1
+     * Returns - Pos: the new Pos
+     */
+    fun up(): Pos;
+
+    /*
+     * This returns a new Pos with the current pos y incremented by the given number
+     * Parameter - Number (number): the number to increment by
+     * Returns - Pos: the new Pos
+     */
+    fun up(number: Number): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x decremented by 1
+     * Returns - Pos: the new Pos
+     */
+    fun west(): Pos;
+
+    /*
+     * This returns a new Pos with the current pos x decremented by the given number
+     * Parameter - Number (number): the number to decrement by
+     * Returns - Pos: the new Pos
+     */
+    fun west(number: Number): Pos;
+}
+
+/* Native, implemented in Java
+ * This class represents recipes in Minecraft.
+ * Import with 'import Recipe from Minecraft'
+ */
+class Recipe {
+    /*
+     * This returns the crafting type of the recipe
+     * Returns - String: the crafting type of the recipe, for example: 'crafting', 'smelting', 'blasting'
+     */
+    fun getCraftingType(): String;
+
+    /*
+     * This returns the full id of the recipe
+     * Returns - String: the full id of the recipe
+     */
+    fun getFullId(): String;
+
+    /*
+     * This returns the id of the recipe
+     * Returns - String: the id of the recipe
+     */
+    fun getId(): String;
+
+    /*
+     * This returns all the possible ingredients of the recipe
+     * Returns - List: list of lists, each inner lists contains possible recipe items
+     */
+    fun getIngredients(): List;
+
+    /*
+     * This returns the output of the recipe
+     * Returns - ItemStack: the output of the recipe
+     */
+    fun getOutput(): ItemStack;
+
+    /*
+     * This converts a recipe id into a Recipe if it's valid,
+     * otherwise an error will be thrown
+     * Parameter - String (recipeId): the id of the recipe to convert to a Recipe
+     * Returns - Recipe: the recipe instance from the id
+     */
+    static fun of(recipeId: String): Recipe;
+}
+
+/* Native, implemented in Java
+ * This allows you to get information about the player's current screen.
+ * Import with 'import Screen from Minecraft'
+ */
+class Screen {
+    /*
+     * Gets the name of the specific screen
+     * Returns - String: the screen name, if you are in the creative menu it will return the name of the tab you are on
+     */
+    fun getName(): String;
+
+    /*
+     * Gets the title of the specific screen
+     * Returns - String: the screen title as text, this may include formatting, and custom names for the screen if applicable
+     */
+    fun getTitle(): String;
+}
+
+/* Native, implemented in Java
+ * This class is the base class for all shapes that can be rendered,
+ * providing the base functionality for all shapes
+ * Import with 'import Shape from Minecraft'
+ */
+class Shape {
+    /*
+     * This returns the blue value of the shape
+     * Returns - Number: the blue value of the shape
+     */
+    fun getBlue(): Number;
+
+    /*
+     * This returns the green value of the shape
+     * Returns - Number: the green value of the shape
+     */
+    fun getGreen(): Number;
+
+    /*
+     * This returns the opacity of the shape
+     * Returns - Number: the opacity of the shape
+     */
+    fun getOpacity(): Number;
+
+    /*
+     * This returns the RGB value of the shape
+     * Returns - Number: the RGB value of the shape as a single number in the form 0xRRGGBB
+     */
+    fun getRGB(): Number;
+
+    /*
+     * This returns the RGBA value of the shape as a list
+     * Returns - List: the RGBA value of the shape as a list in the form [red, green, blue, opacity]
+     */
+    fun getRGBAList(): List;
+
+    /*
+     * This returns the RGB value of the shape as a list
+     * Returns - List: the RGB value of the shape as a list in the form [red, green, blue]
+     */
+    fun getRGBList(): List;
+
+    /*
+     * This returns the red value of the shape
+     * Returns - Number: the red value of the shape
+     */
+    fun getRed(): Number;
+
+    /*
+     * This gets the x scale of the shape
+     */
+    fun getXScale(): Null;
+
+    /*
+     * This gets the x tilt of the shape
+     */
+    fun getXTilt(): Null;
+
+    /*
+     * This gets the y scale of the shape
+     */
+    fun getYScale(): Null;
+
+    /*
+     * This gets the y tilt of the shape
+     */
+    fun getYTilt(): Null;
+
+    /*
+     * This gets the z scale of the shape
+     */
+    fun getZScale(): Null;
+
+    /*
+     * This gets the z tilt of the shape
+     */
+    fun getZTilt(): Null;
+
+    /*
+     * This sets the shape to be rendered indefinitely, the shape will only stop rendering when
+     * the script ends or when you call the stopRendering() method
+     */
+    fun render(): Null;
+
+    /*
+     * This sets the blue value of the shape, using a single value.
+     * If the colour is not between 0 and 255 an error will be thrown
+     * Parameter - Number (blue): the amount of blue between 0 - 255
+     */
+    fun setBlue(blue: Number): Null;
+
+    /*
+     * This sets the colour of the shape, using a single value, this
+     * function also has a sibling named `setColor()` that has the same functionality.
+     * The colour generally should be hexadecimal in the form 0xRRGGBB
+     * Parameter - Number (colour): the colour you want to set
+     */
+    fun setColour(colour: Number): Null;
+
+    /*
+     * This sets the colour of the shape, using three values this function
+     * also has a sibling named `setColor()` that has the same functionality.
+     * If the colours are not between 0 and 255 an error will be thrown
+     * Parameter - Number (red): the amount of red 0 - 255
+     * Parameter - Number (green): the amount of green 0 - 255
+     * Parameter - Number (blue): the amount of blue 0 - 255
+     */
+    fun setColour(red: Number, green: Number, blue: Number): Null;
+
+    /*
+     * This sets the green value of the shape, using a single value.
+     * If the colour is not between 0 and 255 an error will be thrown
+     * Parameter - Number (green): the amount of green between 0 - 255
+     */
+    fun setGreen(green: Number): Null;
+
+    /*
+     * This sets the opacity of the shape, using a single value.
+     * If the colour is not between 0 and 255 an error will be thrown
+     * Parameter - Number (opacity): the amount of opacity between 0 - 255
+     */
+    fun setOpacity(opacity: Number): Null;
+
+    /*
+     * This sets the red value of the shape, using a single value.
+     * If the colour is not between 0 and 255 an error will be thrown
+     * Parameter - Number (red): the amount of red between 0 - 255
+     */
+    fun setRed(red: Number): Null;
+
+    /*
+     * This sets whether the shape should render through blocks
+     * Parameter - Boolean (boolean): whether the shape should render through blocks
+     */
+    fun setRenderThroughBlocks(boolean: Boolean): Null;
+
+    /*
+     * This sets the scale of the shape
+     * Parameter - Number (xScale): the x scale of the shape
+     * Parameter - Number (yScale): the y scale of the shape
+     * Parameter - Number (zScale): the z scale of the shape
+     */
+    fun setScale(xScale: Number, yScale: Number, zScale: Number): Null;
+
+    /*
+     * This sets the tilt of the shape
+     * Parameter - Number (xTilt): the x tilt
+     * Parameter - Number (yTilt): the y tilt
+     * Parameter - Number (zTilt): the z tilt
+     */
+    fun setTilt(xTilt: Number, yTilt: Number, zTilt: Number): Null;
+
+    /*
+     * This sets the x scale of the shape
+     * Parameter - Number (xScale): the x scale of the shape
+     */
+    fun setXScale(xScale: Number): Null;
+
+    /*
+     * This sets the x tilt of the shape
+     * Parameter - Number (xTilt): the x tilt
+     */
+    fun setXTilt(xTilt: Number): Null;
+
+    /*
+     * This sets the y scale of the shape
+     * Parameter - Number (yScale): the y scale of the shape
+     */
+    fun setYScale(yScale: Number): Null;
+
+    /*
+     * This sets the y tilt of the shape
+     * Parameter - Number (yTilt): the y tilt
+     */
+    fun setYTilt(yTilt: Number): Null;
+
+    /*
+     * This sets the z scale of the shape
+     * Parameter - Number (zScale): the z scale of the shape
+     */
+    fun setZScale(zScale: Number): Null;
+
+    /*
+     * This sets the z tilt of the shape
+     * Parameter - Number (zTilt): the z tilt
+     */
+    fun setZTilt(zTilt: Number): Null;
+
+    /*
+     * This returns whether the shape should render through blocks
+     * Returns - Boolean: whether the shape should render through blocks
+     */
+    fun shouldRenderThroughBlocks(): Boolean;
+
+    /*
+     * This stops the shape from rendering
+     */
+    fun stopRendering(): Null;
+}
+
+/* Native, implemented in Java
+ * This class is used to create a sphere shape which can be rendered in the world.
+ * Import with 'import SphereShape from Minecraft'
+ */
+class SphereShape: CentredShape {
+    /*
+     * This creates a new sphere shape
+     * Parameter - Pos (pos): The position of the sphere
+     */
+    SphereShape(pos: Pos);
+
+    /*
+     * This creates a new sphere shape
+     * Parameter - Number (x): The x position of the sphere
+     * Parameter - Number (y): The y position of the sphere
+     * Parameter - Number (z): The z position of the sphere
+     */
+    SphereShape(x: Number, y: Number, z: Number);
+
+    /*
+     * This gets the number of steps the sphere will take to render
+     * Returns - Number: The number of steps
+     */
+    fun getSteps(): Number;
+
+    /*
+     * This sets the number of steps the sphere will take to render
+     * Parameter - Number (steps): The number of steps
+     */
+    fun setSteps(steps: Number): Null;
+}
+
+/* Native, implemented in Java
+ * This class is used to create formatted strings used inside Minecraft.
+ * Import with 'import Text from Minecraft'
+ */
+class Text {
+    /*
+     * This allows you to append a text instance to another text instance
+     * Parameter - Text (otherText): the text instance to append to
+     * Returns - Text: the text instance with the appended text
+     */
+    fun append(otherText: Text): Text;
+
+    /*
+     * This allows you to add a formatting to a text instance.
+     * A list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes).
+     * This will throw an error if the formatting is invalid
+     * Parameter - String (formatting): the name of the formatting
+     * Returns - Text: the text instance with the formatting added
+     */
+    fun format(formatting: String): Text;
+
+    /*
+     * This allows you to add a click event to a text instance.
+     * The possible events are: 'open_url', 'open_file', 'run_command', 'suggest_command', 'copy_to_clipboard', 'run_function'.
+     * This will throw an error if the action is invalid
+     * Parameter - String (event): the name of the event
+     * Parameter - String (value): the value associated with the event
+     * Returns - Text: the text instance with the click event
+     */
+    fun withClickEvent(event: String, value: String): Text;
+
+    /*
+     * This allows you to add a hover event to a text instance.
+     * The possible events are: 'show_text', 'show_item', 'show_entity'.
+     * This will throw an error if the event is invalid
+     * Parameter - String (event): the name of the event
+     * Parameter - Object (value): the value associated with the event
+     * Returns - Text: the text instance with the hover event
+     */
+    fun withHoverEvent(event: String, value: Object): Text;
+
+    /*
+     * This converts a string into a text instance
+     * Parameter - String (string): The string to convert into a text instance
+     * Returns - Text: the text instance from the string
+     */
+    static fun of(string: String): Text;
+
+    /*
+     * This converts a text json into a text instance
+     * Parameter - String (textJson): The string in json format, or a Json value itself
+     * Returns - Text: the text instance from the json
+     */
+    static fun parse(textJson: String): Text;
+}
+
+/* Native, implemented in Java
+ * This class represents a trade offer, and allows you to get information about it.
+ * Import with 'import Trade from Minecraft'
+ */
+class Trade {
+    /*
+     * Gets the first item that the merchant will buy, adjusted by the price multiplier
+     * Returns - ItemStack: the first item to buy
+     */
+    fun getAdjustedFirstBuyItem(): ItemStack;
+
+    /*
+     * Gets the first item that the merchant will buy
+     * Returns - ItemStack: the first item to buy
+     */
+    fun getFirstBuyItem(): ItemStack;
+
+    /*
+     * Gets the maximum number of times the trade can be used
+     * Returns - Number: the maximum number of uses
+     */
+    fun getMaxUses(): Number;
+
+    /*
+     * Gets the price multiplier which is used to adjust the price of the first buy item
+     * Returns - Number: the price multiplier
+     */
+    fun getPriceMultiplier(): Number;
+
+    /*
+     * Gets the second item that the merchant will buy
+     * Returns - ItemStack: the second item to buy
+     */
+    fun getSecondBuyItem(): ItemStack;
+
+    /*
+     * Gets the item that is being sold by the merchant
+     * Returns - ItemStack: the item for sale
+     */
+    fun getSellItem(): ItemStack;
+
+    /*
+     * This gets the special price which is used to adjust the price of the first buy item
+     * Returns - Number: the special price
+     */
+    fun getSpecialPrice(): Number;
+
+    /*
+     * Gets the number of times the trade has been used
+     * Returns - Number: the number of uses
+     */
+    fun getUses(): Number;
+
+    /*
+     * Returns the amount of xp the villager will get, which
+     * goes towards them levelling up, from trading this offer
+     * Returns - Number: the amount of xp
+     */
+    fun getXpReward(): Number;
+}
+
+/* Native, implemented in Java
+ * This class represents worlds, and allows you to interact with things inside of them.
+ * Import with 'import World from Minecraft'
+ */
+class World {
+    /*
+     * This will get all entities in the world
+     * Returns - List: a list of all entities
+     */
+    fun getAllEntities(): List;
+
+    /*
+     * Deprecated: Use '<World>.getAllPlayers()' instead
+     * This will get all other players in the world
+     * Returns - List: a list of all other players
+     */
+    fun getAllOtherPlayers(): List;
+
+    /*
+     * This function gets all players in the world that are loaded
+     * Returns - List: all players in the world
+     */
+    fun getAllPlayers(): List;
+
+    /*
+     * Deprecated: This function is memory intensive, you should use `<World>.getPositions(pos1, pos2)`
+     * This gets a list of all block positions between the two positions
+     * Parameter - Pos (pos1): the first position
+     * Parameter - Pos (pos2): the second position
+     * Returns - List: the list of positions
+     */
+    fun getArea(pos1: Pos, pos2: Pos): List;
+
+    /*
+     * Deprecated: This function is memory intensive, you should use `<World>.getBlocks(pos1, pos2)`
+     * This gets a list of all blocks (with positions) between the two positions
+     * Parameter - Pos (pos1): the first position
+     * Parameter - Pos (pos2): the second position
+     * Returns - List: the list of blocks
+     */
+    fun getAreaOfBlocks(pos1: Pos, pos2: Pos): List;
+
+    /*
+     * This function gets the biome at the given coordinates
+     * Parameter - Pos (pos): the position
+     * Returns - Biome: the biome at the given coordinates
+     */
+    fun getBiomeAt(pos: Pos): Biome;
+
+    /*
+     * This function gets the biome at the given coordinates
+     * Parameter - Number (x): the x coordinate
+     * Parameter - Number (y): the y coordinate
+     * Parameter - Number (z): the z coordinate
+     * Returns - Biome: the biome at the given coordinates
+     */
+    fun getBiomeAt(x: Number, y: Number, z: Number): Biome;
+
+    /*
+     * This function gets the block at the given coordinates
+     * Parameter - Pos (pos): the position
+     * Returns - Block: the block at the given coordinates
+     */
+    fun getBlockAt(pos: Pos): Block;
+
+    /*
+     * This function gets the block at the given coordinates
+     * Parameter - Number (x): the x coordinate
+     * Parameter - Number (y): the y coordinate
+     * Parameter - Number (z): the z coordinate
+     * Returns - Block: the block at the given coordinates
+     */
+    fun getBlockAt(x: Number, y: Number, z: Number): Block;
+
+    /*
+     * Gets the block light at the given position ignoring sky light
+     * Parameter - Pos (pos): the position of the block
+     * Returns - Number: the light level between 0 - 15
+     */
+    fun getBlockLight(pos: Pos): Number;
+
+    /*
+     * This gets an iterator for all blocks (and positions) between two positions
+     * Parameter - Pos (pos1): the first position
+     * Parameter - Pos (pos2): the second position
+     * Returns - Iterable: the iterator for the blocks
+     */
+    fun getBlocks(pos1: Pos, pos2: Pos): Iterable;
+
+    /*
+     * This gets an iterator for all blocks (and positions) between two positions.
+     * The iterator iterates from the centre outwards
+     * Parameter - Pos (centre): the central position
+     * Parameter - Number (xRange): how far to iterate on the x axis
+     * Parameter - Number (yRange): how far to iterate on the y axis
+     * Parameter - Number (zRange): how far to iterate on the z axis
+     * Returns - Iterable: the iterator for the blocks
+     */
+    fun getBlocksFromCentre(centre: Pos, xRange: Number, yRange: Number, zRange: Number): Iterable;
+
+    /*
+     * This will get the closest player to another entity in the world
+     * Parameter - Entity (entity): the entity to get the closest player to
+     * Parameter - Number (maxDistance): the maximum distance to search for a player in blocks
+     * Returns - Player: the closest player, null if not found
+     */
+    fun getClosestPlayer(entity: Entity, maxDistance: Number): Player;
+
+    /*
+     * Deprecated: You should use 'world.getId()' instead
+     * This will get the id of the world
+     * Returns - String: the id of the world, for example: 'overworld'
+     */
+    fun getDimensionName(): String;
+
+    /*
+     * Gets the emitted restone power at the given position and direction
+     * Parameter - Pos (pos): the position of the block
+     * Parameter - String (direction): the direction to check, for example 'north', 'east', 'up', etc.
+     * Returns - Number: the emitted redstone power
+     */
+    fun getEmittedRedstonePower(pos: Pos, direction: String): Number;
+
+    /*
+     * Gets the emitted restone power at the given position and direction
+     * Parameter - Number (x): the x position of the block
+     * Parameter - Number (y): the y position of the block
+     * Parameter - Number (z): the z position of the block
+     * Parameter - String (direction): the direction to check, for example 'north', 'east', 'up', etc.
+     * Returns - Number: the emitted redstone power
+     */
+    fun getEmittedRedstonePower(x: Number, y: Number, z: Number, direction: String): Number;
+
+    /*
+     * This will get an entity from the given entity id
+     * Parameter - Number (entityId): the entity id
+     * Returns - Entity: the entity, null if not found
+     */
+    fun getEntityFromId(entityId: Number): Entity;
+
+    /*
+     * This will get the full id of the world
+     * Returns - String: the full id of the world, for example: 'minecraft:overworld'
+     */
+    fun getFullId(): String;
+
+    /*
+     * This will get the id of the world
+     * Returns - String: the id of the world, for example: 'overworld'
+     */
+    fun getId(): String;
+
+    /*
+     * Gets the light level at the given position, takes the max of either sky light of block light
+     * Parameter - Pos (pos): the position of the block
+     * Returns - Number: the light level between 0 - 15
+     */
+    fun getLight(pos: Pos): Number;
+
+    /*
+     * Gets the light level at the given position, takes the max of either sky light of block light
+     * Parameter - Number (x): the x position of the block
+     * Parameter - Number (y): the y position of the block
+     * Parameter - Number (z): the z position of the block
+     * Returns - Number: the light level between 0 - 15
+     */
+    fun getLight(x: Number, y: Number, z: Number): Number;
+
+    /*
+     * Deprecated: Use '<World>.getPlayer(name)' instead
+     * This gets another player from the given username
+     * Parameter - String (username): the username of the other player
+     * Returns - Player: the other player, null if not found
+     */
+    fun getOtherPlayer(username: String): Player;
+
+    /*
+     * This function gets the player with the given name
+     * Parameter - String (name): the name of the player
+     * Returns - Player: the player with the given name
+     */
+    fun getPlayer(name: String): Player;
+
+    /*
+     * This gets an iterator for all positions between two positions
+     * Parameter - Pos (pos1): the first position
+     * Parameter - Pos (pos2): the second position
+     * Returns - Iterable: the iterator for the positions
+     */
+    fun getPositions(pos1: Pos, pos2: Pos): Iterable;
+
+    /*
+     * This gets an iterator for all positions between two positions.
+     * The iterator iterates from the centre outwards
+     * Parameter - Pos (centre): the central position
+     * Parameter - Number (xRange): how far to iterate on the x axis
+     * Parameter - Number (yRange): how far to iterate on the y axis
+     * Parameter - Number (zRange): how far to iterate on the z axis
+     * Returns - Iterable: the iterator for the positions
+     */
+    fun getPositionsFromCentre(centre: Pos, xRange: Number, yRange: Number, zRange: Number): Iterable;
+
+    /*
+     * Gets the sky light at the given position ignoring block light
+     * Parameter - Pos (pos): the position of the block
+     * Returns - Number: the light level between 0 - 15
+     */
+    fun getSkyLight(pos: Pos): Number;
+
+    /*
+     * This will get the time of day of the world
+     * info on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle)
+     * Returns - Number: the time of day of the world, between 0 and 24000
+     */
+    fun getTimeOfDay(): Number;
+
+    /*
+     * Returns true if the block at the given position is air
+     * Parameter - Pos (pos): the position of the block
+     * Returns - Boolean: true if the block is air
+     */
+    fun isAir(pos: Pos): Boolean;
+
+    /*
+     * Returns true if the block at the given position is air
+     * Parameter - Number (x): the x position of the block
+     * Parameter - Number (y): the y position of the block
+     * Parameter - Number (z): the z position of the block
+     * Returns - Boolean: true if the block is air
+     */
+    fun isAir(x: Number, y: Number, z: Number): Boolean;
+
+    /*
+     * This function returns loaded state of given coordinates(client side)
+     * Parameter - Pos (pos): the position
+     * Returns - Boolean: whether the block is loaded at the given coordinates
+     */
+    fun isLoaded(pos: Pos): Boolean;
+
+    /*
+     * This will check if the world is currently raining
+     * Returns - Boolean: true if the world is currently raining
+     */
+    fun isRaining(): Boolean;
+
+    /*
+     * This will check if the world is currently thundering
+     * Returns - Boolean: true if the world is currently thundering
+     */
+    fun isThundering(): Boolean;
+
+    /*
+     * This will render a particle in the world, you can find a list of all
+     * the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),
+     * this will throw an error if the id is invalid
+     * Parameter - String (particleId): the id of the particle
+     * Parameter - Pos (pos): the position of the particle
+     */
+    fun renderParticle(particleId: String, pos: Pos): Null;
+
+    /*
+     * This will render a particle in the world, you can find a list of all
+     * the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),
+     * if the id is invalid it will throw an error
+     * Parameter - String (particleId): the id of the particle
+     * Parameter - Number (x): the x position of the particle
+     * Parameter - Number (y): the y position of the particle
+     * Parameter - Number (z): the z position of the particle
+     */
+    fun renderParticle(particleId: String, x: Number, y: Number, z: Number): Null;
+
+    /*
+     * This will render a particle in the world with a velocity, you can find a list of all
+     * the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),
+     * this will throw an error if the id is invalid
+     * Parameter - String (particleId): the id of the particle
+     * Parameter - Pos (pos): the position of the particle
+     * Parameter - Number (velX): the velocity of the particle on the x axis
+     * Parameter - Number (velY): the velocity of the particle on the y axis
+     * Parameter - Number (velZ): the velocity of the particle on the z axis
+     */
+    fun renderParticle(particleId: String, pos: Pos, velX: Number, velY: Number, velZ: Number): Null;
+
+    /*
+     * Deprecated: This function is dangerous, use at your own risk
+     * This sets a ghost block in the world as if it were a real block, may cause issues
+     * Parameter - Block (block): the block to set
+     * Parameter - Pos (pos): the position of the block
+     */
+    fun setGhostBlock(block: Block, pos: Pos): Null;
+
+    /*
+     * Deprecated: This function is dangerous, use at your own risk
+     * This sets a ghost block in the world as if it were a real block, may cause issues
+     * Parameter - Block (block): the block to set
+     * Parameter - Number (x): the x position of the block
+     * Parameter - Number (y): the y position of the block
+     * Parameter - Number (z): the z position of the block
+     */
+    fun setGhostBlock(block: Block, x: Number, y: Number, z: Number): Null;
+}
+
