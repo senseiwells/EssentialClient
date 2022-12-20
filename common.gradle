@@ -58,11 +58,6 @@ dependencies {
 	// include "net.dv8tion:JDA:5.0.0-alpha.19"
 	// include implementation("com.github.senseiwells:ArucasDiscordAPI:${project.arucas_discord_api_version.length() > 10 ? project.arucas_discord_api_version.substring(0, 10) : project.arucas_discord_api_version}")
 
-	// Multiconnect API
-	include modImplementation("net.earthcomputer.multiconnect:multiconnect-api:${project.multiconnect_api_version}") {
-		transitive = false
-	}
-
 	// Mixin Extras
 	shade implementation("com.github.LlamaLad7:MixinExtras:0.1.1")
 	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.1.1"
