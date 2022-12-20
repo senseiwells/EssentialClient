@@ -2544,15 +2544,15 @@
     "body": ".interactBlock($pos, $direction, $hand)",
     "description": "<Player>.interactBlock(pos, direction, hand)\nThis allows you to interact with a block at a position, direction, and hand\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n- Parameter - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'\n"
   },
-  "Method <Player>.interactBlock(x, y, z, direction)": {
-    "prefix": ".interactBlock($x, $y, $z, $direction)",
-    "body": ".interactBlock($x, $y, $z, $direction)",
-    "description": "<Player>.interactBlock(x, y, z, direction)\nThis allows you to interact with a block at a position and direction\n- Parameter - Number (`x`): the x position\n- Parameter - Number (`y`): the y position\n- Parameter - Number (`z`): the z position\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n"
-  },
   "Method <Player>.interactBlock(pos, direction, blockPos, insideBlock)": {
     "prefix": ".interactBlock($pos, $direction, $blockPos, $insideBlock)",
     "body": ".interactBlock($pos, $direction, $blockPos, $insideBlock)",
     "description": "<Player>.interactBlock(pos, direction, blockPos, insideBlock)\nThis allows you to interact with a block at a position and direction\nThis function is for very specific cases where there needs to be extra precision\nlike when placing stairs or slabs in certain directions, so the first set of\ncoords is the exact position of the block, and the second set of coords is the position\n- Parameter - Pos (`pos`): the exact position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n- Parameter - Pos (`blockPos`): the position of the block\n- Parameter - Boolean (`insideBlock`): whether the player is inside the block\n"
+  },
+  "Method <Player>.interactBlock(x, y, z, direction)": {
+    "prefix": ".interactBlock($x, $y, $z, $direction)",
+    "body": ".interactBlock($x, $y, $z, $direction)",
+    "description": "<Player>.interactBlock(x, y, z, direction)\nThis allows you to interact with a block at a position and direction\n- Parameter - Number (`x`): the x position\n- Parameter - Number (`y`): the y position\n- Parameter - Number (`z`): the z position\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n"
   },
   "Method <Player>.interactBlock(pos, direction, hand, blockPos, insideBlock)": {
     "prefix": ".interactBlock($pos, $direction, $hand, $blockPos, $insideBlock)",
