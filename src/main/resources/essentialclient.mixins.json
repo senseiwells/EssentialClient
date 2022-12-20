@@ -36,7 +36,6 @@
     "clientScript.ScreenMixin",
     "clientScript.WorldRendererMixin",
     "commandSuggestorIgnoresSpaces.ChatInputSuggestorMixin",
-    "compat.ClientPlayerInteractionManagerMixin",
     "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
