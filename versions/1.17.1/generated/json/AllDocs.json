@@ -9885,6 +9885,38 @@
           "name": "interactBlock",
           "is_arbitrary": false,
           "desc": [
+            "This allows you to interact with a block at a position and direction"
+          ],
+          "params": [
+            {
+              "name": "x",
+              "type": "Number",
+              "desc": "the x position"
+            },
+            {
+              "name": "y",
+              "type": "Number",
+              "desc": "the y position"
+            },
+            {
+              "name": "z",
+              "type": "Number",
+              "desc": "the z position"
+            },
+            {
+              "name": "direction",
+              "type": "String",
+              "desc": "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
+            }
+          ],
+          "examples": [
+            "player.interactBlock(0, 100, 0, 'up');"
+          ]
+        },
+        {
+          "name": "interactBlock",
+          "is_arbitrary": false,
+          "desc": [
             "This allows you to interact with a block at a position and direction",
             "This function is for very specific cases where there needs to be extra precision",
             "like when placing stairs or slabs in certain directions, so the first set of",
@@ -9914,38 +9946,6 @@
           ],
           "examples": [
             "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
-          ]
-        },
-        {
-          "name": "interactBlock",
-          "is_arbitrary": false,
-          "desc": [
-            "This allows you to interact with a block at a position and direction"
-          ],
-          "params": [
-            {
-              "name": "x",
-              "type": "Number",
-              "desc": "the x position"
-            },
-            {
-              "name": "y",
-              "type": "Number",
-              "desc": "the y position"
-            },
-            {
-              "name": "z",
-              "type": "Number",
-              "desc": "the z position"
-            },
-            {
-              "name": "direction",
-              "type": "String",
-              "desc": "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
-            }
-          ],
-          "examples": [
-            "player.interactBlock(0, 100, 0, 'up');"
           ]
         },
         {
