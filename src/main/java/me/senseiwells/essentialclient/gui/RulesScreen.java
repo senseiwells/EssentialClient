@@ -87,12 +87,11 @@ public abstract class RulesScreen extends ChildScreen {
 			this.refreshScroll();
 			this.refreshRules(s);
 		});
-		this.searchBox.setTextFieldFocused(false);
 		this.widget = new ConfigListWidget(this, this.client, this.searchBox.getText());
 		this.addSelectableChild(this.widget);
 		this.addDrawableChild(this.searchBox);
 		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
-		this.setInitialFocus(this.searchBox);
+		// this.setInitialFocus(this.searchBox);
 	}
 
 	@Override

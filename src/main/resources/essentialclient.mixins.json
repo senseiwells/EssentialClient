@@ -59,6 +59,7 @@
     "disableScreenshotMessage.ScreenshotRecorderMixin",
     "disableTutorialNotifications.TutorialToastMixin",
     "displayTimePlayed.GameMenuScreenMixin",
+    "gameRuleSync.GameRuleAccessor",
     "gameRuleSync.RuleInvoker",
     "gameRuleSync.RuleMixin",
     "keyboard.KeyboardMixin",

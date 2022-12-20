@@ -41,7 +41,7 @@ public abstract class GameRule<T> extends SimpleRule<T> {
 
 	@Override
 	public String getCategory() {
-		return this.gameRuleKey == null ? "Unknown" : I18n.translate(this.gameRuleKey.getCategory().getCategory());
+		return this.gameRuleKey == null ? "X" : I18n.translate(this.gameRuleKey.getCategory().getCategory());
 	}
 
 	public abstract T getValueFromString(String value);

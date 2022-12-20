@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.rule.game;
 
+import me.senseiwells.essentialclient.mixins.gameRuleSync.GameRuleAccessor;
 import net.minecraft.world.GameRules;
 
 import java.util.Collection;
@@ -40,12 +41,14 @@ public class VanillaGameRules {
 		DO_PATROL_SPAWNING = registerBoolean("doPatrolSpawning", "Whether patrols can spawn", true, GameRules.DO_PATROL_SPAWNING),
 		DO_TRADER_SPAWNING = registerBoolean("doTraderSpawning", "Whether wandering traders can spawn", true, GameRules.DO_TRADER_SPAWNING),
 		FORGIVE_DEAD_PLAYERS = registerBoolean("forgiveDeadPlayers", "Makes angered neutral mobs stop being angry when the targeted player dies nearby", true, GameRules.FORGIVE_DEAD_PLAYERS),
-		UNIVERSAL_ANGER = registerBoolean("universalAnger", "Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled", false, GameRules.UNIVERSAL_ANGER);
-	//#if MC >= 11900
-	public static final BooleanGameRule DO_WARDEN_SPAWNING = registerBoolean("doWardenSpawning", "Whether wardens can spawn, this rule is only available for 1.19+", true, GameRules.DO_WARDEN_SPAWNING);
-	//#else
-	//$$public static final BooleanGameRule DO_WARDEN_SPAWNING = registerBoolean("doWardenSpawning", "Whether wardens can spawn, this rule is only available for 1.19+", true, null);
-	//#endif
+		UNIVERSAL_ANGER = registerBoolean("universalAnger", "Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled", false, GameRules.UNIVERSAL_ANGER),
+		DO_WARDEN_SPAWNING = registerBoolean("doWardenSpawning", "Whether wardens can spawn", true, null),
+		BLOCK_EXPLOSION_DROP_DECAY = registerBoolean("blockExplosionDropDecay", "Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a block explosion (e.g. clicking a bed in dimensions other than the Overworld)", true, null),
+		MOB_EXPLOSION_DROP_DECAY = registerBoolean("mobExplosionDropDecay", "Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a mob explosion (e.g. Creeper explosion)", true, null),
+		TNT_EXPLOSION_DROP_DECAY = registerBoolean("tntExplosionDropDecay", "Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a TNT explosion", false, null),
+		GLOBAL_SOUND_EVENTS = registerBoolean("globalSoundEvents", "Whether certain sound events are heard by all players regardless of location", true, null),
+		LAVA_SOURCE_CONVERSION = registerBoolean("lavaSourceConversion", "Whether new sources of lava are allowed to form", false, null),
+		WATER_SOURCE_CONVERSION = registerBoolean("waterSourceConversion", "Whether new sources of water are allowed to form", true, null);
 
 	@SuppressWarnings("unused")
 	public static final IntegerGameRule
@@ -53,13 +56,22 @@ public class VanillaGameRules {
 		SPAWN_RADIUS = registerInteger("spawnRadius", "The number of blocks outward from the world spawn coordinates that a player spawns in when first joining a server or when dying without a personal spawnpoint. Has no effect on servers where the default game mode is adventure", 10, GameRules.SPAWN_RADIUS),
 		MAX_ENTITY_CRAMMING = registerInteger("maxEntityCramming", "The maximum number of pushable entities a mob or player can push, before taking 3♥ suffocation damage per half-second. Setting to 0 or lower disables the rule. Damage affects survival-mode or adventure-mode players, and all mobs but bats. Pushable entities include non-spectator-mode players, any mob except bats, as well as boats and minecarts", 24, GameRules.MAX_ENTITY_CRAMMING),
 		MAX_COMMAND_CHAIN_LENGTH = registerInteger("maxCommandChainLength", "The maximum length of a chain of commands that can be executed during one tick. Applies to command blocks and functions", 65536, GameRules.MAX_COMMAND_CHAIN_LENGTH),
-		PLAYERS_SLEEPING_PERCENTAGE = registerInteger("playersSleepingPercentage", "What percentage of players must sleep to skip the night", 100, GameRules.PLAYERS_SLEEPING_PERCENTAGE);
+		PLAYERS_SLEEPING_PERCENTAGE = registerInteger("playersSleepingPercentage", "What percentage of players must sleep to skip the night", 100, GameRules.PLAYERS_SLEEPING_PERCENTAGE),
+		SNOW_ACCUMULATION_HEIGHT = registerInteger("snowAccumulationHeight", "The maximum number of snow layers that can be accumulated on each block", 1, null);
+
+	static {
+		loadRest();
+	}
 
 	private static BooleanGameRule registerBoolean(String name, String description, boolean defaultValue, GameRules.Key<?> ruleKey) {
+		ruleKey = getRuleKey(name, ruleKey);
+		description = description + (ruleKey == null ? "\n\nThis Game Rule is not available in your version" : "");
 		return register(new BooleanGameRule(name, description, defaultValue, ruleKey));
 	}
 
 	private static IntegerGameRule registerInteger(String name, String description, int defaultValue, GameRules.Key<?> ruleKey) {
+		ruleKey = getRuleKey(name, ruleKey);
+		description = description + (ruleKey == null ? "\n\nThis Game Rule is not available in your version" : "");
 		return register(new IntegerGameRule(name, description, defaultValue, ruleKey));
 	}
 
@@ -74,5 +86,36 @@ public class VanillaGameRules {
 
 	public static Collection<GameRule<?>> getGameRules() {
 		return GAME_RULES.values();
+	}
+
+	private static GameRules.Key<?> getRuleKey(String name, GameRules.Key<?> existing) {
+		if (existing != null) {
+			return existing;
+		}
+		for (GameRules.Key<?> key : getAllKeys()) {
+			if (key.getName().equals(name)) {
+				return key;
+			}
+		}
+		return null;
+	}
+
+	private static void loadRest() {
+		// In case I forget to add a GameRule with its description it will still work
+		for (GameRules.Key<?> key : getAllKeys()) {
+			if (!GAME_RULES.containsKey(key.getName())) {
+				GameRules.Rule<?> rule = GameRuleAccessor.getRules().get(key).createRule();
+				String noDescription = "Game Rule doesn't have a description... (Please Report this as a bug!)";
+				if (rule instanceof GameRules.BooleanRule booleanRule) {
+					registerBoolean(key.getName(), noDescription, booleanRule.get(), key);
+				} else if (rule instanceof GameRules.IntRule intRule) {
+					registerInteger(key.getName(), noDescription, intRule.get(), key);
+				}
+			}
+		}
+	}
+
+	private static Collection<GameRules.Key<?>> getAllKeys() {
+		return GameRuleAccessor.getRules().keySet();
 	}
 }
