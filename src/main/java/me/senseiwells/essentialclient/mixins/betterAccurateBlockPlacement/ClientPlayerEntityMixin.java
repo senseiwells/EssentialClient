@@ -8,8 +8,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 
-//#if MC >= 11901
-import net.minecraft.network.encryption.PlayerPublicKey;
+//#if MC >= 11901 && MC < 11903
+//$$import net.minecraft.network.encryption.PlayerPublicKey;
 //#endif
 
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
@@ -36,7 +37,18 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	//$$}
 	//#endif
 
-	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 2), require = 0)
+	@Redirect(
+		method = "sendMovementPackets",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			ordinal = 0
+		),
+		slice = @Slice(
+			from = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isCamera()Z")
+		),
+		require = 0
+	)
 	private void onSendPacketVehicle(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
@@ -51,14 +63,27 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		));
 	}
 
-	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 3), require = 0)
+	@Redirect(
+		method = "sendMovementPackets",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			ordinal = 1
+		),
+		slice = @Slice(
+			from = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isCamera()Z")
+		),
+		require = 0
+	)
 	private void onSendPacketAll(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);
 			return;
 		}
+
+		PlayerMoveC2SPacket.Full existing = ((PlayerMoveC2SPacket.Full) packet);
 		clientPlayNetworkHandler.sendPacket(new PlayerMoveC2SPacket.Full(
-			this.getX(), this.getY(), this.getZ(),
+			existing.getX(0), existing.getY(0), existing.getZ(0),
 			BetterAccurateBlockPlacement.fakeYaw,
 			BetterAccurateBlockPlacement.fakePitch,
 			this.isOnGround()
@@ -66,7 +91,18 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Redirect(method = "sendMovementPackets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 5), require = 0)
+	@Redirect(
+		method = "sendMovementPackets",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			ordinal = 3
+		),
+		slice = @Slice(
+			from = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isCamera()Z")
+		),
+		require = 0
+	)
 	private void onSendPacketLook(ClientPlayNetworkHandler clientPlayNetworkHandler, Packet<?> packet) {
 		if (!ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
 			clientPlayNetworkHandler.sendPacket(packet);

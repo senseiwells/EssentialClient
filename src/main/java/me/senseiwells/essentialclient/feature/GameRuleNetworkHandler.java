@@ -84,7 +84,7 @@ public class GameRuleNetworkHandler extends NetworkHandler {
 			String ruleValue = compound.getString(ruleKey);
 			GameRule<?> gameRule = VanillaGameRules.ruleFromString(ruleKey);
 			if (gameRule == null) {
-				EssentialClient.LOGGER.warn("Game Rule '%s' could not be synced");
+				EssentialClient.LOGGER.warn("Game Rule '{}' could not be synced", ruleKey);
 				continue;
 			}
 			gameRule.setFromServer(ruleValue);
