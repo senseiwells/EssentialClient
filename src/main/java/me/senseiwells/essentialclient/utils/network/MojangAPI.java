@@ -33,12 +33,12 @@ public class MojangAPI {
 			invalidNames.add(name);
 			return null;
 		}
-		uuid = UUID.fromString(object.get("id").getAsString());
+		uuid = UUID.fromString(addDashes(object.get("id").getAsString()));
 		if (nameToUuidCache == null) {
-			nameToUuidCache = new HashMap<>();
+			nameToUuidCache = new WeakHashMap<>();
 		}
 		if (uuidToNameCache == null) {
-			uuidToNameCache = new HashMap<>();
+			uuidToNameCache = new WeakHashMap<>();
 		}
 		nameToUuidCache.put(name, uuid);
 		uuidToNameCache.put(uuid, name);
@@ -64,13 +64,22 @@ public class MojangAPI {
 		}
 		name = object.get("name").getAsString();
 		if (nameToUuidCache == null) {
-			nameToUuidCache = new HashMap<>();
+			nameToUuidCache = new WeakHashMap<>();
 		}
 		if (uuidToNameCache == null) {
-			uuidToNameCache = new HashMap<>();
+			uuidToNameCache = new WeakHashMap<>();
 		}
 		nameToUuidCache.put(name, uuid);
 		uuidToNameCache.put(uuid, name);
 		return name;
+	}
+
+	private static String addDashes(String uuid) {
+		StringBuilder builder = new StringBuilder(uuid);
+		builder.insert(20, '-');
+		builder.insert(16, '-');
+		builder.insert(12, '-');
+		builder.insert(8, '-');
+		return builder.toString();
 	}
 }
