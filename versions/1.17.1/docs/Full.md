@@ -8338,7 +8338,7 @@ player.showTitle('Title!', 'Subtitle!');
 
 ### `<Player>.spectatorTeleport(entity)`
 - Description: This allows you to teleport to any entity as long as you are in spectator mode
-- Parameter - Entity (`entity`): the entity to teleport to
+- Parameter - Entity (`entity`): the entity to teleport to, this can also be a string (UUID of entity)
 - Example:
 ```kotlin
 player.spectatorTeleport(player.getLookingAtEntity());

@@ -10368,7 +10368,7 @@
             {
               "name": "entity",
               "type": "Entity",
-              "desc": "the entity to teleport to"
+              "desc": "the entity to teleport to, this can also be a string (UUID of entity)"
             }
           ],
           "examples": [

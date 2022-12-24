@@ -2657,7 +2657,7 @@
   "Method <Player>.spectatorTeleport(entity)": {
     "prefix": ".spectatorTeleport($entity)",
     "body": ".spectatorTeleport($entity)",
-    "description": "<Player>.spectatorTeleport(entity)\nThis allows you to teleport to any entity as long as you are in spectator mode\n- Parameter - Entity (`entity`): the entity to teleport to\n"
+    "description": "<Player>.spectatorTeleport(entity)\nThis allows you to teleport to any entity as long as you are in spectator mode\n- Parameter - Entity (`entity`): the entity to teleport to, this can also be a string (UUID of entity)\n"
   },
   "Method <Player>.stonecutter(itemInput, itemOutput)": {
     "prefix": ".stonecutter($itemInput, $itemOutput)",
