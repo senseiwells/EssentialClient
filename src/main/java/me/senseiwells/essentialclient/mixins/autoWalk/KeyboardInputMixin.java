@@ -2,39 +2,49 @@ package me.senseiwells.essentialclient.mixins.autoWalk;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.Texts;
+import net.minecraft.client.input.Input;
 import net.minecraft.client.input.KeyboardInput;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.util.Formatting;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(KeyboardInput.class)
-public class KeyboardInputMixin {
+public class KeyboardInputMixin extends Input {
+	@Shadow
+	@Final
+	private GameOptions settings;
 
+	@Unique
 	private int ticks = 0;
+	@Unique
 	private boolean shouldAutoHold = false;
 
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 0))
-	private boolean onIsForwardPressed(KeyBinding keyBinding) {
-		if (keyBinding.isPressed()) {
+	@Inject(method = "tick", at = @At("TAIL"))
+	private void onTick(boolean slowDown, float f, CallbackInfo ci) {
+		if (this.settings.forwardKey.isPressed()) {
 			int autoWalk = ClientRules.AUTO_WALK.getValue();
 			this.shouldAutoHold = autoWalk > 0 && this.ticks++ > autoWalk;
 			if (this.shouldAutoHold) {
-				EssentialUtils.sendMessageToActionBar("§aYou are now autowalking");
+				EssentialUtils.sendMessageToActionBar(Texts.literal("You are now autowalking").formatted(Formatting.GREEN));
 			}
-			return true;
+			this.pressingForward = true;
+		} else {
+			this.ticks = 0;
+			this.pressingForward = this.shouldAutoHold;
 		}
-		this.ticks = 0;
-		return this.shouldAutoHold;
-	}
 
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 1))
-	private boolean onIsBackPressed(KeyBinding keyBinding) {
-		if (keyBinding.isPressed()) {
+		if (this.settings.backKey.isPressed()) {
 			this.ticks = 0;
 			this.shouldAutoHold = false;
-			return true;
 		}
-		return false;
 	}
 }

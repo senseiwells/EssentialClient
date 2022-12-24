@@ -89,6 +89,13 @@ public class EssentialUtils {
 		}
 	}
 
+	public static void sendMessageToActionBar(Text text) {
+		MinecraftClient client = getClient();
+		if (client.player != null) {
+			client.execute(() -> client.player.sendMessage(text, true));
+		}
+	}
+
 	public static void sendMessage(String message) {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
