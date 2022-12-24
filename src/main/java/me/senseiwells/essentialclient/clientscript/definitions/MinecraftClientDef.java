@@ -207,7 +207,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		String name = arguments.nextPrimitive(StringDef.class);
 		ScreenshotRecorder.saveScreenshot(
 			client.runDirectory,
-			name,
+			name.endsWith(".png") ? name : name + ".png",
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);

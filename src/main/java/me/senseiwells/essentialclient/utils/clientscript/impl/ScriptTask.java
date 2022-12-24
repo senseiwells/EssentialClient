@@ -43,12 +43,17 @@ public class ScriptTask extends Task {
 			TickedFunction next = iterator.next();
 			if (!iterator.hasNext()) {
 				return Scheduler.schedule(totalTicks + next.ticks, () -> {
-					return next.function.invoke(this.getInterpreter().branch(), List.of());
+					if (this.getInterpreter().getThreadHandler().getRunning()) {
+						return next.function.invoke(this.getInterpreter().branch(), List.of());
+					}
+					return this.getInterpreter().getNull();
 				});
 			}
 			totalTicks += next.ticks;
 			Scheduler.schedule(totalTicks, () -> {
-				next.function.invoke(this.getInterpreter().branch(), List.of());
+				if (this.getInterpreter().getThreadHandler().getRunning()) {
+					next.function.invoke(this.getInterpreter().branch(), List.of());
+				}
 			});
 		}
 		return CompletableFuture.completedFuture(this.getInterpreter().getNull());
