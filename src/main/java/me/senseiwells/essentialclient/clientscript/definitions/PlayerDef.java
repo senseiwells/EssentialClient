@@ -50,6 +50,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -596,7 +597,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "spectatorTeleport",
 		desc = "This allows you to teleport to any entity as long as you are in spectator mode",
-		params = {ENTITY, "entity", "the entity to teleport to"},
+		params = {ENTITY, "entity", "the entity to teleport to, this can also be a string (UUID of entity)"},
 		examples = "player.spectatorTeleport(player.getLookingAtEntity());"
 	)
 	private boolean spectatorTeleport(Arguments arguments) {
@@ -604,8 +605,16 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		if (!player.isSpectator()) {
 			return false;
 		}
-		Entity entity = arguments.skip().nextPrimitive(EntityDef.class);
-		EssentialUtils.getNetworkHandler().sendPacket(new SpectatorTeleportC2SPacket(entity.getUuid()));
+		arguments.skip();
+
+		UUID uuid;
+		if (arguments.isNext(StringDef.class)) {
+			String uuidAsString = arguments.nextPrimitive(StringDef.class);
+			uuid = RuntimeError.wrap(() -> UUID.fromString(uuidAsString));
+		} else {
+			uuid = arguments.nextPrimitive(EntityDef.class).getUuid();
+		}
+		EssentialUtils.getNetworkHandler().sendPacket(new SpectatorTeleportC2SPacket(uuid));
 		return true;
 	}
 
