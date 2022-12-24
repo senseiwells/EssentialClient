@@ -29,7 +29,11 @@ public class KeyboardInputMixin extends Input {
 	private boolean shouldAutoHold = false;
 
 	@Inject(method = "tick", at = @At("TAIL"))
+	//#if MC >= 11900
 	private void onTick(boolean slowDown, float f, CallbackInfo ci) {
+		//#else
+		//$$private void onTick(boolean slowDown, CallbackInfo ci) {
+		//#endif
 		if (this.settings.forwardKey.isPressed()) {
 			int autoWalk = ClientRules.AUTO_WALK.getValue();
 			this.shouldAutoHold = autoWalk > 0 && this.ticks++ > autoWalk;
