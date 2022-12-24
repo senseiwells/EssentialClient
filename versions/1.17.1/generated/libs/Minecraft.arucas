@@ -2399,9 +2399,8 @@ class Player: OtherPlayer {
      * Parameter - Number (x): the x position
      * Parameter - Number (y): the y position
      * Parameter - Number (z): the z position
-     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
      */
-    fun interactBlock(x: Number, y: Number, z: Number, direction: String): Null;
+    fun interactBlock(x: Number, y: Number, z: Number): Null;
 
     /*
      * This allows you to interact with a block at a position and direction

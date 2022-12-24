@@ -9902,11 +9902,6 @@
               "name": "z",
               "type": "Number",
               "desc": "the z position"
-            },
-            {
-              "name": "direction",
-              "type": "String",
-              "desc": "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
             }
           ],
           "examples": [

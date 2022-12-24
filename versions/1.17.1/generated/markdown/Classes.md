@@ -5163,13 +5163,12 @@ player.interactBlock(new Pos(0, 0, 0), 'up');
 player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 ```
 
-### `<Player>.interactBlock(x, y, z, direction)`
+### `<Player>.interactBlock(x, y, z)`
 - Description: This allows you to interact with a block at a position and direction
 - Parameters:
   - Number (`x`): the x position
   - Number (`y`): the y position
   - Number (`z`): the z position
-  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
 - Example:
 ```kotlin
 player.interactBlock(0, 100, 0, 'up');
