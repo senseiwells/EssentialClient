@@ -1254,8 +1254,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		params = {
 			NUMBER, "x", "the x position",
 			NUMBER, "y", "the y position",
-			NUMBER, "z", "the z position",
-			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
+			NUMBER, "z", "the z position"
 		},
 		examples = "player.interactBlock(0, 100, 0, 'up');"
 	)
@@ -1263,10 +1262,9 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		double x = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		double y = arguments.nextPrimitive(NumberDef.class).intValue();
 		double z = arguments.nextPrimitive(NumberDef.class).intValue();
-		String directionAsString = arguments.nextConstant();
 		this.interactInternal(
 			arguments.getInterpreter(),
-			directionAsString,
+			"down",
 			EssentialUtils.getPlayer().getActiveHand(),
 			new Vec3d(x, y, z),
 			new BlockPos(x, y, z),
