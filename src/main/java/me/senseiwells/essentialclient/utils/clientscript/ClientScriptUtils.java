@@ -457,9 +457,9 @@ public class ClientScriptUtils {
 				yield new DoubleSliderClientRule(name, description, 0.0D, category, min, max);
 			}
 			case "integer" -> {
-				Integer defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class).intValue();
+				Double defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class);
 				if (defaultNumber != null) {
-					yield new IntegerClientRule(name, description, defaultNumber, category);
+					yield new IntegerClientRule(name, description, defaultNumber.intValue(), category);
 				}
 				yield new IntegerClientRule(name, description, 0, category);
 			}
