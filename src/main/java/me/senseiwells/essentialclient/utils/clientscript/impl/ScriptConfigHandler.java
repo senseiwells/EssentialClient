@@ -136,10 +136,13 @@ public class ScriptConfigHandler implements Config.CList {
 		String name = object.get("name").getAsString();
 		JsonElement value = object.get("value");
 
-		ClientRule<T> config = (ClientRule<T>) this.configs.get(name).getPrimitive(ConfigDef.class);
-		if (config != null) {
-			config.setValueQuietly(config.fromJson(value));
-			return;
+		ClassInstance instance = this.configs.get(name);
+		if (instance != null) {
+			ClientRule<T> config = (ClientRule<T>) this.configs.get(name).getPrimitive(ConfigDef.class);
+			if (config != null) {
+				config.setValueQuietly(config.fromJson(value));
+				return;
+			}
 		}
 
 		String type = object.get("type").getAsString();

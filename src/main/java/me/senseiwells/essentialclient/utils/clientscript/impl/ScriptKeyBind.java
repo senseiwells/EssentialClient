@@ -4,6 +4,7 @@ import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.ArucasFunction;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ public class ScriptKeyBind {
 		Interpreter parent = interpreter.branch();
 		this.keyBind = ClientKeyBinds.registerMulti(name, "Scripting Key Binds", client -> {
 			if (interpreter.getThreadHandler().getRunning() && this.function != null) {
-				this.function.invoke(parent.branch(), List.of());
+				ClientScriptUtils.wrapSafe(() -> {
+					this.function.invoke(parent.branch(), List.of());
+				}, interpreter);
 			}
 		});
 	}

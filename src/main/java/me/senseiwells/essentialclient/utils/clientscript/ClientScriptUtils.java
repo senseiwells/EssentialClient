@@ -118,14 +118,24 @@ public class ClientScriptUtils {
 				"'%s' was not called on the Minecraft main thread, this may lead to unexpected behavior".formatted(name)
 			);
 		}
-		return client.submit(() -> {
-			try {
-				return callable.get();
-			} catch (Exception e) {
-				interpreter.getThreadHandler().handleError(e);
-				return null;
-			}
-		});
+		return client.submit(() -> wrapSafe(callable, interpreter));
+	}
+
+	public static <V> V wrapSafe(Supplier<V> callable, Interpreter interpreter) {
+		try {
+			return callable.get();
+		} catch (Exception e) {
+			interpreter.getThreadHandler().handleError(e);
+			return null;
+		}
+	}
+
+	public static void wrapSafe(Runnable runnable, Interpreter interpreter) {
+		try {
+			runnable.run();
+		} catch (Exception e) {
+			interpreter.getThreadHandler().handleError(e);
+		}
 	}
 
 	public static void holdKey(Interpreter interpreter, KeyBinding key, int interval) {
