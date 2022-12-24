@@ -5152,17 +5152,6 @@ player.getSwappableHotbarSlot();
 player.interactBlock(new Pos(0, 0, 0), 'up');
 ```
 
-### `<Player>.interactBlock(pos, direction, hand)`
-- Description: This allows you to interact with a block at a position, direction, and hand
-- Parameters:
-  - Pos (`pos`): the position of the block
-  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
-  - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
-- Example:
-```kotlin
-player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
-```
-
 ### `<Player>.interactBlock(x, y, z)`
 - Description: This allows you to interact with a block at a position and direction
 - Parameters:
@@ -5172,6 +5161,17 @@ player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 - Example:
 ```kotlin
 player.interactBlock(0, 100, 0, 'up');
+```
+
+### `<Player>.interactBlock(pos, direction, hand)`
+- Description: This allows you to interact with a block at a position, direction, and hand
+- Parameters:
+  - Pos (`pos`): the position of the block
+  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+  - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
+- Example:
+```kotlin
+player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 ```
 
 ### `<Player>.interactBlock(pos, direction, blockPos, insideBlock)`
