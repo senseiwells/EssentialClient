@@ -5163,18 +5163,6 @@ player.interactBlock(new Pos(0, 0, 0), 'up');
 player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 ```
 
-### `<Player>.interactBlock(x, y, z, direction)`
-- Description: This allows you to interact with a block at a position and direction
-- Parameters:
-  - Number (`x`): the x position
-  - Number (`y`): the y position
-  - Number (`z`): the z position
-  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
-- Example:
-```kotlin
-player.interactBlock(0, 100, 0, 'up');
-```
-
 ### `<Player>.interactBlock(pos, direction, blockPos, insideBlock)`
 - Description: This allows you to interact with a block at a position and direction
 This function is for very specific cases where there needs to be extra precision
@@ -5188,6 +5176,18 @@ coords is the exact position of the block, and the second set of coords is the p
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);
+```
+
+### `<Player>.interactBlock(x, y, z, direction)`
+- Description: This allows you to interact with a block at a position and direction
+- Parameters:
+  - Number (`x`): the x position
+  - Number (`y`): the y position
+  - Number (`z`): the z position
+  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+- Example:
+```kotlin
+player.interactBlock(0, 100, 0, 'up');
 ```
 
 ### `<Player>.interactBlock(pos, direction, hand, blockPos, insideBlock)`
