@@ -470,7 +470,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "canPlaceBlockAt",
 		desc = "Checks block can be placed at given position",
-		params = {POS, "pos", "the position to check"},
+		params = {
+			BLOCK, "block", "the block to check for",
+			POS, "pos", "the position to check"
+		},
 		examples = "player.canPlaceBlockAt(block, pos);"
 	)
 	private boolean canPlaceBlockAtPos(Arguments arguments) {
