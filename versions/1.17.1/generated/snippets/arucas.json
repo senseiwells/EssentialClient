@@ -2259,6 +2259,11 @@
     "body": ".getCurrentSlot()",
     "description": "<OtherPlayer>.getCurrentSlot()\nThis gets the players currently selected slot\n"
   },
+  "Method <OtherPlayer>.getEmptySlots()": {
+    "prefix": ".getEmptySlots()",
+    "body": ".getEmptySlots()",
+    "description": "<OtherPlayer>.getEmptySlots()\nThis gets all the empty slots in the player inventory\n"
+  },
   "Method <OtherPlayer>.getFishingBobber()": {
     "prefix": ".getFishingBobber()",
     "body": ".getFishingBobber()",

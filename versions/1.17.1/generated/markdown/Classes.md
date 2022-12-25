@@ -4585,6 +4585,14 @@ otherPlayer.getAllSlotsFor(Material.DIAMOND, 'player');
 otherPlayer.getCurrentSlot();
 ```
 
+### `<OtherPlayer>.getEmptySlots()`
+- Description: This gets all the empty slots in the player inventory
+- Returns - List: a list of all the slot numbers that are empty
+- Example:
+```kotlin
+otherPlayer.getEmptySlots();
+```
+
 ### `<OtherPlayer>.getFishingBobber()`
 - Description: This gets the fishing bobber that the player has
 - Returns - Entity: the fishing bobber entity, null if the player isn't fishing

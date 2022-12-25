@@ -8821,6 +8821,20 @@
           ]
         },
         {
+          "name": "getEmptySlots",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets all the empty slots in the player inventory"
+          ],
+          "returns": {
+            "type": "List",
+            "desc": "a list of all the slot numbers that are empty"
+          },
+          "examples": [
+            "otherPlayer.getEmptySlots();"
+          ]
+        },
+        {
           "name": "getFishingBobber",
           "is_arbitrary": false,
           "desc": [

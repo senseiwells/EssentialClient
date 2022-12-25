@@ -2006,6 +2006,12 @@ class OtherPlayer {
     fun getCurrentSlot(): Number;
 
     /*
+     * This gets all the empty slots in the player inventory
+     * Returns - List: a list of all the slot numbers that are empty
+     */
+    fun getEmptySlots(): List;
+
+    /*
      * This gets the fishing bobber that the player has
      * Returns - Entity: the fishing bobber entity, null if the player isn't fishing
      */
