@@ -7917,9 +7917,11 @@ foreach (entity : allEntities) {
 player.breakBlock(new Pos(0, 0, 0));
 ```
 
-### `<Player>.canPlaceBlockAt(pos)`
+### `<Player>.canPlaceBlockAt(block, pos)`
 - Description: Checks block can be placed at given position
-- Parameter - Pos (`pos`): the position to check
+- Parameters:
+  - Block (`block`): the block to check for
+  - Pos (`pos`): the position to check
 - Example:
 ```kotlin
 player.canPlaceBlockAt(block, pos);

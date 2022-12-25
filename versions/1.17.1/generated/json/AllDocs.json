@@ -9476,6 +9476,11 @@
           ],
           "params": [
             {
+              "name": "block",
+              "type": "Block",
+              "desc": "the block to check for"
+            },
+            {
               "name": "pos",
               "type": "Pos",
               "desc": "the position to check"

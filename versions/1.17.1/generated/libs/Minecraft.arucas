@@ -2251,9 +2251,10 @@ class Player: OtherPlayer {
 
     /*
      * Checks block can be placed at given position
+     * Parameter - Block (block): the block to check for
      * Parameter - Pos (pos): the position to check
      */
-    fun canPlaceBlockAt(pos: Pos): Null;
+    fun canPlaceBlockAt(block: Block, pos: Pos): Null;
 
     /*
      * Checks block can be placed at given position

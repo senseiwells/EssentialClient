@@ -2444,10 +2444,10 @@
     "body": ".breakBlock($pos)",
     "description": "<Player>.breakBlock(pos)\nThis breaks a block at a given position, if it is able to be broken\n- Parameter - Pos (`pos`): the position of the block\n"
   },
-  "Method <Player>.canPlaceBlockAt(pos)": {
-    "prefix": ".canPlaceBlockAt($pos)",
-    "body": ".canPlaceBlockAt($pos)",
-    "description": "<Player>.canPlaceBlockAt(pos)\nChecks block can be placed at given position\n- Parameter - Pos (`pos`): the position to check\n"
+  "Method <Player>.canPlaceBlockAt(block, pos)": {
+    "prefix": ".canPlaceBlockAt($block, $pos)",
+    "body": ".canPlaceBlockAt($block, $pos)",
+    "description": "<Player>.canPlaceBlockAt(block, pos)\nChecks block can be placed at given position\n- Parameter - Block (`block`): the block to check for\n- Parameter - Pos (`pos`): the position to check\n"
   },
   "Method <Player>.canPlaceBlockAt(block, x, y, z)": {
     "prefix": ".canPlaceBlockAt($block, $x, $y, $z)",
