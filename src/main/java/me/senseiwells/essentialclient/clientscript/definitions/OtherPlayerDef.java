@@ -66,6 +66,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 			MemberFunction.of("getCurrentSlot", this::getCurrentSlot),
 			MemberFunction.of("getHeldItem", this::getHeldItem),
 			MemberFunction.of("isInventoryFull", this::isInventoryFull),
+			MemberFunction.of("getEmptySlots", this::getEmptySlots),
 			MemberFunction.of("getPlayerName", this::getPlayerName),
 			MemberFunction.of("getGamemode", this::getGamemode),
 			MemberFunction.of("getTotalSlots", this::getTotalSlots),
@@ -113,6 +114,23 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	)
 	private boolean isInventoryFull(Arguments arguments) {
 		return arguments.nextPrimitive(this).getInventory().getEmptySlot() == -1;
+	}
+
+	@FunctionDoc(
+		name = "getEmptySlots",
+		desc = "This gets all the empty slots in the player inventory",
+		returns = {LIST, "a list of all the slot numbers that are empty"},
+		examples = "otherPlayer.getEmptySlots();"
+	)
+	private ArucasList getEmptySlots(Arguments arguments) {
+		PlayerInventory inventory = arguments.nextPrimitive(this).getInventory();
+		ArucasList list = new ArucasList();
+		for (int i = 0; i < inventory.main.size(); ++i) {
+			if (inventory.main.get(i).isEmpty()) {
+				list.add(arguments.getInterpreter().convertValue(i));
+			}
+		}
+		return list;
 	}
 
 	@FunctionDoc(
