@@ -42,6 +42,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -209,4 +210,27 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		Entity entity = this.world.getEntityById(entityId);
 		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(entity);
 	}
+
+	//#if MC >= 11903
+	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true) // Checkstyle Ignore
+	private void onChatMessage(String message, CallbackInfo ci) {
+		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
+	private void onCommand(String command, CallbackInfo ci) {
+		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run(command)) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
+	private void onCommand(String command, CallbackInfoReturnable<Boolean> cir) {
+		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run(command)) {
+			cir.setReturnValue(true);
+		}
+	}
+	//#endif
 }
