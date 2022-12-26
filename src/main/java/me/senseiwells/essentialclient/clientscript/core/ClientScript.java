@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.utils.config.Config;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -12,6 +14,8 @@ import java.util.*;
 
 public enum ClientScript implements Config.CList {
 	INSTANCE;
+
+	public static final Logger LOGGER = LogManager.getLogger("ClientScript");
 
 	private final Map<String, ClientScriptInstance> scriptInstances;
 	private final Set<String> selectedScriptNames;

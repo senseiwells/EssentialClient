@@ -67,7 +67,8 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		START_SELECTED_SCRIPTS_ON_JOIN = register(new BooleanClientRule("startSelectedScriptsOnJoin", "This will enable your selected scripts when you join a world automatically", MISCELLANEOUS)),
 		SURVIVAL_INVENTORY_IN_CREATIVE = register(new BooleanClientRule("survivalInventoryInCreative", "This lets you open the survival inventory in creative mode", UTILITY)),
 		TOGGLE_TAB = register(new BooleanClientRule("toggleTab", "This allows you to toggle tab instead of holding to see tab", UTILITY)),
-		UNLOCK_ALL_RECIPES_ON_JOIN = register(new BooleanClientRule("unlockAllRecipesOnJoin", "Unlocks every recipe when joining a world", UTILITY));
+		UNLOCK_ALL_RECIPES_ON_JOIN = register(new BooleanClientRule("unlockAllRecipesOnJoin", "Unlocks every recipe when joining a world", UTILITY)),
+		CLIENTSCRIPT_DEBUGGER = register(new BooleanClientRule("clientscriptDebugger", "You probably shouldn't touch this", UTILITY));
 
 	public static final IntegerClientRule
 		ANNOUNCE_AFK = register(new IntegerClientRule("announceAFK", "This announces when you become afk after a set amount of time (ticks)", UTILITY)),

@@ -50,6 +50,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -1259,13 +1260,14 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			NUMBER, "y", "the y position",
 			NUMBER, "z", "the z position"
 		},
-		examples = "player.interactBlock(0, 100, 0, 'up');"
+		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
+		examples = "player.interactBlock(0, 100, 0);"
 	)
-	private Void interactBlock(Arguments arguments) {
+	private Future<String> interactBlock(Arguments arguments) {
 		double x = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		double y = arguments.nextPrimitive(NumberDef.class).intValue();
 		double z = arguments.nextPrimitive(NumberDef.class).intValue();
-		this.interactInternal(
+		return this.interactInternal(
 			arguments.getInterpreter(),
 			"down",
 			EssentialUtils.getPlayer().getActiveHand(),
@@ -1273,7 +1275,6 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			new BlockPos(x, y, z),
 			false
 		);
-		return null;
 	}
 
 	@FunctionDoc(
@@ -1283,12 +1284,13 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			POS, "pos", "the position of the block",
 			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
 		},
+		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
 		examples = "player.interactBlock(new Pos(0, 0, 0), 'up');"
 	)
-	private Void interactBlockPos(Arguments arguments) {
+	private Future<String> interactBlockPos(Arguments arguments) {
 		ScriptPos pos = arguments.skip().nextPrimitive(PosDef.class);
 		String direction = arguments.nextConstant();
-		this.interactInternal(
+		return this.interactInternal(
 			arguments.getInterpreter(),
 			direction,
 			EssentialUtils.getPlayer().getActiveHand(),
@@ -1296,7 +1298,6 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			pos.getBlockPos(),
 			false
 		);
-		return null;
 	}
 
 	@FunctionDoc(
@@ -1307,14 +1308,15 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
 			STRING, "hand", "the hand to use, e.g. 'main_hand', 'off_hand'"
 		},
+		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
 		examples = "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
 	)
-	private Void interactBlockPosHand(Arguments arguments) {
+	private Future<String> interactBlockPosHand(Arguments arguments) {
 		ScriptPos pos = arguments.skip().nextPrimitive(PosDef.class);
 		String direction = arguments.nextConstant();
 		String handAsString = arguments.nextConstant();
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
-		this.interactInternal(
+		return this.interactInternal(
 			arguments.getInterpreter(),
 			direction,
 			hand,
@@ -1322,7 +1324,6 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			pos.getBlockPos(),
 			false
 		);
-		return null;
 	}
 
 	@FunctionDoc(
@@ -1343,9 +1344,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			NUMBER, "blockZ", "the z position of the block",
 			BOOLEAN, "insideBlock", "whether the player is inside the block"
 		},
+		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
 		examples = "player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);"
 	)
-	private Void interactBlockFull(Arguments arguments) {
+	private Future<String> interactBlockFull(Arguments arguments) {
 		double px = arguments.skip().nextPrimitive(NumberDef.class);
 		double py = arguments.nextPrimitive(NumberDef.class);
 		double pz = arguments.nextPrimitive(NumberDef.class);
@@ -1354,7 +1356,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		double by = arguments.nextPrimitive(NumberDef.class);
 		double bz = arguments.nextPrimitive(NumberDef.class);
 		boolean bool = arguments.nextPrimitive(BooleanDef.class);
-		this.interactInternal(
+		return this.interactInternal(
 			arguments.getInterpreter(),
 			direction,
 			EssentialUtils.getPlayer().getActiveHand(),
@@ -1362,7 +1364,6 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			new BlockPos(bx, by, bz),
 			bool
 		);
-		return null;
 	}
 
 	@FunctionDoc(
@@ -1379,14 +1380,14 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			POS, "blockPos", "the position of the block",
 			BOOLEAN, "insideBlock", "whether the player is inside the block"
 		},
+		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
 		examples = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
 	)
-	private Void interactBlockFullPos(Arguments arguments) {
+	private Future<String> interactBlockFullPos(Arguments arguments) {
 		Vec3d pos = arguments.skip().nextPrimitive(PosDef.class).getVec3d();
 		String direction = arguments.nextConstant();
 		BlockPos blockPos = arguments.nextPrimitive(PosDef.class).getBlockPos();
-		this.interactInternal(arguments.getInterpreter(), direction, EssentialUtils.getPlayer().getActiveHand(), pos, blockPos, false);
-		return null;
+		return this.interactInternal(arguments.getInterpreter(), direction, EssentialUtils.getPlayer().getActiveHand(), pos, blockPos, false);
 	}
 
 	@FunctionDoc(
@@ -1404,16 +1405,16 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			POS, "blockPos", "the position of the block",
 			BOOLEAN, "insideBlock", "whether the player is inside the block"
 		},
+		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
 		examples = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');"
 	)
-	private Void interactBlockFullPosHand(Arguments arguments) {
+	private Future<String> interactBlockFullPosHand(Arguments arguments) {
 		Vec3d pos = arguments.nextPrimitive(PosDef.class).getVec3d();
 		String direction = arguments.nextConstant();
 		String handAsString = arguments.nextConstant();
 		BlockPos blockPos = arguments.nextPrimitive(PosDef.class).getBlockPos();
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
-		this.interactInternal(arguments.getInterpreter(), direction, hand, pos, blockPos, false);
-		return null;
+		return this.interactInternal(arguments.getInterpreter(), direction, hand, pos, blockPos, false);
 	}
 
 	@FunctionDoc(
@@ -1429,15 +1430,15 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		return EssentialUtils.getBlockBreakingSpeed(itemStack, state, player);
 	}
 
-	private void interactInternal(Interpreter interpreter, String directionAsString, Hand hand, Vec3d pos, BlockPos blockPos, boolean insideBlock) {
+	private Future<String> interactInternal(Interpreter interpreter, String directionAsString, Hand hand, Vec3d pos, BlockPos blockPos, boolean insideBlock) {
 		Hand finalHand = hand == null ? Hand.MAIN_HAND : hand;
 		Direction direction = ClientScriptUtils.stringToDirection(directionAsString, Direction.DOWN);
 		BlockHitResult hitResult = new BlockHitResult(pos, direction, blockPos, insideBlock);
-		ClientScriptUtils.ensureMainThread("interactBlock", interpreter, () -> {
+		return ClientScriptUtils.ensureMainThread("interactBlock", interpreter, () -> {
 			//#if MC >= 11900
-			EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), finalHand, hitResult);
+			return EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), finalHand, hitResult).toString().toLowerCase(Locale.ROOT);
 			//#else
-			//$$EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), finalHand, hitResult);
+			//$$return EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), finalHand, hitResult).toString().toLowerCase(Locale.ROOT);
 			//#endif
 		});
 	}

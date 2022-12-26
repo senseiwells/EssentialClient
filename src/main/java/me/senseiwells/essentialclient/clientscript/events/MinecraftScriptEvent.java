@@ -4,6 +4,8 @@ import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.essentialclient.clientscript.core.ClientScript;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptEvent;
 import me.senseiwells.essentialclient.utils.clientscript.impl.WaitingEvent;
 
@@ -124,6 +126,9 @@ public class MinecraftScriptEvent {
 			}
 		}
 		this.WAITING_EVENTS.clear();
+		if (shouldCancel && ClientRules.CLIENTSCRIPT_DEBUGGER.getValue()) {
+			ClientScript.LOGGER.info("Event '{}' was cancelled", this.name);
+		}
 		return shouldCancel;
 	}
 
@@ -165,6 +170,9 @@ public class MinecraftScriptEvent {
 				if (gameEvent.invoke(Arrays.asList(arguments))) {
 					shouldCancel = true;
 				}
+			}
+			if (shouldCancel && ClientRules.CLIENTSCRIPT_DEBUGGER.getValue()) {
+				ClientScript.LOGGER.info("Event '{}' was cancelled", this.getName());
 			}
 			return shouldCancel;
 		}
