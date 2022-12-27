@@ -378,6 +378,14 @@ class List: Collection {
     fun reduce(reducer: Function): Object;
 
     /*
+     * This reduces the list using the reducer starting with an identity
+     * Parameter - Object (identity): the identity
+     * Parameter - Function (reducer): a function that takes a value and returns a new value
+     * Returns - Object: the reduced value
+     */
+    fun reduce(identity: Object, reducer: Function): Object;
+
+    /*
      * This allows you to remove the value at a specific index, alternative to bracket assignment.
      * This will throw an error if the index is out of bounds
      * Parameter - Number (index): the index of the value you want to remove
@@ -961,6 +969,14 @@ class Set: Collection {
      * Returns - Object: the reduced set
      */
     fun reduce(function: Function): Object;
+
+    /*
+     * This reduces the list using the reducer starting with an identity
+     * Parameter - Object (identity): the identity
+     * Parameter - Function (reducer): a function that takes a value and returns a new value
+     * Returns - Object: the reduced value
+     */
+    fun reduce(identity: Object, reducer: Function): Object;
 
     /*
      * This allows you to remove a value from the set

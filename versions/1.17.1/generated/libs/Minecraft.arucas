@@ -2390,24 +2390,27 @@ class Player: OtherPlayer {
      * This allows you to interact with a block at a position and direction
      * Parameter - Pos (pos): the position of the block
      * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(pos: Pos, direction: String): Null;
-
-    /*
-     * This allows you to interact with a block at a position, direction, and hand
-     * Parameter - Pos (pos): the position of the block
-     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
-     * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
-     */
-    fun interactBlock(pos: Pos, direction: String, hand: String): Null;
+    fun interactBlock(pos: Pos, direction: String): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
      * Parameter - Number (x): the x position
      * Parameter - Number (y): the y position
      * Parameter - Number (z): the z position
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(x: Number, y: Number, z: Number): Null;
+    fun interactBlock(x: Number, y: Number, z: Number): Future;
+
+    /*
+     * This allows you to interact with a block at a position, direction, and hand
+     * Parameter - Pos (pos): the position of the block
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
+     */
+    fun interactBlock(pos: Pos, direction: String, hand: String): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
@@ -2418,8 +2421,9 @@ class Player: OtherPlayer {
      * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
      * Parameter - Pos (blockPos): the position of the block
      * Parameter - Boolean (insideBlock): whether the player is inside the block
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(pos: Pos, direction: String, blockPos: Pos, insideBlock: Boolean): Null;
+    fun interactBlock(pos: Pos, direction: String, blockPos: Pos, insideBlock: Boolean): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
@@ -2431,8 +2435,9 @@ class Player: OtherPlayer {
      * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
      * Parameter - Pos (blockPos): the position of the block
      * Parameter - Boolean (insideBlock): whether the player is inside the block
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(pos: Pos, direction: String, hand: String, blockPos: Pos, insideBlock: Boolean): Null;
+    fun interactBlock(pos: Pos, direction: String, hand: String, blockPos: Pos, insideBlock: Boolean): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
@@ -2447,8 +2452,9 @@ class Player: OtherPlayer {
      * Parameter - Number (blockY): the y position of the block
      * Parameter - Number (blockZ): the z position of the block
      * Parameter - Boolean (insideBlock): whether the player is inside the block
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(x: Number, y: Number, z: Number, direction: String, blockX: Number, blockY: Number, blockZ: Number, insideBlock: Boolean): Null;
+    fun interactBlock(x: Number, y: Number, z: Number, direction: String, blockX: Number, blockY: Number, blockZ: Number, insideBlock: Boolean): Future;
 
     /*
      * This allows you to interact item with given Hand

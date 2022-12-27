@@ -83,6 +83,20 @@ getUnixTime();
 input('What is your name?');
 ```
 
+### `isDebug()`
+- Description: This is used to determine whether the interpreter is in debug mode
+- Example:
+```kotlin
+isDebug();
+```
+
+### `isExperimental()`
+- Description: This is used to determine whether the interpreter is in experimental mode
+- Example:
+```kotlin
+isExperimental();
+```
+
 ### `isMain()`
 - Description: This is used to check whether the script is the main script
 - Returns - Boolean: true if the script is the main script, false if it is not

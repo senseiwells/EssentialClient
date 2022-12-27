@@ -1514,6 +1514,11 @@
     "body": ".reduce($reducer)",
     "description": "<List>.reduce(reducer)\nThis reduces the list using the reducer, a function that takes an\naccumulated value and a new value and returns the next accumulated value\n- Parameter - Function (`reducer`): a function that takes a value and returns a new value\n"
   },
+  "Method <List>.reduce(identity, reducer)": {
+    "prefix": ".reduce($identity, $reducer)",
+    "body": ".reduce($identity, $reducer)",
+    "description": "<List>.reduce(identity, reducer)\nThis reduces the list using the reducer starting with an identity\n- Parameter - Object (`identity`): the identity\n- Parameter - Function (`reducer`): a function that takes a value and returns a new value\n"
+  },
   "Method <List>.remove(index)": {
     "prefix": ".remove($index)",
     "body": ".remove($index)",
@@ -2544,15 +2549,15 @@
     "body": ".interactBlock($pos, $direction)",
     "description": "<Player>.interactBlock(pos, direction)\nThis allows you to interact with a block at a position and direction\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n"
   },
-  "Method <Player>.interactBlock(pos, direction, hand)": {
-    "prefix": ".interactBlock($pos, $direction, $hand)",
-    "body": ".interactBlock($pos, $direction, $hand)",
-    "description": "<Player>.interactBlock(pos, direction, hand)\nThis allows you to interact with a block at a position, direction, and hand\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n- Parameter - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'\n"
-  },
   "Method <Player>.interactBlock(x, y, z)": {
     "prefix": ".interactBlock($x, $y, $z)",
     "body": ".interactBlock($x, $y, $z)",
     "description": "<Player>.interactBlock(x, y, z)\nThis allows you to interact with a block at a position and direction\n- Parameter - Number (`x`): the x position\n- Parameter - Number (`y`): the y position\n- Parameter - Number (`z`): the z position\n"
+  },
+  "Method <Player>.interactBlock(pos, direction, hand)": {
+    "prefix": ".interactBlock($pos, $direction, $hand)",
+    "body": ".interactBlock($pos, $direction, $hand)",
+    "description": "<Player>.interactBlock(pos, direction, hand)\nThis allows you to interact with a block at a position, direction, and hand\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n- Parameter - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'\n"
   },
   "Method <Player>.interactBlock(pos, direction, blockPos, insideBlock)": {
     "prefix": ".interactBlock($pos, $direction, $blockPos, $insideBlock)",
@@ -2988,6 +2993,11 @@
     "prefix": ".reduce($function)",
     "body": ".reduce($function)",
     "description": "<Set>.reduce(function)\nThis allows you to reduce the set\n- Parameter - Function (`function`): the function you want to reduce the set by\n"
+  },
+  "Method <Set>.reduce(identity, reducer)": {
+    "prefix": ".reduce($identity, $reducer)",
+    "body": ".reduce($identity, $reducer)",
+    "description": "<Set>.reduce(identity, reducer)\nThis reduces the list using the reducer starting with an identity\n- Parameter - Object (`identity`): the identity\n- Parameter - Function (`reducer`): a function that takes a value and returns a new value\n"
   },
   "Method <Set>.remove(value)": {
     "prefix": ".remove($value)",

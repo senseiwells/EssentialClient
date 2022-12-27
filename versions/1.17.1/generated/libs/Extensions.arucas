@@ -69,6 +69,16 @@ fun getUnixTime(): Number;
 fun input(prompt: String): String;
 
 /*
+ * This is used to determine whether the interpreter is in debug mode
+ */
+fun isDebug(): Null;
+
+/*
+ * This is used to determine whether the interpreter is in experimental mode
+ */
+fun isExperimental(): Null;
+
+/*
  * This is used to check whether the script is the main script
  * Returns - Boolean: true if the script is the main script, false if it is not
  */

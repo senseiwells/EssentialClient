@@ -67,6 +67,12 @@ This allows you to change the font for client script errors
 - Type: Cycle
 - Default Value: Minecraft
 
+# clientscriptDebugger
+You probably shouldn't touch this
+- Category: Utility
+- Type: Boolean
+- Default Value: false
+
 # commandAlternateDimension
 This command calculates the coordinates of the alternate dimension
 - Category: Commands

@@ -3170,6 +3170,20 @@ accumulated value and a new value and returns the next accumulated value
 // 6
 ```
 
+### `<List>.reduce(identity, reducer)`
+- Description: This reduces the list using the reducer starting with an identity
+- Parameters:
+  - Object (`identity`): the identity
+  - Function (`reducer`): a function that takes a value and returns a new value
+- Returns - Object: the reduced value
+- Example:
+```kotlin
+(list = [1, 2, 3]).reduce("", fun(a, b) {
+    return a + b;
+});
+// "123"
+```
+
 ### `<List>.remove(index)`
 - Description: This allows you to remove the value at a specific index, alternative to bracket assignment.
 This will throw an error if the index is out of bounds
@@ -5157,20 +5171,10 @@ player.getSwappableHotbarSlot();
 - Parameters:
   - Pos (`pos`): the position of the block
   - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 0, 0), 'up');
-```
-
-### `<Player>.interactBlock(pos, direction, hand)`
-- Description: This allows you to interact with a block at a position, direction, and hand
-- Parameters:
-  - Pos (`pos`): the position of the block
-  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
-  - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
-- Example:
-```kotlin
-player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 ```
 
 ### `<Player>.interactBlock(x, y, z)`
@@ -5179,9 +5183,22 @@ player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
   - Number (`x`): the x position
   - Number (`y`): the y position
   - Number (`z`): the z position
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
-player.interactBlock(0, 100, 0, 'up');
+player.interactBlock(0, 100, 0);
+```
+
+### `<Player>.interactBlock(pos, direction, hand)`
+- Description: This allows you to interact with a block at a position, direction, and hand
+- Parameters:
+  - Pos (`pos`): the position of the block
+  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+  - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
+- Example:
+```kotlin
+player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 ```
 
 ### `<Player>.interactBlock(pos, direction, blockPos, insideBlock)`
@@ -5194,6 +5211,7 @@ coords is the exact position of the block, and the second set of coords is the p
   - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
   - Pos (`blockPos`): the position of the block
   - Boolean (`insideBlock`): whether the player is inside the block
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);
@@ -5210,6 +5228,7 @@ coords is the exact position of the block, and the second set of coords is the p
   - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
   - Pos (`blockPos`): the position of the block
   - Boolean (`insideBlock`): whether the player is inside the block
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');
@@ -5229,6 +5248,7 @@ coords is the exact position of the block, and the second set of coords is the p
   - Number (`blockY`): the y position of the block
   - Number (`blockZ`): the z position of the block
   - Boolean (`insideBlock`): whether the player is inside the block
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);
@@ -6014,6 +6034,17 @@ Set.of(-9, 81, 96, 15).map(fun(value) { return value * 2; });
 - Example:
 ```kotlin
 Set.of(-9, 81, 96, 15).reduce(fun(value, next) { return value + next; });
+```
+
+### `<Set>.reduce(identity, reducer)`
+- Description: This reduces the list using the reducer starting with an identity
+- Parameters:
+  - Object (`identity`): the identity
+  - Function (`reducer`): a function that takes a value and returns a new value
+- Returns - Object: the reduced value
+- Example:
+```kotlin
+Set.of(-9, 81, 96, 15).reduce("", fun(value, next) { return value + next; });
 ```
 
 ### `<Set>.remove(value)`
