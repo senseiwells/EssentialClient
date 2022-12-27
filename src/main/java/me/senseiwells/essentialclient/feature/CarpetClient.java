@@ -188,75 +188,79 @@ public class CarpetClient implements Config.CList {
 	}
 
 	private CarpetClientRule<?> jsonToClientRule(JsonElement jsonElement) {
-		JsonObject ruleObject = jsonElement.getAsJsonObject();
-		String name = ruleObject.get("name").getAsString();
-		Rule.Type type = Rule.Type.fromString(ruleObject.get("type").getAsString());
-		String description = ruleObject.get("description").getAsString();
-		JsonElement repo = ruleObject.get("repo");
-		if (repo != null) {
-			String repoString = repo.getAsString();
-			description += "\n§3From: " + repoString;
-		}
-		String optionalInfo = null;
-		JsonElement extraInfo = ruleObject.get("extras");
-		if (extraInfo != null) {
-			if (extraInfo.isJsonArray()) {
-				StringBuilder builder = new StringBuilder();
-				extraInfo.getAsJsonArray().forEach(element -> {
-					if (element.isJsonPrimitive()) {
-						builder.append(element.getAsString()).append(" ");
-					}
-				});
-				optionalInfo = builder.toString();
+		try {
+			JsonObject ruleObject = jsonElement.getAsJsonObject();
+			String name = ruleObject.get("name").getAsString();
+			Rule.Type type = Rule.Type.fromString(ruleObject.get("type").getAsString());
+			String description = ruleObject.get("description").getAsString();
+			JsonElement repo = ruleObject.get("repo");
+			if (repo != null) {
+				String repoString = repo.getAsString();
+				description += "\n§3From: " + repoString;
 			}
-			if (extraInfo.isJsonPrimitive()) {
-				optionalInfo = extraInfo.getAsString();
+			String optionalInfo = null;
+			JsonElement extraInfo = ruleObject.get("extras");
+			if (extraInfo != null) {
+				if (extraInfo.isJsonArray()) {
+					StringBuilder builder = new StringBuilder();
+					extraInfo.getAsJsonArray().forEach(element -> {
+						if (element.isJsonPrimitive()) {
+							builder.append(element.getAsString()).append(" ");
+						}
+					});
+					optionalInfo = builder.toString();
+				}
+				if (extraInfo.isJsonPrimitive()) {
+					optionalInfo = extraInfo.getAsString();
+				}
 			}
-		}
-		JsonElement defaultValue = ruleObject.get("default");
-		if (defaultValue == null) {
-			defaultValue = ruleObject.get("value");
-		}
-		JsonElement categories = ruleObject.get("categories");
-		if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Rule.Type.BOOLEAN) {
-			CycleCarpetRule rule = CycleCarpetRule.commandOf(name, description, defaultValue.getAsString());
-			rule.setOptionalInfo(optionalInfo);
-			return rule;
-		}
-		JsonElement strictElement = ruleObject.get("strict");
-		if (strictElement != null && strictElement.getAsBoolean() && type != Rule.Type.BOOLEAN) {
-			List<String> validValues = new ArrayList<>();
-			JsonElement options = ruleObject.get("options");
-			if (options.isJsonArray()) {
-				JsonArray values = options.getAsJsonArray();
-				values.forEach(element -> validValues.add(element.getAsString()));
-				CycleCarpetRule rule = new CycleCarpetRule(name, description, validValues, defaultValue.getAsString());
+			JsonElement defaultValue = ruleObject.get("default");
+			if (defaultValue == null) {
+				defaultValue = ruleObject.get("value");
+			}
+			JsonElement categories = ruleObject.get("categories");
+			if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Rule.Type.BOOLEAN) {
+				CycleCarpetRule rule = CycleCarpetRule.commandOf(name, description, defaultValue.getAsString());
 				rule.setOptionalInfo(optionalInfo);
 				return rule;
 			}
+			JsonElement strictElement = ruleObject.get("strict");
+			if (strictElement != null && strictElement.getAsBoolean() && type != Rule.Type.BOOLEAN) {
+				List<String> validValues = new ArrayList<>();
+				JsonElement options = ruleObject.get("options");
+				if (options.isJsonArray()) {
+					JsonArray values = options.getAsJsonArray();
+					values.forEach(element -> validValues.add(element.getAsString()));
+					CycleCarpetRule rule = new CycleCarpetRule(name, description, validValues, defaultValue.getAsString());
+					rule.setOptionalInfo(optionalInfo);
+					return rule;
+				}
+			}
+			CarpetClientRule<?> rule = switch (type) {
+				case CYCLE -> {
+					JsonArray validCycles = ruleObject.get("cycles").getAsJsonArray();
+					List<String> cycles = new ArrayList<>();
+					validCycles.forEach(element -> cycles.add(element.getAsString()));
+					yield new CycleCarpetRule(name, description, cycles, defaultValue.getAsString());
+				}
+				case BOOLEAN -> {
+					yield new BooleanCarpetRule(name, description, defaultValue.getAsBoolean());
+				}
+				case INTEGER -> {
+					yield new IntegerCarpetRule(name, description, defaultValue.getAsInt());
+				}
+				case DOUBLE -> {
+					yield new DoubleCarpetRule(name, description, defaultValue.getAsDouble());
+				}
+				default -> {
+					yield new StringCarpetRule(name, description, defaultValue.getAsString());
+				}
+			};
+			rule.setOptionalInfo(optionalInfo);
+			return rule;
+		} catch (Exception exception) {
+			return null;
 		}
-		CarpetClientRule<?> rule = switch (type) {
-			case CYCLE -> {
-				JsonArray validCycles = ruleObject.get("cycles").getAsJsonArray();
-				List<String> cycles = new ArrayList<>();
-				validCycles.forEach(element -> cycles.add(element.getAsString()));
-				yield new CycleCarpetRule(name, description, cycles, defaultValue.getAsString());
-			}
-			case BOOLEAN -> {
-				yield new BooleanCarpetRule(name, description, defaultValue.getAsBoolean());
-			}
-			case INTEGER -> {
-				yield new IntegerCarpetRule(name, description, defaultValue.getAsInt());
-			}
-			case DOUBLE -> {
-				yield new DoubleCarpetRule(name, description, defaultValue.getAsDouble());
-			}
-			default -> {
-				yield new StringCarpetRule(name, description, defaultValue.getAsString());
-			}
-		};
-		rule.setOptionalInfo(optionalInfo);
-		return rule;
 	}
 
 	//#if MC >= 11902
@@ -396,7 +400,9 @@ public class CarpetClient implements Config.CList {
 		JsonArray jsonArray = this.getData(jsonElement);
 		jsonArray.forEach(element -> {
 			CarpetClientRule<?> rule = this.jsonToClientRule(element);
-			this.ALL_RULES.put(rule.getName(), rule);
+			if (rule != null) {
+				this.ALL_RULES.put(rule.getName(), rule);
+			}
 		});
 	}
 }
