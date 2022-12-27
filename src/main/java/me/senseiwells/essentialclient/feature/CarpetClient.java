@@ -188,9 +188,18 @@ public class CarpetClient implements Config.CList {
 	}
 
 	private CarpetClientRule<?> jsonToClientRule(JsonElement jsonElement) {
+		if (!jsonElement.isJsonObject()) {
+			EssentialClient.LOGGER.error("Failed to load Carpet Rule (Not JSON Object!):\n{}", jsonElement);
+			return null;
+		}
+		JsonObject ruleObject = jsonElement.getAsJsonObject();
+		JsonElement nameElement = ruleObject.get("name");
+		if (nameElement == null || !nameElement.isJsonPrimitive()) {
+			EssentialClient.LOGGER.error("Failed to load Carpet Rule (No Valid Name!):\n{}", ruleObject);
+			return null;
+		}
+		String name = nameElement.getAsString();
 		try {
-			JsonObject ruleObject = jsonElement.getAsJsonObject();
-			String name = ruleObject.get("name").getAsString();
 			Rule.Type type = Rule.Type.fromString(ruleObject.get("type").getAsString());
 			String description = ruleObject.get("description").getAsString();
 			JsonElement repo = ruleObject.get("repo");
@@ -258,7 +267,8 @@ public class CarpetClient implements Config.CList {
 			};
 			rule.setOptionalInfo(optionalInfo);
 			return rule;
-		} catch (Exception exception) {
+		} catch (Exception e) {
+			EssentialClient.LOGGER.error("Failed to load Carpet Rule '{}'", name, e);
 			return null;
 		}
 	}
