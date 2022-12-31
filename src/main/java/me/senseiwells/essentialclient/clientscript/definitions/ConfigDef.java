@@ -16,6 +16,7 @@ import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
+import me.senseiwells.essentialclient.utils.interfaces.Rule;
 
 import java.util.List;
 
@@ -262,12 +263,22 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 
 	@FunctionDoc(
 		name = "setValue",
-		desc = "Sets the value of the config, if the value is invalid it will not be changed",
+		desc = {
+			"Sets the value of the config, if the value is invalid it will not be changed",
+			"If you are modifying a list rule you must pass in a list to this method"
+		},
 		params = {OBJECT, "value", "The new value of the config"},
 		examples = "config.setValue(10);"
 	)
 	private Void setValue(Arguments arguments) {
 		ClientRule<?> rule = arguments.nextPrimitive(this);
+		if (rule instanceof Rule.ListRule listRule) {
+			List<String> values = arguments.nextPrimitive(ListDef.class).stream()
+				.map(e -> e.toString(arguments.getInterpreter()))
+				.toList();
+			listRule.setValue(values);
+			return null;
+		}
 		ClassInstance value = arguments.next();
 		rule.setValueFromString(value.toString(arguments.getInterpreter()));
 		return null;
