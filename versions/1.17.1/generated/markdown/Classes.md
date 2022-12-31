@@ -760,6 +760,7 @@ config.resetToDefault();
 
 ### `<Config>.setValue(value)`
 - Description: Sets the value of the config, if the value is invalid it will not be changed
+If you are modifying a list rule you must pass in a list to this method
 - Parameter - Object (`value`): The new value of the config
 - Example:
 ```kotlin
@@ -5177,18 +5178,6 @@ player.getSwappableHotbarSlot();
 player.interactBlock(new Pos(0, 0, 0), 'up');
 ```
 
-### `<Player>.interactBlock(x, y, z)`
-- Description: This allows you to interact with a block at a position and direction
-- Parameters:
-  - Number (`x`): the x position
-  - Number (`y`): the y position
-  - Number (`z`): the z position
-- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
-- Example:
-```kotlin
-player.interactBlock(0, 100, 0);
-```
-
 ### `<Player>.interactBlock(pos, direction, hand)`
 - Description: This allows you to interact with a block at a position, direction, and hand
 - Parameters:
@@ -5199,6 +5188,18 @@ player.interactBlock(0, 100, 0);
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
+```
+
+### `<Player>.interactBlock(x, y, z)`
+- Description: This allows you to interact with a block at a position and direction
+- Parameters:
+  - Number (`x`): the x position
+  - Number (`y`): the y position
+  - Number (`z`): the z position
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
+- Example:
+```kotlin
+player.interactBlock(0, 100, 0);
 ```
 
 ### `<Player>.interactBlock(pos, direction, blockPos, insideBlock)`
