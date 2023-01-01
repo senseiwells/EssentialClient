@@ -2378,6 +2378,12 @@ class Player: OtherPlayer {
     fun getLookingAtEntity(): Entity;
 
     /*
+     * This gets the current selected slot number your player is holding
+     * Returns - Number: the selected slot
+     */
+    fun getSelectedSlot(): Number;
+
+    /*
      * This will get the next empty slot in the hotbar starting from the current slot
      * going right, and if it reaches the end of the hotbar it will start from the beginning.
      * If there is no empty slot it will return any slot that doesn't have an item with

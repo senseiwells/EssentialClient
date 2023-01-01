@@ -8122,6 +8122,14 @@ screen = player.getCurrentScreen();
 player.getLookingAtEntity();
 ```
 
+### `<Player>.getSelectedSlot()`
+- Description: This gets the current selected slot number your player is holding
+- Returns - Number: the selected slot
+- Example:
+```kotlin
+player.getSelectedSlot
+```
+
 ### `<Player>.getSwappableHotbarSlot()`
 - Description: This will get the next empty slot in the hotbar starting from the current slot
 going right, and if it reaches the end of the hotbar it will start from the beginning.

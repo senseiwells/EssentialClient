@@ -9881,6 +9881,20 @@
           ]
         },
         {
+          "name": "getSelectedSlot",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets the current selected slot number your player is holding"
+          ],
+          "returns": {
+            "type": "Number",
+            "desc": "the selected slot"
+          },
+          "examples": [
+            "player.getSelectedSlot"
+          ]
+        },
+        {
           "name": "getSwappableHotbarSlot",
           "is_arbitrary": false,
           "desc": [

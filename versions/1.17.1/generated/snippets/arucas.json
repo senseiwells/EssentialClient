@@ -2539,6 +2539,11 @@
     "body": ".getLookingAtEntity()",
     "description": "<Player>.getLookingAtEntity()\nThis gets the entity that the player is currently looking at\n"
   },
+  "Method <Player>.getSelectedSlot()": {
+    "prefix": ".getSelectedSlot()",
+    "body": ".getSelectedSlot()",
+    "description": "<Player>.getSelectedSlot()\nThis gets the current selected slot number your player is holding\n"
+  },
   "Method <Player>.getSwappableHotbarSlot()": {
     "prefix": ".getSwappableHotbarSlot()",
     "body": ".getSwappableHotbarSlot()",
