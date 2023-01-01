@@ -107,6 +107,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			MemberFunction.of("use", 1, this::use),
 			MemberFunction.of("attack", 1, this::attack),
 			MemberFunction.of("setSelectedSlot", 1, this::setSelectedSlot),
+			MemberFunction.of("getSelectedSlot", this::getSelectedSlot),
 			MemberFunction.of("say", 1, this::say),
 			MemberFunction.of("message", 1, this::message),
 			MemberFunction.of("messageActionBar", 1, this::messageActionBar),
@@ -228,6 +229,16 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			EssentialUtils.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(index));
 		});
 		return null;
+	}
+
+	@FunctionDoc(
+		name = "getSelectedSlot",
+		desc = "This gets the current selected slot number your player is holding",
+		returns = {NUMBER, "the selected slot"},
+		examples = "player.getSelectedSlot"
+	)
+	private int getSelectedSlot(Arguments arguments) {
+		return EssentialUtils.getPlayer().getInventory().selectedSlot;
 	}
 
 	@FunctionDoc(

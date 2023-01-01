@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
-import kotlin.Unit;
 import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.ArucasFunction;
