@@ -15,7 +15,7 @@ jobs:
           distribution: temurin
           java-version: 17
       - name: Generate Documentations
-        run: ./gradlew :1.17.1:runClient --args="--generate ../generated" --stacktrace --no-daemon
+        run: ./gradlew :1.17.1:runClient --args="--generate ..../generated" --stacktrace --no-daemon
       - name: Commit Changes
         continue-on-error: true
         run: |
