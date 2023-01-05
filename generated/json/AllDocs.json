@@ -164,6 +164,26 @@
         ]
       },
       {
+        "name": "isDebug",
+        "is_arbitrary": false,
+        "desc": [
+          "This is used to determine whether the interpreter is in debug mode"
+        ],
+        "examples": [
+          "isDebug();"
+        ]
+      },
+      {
+        "name": "isExperimental",
+        "is_arbitrary": false,
+        "desc": [
+          "This is used to determine whether the interpreter is in experimental mode"
+        ],
+        "examples": [
+          "isExperimental();"
+        ]
+      },
+      {
         "name": "isMain",
         "is_arbitrary": false,
         "desc": [
@@ -228,6 +248,24 @@
         ],
         "examples": [
           "print('Hello World', 'This is a test', 123);"
+        ]
+      },
+      {
+        "name": "printDebug",
+        "is_arbitrary": false,
+        "desc": [
+          "This logs something to the debug output.",
+          "It only prints if debug mode is enabled: `debug(true)`"
+        ],
+        "params": [
+          {
+            "name": "printValue",
+            "type": "Object",
+            "desc": "the value to print"
+          }
+        ],
+        "examples": [
+          "debug(true); // Enable debug for testing\nif (true) {\n    printDebug(\"Inside if statement\");\n}"
         ]
       },
       {
@@ -1741,7 +1779,8 @@
           "name": "setValue",
           "is_arbitrary": false,
           "desc": [
-            "Sets the value of the config, if the value is invalid it will not be changed"
+            "Sets the value of the config, if the value is invalid it will not be changed",
+            "If you are modifying a list rule you must pass in a list to this method"
           ],
           "params": [
             {
@@ -3811,7 +3850,7 @@
           "name": "getDirectory",
           "is_arbitrary": false,
           "desc": [
-            "This returns the file of the working directory"
+            "This returns the file of user directory"
           ],
           "returns": {
             "type": "File",
@@ -5529,7 +5568,7 @@
           "name": "fromFile",
           "is_arbitrary": false,
           "desc": [
-            "This will read a file and parse it into a Json"
+            "This will read a file and parse it into a Json, this will throw an error if the file cannot be read"
           ],
           "params": [
             {
@@ -6105,6 +6144,32 @@
           },
           "examples": [
             "// a will start at 1 and b at 2\n// next accumulator will be 3\n// a will be 3 and b will be 3 = 6\n(list = [1, 2, 3]).reduce(fun(a, b) {\n    return a + b;\n});\n// 6"
+          ]
+        },
+        {
+          "name": "reduce",
+          "is_arbitrary": false,
+          "desc": [
+            "This reduces the list using the reducer starting with an identity"
+          ],
+          "params": [
+            {
+              "name": "identity",
+              "type": "Object",
+              "desc": "the identity"
+            },
+            {
+              "name": "reducer",
+              "type": "Function",
+              "desc": "a function that takes a value and returns a new value"
+            }
+          ],
+          "returns": {
+            "type": "Object",
+            "desc": "the reduced value"
+          },
+          "examples": [
+            "(list = [1, 2, 3]).reduce(\"\", fun(a, b) {\n    return a + b;\n});\n// \"123\""
           ]
         },
         {
@@ -8803,6 +8868,20 @@
           ]
         },
         {
+          "name": "getEmptySlots",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets all the empty slots in the player inventory"
+          ],
+          "returns": {
+            "type": "List",
+            "desc": "a list of all the slot numbers that are empty"
+          },
+          "examples": [
+            "otherPlayer.getEmptySlots();"
+          ]
+        },
+        {
           "name": "getFishingBobber",
           "is_arbitrary": false,
           "desc": [
@@ -9444,6 +9523,11 @@
           ],
           "params": [
             {
+              "name": "block",
+              "type": "Block",
+              "desc": "the block to check for"
+            },
+            {
               "name": "pos",
               "type": "Pos",
               "desc": "the position to check"
@@ -9797,6 +9881,20 @@
           ]
         },
         {
+          "name": "getSelectedSlot",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets the current selected slot number your player is holding"
+          ],
+          "returns": {
+            "type": "Number",
+            "desc": "the selected slot"
+          },
+          "examples": [
+            "player.getSelectedSlot"
+          ]
+        },
+        {
           "name": "getSwappableHotbarSlot",
           "is_arbitrary": false,
           "desc": [
@@ -9832,6 +9930,10 @@
               "desc": "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
             }
           ],
+          "returns": {
+            "type": "Future",
+            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
+          },
           "examples": [
             "player.interactBlock(new Pos(0, 0, 0), 'up');"
           ]
@@ -9859,6 +9961,10 @@
               "desc": "the hand to use, e.g. 'main_hand', 'off_hand'"
             }
           ],
+          "returns": {
+            "type": "Future",
+            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
+          },
           "examples": [
             "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
           ]
@@ -9884,15 +9990,14 @@
               "name": "z",
               "type": "Number",
               "desc": "the z position"
-            },
-            {
-              "name": "direction",
-              "type": "String",
-              "desc": "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
             }
           ],
+          "returns": {
+            "type": "Future",
+            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
+          },
           "examples": [
-            "player.interactBlock(0, 100, 0, 'up');"
+            "player.interactBlock(0, 100, 0);"
           ]
         },
         {
@@ -9926,6 +10031,10 @@
               "desc": "whether the player is inside the block"
             }
           ],
+          "returns": {
+            "type": "Future",
+            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
+          },
           "examples": [
             "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
           ]
@@ -9966,6 +10075,10 @@
               "desc": "whether the player is inside the block"
             }
           ],
+          "returns": {
+            "type": "Future",
+            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
+          },
           "examples": [
             "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');"
           ]
@@ -10021,6 +10134,10 @@
               "desc": "whether the player is inside the block"
             }
           ],
+          "returns": {
+            "type": "Future",
+            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
+          },
           "examples": [
             "player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);"
           ]
@@ -10350,7 +10467,7 @@
             {
               "name": "entity",
               "type": "Entity",
-              "desc": "the entity to teleport to"
+              "desc": "the entity to teleport to, this can also be a string (UUID of entity)"
             }
           ],
           "examples": [
@@ -11610,6 +11727,32 @@
           },
           "examples": [
             "Set.of(-9, 81, 96, 15).reduce(fun(value, next) { return value + next; });"
+          ]
+        },
+        {
+          "name": "reduce",
+          "is_arbitrary": false,
+          "desc": [
+            "This reduces the list using the reducer starting with an identity"
+          ],
+          "params": [
+            {
+              "name": "identity",
+              "type": "Object",
+              "desc": "the identity"
+            },
+            {
+              "name": "reducer",
+              "type": "Function",
+              "desc": "a function that takes a value and returns a new value"
+            }
+          ],
+          "returns": {
+            "type": "Object",
+            "desc": "the reduced value"
+          },
+          "examples": [
+            "Set.of(-9, 81, 96, 15).reduce(\"\", fun(value, next) { return value + next; });"
           ]
         },
         {

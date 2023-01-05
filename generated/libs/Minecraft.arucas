@@ -488,6 +488,7 @@ class Config {
 
     /*
      * Sets the value of the config, if the value is invalid it will not be changed
+     * If you are modifying a list rule you must pass in a list to this method
      * Parameter - Object (value): The new value of the config
      */
     fun setValue(value: Object): Null;
@@ -2006,6 +2007,12 @@ class OtherPlayer {
     fun getCurrentSlot(): Number;
 
     /*
+     * This gets all the empty slots in the player inventory
+     * Returns - List: a list of all the slot numbers that are empty
+     */
+    fun getEmptySlots(): List;
+
+    /*
      * This gets the fishing bobber that the player has
      * Returns - Entity: the fishing bobber entity, null if the player isn't fishing
      */
@@ -2245,9 +2252,10 @@ class Player: OtherPlayer {
 
     /*
      * Checks block can be placed at given position
+     * Parameter - Block (block): the block to check for
      * Parameter - Pos (pos): the position to check
      */
-    fun canPlaceBlockAt(pos: Pos): Null;
+    fun canPlaceBlockAt(block: Block, pos: Pos): Null;
 
     /*
      * Checks block can be placed at given position
@@ -2370,6 +2378,12 @@ class Player: OtherPlayer {
     fun getLookingAtEntity(): Entity;
 
     /*
+     * This gets the current selected slot number your player is holding
+     * Returns - Number: the selected slot
+     */
+    fun getSelectedSlot(): Number;
+
+    /*
      * This will get the next empty slot in the hotbar starting from the current slot
      * going right, and if it reaches the end of the hotbar it will start from the beginning.
      * If there is no empty slot it will return any slot that doesn't have an item with
@@ -2383,25 +2397,27 @@ class Player: OtherPlayer {
      * This allows you to interact with a block at a position and direction
      * Parameter - Pos (pos): the position of the block
      * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(pos: Pos, direction: String): Null;
+    fun interactBlock(pos: Pos, direction: String): Future;
 
     /*
      * This allows you to interact with a block at a position, direction, and hand
      * Parameter - Pos (pos): the position of the block
      * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
      * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(pos: Pos, direction: String, hand: String): Null;
+    fun interactBlock(pos: Pos, direction: String, hand: String): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
      * Parameter - Number (x): the x position
      * Parameter - Number (y): the y position
      * Parameter - Number (z): the z position
-     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(x: Number, y: Number, z: Number, direction: String): Null;
+    fun interactBlock(x: Number, y: Number, z: Number): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
@@ -2412,8 +2428,9 @@ class Player: OtherPlayer {
      * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
      * Parameter - Pos (blockPos): the position of the block
      * Parameter - Boolean (insideBlock): whether the player is inside the block
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(pos: Pos, direction: String, blockPos: Pos, insideBlock: Boolean): Null;
+    fun interactBlock(pos: Pos, direction: String, blockPos: Pos, insideBlock: Boolean): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
@@ -2425,8 +2442,9 @@ class Player: OtherPlayer {
      * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
      * Parameter - Pos (blockPos): the position of the block
      * Parameter - Boolean (insideBlock): whether the player is inside the block
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(pos: Pos, direction: String, hand: String, blockPos: Pos, insideBlock: Boolean): Null;
+    fun interactBlock(pos: Pos, direction: String, hand: String, blockPos: Pos, insideBlock: Boolean): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
@@ -2441,8 +2459,9 @@ class Player: OtherPlayer {
      * Parameter - Number (blockY): the y position of the block
      * Parameter - Number (blockZ): the z position of the block
      * Parameter - Boolean (insideBlock): whether the player is inside the block
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
-    fun interactBlock(x: Number, y: Number, z: Number, direction: String, blockX: Number, blockY: Number, blockZ: Number, insideBlock: Boolean): Null;
+    fun interactBlock(x: Number, y: Number, z: Number, direction: String, blockX: Number, blockY: Number, blockZ: Number, insideBlock: Boolean): Future;
 
     /*
      * This allows you to interact item with given Hand
@@ -2559,7 +2578,7 @@ class Player: OtherPlayer {
 
     /*
      * This allows you to teleport to any entity as long as you are in spectator mode
-     * Parameter - Entity (entity): the entity to teleport to
+     * Parameter - Entity (entity): the entity to teleport to, this can also be a string (UUID of entity)
      */
     fun spectatorTeleport(entity: Entity): Null;
 

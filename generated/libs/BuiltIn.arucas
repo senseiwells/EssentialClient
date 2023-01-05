@@ -172,7 +172,7 @@ class File {
     fun write(string: String): Null;
 
     /*
-     * This returns the file of the working directory
+     * This returns the file of user directory
      * Returns - File: the file of the working directory
      */
     static fun getDirectory(): File;
@@ -376,6 +376,14 @@ class List: Collection {
      * Returns - Object: the reduced value
      */
     fun reduce(reducer: Function): Object;
+
+    /*
+     * This reduces the list using the reducer starting with an identity
+     * Parameter - Object (identity): the identity
+     * Parameter - Function (reducer): a function that takes a value and returns a new value
+     * Returns - Object: the reduced value
+     */
+    fun reduce(identity: Object, reducer: Function): Object;
 
     /*
      * This allows you to remove the value at a specific index, alternative to bracket assignment.
@@ -961,6 +969,14 @@ class Set: Collection {
      * Returns - Object: the reduced set
      */
     fun reduce(function: Function): Object;
+
+    /*
+     * This reduces the list using the reducer starting with an identity
+     * Parameter - Object (identity): the identity
+     * Parameter - Function (reducer): a function that takes a value and returns a new value
+     * Returns - Object: the reduced value
+     */
+    fun reduce(identity: Object, reducer: Function): Object;
 
     /*
      * This allows you to remove a value from the set

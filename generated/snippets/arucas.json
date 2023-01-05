@@ -372,7 +372,7 @@
   "Method <Config>.setValue(value)": {
     "prefix": ".setValue($value)",
     "body": ".setValue($value)",
-    "description": "<Config>.setValue(value)\nSets the value of the config, if the value is invalid it will not be changed\n- Parameter - Object (`value`): The new value of the config\n"
+    "description": "<Config>.setValue(value)\nSets the value of the config, if the value is invalid it will not be changed\nIf you are modifying a list rule you must pass in a list to this method\n- Parameter - Object (`value`): The new value of the config\n"
   },
   "Method <Config>.toJson()": {
     "prefix": ".toJson()",
@@ -897,7 +897,7 @@
   "Static Method File.getDirectory()": {
     "prefix": "File.getDirectory()",
     "body": "File.getDirectory()",
-    "description": "File.getDirectory()\nThis returns the file of the working directory\n"
+    "description": "File.getDirectory()\nThis returns the file of user directory\n"
   },
   "Method <File>.createDirectory()": {
     "prefix": ".createDirectory()",
@@ -1377,7 +1377,7 @@
   "Static Method Json.fromFile(file)": {
     "prefix": "Json.fromFile(file)",
     "body": "Json.fromFile($file)",
-    "description": "Json.fromFile(file)\nThis will read a file and parse it into a Json\n- Parameter - File (`file`): the file that you want to parse into a Json\n"
+    "description": "Json.fromFile(file)\nThis will read a file and parse it into a Json, this will throw an error if the file cannot be read\n- Parameter - File (`file`): the file that you want to parse into a Json\n"
   },
   "Static Method Json.fromList(list)": {
     "prefix": "Json.fromList(list)",
@@ -1513,6 +1513,11 @@
     "prefix": ".reduce($reducer)",
     "body": ".reduce($reducer)",
     "description": "<List>.reduce(reducer)\nThis reduces the list using the reducer, a function that takes an\naccumulated value and a new value and returns the next accumulated value\n- Parameter - Function (`reducer`): a function that takes a value and returns a new value\n"
+  },
+  "Method <List>.reduce(identity, reducer)": {
+    "prefix": ".reduce($identity, $reducer)",
+    "body": ".reduce($identity, $reducer)",
+    "description": "<List>.reduce(identity, reducer)\nThis reduces the list using the reducer starting with an identity\n- Parameter - Object (`identity`): the identity\n- Parameter - Function (`reducer`): a function that takes a value and returns a new value\n"
   },
   "Method <List>.remove(index)": {
     "prefix": ".remove($index)",
@@ -2259,6 +2264,11 @@
     "body": ".getCurrentSlot()",
     "description": "<OtherPlayer>.getCurrentSlot()\nThis gets the players currently selected slot\n"
   },
+  "Method <OtherPlayer>.getEmptySlots()": {
+    "prefix": ".getEmptySlots()",
+    "body": ".getEmptySlots()",
+    "description": "<OtherPlayer>.getEmptySlots()\nThis gets all the empty slots in the player inventory\n"
+  },
   "Method <OtherPlayer>.getFishingBobber()": {
     "prefix": ".getFishingBobber()",
     "body": ".getFishingBobber()",
@@ -2439,10 +2449,10 @@
     "body": ".breakBlock($pos)",
     "description": "<Player>.breakBlock(pos)\nThis breaks a block at a given position, if it is able to be broken\n- Parameter - Pos (`pos`): the position of the block\n"
   },
-  "Method <Player>.canPlaceBlockAt(pos)": {
-    "prefix": ".canPlaceBlockAt($pos)",
-    "body": ".canPlaceBlockAt($pos)",
-    "description": "<Player>.canPlaceBlockAt(pos)\nChecks block can be placed at given position\n- Parameter - Pos (`pos`): the position to check\n"
+  "Method <Player>.canPlaceBlockAt(block, pos)": {
+    "prefix": ".canPlaceBlockAt($block, $pos)",
+    "body": ".canPlaceBlockAt($block, $pos)",
+    "description": "<Player>.canPlaceBlockAt(block, pos)\nChecks block can be placed at given position\n- Parameter - Block (`block`): the block to check for\n- Parameter - Pos (`pos`): the position to check\n"
   },
   "Method <Player>.canPlaceBlockAt(block, x, y, z)": {
     "prefix": ".canPlaceBlockAt($block, $x, $y, $z)",
@@ -2529,6 +2539,11 @@
     "body": ".getLookingAtEntity()",
     "description": "<Player>.getLookingAtEntity()\nThis gets the entity that the player is currently looking at\n"
   },
+  "Method <Player>.getSelectedSlot()": {
+    "prefix": ".getSelectedSlot()",
+    "body": ".getSelectedSlot()",
+    "description": "<Player>.getSelectedSlot()\nThis gets the current selected slot number your player is holding\n"
+  },
   "Method <Player>.getSwappableHotbarSlot()": {
     "prefix": ".getSwappableHotbarSlot()",
     "body": ".getSwappableHotbarSlot()",
@@ -2544,10 +2559,10 @@
     "body": ".interactBlock($pos, $direction, $hand)",
     "description": "<Player>.interactBlock(pos, direction, hand)\nThis allows you to interact with a block at a position, direction, and hand\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n- Parameter - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'\n"
   },
-  "Method <Player>.interactBlock(x, y, z, direction)": {
-    "prefix": ".interactBlock($x, $y, $z, $direction)",
-    "body": ".interactBlock($x, $y, $z, $direction)",
-    "description": "<Player>.interactBlock(x, y, z, direction)\nThis allows you to interact with a block at a position and direction\n- Parameter - Number (`x`): the x position\n- Parameter - Number (`y`): the y position\n- Parameter - Number (`z`): the z position\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n"
+  "Method <Player>.interactBlock(x, y, z)": {
+    "prefix": ".interactBlock($x, $y, $z)",
+    "body": ".interactBlock($x, $y, $z)",
+    "description": "<Player>.interactBlock(x, y, z)\nThis allows you to interact with a block at a position and direction\n- Parameter - Number (`x`): the x position\n- Parameter - Number (`y`): the y position\n- Parameter - Number (`z`): the z position\n"
   },
   "Method <Player>.interactBlock(pos, direction, blockPos, insideBlock)": {
     "prefix": ".interactBlock($pos, $direction, $blockPos, $insideBlock)",
@@ -2657,7 +2672,7 @@
   "Method <Player>.spectatorTeleport(entity)": {
     "prefix": ".spectatorTeleport($entity)",
     "body": ".spectatorTeleport($entity)",
-    "description": "<Player>.spectatorTeleport(entity)\nThis allows you to teleport to any entity as long as you are in spectator mode\n- Parameter - Entity (`entity`): the entity to teleport to\n"
+    "description": "<Player>.spectatorTeleport(entity)\nThis allows you to teleport to any entity as long as you are in spectator mode\n- Parameter - Entity (`entity`): the entity to teleport to, this can also be a string (UUID of entity)\n"
   },
   "Method <Player>.stonecutter(itemInput, itemOutput)": {
     "prefix": ".stonecutter($itemInput, $itemOutput)",
@@ -2983,6 +2998,11 @@
     "prefix": ".reduce($function)",
     "body": ".reduce($function)",
     "description": "<Set>.reduce(function)\nThis allows you to reduce the set\n- Parameter - Function (`function`): the function you want to reduce the set by\n"
+  },
+  "Method <Set>.reduce(identity, reducer)": {
+    "prefix": ".reduce($identity, $reducer)",
+    "body": ".reduce($identity, $reducer)",
+    "description": "<Set>.reduce(identity, reducer)\nThis reduces the list using the reducer starting with an identity\n- Parameter - Object (`identity`): the identity\n- Parameter - Function (`reducer`): a function that takes a value and returns a new value\n"
   },
   "Method <Set>.remove(value)": {
     "prefix": ".remove($value)",

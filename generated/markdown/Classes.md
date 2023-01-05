@@ -760,6 +760,7 @@ config.resetToDefault();
 
 ### `<Config>.setValue(value)`
 - Description: Sets the value of the config, if the value is invalid it will not be changed
+If you are modifying a list rule you must pass in a list to this method
 - Parameter - Object (`value`): The new value of the config
 - Example:
 ```kotlin
@@ -1925,7 +1926,7 @@ file.write('Hello World!');
 ## Static Methods
 
 ### `File.getDirectory()`
-- Description: This returns the file of the working directory
+- Description: This returns the file of user directory
 - Returns - File: the file of the working directory
 - Example:
 ```kotlin
@@ -2867,7 +2868,7 @@ json.writeToFile(new File('D:/cool/realDirectory'));
 ## Static Methods
 
 ### `Json.fromFile(file)`
-- Description: This will read a file and parse it into a Json
+- Description: This will read a file and parse it into a Json, this will throw an error if the file cannot be read
 - Parameter - File (`file`): the file that you want to parse into a Json
 - Returns - Json: the Json parsed from the file
 - Example:
@@ -3168,6 +3169,20 @@ accumulated value and a new value and returns the next accumulated value
     return a + b;
 });
 // 6
+```
+
+### `<List>.reduce(identity, reducer)`
+- Description: This reduces the list using the reducer starting with an identity
+- Parameters:
+  - Object (`identity`): the identity
+  - Function (`reducer`): a function that takes a value and returns a new value
+- Returns - Object: the reduced value
+- Example:
+```kotlin
+(list = [1, 2, 3]).reduce("", fun(a, b) {
+    return a + b;
+});
+// "123"
 ```
 
 ### `<List>.remove(index)`
@@ -4585,6 +4600,14 @@ otherPlayer.getAllSlotsFor(Material.DIAMOND, 'player');
 otherPlayer.getCurrentSlot();
 ```
 
+### `<OtherPlayer>.getEmptySlots()`
+- Description: This gets all the empty slots in the player inventory
+- Returns - List: a list of all the slot numbers that are empty
+- Example:
+```kotlin
+otherPlayer.getEmptySlots();
+```
+
 ### `<OtherPlayer>.getFishingBobber()`
 - Description: This gets the fishing bobber that the player has
 - Returns - Entity: the fishing bobber entity, null if the player isn't fishing
@@ -4956,9 +4979,11 @@ foreach (entity : allEntities) {
 player.breakBlock(new Pos(0, 0, 0));
 ```
 
-### `<Player>.canPlaceBlockAt(pos)`
+### `<Player>.canPlaceBlockAt(block, pos)`
 - Description: Checks block can be placed at given position
-- Parameter - Pos (`pos`): the position to check
+- Parameters:
+  - Block (`block`): the block to check for
+  - Pos (`pos`): the position to check
 - Example:
 ```kotlin
 player.canPlaceBlockAt(block, pos);
@@ -5130,6 +5155,14 @@ screen = player.getCurrentScreen();
 player.getLookingAtEntity();
 ```
 
+### `<Player>.getSelectedSlot()`
+- Description: This gets the current selected slot number your player is holding
+- Returns - Number: the selected slot
+- Example:
+```kotlin
+player.getSelectedSlot
+```
+
 ### `<Player>.getSwappableHotbarSlot()`
 - Description: This will get the next empty slot in the hotbar starting from the current slot
 going right, and if it reaches the end of the hotbar it will start from the beginning.
@@ -5147,6 +5180,7 @@ player.getSwappableHotbarSlot();
 - Parameters:
   - Pos (`pos`): the position of the block
   - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 0, 0), 'up');
@@ -5158,21 +5192,22 @@ player.interactBlock(new Pos(0, 0, 0), 'up');
   - Pos (`pos`): the position of the block
   - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
   - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 ```
 
-### `<Player>.interactBlock(x, y, z, direction)`
+### `<Player>.interactBlock(x, y, z)`
 - Description: This allows you to interact with a block at a position and direction
 - Parameters:
   - Number (`x`): the x position
   - Number (`y`): the y position
   - Number (`z`): the z position
-  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
-player.interactBlock(0, 100, 0, 'up');
+player.interactBlock(0, 100, 0);
 ```
 
 ### `<Player>.interactBlock(pos, direction, blockPos, insideBlock)`
@@ -5185,6 +5220,7 @@ coords is the exact position of the block, and the second set of coords is the p
   - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
   - Pos (`blockPos`): the position of the block
   - Boolean (`insideBlock`): whether the player is inside the block
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);
@@ -5201,6 +5237,7 @@ coords is the exact position of the block, and the second set of coords is the p
   - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
   - Pos (`blockPos`): the position of the block
   - Boolean (`insideBlock`): whether the player is inside the block
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');
@@ -5220,6 +5257,7 @@ coords is the exact position of the block, and the second set of coords is the p
   - Number (`blockY`): the y position of the block
   - Number (`blockZ`): the z position of the block
   - Boolean (`insideBlock`): whether the player is inside the block
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
 - Example:
 ```kotlin
 player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);
@@ -5385,7 +5423,7 @@ player.showTitle('Title!', 'Subtitle!');
 
 ### `<Player>.spectatorTeleport(entity)`
 - Description: This allows you to teleport to any entity as long as you are in spectator mode
-- Parameter - Entity (`entity`): the entity to teleport to
+- Parameter - Entity (`entity`): the entity to teleport to, this can also be a string (UUID of entity)
 - Example:
 ```kotlin
 player.spectatorTeleport(player.getLookingAtEntity());
@@ -6005,6 +6043,17 @@ Set.of(-9, 81, 96, 15).map(fun(value) { return value * 2; });
 - Example:
 ```kotlin
 Set.of(-9, 81, 96, 15).reduce(fun(value, next) { return value + next; });
+```
+
+### `<Set>.reduce(identity, reducer)`
+- Description: This reduces the list using the reducer starting with an identity
+- Parameters:
+  - Object (`identity`): the identity
+  - Function (`reducer`): a function that takes a value and returns a new value
+- Returns - Object: the reduced value
+- Example:
+```kotlin
+Set.of(-9, 81, 96, 15).reduce("", fun(value, next) { return value + next; });
 ```
 
 ### `<Set>.remove(value)`

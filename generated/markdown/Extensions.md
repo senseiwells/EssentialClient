@@ -83,6 +83,20 @@ getUnixTime();
 input('What is your name?');
 ```
 
+### `isDebug()`
+- Description: This is used to determine whether the interpreter is in debug mode
+- Example:
+```kotlin
+isDebug();
+```
+
+### `isExperimental()`
+- Description: This is used to determine whether the interpreter is in experimental mode
+- Example:
+```kotlin
+isExperimental();
+```
+
 ### `isMain()`
 - Description: This is used to check whether the script is the main script
 - Returns - Boolean: true if the script is the main script, false if it is not
@@ -115,6 +129,18 @@ other wise it will print the contents without a new line
 - Example:
 ```kotlin
 print('Hello World', 'This is a test', 123);
+```
+
+### `printDebug(printValue)`
+- Description: This logs something to the debug output.
+It only prints if debug mode is enabled: `debug(true)`
+- Parameter - Object (`printValue`): the value to print
+- Example:
+```kotlin
+debug(true); // Enable debug for testing
+if (true) {
+    printDebug("Inside if statement");
+}
 ```
 
 ### `random(bound)`
