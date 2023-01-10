@@ -4,8 +4,7 @@ import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.gui.config.ConfigListWidget;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.List;
@@ -17,13 +16,15 @@ public class CategoryEntry extends ConfigListWidget.Entry {
 		this.name = name;
 	}
 
+	//#if MC >= 11700
 	@Override
-	public List<? extends Selectable> selectableChildren() {
+	public List<ButtonWidget> selectableChildren() {
 		return ImmutableList.of();
 	}
+	//#endif
 
 	@Override
-	public List<? extends Element> children() {
+	public List<ButtonWidget> children() {
 		return ImmutableList.of();
 	}
 

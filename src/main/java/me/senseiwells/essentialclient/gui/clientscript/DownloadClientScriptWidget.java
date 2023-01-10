@@ -7,7 +7,6 @@ import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.toast.SystemToast;
@@ -56,10 +55,12 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 			renderer.draw(matrices, this.text, DownloadClientScriptWidget.this.downloadScreen.width / 2.0F - this.textWidth / 2.0F, y + entryHeight - 9 - 1, 0xFFFFFF);
 		}
 
+		//#if MC >= 11700
 		@Override
-		public List<? extends Selectable> selectableChildren() {
+		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
+		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {
@@ -104,10 +105,12 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 			this.downloadButton.render(matrices, mouseX, mouseY, tickDelta);
 		}
 
+		//#if MC >= 11700
 		@Override
-		public List<? extends Selectable> selectableChildren() {
+		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
+		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {

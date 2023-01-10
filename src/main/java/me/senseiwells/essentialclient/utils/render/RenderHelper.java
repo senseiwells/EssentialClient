@@ -15,7 +15,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LightType;
 import org.lwjgl.system.MemoryStack;
 
@@ -29,6 +28,12 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+//#endif
+
+//#if MC >= 11700
+import net.minecraft.util.math.random.Random;
+//#else
+//$$import org.lwjgl.opengl.GL20;
 //#endif
 
 public class RenderHelper {
@@ -75,7 +80,7 @@ public class RenderHelper {
 		RenderSystem.depthMask(true);
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		setPositionColourShader();
 	}
 
 	private static void renderBoxes(MatrixStack matrices) {
@@ -98,8 +103,8 @@ public class RenderHelper {
 	}
 
 	private static void drawBoxOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptBox>> forEach) {
-		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-		bufferBuilder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+		setLineShader();
+		startLines(bufferBuilder);
 		forEach.accept(box -> {
 			if (box.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(box.getOutlineWidth());
@@ -110,8 +115,8 @@ public class RenderHelper {
 	}
 
 	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptBox>> forEach) {
-		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		setPositionColourShader();
+		startQuads(bufferBuilder, VertexFormats.POSITION_COLOR);
 		forEach.accept(box -> {
 			addBoxToBuffer(bufferBuilder, matrices, cameraPos, box, false);
 		});
@@ -240,8 +245,8 @@ public class RenderHelper {
 	}
 
 	private static void drawSpheresOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptSphere>> forEach) {
-		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-		bufferBuilder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+		setLineShader();
+		startLines(bufferBuilder);
 		forEach.accept(sphere -> {
 			if (sphere.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(sphere.getOutlineWidth());
@@ -252,8 +257,8 @@ public class RenderHelper {
 	}
 
 	private static void drawSpheres(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptSphere>> forEach) {
-		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		setPositionColourShader();
+		startQuads(bufferBuilder, VertexFormats.POSITION_COLOR);
 		forEach.accept(sphere -> {
 			addSphereToBuffer(bufferBuilder, matrices, cameraPos, sphere, false);
 		});
@@ -375,8 +380,8 @@ public class RenderHelper {
 	}
 
 	private static void drawLines(Tessellator tessellator, BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptLine>> forEach) {
-		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-		builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+		setLineShader();
+		startLines(builder);
 		forEach.accept(line -> {
 			if (line.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(line.getOutlineWidth());
@@ -643,5 +648,33 @@ public class RenderHelper {
 				//#endif
 			}
 		}
+	}
+
+	private static void startLines(BufferBuilder builder) {
+		//#if MC >= 11700
+		builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+		//#else
+		//$$builder.begin(GL20.GL_LINES, VertexFormats.POSITION_COLOUR);
+		//#endif
+	}
+
+	private static void startQuads(BufferBuilder builder, VertexFormat format) {
+		//#if MC >= 11700
+		builder.begin(VertexFormat.DrawMode.QUADS, format);
+		//#else
+		//$$builder.begin(GL20.GL_QUADS, format);
+		//#endif
+	}
+
+	private static void setLineShader() {
+		//#if MC >= 11700
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+		//#endif
+	}
+
+	private static void setPositionColourShader() {
+		//#if MC >= 11700
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		//#endif
 	}
 }

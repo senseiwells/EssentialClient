@@ -25,7 +25,15 @@ public class InventoryScreenMixin extends Screen implements IScreenInventory {
 		super(title);
 	}
 
-	@Redirect(method = "handledScreenTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasCreativeInventory()Z"), require = 0)
+	@Redirect(
+		//#if MC >= 11700
+		method = "handledScreenTick",
+		//#else
+		//$$method = "tick",
+		//#endif
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasCreativeInventory()Z"),
+		require = 0
+	)
 	private boolean hasCreativeInventory(ClientPlayerInteractionManager instance) {
 		return !this.forced && instance.hasCreativeInventory();
 	}
@@ -35,10 +43,14 @@ public class InventoryScreenMixin extends Screen implements IScreenInventory {
 		return !this.forced && instance.hasCreativeInventory();
 	}
 
-	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;addSelectableChild(Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;"))
+	@Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/InventoryScreen;setInitialFocus(Lnet/minecraft/client/gui/Element;)V"))
 	private void onInit(CallbackInfo ci) {
 		if (ClientRules.SURVIVAL_INVENTORY_IN_CREATIVE.getValue() && this.client != null && this.client.interactionManager != null && this.client.player != null && this.client.interactionManager.hasCreativeInventory()) {
+			//#if MC >= 11700
 			this.addDrawableChild(WidgetHelper.newButton(5, 5, 100, 20, Texts.SWAP_INVENTORY, button -> {
+				//#else
+				//$$this.addChild(WidgetHelper.newButton(5, 5, 100, 20, Texts.SWAP_INVENTORY, button -> {
+				//#endif
 				CreativeInventoryScreen screen = new CreativeInventoryScreen(
 					//#if MC >= 11903
 					this.client.player, this.client.player.networkHandler.getEnabledFeatures(), this.client.options.getOperatorItemsTab().getValue()
