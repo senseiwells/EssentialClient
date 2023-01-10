@@ -76,8 +76,7 @@ public class CarpetClient implements Config.CList {
 				clientRule = this.completeRuleMap.get(name);
 				if (parsedRule != null) {
 					clientRule = clientRule == null ? this.parseRuleToClientRule(parsedRule) : this.parseRuleToClientRule(parsedRule, clientRule.getDescription(), clientRule.getOptionalInfo());
-				}
-				else {
+				} else {
 					// We must copy otherwise we will be modifying the global CarpetRule
 					clientRule = clientRule != null ? clientRule.copy() : new StringClientRule(name, this.LOADNT, value, this.handleRuleChange(name));
 				}
@@ -112,73 +111,87 @@ public class CarpetClient implements Config.CList {
 	}
 
 	private ClientRule<?> jsonToClientRule(JsonElement jsonElement) {
+		if (!jsonElement.isJsonObject()) {
+			EssentialClient.LOGGER.error("Failed to load Carpet Rule (Not JSON Object!):\n{}", jsonElement);
+			return null;
+		}
 		JsonObject ruleObject = jsonElement.getAsJsonObject();
-		String name = ruleObject.get("name").getAsString();
-		Type type = Type.fromString(ruleObject.get("type").getAsString());
-		String description = ruleObject.get("description").getAsString();
-		JsonElement repo = ruleObject.get("repo");
-		if (repo != null) {
-			description += "\n§3From: " + repo.getAsString();
+		JsonElement nameElement = ruleObject.get("name");
+		if (nameElement == null || !nameElement.isJsonPrimitive()) {
+			EssentialClient.LOGGER.error("Failed to load Carpet Rule (No Valid Name!):\n{}", ruleObject);
+			return null;
 		}
-		String optionalInfo = null;
-		JsonElement extraInfo = ruleObject.get("extras");
-		if (extraInfo != null) {
-			if (extraInfo.isJsonArray()) {
-				StringBuilder builder = new StringBuilder();
-				extraInfo.getAsJsonArray().forEach(element -> {
-					if (element.isJsonPrimitive()) {
-						builder.append(element.getAsString()).append(" ");
-					}
-				});
-				optionalInfo = builder.toString();
+		String name = nameElement.getAsString();
+		try {
+			Type type = Type.fromString(ruleObject.get("type").getAsString());
+			String description = ruleObject.get("description").getAsString();
+			JsonElement repo = ruleObject.get("repo");
+			if (repo != null) {
+				description += "\n§3From: " + repo.getAsString();
 			}
-			if (extraInfo.isJsonPrimitive()) {
-				optionalInfo = extraInfo.getAsString();
+			String optionalInfo = null;
+			JsonElement extraInfo = ruleObject.get("extras");
+			if (extraInfo != null) {
+				if (extraInfo.isJsonArray()) {
+					StringBuilder builder = new StringBuilder();
+					extraInfo.getAsJsonArray().forEach(element -> {
+						if (element.isJsonPrimitive()) {
+							builder.append(element.getAsString()).append(" ");
+						}
+					});
+					optionalInfo = builder.toString();
+				}
+				if (extraInfo.isJsonPrimitive()) {
+					optionalInfo = extraInfo.getAsString();
+				}
 			}
-		}
-		JsonElement defaultValue = ruleObject.get("default");
-		if (defaultValue == null) {
-			defaultValue = ruleObject.get("value");
-		}
-		JsonElement categories = ruleObject.get("categories");
-		if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Type.BOOLEAN) {
-			return new CommandClientRule(name, description, defaultValue.getAsString(), value -> {
-				this.handleChangeRule(name, value);
-			}).setOptionalInfo(optionalInfo);
-		}
-		JsonElement strictElement = ruleObject.get("strict");
-		if (strictElement != null && strictElement.getAsBoolean() && type != Type.BOOLEAN) {
-			List<String> validValues = new ArrayList<>();
-			JsonElement options = ruleObject.get("options");
-			if (options.isJsonArray()) {
-				JsonArray values = options.getAsJsonArray();
-				values.forEach(element -> validValues.add(element.getAsString()));
-				return new CycleClientRule(name, description, validValues, defaultValue.getAsString(), value -> {
+			JsonElement defaultValue = ruleObject.get("default");
+			if (defaultValue == null) {
+				defaultValue = ruleObject.get("value");
+			}
+			JsonElement categories = ruleObject.get("categories");
+			if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Type.BOOLEAN) {
+				return new CommandClientRule(name, description, defaultValue.getAsString(), value -> {
 					this.handleChangeRule(name, value);
 				}).setOptionalInfo(optionalInfo);
 			}
+			JsonElement strictElement = ruleObject.get("strict");
+			if (strictElement != null && strictElement.getAsBoolean() && type != Type.BOOLEAN) {
+				List<String> validValues = new ArrayList<>();
+				JsonElement options = ruleObject.get("options");
+				if (options.isJsonArray()) {
+					JsonArray values = options.getAsJsonArray();
+					values.forEach(element -> validValues.add(element.getAsString()));
+					return new CycleClientRule(name, description, validValues, defaultValue.getAsString(), value -> {
+						this.handleChangeRule(name, value);
+					}).setOptionalInfo(optionalInfo);
+				}
+			}
+			ClientRule<?> clientRule = switch (type) {
+				case CYCLE -> {
+					JsonArray validCycles = ruleObject.get("cycles").getAsJsonArray();
+					List<String> cycles = new ArrayList<>();
+					validCycles.forEach(element -> cycles.add(element.getAsString()));
+					yield new CycleClientRule(name, description, cycles, defaultValue.getAsString(), this.handleRuleChange(name));
+				}
+				case BOOLEAN -> {
+					yield new BooleanClientRule(name, description, defaultValue.getAsBoolean(), this.handleRuleChange(name));
+				}
+				case INTEGER -> {
+					yield new IntegerClientRule(name, description, defaultValue.getAsInt(), this.handleRuleChange(name));
+				}
+				case DOUBLE -> {
+					yield new DoubleClientRule(name, description, defaultValue.getAsDouble(), this.handleRuleChange(name));
+				}
+				default -> {
+					yield new StringClientRule(name, description, defaultValue.getAsString(), this.handleRuleChange(name));
+				}
+			};
+			return clientRule.setOptionalInfo(optionalInfo);
+		} catch (Exception e) {
+			EssentialClient.LOGGER.error("Failed to load Carpet Rule '{}'", name, e);
+			return null;
 		}
-		ClientRule<?> clientRule = switch (type) {
-			case CYCLE -> {
-				JsonArray validCycles = ruleObject.get("cycles").getAsJsonArray();
-				List<String> cycles = new ArrayList<>();
-				validCycles.forEach(element -> cycles.add(element.getAsString()));
-				yield new CycleClientRule(name, description, cycles, defaultValue.getAsString(), this.handleRuleChange(name));
-			}
-			case BOOLEAN -> {
-				yield new BooleanClientRule(name, description, defaultValue.getAsBoolean(), this.handleRuleChange(name));
-			}
-			case INTEGER -> {
-				yield new IntegerClientRule(name, description, defaultValue.getAsInt(), this.handleRuleChange(name));
-			}
-			case DOUBLE -> {
-				yield new DoubleClientRule(name, description, defaultValue.getAsDouble(), this.handleRuleChange(name));
-			}
-			default -> {
-				yield new StringClientRule(name, description, defaultValue.getAsString(), this.handleRuleChange(name));
-			}
-		};
-		return clientRule.setOptionalInfo(optionalInfo);
 	}
 
 	private ClientRule<?> parseRuleToClientRule(ParsedRule<?> parsedRule) {
@@ -269,7 +282,9 @@ public class CarpetClient implements Config.CList {
 		JsonArray jsonArray = this.getData(jsonElement.getAsJsonArray());
 		jsonArray.forEach(element -> {
 			ClientRule<?> rule = this.jsonToClientRule(element);
-			this.completeRuleMap.put(rule.getName(), rule);
+			if (rule != null) {
+				this.completeRuleMap.put(rule.getName(), rule);
+			}
 		});
 	}
 }
