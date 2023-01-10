@@ -287,7 +287,7 @@ public class ClientScriptUtils {
 			//#if MC >= 11903
 			RegistryWrapper<Item> wrapper = CommandRegister.getRegistryAccess().createWrapper(RegistryKeys.ITEM);
 			//#elseif MC >= 11901
-			//$$RegistryWrapper<Item> wrapper = CommandRegistryWrapper.of(Registry.ITEM);
+			//$$CommandRegistryWrapper<Item> wrapper = CommandRegistryWrapper.of(Registry.ITEM);
 			//#endif
 
 			//#if MC >= 11901

@@ -152,7 +152,7 @@ public class CarpetClient implements Config.CList {
 			this.HANDLING_DATA.set(true);
 
 			Consumer<SettingsManager> managerProcessor = settings -> {
-				//#if MC > 11902
+				//#if MC >= 11902
 				for (CarpetRule<?> carpetRule : settings.getCarpetRules()) {
 					CarpetClientRule<?> clientRule = this.ALL_RULES.get(carpetRule.name());
 					clientRule = clientRule == null ? this.parseRuleToClientRule(carpetRule, settings.identifier()) :
@@ -281,7 +281,7 @@ public class CarpetClient implements Config.CList {
 		return this.parseRuleToClientRule(carpetRule, null, null, manager);
 	}
 
-	//#if MC > 11902
+	//#if MC >= 11902
 	private CarpetClientRule<?> parseRuleToClientRule(CarpetRule<?> carpetRule, String description, String optionalInfo, String manager) {
 		String name = carpetRule.name();
 		Rule.Type type = Rule.Type.fromClass(carpetRule.type());
