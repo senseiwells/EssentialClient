@@ -128,8 +128,8 @@ public class ClientScriptScreen extends ChildScreen {
 			int halfHeight = this.height / 2;
 			int halfWidth = this.width / 2;
 			WidgetHelper.setPosition(this.nameBox, halfWidth - 100, halfHeight - 55);
-			WidgetHelper.setPosition(this.openBox, halfHeight - 100, halfHeight - 25);
-			WidgetHelper.setPosition(this.deleteBox, halfHeight - 100, halfHeight);
+			WidgetHelper.setPosition(this.openBox, halfWidth - 100, halfHeight - 25);
+			WidgetHelper.setPosition(this.deleteBox, halfWidth - 100, halfHeight);
 			WidgetHelper.setPosition(this.keyBindBox, halfWidth - 50, halfHeight + 25);
 			WidgetHelper.setPosition(this.selectedCheck, WidgetHelper.getX(this.keyBindBox) + 80, halfHeight + 25);
 			this.addDrawableChild(this.nameBox);
