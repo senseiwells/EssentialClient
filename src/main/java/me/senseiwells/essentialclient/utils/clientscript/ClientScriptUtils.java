@@ -204,7 +204,7 @@ public class ClientScriptUtils {
 				if (eventString == null) {
 					throw new RuntimeError("Invalid event value: %s".formatted(object.toString(interpreter)));
 				}
-				yield new ClickEvent(action, string);
+				yield new ClickEvent(action, eventString);
 			}
 		};
 	}
