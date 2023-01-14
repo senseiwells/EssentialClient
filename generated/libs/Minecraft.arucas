@@ -4,14 +4,14 @@
  */
 class Biome {
     /*
-     * This function calculates wheter snow will fall at given coordinates
+     * This function calculates whether snow will fall at given coordinates
      * Parameter - Pos (pos): the position
      * Returns - Boolean: whether snow will fall at given position
      */
     fun canSnow(pos: Pos): Boolean;
 
     /*
-     * This function calculates wheter snow will fall at given coordinates
+     * This function calculates whether snow will fall at given coordinates
      * Parameter - Number (x): the x coordinate
      * Parameter - Number (y): the y coordinate
      * Parameter - Number (z): the z coordinate
@@ -20,7 +20,7 @@ class Biome {
     fun canSnow(x: Number, y: Number, z: Number): Boolean;
 
     /*
-     * This function returns Fog color of the biome
+     * This function returns fog color of the biome
      * Returns - Number: fog color of the biome
      */
     fun getFogColor(): Number;
@@ -62,14 +62,14 @@ class Biome {
     fun hasHighHumidity(): Boolean;
 
     /*
-     * This function calculates wheter biome is cold at given position
+     * This function calculates whether biome is cold at given position
      * Parameter - Pos (pos): the position
      * Returns - Boolean: whether temperature is cold at given position
      */
     fun isCold(pos: Pos): Boolean;
 
     /*
-     * This function calculates wheter biome is cold at given position
+     * This function calculates whether biome is cold at given position
      * Parameter - Number (x): the x coordinate
      * Parameter - Number (y): the y coordinate
      * Parameter - Number (z): the z coordinate
@@ -78,14 +78,14 @@ class Biome {
     fun isCold(x: Number, y: Number, z: Number): Boolean;
 
     /*
-     * This function calculates wheter biome is hot at given position
+     * This function calculates whether a biome is hot at given position
      * Parameter - Pos (pos): the position
      * Returns - Boolean: whether temperature is hot at given position
      */
     fun isHot(pos: Pos): Boolean;
 
     /*
-     * This function calculates wheter biome is hot at given position
+     * This function calculates whether a biome is hot at given position
      * Parameter - Number (x): the x coordinate
      * Parameter - Number (y): the y coordinate
      * Parameter - Number (z): the z coordinate
@@ -2402,15 +2402,6 @@ class Player: OtherPlayer {
     fun interactBlock(pos: Pos, direction: String): Future;
 
     /*
-     * This allows you to interact with a block at a position, direction, and hand
-     * Parameter - Pos (pos): the position of the block
-     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
-     * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
-     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
-     */
-    fun interactBlock(pos: Pos, direction: String, hand: String): Future;
-
-    /*
      * This allows you to interact with a block at a position and direction
      * Parameter - Number (x): the x position
      * Parameter - Number (y): the y position
@@ -2418,6 +2409,15 @@ class Player: OtherPlayer {
      * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
     fun interactBlock(x: Number, y: Number, z: Number): Future;
+
+    /*
+     * This allows you to interact with a block at a position, direction, and hand
+     * Parameter - Pos (pos): the position of the block
+     * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+     * Parameter - String (hand): the hand to use, e.g. 'main_hand', 'off_hand'
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
+     */
+    fun interactBlock(pos: Pos, direction: String, hand: String): Future;
 
     /*
      * This allows you to interact with a block at a position and direction

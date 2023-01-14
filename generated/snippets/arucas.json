@@ -7,17 +7,17 @@
   "Method <Biome>.canSnow(pos)": {
     "prefix": ".canSnow($pos)",
     "body": ".canSnow($pos)",
-    "description": "<Biome>.canSnow(pos)\nThis function calculates wheter snow will fall at given coordinates\n- Parameter - Pos (`pos`): the position\n"
+    "description": "<Biome>.canSnow(pos)\nThis function calculates whether snow will fall at given coordinates\n- Parameter - Pos (`pos`): the position\n"
   },
   "Method <Biome>.canSnow(x, y, z)": {
     "prefix": ".canSnow($x, $y, $z)",
     "body": ".canSnow($x, $y, $z)",
-    "description": "<Biome>.canSnow(x, y, z)\nThis function calculates wheter snow will fall at given coordinates\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
+    "description": "<Biome>.canSnow(x, y, z)\nThis function calculates whether snow will fall at given coordinates\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
   },
   "Method <Biome>.getFogColor()": {
     "prefix": ".getFogColor()",
     "body": ".getFogColor()",
-    "description": "<Biome>.getFogColor()\nThis function returns Fog color of the biome\n"
+    "description": "<Biome>.getFogColor()\nThis function returns fog color of the biome\n"
   },
   "Method <Biome>.getId()": {
     "prefix": ".getId()",
@@ -52,22 +52,22 @@
   "Method <Biome>.isCold(pos)": {
     "prefix": ".isCold($pos)",
     "body": ".isCold($pos)",
-    "description": "<Biome>.isCold(pos)\nThis function calculates wheter biome is cold at given position\n- Parameter - Pos (`pos`): the position\n"
+    "description": "<Biome>.isCold(pos)\nThis function calculates whether biome is cold at given position\n- Parameter - Pos (`pos`): the position\n"
   },
   "Method <Biome>.isCold(x, y, z)": {
     "prefix": ".isCold($x, $y, $z)",
     "body": ".isCold($x, $y, $z)",
-    "description": "<Biome>.isCold(x, y, z)\nThis function calculates wheter biome is cold at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
+    "description": "<Biome>.isCold(x, y, z)\nThis function calculates whether biome is cold at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
   },
   "Method <Biome>.isHot(pos)": {
     "prefix": ".isHot($pos)",
     "body": ".isHot($pos)",
-    "description": "<Biome>.isHot(pos)\nThis function calculates wheter biome is hot at given position\n- Parameter - Pos (`pos`): the position\n"
+    "description": "<Biome>.isHot(pos)\nThis function calculates whether a biome is hot at given position\n- Parameter - Pos (`pos`): the position\n"
   },
   "Method <Biome>.isHot(x, y, z)": {
     "prefix": ".isHot($x, $y, $z)",
     "body": ".isHot($x, $y, $z)",
-    "description": "<Biome>.isHot(x, y, z)\nThis function calculates wheter biome is hot at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
+    "description": "<Biome>.isHot(x, y, z)\nThis function calculates whether a biome is hot at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
   },
   "Block Class": {
     "prefix": "Block",
@@ -2554,15 +2554,15 @@
     "body": ".interactBlock($pos, $direction)",
     "description": "<Player>.interactBlock(pos, direction)\nThis allows you to interact with a block at a position and direction\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n"
   },
-  "Method <Player>.interactBlock(pos, direction, hand)": {
-    "prefix": ".interactBlock($pos, $direction, $hand)",
-    "body": ".interactBlock($pos, $direction, $hand)",
-    "description": "<Player>.interactBlock(pos, direction, hand)\nThis allows you to interact with a block at a position, direction, and hand\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n- Parameter - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'\n"
-  },
   "Method <Player>.interactBlock(x, y, z)": {
     "prefix": ".interactBlock($x, $y, $z)",
     "body": ".interactBlock($x, $y, $z)",
     "description": "<Player>.interactBlock(x, y, z)\nThis allows you to interact with a block at a position and direction\n- Parameter - Number (`x`): the x position\n- Parameter - Number (`y`): the y position\n- Parameter - Number (`z`): the z position\n"
+  },
+  "Method <Player>.interactBlock(pos, direction, hand)": {
+    "prefix": ".interactBlock($pos, $direction, $hand)",
+    "body": ".interactBlock($pos, $direction, $hand)",
+    "description": "<Player>.interactBlock(pos, direction, hand)\nThis allows you to interact with a block at a position, direction, and hand\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n- Parameter - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'\n"
   },
   "Method <Player>.interactBlock(pos, direction, blockPos, insideBlock)": {
     "prefix": ".interactBlock($pos, $direction, $blockPos, $insideBlock)",
