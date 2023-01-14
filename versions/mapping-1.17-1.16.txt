@@ -1,0 +1,10 @@
+net.minecraft.client.gui.screen.Screen addDrawableChild() addButton()
+net.minecraft.client.gui.screen.Screen addSelectableChild() addChild()
+
+net.minecraft.client.MinecraftClient setScreen() openScreen()
+
+net.minecraft.entity.Entity getId() getEntityId()
+net.minecraft.entity.Entity setId() setEntityId()
+net.minecraft.entity.Entity collidesWithStateAtPos() method_30632()
+
+net.minecraft.MinecraftVersion GAME_VERSION field_25319
