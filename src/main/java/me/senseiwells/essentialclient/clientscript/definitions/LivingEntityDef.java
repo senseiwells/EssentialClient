@@ -11,7 +11,7 @@ import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
 

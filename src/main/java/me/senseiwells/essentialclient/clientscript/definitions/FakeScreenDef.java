@@ -16,6 +16,7 @@ import me.senseiwells.arucas.utils.*;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
+import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.item.ItemStack;
 
@@ -70,7 +71,7 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 		if (rows < 1 || rows > 6) {
 			throw new RuntimeError("Rows must be between 1 and 6");
 		}
-		FakeInventoryScreen screen = new FakeInventoryScreen(arguments.getInterpreter(), EssentialUtils.getPlayer().getInventory(), name, rows);
+		FakeInventoryScreen screen = new FakeInventoryScreen(arguments.getInterpreter(), PlayerHelper.getPlayerInventory(), name, rows);
 		instance.setPrimitive(this, screen);
 		return null;
 	}

@@ -230,13 +230,19 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	//#if MC >= 11700
 	@Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", shift = At.Shift.BEFORE))
-	//#else
-	//$$@Redirect(method = "onEntitiesDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(I)V", shift = At.Shift.BEFORE))
-	//#endif
 	private void onEntityRemoved(int entityId, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(entityId);
 		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(entity);
 	}
+	//#else
+	//$$@Redirect(method = "onEntitiesDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(I)V"))
+	//$$private void onEntityRemoved(ClientWorld instance, int i) {
+	//$$	Entity entity = instance.getEntityById(i);
+	//$$	MinecraftScriptEvents.ON_ENTITY_REMOVED.run(entity);
+	//$$	instance.removeEntity(i);
+	//$$}
+	//#endif
+
 
 	//#if MC >= 11903
 	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true) // Checkstyle Ignore

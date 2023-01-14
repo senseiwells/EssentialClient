@@ -650,15 +650,23 @@ public class RenderHelper {
 		}
 	}
 
-	private static void startLines(BufferBuilder builder) {
+	public static void startLines(BufferBuilder builder) {
 		//#if MC >= 11700
 		builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 		//#else
-		//$$builder.begin(GL20.GL_LINES, VertexFormats.POSITION_COLOUR);
+		//$$builder.begin(GL20.GL_LINES, VertexFormats.POSITION_COLOR);
 		//#endif
 	}
 
-	private static void startQuads(BufferBuilder builder, VertexFormat format) {
+	public static void startDebugLines(BufferBuilder builder, VertexFormat format) {
+		//#if MC >= 11700
+		builder.begin(VertexFormat.DrawMode.DEBUG_LINES, format);
+		//#else
+		//$$builder.begin(GL20.GL_LINES, format);
+		//#endif
+	}
+
+	public static void startQuads(BufferBuilder builder, VertexFormat format) {
 		//#if MC >= 11700
 		builder.begin(VertexFormat.DrawMode.QUADS, format);
 		//#else
@@ -666,15 +674,29 @@ public class RenderHelper {
 		//#endif
 	}
 
-	private static void setLineShader() {
+	public static void setLineShader() {
 		//#if MC >= 11700
 		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
 		//#endif
 	}
 
-	private static void setPositionColourShader() {
+	public static void setPositionColourShader() {
 		//#if MC >= 11700
 		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		//#endif
+	}
+
+	public static void setPositionTextureColourShader() {
+		//#if MC >= 11700
+		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+		//#endif
+	}
+
+	public static void bindTexture(Identifier texture) {
+		//#if MC >= 11700
+		RenderSystem.setShaderTexture(0, texture);
+		//#else
+		//$$EssentialUtils.getClient().getTextureManager().bindTexture(texture);
 		//#endif
 	}
 }

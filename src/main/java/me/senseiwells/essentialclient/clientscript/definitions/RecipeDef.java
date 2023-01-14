@@ -14,7 +14,7 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;

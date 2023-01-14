@@ -17,7 +17,8 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
@@ -391,7 +392,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	)
 	private float getYaw(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
-		float yaw = entity.getYaw() % 360;
+		float yaw = EntityHelper.getEntityYaw(entity) % 360;
 		return yaw < -180 ? 360 + yaw : yaw;
 	}
 
@@ -402,7 +403,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		examples = "entity.getPitch();"
 	)
 	private float getPitch(Arguments arguments) {
-		return arguments.nextPrimitive(this).getPitch();
+		return EntityHelper.getEntityPitch(arguments.nextPrimitive(this));
 	}
 
 	@FunctionDoc(

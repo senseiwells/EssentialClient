@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -103,7 +104,7 @@ public class ScriptFakeEntity {
 	public void updatePosAndRotation(Vec3d pos, float yaw, float pitch, int interpolation) {
 		this.pos = pos;
 		this.entity.setHeadYaw(yaw);
-		this.entity.setPitch(pitch);
+		EntityHelper.setEntityPitch(this.entity, pitch);
 		this.updatePosition(interpolation);
 	}
 
@@ -116,7 +117,11 @@ public class ScriptFakeEntity {
 	}
 
 	public void despawn() {
+		//#if MC >= 11700
 		this.world.removeEntity(this.entity.getId(), Entity.RemovalReason.DISCARDED);
+		//#else
+		//$$this.world.removeEntity(this.entity.getEntityId());
+		//#endif
 	}
 
 	private void updatePosition(int interpolation) {
@@ -145,8 +150,10 @@ public class ScriptFakeEntity {
 					EssentialUtils.getClient().execute(() -> {
 						//#if MC >= 11800
 						ids.forEach(i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
-						//#else
+						//#elseif MC >= 11700
 						//$$ids.forEach((java.util.function.IntConsumer) i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
+						//#else
+						//$$ids.forEach((java.util.function.IntConsumer) i -> world.removeEntity(i));
 						//#endif
 					});
 				}

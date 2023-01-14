@@ -32,7 +32,7 @@ import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.keyboard.KeyboardHelper;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.network.MojangAPI;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -190,6 +190,10 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		MinecraftClient client = arguments.nextPrimitive(this);
 		ScreenshotRecorder.saveScreenshot(
 			client.runDirectory,
+			//#if MC < 11700
+			//$$client.getWindow().getFramebufferHeight(),
+			//$$client.getWindow().getFramebufferWidth(),
+			//#endif
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);
@@ -208,6 +212,10 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		ScreenshotRecorder.saveScreenshot(
 			client.runDirectory,
 			name.endsWith(".png") ? name : name + ".png",
+			//#if MC < 11700
+			//$$client.getWindow().getFramebufferHeight(),
+			//$$client.getWindow().getFramebufferWidth(),
+			//#endif
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);

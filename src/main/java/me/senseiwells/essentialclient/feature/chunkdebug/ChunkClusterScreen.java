@@ -29,11 +29,7 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 		this.chunkWidget = new ChunkListWidget();
 		this.addSelectableChild(this.chunkWidget);
 		ButtonWidget widget = WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close());
-		//#if MC >= 11700
 		this.addDrawableChild(widget);
-		//#else
-		//$$this.addChild(widget);
-		//#endif
 	}
 
 	@Override

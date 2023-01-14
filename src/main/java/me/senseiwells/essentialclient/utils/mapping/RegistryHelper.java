@@ -1,4 +1,4 @@
-package me.senseiwells.essentialclient.utils.registry;
+package me.senseiwells.essentialclient.utils.mapping;
 
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.block.Block;

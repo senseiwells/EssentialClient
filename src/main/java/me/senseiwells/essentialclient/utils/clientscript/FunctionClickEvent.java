@@ -1,4 +1,4 @@
-package me.senseiwells.essentialclient.utils.misc;
+package me.senseiwells.essentialclient.utils.clientscript;
 
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.ArucasFunction;

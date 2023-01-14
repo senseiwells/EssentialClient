@@ -7,4 +7,8 @@ net.minecraft.entity.Entity getId() getEntityId()
 net.minecraft.entity.Entity setId() setEntityId()
 net.minecraft.entity.Entity collidesWithStateAtPos() method_30632()
 
+com.mojang.blaze3d.systems.RenderSystem setShaderColor() color4f()
+
+net.minecraft.text.TextVisitFactory removeFormattingCodes() method_31402()
+
 net.minecraft.MinecraftVersion GAME_VERSION field_25319

@@ -117,13 +117,15 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 
 	@Override
 	public List<ClickableWidget> children() {
-		return this.selectableChildren();
-	}
-
-	@Override
-	public List<ClickableWidget> selectableChildren() {
 		return ImmutableList.of(this.editButton, this.resetButton);
 	}
+
+	//#if MC >= 11700
+	@Override
+	public List<ClickableWidget> selectableChildren() {
+		return this.children();
+	}
+	//#endif
 
 	@Override
 	public void updateEntryOnClose() { }

@@ -37,7 +37,7 @@ public class VanillaGameRules {
 		DROWNING_DAMAGE = registerBoolean("drowningDamage", "Whether the player should take damage when drowning", true, GameRules.DROWNING_DAMAGE),
 		FALL_DAMAGE = registerBoolean("fallDamage", "Whether the player should take fall damage", true, GameRules.FALL_DAMAGE),
 		FIRE_DAMAGE = registerBoolean("fireDamage", "Whether the player should take damage in fire, lava, campfires, or on magma blocks", true, GameRules.FIRE_DAMAGE),
-		FREEZE_DAMAGE = registerBoolean("freezeDamage", "Whether the player should take damage when inside powder snow", true, GameRules.FREEZE_DAMAGE),
+		FREEZE_DAMAGE = registerBoolean("freezeDamage", "Whether the player should take damage when inside powder snow", true, null),
 		DO_PATROL_SPAWNING = registerBoolean("doPatrolSpawning", "Whether patrols can spawn", true, GameRules.DO_PATROL_SPAWNING),
 		DO_TRADER_SPAWNING = registerBoolean("doTraderSpawning", "Whether wandering traders can spawn", true, GameRules.DO_TRADER_SPAWNING),
 		FORGIVE_DEAD_PLAYERS = registerBoolean("forgiveDeadPlayers", "Makes angered neutral mobs stop being angry when the targeted player dies nearby", true, GameRules.FORGIVE_DEAD_PLAYERS),
@@ -56,7 +56,7 @@ public class VanillaGameRules {
 		SPAWN_RADIUS = registerInteger("spawnRadius", "The number of blocks outward from the world spawn coordinates that a player spawns in when first joining a server or when dying without a personal spawnpoint. Has no effect on servers where the default game mode is adventure", 10, GameRules.SPAWN_RADIUS),
 		MAX_ENTITY_CRAMMING = registerInteger("maxEntityCramming", "The maximum number of pushable entities a mob or player can push, before taking 3♥ suffocation damage per half-second. Setting to 0 or lower disables the rule. Damage affects survival-mode or adventure-mode players, and all mobs but bats. Pushable entities include non-spectator-mode players, any mob except bats, as well as boats and minecarts", 24, GameRules.MAX_ENTITY_CRAMMING),
 		MAX_COMMAND_CHAIN_LENGTH = registerInteger("maxCommandChainLength", "The maximum length of a chain of commands that can be executed during one tick. Applies to command blocks and functions", 65536, GameRules.MAX_COMMAND_CHAIN_LENGTH),
-		PLAYERS_SLEEPING_PERCENTAGE = registerInteger("playersSleepingPercentage", "What percentage of players must sleep to skip the night", 100, GameRules.PLAYERS_SLEEPING_PERCENTAGE),
+		PLAYERS_SLEEPING_PERCENTAGE = registerInteger("playersSleepingPercentage", "What percentage of players must sleep to skip the night", 100, null),
 		SNOW_ACCUMULATION_HEIGHT = registerInteger("snowAccumulationHeight", "The maximum number of snow layers that can be accumulated on each block", 1, null);
 
 	static {

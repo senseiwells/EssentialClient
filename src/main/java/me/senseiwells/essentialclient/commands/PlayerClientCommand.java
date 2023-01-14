@@ -122,7 +122,8 @@ public class PlayerClientCommand {
 		//dispatcher.register(literal("pc").redirect(dispatcher.getRoot().getChild("playerclient").getRedirect()));
 	}
 
-	public static int constructPlayer(CommandContext<ServerCommandSource> context, boolean isHere, boolean hasGamemode) {
+	@SuppressWarnings("RedundantThrows")
+	public static int constructPlayer(CommandContext<ServerCommandSource> context, boolean isHere, boolean hasGamemode) throws CommandSyntaxException {
 		ServerCommandSource source = context.getSource();
 		if (!(source.getEntity() instanceof ClientPlayerEntity player)) {
 			return 0;

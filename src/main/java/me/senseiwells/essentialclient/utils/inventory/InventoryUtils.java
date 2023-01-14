@@ -12,6 +12,7 @@ import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.interfaces.IGhostRecipeBookWidget;
+import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -65,12 +66,12 @@ public class InventoryUtils {
 	public static void swapItemToEquipmentSlot(ClientPlayerEntity playerEntity, EquipmentSlot slotType, int sourceSlot) {
 		if (sourceSlot != -1 && playerEntity.currentScreenHandler == playerEntity.playerScreenHandler) {
 			ScreenHandler container = playerEntity.playerScreenHandler;
-			MinecraftClient client = MinecraftClient.getInstance();
+			MinecraftClient client = EssentialUtils.getClient();
 			if (client.interactionManager == null) {
 				return;
 			}
 			if (slotType == EquipmentSlot.MAINHAND) {
-				int currentHotbarSlot = playerEntity.getInventory().selectedSlot;
+				int currentHotbarSlot = PlayerHelper.getPlayerInventory().selectedSlot;
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
 			} else if (slotType == EquipmentSlot.OFFHAND) {
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, 40, SlotActionType.SWAP, client.player);
@@ -299,11 +300,19 @@ public class InventoryUtils {
 	}
 
 	public static ItemStack getCursorStack() {
+		//#if MC >= 11700
 		return getPlayer().currentScreenHandler.getCursorStack();
+		//#else
+		//$$return getPlayer().inventory.getCursorStack();
+		//#endif
 	}
 
 	public static boolean setCursorStack(ItemStack stack) {
+		//#if MC >= 11700
 		getPlayer().currentScreenHandler.setCursorStack(stack);
+		//#else
+		//$$getPlayer().inventory.getCursorStack();
+		//#endif
 		return true;
 	}
 
@@ -651,10 +660,10 @@ public class InventoryUtils {
 	}
 
 	public static void clearTradeInputSlot(MerchantScreenHandler handler) {
-		ClientPlayerEntity player = EssentialUtils.getPlayer();
+		PlayerInventory inventory = PlayerHelper.getPlayerInventory();
 		Slot slot = handler.getSlot(0);
 		if (slot.hasStack()) {
-			if (canMergeIntoMain(player.getInventory(), slot.getStack())) {
+			if (canMergeIntoMain(inventory, slot.getStack())) {
 				shiftClickSlot(handler, slot.id);
 			} else {
 				dropStack(handler, slot.id);
@@ -664,7 +673,7 @@ public class InventoryUtils {
 		if (!slot.hasStack()) {
 			return;
 		}
-		if (canMergeIntoMain(player.getInventory(), slot.getStack())) {
+		if (canMergeIntoMain(inventory, slot.getStack())) {
 			shiftClickSlot(handler, slot.id);
 			return;
 		}

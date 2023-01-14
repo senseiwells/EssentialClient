@@ -27,7 +27,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 									  //#if MC >= 11700
 									  EntityRendererFactory.Context context,
 									  //#else
-									  //$$EntityRenderDispatcher dispatcher,
+									  //$$EntityRenderDispatcher context,
 									  //#endif
 									  PlayerEntityModel<AbstractClientPlayerEntity> model,
 									  float shadowRadius

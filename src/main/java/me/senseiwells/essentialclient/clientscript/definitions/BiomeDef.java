@@ -12,7 +12,7 @@ import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
@@ -61,7 +61,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 
 	@FunctionDoc(
 		name = "canSnow",
-		desc = "This function calculates wheter snow will fall at given coordinates",
+		desc = "This function calculates whether snow will fall at given coordinates",
 		params = {
 			NUMBER, "x", "the x coordinate",
 			NUMBER, "y", "the y coordinate",
@@ -76,12 +76,12 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		int y = arguments.nextPrimitive(NumberDef.class).intValue();
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
 		BlockPos blockPos = new BlockPos(x, y, z);
-		return biome.isCold(blockPos);
+		return isCold(biome, blockPos);
 	}
 
 	@FunctionDoc(
 		name = "canSnow",
-		desc = "This function calculates wheter snow will fall at given coordinates",
+		desc = "This function calculates whether snow will fall at given coordinates",
 		params = {POS, "pos", "the position"},
 		returns = {BOOLEAN, "whether snow will fall at given position"},
 		examples = "biome.canSnow(new Pos(0, 100, 0));"
@@ -89,12 +89,12 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	private boolean canSnowPos(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		return biome.isCold(pos.getBlockPos());
+		return isCold(biome, pos.getBlockPos());
 	}
 
 	@FunctionDoc(
 		name = "isHot",
-		desc = "This function calculates wheter biome is hot at given position",
+		desc = "This function calculates whether a biome is hot at given position",
 		params = {
 			NUMBER, "x", "the x coordinate",
 			NUMBER, "y", "the y coordinate",
@@ -108,16 +108,12 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		int x = arguments.nextPrimitive(NumberDef.class).intValue();
 		int y = arguments.nextPrimitive(NumberDef.class).intValue();
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
-		//#if MC >= 11800
-		return biome.isHot(new BlockPos(x, y, z));
-		//#else
-		//$$return biome.getTemperature(new BlockPos(x, y, z)) > 1.0F;
-		//#endif
+		return isHot(biome, new BlockPos(x, y, z));
 	}
 
 	@FunctionDoc(
 		name = "isHot",
-		desc = "This function calculates wheter biome is hot at given position",
+		desc = "This function calculates whether a biome is hot at given position",
 		params = {POS, "pos", "the position"},
 		returns = {BOOLEAN, "whether temperature is hot at given position"},
 		examples = "biome.isHot(0, 100, 0);"
@@ -125,16 +121,12 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	private boolean isHotPos(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		//#if MC >= 11800
-		return biome.isHot(pos.getBlockPos());
-		//#else
-		//$$return biome.getTemperature(pos.getBlockPos()) > 1.0F;
-		//#endif
+		return isHot(biome, pos.getBlockPos());
 	}
 
 	@FunctionDoc(
 		name = "isCold",
-		desc = "This function calculates wheter biome is cold at given position",
+		desc = "This function calculates whether biome is cold at given position",
 		params = {POS, "pos", "the position"},
 		returns = {BOOLEAN, "whether temperature is cold at given position"},
 		examples = "biome.isCold(0, 100, 0);"
@@ -142,12 +134,12 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	private boolean isColdPos(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		return biome.isCold(pos.getBlockPos());
+		return isCold(biome, pos.getBlockPos());
 	}
 
 	@FunctionDoc(
 		name = "isCold",
-		desc = "This function calculates wheter biome is cold at given position",
+		desc = "This function calculates whether biome is cold at given position",
 		params = {
 			NUMBER, "x", "the x coordinate",
 			NUMBER, "y", "the y coordinate",
@@ -161,12 +153,12 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		int x = arguments.nextPrimitive(NumberDef.class).intValue();
 		int y = arguments.nextPrimitive(NumberDef.class).intValue();
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
-		return biome.isCold(new BlockPos(x, y, z));
+		return isCold(biome, new BlockPos(x, y, z));
 	}
 
 	@FunctionDoc(
 		name = "getFogColor",
-		desc = "This function returns Fog color of the biome",
+		desc = "This function returns fog color of the biome",
 		returns = {NUMBER, "fog color of the biome"},
 		examples = "biome.getFogColor();"
 	)
@@ -240,5 +232,21 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	private boolean hasHighHumidity(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
 		return biome.hasHighHumidity();
+	}
+
+	private static boolean isCold(Biome biome, BlockPos pos) {
+		//#if MC >= 11700
+		return biome.isCold(pos);
+		//#else
+		//$$return biome.getTemperature(pos) < 0.15F;
+		//#endif
+	}
+
+	private static boolean isHot(Biome biome, BlockPos pos) {
+		//#if MC >= 11800
+		return biome.isHot(pos);
+		//#else
+		//$$return biome.getTemperature(pos) > 1.0F;
+		//#endif
 	}
 }

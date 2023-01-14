@@ -14,6 +14,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+//#if MC < 11700
+//$$import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+//#endif
+
 @Mixin(AnvilScreenHandler.class)
 public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 	@Shadow
@@ -28,7 +32,15 @@ public abstract class AnvilScreenHandlerMixin extends ForgingScreenHandler {
 	}
 
 	@Inject(method = "onTakeOutput", at = @At("HEAD"))
-	private void onAnvil(PlayerEntity player, ItemStack stack, CallbackInfo ci) {
+	private void onAnvil(
+		PlayerEntity player,
+		ItemStack stack,
+		//#if MC >= 11700
+		CallbackInfo ci
+		//#else
+		//$$CallbackInfoReturnable<ItemStack> cir
+		//#endif
+	) {
 		if (player instanceof ClientPlayerEntity) {
 			MinecraftScriptEvents.ON_ANVIL.run(
 				this.input.getStack(0),

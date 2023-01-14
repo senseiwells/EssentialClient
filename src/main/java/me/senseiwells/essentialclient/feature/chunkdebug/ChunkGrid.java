@@ -3,6 +3,8 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
+import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -55,7 +57,7 @@ public class ChunkGrid {
 		this.dimensions = this.dimensionPoints.keySet().stream().toList();
 		ClientPlayerEntity player = client.player;
 		if (player != null) {
-			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(player.getChunkPos().x, player.getChunkPos().z));
+			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(EntityHelper.getEntityChunkX(player), EntityHelper.getEntityChunkZ(player)));
 			String playerDimension = player.world.getRegistryKey().getValue().getPath();
 			int dimensionIndex = this.dimensions.indexOf(playerDimension);
 			this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
@@ -85,9 +87,9 @@ public class ChunkGrid {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		RenderHelper.setPositionColourShader();
 
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		RenderHelper.startQuads(bufferBuilder, VertexFormats.POSITION_COLOR);
 
 		if (isMinimap && ClientRules.CHUNK_DEBUG_MINIMAP_BACKGROUND.getValue()) {
 			int thatX = thisX + this.scale * (this.columns + 1);
@@ -121,7 +123,7 @@ public class ChunkGrid {
 
 		ClientPlayerEntity player = this.client.player;
 		if (player != null && this.isPlayerInDimension(player)) {
-			ChunkPos playerChunkPos = player.getChunkPos();
+			ChunkPos playerChunkPos = EntityHelper.getEntityChunkPos(player);
 			int x = playerChunkPos.x - (isMinimap ? this.minimapCornerPoint.x : this.cornerPoint.getX());
 			int z = playerChunkPos.z - (isMinimap ? this.minimapCornerPoint.y : this.cornerPoint.getY());
 			if (x >= 0 && x <= this.columns && z >= 0 && z <= this.rows) {
@@ -175,7 +177,7 @@ public class ChunkGrid {
 						this.setDimension(player.world);
 						EssentialClient.CHUNK_NET_HANDLER.requestChunkData(this.getDimension());
 					}
-					Point minimapCorner = this.getCornerOfCentre(player.getChunkPos().x, player.getChunkPos().z);
+					Point minimapCorner = this.getCornerOfCentre(EntityHelper.getEntityChunkX(player), EntityHelper.getEntityChunkZ(player));
 					this.minimapCornerPoint.setLocation(minimapCorner);
 				}
 			}
@@ -214,7 +216,7 @@ public class ChunkGrid {
 			return;
 		}
 
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+		RenderHelper.startDebugLines(bufferBuilder, VertexFormats.POSITION_COLOR);
 		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
@@ -235,7 +237,7 @@ public class ChunkGrid {
 			return;
 		}
 
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+		RenderHelper.startDebugLines(bufferBuilder, VertexFormats.POSITION_COLOR);
 		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
 		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();

@@ -82,13 +82,15 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 
 		@Override
 		public List<ClickableWidget> children() {
-			return this.selectableChildren();
-		}
-
-		@Override
-		public List<ClickableWidget> selectableChildren() {
 			return ImmutableList.of(this.configButton, this.startButton, this.checkButton);
 		}
+
+		//#if MC >= 11700
+		@Override
+		public List<ClickableWidget> selectableChildren() {
+			return this.children();
+		}
+		//#endif
 
 		@Override
 		public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float tickDelta) {

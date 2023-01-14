@@ -38,7 +38,6 @@ configurations {
 archivesBaseName = project.archives_base_name
 version = project.minecraft_version + "-" + project.mod_version
 group = project.maven_group
-ext.kotlin_version = "1.7.1"
 
 shadowJar {
 	configurations = [project.configurations.shade]

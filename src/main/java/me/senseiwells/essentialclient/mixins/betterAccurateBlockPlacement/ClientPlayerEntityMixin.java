@@ -23,18 +23,14 @@ import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
-	//#if MC >= 11903
-	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
-		super(world, pos, yaw, gameProfile);
-	}
-	//#elseif MC >= 11901
+	//#if MC >= 11901 && MC < 11903
 	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, PlayerPublicKey publicKey) {
 	//$$	super(world, pos, yaw, gameProfile, publicKey);
 	//$$}
 	//#else
-	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
-	//$$	super(world, pos, yaw, profile);
-	//$$}
+	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
+		super(world, pos, yaw, profile);
+	}
 	//#endif
 
 	@Redirect(
