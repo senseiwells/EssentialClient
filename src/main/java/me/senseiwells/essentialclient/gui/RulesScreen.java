@@ -63,7 +63,7 @@ public abstract class RulesScreen extends ChildScreen {
 		this.widget.setScrollAmount(0);
 	}
 
-	public abstract Collection<? extends Rule<?>> getRules();
+	public abstract Collection<? extends Rule<?>> getRules(String filter);
 
 	public Comparator<BaseListEntry<?>> entryComparator() {
 		return Comparator.comparing(a -> a.getRule().getName());
@@ -136,7 +136,7 @@ public abstract class RulesScreen extends ChildScreen {
 	public static RulesScreen getClientRulesScreen(Screen parent) {
 		return new RulesScreen(Texts.CLIENT_SCREEN, parent) {
 			@Override
-			public Collection<? extends Rule<?>> getRules() {
+			public Collection<? extends Rule<?>> getRules(String filter) {
 				return ClientRules.getClientRules();
 			}
 		};
@@ -145,7 +145,7 @@ public abstract class RulesScreen extends ChildScreen {
 	public static RulesScreen getCarpetRulesScreen(Screen parent) {
 		return new RulesScreen(Texts.SERVER_SCREEN, parent) {
 			@Override
-			public Collection<? extends Rule<?>> getRules() {
+			public Collection<? extends Rule<?>> getRules(String filter) {
 				return CarpetClient.INSTANCE.getCurrentCarpetRules();
 			}
 
@@ -159,7 +159,7 @@ public abstract class RulesScreen extends ChildScreen {
 	public static RulesScreen getGameRulesScreen(Screen parent) {
 		return new RulesScreen(Texts.GAME_RULE_SCREEN, parent) {
 			@Override
-			public Collection<? extends Rule<?>> getRules() {
+			public Collection<? extends Rule<?>> getRules(String filter) {
 				return VanillaGameRules.getGameRules();
 			}
 

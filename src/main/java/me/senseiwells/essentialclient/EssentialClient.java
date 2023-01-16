@@ -1,5 +1,7 @@
 package me.senseiwells.essentialclient;
 
+import carpet.CarpetExtension;
+import carpet.CarpetServer;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
@@ -27,7 +29,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class EssentialClient implements ModInitializer {
+public class EssentialClient implements ModInitializer, CarpetExtension {
 	public static final ChunkClientNetworkHandler CHUNK_NET_HANDLER;
 	public static final GameRuleNetworkHandler GAME_RULE_NET_HANDLER;
 	public static final ScriptNetworkHandler SCRIPT_NET_HANDLER;
@@ -59,6 +61,7 @@ public class EssentialClient implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		CarpetServer.manageExtension(CarpetClient.INSTANCE);
 		// Run async for faster boot, saves ~2000ms on my machine
 		new Thread(() -> {
 			CONFIG_SET.forEach(Config::readConfig);
@@ -78,7 +81,6 @@ public class EssentialClient implements ModInitializer {
 		CONFIG_SET.add(ConfigPlayerList.INSTANCE);
 		CONFIG_SET.add(ClientRules.INSTANCE);
 		CONFIG_SET.add(ClientScript.INSTANCE);
-		CONFIG_SET.add(CarpetClient.INSTANCE);
 		CONFIG_SET.add(ClientKeyBinds.INSTANCE);
 	}
 

@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.feature;
 
+import carpet.CarpetExtension;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,6 +14,7 @@ import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.mapping.CarpetRuleHelper;
 import me.senseiwells.essentialclient.utils.misc.Events;
+import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
@@ -20,7 +22,7 @@ import net.minecraft.nbt.NbtCompound;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CarpetClient implements Config.CList {
+public class CarpetClient implements CarpetExtension, Config.CList {
 	public static final CarpetClient INSTANCE = new CarpetClient();
 
 	private final Map<String, CarpetClientRule<?>> ALL_RULES;
@@ -56,6 +58,12 @@ public class CarpetClient implements Config.CList {
 		this.COMMAND = new JsonPrimitive("COMMAND");
 		this.HANDLING_DATA = new AtomicBoolean(false);
 		this.isServerCarpet = false;
+	}
+
+	@Override
+	public void onGameStarted() {
+		EssentialClient.CONFIG_SET.add(CarpetClient.INSTANCE);
+		Scheduler.schedule(0, () -> this.readConfig());
 	}
 
 	public boolean isServerCarpet() {

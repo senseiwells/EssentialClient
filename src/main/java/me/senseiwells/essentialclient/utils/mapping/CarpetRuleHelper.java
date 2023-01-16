@@ -2,7 +2,6 @@ package me.senseiwells.essentialclient.utils.mapping;
 
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
-import carpet.api.settings.RuleHelper;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -12,6 +11,7 @@ import java.util.function.BiConsumer;
 
 //#if MC >= 11902
 import carpet.api.settings.CarpetRule;
+import carpet.api.settings.RuleHelper;
 import carpet.api.settings.SettingsManager;
 //#else
 //$$import carpet.settings.ParsedRule;
@@ -66,7 +66,9 @@ public class CarpetRuleHelper {
 			//#else
 			//$$SettingsManager manager = extension.customSettingsManager();
 			//#endif
-			managers.add(manager);
+			if (manager != null) {
+				managers.add(manager);
+			}
 		}
 		return managers;
 	}
@@ -98,7 +100,7 @@ public class CarpetRuleHelper {
 			//#if MC >= 11902
 			return RuleHelper.translatedDescription(this.rule);
 			//#else
-			//$$return this.rule.name;
+			//$$return this.rule.description;
 			//#endif
 		}
 
