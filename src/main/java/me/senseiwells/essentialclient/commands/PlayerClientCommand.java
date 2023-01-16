@@ -158,7 +158,7 @@ public class PlayerClientCommand {
 		if (playerData == null) {
 			throw NO_PLAYER.create(playerName);
 		}
-		GameMode playerGameMode = EssentialUtils.getPlayerListEntry().getGameMode();
+		GameMode playerGameMode = EssentialUtils.getInteractionManager().getCurrentGameMode();
 		if (playerData.gamemode() != null && playerGameMode != playerData.gamemode()) {
 			throw WRONG_GAMEMODE.create(playerGameMode, playerData.gamemode());
 		}
