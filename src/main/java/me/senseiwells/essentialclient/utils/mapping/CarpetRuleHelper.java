@@ -168,6 +168,14 @@ public class CarpetRuleHelper {
 			//#endif
 		}
 
+		public String getSettingsManagerId() {
+			//#if MC >= 11902
+			return this.rule.settingsManager().identifier();
+			//#else
+			//$$return this.rule.settingsManager.getIdentifier();
+			//#endif
+		}
+
 		public boolean isCommand() {
 			return this.getCategories().contains("command");
 		}

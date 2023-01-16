@@ -149,8 +149,8 @@ public class CarpetClient implements Config.CList {
 			return null;
 		}
 		String name = nameElement.getAsString();
+		CarpetRuleHelper.Wrapper carpetRule = CarpetRuleHelper.getCarpetRule(name);
 		try {
-			Rule.Type type = Rule.Type.fromString(ruleObject.get("type").getAsString());
 			String description = ruleObject.get("description").getAsString();
 			JsonElement repo = ruleObject.get("repo");
 			if (repo != null) {
@@ -173,6 +173,10 @@ public class CarpetClient implements Config.CList {
 					optionalInfo = extraInfo.getAsString();
 				}
 			}
+			if (carpetRule != null) {
+				return this.parseRuleToClientRule(carpetRule, description, optionalInfo, carpetRule.getSettingsManagerId());
+			}
+			Rule.Type type = Rule.Type.fromString(ruleObject.get("type").getAsString());
 			JsonElement defaultValue = ruleObject.get("default");
 			if (defaultValue == null) {
 				defaultValue = ruleObject.get("value");
@@ -218,6 +222,9 @@ public class CarpetClient implements Config.CList {
 			rule.setOptionalInfo(optionalInfo);
 			return rule;
 		} catch (Exception e) {
+			if (carpetRule != null) {
+				return this.parseRuleToClientRule(carpetRule, carpetRule.getSettingsManagerId());
+			}
 			EssentialClient.LOGGER.error("Failed to load Carpet Rule '{}'", name, e);
 			return null;
 		}
