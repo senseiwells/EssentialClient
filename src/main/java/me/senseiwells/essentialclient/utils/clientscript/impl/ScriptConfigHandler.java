@@ -47,7 +47,7 @@ public class ScriptConfigHandler implements Config.CList {
 	public RulesScreen createScreen(Text title, boolean alphabetical) {
 		return new RulesScreen(title, EssentialUtils.getClient().currentScreen) {
 			@Override
-			public Collection<? extends Rule<?>> getRules() {
+			public Collection<? extends Rule<?>> getRules(String filter) {
 				return ScriptConfigHandler.this.configs.values().stream().map(i -> i.getPrimitive(ConfigDef.class)).toList();
 			}
 

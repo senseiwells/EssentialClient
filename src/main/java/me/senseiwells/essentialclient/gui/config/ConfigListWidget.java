@@ -19,7 +19,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	public void reloadEntries(RulesScreen rulesScreen, String filter) {
 		this.clearEntries();
-		Collection<? extends Rule<?>> rules = rulesScreen.getRules();
+		Collection<? extends Rule<?>> rules = rulesScreen.getRules(filter);
 
 		SortedMap<String, Set<BaseListEntry<?>>> sortedEntries = new TreeMap<>();
 		rules.forEach(rule -> {
