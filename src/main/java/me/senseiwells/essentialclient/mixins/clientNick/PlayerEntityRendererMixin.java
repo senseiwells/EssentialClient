@@ -5,7 +5,6 @@ import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -16,9 +15,23 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+//#if MC >= 11700
+import net.minecraft.client.render.entity.EntityRendererFactory;
+//#else
+//$$import net.minecraft.client.render.entity.EntityRenderDispatcher;
+//#endif
+
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-	public PlayerEntityRendererMixin(EntityRendererFactory.Context context, PlayerEntityModel<AbstractClientPlayerEntity> model, float shadowRadius) {
+	public PlayerEntityRendererMixin( // Checkstyle ignore
+									  //#if MC >= 11700
+									  EntityRendererFactory.Context context,
+									  //#else
+									  //$$EntityRenderDispatcher context,
+									  //#endif
+									  PlayerEntityModel<AbstractClientPlayerEntity> model,
+									  float shadowRadius
+	) {
 		super(context, model, shadowRadius);
 	}
 

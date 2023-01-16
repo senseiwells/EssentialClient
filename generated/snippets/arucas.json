@@ -7,17 +7,17 @@
   "Method <Biome>.canSnow(pos)": {
     "prefix": ".canSnow($pos)",
     "body": ".canSnow($pos)",
-    "description": "<Biome>.canSnow(pos)\nThis function calculates wheter snow will fall at given coordinates\n- Parameter - Pos (`pos`): the position\n"
+    "description": "<Biome>.canSnow(pos)\nThis function calculates whether snow will fall at given coordinates\n- Parameter - Pos (`pos`): the position\n"
   },
   "Method <Biome>.canSnow(x, y, z)": {
     "prefix": ".canSnow($x, $y, $z)",
     "body": ".canSnow($x, $y, $z)",
-    "description": "<Biome>.canSnow(x, y, z)\nThis function calculates wheter snow will fall at given coordinates\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
+    "description": "<Biome>.canSnow(x, y, z)\nThis function calculates whether snow will fall at given coordinates\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
   },
   "Method <Biome>.getFogColor()": {
     "prefix": ".getFogColor()",
     "body": ".getFogColor()",
-    "description": "<Biome>.getFogColor()\nThis function returns Fog color of the biome\n"
+    "description": "<Biome>.getFogColor()\nThis function returns fog color of the biome\n"
   },
   "Method <Biome>.getId()": {
     "prefix": ".getId()",
@@ -52,22 +52,22 @@
   "Method <Biome>.isCold(pos)": {
     "prefix": ".isCold($pos)",
     "body": ".isCold($pos)",
-    "description": "<Biome>.isCold(pos)\nThis function calculates wheter biome is cold at given position\n- Parameter - Pos (`pos`): the position\n"
+    "description": "<Biome>.isCold(pos)\nThis function calculates whether biome is cold at given position\n- Parameter - Pos (`pos`): the position\n"
   },
   "Method <Biome>.isCold(x, y, z)": {
     "prefix": ".isCold($x, $y, $z)",
     "body": ".isCold($x, $y, $z)",
-    "description": "<Biome>.isCold(x, y, z)\nThis function calculates wheter biome is cold at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
+    "description": "<Biome>.isCold(x, y, z)\nThis function calculates whether biome is cold at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
   },
   "Method <Biome>.isHot(pos)": {
     "prefix": ".isHot($pos)",
     "body": ".isHot($pos)",
-    "description": "<Biome>.isHot(pos)\nThis function calculates wheter biome is hot at given position\n- Parameter - Pos (`pos`): the position\n"
+    "description": "<Biome>.isHot(pos)\nThis function calculates whether a biome is hot at given position\n- Parameter - Pos (`pos`): the position\n"
   },
   "Method <Biome>.isHot(x, y, z)": {
     "prefix": ".isHot($x, $y, $z)",
     "body": ".isHot($x, $y, $z)",
-    "description": "<Biome>.isHot(x, y, z)\nThis function calculates wheter biome is hot at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
+    "description": "<Biome>.isHot(x, y, z)\nThis function calculates whether a biome is hot at given position\n- Parameter - Number (`x`): the x coordinate\n- Parameter - Number (`y`): the y coordinate\n- Parameter - Number (`z`): the z coordinate\n"
   },
   "Block Class": {
     "prefix": "Block",

@@ -2,6 +2,7 @@ package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
 import me.senseiwells.essentialclient.utils.misc.Events;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -46,8 +47,8 @@ public class BetterAccurateBlockPlacement {
 		fakeDirection = null;
 
 		if (ClientRules.BETTER_ACCURATE_BLOCK_PLACEMENT.getValue()) {
-			fakeYaw = playerEntity.getYaw();
-			fakePitch = playerEntity.getPitch();
+			fakeYaw = EntityHelper.getEntityYaw(playerEntity);
+			fakePitch = EntityHelper.getEntityPitch(playerEntity);
 			Direction facing = Direction.getEntityFacingOrder(playerEntity)[0];
 			if (ACCURATE_INTO.isPressed() && client.crosshairTarget instanceof BlockHitResult blockHitResult) {
 				fakeYaw = 0;

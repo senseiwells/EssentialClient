@@ -60,9 +60,24 @@ public class ClientPlayerInteractionManagerMixin {
 	}
 
 	@Inject(method = "clickSlot", at = @At("HEAD"), cancellable = true)
-	private void onClickSlot(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
+	private void onClickSlot(
+		int syncId,
+		int slotId,
+		int button,
+		SlotActionType actionType,
+		PlayerEntity player,
+		//#if MC >= 11700
+		CallbackInfo ci
+		//#else
+		//$$CallbackInfoReturnable<ItemStack> cir
+		//#endif
+	) {
 		if (MinecraftScriptEvents.ON_CLICK_SLOT.run(slotId, actionType.name(), new ScriptItemStack(slotId < 0 ? ItemStack.EMPTY : player.currentScreenHandler.slots.get(slotId).getStack().copy()))) {
+			//#if MC >= 11700
 			ci.cancel();
+			//#else
+			//$$cir.setReturnValue(ItemStack.EMPTY);
+			//#endif
 		}
 	}
 

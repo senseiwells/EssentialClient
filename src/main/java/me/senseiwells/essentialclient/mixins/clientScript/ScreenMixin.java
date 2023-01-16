@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
-import me.senseiwells.essentialclient.utils.misc.FunctionClickEvent;
+import me.senseiwells.essentialclient.utils.clientscript.FunctionClickEvent;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Style;
 import org.spongepowered.asm.mixin.Mixin;

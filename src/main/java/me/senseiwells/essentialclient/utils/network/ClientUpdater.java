@@ -1,4 +1,4 @@
-package me.senseiwells.essentialclient.utils.misc;
+package me.senseiwells.essentialclient.utils.network;
 
 import com.google.gson.*;
 import me.senseiwells.arucas.utils.Util;

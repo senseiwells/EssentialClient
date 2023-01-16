@@ -79,7 +79,11 @@ public class ScriptNetworkHandler extends NetworkHandler {
 				case DOUBLE -> this.buf.readDouble();
 				case BYTE_ARRAY -> this.buf.readByteArray();
 				case INT_ARRAY -> this.buf.readIntArray();
+				//#if MC >= 11700
 				case LONG_ARRAY -> this.buf.readLongArray();
+				//#else
+				//$$case LONG_ARRAY -> this.buf.readLongArray(null);
+				//#endif
 				case STRING -> this.buf.readString();
 				case TEXT -> this.buf.readText();
 				case UUID -> this.buf.readUuid();

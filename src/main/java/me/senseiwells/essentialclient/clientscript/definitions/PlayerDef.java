@@ -18,6 +18,8 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
+import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
+import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.block.BlockState;
@@ -32,6 +34,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
@@ -225,7 +228,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			throw new RuntimeError("Number must be between 0 - 8");
 		}
 		ClientScriptUtils.ensureMainThread("setSelectedSlot", arguments.getInterpreter(), () -> {
-			EssentialUtils.getPlayer().getInventory().selectedSlot = index;
+			PlayerHelper.getPlayerInventory().selectedSlot = index;
 			EssentialUtils.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(index));
 		});
 		return null;
@@ -238,7 +241,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.getSelectedSlot"
 	)
 	private int getSelectedSlot(Arguments arguments) {
-		return EssentialUtils.getPlayer().getInventory().selectedSlot;
+		return PlayerHelper.getPlayerInventory().selectedSlot;
 	}
 
 	@FunctionDoc(
@@ -298,8 +301,12 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		Text subTitle = ClientScriptUtils.instanceToText(subTitleInstance, arguments.getInterpreter());
 		ClientScriptUtils.ensureMainThread("showTitle", arguments.getInterpreter(), () -> {
 			MinecraftClient client = EssentialUtils.getClient();
+			//#if MC >= 11700
 			client.inGameHud.setTitle(title);
 			client.inGameHud.setSubtitle(subTitle);
+			//#else
+			//$$client.inGameHud.setTitles(title, subTitle, -1, -1, -1);
+			//#endif
 		});
 		return null;
 	}
@@ -439,8 +446,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		float yaw = arguments.skip().nextPrimitive(NumberDef.class).floatValue();
 		float pitch = arguments.nextPrimitive(NumberDef.class).floatValue();
 		ClientScriptUtils.ensureMainThread("look", arguments.getInterpreter(), () -> {
-			EssentialUtils.getPlayer().setYaw(yaw);
-			EssentialUtils.getPlayer().setPitch(pitch);
+			PlayerHelper.setPlayerYaw(yaw);
+			PlayerHelper.setPlayerPitch(pitch);
 		});
 		return null;
 	}
@@ -581,7 +588,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 					interactionManager.clickSlot(screenHandler.syncId, slot1, 0, SlotActionType.SWAP, player);
 					interactionManager.clickSlot(screenHandler.syncId, slot2, 0, SlotActionType.SWAP, player);
 					interactionManager.clickSlot(screenHandler.syncId, slot1, 0, SlotActionType.SWAP, player);
-					player.getInventory().updateItems();
+					PlayerHelper.getPlayerInventory().updateItems();
 				} else {
 					InventoryUtils.swapSlot(screenHandler, slot1, secondMapped);
 				}
@@ -606,7 +613,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private int getSwappableHotbarSlot(Arguments arguments) {
 		// Return predicted current swappable hotbar slot
-		return EssentialUtils.getPlayer().getInventory().getSwappableHotbarSlot();
+		return PlayerHelper.getPlayerInventory().getSwappableHotbarSlot();
 	}
 
 	@FunctionDoc(
@@ -1134,14 +1141,14 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Void swapPlayerSlotWithHotbar(Arguments arguments) {
 		int slotToSwap = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		ClientScriptUtils.ensureMainThread("swapPlayerSlotWithHotbar", arguments.getInterpreter(), () -> {
-			ClientPlayerEntity player = EssentialUtils.getPlayer();
-			if (slotToSwap < 0 || slotToSwap > player.getInventory().main.size()) {
+			PlayerInventory inventory = PlayerHelper.getPlayerInventory();
+			if (slotToSwap < 0 || slotToSwap > inventory.main.size()) {
 				throw new RuntimeError("That slot is out of bounds");
 			}
 			ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
-			int prepareSlot = player.getInventory().getSwappableHotbarSlot();
+			int prepareSlot = inventory.getSwappableHotbarSlot();
 			networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(prepareSlot));
-			player.getInventory().swapSlotWithHotbar(slotToSwap);
+			inventory.swapSlotWithHotbar(slotToSwap);
 			networkHandler.sendPacket(new PickFromInventoryC2SPacket(slotToSwap));
 		});
 		return null;

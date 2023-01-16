@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.RenderHelper;
@@ -51,8 +52,8 @@ public class ChunkDebugScreen extends ChildScreen {
 			if (this.client.player != null) {
 				ChunkGrid.instance.setDimension(this.client.player.world);
 				dimensionButton.setMessage(ChunkGrid.instance.getPrettyDimension());
-				int chunkX = this.client.player.getChunkPos().x;
-				int chunkZ = this.client.player.getChunkPos().z;
+				int chunkX = EntityHelper.getEntityChunkX(this.client.player);
+				int chunkZ = EntityHelper.getEntityChunkZ(this.client.player);
 				ChunkGrid.instance.setCentre(chunkX, chunkZ);
 				this.xPositionBox.setText(String.valueOf(chunkX));
 				this.zPositionBox.setText(String.valueOf(chunkZ));
@@ -155,7 +156,7 @@ public class ChunkDebugScreen extends ChildScreen {
 		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		RenderHelper.startQuads(bufferBuilder, VertexFormats.POSITION_COLOR);
 
 		// Header gradient
 		bufferBuilder.vertex(0, HEADER_HEIGHT, 0).color(0, 0, 0, 255).next();
@@ -173,13 +174,14 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	private void drawHeaderAndFooterTexture(Tessellator tessellator, BufferBuilder bufferBuilder) {
-		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-		RenderSystem.setShaderTexture(0, OPTIONS_BACKGROUND_TEXTURE);
+		RenderHelper.setPositionTextureColourShader();
+		RenderHelper.bindTexture(OPTIONS_BACKGROUND_TEXTURE);
+
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
 
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+		RenderHelper.startQuads(bufferBuilder, VertexFormats.POSITION_TEXTURE_COLOR);
 
 		// Header
 		bufferBuilder.vertex(0, 0, 0).texture(0, 0).color(64, 64, 64, 255).next();

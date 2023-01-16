@@ -32,7 +32,6 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.command.*;
 import me.senseiwells.essentialclient.utils.misc.Events;
-import me.senseiwells.essentialclient.utils.misc.FunctionClickEvent;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;

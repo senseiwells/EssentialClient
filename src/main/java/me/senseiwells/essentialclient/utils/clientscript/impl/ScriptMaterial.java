@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;

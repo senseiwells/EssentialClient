@@ -7,7 +7,7 @@ Import with `import Biome from Minecraft;`
 ## Methods
 
 ### `<Biome>.canSnow(pos)`
-- Description: This function calculates wheter snow will fall at given coordinates
+- Description: This function calculates whether snow will fall at given coordinates
 - Parameter - Pos (`pos`): the position
 - Returns - Boolean: whether snow will fall at given position
 - Example:
@@ -16,7 +16,7 @@ biome.canSnow(new Pos(0, 100, 0));
 ```
 
 ### `<Biome>.canSnow(x, y, z)`
-- Description: This function calculates wheter snow will fall at given coordinates
+- Description: This function calculates whether snow will fall at given coordinates
 - Parameters:
   - Number (`x`): the x coordinate
   - Number (`y`): the y coordinate
@@ -28,7 +28,7 @@ biome.canSnow(0, 100, 0);
 ```
 
 ### `<Biome>.getFogColor()`
-- Description: This function returns Fog color of the biome
+- Description: This function returns fog color of the biome
 - Returns - Number: fog color of the biome
 - Example:
 ```kotlin
@@ -84,7 +84,7 @@ biome.hasHighHumidity();
 ```
 
 ### `<Biome>.isCold(pos)`
-- Description: This function calculates wheter biome is cold at given position
+- Description: This function calculates whether biome is cold at given position
 - Parameter - Pos (`pos`): the position
 - Returns - Boolean: whether temperature is cold at given position
 - Example:
@@ -93,7 +93,7 @@ biome.isCold(0, 100, 0);
 ```
 
 ### `<Biome>.isCold(x, y, z)`
-- Description: This function calculates wheter biome is cold at given position
+- Description: This function calculates whether biome is cold at given position
 - Parameters:
   - Number (`x`): the x coordinate
   - Number (`y`): the y coordinate
@@ -105,7 +105,7 @@ biome.isCold(0, 100, 0);
 ```
 
 ### `<Biome>.isHot(pos)`
-- Description: This function calculates wheter biome is hot at given position
+- Description: This function calculates whether a biome is hot at given position
 - Parameter - Pos (`pos`): the position
 - Returns - Boolean: whether temperature is hot at given position
 - Example:
@@ -114,7 +114,7 @@ biome.isHot(0, 100, 0);
 ```
 
 ### `<Biome>.isHot(x, y, z)`
-- Description: This function calculates wheter biome is hot at given position
+- Description: This function calculates whether a biome is hot at given position
 - Parameters:
   - Number (`x`): the x coordinate
   - Number (`y`): the y coordinate

@@ -16,6 +16,7 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
+import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.player.PlayerAbilities;
@@ -93,7 +94,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 		examples = "otherPlayer.getCurrentSlot();"
 	)
 	private double getCurrentSlot(Arguments arguments) {
-		return arguments.nextPrimitive(this).getInventory().selectedSlot;
+		return PlayerHelper.getPlayerInventory(arguments.nextPrimitive(this)).selectedSlot;
 	}
 
 	@FunctionDoc(
@@ -103,7 +104,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 		examples = "otherPlayer.getHeldItem();"
 	)
 	private ItemStack getHeldItem(Arguments arguments) {
-		return arguments.nextPrimitive(this).getInventory().getMainHandStack();
+		return PlayerHelper.getPlayerInventory(arguments.nextPrimitive(this)).getMainHandStack();
 	}
 
 	@FunctionDoc(
@@ -113,7 +114,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 		examples = "otherPlayer.isInventoryFull();"
 	)
 	private boolean isInventoryFull(Arguments arguments) {
-		return arguments.nextPrimitive(this).getInventory().getEmptySlot() == -1;
+		return PlayerHelper.getPlayerInventory(arguments.nextPrimitive(this)).getEmptySlot() == -1;
 	}
 
 	@FunctionDoc(
@@ -123,7 +124,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 		examples = "otherPlayer.getEmptySlots();"
 	)
 	private ArucasList getEmptySlots(Arguments arguments) {
-		PlayerInventory inventory = arguments.nextPrimitive(this).getInventory();
+		PlayerInventory inventory = PlayerHelper.getPlayerInventory(arguments.nextPrimitive(this));
 		ArucasList list = new ArucasList();
 		for (int i = 0; i < inventory.main.size(); ++i) {
 			if (inventory.main.get(i).isEmpty()) {
@@ -223,11 +224,12 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	private ItemStack getItemForPlayerSlot(Arguments arguments) {
 		// This gets the item for a slot in the player's inventory (no screen inventories)
 		AbstractClientPlayerEntity player = arguments.nextPrimitive(this);
+		PlayerInventory inventory = PlayerHelper.getPlayerInventory(player);
 		int slot = arguments.nextPrimitive(NumberDef.class).intValue();
-		if (slot < 0 || slot > player.getInventory().main.size()) {
+		if (slot < 0 || slot > inventory.main.size()) {
 			throw new RuntimeError("That slot is out of bounds");
 		}
-		return player.getInventory().main.get(slot);
+		return inventory.main.get(slot);
 	}
 
 	@FunctionDoc(
@@ -318,7 +320,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	)
 	private ArucasMap getAbilities(Arguments arguments) {
 		AbstractClientPlayerEntity playerEntity = arguments.nextPrimitive(this);
-		PlayerAbilities playerAbilities = playerEntity.getAbilities();
+		PlayerAbilities playerAbilities = PlayerHelper.getPlayerAbilities(playerEntity);
 		Interpreter interpreter = arguments.getInterpreter();
 		ArucasMap map = new ArucasMap();
 		map.put(interpreter, interpreter.create(StringDef.class, "invulnerable"), interpreter.createBool(playerAbilities.invulnerable));

@@ -16,7 +16,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;

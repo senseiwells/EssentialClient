@@ -65,7 +65,11 @@ public class MessageHandlerMixin {
 	//$$		PlayerListEntry playerListEntry = EssentialUtils.getNetworkHandler().getPlayerListEntry(sender);
 	//$$		if (playerListEntry != null) {
 	//$$			String newName = ConfigClientNick.INSTANCE.get(playerListEntry.getProfile().getName());
-	//$$			String message = TextVisitFactory.removeFormattingCodes(text);
+	//#if MC >= 11700
+	//$$String message = TextVisitFactory.removeFormattingCodes(text);
+	//#else
+	//$$String message = TextVisitFactory.method_31402(text);
+	//#endif
 	//$$			String oldName = StringUtils.substringBetween(message, "<", ">");
 	//$$			text = newName != null && oldName != null ? Texts.literal(message.replaceAll(oldName, newName)) : text;
 	//$$		}

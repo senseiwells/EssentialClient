@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.rule.carpet.CarpetClientRule;
 import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
 import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
 import me.senseiwells.essentialclient.rule.client.BooleanClientRule;
+import me.senseiwells.essentialclient.utils.mapping.WorldHelper;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
@@ -211,7 +212,7 @@ public class EssentialUtils {
 		double x = player.getX() - pos.getX() - 0.5;
 		double y = player.getY() - pos.getY() + 1.0;
 		double z = player.getZ() - pos.getZ() - 0.5;
-		if (x * x + y * y + z * z > 36 || player.world.isOutOfHeightLimit(pos) || !player.world.getWorldBorder().contains(pos)) {
+		if (x * x + y * y + z * z > 36 || WorldHelper.isPositionOutOfWorld(player.world, pos) || !player.world.getWorldBorder().contains(pos)) {
 			return false;
 		}
 		if (player.isBlockBreakingRestricted(player.world, pos, getInteractionManager().getCurrentGameMode())) {

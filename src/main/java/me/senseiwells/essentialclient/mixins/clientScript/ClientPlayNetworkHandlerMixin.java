@@ -184,12 +184,35 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	}
 	//#endif
 
-	@Inject(method = "onDeathMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;getEntityById(I)Lnet/minecraft/entity/Entity;", shift = At.Shift.BEFORE))
-	private void onDeath(DeathMessageS2CPacket packet, CallbackInfo ci) {
+	@Inject(
+		//#if MC >= 11700
+		method = "onDeathMessage",
+		//#else
+		//$$method = "onCombatEvent",
+		//#endif
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;getEntityById(I)Lnet/minecraft/entity/Entity;", shift = At.Shift.BEFORE)
+	)
+	private void onDeath(
+		//#if MC >= 11700
+		DeathMessageS2CPacket packet,
+		//#else
+		//$$CombatEventS2CPacket packet,
+		//#endif
+		CallbackInfo ci
+	) {
+		//#if MC >= 11700
 		Entity entity = this.world.getEntityById(packet.getEntityId());
+		//#else
+		//$$Entity entity = this.world.getEntityById(packet.entityId);
+		//#endif
 		if (entity == this.client.player) {
+			//#if MC >= 11700
 			Entity killer = this.world.getEntityById(packet.getKillerId());
 			MinecraftScriptEvents.ON_DEATH.run(killer, packet.getMessage());
+			//#else
+			//$$Entity killer = this.world.getEntityById(packet.attackerEntityId);
+			//$$MinecraftScriptEvents.ON_DEATH.run(killer, packet.deathMessage);
+			//#endif
 		}
 	}
 
@@ -205,11 +228,21 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
+	//#if MC >= 11700
 	@Inject(method = "method_37472", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(ILnet/minecraft/entity/Entity$RemovalReason;)V", shift = At.Shift.BEFORE))
 	private void onEntityRemoved(int entityId, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(entityId);
 		MinecraftScriptEvents.ON_ENTITY_REMOVED.run(entity);
 	}
+	//#else
+	//$$@Redirect(method = "onEntitiesDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;removeEntity(I)V"))
+	//$$private void onEntityRemoved(ClientWorld instance, int i) {
+	//$$	Entity entity = instance.getEntityById(i);
+	//$$	MinecraftScriptEvents.ON_ENTITY_REMOVED.run(entity);
+	//$$	instance.removeEntity(i);
+	//$$}
+	//#endif
+
 
 	//#if MC >= 11903
 	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true) // Checkstyle Ignore

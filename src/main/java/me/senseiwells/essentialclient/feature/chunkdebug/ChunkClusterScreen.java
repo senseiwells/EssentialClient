@@ -7,7 +7,6 @@ import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
-import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,7 +28,8 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 		super.init();
 		this.chunkWidget = new ChunkListWidget();
 		this.addSelectableChild(this.chunkWidget);
-		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
+		ButtonWidget widget = WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close());
+		this.addDrawableChild(widget);
 	}
 
 	@Override
@@ -79,10 +79,12 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 			});
 		}
 
+		//#if MC >= 11700
 		@Override
-		public List<? extends Selectable> selectableChildren() {
+		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
+		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {

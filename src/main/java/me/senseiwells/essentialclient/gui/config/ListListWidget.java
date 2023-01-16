@@ -126,12 +126,14 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 
 		@Override
 		public List<ClickableWidget> children() {
-			return this.selectableChildren();
-		}
-
-		@Override
-		public List<ClickableWidget> selectableChildren() {
 			return ImmutableList.of(this.textField, this.addButton, this.removeButton);
 		}
+
+		//#if MC >= 11700
+		@Override
+		public List<ClickableWidget> selectableChildren() {
+			return this.children();
+		}
+		//#endif
 	}
 }

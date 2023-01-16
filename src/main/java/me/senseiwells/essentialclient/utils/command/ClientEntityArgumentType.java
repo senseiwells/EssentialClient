@@ -6,7 +6,8 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import me.senseiwells.essentialclient.utils.registry.RegistryHelper;
+import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelectorOptions;
@@ -491,9 +492,9 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						float min = range.getMin() == null ? 0 : range.getMin();
 						float max = range.getMax() == null ? 359 : range.getMax();
 						if (max < min) {
-							parser.addFilter((origin, entity) -> entity.getPitch() >= min || entity.getPitch() <= max);
+							parser.addFilter((origin, entity) -> EntityHelper.getEntityPitch(entity) >= min || EntityHelper.getEntityPitch(entity) <= max);
 						} else {
-							parser.addFilter((origin, entity) -> entity.getPitch() >= min && entity.getPitch() <= max);
+							parser.addFilter((origin, entity) -> EntityHelper.getEntityPitch(entity) >= min && EntityHelper.getEntityPitch(entity) <= max);
 						}
 						parser.hasXRotation = true;
 					}
@@ -510,9 +511,9 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						float min = range.getMin() == null ? 0 : range.getMin();
 						float max = range.getMax() == null ? 359 : range.getMax();
 						if (max < min) {
-							parser.addFilter((origin, entity) -> entity.getYaw() >= min || entity.getYaw() <= max);
+							parser.addFilter((origin, entity) -> EntityHelper.getEntityYaw(entity) >= min || EntityHelper.getEntityYaw(entity) <= max);
 						} else {
-							parser.addFilter((origin, entity) -> entity.getYaw() >= min && entity.getYaw() <= max);
+							parser.addFilter((origin, entity) -> EntityHelper.getEntityYaw(entity) >= min && EntityHelper.getEntityYaw(entity) <= max);
 						}
 						parser.hasYRotation = true;
 					}
@@ -606,7 +607,12 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 							//$$Identifier typeId = Identifier.fromCommandInput(parser.reader);
 							//$$parser.addFilter((origin, entity) -> {
 							//$$	try {
-							//$$		Tag<EntityType<?>> tag = entity.getEntityWorld().getTagManager().getTag(Registry.ENTITY_TYPE_KEY, typeId, id -> new IllegalArgumentException());
+							//$$		Tag<EntityType<?>> tag = entity.getEntityWorld().getTagManager()
+							//#if MC >= 11700
+							//$$.getTag(Registry.ENTITY_TYPE_KEY, typeId, id -> new IllegalArgumentException());
+							//#else
+							//$$.getEntityTypes().getTag(typeId);
+							//#endif
 							//$$		return tag.contains(entity.getType()) != neg;
 							//$$	}
 							//$$	catch (IllegalArgumentException e) {

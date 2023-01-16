@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
-import me.senseiwells.essentialclient.utils.misc.ClientUpdater;
+import me.senseiwells.essentialclient.utils.network.ClientUpdater;
 import net.minecraft.server.command.ServerCommandSource;
 
 import static net.minecraft.server.command.CommandManager.literal;
