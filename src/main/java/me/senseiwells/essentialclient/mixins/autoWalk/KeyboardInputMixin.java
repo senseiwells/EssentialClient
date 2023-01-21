@@ -26,7 +26,7 @@ public class KeyboardInputMixin extends Input {
 	@Unique
 	private boolean shouldAutoHold = false;
 
-	@Inject(method = "tick", at = @At("TAIL"))
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 3, shift = At.Shift.AFTER))
 	//#if MC >= 11900
 	private void onTick(boolean slowDown, float f, CallbackInfo ci) {
 		//#else
