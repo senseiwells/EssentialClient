@@ -9942,37 +9942,6 @@
           "name": "interactBlock",
           "is_arbitrary": false,
           "desc": [
-            "This allows you to interact with a block at a position, direction, and hand"
-          ],
-          "params": [
-            {
-              "name": "pos",
-              "type": "Pos",
-              "desc": "the position of the block"
-            },
-            {
-              "name": "direction",
-              "type": "String",
-              "desc": "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
-            },
-            {
-              "name": "hand",
-              "type": "String",
-              "desc": "the hand to use, e.g. 'main_hand', 'off_hand'"
-            }
-          ],
-          "returns": {
-            "type": "Future",
-            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
-          },
-          "examples": [
-            "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
-          ]
-        },
-        {
-          "name": "interactBlock",
-          "is_arbitrary": false,
-          "desc": [
             "This allows you to interact with a block at a position and direction"
           ],
           "params": [
@@ -9998,6 +9967,37 @@
           },
           "examples": [
             "player.interactBlock(0, 100, 0);"
+          ]
+        },
+        {
+          "name": "interactBlock",
+          "is_arbitrary": false,
+          "desc": [
+            "This allows you to interact with a block at a position, direction, and hand"
+          ],
+          "params": [
+            {
+              "name": "pos",
+              "type": "Pos",
+              "desc": "the position of the block"
+            },
+            {
+              "name": "direction",
+              "type": "String",
+              "desc": "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
+            },
+            {
+              "name": "hand",
+              "type": "String",
+              "desc": "the hand to use, e.g. 'main_hand', 'off_hand'"
+            }
+          ],
+          "returns": {
+            "type": "Future",
+            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
+          },
+          "examples": [
+            "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
           ]
         },
         {
