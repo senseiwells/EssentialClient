@@ -56,10 +56,10 @@ public class MinecraftScriptEvent {
 	}
 
 	public synchronized void registerEvent(ScriptEvent gameEvent) {
-		if (gameEvent.getInterpreter().getThreadHandler().getRunning()) {
+		if (gameEvent.getInterpreter().isRunning()) {
 			Set<ScriptEvent> gameEventWrappers = this.REGISTERED_EVENTS.computeIfAbsent(gameEvent.getId(), id -> {
 				// Possible leak?
-				gameEvent.getInterpreter().getThreadHandler().addShutdownEvent(() -> this.REGISTERED_EVENTS.remove(id));
+				gameEvent.getInterpreter().addStopEvent(() -> this.REGISTERED_EVENTS.remove(id));
 				return new LinkedHashSet<>();
 			});
 			gameEventWrappers.add(gameEvent);
@@ -86,7 +86,7 @@ public class MinecraftScriptEvent {
 	public synchronized Future<ClassInstance> registerWaitingEvent(Interpreter interpreter) {
 		CompletableFuture<ClassInstance> future = new CompletableFuture<>();
 		Set<WaitingEvent> futures = this.WAITING_EVENTS.computeIfAbsent(interpreter.getProperties().getId(), id -> {
-			interpreter.getThreadHandler().addShutdownEvent(() -> this.WAITING_EVENTS.remove(id));
+			interpreter.addStopEvent(() -> this.WAITING_EVENTS.remove(id));
 			return new LinkedHashSet<>();
 		});
 		futures.add(new WaitingEvent(interpreter, future));

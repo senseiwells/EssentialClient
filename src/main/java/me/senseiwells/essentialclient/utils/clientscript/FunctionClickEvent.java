@@ -19,8 +19,6 @@ public class FunctionClickEvent extends ClickEvent {
 
 	public void executeFunction() {
 		Interpreter branch = this.interpreter.branch();
-		ClientScriptUtils.wrapSafe(() -> {
-			this.function.invoke(branch, List.of());
-		}, branch);
+		branch.runSafe(() -> this.function.invoke(branch, List.of()));
 	}
 }

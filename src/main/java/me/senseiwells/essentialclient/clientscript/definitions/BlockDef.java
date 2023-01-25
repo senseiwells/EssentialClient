@@ -44,6 +44,7 @@ import java.util.Optional;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils.warnMainThread;
 
 @ClassDoc(
 	name = BLOCK,
@@ -127,6 +128,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 			MemberFunction.of("getX", this::getBlockX),
 			MemberFunction.of("getZ", this::getBlockZ),
 			MemberFunction.of("getY", this::getBlockY),
+			MemberFunction.of("offset", 1, this::offset),
+			MemberFunction.of("offset", 2, this::offset2),
 			MemberFunction.of("isSolidBlock", this::isSolidBlock),
 			MemberFunction.of("rotateYClockwise", this::rotateYClockwise),
 			MemberFunction.of("rotateYCounterClockwise", this::rotateYCounterClockwise),
@@ -289,6 +292,40 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	private Object getBlockY(Arguments arguments) {
 		BlockPos pos = arguments.nextPrimitive(this).pos;
 		return pos == null ? null : pos.getY();
+	}
+
+	@FunctionDoc(
+		name = "offset",
+		desc = "This gets a block with a given offset, this will throw if the block has no position",
+		params = {POS, "offset", "the position offset to add to the block's current position"},
+		returns = {BLOCK, "the block at the offset position"},
+		examples = "block.offset(new Pos(0, 1, 0));"
+	)
+	private Object offset(Arguments arguments) {
+		warnMainThread("offset", arguments.getInterpreter());
+		ScriptBlockState state = this.ensurePosition(arguments);
+		BlockPos offset = arguments.nextPrimitive(PosDef.class).getBlockPos();
+		BlockPos newPos = state.pos.add(offset);
+		return new ScriptBlockState(EssentialUtils.getWorld().getBlockState(newPos), newPos);
+	}
+
+	@FunctionDoc(
+		name = "offset",
+		desc = "This gets a block with a given offset, this will throw if the block has no position",
+		params = {
+			STRING, "direction", "the direction of the offset",
+			NUMBER, "distance", "the distance of the offset"
+		},
+		returns = {BLOCK, "the block at the offset position"},
+		examples = "block.offset('north', 5);"
+	)
+	private Object offset2(Arguments arguments) {
+		warnMainThread("offset", arguments.getInterpreter());
+		ScriptBlockState state = this.ensurePosition(arguments);
+		Direction direction = ClientScriptUtils.stringToDirection(arguments.nextConstant(), null);
+		int amount = arguments.nextPrimitive(NumberDef.class).intValue();
+		BlockPos newPos = state.pos.offset(direction, amount);
+		return new ScriptBlockState(EssentialUtils.getWorld().getBlockState(newPos), newPos);
 	}
 
 	@FunctionDoc(

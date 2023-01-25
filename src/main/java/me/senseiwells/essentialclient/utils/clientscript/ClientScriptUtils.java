@@ -117,30 +117,13 @@ public class ClientScriptUtils {
 				"'%s' was not called on the Minecraft main thread, this may lead to unexpected behavior".formatted(name)
 			);
 		}
-		return client.submit(() -> wrapSafe(callable, interpreter));
-	}
-
-	public static <V> V wrapSafe(Supplier<V> callable, Interpreter interpreter) {
-		try {
-			return callable.get();
-		} catch (Exception e) {
-			interpreter.getThreadHandler().handleError(e);
-			return null;
-		}
-	}
-
-	public static void wrapSafe(Runnable runnable, Interpreter interpreter) {
-		try {
-			runnable.run();
-		} catch (Exception e) {
-			interpreter.getThreadHandler().handleError(e);
-		}
+		return client.submit(() -> interpreter.runSafe(callable::get));
 	}
 
 	public static void holdKey(Interpreter interpreter, KeyBinding key, int interval) {
-		if (interpreter.getThreadHandler().getRunning()) {
+		if (interpreter.isRunning()) {
 			HELD_KEYS.put(key.getTranslationKey(), new TickedKey(key, interval));
-			interpreter.getThreadHandler().addShutdownEvent(() -> releaseKey(key));
+			interpreter.addStopEvent(() -> releaseKey(key));
 		}
 	}
 
@@ -482,9 +465,9 @@ public class ClientScriptUtils {
 					throw new RuntimeError("'integer_slider' type must have 'max' as a number");
 				}
 
-				Integer defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class).intValue();
+				Number defaultNumber = defaultValue == null ? null : defaultValue.getPrimitive(NumberDef.class);
 				if (defaultNumber != null) {
-					yield new IntegerSliderClientRule(name, description, defaultNumber, category, min.intValue(), max.intValue());
+					yield new IntegerSliderClientRule(name, description, defaultNumber.intValue(), category, min.intValue(), max.intValue());
 				}
 				yield new IntegerSliderClientRule(name, description, 0, category, min.intValue(), max.intValue());
 			}
@@ -512,7 +495,7 @@ public class ClientScriptUtils {
 		if (function != null) {
 			Interpreter parent = interpreter.branch();
 			clientRule.addListener(object -> {
-				parent.getThreadHandler().runAsync(() -> {
+				parent.runAsync(() -> {
 					function.invoke(parent.branch(), List.of(instance));
 					return null;
 				});
@@ -700,7 +683,7 @@ public class ClientScriptUtils {
 						for (ParsedArgument<?, ?> argument : arguments) {
 							list.add(commandArgumentToValue(argument.getResult(), this.interpreter));
 						}
-						this.interpreter.getThreadHandler().runAsync(() -> {
+						this.interpreter.runAsync(() -> {
 							function.invoke(this.interpreter.branch(), list);
 							return null;
 						});
@@ -775,7 +758,7 @@ public class ClientScriptUtils {
 					for (ParsedArgument<?, ?> arg : commandArguments) {
 						list.add(commandArgumentToValue(arg.getResult(), branch));
 					}
-					return branch.safe(Suggestions.empty(), () -> {
+					return branch.runSafe(Suggestions.empty(), () -> {
 						ArucasCollection collection = suggester.invoke(branch, list).getPrimitive(CollectionDef.class);
 						if (collection != null) {
 							List<String> suggested = collection.asCollection().stream().map(i -> i.toString(branch)).toList();

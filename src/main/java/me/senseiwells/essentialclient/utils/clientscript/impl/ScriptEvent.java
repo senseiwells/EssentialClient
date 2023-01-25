@@ -50,13 +50,13 @@ public class ScriptEvent {
 		List<ClassInstance> newArgs = count >= 0 && count < arguments.size() ? arguments.subList(0, count) : arguments;
 
 		if (this.event.isThreadDefinable() && !this.cancellable && EssentialUtils.getClient().isOnThread()) {
-			branch.getThreadHandler().runAsync(() -> {
+			branch.runAsync(() -> {
 				branch.call(this.function, newArgs, Trace.getINTERNAL());
 				return null;
 			});
 			return false;
 		}
-		return branch.safe(false, () -> {
+		return branch.runSafe(false, () -> {
 			try {
 				branch.call(this.function, newArgs, Trace.getINTERNAL());
 				return Boolean.FALSE;

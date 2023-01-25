@@ -1,10 +1,11 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
-import me.senseiwells.arucas.api.ThreadHandler;
+import me.senseiwells.arucas.api.ArucasErrorHandler;
 import me.senseiwells.arucas.core.Arucas;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.ArucasError;
 import me.senseiwells.arucas.exceptions.FatalError;
+import me.senseiwells.arucas.exceptions.Propagator;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
@@ -15,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,15 +24,13 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ClientScriptThreadHandler extends ThreadHandler {
+public enum ClientScriptErrorHandler implements ArucasErrorHandler {
+	INSTANCE;
+
 	private static final String ISSUE_TRACKER = "https://github.com/senseiwells/EssentialClient/issues/new";
 
-	public ClientScriptThreadHandler(Interpreter interpreter) {
-		super(interpreter);
-	}
-
 	@Override
-	protected void handleArucasError(ArucasError arucasError, Interpreter interpreter) {
+	public void handleArucasError(@NotNull ArucasError arucasError, @NotNull Interpreter interpreter) {
 		Identifier identifier = switch (ClientRules.CLIENT_SCRIPT_FONT.getValue()) {
 			case "Minecraft" -> Texts.MINECRAFT_MONO;
 			case "Jetbrains" -> Texts.JETBRAINS_MONO;
@@ -40,16 +40,21 @@ public class ClientScriptThreadHandler extends ThreadHandler {
 	}
 
 	@Override
-	protected void handleFatalError(FatalError fatalError, Interpreter interpreter) {
+	public void handleInvalidPropagator(@NotNull Propagator propagator, @NotNull Interpreter interpreter) {
+		ArucasErrorHandler.getDefault().handleInvalidPropagator(propagator, interpreter);
+	}
+
+	@Override
+	public void handleFatalError(@NotNull FatalError fatalError, @NotNull Interpreter interpreter) {
 		this.handleFatalError((Throwable) fatalError, interpreter);
 	}
 
 	@Override
-	protected void handleFatalError(Throwable throwable, Interpreter interpreter) {
-		Text error = Texts.literal("\n").formatted(Formatting.RED).append(Texts.FATAL_ERROR.generate(this.getInterpreter().getName()));
+	public void handleFatalError(@NotNull Throwable throwable, @NotNull Interpreter interpreter) {
+		Text error = Texts.literal("\n").formatted(Formatting.RED).append(Texts.FATAL_ERROR.generate(interpreter.getName()));
 		EssentialUtils.sendMessage(error);
 
-		String path = this.writeCrashReport(this.getInterpreter(), throwable).toAbsolutePath().toString();
+		String path = this.writeCrashReport(interpreter, throwable).toAbsolutePath().toString();
 		Text crashReport = Texts.CRASH_REPORT.generate(
 			Texts.literal("\n" + path + "\n")
 				.formatted(Formatting.UNDERLINE)
@@ -93,8 +98,8 @@ public class ClientScriptThreadHandler extends ThreadHandler {
 			EssentialUtils.getMinecraftVersion(),
 			EssentialClient.VERSION,
 			Arucas.getVERSION(),
-			this.getInterpreter().getName(),
-			this.getInterpreter().getContent(),
+			interpreter.getName(),
+			interpreter.getContent(),
 			scriptTrace,
 			stacktrace
 		);

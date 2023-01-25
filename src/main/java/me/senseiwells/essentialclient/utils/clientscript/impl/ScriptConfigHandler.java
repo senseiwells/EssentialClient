@@ -37,7 +37,7 @@ public class ScriptConfigHandler implements Config.CList {
 			this.readConfig();
 		}
 
-		interpreter.getThreadHandler().addShutdownEvent(() -> {
+		interpreter.addStopEvent(() -> {
 			if (this.save) {
 				this.saveConfig();
 			}

@@ -2,8 +2,7 @@ package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.api.ArucasLibrary;
-import me.senseiwells.arucas.api.ImplArucasLibrary;
-import me.senseiwells.arucas.api.ThreadHandler;
+import me.senseiwells.arucas.api.GitHubArucasLibrary;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Properties;
 import me.senseiwells.essentialclient.EssentialClient;
@@ -96,7 +95,7 @@ public class ClientScriptInstance {
 		}
 		this.isStopping = true;
 		MinecraftScriptEvents.ON_SCRIPT_END.run(this.interpreter.getProperties().getId());
-		this.interpreter.getThreadHandler().stop();
+		this.interpreter.stop();
 
 		MinecraftClient client = EssentialUtils.getClient();
 		if (CommandHelper.getCommandPacket() != null) {
@@ -128,11 +127,10 @@ public class ClientScriptInstance {
 			return;
 		}
 
-		this.interpreter = Interpreter.of(fileContent, this.scriptName, getApi(), ClientScriptThreadHandler::new);
+		this.interpreter = Interpreter.of(fileContent, this.scriptName, getApi());
 
-		ThreadHandler threadHandler = this.interpreter.getThreadHandler();
-		threadHandler.addShutdownEvent(this::stopScript);
-		threadHandler.executeAsync();
+		this.interpreter.addStopEvent(this::stopScript);
+		this.interpreter.executeAsync();
 
 		if (ClientRules.CLIENT_SCRIPT_ANNOUNCEMENTS.getValue()) {
 			EssentialUtils.sendMessage(Texts.SCRIPT_STATUS.generate(this.scriptName, Texts.STARTED));
@@ -163,7 +161,7 @@ public class ClientScriptInstance {
 	}
 
 	private static void load() {
-		ArucasLibrary library = new ImplArucasLibrary(
+		ArucasLibrary library = new GitHubArucasLibrary(
 			ClientScript.INSTANCE.getLibraryDirectory()
 		);
 
@@ -172,6 +170,7 @@ public class ClientScriptInstance {
 			.setObfuscator(new ClientScriptObfuscator())
 			.setInput(ClientScriptIO.INSTANCE)
 			.setOutput(ClientScriptIO.INSTANCE)
+			.setErrorHandler(ClientScriptErrorHandler.INSTANCE)
 			.setLibraryManager(library)
 			.setInterpreterProperties(() -> {
 				Properties properties = new Properties();

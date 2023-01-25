@@ -143,7 +143,7 @@ public class ScriptFakeEntity {
 	private synchronized static int getNextFakeId(Interpreter interpreter) {
 		int id = FAKE_ID_COUNTER.getAndDecrement();
 		IntSet fakeIds = FAKE_IDS.computeIfAbsent(interpreter.getProperties().getId(), uuid -> {
-			interpreter.getThreadHandler().addShutdownEvent(() -> {
+			interpreter.addStopEvent(() -> {
 				IntSet ids = FAKE_IDS.get(uuid);
 				ClientWorld world = EssentialUtils.getWorld();
 				if (ids != null && world != null) {

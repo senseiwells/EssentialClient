@@ -15,10 +15,8 @@ public class ScriptKeyBind {
 	public ScriptKeyBind(Interpreter interpreter, String name) {
 		Interpreter parent = interpreter.branch();
 		this.keyBind = ClientKeyBinds.registerMulti(name, "Scripting Key Binds", client -> {
-			if (interpreter.getThreadHandler().getRunning() && this.function != null) {
-				ClientScriptUtils.wrapSafe(() -> {
-					this.function.invoke(parent.branch(), List.of());
-				}, interpreter);
+			if (interpreter.isRunning() && this.function != null) {
+				interpreter.runSafe(() -> this.function.invoke(parent.branch(), List.of()));
 			}
 		});
 	}

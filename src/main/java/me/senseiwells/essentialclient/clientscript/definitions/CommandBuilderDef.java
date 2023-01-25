@@ -236,7 +236,7 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 			for (ParsedArgument<?, ?> argument : args) {
 				list.add(ClientScriptUtils.commandArgumentToValue(argument.getResult(), interpreter));
 			}
-			interpreter.getThreadHandler().runAsync(() -> {
+			interpreter.runAsync(() -> {
 				function.invoke(interpreter.branch(), list);
 				return null;
 			});

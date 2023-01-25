@@ -1165,7 +1165,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		BlockPos blockPos = arguments.skip().nextPrimitive(PosDef.class).getBlockPos();
 		CompletableFuture<Void> future = new CompletableFuture<>();
 		ClientScriptUtils.ensureMainThread("breakBlock", arguments.getInterpreter(), () -> {
-			EssentialUtils.mineBlock(blockPos, () -> arguments.getInterpreter().getThreadHandler().getRunning(), future);
+			EssentialUtils.mineBlock(blockPos, () -> arguments.getInterpreter().isRunning(), future);
 		});
 		return future;
 	}

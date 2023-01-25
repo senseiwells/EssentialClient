@@ -202,9 +202,9 @@ public abstract class ScriptShape {
 
 	private void addShape() {
 		Map<UUID, Set<ScriptShape>> map = this.getMap();
-		if (this.interpreter.getThreadHandler().getRunning()) {
+		if (this.interpreter.isRunning()) {
 			Set<ScriptShape> shapes = map.computeIfAbsent(this.interpreter.getProperties().getId(), id -> {
-				this.interpreter.getThreadHandler().addShutdownEvent(() -> map.remove(id));
+				this.interpreter.addStopEvent(() -> map.remove(id));
 				return ConcurrentHashMap.newKeySet();
 			});
 			shapes.add(this);
