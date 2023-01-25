@@ -248,6 +248,21 @@ class Block: Material {
     fun mirrorLeftRight(): Block;
 
     /*
+     * This gets a block with a given offset, this will throw if the block has no position
+     * Parameter - Pos (offset): the position offset to add to the block's current position
+     * Returns - Block: the block at the offset position
+     */
+    fun offset(offset: Pos): Block;
+
+    /*
+     * This gets a block with a given offset, this will throw if the block has no position
+     * Parameter - String (direction): the direction of the offset
+     * Parameter - Number (distance): the distance of the offset
+     * Returns - Block: the block at the offset position
+     */
+    fun offset(direction: String, distance: Number): Block;
+
+    /*
      * This rotates the Block 90 degrees clockwise
      * Returns - Block: the rotated Block
      */

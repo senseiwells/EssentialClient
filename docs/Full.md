@@ -3298,6 +3298,26 @@ block.mirrorFrontBack();
 block.mirrorLeftRight();
 ```
 
+### `<Block>.offset(offset)`
+- Description: This gets a block with a given offset, this will throw if the block has no position
+- Parameter - Pos (`offset`): the position offset to add to the block's current position
+- Returns - Block: the block at the offset position
+- Example:
+```kotlin
+block.offset(new Pos(0, 1, 0));
+```
+
+### `<Block>.offset(direction, distance)`
+- Description: This gets a block with a given offset, this will throw if the block has no position
+- Parameters:
+  - String (`direction`): the direction of the offset
+  - Number (`distance`): the distance of the offset
+- Returns - Block: the block at the offset position
+- Example:
+```kotlin
+block.offset('north', 5);
+```
+
 ### `<Block>.rotateYClockwise()`
 - Description: This rotates the Block 90 degrees clockwise
 - Returns - Block: the rotated Block
@@ -9613,21 +9633,6 @@ task = new Task();
 ```
 
 ## Methods
-
-### `<Task>.loopIf(boolSupplier)`
-- Description: This loops the task, essentially just calling 'task.run', the
-task will run async from the original task, the loop will continue
-if the function provided returns true
-- Parameter - Function (`boolSupplier`): the function to check if the loop should run
-- Returns - Task: the task, this allows for chaining
-- Example:
-```kotlin
-task = new Task()
-    .then(fun() print("hello"))
-    .then(fun() print(" "))
-    .then(fun() print("world"))
-    .loopIf(fun() true); // Always loop
-```
 
 ### `<Task>.run()`
 - Description: This runs the task asynchronously and returns a future which can be awaited.

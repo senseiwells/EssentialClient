@@ -1,5 +1,5 @@
 {
-  "version": "2.0.1",
+  "version": "2.1.0",
   "extensions": {
     "BuiltInExtension": [
       {
@@ -1097,6 +1097,53 @@
           },
           "examples": [
             "block.mirrorLeftRight();"
+          ]
+        },
+        {
+          "name": "offset",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets a block with a given offset, this will throw if the block has no position"
+          ],
+          "params": [
+            {
+              "name": "offset",
+              "type": "Pos",
+              "desc": "the position offset to add to the block's current position"
+            }
+          ],
+          "returns": {
+            "type": "Block",
+            "desc": "the block at the offset position"
+          },
+          "examples": [
+            "block.offset(new Pos(0, 1, 0));"
+          ]
+        },
+        {
+          "name": "offset",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets a block with a given offset, this will throw if the block has no position"
+          ],
+          "params": [
+            {
+              "name": "direction",
+              "type": "String",
+              "desc": "the direction of the offset"
+            },
+            {
+              "name": "distance",
+              "type": "Number",
+              "desc": "the distance of the offset"
+            }
+          ],
+          "returns": {
+            "type": "Block",
+            "desc": "the block at the offset position"
+          },
+          "examples": [
+            "block.offset('north', 5);"
           ]
         },
         {
@@ -12863,29 +12910,6 @@
         }
       ],
       "methods": [
-        {
-          "name": "loopIf",
-          "is_arbitrary": false,
-          "desc": [
-            "This loops the task, essentially just calling 'task.run', the",
-            "task will run async from the original task, the loop will continue",
-            "if the function provided returns true"
-          ],
-          "params": [
-            {
-              "name": "boolSupplier",
-              "type": "Function",
-              "desc": "the function to check if the loop should run"
-            }
-          ],
-          "returns": {
-            "type": "Task",
-            "desc": "the task, this allows for chaining"
-          },
-          "examples": [
-            "task = new Task()\n    .then(fun() print(\"hello\"))\n    .then(fun() print(\" \"))\n    .then(fun() print(\"world\"))\n    .loopIf(fun() true); // Always loop"
-          ]
-        },
         {
           "name": "run",
           "is_arbitrary": false,

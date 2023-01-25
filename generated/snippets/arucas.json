@@ -199,6 +199,16 @@
     "body": ".mirrorLeftRight()",
     "description": "<Block>.mirrorLeftRight()\nThis mirrors the Block around the left and right\n"
   },
+  "Method <Block>.offset(offset)": {
+    "prefix": ".offset($offset)",
+    "body": ".offset($offset)",
+    "description": "<Block>.offset(offset)\nThis gets a block with a given offset, this will throw if the block has no position\n- Parameter - Pos (`offset`): the position offset to add to the block's current position\n"
+  },
+  "Method <Block>.offset(direction, distance)": {
+    "prefix": ".offset($direction, $distance)",
+    "body": ".offset($direction, $distance)",
+    "description": "<Block>.offset(direction, distance)\nThis gets a block with a given offset, this will throw if the block has no position\n- Parameter - String (`direction`): the direction of the offset\n- Parameter - Number (`distance`): the distance of the offset\n"
+  },
   "Method <Block>.rotateYClockwise()": {
     "prefix": ".rotateYClockwise()",
     "body": ".rotateYClockwise()",
@@ -3303,11 +3313,6 @@
     "prefix": "Task",
     "body": "Task",
     "description": "The Task class.\nThis class is used to create tasks that can be chained and\nrun asynchronously. Tasks can be executed as many times as needed\nand chained tasks will be executed in the order they are created.\n"
-  },
-  "Method <Task>.loopIf(boolSupplier)": {
-    "prefix": ".loopIf($boolSupplier)",
-    "body": ".loopIf($boolSupplier)",
-    "description": "<Task>.loopIf(boolSupplier)\nThis loops the task, essentially just calling 'task.run', the\ntask will run async from the original task, the loop will continue\nif the function provided returns true\n- Parameter - Function (`boolSupplier`): the function to check if the loop should run\n"
   },
   "Method <Task>.run()": {
     "prefix": ".run()",
