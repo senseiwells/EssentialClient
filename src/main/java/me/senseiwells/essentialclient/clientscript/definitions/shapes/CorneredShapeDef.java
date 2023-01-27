@@ -11,6 +11,7 @@ import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptShape;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -30,6 +31,7 @@ public class CorneredShapeDef extends PrimitiveDefinition<ScriptShape.Cornered> 
 		super(CORNERED_SHAPE, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptShape.Cornered> superclass() {
 		return this.getPrimitiveDef(OutlinedShapeDef.class);

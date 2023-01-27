@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -39,8 +40,9 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		super(RECIPE, interpreter);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Recipe{id=" + instance.asPrimitive(this).getId() + "}";
 	}
 

@@ -25,6 +25,7 @@ import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -46,18 +47,21 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	}
 
 	@Deprecated
+	@NotNull
 	@Override
-	public ClassInstance create(AbstractClientPlayerEntity value) {
+	public ClassInstance create(@NotNull AbstractClientPlayerEntity value) {
 		return super.create(value);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super AbstractClientPlayerEntity> superclass() {
 		return this.getPrimitiveDef(LivingEntityDef.class);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "OtherPlayer{name=%s}".formatted(instance.asPrimitive(this).getEntityName());
 	}
 

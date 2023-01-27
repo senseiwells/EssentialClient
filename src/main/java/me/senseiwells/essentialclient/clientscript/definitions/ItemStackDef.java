@@ -35,6 +35,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		super(ITEM_STACK, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptItemStack> superclass() {
 		return this.getPrimitiveDef(MaterialDef.class);
@@ -66,18 +68,19 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	}
 
 	@Override
-	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+	public boolean equals$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		ScriptItemStack stack = other.getPrimitive(this);
 		return stack != null && instance.asPrimitive(this).stack.isItemEqual(stack.stack);
 	}
 
 	@Override
-	public int hashCode$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public int hashCode$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return this.toString$Arucas(instance, interpreter, trace).hashCode();
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		ScriptItemStack stack = instance.asPrimitive(this);
 		return "ItemStack{id=" + stack.getId() + ", count=" + stack.stack.getCount() + "}";
 	}

@@ -14,6 +14,7 @@ import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.*;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -36,6 +37,7 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 		super(MINECRAFT_TASK, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptTask> superclass() {
 		return this.getPrimitiveDef(TaskDef.class);

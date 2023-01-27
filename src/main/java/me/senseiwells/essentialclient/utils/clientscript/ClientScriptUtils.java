@@ -117,7 +117,7 @@ public class ClientScriptUtils {
 				"'%s' was not called on the Minecraft main thread, this may lead to unexpected behavior".formatted(name)
 			);
 		}
-		return client.submit(() -> interpreter.runSafe(callable::get));
+		return client.submit(() -> interpreter.runSafe(callable));
 	}
 
 	public static void holdKey(Interpreter interpreter, KeyBinding key, int interval) {
@@ -758,7 +758,7 @@ public class ClientScriptUtils {
 					for (ParsedArgument<?, ?> arg : commandArguments) {
 						list.add(commandArgumentToValue(arg.getResult(), branch));
 					}
-					return branch.runSafe(Suggestions.empty(), () -> {
+					return branch.runSafe(Suggestions.empty(), (Supplier<CompletableFuture<Suggestions>>) () -> {
 						ArucasCollection collection = suggester.invoke(branch, list).getPrimitive(CollectionDef.class);
 						if (collection != null) {
 							List<String> suggested = collection.asCollection().stream().map(i -> i.toString(branch)).toList();

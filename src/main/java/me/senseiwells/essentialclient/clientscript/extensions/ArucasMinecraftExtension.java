@@ -6,22 +6,22 @@ import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.BuiltInFunction;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ArucasMinecraftExtension implements ArucasExtension {
+	@NotNull
 	@Override
 	public String getName() {
 		return "MinecraftExtension";
 	}
 
+	@NotNull
 	@Override
 	public List<BuiltInFunction> getBuiltInFunctions() {
 		return List.of(
-			BuiltInFunction.of("hold", this::hold),
-			BuiltInFunction.of("uncatchable", a -> {
-				throw new NullPointerException();
-			})
+			BuiltInFunction.of("hold", this::hold)
 		);
 	}
 

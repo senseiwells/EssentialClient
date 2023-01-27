@@ -20,6 +20,7 @@ import net.minecraft.client.gui.screen.ingame.MerchantScreen;
 import net.minecraft.screen.MerchantScreenHandler;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 		super(MERCHANT_SCREEN, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super MerchantScreen> superclass() {
 		return this.getPrimitiveDef(ScreenDef.class);

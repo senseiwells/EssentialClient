@@ -34,6 +34,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -52,8 +53,9 @@ public class WorldDef extends CreatableDefinition<World> {
 		super(WORLD, interpreter);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		World world = instance.asPrimitive(this);
 		return "World{level=" + world + "dimension=" + world.getRegistryKey().getValue().getPath() + "}";
 	}

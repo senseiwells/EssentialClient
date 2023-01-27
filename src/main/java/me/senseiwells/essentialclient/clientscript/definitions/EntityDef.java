@@ -33,6 +33,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.biome.Biome;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -51,13 +52,15 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	}
 
 	@Deprecated
+	@NotNull
 	@Override
-	public ClassInstance create(Entity value) {
+	public ClassInstance create(@NotNull Entity value) {
 		return super.create(value);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Entity{id=%s}".formatted(RegistryHelper.getEntityTypeRegistry().getId(instance.getPrimitive(this).getType()));
 	}
 

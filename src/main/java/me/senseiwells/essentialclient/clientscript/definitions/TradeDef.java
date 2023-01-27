@@ -13,6 +13,7 @@ import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import net.minecraft.village.TradeOffer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	}
 
 	@Override
-	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+	public boolean equals$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		TradeOffer otherOffer = other.getPrimitive(this);
 		return otherOffer != null && InventoryUtils.areTradesEqual(instance.getPrimitive(this), otherOffer);
 	}

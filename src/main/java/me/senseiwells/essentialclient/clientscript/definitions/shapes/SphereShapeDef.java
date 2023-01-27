@@ -17,6 +17,7 @@ import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptSphere;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
 		super(SPHERE_SHAPE, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptSphere> superclass() {
 		return this.getPrimitiveDef(CentredShapeDef.class);

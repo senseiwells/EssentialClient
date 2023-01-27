@@ -16,6 +16,7 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -34,8 +35,9 @@ public class TextDef extends CreatableDefinition<MutableText> {
 		super(MinecraftAPI.TEXT, interpreter);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Text{text=" + instance.asPrimitive(this).getString() + "}";
 	}
 

@@ -16,6 +16,7 @@ import me.senseiwells.essentialclient.utils.clientscript.ThreadSafeUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,13 +40,15 @@ public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 		super(MinecraftAPI.ITEM_ENTITY, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ItemEntity> superclass() {
 		return this.getPrimitiveDef(EntityDef.class);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		ItemStack stack = instance.asPrimitive(this).getStack();
 		return "ItemEntity{id=" + stack.getItem().toString() + ", count=" + stack.getCount() + "}";
 	}

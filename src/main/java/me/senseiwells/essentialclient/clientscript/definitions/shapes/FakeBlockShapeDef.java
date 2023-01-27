@@ -23,6 +23,7 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 		super(FAKE_BLOCK, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptFakeBlock> superclass() {
 		return this.getPrimitiveDef(ShapeDef.class);

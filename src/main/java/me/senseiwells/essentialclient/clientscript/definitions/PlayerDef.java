@@ -51,6 +51,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -76,13 +77,15 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		super(PLAYER, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ClientPlayerEntity> superclass() {
 		return this.getPrimitiveDef(OtherPlayerDef.class);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Player{name=" + instance.asPrimitive(this).getEntityName() + "}";
 	}
 

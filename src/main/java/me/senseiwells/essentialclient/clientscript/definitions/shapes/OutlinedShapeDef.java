@@ -9,6 +9,7 @@ import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptShape;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 		super(OUTLINED_SHAPE, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptShape.Outlined> superclass() {
 		return this.getPrimitiveDef(ShapeDef.class);

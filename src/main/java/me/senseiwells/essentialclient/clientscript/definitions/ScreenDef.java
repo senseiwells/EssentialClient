@@ -17,6 +17,7 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -35,13 +36,15 @@ public class ScreenDef extends PrimitiveDefinition<Screen> {
 	}
 
 	@Deprecated
+	@NotNull
 	@Override
-	public ClassInstance create(Screen value) {
+	public ClassInstance create(@NotNull Screen value) {
 		return super.create(value);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Screen{screen=" + ScreenRemapper.getScreenName(instance.asPrimitive(this).getClass()) + "}";
 	}
 

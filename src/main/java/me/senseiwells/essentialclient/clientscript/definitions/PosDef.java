@@ -18,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -42,18 +43,19 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	}
 
 	@Override
-	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+	public boolean equals$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		ScriptPos pos = other.getPrimitive(this);
 		return pos != null && instance.asPrimitive(this).getVec3d().equals(pos.getVec3d());
 	}
 
 	@Override
-	public int hashCode$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public int hashCode$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return instance.asPrimitive(this).getVec3d().hashCode();
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return instance.asPrimitive(this).getVec3d().toString();
 	}
 

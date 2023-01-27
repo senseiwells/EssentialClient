@@ -16,6 +16,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -42,18 +43,19 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	}
 
 	@Override
-	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+	public boolean equals$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		ScriptMaterial material = other.getPrimitive(this);
 		return material != null && instance.asPrimitive(this).asDefault().equals(material.asDefault());
 	}
 
 	@Override
-	public int hashCode$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public int hashCode$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return instance.asPrimitive(this).asDefault().hashCode();
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return instance.asPrimitive(this).asString();
 	}
 

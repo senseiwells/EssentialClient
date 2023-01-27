@@ -17,6 +17,7 @@ import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.rule.client.ClientRule;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -35,8 +36,9 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 		super(MinecraftAPI.CONFIG, interpreter);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		ClientRule<?> rule = instance.asPrimitive(this);
 		return "Config{name=" + rule.getName() + ", value=" + rule.getValue() + "}";
 	}

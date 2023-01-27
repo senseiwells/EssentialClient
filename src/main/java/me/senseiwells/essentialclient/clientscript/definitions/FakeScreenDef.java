@@ -14,11 +14,11 @@ import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.*;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
-import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -41,6 +41,7 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 		super(MinecraftAPI.FAKE_SCREEN, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super FakeInventoryScreen> superclass() {
 		return this.getPrimitiveDef(ScreenDef.class);

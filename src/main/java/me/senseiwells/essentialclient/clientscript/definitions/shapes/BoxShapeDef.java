@@ -15,6 +15,7 @@ import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBox;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class BoxShapeDef extends CreatableDefinition<ScriptBox> {
 		super(BOX_SHAPE, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptBox> superclass() {
 		return this.getPrimitiveDef(CorneredShapeDef.class);

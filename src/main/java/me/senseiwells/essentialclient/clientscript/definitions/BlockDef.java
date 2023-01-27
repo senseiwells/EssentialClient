@@ -32,6 +32,7 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.EmptyBlockView;
+import org.jetbrains.annotations.NotNull;
 
 //#if MC >= 11903
 import net.minecraft.registry.tag.BlockTags;
@@ -58,6 +59,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		super(BLOCK, interpreter);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super ScriptBlockState> superclass() {
 		return this.getPrimitiveDef(MaterialDef.class);
@@ -69,7 +71,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	}
 
 	@Override
-	public boolean equals$Arucas(ClassInstance instance, Interpreter interpreter, ClassInstance other, LocatableTrace trace) {
+	public boolean equals$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		ScriptBlockState state = other.getPrimitive(this);
 		return state != null && instance.asPrimitive(this).state.equals(state.state);
 	}
@@ -79,8 +81,9 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		return instance.asPrimitive(this).state.hashCode();
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Block{id=" + instance.asPrimitive(this).getId().getPath() + "}";
 	}
 

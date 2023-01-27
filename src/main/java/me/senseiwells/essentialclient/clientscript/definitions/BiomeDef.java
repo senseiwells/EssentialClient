@@ -16,6 +16,7 @@ import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -34,8 +35,9 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		super(MinecraftAPI.BIOME, interpreter);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		Identifier id = RegistryHelper.getBiomeRegistry().getId(instance.asPrimitive(this));
 		return "Biome{id=" + (id == null ? "plains" : id.getPath()) + "}";
 	}

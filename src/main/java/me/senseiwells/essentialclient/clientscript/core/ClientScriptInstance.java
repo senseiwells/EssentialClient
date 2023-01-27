@@ -1,8 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.ArucasAPI;
-import me.senseiwells.arucas.api.ArucasLibrary;
-import me.senseiwells.arucas.api.GitHubArucasLibrary;
+import me.senseiwells.arucas.api.impl.MultiArucasLibrary;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Properties;
 import me.senseiwells.essentialclient.EssentialClient;
@@ -148,6 +147,7 @@ public class ClientScriptInstance {
 		return API;
 	}
 
+	@SuppressWarnings("unused")
 	public static void addApi(ClientScriptAPI api) {
 		if (APIS == null) {
 			throw new IllegalStateException("ClientScript API has been locked, register your api earlier");
@@ -161,17 +161,13 @@ public class ClientScriptInstance {
 	}
 
 	private static void load() {
-		ArucasLibrary library = new GitHubArucasLibrary(
-			ClientScript.INSTANCE.getLibraryDirectory()
-		);
-
 		ArucasAPI.Builder builder = new ArucasAPI.Builder()
+			.setLibraryManager(new MultiArucasLibrary(ClientScript.INSTANCE.getLibraryDirectory()))
 			.addDefault()
 			.setObfuscator(new ClientScriptObfuscator())
 			.setInput(ClientScriptIO.INSTANCE)
 			.setOutput(ClientScriptIO.INSTANCE)
 			.setErrorHandler(ClientScriptErrorHandler.INSTANCE)
-			.setLibraryManager(library)
 			.setInterpreterProperties(() -> {
 				Properties properties = new Properties();
 				properties.setErrorMaxLength(40);

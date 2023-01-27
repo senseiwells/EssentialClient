@@ -14,6 +14,7 @@ import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -36,18 +37,21 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 	}
 
 	@Deprecated
+	@NotNull
 	@Override
-	public ClassInstance create(LivingEntity value) {
+	public ClassInstance create(@NotNull LivingEntity value) {
 		return super.create(value);
 	}
 
+	@NotNull
 	@Override
 	public PrimitiveDefinition<? super LivingEntity> superclass() {
 		return this.getInterpreter().getPrimitive(EntityDef.class);
 	}
 
+	@NotNull
 	@Override
-	public String toString$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "LivingEntity{id=%s}".formatted(RegistryHelper.getEntityTypeRegistry().getId(instance.asPrimitive(this).getType()).getPath());
 	}
 

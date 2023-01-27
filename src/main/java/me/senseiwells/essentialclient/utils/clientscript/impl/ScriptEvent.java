@@ -10,6 +10,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class ScriptEvent {
 	private final Interpreter interpreter;
@@ -56,7 +57,7 @@ public class ScriptEvent {
 			});
 			return false;
 		}
-		return branch.runSafe(false, () -> {
+		return branch.runSafe(false, (Supplier<Boolean>) () -> {
 			try {
 				branch.call(this.function, newArgs, Trace.getINTERNAL());
 				return Boolean.FALSE;
