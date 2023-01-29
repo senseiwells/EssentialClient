@@ -892,7 +892,7 @@
   "Method <FakeScreen>.onClick(function)": {
     "prefix": ".onClick($function)",
     "body": ".onClick($function)",
-    "description": "<FakeScreen>.onClick(function)\nThis sets the callback for when a slot is clicked in the inventory.\nThe callback must have 3 parameters, the first is the item stack that was clicked,\nthen second is the slot number, third is the action as a string\n- Parameter - Function (`function`): the callback function\n"
+    "description": "<FakeScreen>.onClick(function)\nThis sets the callback for when a slot is clicked in the inventory.\nThe callback must have 3 parameters, the first is the item stack that was clicked,\nthen second is the slot number, third is the action as a string, fourth is the\nbutton string: right, left, middle.\n- Parameter - Function (`function`): the callback function\n"
   },
   "Method <FakeScreen>.setStackForSlot(slotNum, stack)": {
     "prefix": ".setStackForSlot($slotNum, $stack)",

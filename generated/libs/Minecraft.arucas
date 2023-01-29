@@ -1172,7 +1172,8 @@ class FakeScreen: Screen {
     /*
      * This sets the callback for when a slot is clicked in the inventory.
      * The callback must have 3 parameters, the first is the item stack that was clicked,
-     * then second is the slot number, third is the action as a string
+     * then second is the slot number, third is the action as a string, fourth is the
+     * button string: right, left, middle.
      * Parameter - Function (function): the callback function
      */
     fun onClick(function: Function): Null;
