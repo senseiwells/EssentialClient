@@ -67,7 +67,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@Override
 	public List<BuiltInFunction> defineStaticMethods() {
 		return List.of(
-			BuiltInFunction.of("of", this::of)
+			BuiltInFunction.of("of", 1, this::of)
 		);
 	}
 
