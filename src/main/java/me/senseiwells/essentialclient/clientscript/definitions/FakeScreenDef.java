@@ -91,16 +91,19 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 		desc = {
 			"This sets the callback for when a slot is clicked in the inventory.",
 			"The callback must have 3 parameters, the first is the item stack that was clicked,",
-			"then second is the slot number, third is the action as a string"
+			"then second is the slot number, third is the action as a string, fourth is the",
+			"button string: right, left, middle."
 		},
 		params = {
 			FUNCTION, "function", "the callback function"
 		},
 		examples =
 			"""
-				fakeScreen.onClick(fun(item, slotNum, action) {
-					// action can be any of the following:
+				fakeScreen.onClick(fun(item, slotNum, action, button) {
+					// Action can be any of the following:
 					// 'PICKUP', 'QUICK_MOVE', 'SWAP', 'CLONE', 'THROW', 'QUICK_CRAFT', or 'PICKUP_ALL'
+					// Button can be any of the follinwg:
+					// 'right', 'left', 'middle', or 'unknown'
 					print(action);
 				});
 				"""

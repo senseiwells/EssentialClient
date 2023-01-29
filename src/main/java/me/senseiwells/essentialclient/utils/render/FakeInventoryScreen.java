@@ -6,6 +6,7 @@ import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.ArucasFunction;
 import me.senseiwells.essentialclient.clientscript.definitions.ItemStackDef;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -70,7 +72,8 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 				this.function.invoke(branch, List.of(
 					branch.create(ItemStackDef.class, new ScriptItemStack(stack.copy())),
 					branch.create(NumberDef.class, (double) slotNumber),
-					branch.create(StringDef.class, action)
+					branch.create(StringDef.class, action),
+					branch.create(StringDef.class, ClientScriptUtils.mouseButtonToString(button))
 				));
 				return null;
 			});

@@ -75,6 +75,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
+import org.lwjgl.glfw.GLFW;
+
 public class ClientScriptUtils {
 	private static final Set<String> WARNED = ConcurrentHashMap.newKeySet();
 	private static final Map<String, TickedKey> HELD_KEYS = new ConcurrentHashMap<>();
@@ -157,6 +159,15 @@ public class ClientScriptUtils {
 				}
 				throw new RuntimeError("Invalid direction '%s'".formatted(string));
 			}
+		};
+	}
+
+	public static String mouseButtonToString(int number) {
+		return switch (number) {
+			case GLFW.GLFW_MOUSE_BUTTON_RIGHT -> "right";
+			case GLFW.GLFW_MOUSE_BUTTON_LEFT -> "left";
+			case GLFW.GLFW_MOUSE_BUTTON_MIDDLE -> "middle";
+			default -> "unknown";
 		};
 	}
 
