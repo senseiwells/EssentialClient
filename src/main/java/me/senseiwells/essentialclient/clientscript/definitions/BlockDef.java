@@ -77,7 +77,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	}
 
 	@Override
-	public int hashCode$Arucas(ClassInstance instance, Interpreter interpreter, LocatableTrace trace) {
+	public int hashCode$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return instance.asPrimitive(this).state.hashCode();
 	}
 
