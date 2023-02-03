@@ -2418,15 +2418,6 @@ class Player: OtherPlayer {
     fun interactBlock(pos: Pos, direction: String): Future;
 
     /*
-     * This allows you to interact with a block at a position and direction
-     * Parameter - Number (x): the x position
-     * Parameter - Number (y): the y position
-     * Parameter - Number (z): the z position
-     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
-     */
-    fun interactBlock(x: Number, y: Number, z: Number): Future;
-
-    /*
      * This allows you to interact with a block at a position, direction, and hand
      * Parameter - Pos (pos): the position of the block
      * Parameter - String (direction): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
@@ -2434,6 +2425,15 @@ class Player: OtherPlayer {
      * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
     fun interactBlock(pos: Pos, direction: String, hand: String): Future;
+
+    /*
+     * This allows you to interact with a block at a position and direction
+     * Parameter - Number (x): the x position
+     * Parameter - Number (y): the y position
+     * Parameter - Number (z): the z position
+     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
+     */
+    fun interactBlock(x: Number, y: Number, z: Number): Future;
 
     /*
      * This allows you to interact with a block at a position and direction
