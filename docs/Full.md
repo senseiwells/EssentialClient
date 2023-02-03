@@ -7163,7 +7163,9 @@ client.playSound('entity.lightning_bolt.thunder', 1, 1);
 ```
 
 ### `<MinecraftClient>.playerNameFromUuid(uuid)`
-- Description: This will return the player name from the given uuid
+- Description: This will return the player name from the given uuid.
+The player name is fetched from the Mojang API, this is
+intended for use to get a player's name who is not online
 - Parameter - String (`uuid`): the uuid as a string
 - Returns - String: the player name, null if the uuid is not found
 - Example:
@@ -7304,7 +7306,9 @@ client.tick();
 ```
 
 ### `<MinecraftClient>.uuidFromPlayerName(name)`
-- Description: This will return the uuid from the given player name
+- Description: This will return the uuid from the given player name.
+The player uuid is fetched from the Mojang API, this is
+intended for use to get a player's uuid who is not online
 - Parameter - String (`name`): the player name
 - Returns - String: the uuid, null if the player name is not found
 - Example:
@@ -7709,7 +7713,8 @@ otherPlayer.getXpProgress();
 ```
 
 ### `<OtherPlayer>.isInventoryFull()`
-- Description: This gets whether the players inventory is full
+- Description: This gets whether the players inventory is full.
+More specifically whether the player has no empty slots
 - Returns - Boolean: whether the inventory is full
 - Example:
 ```kotlin
@@ -8175,18 +8180,6 @@ player.getSwappableHotbarSlot();
 - Example:
 ```kotlin
 player.interactBlock(new Pos(0, 0, 0), 'up');
-```
-
-### `<Player>.interactBlock(x, y, z)`
-- Description: This allows you to interact with a block at a position and direction
-- Parameters:
-  - Number (`x`): the x position
-  - Number (`y`): the y position
-  - Number (`z`): the z position
-- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
-- Example:
-```kotlin
-player.interactBlock(0, 100, 0);
 ```
 
 ### `<Player>.interactBlock(pos, direction, hand)`
@@ -10790,9 +10783,10 @@ new GameEvent("onPickBlock", fun(itemStack) {
 - This event is fired when the player receives a message in chat
 - Parameter - String (`uuid`): the sender's UUID
 - Parameter - String (`message`): the message that was received
+- Parameter - String (`type`): the type of message that was received; 'chat', 'say_command', 'msg_command_incoming', 'msg_command_outgoing', 'team_msg_command_incoming', 'team_msg_command_outgoing', and 'emote_command'
 - Cancellable: true
 ```kotlin
-new GameEvent("onReceiveMessage", fun(uuid, message) {
+new GameEvent("onReceiveMessage", fun(uuid, message, type) {
     // Code
 });
 ```

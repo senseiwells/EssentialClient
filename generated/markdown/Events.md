@@ -400,9 +400,10 @@ new GameEvent("onPickBlock", fun(itemStack) {
 - This event is fired when the player receives a message in chat
 - Parameter - String (`uuid`): the sender's UUID
 - Parameter - String (`message`): the message that was received
+- Parameter - String (`type`): the type of message that was received; 'chat', 'say_command', 'msg_command_incoming', 'msg_command_outgoing', 'team_msg_command_incoming', 'team_msg_command_outgoing', and 'emote_command'
 - Cancellable: true
 ```kotlin
-new GameEvent("onReceiveMessage", fun(uuid, message) {
+new GameEvent("onReceiveMessage", fun(uuid, message, type) {
     // Code
 });
 ```

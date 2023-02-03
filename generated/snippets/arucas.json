@@ -2067,7 +2067,7 @@
   "Method <MinecraftClient>.playerNameFromUuid(uuid)": {
     "prefix": ".playerNameFromUuid($uuid)",
     "body": ".playerNameFromUuid($uuid)",
-    "description": "<MinecraftClient>.playerNameFromUuid(uuid)\nThis will return the player name from the given uuid\n- Parameter - String (`uuid`): the uuid as a string\n"
+    "description": "<MinecraftClient>.playerNameFromUuid(uuid)\nThis will return the player name from the given uuid.\nThe player name is fetched from the Mojang API, this is\nintended for use to get a player's name who is not online\n- Parameter - String (`uuid`): the uuid as a string\n"
   },
   "Method <MinecraftClient>.pressKey(key)": {
     "prefix": ".pressKey($key)",
@@ -2147,7 +2147,7 @@
   "Method <MinecraftClient>.uuidFromPlayerName(name)": {
     "prefix": ".uuidFromPlayerName($name)",
     "body": ".uuidFromPlayerName($name)",
-    "description": "<MinecraftClient>.uuidFromPlayerName(name)\nThis will return the uuid from the given player name\n- Parameter - String (`name`): the player name\n"
+    "description": "<MinecraftClient>.uuidFromPlayerName(name)\nThis will return the uuid from the given player name.\nThe player uuid is fetched from the Mojang API, this is\nintended for use to get a player's uuid who is not online\n- Parameter - String (`name`): the player name\n"
   },
   "MinecraftTask Class": {
     "prefix": "MinecraftTask",
@@ -2347,7 +2347,7 @@
   "Method <OtherPlayer>.isInventoryFull()": {
     "prefix": ".isInventoryFull()",
     "body": ".isInventoryFull()",
-    "description": "<OtherPlayer>.isInventoryFull()\nThis gets whether the players inventory is full\n"
+    "description": "<OtherPlayer>.isInventoryFull()\nThis gets whether the players inventory is full.\nMore specifically whether the player has no empty slots\n"
   },
   "Method <OtherPlayer>.isPlayerSlot(slotNum)": {
     "prefix": ".isPlayerSlot($slotNum)",
@@ -2563,11 +2563,6 @@
     "prefix": ".interactBlock($pos, $direction)",
     "body": ".interactBlock($pos, $direction)",
     "description": "<Player>.interactBlock(pos, direction)\nThis allows you to interact with a block at a position and direction\n- Parameter - Pos (`pos`): the position of the block\n- Parameter - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.\n"
-  },
-  "Method <Player>.interactBlock(x, y, z)": {
-    "prefix": ".interactBlock($x, $y, $z)",
-    "body": ".interactBlock($x, $y, $z)",
-    "description": "<Player>.interactBlock(x, y, z)\nThis allows you to interact with a block at a position and direction\n- Parameter - Number (`x`): the x position\n- Parameter - Number (`y`): the y position\n- Parameter - Number (`z`): the z position\n"
   },
   "Method <Player>.interactBlock(pos, direction, hand)": {
     "prefix": ".interactBlock($pos, $direction, $hand)",
@@ -3850,9 +3845,9 @@
     "description": "This event is fired when the player picks a block with middle mouse\n\n- Argument - ItemStack (`itemStack`): the item stack that was picked\n"
   },
   "Game Event: onReceiveMessage": {
-    "prefix": "new GameEvent(\"onReceiveMessage\", fun(uuid, message) { })",
-    "body": "new GameEvent(\"onReceiveMessage\", fun($uuid, $message) {\n\t$0\n})",
-    "description": "This event is fired when the player receives a message in chat\n\n- Argument - String (`uuid`): the sender's UUID\n- Argument - String (`message`): the message that was received\n"
+    "prefix": "new GameEvent(\"onReceiveMessage\", fun(uuid, message, type) { })",
+    "body": "new GameEvent(\"onReceiveMessage\", fun($uuid, $message, $type) {\n\t$0\n})",
+    "description": "This event is fired when the player receives a message in chat\n\n- Argument - String (`uuid`): the sender's UUID\n- Argument - String (`message`): the message that was received\n- Argument - String (`type`): the type of message that was received; 'chat', 'say_command', 'msg_command_incoming', 'msg_command_outgoing', 'team_msg_command_incoming', 'team_msg_command_outgoing', and 'emote_command'\n"
   },
   "Game Event: onGamemodeChange": {
     "prefix": "new GameEvent(\"onGamemodeChange\", fun(gamemode) { })",

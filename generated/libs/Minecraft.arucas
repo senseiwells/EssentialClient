@@ -1829,7 +1829,9 @@ class MinecraftClient {
     fun playSound(soundId: String, volume: Number, pitch: Number): Null;
 
     /*
-     * This will return the player name from the given uuid
+     * This will return the player name from the given uuid.
+     * The player name is fetched from the Mojang API, this is
+     * intended for use to get a player's name who is not online
      * Parameter - String (uuid): the uuid as a string
      * Returns - String: the player name, null if the uuid is not found
      */
@@ -1937,7 +1939,9 @@ class MinecraftClient {
     fun tick(): Null;
 
     /*
-     * This will return the uuid from the given player name
+     * This will return the uuid from the given player name.
+     * The player uuid is fetched from the Mojang API, this is
+     * intended for use to get a player's uuid who is not online
      * Parameter - String (name): the player name
      * Returns - String: the uuid, null if the player name is not found
      */
@@ -2113,7 +2117,8 @@ class OtherPlayer {
     fun getXpProgress(): Number;
 
     /*
-     * This gets whether the players inventory is full
+     * This gets whether the players inventory is full.
+     * More specifically whether the player has no empty slots
      * Returns - Boolean: whether the inventory is full
      */
     fun isInventoryFull(): Boolean;
@@ -2417,15 +2422,6 @@ class Player: OtherPlayer {
      * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
      */
     fun interactBlock(pos: Pos, direction: String): Future;
-
-    /*
-     * This allows you to interact with a block at a position and direction
-     * Parameter - Number (x): the x position
-     * Parameter - Number (y): the y position
-     * Parameter - Number (z): the z position
-     * Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
-     */
-    fun interactBlock(x: Number, y: Number, z: Number): Future;
 
     /*
      * This allows you to interact with a block at a position, direction, and hand

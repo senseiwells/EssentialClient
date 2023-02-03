@@ -8157,7 +8157,9 @@
           "name": "playerNameFromUuid",
           "is_arbitrary": false,
           "desc": [
-            "This will return the player name from the given uuid"
+            "This will return the player name from the given uuid.",
+            "The player name is fetched from the Mojang API, this is",
+            "intended for use to get a player's name who is not online"
           ],
           "params": [
             {
@@ -8439,7 +8441,9 @@
           "name": "uuidFromPlayerName",
           "is_arbitrary": false,
           "desc": [
-            "This will return the uuid from the given player name"
+            "This will return the uuid from the given player name.",
+            "The player uuid is fetched from the Mojang API, this is",
+            "intended for use to get a player's uuid who is not online"
           ],
           "params": [
             {
@@ -9141,7 +9145,8 @@
           "name": "isInventoryFull",
           "is_arbitrary": false,
           "desc": [
-            "This gets whether the players inventory is full"
+            "This gets whether the players inventory is full.",
+            "More specifically whether the player has no empty slots"
           ],
           "returns": {
             "type": "Boolean",
@@ -9987,37 +9992,6 @@
           },
           "examples": [
             "player.interactBlock(new Pos(0, 0, 0), 'up');"
-          ]
-        },
-        {
-          "name": "interactBlock",
-          "is_arbitrary": false,
-          "desc": [
-            "This allows you to interact with a block at a position and direction"
-          ],
-          "params": [
-            {
-              "name": "x",
-              "type": "Number",
-              "desc": "the x position"
-            },
-            {
-              "name": "y",
-              "type": "Number",
-              "desc": "the y position"
-            },
-            {
-              "name": "z",
-              "type": "Number",
-              "desc": "the z position"
-            }
-          ],
-          "returns": {
-            "type": "Future",
-            "desc": "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"
-          },
-          "examples": [
-            "player.interactBlock(0, 100, 0);"
           ]
         },
         {
@@ -14843,6 +14817,11 @@
           "name": "message",
           "type": "String",
           "desc": "the message that was received"
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "desc": "the type of message that was received; 'chat', 'say_command', 'msg_command_incoming', 'msg_command_outgoing', 'team_msg_command_incoming', 'team_msg_command_outgoing', and 'emote_command'"
         }
       ],
       "cancellable": true
