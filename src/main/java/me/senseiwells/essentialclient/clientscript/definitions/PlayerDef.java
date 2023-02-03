@@ -155,7 +155,6 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			MemberFunction.of("attackBlock", 4, this::attackBlock),
 			MemberFunction.of("attackBlock", 2, this::attackBlockPos),
 			MemberFunction.of("interactItem", 2, this::interactItem),
-			MemberFunction.of("interactBlock", 4, this::interactBlock),
 			MemberFunction.of("interactBlock", 2, this::interactBlockPos),
 			MemberFunction.of("interactBlock", 3, this::interactBlockPosHand),
 			MemberFunction.of("interactBlock", 8, this::interactBlockFull),
@@ -1270,31 +1269,6 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			//#endif
 		});
 		return null;
-	}
-
-	@FunctionDoc(
-		name = "interactBlock",
-		desc = "This allows you to interact with a block at a position and direction",
-		params = {
-			NUMBER, "x", "the x position",
-			NUMBER, "y", "the y position",
-			NUMBER, "z", "the z position"
-		},
-		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
-		examples = "player.interactBlock(0, 100, 0);"
-	)
-	private Future<String> interactBlock(Arguments arguments) {
-		double x = arguments.skip().nextPrimitive(NumberDef.class).intValue();
-		double y = arguments.nextPrimitive(NumberDef.class).intValue();
-		double z = arguments.nextPrimitive(NumberDef.class).intValue();
-		return this.interactInternal(
-			arguments.getInterpreter(),
-			"down",
-			EssentialUtils.getPlayer().getActiveHand(),
-			new Vec3d(x, y, z),
-			new BlockPos(x, y, z),
-			false
-		);
 	}
 
 	@FunctionDoc(
