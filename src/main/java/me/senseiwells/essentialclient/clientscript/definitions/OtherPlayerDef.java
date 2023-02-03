@@ -113,7 +113,10 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 
 	@FunctionDoc(
 		name = "isInventoryFull",
-		desc = "This gets whether the players inventory is full",
+		desc = {
+			"This gets whether the players inventory is full.",
+			"More specifically whether the player has no empty slots"
+		},
 		returns = {BOOLEAN, "whether the inventory is full"},
 		examples = "otherPlayer.isInventoryFull();"
 	)
@@ -278,8 +281,10 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getAllSlotsFor",
 		desc = "This gets all the slot numbers of the specified item in the players combined inventory",
-		params = {MATERIAL, "materialLike", "the item or material you want to get the slot of",
-			STRING, "inventoryType", "all/combined -> includes external, player/main -> player slots, external/other -> excludes player inventory"},
+		params = {
+			MATERIAL, "materialLike", "the item or material you want to get the slot of",
+			STRING, "inventoryType", "all/combined -> includes external, player/main -> player slots, external/other -> excludes player inventory"
+		},
 		returns = {LIST, "the slot numbers of the item, empty list if not found"},
 		examples = "otherPlayer.getAllSlotsFor(Material.DIAMOND, 'player');"
 	)

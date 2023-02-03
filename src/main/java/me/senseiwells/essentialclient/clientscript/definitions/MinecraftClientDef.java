@@ -410,7 +410,11 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 
 	@FunctionDoc(
 		name = "playerNameFromUuid",
-		desc = "This will return the player name from the given uuid",
+		desc = {
+			"This will return the player name from the given uuid.",
+			"The player name is fetched from the Mojang API, this is",
+			"intended for use to get a player's name who is not online"
+		},
 		params = {STRING, "uuid", "the uuid as a string"},
 		returns = {STRING, "the player name, null if the uuid is not found"},
 		examples = "client.playerNameFromUuid('d4fca8c4-e083-4300-9a73-bf438847861c');"
@@ -422,7 +426,11 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 
 	@FunctionDoc(
 		name = "uuidFromPlayerName",
-		desc = "This will return the uuid from the given player name",
+		desc = {
+			"This will return the uuid from the given player name.",
+			"The player uuid is fetched from the Mojang API, this is",
+			"intended for use to get a player's uuid who is not online"
+		},
 		params = {STRING, "name", "the player name"},
 		returns = {STRING, "the uuid, null if the player name is not found"},
 		examples = "client.uuidFromPlayerName('senseiwells');"
