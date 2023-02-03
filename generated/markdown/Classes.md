@@ -143,12 +143,12 @@ Import with `import Block from Minecraft;`
 block.getBlastResistance();
 ```
 
-### `<Block>.getBlockNbt()`
-- Description: This gets the NBT of the Block
-- Returns - Map: the NBT of the Block, may be null if the Block has no NBT
+### `<Block>.getBlockEntityNbt()`
+- Description: This gets the NBT of a block entity
+- Returns - Map: the NBT of a block entity, may be null if the block entity has no NBT
 - Example:
 ```kotlin
-block.getBlockNbt();
+block.getBlockEntityNbt();
 ```
 
 ### `<Block>.getBlockProperties()`
@@ -4322,6 +4322,7 @@ client.stripFormatting('§cHello§r');
 ```
 
 ### `<MinecraftClient>.syncToTick()`
+- Deprecated: This function is unstable, it should not be used
 - Description: Synchronizes the current thread in Arucas to the next game tick
 - Example:
 ```kotlin
@@ -5209,18 +5210,6 @@ player.getSwappableHotbarSlot();
 player.interactBlock(new Pos(0, 0, 0), 'up');
 ```
 
-### `<Player>.interactBlock(pos, direction, hand)`
-- Description: This allows you to interact with a block at a position, direction, and hand
-- Parameters:
-  - Pos (`pos`): the position of the block
-  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
-  - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
-- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
-- Example:
-```kotlin
-player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
-```
-
 ### `<Player>.interactBlock(x, y, z)`
 - Description: This allows you to interact with a block at a position and direction
 - Parameters:
@@ -5231,6 +5220,18 @@ player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 - Example:
 ```kotlin
 player.interactBlock(0, 100, 0);
+```
+
+### `<Player>.interactBlock(pos, direction, hand)`
+- Description: This allows you to interact with a block at a position, direction, and hand
+- Parameters:
+  - Pos (`pos`): the position of the block
+  - String (`direction`): the direction of the interaction, e.g. 'up', 'north', 'east', etc.
+  - String (`hand`): the hand to use, e.g. 'main_hand', 'off_hand'
+- Returns - Future: the result of the placement as a string; this can be: 'success', 'pass', 'fail'
+- Example:
+```kotlin
+player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');
 ```
 
 ### `<Player>.interactBlock(pos, direction, blockPos, insideBlock)`
