@@ -55,7 +55,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	//$$}
 	//$$@Inject(method = "sendCommand(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
 	//$$public void onCommandMessage(String message, Text preview, CallbackInfo ci) {
-	//$$	if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
+	//$$	if (ClientScriptIO.INSTANCE.submitInput("/" + message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run("/" + message)) {
 	//$$		ci.cancel();
 	//$$	}
 	//$$}

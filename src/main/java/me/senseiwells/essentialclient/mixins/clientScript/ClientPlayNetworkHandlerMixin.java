@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import me.senseiwells.essentialclient.clientscript.core.ClientScriptIO;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
@@ -247,21 +248,21 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	//#if MC >= 11903
 	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true) // Checkstyle Ignore
 	private void onChatMessage(String message, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
+		if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
 	private void onCommand(String command, CallbackInfo ci) {
-		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run(command)) {
+		if (ClientScriptIO.INSTANCE.submitInput("/" + command) || MinecraftScriptEvents.ON_SEND_MESSAGE.run("/" + command)) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
 	private void onCommand(String command, CallbackInfoReturnable<Boolean> cir) {
-		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run(command)) {
+		if (MinecraftScriptEvents.ON_SEND_MESSAGE.run("/" + command)) {
 			cir.setReturnValue(true);
 		}
 	}
