@@ -117,7 +117,7 @@ public class EssentialUtils {
 			client.execute(() -> {
 				//#if MC >= 11903
 				if (message.startsWith("/")) {
-					client.player.networkHandler.sendCommand(message.substring(1));
+					client.player.networkHandler.sendChatCommand(message.substring(1));
 					return;
 				}
 				client.player.networkHandler.sendChatMessage(message);
