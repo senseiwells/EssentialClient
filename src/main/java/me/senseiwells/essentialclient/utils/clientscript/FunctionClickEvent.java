@@ -2,10 +2,10 @@ package me.senseiwells.essentialclient.utils.clientscript;
 
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.ArucasFunction;
-import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import net.minecraft.text.ClickEvent;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class FunctionClickEvent extends ClickEvent {
 	private final Interpreter interpreter;
@@ -19,6 +19,6 @@ public class FunctionClickEvent extends ClickEvent {
 
 	public void executeFunction() {
 		Interpreter branch = this.interpreter.branch();
-		branch.runSafe(() -> this.function.invoke(branch, List.of()));
+		branch.runSafe((Supplier<Object>) () -> this.function.invoke(branch, List.of()));
 	}
 }

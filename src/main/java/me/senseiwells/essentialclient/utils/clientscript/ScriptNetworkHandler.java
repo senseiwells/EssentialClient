@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.utils.clientscript;
 
 import io.netty.buffer.Unpooled;
 import me.senseiwells.arucas.builtin.*;
-import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.Arguments;

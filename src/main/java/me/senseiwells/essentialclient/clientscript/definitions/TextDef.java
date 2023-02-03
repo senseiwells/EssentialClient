@@ -3,8 +3,8 @@ package me.senseiwells.essentialclient.clientscript.definitions;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.StringDef;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.extensions.JsonDef;
 import me.senseiwells.arucas.utils.*;
@@ -37,7 +37,7 @@ public class TextDef extends CreatableDefinition<MutableText> {
 
 	@NotNull
 	@Override
-	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Text{text=" + instance.asPrimitive(this).getString() + "}";
 	}
 

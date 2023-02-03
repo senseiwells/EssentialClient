@@ -5,8 +5,8 @@ import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.builtin.StringDef;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.*;
@@ -60,8 +60,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 
 	@NotNull
 	@Override
-	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
-		return "Entity{id=%s}".formatted(RegistryHelper.getEntityTypeRegistry().getId(instance.getPrimitive(this).getType()));
+	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+		return "Entity{id=%s}".formatted(RegistryHelper.getEntityTypeRegistry().getId(instance.asPrimitive(this).getType()));
 	}
 
 	@Override

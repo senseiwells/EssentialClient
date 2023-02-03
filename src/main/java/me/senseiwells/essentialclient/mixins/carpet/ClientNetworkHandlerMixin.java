@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ClientNetworkHandler.class, remap = false)
 public class ClientNetworkHandlerMixin {
+	@SuppressWarnings({"MixinAnnotationTarget", "InvalidInjectorMethodSignature"})
 	@ModifyVariable(method = "lambda$static$0", at = @At("STORE"), ordinal = 1)
 	private static NbtCompound onGetRuleNBT(NbtCompound original) {
 		CarpetClient.INSTANCE.syncCarpetRule(original);

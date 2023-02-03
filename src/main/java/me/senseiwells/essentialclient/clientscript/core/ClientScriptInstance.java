@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.ArucasAPI;
-import me.senseiwells.arucas.api.impl.MultiArucasLibrary;
+import me.senseiwells.arucas.api.impl.GitHubArucasLibrary;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Properties;
 import me.senseiwells.essentialclient.EssentialClient;
@@ -162,8 +162,8 @@ public class ClientScriptInstance {
 
 	private static void load() {
 		ArucasAPI.Builder builder = new ArucasAPI.Builder()
-			.setLibraryManager(new MultiArucasLibrary(ClientScript.INSTANCE.getLibraryDirectory()))
 			.addDefault()
+			.addArucasLibrary("ArucasLibraries", new GitHubArucasLibrary(ClientScript.INSTANCE.getLibraryDirectory()))
 			.setObfuscator(new ClientScriptObfuscator())
 			.setInput(ClientScriptIO.INSTANCE)
 			.setOutput(ClientScriptIO.INSTANCE)
@@ -190,7 +190,7 @@ public class ClientScriptInstance {
 
 		new Thread(() -> {
 			try {
-				API.generateNativeFiles(API.getLibraryManager().getImportPath());
+				API.generateNativeFiles(ClientScript.INSTANCE.getLibraryDirectory());
 			} catch (Exception e) {
 				// This isn't fatal
 				EssentialClient.LOGGER.error("Failed to generate native files", e);

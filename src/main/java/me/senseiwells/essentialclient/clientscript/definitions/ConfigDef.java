@@ -6,8 +6,8 @@ import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.FunctionDef;
 import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.MapDef;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.*;
@@ -38,7 +38,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 
 	@NotNull
 	@Override
-	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		ClientRule<?> rule = instance.asPrimitive(this);
 		return "Config{name=" + rule.getName() + ", value=" + rule.getValue() + "}";
 	}

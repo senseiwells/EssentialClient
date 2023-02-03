@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
-import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.impl.DelayedFunction;
 import me.senseiwells.arucas.utils.impl.Task;
@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 public class ScriptTask extends Task {
 	public ScriptTask(Interpreter interpreter) {
@@ -26,7 +27,7 @@ public class ScriptTask extends Task {
 			if (!tasks.hasNext()) {
 				return Scheduler.schedule(totalTicks + next.getTime(), () -> {
 					Interpreter interpreter = this.getInterpreter();
-					return interpreter.runSafe(() -> {
+					return interpreter.runSafe((Supplier<ClassInstance>) () -> {
 						if (interpreter.isRunning()) {
 							return next.getFunction().invoke(interpreter.branch(), List.of());
 						}
@@ -37,7 +38,7 @@ public class ScriptTask extends Task {
 			totalTicks += next.getTime();
 			Scheduler.schedule(totalTicks, () -> {
 				Interpreter interpreter = this.getInterpreter();
-				interpreter.runSafe(() -> {
+				interpreter.runSafe((Supplier<Object>) () -> {
 					if (interpreter.isRunning()) {
 						next.getFunction().invoke(interpreter.branch(), List.of());
 					}

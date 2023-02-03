@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.api.docs.parser.JsonParser;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
+import org.jetbrains.annotations.NotNull;
 
 public class ScriptJsonParser extends JsonParser {
 	public static JsonParser scriptOf(ArucasAPI api) {
@@ -14,6 +15,7 @@ public class ScriptJsonParser extends JsonParser {
 		return parser;
 	}
 
+	@NotNull
 	@Override
 	public JsonObject toJson() {
 		JsonObject object = super.toJson();

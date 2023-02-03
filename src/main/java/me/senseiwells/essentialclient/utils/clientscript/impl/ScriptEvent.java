@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
 import me.senseiwells.arucas.builtin.FunctionDef;
-import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Trace;
 import me.senseiwells.essentialclient.clientscript.events.CancelEvent;

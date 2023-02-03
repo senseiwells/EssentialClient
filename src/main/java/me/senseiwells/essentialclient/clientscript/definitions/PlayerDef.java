@@ -3,9 +3,9 @@ package me.senseiwells.essentialclient.clientscript.definitions;
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.*;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.*;
@@ -18,7 +18,6 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
-import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
 import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -85,7 +84,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 
 	@NotNull
 	@Override
-	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Player{name=" + instance.asPrimitive(this).getEntityName() + "}";
 	}
 

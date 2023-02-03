@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.clientscript.core;
 import me.senseiwells.arucas.api.ArucasObfuscator;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -12,13 +13,15 @@ public class ClientScriptObfuscator implements ArucasObfuscator {
 		return !EssentialUtils.isDev();
 	}
 
+	@NotNull
 	@Override
-	public String obfuscateClassName(String s) {
+	public String obfuscateClassName(@NotNull String s) {
 		return this.shouldObfuscate() ? MinecraftDeobfuscator.obfuscate(s) : s;
 	}
 
+	@NotNull
 	@Override
-	public String obfuscateMethodName(Class<?> clazz, String name) {
+	public String obfuscateMethodName(@NotNull Class<?> clazz, @NotNull String name) {
 		if (this.shouldObfuscate()) {
 			for (Class<?> k = clazz; k != Object.class; k = k.getSuperclass()) {
 				String result = obfuscateMethod(k, name);
@@ -36,8 +39,9 @@ public class ClientScriptObfuscator implements ArucasObfuscator {
 		return name;
 	}
 
+	@NotNull
 	@Override
-	public String obfuscateFieldName(Class<?> clazz, String name) {
+	public String obfuscateFieldName(@NotNull Class<?> clazz, @NotNull String name) {
 		if (this.shouldObfuscate()) {
 			for (Class<?> k = clazz; k != Object.class; k = k.getSuperclass()) {
 				String result = obfuscateField(k, name);
@@ -55,8 +59,9 @@ public class ClientScriptObfuscator implements ArucasObfuscator {
 		return name;
 	}
 
+	@NotNull
 	@Override
-	public String deobfuscateClass(Class<?> aClass) {
+	public String deobfuscateClass(@NotNull Class<?> aClass) {
 		return this.shouldObfuscate() ? MinecraftDeobfuscator.deobfuscateClass(aClass.getName()) : aClass.getName();
 	}
 

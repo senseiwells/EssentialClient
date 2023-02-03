@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.clientscript.definitions;
 
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.LocatableTrace;
@@ -44,7 +44,7 @@ public class ScreenDef extends PrimitiveDefinition<Screen> {
 
 	@NotNull
 	@Override
-	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Screen{screen=" + ScreenRemapper.getScreenName(instance.asPrimitive(this).getClass()) + "}";
 	}
 

@@ -4,9 +4,9 @@ import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.builtin.StringDef;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
 import me.senseiwells.arucas.utils.*;
@@ -71,19 +71,19 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	}
 
 	@Override
-	public boolean equals$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
+	public boolean equals(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		ScriptBlockState state = other.getPrimitive(this);
 		return state != null && instance.asPrimitive(this).state.equals(state.state);
 	}
 
 	@Override
-	public int hashCode$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+	public int hashCode(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return instance.asPrimitive(this).state.hashCode();
 	}
 
 	@NotNull
 	@Override
-	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		return "Block{id=" + instance.asPrimitive(this).getId().getPath() + "}";
 	}
 
@@ -527,10 +527,10 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	}
 
 	@FunctionDoc(
-		name = "getBlockNbt",
-		desc = "This gets the NBT of the Block",
-		returns = {MAP, "the NBT of the Block, may be null if the Block has no NBT"},
-		examples = "block.getBlockNbt();"
+		name = "getBlockEntityNbt",
+		desc = "This gets the NBT of a block entity",
+		returns = {MAP, "the NBT of a block entity, may be null if the block entity has no NBT"},
+		examples = "block.getBlockEntityNbt();"
 	)
 	private Object getBlockNbt(Arguments arguments) {
 		ScriptBlockState blockState = this.ensurePosition(arguments);

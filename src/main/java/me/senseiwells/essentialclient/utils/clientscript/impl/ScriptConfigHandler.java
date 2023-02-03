@@ -3,7 +3,7 @@ package me.senseiwells.essentialclient.utils.clientscript.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.essentialclient.clientscript.definitions.ConfigDef;
@@ -107,7 +107,7 @@ public class ScriptConfigHandler implements Config.CList {
 	public JsonElement getSaveData() {
 		JsonArray array = new JsonArray();
 		for (ClassInstance instance : this.configs.values()) {
-			array.add(instance.getPrimitive(ConfigDef.class).serialise());
+			array.add(instance.asPrimitive(ConfigDef.class).serialise());
 		}
 		return array;
 	}

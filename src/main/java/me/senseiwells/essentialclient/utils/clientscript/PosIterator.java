@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
-import me.senseiwells.arucas.classes.ClassInstance;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.utils.impl.ArucasIterator;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import net.minecraft.block.BlockState;

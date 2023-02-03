@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.clientscript.definitions;
 
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.LocatableTrace;
@@ -33,9 +33,9 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	}
 
 	@Override
-	public boolean equals$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
+	public boolean equals(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		TradeOffer otherOffer = other.getPrimitive(this);
-		return otherOffer != null && InventoryUtils.areTradesEqual(instance.getPrimitive(this), otherOffer);
+		return otherOffer != null && InventoryUtils.areTradesEqual(instance.asPrimitive(this), otherOffer);
 	}
 
 	@Override

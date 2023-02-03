@@ -7,8 +7,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.EnumDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 

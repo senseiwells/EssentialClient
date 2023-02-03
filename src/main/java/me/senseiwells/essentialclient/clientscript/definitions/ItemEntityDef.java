@@ -2,9 +2,9 @@ package me.senseiwells.essentialclient.clientscript.definitions;
 
 import me.senseiwells.arucas.api.docs.ClassDoc;
 import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.classes.ClassInstance;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
+import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.LocatableTrace;
@@ -48,7 +48,7 @@ public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 
 	@NotNull
 	@Override
-	public String toString$Arucas(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
 		ItemStack stack = instance.asPrimitive(this).getStack();
 		return "ItemEntity{id=" + stack.getItem().toString() + ", count=" + stack.getCount() + "}";
 	}
