@@ -98,7 +98,7 @@ public class WorldDef extends CreatableDefinition<World> {
 			MemberFunction.of("getAreaOfBlocks", 2, this::getAreaOfBlocks, "This function is memory intensive, use '<World>.getBlocks(pos1, pos2)'"),
 			MemberFunction.of("getPositions", 2, this::getPositions),
 			MemberFunction.of("getBlocks", 2, this::getBlocks),
-			MemberFunction.of("getPositionsFromCentre", 2, this::getPositionsFromCentre),
+			MemberFunction.of("getPositionsFromCentre", 4, this::getPositionsFromCentre),
 			MemberFunction.of("getBlocksFromCentre", 2, this::getBlocksFromCentre)
 		);
 	}
