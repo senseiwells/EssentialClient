@@ -219,7 +219,7 @@ public class EssentialUtils {
 			return false;
 		}
 		BlockState state = player.world.getBlockState(pos);
-		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(null, null) >= 0;
+		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(getWorld(), pos) >= 0;
 	}
 
 	public static void mineBlock(BlockPos pos, Supplier<Boolean> condition, CompletableFuture<Void> future) {
