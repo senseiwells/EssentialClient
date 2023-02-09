@@ -3,7 +3,6 @@ package me.senseiwells.essentialclient.clientscript.core;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.builtin.StringDef;
-import me.senseiwells.arucas.extensions.JavaClassDef;
 import me.senseiwells.essentialclient.clientscript.definitions.*;
 import me.senseiwells.essentialclient.clientscript.definitions.shapes.*;
 import me.senseiwells.essentialclient.clientscript.extensions.ArucasMinecraftExtension;
@@ -164,8 +163,5 @@ public class MinecraftAPI {
 		builder.addConversion(BlockStateArgument.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b.getBlockState(), null)));
 		builder.addConversion(Identifier.class, (id, i) -> i.create(StringDef.class, id.toString()));
 		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(RegistryHelper.getEnchantmentRegistry().getId(e)));
-		
-		// TODO:
-		builder.addConversion(Class.class, (c, i) -> i.create(JavaClassDef.class, c));
 	}
 }
