@@ -1,17 +1,9 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
-import me.senseiwells.arucas.api.ArucasAPI;
-import me.senseiwells.arucas.api.docs.parser.MarkdownParser;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 
-public class ScriptMarkdownParser extends MarkdownParser {
-	public static ScriptMarkdownParser scriptOf(ArucasAPI api) {
-		ScriptMarkdownParser parser = new ScriptMarkdownParser();
-		parser.fromApi(api);
-		return parser;
-	}
-
-	public String parseEvents() {
+public class ScriptMarkdownHelper {
+	public static String parseEvents() {
 		StringBuilder builder = new StringBuilder("# Events\n\n");
 		builder.append("""
 			Events are triggers for certain events that happen in the game.
@@ -28,7 +20,7 @@ public class ScriptMarkdownParser extends MarkdownParser {
 			String[] parameters = e.getParameters();
 			String params = "";
 			if (parameters.length % 3 == 0 && parameters.length != 0) {
-				params = this.addParameters(builder, parameters);
+				params = addParameters(builder, parameters);
 			}
 			builder.append("- Cancellable: ").append(e.canCancel()).append("\n");
 			builder.append("```kotlin\n");
@@ -40,7 +32,7 @@ public class ScriptMarkdownParser extends MarkdownParser {
 		return builder.toString();
 	}
 
-	private String addParameters(StringBuilder builder, String[] parameters) {
+	private static String addParameters(StringBuilder builder, String[] parameters) {
 		int i = 0;
 		StringBuilder params = new StringBuilder();
 		while (i < parameters.length) {

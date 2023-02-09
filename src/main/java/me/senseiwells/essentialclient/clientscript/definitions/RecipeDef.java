@@ -47,7 +47,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	}
 
 	@Override
-	public List<Triple<String, Object, Boolean>> defineStaticFields() {
+	public List<PrimitiveField> defineStaticFields() {
 		ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
 		if (networkHandler == null) {
 			return super.defineStaticFields();
@@ -59,12 +59,12 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		}
 
 		ArucasList list = new ArucasList();
-		List<Triple<String, Object, Boolean>> fields = new ArrayList<>(map.size());
+		List<PrimitiveField> fields = new ArrayList<>(map.size());
 		map.forEach((key, value) -> {
 			list.add(value);
-			fields.add(new Triple<>(key, value, false));
+			fields.add(new PrimitiveField(key, value, false));
 		});
-		fields.add(new Triple<>("ALL", list, false));
+		fields.add(new PrimitiveField("ALL", list, false));
 		return fields;
 	}
 

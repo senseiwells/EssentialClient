@@ -60,7 +60,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	}
 
 	@Override
-	public List<Triple<String, Object, Boolean>> defineStaticFields() {
+	public List<PrimitiveField> defineStaticFields() {
 		SortedMap<String, ClassInstance> map = new TreeMap<>();
 
 		for (Item item : RegistryHelper.getItemRegistry()) {
@@ -75,11 +75,11 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 			}
 		}
 
-		List<Triple<String, Object, Boolean>> fields = new ArrayList<>(map.size());
+		List<PrimitiveField> fields = new ArrayList<>(map.size());
 		map.forEach((key, value) -> {
-			fields.add(new Triple<>(key, value, false));
+			fields.add(new PrimitiveField(key, value, false));
 		});
-		fields.add(new Triple<>("ALL", map.values().stream().toList(), false));
+		fields.add(new PrimitiveField("ALL", map.values().stream().toList(), false));
 		return fields;
 	}
 

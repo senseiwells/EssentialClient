@@ -4,6 +4,10 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import me.senseiwells.arucas.api.ArucasAPI;
+import me.senseiwells.arucas.api.docs.visitor.ArucasDocParser;
+import me.senseiwells.arucas.api.docs.visitor.impl.JsonDocVisitor;
+import me.senseiwells.arucas.api.docs.visitor.impl.MarkdownDocVisitor;
+import me.senseiwells.arucas.api.docs.visitor.impl.VSCSnippetDocVisitor;
 import me.senseiwells.arucas.utils.Util;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.misc.WikiParser;
@@ -37,21 +41,27 @@ public class DocGenerator implements ModInitializer {
 		Util.File file = Util.File.INSTANCE;
 		Path path = file.ensureExists(Path.of(options.valueOf(pathSpec)));
 		ArucasAPI api = ClientScriptInstance.getApi();
+		Path libPath = file.ensureExists(path.resolve("libs"));
+		Path docPath = file.ensureExists(path.getParent().resolve("docs"));
 		Path jsonPath = file.ensureExists(path.resolve("json"));
 		Path mdPath = file.ensureExists(path.resolve("markdown"));
-		Path libPath = file.ensureExists(path.resolve("libs"));
 		Path snippetPath = file.ensureExists(path.resolve("snippets"));
-		Path docPath = file.ensureExists(path.getParent().resolve("docs"));
+
+		JsonDocVisitor jsonVisitor = new JsonDocVisitor();
+		MarkdownDocVisitor markdownVisitor = new MarkdownDocVisitor();
+		VSCSnippetDocVisitor snippetVisitor = new VSCSnippetDocVisitor();
+
+		new ArucasDocParser(api).addVisitors(jsonVisitor, markdownVisitor, snippetVisitor).parse();
+
 		try {
-			Files.writeString(jsonPath.resolve("AllDocs.json"), ScriptJsonParser.scriptOf(api).parse());
+			Files.writeString(jsonPath.resolve("AllDocs.json"), jsonVisitor.getJson());
 			api.generateNativeFiles(libPath);
 
-			Files.writeString(snippetPath.resolve("arucas.json"), ScriptSnippetParser.scriptOf(api).parse());
+			Files.writeString(snippetPath.resolve("arucas.json"), snippetVisitor.getJson());
 
-			ScriptMarkdownParser markdownParser = ScriptMarkdownParser.scriptOf(api);
-			String extensions = markdownParser.parseExtensions();
-			String classes = markdownParser.parseClasses();
-			String events = markdownParser.parseEvents();
+			String extensions = markdownVisitor.getExtensions();
+			String classes = markdownVisitor.getClasses();
+			String events = ScriptMarkdownHelper.parseEvents();
 			Files.writeString(mdPath.resolve("Extensions.md"), extensions);
 			Files.writeString(mdPath.resolve("Classes.md"), classes);
 			Files.writeString(mdPath.resolve("Events.md"), events);
