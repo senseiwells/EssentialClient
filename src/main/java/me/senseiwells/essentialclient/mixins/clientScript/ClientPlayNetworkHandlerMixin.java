@@ -165,13 +165,14 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		//#if MC >= 11903
 		for (PlayerListS2CPacket.Action action : packet.getActions()) {
 			switch (action) {
-				case ADD_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(entry.profile().getName()));
+				case ADD_PLAYER ->
+					packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(entry.profile().getName(), entry.profile().getId().toString()));
 			}
 		}
 		//#else
 		//$$switch (packet.getAction()) {
-		//$$	case ADD_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(entry.getProfile().getName()));
-		//$$	case REMOVE_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_LEAVE.run(entry.getProfile().getName()));
+		//$$	case ADD_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_JOIN.run(entry.getProfile().getName(), entry.getProfile().getId().toString()));
+		//$$	case REMOVE_PLAYER -> packet.getEntries().forEach(entry -> MinecraftScriptEvents.ON_PLAYER_LEAVE.run(entry.getProfile().getName(), entry.getProfile().getId().toString()));
 		//$$}
 		//#endif
 	}
@@ -180,7 +181,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onPlayerRemove", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
 	private void onPlayerRemove(PlayerRemoveS2CPacket packet, CallbackInfo ci) {
 		for (UUID uuid : packet.profileIds()) {
-			MinecraftScriptEvents.ON_PLAYER_LEAVE.run(this.playerListEntries.get(uuid).getProfile().getName());
+			MinecraftScriptEvents.ON_PLAYER_LEAVE.run(this.playerListEntries.get(uuid).getProfile().getName(), uuid.toString());
 		}
 	}
 	//#endif
