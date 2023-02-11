@@ -129,6 +129,8 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			MemberFunction.of("getLatestChatMessage", this::getLatestChatMessage),
 			MemberFunction.of("addCommand", 1, this::addCommand),
 			MemberFunction.of("isInSinglePlayer", this::isInSinglePlayer),
+			MemberFunction.of("getOnlinePlayerNames", this::getOnlinePlayerNames),
+			MemberFunction.of("getOnlinePlayerUuids", this::getOnlinePlayerUuids),
 			MemberFunction.of("playerNameFromUuid", 1, this::playerNameFromUuid),
 			MemberFunction.of("uuidFromPlayerName", 1, this::uuidFromPlayerName),
 			MemberFunction.of("getServerIp", this::getServerIp),
@@ -406,6 +408,32 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	)
 	private boolean isInSinglePlayer(Arguments arguments) {
 		return arguments.nextPrimitive(this).isInSingleplayer();
+	}
+
+	@FunctionDoc(
+		name = "getOnlinePlayerNames",
+		desc = "This will get a list of all the online player's names.",
+		returns = {LIST, "The list of online player names."},
+		examples = "client.getOnlinePlayerNames();"
+	)
+	private List<String> getOnlinePlayerNames(Arguments arguments) {
+		return EssentialUtils.getNetworkHandler().getPlayerList()
+			.stream()
+			.map(e -> e.getProfile().getName())
+			.toList();
+	}
+
+	@FunctionDoc(
+		name = "getOnlinePlayerUuids",
+		desc = "This will get a list of all the online player's uuids.",
+		returns = {LIST, "The list of online player uuids."},
+		examples = "client.getOnlinePlayerUuids();"
+	)
+	private List<String> getOnlinePlayerUuids(Arguments arguments) {
+		return EssentialUtils.getNetworkHandler().getPlayerList()
+			.stream()
+			.map(e -> e.getProfile().getId().toString())
+			.toList();
 	}
 
 	@FunctionDoc(
