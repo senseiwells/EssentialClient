@@ -312,9 +312,10 @@ new GameEvent("onOpenScreen", fun(screen) {
 ## `"onPlayerJoin"`
 - This event is fired when a player joins the server
 - Parameter - String (`name`): the player's name
+- Parameter - String (`uuid`): the player's uuid
 - Cancellable: false
 ```kotlin
-new GameEvent("onPlayerJoin", fun(name) {
+new GameEvent("onPlayerJoin", fun(name, uuid) {
     // Code
 });
 ```
@@ -423,9 +424,10 @@ new GameEvent("onGamemodeChange", fun(gamemode) {
 ## `"onPlayerLeave"`
 - This event is fired when a player leaves the server
 - Parameter - String (`name`): the player's name
+- Parameter - String (`uuid`): the player's uuid
 - Cancellable: false
 ```kotlin
-new GameEvent("onPlayerLeave", fun(name) {
+new GameEvent("onPlayerLeave", fun(name, uuid) {
     // Code
 });
 ```
