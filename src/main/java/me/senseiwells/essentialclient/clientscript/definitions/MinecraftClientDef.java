@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.senseiwells.arucas.api.docs.ClassDoc;
@@ -39,6 +40,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.world.ClientWorld;
@@ -56,6 +58,7 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
@@ -131,6 +134,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			MemberFunction.of("isInSinglePlayer", this::isInSinglePlayer),
 			MemberFunction.of("getOnlinePlayerNames", this::getOnlinePlayerNames),
 			MemberFunction.of("getOnlinePlayerUuids", this::getOnlinePlayerUuids),
+			MemberFunction.of("getOnlinePlayerNamesAndUuids", this::getOnlinePlayerNamesAndUuids),
 			MemberFunction.of("playerNameFromUuid", 1, this::playerNameFromUuid),
 			MemberFunction.of("uuidFromPlayerName", 1, this::uuidFromPlayerName),
 			MemberFunction.of("getServerIp", this::getServerIp),
@@ -421,6 +425,19 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			.stream()
 			.map(e -> e.getProfile().getName())
 			.toList();
+	}
+
+	@FunctionDoc(
+		name = "getOnlinePlayerNamesAndUuids",
+		desc = "This will get a map of all the online player's names to their uuids.",
+		returns = {MAP, "The map of online player names to uuids."},
+		examples = "client.getOnlinePlayerNamesAndUuids();"
+	)
+	private Object getOnlinePlayerNamesAndUuids(Arguments arguments) {
+		return EssentialUtils.getNetworkHandler().getPlayerList()
+			.stream()
+			.map(PlayerListEntry::getProfile)
+			.collect(Collectors.toMap(GameProfile::getName, GameProfile::getId));
 	}
 
 	@FunctionDoc(
