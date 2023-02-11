@@ -7103,6 +7103,14 @@ client.getModList();
 client.getOnlinePlayerNames();
 ```
 
+### `<MinecraftClient>.getOnlinePlayerNamesAndUuids()`
+- Description: This will get a map of all the online player's names to their uuids.
+- Returns - Map: The map of online player names to uuids.
+- Example:
+```kotlin
+client.getOnlinePlayerNamesAndUuids();
+```
+
 ### `<MinecraftClient>.getOnlinePlayerUuids()`
 - Description: This will get a list of all the online player's uuids.
 - Returns - List: The list of online player uuids.

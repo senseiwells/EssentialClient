@@ -8050,6 +8050,20 @@
           ]
         },
         {
+          "name": "getOnlinePlayerNamesAndUuids",
+          "is_arbitrary": false,
+          "desc": [
+            "This will get a map of all the online player's names to their uuids."
+          ],
+          "returns": {
+            "type": "Map",
+            "desc": "The map of online player names to uuids."
+          },
+          "examples": [
+            "client.getOnlinePlayerNamesAndUuids();"
+          ]
+        },
+        {
           "name": "getOnlinePlayerUuids",
           "is_arbitrary": false,
           "desc": [

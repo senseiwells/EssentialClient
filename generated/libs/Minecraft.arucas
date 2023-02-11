@@ -1756,6 +1756,12 @@ class MinecraftClient {
     fun getOnlinePlayerNames(): List;
 
     /*
+     * This will get a map of all the online player's names to their uuids.
+     * Returns - Map: The map of online player names to uuids.
+     */
+    fun getOnlinePlayerNamesAndUuids(): Map;
+
+    /*
      * This will get a list of all the online player's uuids.
      * Returns - List: The list of online player uuids.
      */
