@@ -3595,6 +3595,11 @@ class World {
     fun isThundering(): Boolean;
 
     /*
+     * This reloads all the chunks, as if you were to press F3 + A.
+     */
+    fun reloadChunks(): Null;
+
+    /*
      * This will render a particle in the world, you can find a list of all
      * the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),
      * this will throw an error if the id is invalid.

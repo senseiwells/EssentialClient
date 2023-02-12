@@ -10376,6 +10376,13 @@ world.isRaining();
 world.isThundering();
 ```
 
+### `<World>.reloadChunks()`
+- Description: This reloads all the chunks, as if you were to press F3 + A.
+- Example:
+```kotlin
+world.reloadChunks();
+```
+
 ### `<World>.renderParticle(particleId, pos)`
 - Description: This will render a particle in the world, you can find a list of all
 the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),

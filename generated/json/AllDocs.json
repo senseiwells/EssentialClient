@@ -14338,6 +14338,16 @@
           ]
         },
         {
+          "name": "reloadChunks",
+          "is_arbitrary": false,
+          "desc": [
+            "This reloads all the chunks, as if you were to press F3 + A."
+          ],
+          "examples": [
+            "world.reloadChunks();"
+          ]
+        },
+        {
           "name": "renderParticle",
           "is_arbitrary": false,
           "desc": [
