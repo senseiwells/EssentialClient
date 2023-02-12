@@ -22,6 +22,7 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
@@ -99,7 +100,8 @@ public class WorldDef extends CreatableDefinition<World> {
 			MemberFunction.of("getPositions", 2, this::getPositions),
 			MemberFunction.of("getBlocks", 2, this::getBlocks),
 			MemberFunction.of("getPositionsFromCentre", 4, this::getPositionsFromCentre),
-			MemberFunction.of("getBlocksFromCentre", 2, this::getBlocksFromCentre)
+			MemberFunction.of("getBlocksFromCentre", 2, this::getBlocksFromCentre),
+			MemberFunction.of("reloadChunks", this::reloadChunks)
 		);
 	}
 
@@ -792,5 +794,17 @@ public class WorldDef extends CreatableDefinition<World> {
 		int z = arguments.nextPrimitive(NumberDef.class).intValue();
 		Iterable<BlockPos> posIterable = BlockPos.iterateOutwards(posA, x, y, z);
 		return () -> new PosIterator.Block(world, posIterable.iterator(), o -> arguments.getInterpreter().convertValue(o));
+	}
+
+	@FunctionDoc(
+		name = "reloadChunks",
+		desc = "This reloads all the chunks, as if you were to press F3 + A.",
+		examples = "world.reloadChunks();"
+	)
+	private Void reloadChunks(Arguments arguments) {
+		ClientScriptUtils.ensureMainThread("reloadChunks", arguments.getInterpreter(), () -> {
+			EssentialUtils.getClient().worldRenderer.reload();
+		});
+		return null;
 	}
 }
