@@ -116,7 +116,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			MemberFunction.of("say", 1, this::say),
 			MemberFunction.of("message", 1, this::message),
 			MemberFunction.of("messageActionBar", 1, this::messageActionBar),
-			MemberFunction.of("showTitle", 1, this::showTitle),
+			MemberFunction.of("showTitle", 2, this::showTitle),
 			MemberFunction.of("openInventory", this::openInventory),
 			MemberFunction.of("openScreen", 1, this::openScreen),
 			MemberFunction.of("closeScreen", this::closeScreen),
