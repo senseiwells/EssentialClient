@@ -1,7 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.NumberDef;
+import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
@@ -31,7 +34,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 		"This class extends Entity and so inherits all of their methods too,",
 		"ItemEntities are entities that are dropped items."
 	},
-	importPath = "Minecraft",
 	superclass = EntityDef.class,
 	language = Util.Language.Java
 )
@@ -66,7 +68,7 @@ public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 	@FunctionDoc(
 		name = "getItemStack",
 		desc = "This method returns the ItemStack that is held in the ItemEntity",
-		returns = {ITEM_STACK, "the ItemStack that the entity holds"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack that the entity holds"),
 		examples = "itemEntity.getItemStack();"
 	)
 	private ScriptItemStack getItemStack(Arguments arguments) {
@@ -76,7 +78,7 @@ public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 	@FunctionDoc(
 		name = "getCustomName",
 		desc = "This method returns the custom name of the ItemEntity",
-		returns = {STRING, "the custom name of the entity"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the custom name of the entity"),
 		examples = "itemEntity.getCustomName();"
 	)
 	private String getCustomName(Arguments arguments) {
@@ -89,7 +91,7 @@ public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 			"This method returns the age of the ItemEntity",
 			"this is increased every tick and the item entity despawns after 6000 ticks"
 		},
-		returns = {NUMBER, "the age of the entity"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the age of the entity"),
 		examples = "itemEntity.getItemAge();"
 	)
 	private double getItemAge(Arguments arguments) {
@@ -99,7 +101,7 @@ public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 	@FunctionDoc(
 		name = "getThrower",
 		desc = "This method returns the player that threw the ItemEntity, null if not thrown by a player or player not found",
-		returns = {PLAYER, "the player that threw the entity"},
+		returns = @ReturnDoc(type = PlayerDef.class, desc = "the player that threw the entity"),
 		examples = "itemEntity.getThrower();"
 	)
 	private Object getThrower(Arguments arguments) {

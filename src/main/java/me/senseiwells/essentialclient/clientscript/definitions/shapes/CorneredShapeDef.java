@@ -1,7 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.utils.Arguments;
@@ -17,12 +19,10 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.CORNERED_SHAPE;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 @ClassDoc(
 	name = CORNERED_SHAPE,
 	desc = "This class represents all shapes that use 2 corners to dictate their position",
-	importPath = "Minecraft",
 	superclass = OutlinedShapeDef.class,
 	language = Util.Language.Java
 )
@@ -51,7 +51,7 @@ public class CorneredShapeDef extends PrimitiveDefinition<ScriptShape.Cornered> 
 	@FunctionDoc(
 		name = "setPos1",
 		desc = "This sets the first position of the shape",
-		params = {POS, "pos1", "the first position of the shape"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos1", desc = "the first position of the shape")},
 		examples = "shape.setPos1(new Pos(1, 0, 100));"
 	)
 	private Void setPos1(Arguments arguments) {
@@ -64,7 +64,7 @@ public class CorneredShapeDef extends PrimitiveDefinition<ScriptShape.Cornered> 
 	@FunctionDoc(
 		name = "setPos2",
 		desc = "This sets the second position of the shape",
-		params = {POS, "pos2", "the second position of the shape"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos2", desc = "the second position of the shape")},
 		examples = "shape.setPos2(new Pos(1, 0, 100));"
 	)
 	private Void setPos2(Arguments arguments) {
@@ -77,7 +77,7 @@ public class CorneredShapeDef extends PrimitiveDefinition<ScriptShape.Cornered> 
 	@FunctionDoc(
 		name = "getPos1",
 		desc = "This gets the first position of the shape",
-		returns = {POS, "the first position of the shape"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the first position of the shape"),
 		examples = "shape.getPos1();"
 	)
 	private ScriptPos getPos1(Arguments arguments) {
@@ -88,7 +88,7 @@ public class CorneredShapeDef extends PrimitiveDefinition<ScriptShape.Cornered> 
 	@FunctionDoc(
 		name = "getPos2",
 		desc = "This gets the second position of the shape",
-		returns = {POS, "the second position of the shape"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the second position of the shape"),
 		examples = "shape.getPos2();"
 	)
 	private ScriptPos getPos2(Arguments arguments) {

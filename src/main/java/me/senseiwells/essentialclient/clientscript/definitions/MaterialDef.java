@@ -1,8 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import kotlin.Triple;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
@@ -20,8 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static me.senseiwells.arucas.utils.Util.Types.STRING;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MATERIAL;
 
 @ClassDoc(
 	name = MATERIAL,
@@ -29,7 +29,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 		"This class represents all possible item and block types",
 		"and allows you to convert them into instances of ItemStacks and Blocks"
 	},
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
@@ -76,9 +75,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 		}
 
 		List<PrimitiveField> fields = new ArrayList<>(map.size());
-		map.forEach((key, value) -> {
-			fields.add(new PrimitiveField(key, value, false));
-		});
+		map.forEach((key, value) -> fields.add(new PrimitiveField(key, value, false)));
 		fields.add(new PrimitiveField("ALL", map.values().stream().toList(), false));
 		return fields;
 	}
@@ -97,8 +94,8 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 			"This converts a block or item id into a Material.",
 			"This method will throw an error if the id is invalid"
 		},
-		params = {STRING, "id", "the id of the block or item"},
-		returns = {MATERIAL, "the material instance from the id"},
+		params = {@ParameterDoc(type = StringDef.class, name = "id", desc = "the id of the block or item")},
+		returns = @ReturnDoc(type = MaterialDef.class, desc = "the material instance from the id"),
 		examples = "Material.of('diamond');"
 	)
 	private Object of(Arguments arguments) {
@@ -128,7 +125,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	@FunctionDoc(
 		name = "getFullId",
 		desc = "This returns the full id of the material, for example: 'minecraft:diamond'",
-		returns = {STRING, "the full id representation of the material"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the full id representation of the material"),
 		examples = "material.getFullId();"
 	)
 	private Object getFullId(Arguments arguments) {
@@ -139,7 +136,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	@FunctionDoc(
 		name = "getId",
 		desc = "This returns the id of the material, for example: 'diamond'",
-		returns = {STRING, "the id representation of the material"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the id representation of the material"),
 		examples = "material.getId();"
 	)
 	private Object getId(Arguments arguments) {
@@ -153,7 +150,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 			"This converts the material into an ItemStack.",
 			"If it cannot be converted an error will be thrown"
 		},
-		returns = {ITEM_STACK, "the ItemStack representation of the material"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack representation of the material"),
 		examples = "material.asItemStack();"
 	)
 	private Object asItemStack(Arguments arguments) {
@@ -167,7 +164,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 			"This converts the material into a Block.",
 			"If it cannot be converted an error will be thrown"
 		},
-		returns = {BLOCK, "the Block representation of the material"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the Block representation of the material"),
 		examples = "material.asBlock();"
 	)
 	private Object asBlock(Arguments arguments) {
@@ -181,7 +178,7 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 			"This gets the translated name of the ItemStack, for example: ",
 			"Material.DIAMOND_SWORD would return 'Diamond Sword' if your language is English"
 		},
-		returns = {STRING, "the translated name of the Material"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the translated name of the Material"),
 		examples = "material.getTranslatedName();"
 	)
 	private Object getTranslatedName(Arguments arguments) {

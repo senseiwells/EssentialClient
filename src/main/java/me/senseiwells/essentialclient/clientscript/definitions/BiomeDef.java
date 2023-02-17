@@ -1,8 +1,12 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.NumberDef;
+import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -20,14 +24,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BIOME;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 @ClassDoc(
 	name = BIOME,
 	desc = "This class represents biomes, and allows you to interact with things inside of them.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class BiomeDef extends CreatableDefinition<Biome> {
@@ -65,11 +66,11 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		name = "canSnow",
 		desc = "This function calculates whether snow will fall at given coordinates",
 		params = {
-			NUMBER, "x", "the x coordinate",
-			NUMBER, "y", "the y coordinate",
-			NUMBER, "z", "the z coordinate"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z coordinate")
 		},
-		returns = {BOOLEAN, "whether snow will fall at given position"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether snow will fall at given position"),
 		examples = "biome.canSnow(0, 100, 0);"
 	)
 	private boolean canSnowFull(Arguments arguments) {
@@ -84,8 +85,8 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "canSnow",
 		desc = "This function calculates whether snow will fall at given coordinates",
-		params = {POS, "pos", "the position"},
-		returns = {BOOLEAN, "whether snow will fall at given position"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether snow will fall at given position"),
 		examples = "biome.canSnow(new Pos(0, 100, 0));"
 	)
 	private boolean canSnowPos(Arguments arguments) {
@@ -98,11 +99,11 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		name = "isHot",
 		desc = "This function calculates whether a biome is hot at given position",
 		params = {
-			NUMBER, "x", "the x coordinate",
-			NUMBER, "y", "the y coordinate",
-			NUMBER, "z", "the z coordinate"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z coordinate")
 		},
-		returns = {BOOLEAN, "whether temperature is hot at given position"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether temperature is hot at given position"),
 		examples = "biome.isHot(0, 100, 0);"
 	)
 	private boolean isHotFull(Arguments arguments) {
@@ -116,8 +117,8 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "isHot",
 		desc = "This function calculates whether a biome is hot at given position",
-		params = {POS, "pos", "the position"},
-		returns = {BOOLEAN, "whether temperature is hot at given position"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether temperature is hot at given position"),
 		examples = "biome.isHot(0, 100, 0);"
 	)
 	private boolean isHotPos(Arguments arguments) {
@@ -129,8 +130,8 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "isCold",
 		desc = "This function calculates whether biome is cold at given position",
-		params = {POS, "pos", "the position"},
-		returns = {BOOLEAN, "whether temperature is cold at given position"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether temperature is cold at given position"),
 		examples = "biome.isCold(0, 100, 0);"
 	)
 	private boolean isColdPos(Arguments arguments) {
@@ -143,11 +144,11 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		name = "isCold",
 		desc = "This function calculates whether biome is cold at given position",
 		params = {
-			NUMBER, "x", "the x coordinate",
-			NUMBER, "y", "the y coordinate",
-			NUMBER, "z", "the z coordinate"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z coordinate")
 		},
-		returns = {BOOLEAN, "whether temperature is cold at given position"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether temperature is cold at given position"),
 		examples = "biome.isCold(0, 100, 0);"
 	)
 	private boolean isColdFull(Arguments arguments) {
@@ -161,7 +162,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "getFogColor",
 		desc = "This function returns fog color of the biome",
-		returns = {NUMBER, "fog color of the biome"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "fog color of the biome"),
 		examples = "biome.getFogColor();"
 	)
 	private int getFogColor(Arguments arguments) {
@@ -172,7 +173,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "getTemperature",
 		desc = "This function returns temperature of the biome",
-		returns = {NUMBER, "temperature of the biome"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "temperature of the biome"),
 		examples = "biome.getTemperature();"
 	)
 	private float getTemperature(Arguments arguments) {
@@ -183,7 +184,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "getWaterColor",
 		desc = "This function returns Fog color of the biome",
-		returns = {NUMBER, "fog color of the biome"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "fog color of the biome"),
 		examples = "biome.getWaterColor();"
 	)
 	private int getWaterColor(Arguments arguments) {
@@ -194,7 +195,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "getWaterFogColor",
 		desc = "This function returns water fog color of the biome",
-		returns = {NUMBER, "water fog color of the biome"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "water fog color of the biome"),
 		examples = "biome.getWaterFogColor();"
 	)
 	private int getWaterFogColor(Arguments arguments) {
@@ -205,7 +206,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "getId",
 		desc = "This function returns the path id of the biome, e.g. 'plains'",
-		returns = {STRING, "id of the biome"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "id of the biome"),
 		examples = "biome.getId();"
 	)
 	private String getId(Arguments arguments) {
@@ -217,7 +218,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "getSkyColor",
 		desc = "This function returns sky color of the biome",
-		returns = {NUMBER, "sky color of the biome"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "sky color of the biome"),
 		examples = "biome.getSkyColor();"
 	)
 	private int getSkyColor(Arguments arguments) {
@@ -228,7 +229,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@FunctionDoc(
 		name = "hasHighHumidity",
 		desc = "This function returns if biome has high humidity",
-		returns = {BOOLEAN, "whether biome has high humidity"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether biome has high humidity"),
 		examples = "biome.hasHighHumidity();"
 	)
 	private boolean hasHighHumidity(Arguments arguments) {

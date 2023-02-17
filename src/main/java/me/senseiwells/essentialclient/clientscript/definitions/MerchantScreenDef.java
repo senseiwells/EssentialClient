@@ -1,7 +1,11 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.BooleanDef;
+import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -24,8 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MERCHANT_SCREEN;
 import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils.ensureMainThread;
 import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils.warnMainThread;
 
@@ -35,7 +38,6 @@ import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtil
 		"This class extends Screen and so inherits all of their methods too,",
 		"this class is used to add functionality to trading screens."
 	},
-	importPath = "Minecraft",
 	superclass = ScreenDef.class,
 	language = Util.Language.Java
 )
@@ -74,7 +76,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	@FunctionDoc(
 		name = "getTradeListSize",
 		desc = "This gets the size of all the trades available",
-		returns = {NUMBER, "the size of the trade list"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the size of the trade list"),
 		examples = "screen.getTradeListSize();"
 	)
 	private int getTradeListSize(Arguments arguments) {
@@ -86,7 +88,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	@FunctionDoc(
 		name = "getTradeList",
 		desc = "This gets a list of all the merchant's trades",
-		returns = {LIST, "the list of all the Trades"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the list of all the Trades"),
 		examples = "screen.getTradeList();"
 	)
 	private ArucasList getTradeList(Arguments arguments) {
@@ -106,7 +108,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"throw an error if you are not trading with a villager.",
 			"The level can be between 1 - 5 from Novice to Master"
 		},
-		returns = {NUMBER, "the level of the villager"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the level of the villager"),
 		examples = "screen.getVillagerLevel();"
 	)
 	private int getVillagerLevel(Arguments arguments) {
@@ -126,7 +128,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"4 requires 150 (80 xp from 3 -> 4), 5 requires 250",
 			"(100 xp from 4 -> 5). 250 is the max xp a villager can have"
 		},
-		returns = {NUMBER, "the amount of xp"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the amount of xp"),
 		examples = "screen.getVillagerXpBar"
 	)
 	private int getVillagerXpBar(Arguments arguments) {
@@ -143,7 +145,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"This makes your player trade with the merchant at a certain index.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
-		params = {NUMBER, "index", "the index of the trade"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "index", desc = "the index of the trade")},
 		examples = "screen.tradeIndex(0);"
 	)
 	private Void tradeIndex(Arguments arguments) {
@@ -160,8 +162,8 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"This gets the index of a trade for a certain item.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
-		params = {MATERIAL, "material", "the item to get the index of"},
-		returns = {NUMBER, "the index of the trade"},
+		params = {@ParameterDoc(type = MaterialDef.class, name = "material", desc = "the item to get the index of")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the index of the trade"),
 		examples = "screen.getIndexOfTradeItem(Material.DIAMOND_PICKAXE);"
 	)
 	private int getIndexOfTradeItem(Arguments arguments) {
@@ -176,8 +178,8 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"This gets the item stack of a trade at a certain index.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
-		params = {NUMBER, "index", "the index of the trade"},
-		returns = {ITEM_STACK, "the item stack of the trade"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "index", desc = "the index of the trade")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the item stack of the trade"),
 		examples = "screen.getTradeItemForIndex(0);"
 	)
 	private ScriptItemStack getTradeItemForIndex(Arguments arguments) {
@@ -192,8 +194,8 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"This checks if the villager has a trade for a certain item.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
-		params = {MATERIAL, "materialLike", "the item or material to check for"},
-		returns = {BOOLEAN, "true if the villager has a trade for the item, false otherwise"},
+		params = {@ParameterDoc(type = MaterialDef.class, name = "materialLike", desc = "the item or material to check for")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the villager has a trade for the item, false otherwise"),
 		examples = "screen.doesVillagerHaveTrade(Material.DIAMOND_PICKAXE);"
 	)
 	private boolean doesVillagerHaveTrade(Arguments arguments) {
@@ -208,7 +210,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"This selects the currently selected trade, as if you were to click it.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
-		params = {NUMBER, "index", "the index of the trade"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "index", desc = "the index of the trade")},
 		examples = "screen.selectTrade(0);"
 	)
 	private Void selectTrade(Arguments arguments) {
@@ -261,7 +263,7 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	@FunctionDoc(
 		name = "isTradeSelected",
 		desc = "This returns true if a trade is selected",
-		returns = {BOOLEAN, "true if a trade is selected"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if a trade is selected"),
 		examples = "screen.isTradeSelected();"
 	)
 	private boolean isTradeSelected(Arguments arguments) {
@@ -272,8 +274,8 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 	@FunctionDoc(
 		name = "isTradeDisabled",
 		desc = "This returns true if a trade is disabled at an index",
-		params = {NUMBER, "index", "the index of the trade"},
-		returns = {BOOLEAN, "true if a trade is disabled"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "index", desc = "the index of the trade")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if a trade is disabled"),
 		examples = "screen.isTradeDisabled(1);"
 	)
 	private boolean isTradeDisabled(Arguments arguments) {
@@ -288,8 +290,8 @@ public class MerchantScreenDef extends CreatableDefinition<MerchantScreen> {
 			"This gets the price of a trade at a certain index.",
 			"You must be inside the merchant GUI or an error will be thrown"
 		},
-		params = {NUMBER, "index", "the index of the trade"},
-		returns = {NUMBER, "the price of the trade"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "index", desc = "the index of the trade")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the price of the trade"),
 		examples = "screen.getPriceForIndex(0);"
 	)
 	private int getPriceForIndex(Arguments arguments) {

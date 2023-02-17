@@ -4,8 +4,10 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.ParsedArgument;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.FunctionDef;
 import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.MapDef;
@@ -25,13 +27,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.COMMAND_BUILDER;
 
 @ClassDoc(
 	name = COMMAND_BUILDER,
 	desc = "This class allows you to build commands for Minecraft.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<ServerCommandSource, ?>> {
@@ -53,8 +53,8 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 		isStatic = true,
 		name = "literal",
 		desc = "Creates a literal argument with just a string",
-		params = {STRING, "argument", "the literal argument"},
-		returns = {COMMAND_BUILDER, "the argument builder"},
+		params = @ParameterDoc(type = StringDef.class, name = "argument", desc = "the literal argument"),
+		returns = @ReturnDoc(type = CommandBuilderDef.class, desc = "the argument builder"),
 		examples = "CommandBuilder.literal('test');"
 	)
 	private LiteralArgumentBuilder<ServerCommandSource> literal(Arguments arguments) {
@@ -70,10 +70,10 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 			"to see all the different types refer to CommandBuilder.fromMap(...)"
 		},
 		params = {
-			STRING, "argumentName", "the name of the argument",
-			STRING, "argumentType", "the type of the argument"
+			@ParameterDoc(type = StringDef.class, name = "argumentName", desc = "the name of the argument"),
+			@ParameterDoc(type = StringDef.class, name = "argumentType", desc = "the type of the argument")
 		},
-		returns = {COMMAND_BUILDER, "the argument builder"},
+		returns = @ReturnDoc(type = CommandBuilderDef.class, desc = "the argument builder"),
 		examples = "CommandBuilder.argument('test', 'entityid');"
 	)
 	private RequiredArgumentBuilder<ServerCommandSource, ?> argument2(Arguments arguments) {
@@ -90,11 +90,11 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 			"to see all the different types refer to CommandBuilder.fromMap(...)"
 		},
 		params = {
-			STRING, "argumentName", "the name of the argument",
-			STRING, "argumentType", "the type of the argument",
-			LIST, "suggestions", "a list of strings for the suggestions for the argument"
+			@ParameterDoc(type = StringDef.class, name = "argumentName", desc = "the name of the argument"),
+			@ParameterDoc(type = StringDef.class, name = "argumentType", desc = "the type of the argument"),
+			@ParameterDoc(type = ListDef.class, name = "suggestions", desc = "a list of strings for the suggestions for the argument")
 		},
-		returns = {COMMAND_BUILDER, "the argument builder"},
+		returns = @ReturnDoc(type = CommandBuilderDef.class, desc = "the argument builder"),
 		examples = "CommandBuilder.argument('test', 'word', ['wow', 'suggestion']);"
 	)
 	private RequiredArgumentBuilder<ServerCommandSource, ?> argument3(Arguments arguments) {
@@ -128,8 +128,8 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 			"The possible argument types are: 'PlayerName', 'Word', 'GreedyString', 'Double', 'Integer', 'Boolean', 'Enum',",
 			"'ItemStack', 'Particle', 'RecipeId', 'EntityId', 'EnchantmentId'"
 		},
-		params = {MAP, "argumentMap", "the map of arguments"},
-		returns = {COMMAND_BUILDER, "the argument builder"},
+		params = {@ParameterDoc(type = MapDef.class, name = "argumentMap", desc = "the map of arguments")},
+		returns = @ReturnDoc(type = CommandBuilderDef.class, desc = "the argument builder"),
 		examples = """
 			effectCommandMap = {
 				"name" : "effect",
@@ -203,8 +203,8 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 	@FunctionDoc(
 		name = "then",
 		desc = "This adds a child CommandBuilder to your command builder",
-		params = {COMMAND_BUILDER, "childBuilder", "the child command builder to add"},
-		returns = {COMMAND_BUILDER, "the parent command builder"},
+		params = {@ParameterDoc(type = CommandBuilderDef.class, name = "childBuilder", desc = "the child command builder to add")},
+		returns = @ReturnDoc(type = CommandBuilderDef.class, desc = "the parent command builder"),
 		examples = "commandBuilder.then(CommandBuilder.literal('subcommand'));"
 	)
 	private ClassInstance then(Arguments arguments) {
@@ -219,8 +219,8 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 			"This sets the function to be executed when the command is executed,",
 			"this should have the correct amount of parameters for the command"
 		},
-		params = {COMMAND_BUILDER, "function", "the function to execute"},
-		returns = {COMMAND_BUILDER, "the parent command builder"},
+		params = {@ParameterDoc(type = CommandBuilderDef.class, name = "function", desc = "the function to execute")},
+		returns = @ReturnDoc(type = CommandBuilderDef.class, desc = "the parent command builder"),
 		examples = "commandBuilder.executes(fun() { });"
 	)
 	private ClassInstance executes(Arguments arguments) {

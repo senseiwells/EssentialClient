@@ -1,9 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -21,14 +19,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SPHERE_SHAPE;
 
 @ClassDoc(
 	name = SPHERE_SHAPE,
 	desc = "This class is used to create a sphere shape which can be rendered in the world.",
-	importPath = "Minecraft",
 	superclass = CentredShapeDef.class,
 	language = Util.Language.Java
 )
@@ -53,7 +48,7 @@ public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
 
 	@ConstructorDoc(
 		desc = "This creates a new sphere shape",
-		params = {POS, "pos", "The position of the sphere"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "The position of the sphere")},
 		examples = "new SphereShape(new Pos(0, 10, 0));"
 	)
 	private Unit construct1(Arguments arguments) {
@@ -66,9 +61,9 @@ public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
 	@ConstructorDoc(
 		desc = "This creates a new sphere shape",
 		params = {
-			NUMBER, "x", "The x position of the sphere",
-			NUMBER, "y", "The y position of the sphere",
-			NUMBER, "z", "The z position of the sphere"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "The x position of the sphere"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "The y position of the sphere"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "The z position of the sphere")
 		},
 		examples = "new SphereShape(0, 10, 0);"
 	)
@@ -92,7 +87,7 @@ public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
 	@FunctionDoc(
 		name = "setSteps",
 		desc = "This sets the number of steps the sphere will take to render",
-		params = {NUMBER, "steps", "The number of steps"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "steps", desc = "The number of steps")},
 		examples = "sphere.setSteps(30);"
 	)
 	private Void setSteps(Arguments arguments) {
@@ -104,7 +99,7 @@ public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
 	@FunctionDoc(
 		name = "getSteps",
 		desc = "This gets the number of steps the sphere will take to render",
-		returns = {NUMBER, "The number of steps"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "The number of steps"),
 		examples = "sphere.getSteps();"
 	)
 	private float getSteps(Arguments arguments) {

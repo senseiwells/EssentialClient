@@ -1,7 +1,11 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.BooleanDef;
+import me.senseiwells.arucas.builtin.ListDef;
+import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -27,7 +31,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LIVI
 		"This class extends Entity and so inherits all of their methods too,",
 		"LivingEntities are any entities that are alive, so all mobs"
 	},
-	importPath = "Minecraft",
 	superclass = EntityDef.class,
 	language = Util.Language.Java
 )
@@ -71,7 +74,7 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 			"a list of all the ids of the status effects",
 			"[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects)"
 		},
-		returns = {LIST, "a list of status effects, may be empty"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "a list of status effects, may be empty"),
 		examples = "livingEntity.getStatusEffects();"
 	)
 	private ArucasList getStatusEffects(Arguments arguments) {
@@ -88,7 +91,7 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 	@FunctionDoc(
 		name = "getHealth",
 		desc = "This gets the LivingEntity's current health",
-		returns = {NUMBER, "the LivingEntity's health"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the LivingEntity's health"),
 		examples = "livingEntity.getHealth();"
 	)
 	private double getHealth(Arguments arguments) {
@@ -98,7 +101,7 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 	@FunctionDoc(
 		name = "isFlyFalling",
 		desc = "This checks if the LivingEntity is fly falling (gliding with elytra)",
-		returns = {BOOLEAN, "true if the LivingEntity is fly falling"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the LivingEntity is fly falling"),
 		examples = "livingEntity.isFlyFalling();"
 	)
 	private boolean isFlyFalling(Arguments arguments) {

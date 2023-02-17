@@ -1,7 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
@@ -13,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.OUTLINED_SHAPE;
 
 @ClassDoc(
@@ -59,7 +60,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 			"also has a sibling named `setOutlineColor()` that has the same functionality.",
 			"The colour generally should be hexadecimal in the form 0xRRGGBB"
 		},
-		params = {NUMBER, "colour", "the colour you want to set"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "colour", desc = "the colour you want to set")},
 		examples = "shape.setOutlineColour(0xFF00FF);"
 	)
 	private Void setOutlineColour1(Arguments arguments) {
@@ -77,9 +78,9 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 			"If the colours are not between 0 and 255 an error will be thrown"
 		},
 		params = {
-			NUMBER, "red", "the amount of red 0 - 255",
-			NUMBER, "green", "the amount of green 0 - 255",
-			NUMBER, "blue", "the amount of blue 0 - 255"
+			@ParameterDoc(type = NumberDef.class, name = "red", desc = "the amount of red 0 - 255"),
+			@ParameterDoc(type = NumberDef.class, name = "green", desc = "the amount of green 0 - 255"),
+			@ParameterDoc(type = NumberDef.class, name = "blue", desc = "the amount of blue 0 - 255")
 		},
 		examples = "shape.setOutlineColour(255, 0, 255);"
 	)
@@ -97,7 +98,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "setOutlineRed",
 		desc = "This sets the outline red value of the shape, using a single value",
-		params = {NUMBER, "red", "the amount of red between 0 - 255"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "red", desc = "the amount of red between 0 - 255")},
 		examples = "shape.setOutlineRed(34);"
 	)
 	private Void setOutlineRed(Arguments arguments) {
@@ -110,7 +111,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "setOutlineGreen",
 		desc = "This sets the outline green value of the shape, using a single value",
-		params = {NUMBER, "green", "the amount of green between 0 - 255"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "green", desc = "the amount of green between 0 - 255")},
 		examples = "shape.setOutlineGreen(34);"
 	)
 	private Void setOutlineGreen(Arguments arguments) {
@@ -123,7 +124,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "setOutlineBlue",
 		desc = "This sets the outline blue value of the shape, using a single value",
-		params = {NUMBER, "blue", "the amount of blue between 0 - 255"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "blue", desc = "the amount of blue between 0 - 255")},
 		examples = "shape.setOutlineBlue(34);"
 	)
 	private Void setOutlineBlue(Arguments arguments) {
@@ -136,7 +137,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "setOutlineWidth",
 		desc = "This sets the outline width of the shape, this should not be negative",
-		params = {NUMBER, "width", "the width of the outline"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "width", desc = "the width of the outline")},
 		examples = "shape.setOutlineWidth(2);"
 	)
 	private Void setOutlineWidth(Arguments arguments) {
@@ -149,7 +150,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "getOutlineRed",
 		desc = "This gets the outline red value of the shape",
-		returns = {NUMBER, "the red value of the outline"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the red value of the outline"),
 		examples = "shape.getOutlineRed();"
 	)
 	private Number getOutlineRed(Arguments arguments) {
@@ -159,7 +160,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "getOutlineGreen",
 		desc = "This gets the outline green value of the shape",
-		returns = {NUMBER, "the green value of the outline"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the green value of the outline"),
 		examples = "shape.getOutlineGreen();"
 	)
 	private Number getOutlineGreen(Arguments arguments) {
@@ -169,7 +170,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "getOutlineBlue",
 		desc = "This gets the outline blue value of the shape",
-		returns = {NUMBER, "the blue value of the outline"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the blue value of the outline"),
 		examples = "shape.getOutlineBlue();"
 	)
 	private Number getOutlineBlue(Arguments arguments) {
@@ -179,7 +180,7 @@ public class OutlinedShapeDef extends PrimitiveDefinition<ScriptShape.Outlined> 
 	@FunctionDoc(
 		name = "getOutlineWidth",
 		desc = "This gets the outline width of the shape",
-		returns = {NUMBER, "the width of the outline"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the width of the outline"),
 		examples = "shape.getOutlineWidth();"
 	)
 	private Number getOutlineWidth(Arguments arguments) {

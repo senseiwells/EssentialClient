@@ -1,9 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.builtin.NumberDef;
-import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -29,8 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.OTHER_PLAYER;
 
 @ClassDoc(
 	name = OTHER_PLAYER,
@@ -38,7 +38,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 		"This class is used to represent all players, mainly other players,",
 		"this class extends LivingEntity and so inherits all of their methods too"
 	},
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEntity> {
@@ -94,7 +93,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getCurrentSlot",
 		desc = "This gets the players currently selected slot",
-		returns = {NUMBER, "the currently selected slot number"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the currently selected slot number"),
 		examples = "otherPlayer.getCurrentSlot();"
 	)
 	private double getCurrentSlot(Arguments arguments) {
@@ -104,7 +103,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getHeldItem",
 		desc = "This gets the players currently selected item, in their main hand",
-		returns = {ITEM_STACK, "the currently selected item"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the currently selected item"),
 		examples = "otherPlayer.getHeldItem();"
 	)
 	private ItemStack getHeldItem(Arguments arguments) {
@@ -117,7 +116,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 			"This gets whether the players inventory is full.",
 			"More specifically whether the player has no empty slots"
 		},
-		returns = {BOOLEAN, "whether the inventory is full"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether the inventory is full"),
 		examples = "otherPlayer.isInventoryFull();"
 	)
 	private boolean isInventoryFull(Arguments arguments) {
@@ -127,7 +126,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getEmptySlots",
 		desc = "This gets all the empty slots in the player inventory",
-		returns = {LIST, "a list of all the slot numbers that are empty"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "a list of all the slot numbers that are empty"),
 		examples = "otherPlayer.getEmptySlots();"
 	)
 	private ArucasList getEmptySlots(Arguments arguments) {
@@ -144,7 +143,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getPlayerName",
 		desc = "This gets the players name",
-		returns = {STRING, "the players name"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the players name"),
 		examples = "otherPlayer.getPlayerName();"
 	)
 	private String getPlayerName(Arguments arguments) {
@@ -154,7 +153,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getGamemode",
 		desc = "This gets the players gamemode, may be null if not known",
-		returns = {STRING, "the players gamemode as a string, for example 'creative', 'survival', 'spectator'"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the players gamemode as a string, for example 'creative', 'survival', 'spectator'"),
 		examples = "otherPlayer.getGamemode();"
 	)
 	private String getGamemode(Arguments arguments) {
@@ -169,7 +168,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getTotalSlots",
 		desc = "This gets the players total inventory slots",
-		returns = {NUMBER, "the players total inventory slots"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the players total inventory slots"),
 		examples = "otherPlayer.getTotalSlots();"
 	)
 	private double getTotalSlots(Arguments arguments) {
@@ -183,8 +182,8 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 			"This gets the item in the specified slot, in the total players inventory, including inventories of open containers.",
 			"This will throw an error if the index is out of bounds"
 		},
-		params = {NUMBER, "slotNum", "the slot number you want to get"},
-		returns = {ITEM_STACK, "the item in the specified slot"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slotNum", desc = "the slot number you want to get")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the item in the specified slot"),
 		examples = "otherPlayer.getItemForSlot(0);"
 	)
 	private ItemStack getItemForSlot(Arguments arguments) {
@@ -203,8 +202,8 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 			"This gets inventory type (player / other) for given slot numbers.",
 			"This will throw an error if the index is out of bounds"
 		},
-		params = {NUMBER, "slotNum", "the slot number you want to get"},
-		returns = {BOOLEAN, "whether slot was player inventory or not"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slotNum", desc = "the slot number you want to get")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether slot was player inventory or not"),
 		examples = "otherPlayer.isPlayerSlot(0);"
 	)
 	private boolean isPlayerSlot(Arguments arguments) {
@@ -224,8 +223,8 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 			"This gets the item in the specified slot, in the players inventory, not including inventories of open containers.",
 			"This will throw an error if the slot is out of bounds"
 		},
-		params = {NUMBER, "slotNum", "the slot number you want to get"},
-		returns = {ITEM_STACK, "the item in the specified slot"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slotNum", desc = "the slot number you want to get")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the item in the specified slot"),
 		examples = "otherPlayer.getItemForPlayerSlot(0);"
 	)
 	private ItemStack getItemForPlayerSlot(Arguments arguments) {
@@ -242,8 +241,8 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getSlotFor",
 		desc = "This gets the slot number of the specified item in the players combined inventory",
-		params = {MATERIAL, "materialLike", "the item or material you want to get the slot of"},
-		returns = {NUMBER, "the slot number of the item, null if not found"},
+		params = {@ParameterDoc(type = MaterialDef.class, name = "materialLike", desc = "the item or material you want to get the slot of")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the slot number of the item, null if not found"),
 		examples = "otherPlayer.getSlotFor(Material.DIAMOND.asItemStack());"
 	)
 	private Double getSlotFor(Arguments arguments) {
@@ -261,8 +260,8 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getAllSlotsFor",
 		desc = "This gets all the slot numbers of the specified item in the players combined inventory",
-		params = {MATERIAL, "materialLike", "the item or material you want to get the slot of"},
-		returns = {LIST, "the slot numbers of the item, empty list if not found"},
+		params = {@ParameterDoc(type = MaterialDef.class, name = "materialLike", desc = "the item or material you want to get the slot of")},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the slot numbers of the item, empty list if not found"),
 		examples = "otherPlayer.getAllSlotsFor(Material.DIAMOND);"
 	)
 	private ArucasList getAllSlotsFor(Arguments arguments) {
@@ -282,10 +281,10 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 		name = "getAllSlotsFor",
 		desc = "This gets all the slot numbers of the specified item in the players combined inventory",
 		params = {
-			MATERIAL, "materialLike", "the item or material you want to get the slot of",
-			STRING, "inventoryType", "all/combined -> includes external, player/main -> player slots, external/other -> excludes player inventory"
+			@ParameterDoc(type = MaterialDef.class, name = "materialLike", desc = "the item or material you want to get the slot of"),
+			@ParameterDoc(type = StringDef.class, name = "inventoryType", desc = "all/combined -> includes external, player/main -> player slots, external/other -> excludes player inventory")
 		},
-		returns = {LIST, "the slot numbers of the item, empty list if not found"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the slot numbers of the item, empty list if not found"),
 		examples = "otherPlayer.getAllSlotsFor(Material.DIAMOND, 'player');"
 	)
 	private ArucasList getAllSlotsForWithOption(Arguments arguments) {
@@ -324,7 +323,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 			"For example:",
 			"`{\"invulnerable\": false, \"canFly\": true, \"canBreakBlocks\": true, \"isCreative\": true, \"walkSpeed\": 1.0, \"flySpeed\": 1.2}`"
 		},
-		returns = {MAP, "the abilities of the player"},
+		returns = @ReturnDoc(type = MapDef.class, desc = "the abilities of the player"),
 		examples = "otherPlayer.getAbilities();"
 	)
 	private ArucasMap getAbilities(Arguments arguments) {
@@ -344,7 +343,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getLevels",
 		desc = "This gets the number of experience levels the player has",
-		returns = {NUMBER, "the number of experience levels"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the number of experience levels"),
 		examples = "otherPlayer.getLevels();"
 	)
 	private double getLevels(Arguments arguments) {
@@ -355,7 +354,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getXpProgress",
 		desc = "This gets the number of experience progress the player has",
-		returns = {NUMBER, "the number of experience progress"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the number of experience progress"),
 		examples = "otherPlayer.getXpProgress();"
 	)
 	private double getXpProgress(Arguments arguments) {
@@ -366,7 +365,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getNextLevelExperience",
 		desc = "This gets the number of experience required to level up for the player",
-		returns = {NUMBER, "the number required to next level"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the number required to next level"),
 		examples = "otherPlayer.getNextLevelExperience();"
 	)
 	private double getNextLevelExperience(Arguments arguments) {
@@ -377,7 +376,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getHunger",
 		desc = "This gets the hunger level of the player",
-		returns = {NUMBER, "the hunger level"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the hunger level"),
 		examples = "otherPlayer.getHunger();"
 	)
 	private double getHunger(Arguments arguments) {
@@ -388,7 +387,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getSaturation",
 		desc = "This gets the saturation level of the player",
-		returns = {NUMBER, "the saturation level"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the saturation level"),
 		examples = "otherPlayer.getSaturation();"
 	)
 	private double getSaturation(Arguments arguments) {
@@ -399,7 +398,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@FunctionDoc(
 		name = "getFishingBobber",
 		desc = "This gets the fishing bobber that the player has",
-		returns = {ENTITY, "the fishing bobber entity, null if the player isn't fishing"},
+		returns = @ReturnDoc(type = EntityDef.class, desc = "the fishing bobber entity, null if the player isn't fishing"),
 		examples = "otherPlayer.getFishingBobber();"
 	)
 	private FishingBobberEntity getFishingBobber(Arguments arguments) {

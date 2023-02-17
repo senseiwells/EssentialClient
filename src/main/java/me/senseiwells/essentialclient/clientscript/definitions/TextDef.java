@@ -1,7 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.ObjectDef;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
@@ -20,14 +23,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.OBJECT;
-import static me.senseiwells.arucas.utils.Util.Types.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TEXT;
 
 @ClassDoc(
 	name = TEXT,
 	desc = "This class is used to create formatted strings used inside Minecraft.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class TextDef extends CreatableDefinition<MutableText> {
@@ -53,8 +53,8 @@ public class TextDef extends CreatableDefinition<MutableText> {
 		isStatic = true,
 		name = "of",
 		desc = "This converts a string into a text instance",
-		params = {STRING, "string", "The string to convert into a text instance"},
-		returns = {TEXT, "the text instance from the string"},
+		params = {@ParameterDoc(type = StringDef.class, name = "string", desc = "The string to convert into a text instance")},
+		returns = @ReturnDoc(type = TextDef.class, desc = "the text instance from the string"),
 		examples = "Text.of('Hello World!');"
 	)
 	private Text of(Arguments arguments) {
@@ -65,8 +65,8 @@ public class TextDef extends CreatableDefinition<MutableText> {
 		isStatic = true,
 		name = "parse",
 		desc = "This converts a text json into a text instance",
-		params = {STRING, "textJson", "The string in json format, or a Json value itself"},
-		returns = {TEXT, "the text instance from the json"},
+		params = {@ParameterDoc(type = StringDef.class, name = "textJson", desc = "The string in json format, or a Json value itself")},
+		returns = @ReturnDoc(type = TextDef.class, desc = "the text instance from the json"),
 		examples = "Text.parse('{\"text\":\"Hello World!\",\"color\":\"white\",\"italic\":\"true\"}');"
 	)
 	private Object parse(Arguments arguments) {
@@ -94,10 +94,10 @@ public class TextDef extends CreatableDefinition<MutableText> {
 			"This will throw an error if the action is invalid"
 		},
 		params = {
-			STRING, "event", "the name of the event",
-			STRING, "value", "the value associated with the event"
+			@ParameterDoc(type = StringDef.class, name = "event", desc = "the name of the event"),
+			@ParameterDoc(type = StringDef.class, name = "value", desc = "the value associated with the event")
 		},
-		returns = {TEXT, "the text instance with the click event"},
+		returns = @ReturnDoc(type = TextDef.class, desc = "the text instance with the click event"),
 		examples = """
 			text = Text.of("Hello World!");
 
@@ -129,10 +129,10 @@ public class TextDef extends CreatableDefinition<MutableText> {
 			"This will throw an error if the event is invalid"
 		},
 		params = {
-			STRING, "event", "the name of the event",
-			OBJECT, "value", "the value associated with the event"
+			@ParameterDoc(type = StringDef.class, name = "event", desc = "the name of the event"),
+			@ParameterDoc(type = ObjectDef.class, name = "value", desc = "the value associated with the event")
 		},
-		returns = {TEXT, "the text instance with the hover event"},
+		returns = @ReturnDoc(type = TextDef.class, desc = "the text instance with the hover event"),
 		examples = """
 			text = Text.of("Hello World!");
 
@@ -158,8 +158,8 @@ public class TextDef extends CreatableDefinition<MutableText> {
 			"A list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes).",
 			"This will throw an error if the formatting is invalid"
 		},
-		params = {STRING, "formatting", "the name of the formatting"},
-		returns = {TEXT, "the text instance with the formatting added"},
+		params = {@ParameterDoc(type = StringDef.class, name = "formatting", desc = "the name of the formatting")},
+		returns = @ReturnDoc(type = TextDef.class, desc = "the text instance with the formatting added"),
 		examples = "text.format('DARK_RED').format('BOLD');"
 	)
 	private ClassInstance formatText(Arguments arguments) {
@@ -174,8 +174,8 @@ public class TextDef extends CreatableDefinition<MutableText> {
 	@FunctionDoc(
 		name = "append",
 		desc = "This allows you to append a text instance to another text instance",
-		params = {TEXT, "otherText", "the text instance to append to"},
-		returns = {TEXT, "the text instance with the appended text"},
+		params = {@ParameterDoc(type = TextDef.class, name = "otherText", desc = "the text instance to append to")},
+		returns = @ReturnDoc(type = TextDef.class, desc = "the text instance with the appended text"),
 		examples = "Text.of('Hello').append(Text.of(' world!'));"
 	)
 	private ClassInstance appendText(Arguments arguments) {

@@ -1,11 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.NullDef;
+import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
@@ -14,6 +13,7 @@ import me.senseiwells.arucas.utils.Arguments;
 import me.senseiwells.arucas.utils.ConstructorFunction;
 import me.senseiwells.arucas.utils.MemberFunction;
 import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.essentialclient.clientscript.definitions.BlockDef;
 import me.senseiwells.essentialclient.clientscript.definitions.MaterialDef;
 import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
@@ -34,7 +34,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 @ClassDoc(
 	name = FAKE_BLOCK,
 	desc = "This class can be used to create fake blocks which can be rendered in the world.",
-	importPath = "Minecraft",
 	superclass = ShapeDef.class,
 	language = Util.Language.Java
 )
@@ -59,8 +58,8 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@ConstructorDoc(
 		desc = "Creates a fake block with the given block and position",
 		params = {
-			BLOCK, "block", "The block to use",
-			POS, "pos", "The position of the block"
+			@ParameterDoc(type = BlockDef.class, name = "block", desc = "The block to use"),
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "The position of the block")
 		},
 		examples = "new FakeBlock(Material.BEDROCK.asBlock(), new Pos(0, 0, 0));"
 	)
@@ -90,7 +89,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@FunctionDoc(
 		name = "setBlock",
 		desc = "Sets the block type to render of the fake block",
-		params = {BLOCK, "block", "The block to render"},
+		params = {@ParameterDoc(type = BlockDef.class, name = "block", desc = "The block to render")},
 		examples = "fakeBlock.setBlock(Material.BEDROCK.asBlock());"
 	)
 	private Void setBlock(Arguments arguments) {
@@ -103,7 +102,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@FunctionDoc(
 		name = "setPos",
 		desc = "Sets the position of the fake block",
-		params = {POS, "pos", "The position of the fake block"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "The position of the fake block")},
 		examples = "fakeBlock.setPos(new Pos(0, 0, 0));"
 	)
 	private Void setPos(Arguments arguments) {
@@ -116,7 +115,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@FunctionDoc(
 		name = "getBlock",
 		desc = "Gets the current block type of the fake block",
-		returns = {BLOCK, "The block type of the fake block"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "The block type of the fake block"),
 		examples = "fakeBlock.getBlock();"
 	)
 	private ScriptMaterial getBlock(Arguments arguments) {
@@ -127,7 +126,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@FunctionDoc(
 		name = "getPos",
 		desc = "Gets the position of the fake block",
-		returns = {POS, "The position of the fake block"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "The position of the fake block"),
 		examples = "fakeBlock.getPos();"
 	)
 	private ScriptPos getPos(Arguments arguments) {
@@ -138,7 +137,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@FunctionDoc(
 		name = "setCull",
 		desc = "Sets whether the fake block should be culled",
-		params = {BOOLEAN, "cull", "Whether the fake block should be culled"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "cull", desc = "Whether the fake block should be culled")},
 		examples = "fakeBlock.setCull(true);"
 	)
 	private Void setCull(Arguments arguments) {
@@ -150,7 +149,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@FunctionDoc(
 		name = "shouldCull",
 		desc = "Gets whether the fake block should be culled",
-		returns = {BOOLEAN, "Whether the fake block should be culled"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "Whether the fake block should be culled"),
 		examples = "fakeBlock.shouldCull();"
 	)
 	private boolean shouldCull(Arguments arguments) {
@@ -164,7 +163,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 			"Sets the direction of the fake block,",
 			"this may be null in which case the block will face the player"
 		},
-		params = {STRING, "direction", "The direction of the fake block"},
+		params = {@ParameterDoc(type = StringDef.class, name = "direction", desc = "The direction of the fake block")},
 		examples = "fakeBlock.setDirection(Direction.UP);"
 	)
 	private Void setDirection(Arguments arguments) {
@@ -181,7 +180,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	@FunctionDoc(
 		name = "getDirection",
 		desc = "Gets the direction of the fake block",
-		returns = {STRING, "The direction of the fake block, may be null"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "The direction of the fake block, may be null"),
 		examples = "fakeBlock.getDirection();"
 	)
 	private String getDirection(Arguments arguments) {

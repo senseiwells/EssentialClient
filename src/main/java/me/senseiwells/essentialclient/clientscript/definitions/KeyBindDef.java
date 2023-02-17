@@ -1,9 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.FunctionDef;
 import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.StringDef;
@@ -23,7 +21,6 @@ import net.minecraft.client.util.InputUtil;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.KEY_BIND;
 
 @ClassDoc(
@@ -54,7 +51,7 @@ public class KeyBindDef extends CreatableDefinition<ScriptKeyBind> {
 
 	@ConstructorDoc(
 		desc = "Creates a new key bind",
-		params = {STRING, "keyName", "the name of the key"},
+		params = {@ParameterDoc(type = StringDef.class, name = "keyName", desc = "the name of the key")},
 		examples = "new KeyBind('MyKey');"
 	)
 	private Unit construct(Arguments arguments) {
@@ -78,7 +75,7 @@ public class KeyBindDef extends CreatableDefinition<ScriptKeyBind> {
 	@FunctionDoc(
 		name = "setKey",
 		desc = "Sets the key bind to a new key",
-		params = {STRING, "keyName", "the name of the key"},
+		params = {@ParameterDoc(type = StringDef.class, name = "keyName", desc = "the name of the key")},
 		examples = "keyBind.setKey('f');"
 	)
 	private Void setKey(Arguments arguments) {
@@ -90,13 +87,12 @@ public class KeyBindDef extends CreatableDefinition<ScriptKeyBind> {
 	}
 
 	@FunctionDoc(
-		isVarArgs = true,
 		name = "setKeys",
 		desc = {
 			"Sets the key bind to new keys, you may also pass",
 			"in a list as the parameter, this is to keep compatability"
 		},
-		params = {STRING, "keyNames...", "the names of keys"},
+		params = @ParameterDoc(type = StringDef.class, name = "keyNames...", desc = "the names of keys", isVarargs = true),
 		examples = "keyBind.setKeys('control', 'f');"
 	)
 	private Void setKeys(Arguments arguments) {
@@ -124,7 +120,7 @@ public class KeyBindDef extends CreatableDefinition<ScriptKeyBind> {
 	@FunctionDoc(
 		name = "getKey",
 		desc = "Gets the key bind's first key",
-		returns = {STRING, "the key bind's key"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the key bind's key"),
 		examples = "keyBind.getKey();"
 	)
 	private String getKey(Arguments arguments) {
@@ -135,7 +131,7 @@ public class KeyBindDef extends CreatableDefinition<ScriptKeyBind> {
 	@FunctionDoc(
 		name = "getKeys",
 		desc = "Gets the all of the keys in the key bind",
-		returns = {LIST, "list of strings of all the keys"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "list of strings of all the keys"),
 		examples = "keybind.getKeys();"
 	)
 	private ArucasList getKeys(Arguments arguments) {
@@ -150,7 +146,7 @@ public class KeyBindDef extends CreatableDefinition<ScriptKeyBind> {
 	@FunctionDoc(
 		name = "setCallback",
 		desc = "Sets the callback function for the key bind",
-		params = {FUNCTION, "callback", "the callback function"},
+		params = {@ParameterDoc(type = FunctionDef.class, name = "callback", desc = "the callback function")},
 		examples = "keyBind.setCallback(fun() { print('My key was pressed'); });"
 	)
 	private Void setCallback(Arguments arguments) {

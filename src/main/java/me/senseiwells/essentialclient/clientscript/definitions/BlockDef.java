@@ -1,9 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.builtin.NumberDef;
-import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
@@ -43,14 +44,12 @@ import net.minecraft.registry.tag.BlockTags;
 import java.util.List;
 import java.util.Optional;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils.warnMainThread;
 
 @ClassDoc(
 	name = BLOCK,
 	desc = "This class allows interactions with blocks in Minecraft.",
-	importPath = "Minecraft",
 	superclass = MaterialDef.class,
 	language = Util.Language.Java
 )
@@ -98,8 +97,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		isStatic = true,
 		name = "of",
 		desc = "This creates a Block from a material or string",
-		params = {MATERIAL, "material", "the material, item stack, block, or string to create the Block from"},
-		returns = {BLOCK, "the Block created from the material or string"},
+		params = {@ParameterDoc(type = MaterialDef.class, name = "material", desc = "the material, item stack, block, or string to create the Block from")},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the Block created from the material or string"),
 		examples = "Block.of(Material.STONE);"
 	)
 	private BlockState of(Arguments arguments) {
@@ -156,7 +155,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getMaterial",
 		desc = "This gets the material of the Block",
-		returns = {MATERIAL, "the material of the Block"},
+		returns = @ReturnDoc(type = MaterialDef.class, desc = "the material of the Block"),
 		examples = "block.getMaterial();"
 	)
 	private Object getMaterial(Arguments arguments) {
@@ -168,7 +167,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getDefaultState",
 		desc = "This gets the default state of the block, it will conserve any positions",
-		returns = {BLOCK, "default state of the Block"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "default state of the Block"),
 		examples = "block.getDefaultState();"
 	)
 	private Object getDefaultState(Arguments arguments) {
@@ -180,10 +179,10 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		name = "with",
 		desc = "This gets modified block with a property value, conserving positions",
 		params = {
-			STRING, "property", "property name, such as 'facing', 'extended'",
-			STRING, "value", "value name, such as 'north', 'true'"
+			@ParameterDoc(type = StringDef.class, name = "property", desc = "property name, such as 'facing', 'extended'"),
+			@ParameterDoc(type = StringDef.class, name = "value", desc = "value name, such as 'north', 'true'")
 		},
-		returns = {BLOCK, "new state of the Block"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "new state of the Block"),
 		examples = "block.with('facing', 'north');"
 	)
 	private Object with(Arguments arguments) {
@@ -207,7 +206,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isBlockEntity",
 		desc = "This checks if the Block is a BlockEntity",
-		returns = {BOOLEAN, "true if the Block is a BlockEntity"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is a BlockEntity"),
 		examples = "block.isBlockEntity();"
 	)
 	private Object isBlockEntity(Arguments arguments) {
@@ -217,7 +216,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isTransparent",
 		desc = "This checks if the Block is transparent",
-		returns = {BOOLEAN, "true if the Block is transparent"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is transparent"),
 		examples = "block.isTransparent();"
 	)
 	private Object isTransparent(Arguments arguments) {
@@ -227,7 +226,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getBlastResistance",
 		desc = "This gets the blast resistance of the Block",
-		returns = {NUMBER, "the blast resistance of the Block"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the blast resistance of the Block"),
 		examples = "block.getBlastResistance();"
 	)
 	private Object getBlastResistance(Arguments arguments) {
@@ -241,7 +240,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 			"You can find a list of all block properties",
 			"[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)"
 		},
-		returns = {MAP, "the properties of the Block, may be empty if there are no properties"},
+		returns = @ReturnDoc(type = MapDef.class, desc = "the properties of the Block, may be empty if there are no properties"),
 		examples = "block.getBlockProperties();"
 	)
 	private Object getBlockProperties(Arguments arguments) {
@@ -258,7 +257,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "hasBlockPosition",
 		desc = "This checks if the Block has a position or not",
-		returns = {BOOLEAN, "true if the Block has a position"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block has a position"),
 		examples = "block.hasBlockPosition();"
 	)
 	private Object hasBlockPosition(Arguments arguments) {
@@ -268,7 +267,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getPos",
 		desc = "This gets the position of the Block",
-		returns = {POS, "the position of the Block, may be null if the Block has no position"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the position of the Block, may be null if the Block has no position"),
 		examples = "block.getPos();"
 	)
 	private Object getPos(Arguments arguments) {
@@ -278,7 +277,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getX",
 		desc = "This gets the X position of the Block",
-		returns = {NUMBER, "the X position of the Block, may be null if the Block has no position"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the X position of the Block, may be null if the Block has no position"),
 		examples = "block.getX();"
 	)
 	private Object getBlockX(Arguments arguments) {
@@ -289,7 +288,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getY",
 		desc = "This gets the Y position of the Block",
-		returns = {NUMBER, "the Y position of the Block, may be null if the Block has no position"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the Y position of the Block, may be null if the Block has no position"),
 		examples = "block.getY();"
 	)
 	private Object getBlockY(Arguments arguments) {
@@ -300,8 +299,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "offset",
 		desc = "This gets a block with a given offset, this will throw if the block has no position",
-		params = {POS, "offset", "the position offset to add to the block's current position"},
-		returns = {BLOCK, "the block at the offset position"},
+		params = {@ParameterDoc(type = PosDef.class, name = "offset", desc = "the position offset to add to the block's current position")},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the block at the offset position"),
 		examples = "block.offset(new Pos(0, 1, 0));"
 	)
 	private Object offset(Arguments arguments) {
@@ -316,10 +315,10 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		name = "offset",
 		desc = "This gets a block with a given offset, this will throw if the block has no position",
 		params = {
-			STRING, "direction", "the direction of the offset",
-			NUMBER, "distance", "the distance of the offset"
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the offset"),
+			@ParameterDoc(type = NumberDef.class, name = "distance", desc = "the distance of the offset")
 		},
-		returns = {BLOCK, "the block at the offset position"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the block at the offset position"),
 		examples = "block.offset('north', 5);"
 	)
 	private Object offset2(Arguments arguments) {
@@ -334,7 +333,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getZ",
 		desc = "This gets the Z position of the Block",
-		returns = {NUMBER, "the Z position of the Block, may be null if the Block has no position"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the Z position of the Block, may be null if the Block has no position"),
 		examples = "block.getZ();"
 	)
 	private Object getBlockZ(Arguments arguments) {
@@ -345,7 +344,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isSolidBlock",
 		desc = "This checks if the Block is a solid block",
-		returns = {BOOLEAN, "true if the Block is a solid block"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is a solid block"),
 		examples = "block.isSolidBlock();"
 	)
 	private Object isSolidBlock(Arguments arguments) {
@@ -356,7 +355,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "rotateYClockwise",
 		desc = "This rotates the Block 90 degrees clockwise",
-		returns = {BLOCK, "the rotated Block"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the rotated Block"),
 		examples = "block.rotateYClockwise();"
 	)
 	private Object rotateYClockwise(Arguments arguments) {
@@ -367,7 +366,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "rotateYCounterClockwise",
 		desc = "This rotates the Block 90 degrees counter-clockwise",
-		returns = {BLOCK, "the rotated Block"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the rotated Block"),
 		examples = "block.rotateYCounterClockwise();"
 	)
 	private Object rotateYCounterClockwise(Arguments arguments) {
@@ -378,7 +377,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "mirrorFrontBack",
 		desc = "This mirrors the Block around the front and back",
-		returns = {BLOCK, "the mirrored Block"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the mirrored Block"),
 		examples = "block.mirrorFrontBack();"
 	)
 	private Object mirrorFrontBack(Arguments arguments) {
@@ -389,7 +388,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "mirrorLeftRight",
 		desc = "This mirrors the Block around the left and right",
-		returns = {BLOCK, "the mirrored Block"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the mirrored Block"),
 		examples = "block.mirrorLeftRight();"
 	)
 	private Object mirrorLeftRight(Arguments arguments) {
@@ -400,7 +399,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isFluid",
 		desc = "This checks if the Block is a fluid",
-		returns = {BOOLEAN, "true if the Block is a fluid"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is a fluid"),
 		examples = "block.isFluid();"
 	)
 	private Object isFluid(Arguments arguments) {
@@ -411,7 +410,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isFluidSource",
 		desc = "This checks if the Block is a fluid source",
-		returns = {BOOLEAN, "true if the Block is a fluid source"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is a fluid source"),
 		examples = "block.isFluidSource();"
 	)
 	private Object isFluidSource(Arguments arguments) {
@@ -426,7 +425,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isReplaceable",
 		desc = "This checks if the Block is replaceable",
-		returns = {BOOLEAN, "true if the Block is replaceable"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is replaceable"),
 		examples = "block.isReplaceable();"
 	)
 	private Object isReplaceable(Arguments arguments) {
@@ -437,7 +436,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getHardness",
 		desc = "This gets the hardness of the Block",
-		returns = {NUMBER, "the hardness of the Block"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the hardness of the Block"),
 		examples = "block.getHardness();"
 	)
 	private Object getHardness(Arguments arguments) {
@@ -448,8 +447,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "sideCoversSmallSquare",
 		desc = "This checks if the Block covers a small square",
-		params = {STRING, "side", "the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'"},
-		returns = {BOOLEAN, "true if the Block covers a small square"},
+		params = {@ParameterDoc(type = StringDef.class, name = "side", desc = "the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block covers a small square"),
 		examples = "block.sideCoversSmallSquare('north');"
 	)
 	private Object sideCoversSmallSquare(Arguments arguments) {
@@ -463,8 +462,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isSideSolidFullSquare",
 		desc = "This checks if the Block is solid on the full square",
-		params = {STRING, "side", "the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'"},
-		returns = {BOOLEAN, "true if the Block is solid on the full square"},
+		params = {@ParameterDoc(type = StringDef.class, name = "side", desc = "the side to check, for example: 'north', 'south', 'east', 'west', 'up', 'down'")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is solid on the full square"),
 		examples = "block.isSideSolidFullSquare('north');"
 	)
 	private Object isSideSolidFullSquare(Arguments arguments) {
@@ -477,7 +476,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isSpawnable",
 		desc = "This checks if the Block is spawnable in the case of zombies",
-		returns = {BOOLEAN, "true if the Block is spawnable in the case of zombies"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block is spawnable in the case of zombies"),
 		examples = "block.isSpawnable();"
 	)
 	private Object allowsSpawning(Arguments arguments) {
@@ -488,8 +487,8 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "isSpawnable",
 		desc = "This checks if the Block allows spawning for given entity",
-		params = {ENTITY, "entity", "the entity to check"},
-		returns = {BOOLEAN, "true if the Block allows spawning for given entity"},
+		params = {@ParameterDoc(type = EntityDef.class, name = "entity", desc = "the entity to check")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the Block allows spawning for given entity"),
 		examples = "block.isSpawnable(zombie);"
 	)
 	private Object allowsSpawningType(Arguments arguments) {
@@ -501,7 +500,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getLuminance",
 		desc = "This gets the luminance of the Block",
-		returns = {NUMBER, "the luminance of the Block"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the luminance of the Block"),
 		examples = "block.getLuminance();"
 	)
 	private Object getLuminance(Arguments arguments) {
@@ -512,7 +511,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getMapColour",
 		desc = "This gets the map colour of the Block, can also be called with 'getMapColor'",
-		returns = {LIST, "a list with the map colour of the Block as RGB values"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "a list with the map colour of the Block as RGB values"),
 		examples = "block.getMapColour();"
 	)
 	private Object getMapColour(Arguments arguments) {
@@ -529,7 +528,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	@FunctionDoc(
 		name = "getBlockEntityNbt",
 		desc = "This gets the NBT of a block entity",
-		returns = {MAP, "the NBT of a block entity, may be null if the block entity has no NBT"},
+		returns = @ReturnDoc(type = MapDef.class, desc = "the NBT of a block entity, may be null if the block entity has no NBT"),
 		examples = "block.getBlockEntityNbt();"
 	)
 	private Object getBlockNbt(Arguments arguments) {

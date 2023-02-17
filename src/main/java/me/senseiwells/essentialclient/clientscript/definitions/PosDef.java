@@ -1,11 +1,11 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
+import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.NumberDef;
+import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -22,14 +22,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ENTITY;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 @ClassDoc(
 	name = POS,
 	desc = "This class is a wrapper for 3 coordinate points in Minecraft",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class PosDef extends CreatableDefinition<ScriptPos> {
@@ -69,7 +66,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 
 	@ConstructorDoc(
 		desc = "Creates a new Pos object with the given coordinates in a list",
-		params = {LIST, "list", "the list containing three coordinates"},
+		params = {@ParameterDoc(type = ListDef.class, name = "list", desc = "the list containing three coordinates")},
 		examples = "new Pos([1, 2, 3])"
 	)
 	private Unit construct1(Arguments arguments) {
@@ -93,9 +90,9 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@ConstructorDoc(
 		desc = "This creates a new Pos with the given x, y, and z",
 		params = {
-			NUMBER, "x", "the x position",
-			NUMBER, "y", "the y position",
-			NUMBER, "z", "the z position"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position")
 		},
 		examples = "new Pos(100, 0, 96);"
 	)
@@ -151,7 +148,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "getX",
 		desc = "This returns the x position of the Pos",
-		returns = {NUMBER, "the x position"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the x position"),
 		examples = "pos.getX();"
 	)
 	private double getX(Arguments arguments) {
@@ -161,7 +158,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "getY",
 		desc = "This returns the y position of the Pos",
-		returns = {NUMBER, "the y position"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the y position"),
 		examples = "pos.getY();"
 	)
 	private double getY(Arguments arguments) {
@@ -171,7 +168,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "getZ",
 		desc = "This returns the z position of the Pos",
-		returns = {NUMBER, "the z position"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the z position"),
 		examples = "pos.getZ();"
 	)
 	private double getZ(Arguments arguments) {
@@ -182,11 +179,11 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		name = "multiply",
 		desc = "This returns a new Pos with the current pos x, y, and z multiplied by the given x, y, and z",
 		params = {
-			NUMBER, "x", "the x multiplier",
-			NUMBER, "y", "the y multiplier",
-			NUMBER, "z", "the z multiplier"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x multiplier"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y multiplier"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z multiplier")
 		},
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.multiply(2, 3, 5);"
 	)
 	private Vec3d multiply(Arguments arguments) {
@@ -200,8 +197,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "multiply",
 		desc = "This returns a new Pos with the current pos x, y, and z multiplied by the given pos x, y, and z",
-		params = {POS, "pos", "the Pos to multiply by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the Pos to multiply by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.multiply(new Pos(2, 3, 5));"
 	)
 	private Vec3d multiply1(Arguments arguments) {
@@ -214,11 +211,11 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		name = "subtract",
 		desc = "This returns a new Pos with the current pos x, y, and z subtracted by the given x, y, and z",
 		params = {
-			NUMBER, "x", "the x subtractor",
-			NUMBER, "y", "the y subtractor",
-			NUMBER, "z", "the z subtractor"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x subtractor"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y subtractor"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z subtractor")
 		},
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.subtract(2, 3, 5);"
 	)
 	private Vec3d subtract(Arguments arguments) {
@@ -232,8 +229,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "subtract",
 		desc = "This returns a new Pos with the current pos x, y, and z subtracted by the given pos x, y, and z",
-		params = {POS, "pos", "the Pos to subtract by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the Pos to subtract by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.subtract(new Pos(2, 3, 5));"
 	)
 	private Vec3d subtract1(Arguments arguments) {
@@ -246,11 +243,11 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		name = "add",
 		desc = "This returns a new Pos with the current pos x, y, and z added by the given x, y, and z",
 		params = {
-			NUMBER, "x", "the x adder",
-			NUMBER, "y", "the y adder",
-			NUMBER, "z", "the z adder"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x adder"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y adder"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z adder")
 		},
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.add(2, 3, 5);"
 	)
 	private Vec3d add(Arguments arguments) {
@@ -264,8 +261,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "add",
 		desc = "This returns a new Pos with the current pos x, y, and z added by the given pos x, y, and z",
-		params = {POS, "pos", "the Pos to add by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the Pos to add by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.add(new Pos(2, 3, 5));"
 	)
 	private Vec3d add1(Arguments arguments) {
@@ -277,8 +274,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "dotProduct",
 		desc = "This returns the dot product of the current pos and the given pos",
-		params = {POS, "pos", "the Pos to dot product with"},
-		returns = {NUMBER, "the dot product"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the Pos to dot product with")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the dot product"),
 		examples = "pos.dotProduct(new Pos(2, 3, 5));"
 	)
 	private double dotProduct(Arguments arguments) {
@@ -290,8 +287,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "crossProduct",
 		desc = "This returns the cross product of the current pos and the given pos",
-		params = {POS, "pos", "the Pos to cross product with"},
-		returns = {POS, "the cross product"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the Pos to cross product with")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the cross product"),
 		examples = "pos.crossProduct(new Pos(2, 3, 5));"
 	)
 	private Vec3d crossProduct(Arguments arguments) {
@@ -303,7 +300,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "toBlockPos",
 		desc = "This floors all of the positions values to the nearest block",
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.toBlockPos();"
 	)
 	private BlockPos toBlockPos(Arguments arguments) {
@@ -313,7 +310,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "toList",
 		desc = "This returns the Pos as a List containing the x, y, and z positions in order",
-		returns = {LIST, "the Pos as a List"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the Pos as a List"),
 		examples = "x, y, z = pos.toList();"
 	)
 	private ArucasList toList(Arguments arguments) {
@@ -329,8 +326,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "offset",
 		desc = "This returns a new Pos with the current pos x, y, and z offset by a direction",
-		params = {STRING, "direction", "the direction to offset by, must be one of: north, south, east, west, up, down"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction to offset by, must be one of: north, south, east, west, up, down")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.offset('north');"
 	)
 	private Vec3d offset(Arguments arguments) {
@@ -344,10 +341,10 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		name = "offset",
 		desc = "This returns a new Pos with the current pos x, y, and z offset by a direction and a distance",
 		params = {
-			STRING, "direction", "the direction to offset by, must be one of: north, south, east, west, up, down",
-			NUMBER, "distance", "the distance to offset by"
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction to offset by, must be one of: north, south, east, west, up, down"),
+			@ParameterDoc(type = NumberDef.class, name = "distance", desc = "the distance to offset by")
 		},
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.offset('north', 2);"
 	)
 	private Vec3d offset1(Arguments arguments) {
@@ -365,7 +362,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "up",
 		desc = "This returns a new Pos with the current pos y incremented by 1",
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.up();"
 	)
 	private Vec3d up(Arguments arguments) {
@@ -376,8 +373,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "up",
 		desc = "This returns a new Pos with the current pos y incremented by the given number",
-		params = {NUMBER, "number", "the number to increment by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "number", desc = "the number to increment by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.up(2);"
 	)
 	private Vec3d up1(Arguments arguments) {
@@ -389,7 +386,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "down",
 		desc = "This returns a new Pos with the current pos y decremented by 1",
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.down();"
 	)
 	private Vec3d down(Arguments arguments) {
@@ -400,8 +397,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "down",
 		desc = "This returns a new Pos with the current pos y decremented by the given number",
-		params = {NUMBER, "number", "the number to decrement by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "number", desc = "the number to decrement by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.down(2);"
 	)
 	private Vec3d down1(Arguments arguments) {
@@ -413,7 +410,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "north",
 		desc = "This returns a new Pos with the current pos z incremented by 1",
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.north();"
 	)
 	private Vec3d north(Arguments arguments) {
@@ -424,8 +421,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "north",
 		desc = "This returns a new Pos with the current pos z incremented by the given number",
-		params = {NUMBER, "number", "the number to increment by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "number", desc = "the number to increment by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.north(2);"
 	)
 	private Vec3d north1(Arguments arguments) {
@@ -437,7 +434,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "south",
 		desc = "This returns a new Pos with the current pos z decremented by 1",
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.south();"
 	)
 	private Vec3d south(Arguments arguments) {
@@ -448,8 +445,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "south",
 		desc = "This returns a new Pos with the current pos z decremented by the given number",
-		params = {NUMBER, "number", "the number to decrement by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "number", desc = "the number to decrement by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.south(2);"
 	)
 	private Vec3d south1(Arguments arguments) {
@@ -461,7 +458,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "east",
 		desc = "This returns a new Pos with the current pos x incremented by 1",
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.east();"
 	)
 	private Vec3d east(Arguments arguments) {
@@ -472,8 +469,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "east",
 		desc = "This returns a new Pos with the current pos x incremented by the given number",
-		params = {NUMBER, "number", "the number to increment by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "number", desc = "the number to increment by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.east(2);"
 	)
 	private Vec3d east1(Arguments arguments) {
@@ -485,7 +482,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "west",
 		desc = "This returns a new Pos with the current pos x decremented by 1",
-		returns = {POS, "the new Pos"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.west();"
 	)
 	private Vec3d west(Arguments arguments) {
@@ -496,8 +493,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "west",
 		desc = "This returns a new Pos with the current pos x decremented by the given number",
-		params = {NUMBER, "number", "the number to decrement by"},
-		returns = {POS, "the new Pos"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "number", desc = "the number to decrement by")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the new Pos"),
 		examples = "pos.west(2);"
 	)
 	private Vec3d west1(Arguments arguments) {
@@ -509,8 +506,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "getSidePos",
 		desc = "This returns side position value of position",
-		params = {STRING, "direction", "the direction, can be: north, south, east, west, up, down"},
-		returns = {POS, "the side of the position"},
+		params = {@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction, can be: north, south, east, west, up, down")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the side of the position"),
 		examples = "pos.getSidePos('east');"
 	)
 	private Vec3d getSidePos(Arguments arguments) {
@@ -523,7 +520,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "asCentre",
 		desc = "This returns center value of the position",
-		returns = {POS, "the center of the position"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the center of the position"),
 		examples = "pos.asCentre();"
 	)
 	private Vec3d asCentre(Arguments arguments) {
@@ -534,8 +531,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "isNear",
 		desc = "This returns whether position to entity is less than 4.5",
-		params = {ENTITY, "entity", "the entity you want to check"},
-		returns = {BOOLEAN, "whether entity is within 4.5 block distance"},
+		params = {@ParameterDoc(type = EntityDef.class, name = "entity", desc = "the entity you want to check")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether entity is within 4.5 block distance"),
 		examples = "pos.isNear(Player.get());"
 	)
 	private boolean isNear(Arguments arguments) {
@@ -548,10 +545,10 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		name = "isWithin",
 		desc = "This returns whether position to entity is less than given distance",
 		params = {
-			ENTITY, "entity", "the entity you want to check",
-			NUMBER, "distance", "the distance you want to check"
+			@ParameterDoc(type = EntityDef.class, name = "entity", desc = "the entity you want to check"),
+			@ParameterDoc(type = NumberDef.class, name = "distance", desc = "the distance you want to check")
 		},
-		returns = {BOOLEAN, "whether entity is within given distance"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether entity is within given distance"),
 		examples = "pos.isNear(player, 8);"
 	)
 	private boolean isWithin(Arguments arguments) {
@@ -564,8 +561,8 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "distanceTo",
 		desc = "This returns distance to other position",
-		params = {POS, "other", "other position"},
-		returns = {NUMBER, "distance to other position"},
+		params = {@ParameterDoc(type = PosDef.class, name = "other", desc = "other position")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "distance to other position"),
 		examples = "pos.distanceTo(new Pos(0, 0, 0));"
 	)
 	private double distanceTo(Arguments arguments) {
@@ -578,11 +575,11 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 		name = "distanceTo",
 		desc = "This returns distance to other x, y, z position",
 		params = {
-			NUMBER, "x", "other position x",
-			NUMBER, "y", "other position y",
-			NUMBER, "z", "other position z"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "other position x"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "other position y"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "other position z")
 		},
-		returns = {NUMBER, "distance to other position"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "distance to other position"),
 		examples = "pos.distanceTo(0, 0, 0);"
 	)
 	private double distanceTo1(Arguments arguments) {
@@ -596,7 +593,7 @@ public class PosDef extends CreatableDefinition<ScriptPos> {
 	@FunctionDoc(
 		name = "normalize",
 		desc = "Normalizes the vector to have a magnitude of 1",
-		returns = {POS, "the normalized position"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the normalized position"),
 		examples = "pos.normalize();"
 	)
 	private Vec3d normalize(Arguments arguments) {

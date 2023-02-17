@@ -1,9 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.FileDef;
 import me.senseiwells.arucas.builtin.ListDef;
@@ -22,13 +20,11 @@ import me.senseiwells.essentialclient.utils.render.Texts;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.CONFIG_HANDLER;
 
 @ClassDoc(
 	name = CONFIG_HANDLER,
 	desc = "This class allows you to easily read and write config files.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
@@ -46,7 +42,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 
 	@ConstructorDoc(
 		desc = "Creates a new ConfigHandler, this is used to read and save configs",
-		params = {STRING, "name", "The name of the config, this will also be the name of the config file"},
+		params = {@ParameterDoc(type = StringDef.class, name = "name", desc = "The name of the config, this will also be the name of the config file")},
 		examples = "new ConfigHandler('MyConfig');"
 	)
 	private Unit constructor1(Arguments arguments) {
@@ -59,8 +55,8 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@ConstructorDoc(
 		desc = "Creates a new ConfigHandler, this is used to read and save configs",
 		params = {
-			STRING, "name", "The name of the config, this will also be the name of the config file",
-			BOOLEAN, "read", "Whether or not to read the config on creation"
+			@ParameterDoc(type = StringDef.class, name = "name", desc = "The name of the config, this will also be the name of the config file"),
+			@ParameterDoc(type = BooleanDef.class, name = "read", desc = "Whether or not to read the config on creation")
 		},
 		examples = "new ConfigHandler('MyConfig', false);"
 	)
@@ -96,7 +92,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "getName",
 		desc = "Gets the name of the config",
-		returns = {STRING, "The name of the config"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "The name of the config"),
 		examples = "configHandler.getName();"
 	)
 	private String getName(Arguments arguments) {
@@ -130,7 +126,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "setSaveOnClose",
 		desc = "Sets whether or not the configs should be saved when the script ends, by default this is true",
-		params = {BOOLEAN, "saveOnClose", "Whether or not the configs should be saved when the script ends"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "saveOnClose", desc = "Whether or not the configs should be saved when the script ends")},
 		examples = "configHandler.setSaveOnClose(false);"
 	)
 	private Void setSaveOnClose(Arguments arguments) {
@@ -141,7 +137,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "willSaveOnClose",
 		desc = "Gets whether or not the configs will be saved when the script ends",
-		returns = {BOOLEAN, "Whether or not the configs will be saved when the script ends"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "Whether or not the configs will be saved when the script ends"),
 		examples = "configHandler.willSaveOnClose();"
 	)
 	private boolean willSaveOnClose(Arguments arguments) {
@@ -151,7 +147,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "setSavePath",
 		desc = "Sets the path to save the configs to, this shouldn't include the file name",
-		params = {FILE, "savePath", "The path to save the configs to"},
+		params = {@ParameterDoc(type = FileDef.class, name = "savePath", desc = "The path to save the configs to")},
 		examples = "configHandler.setSavePath(new File('/home/user/scripts/'));"
 	)
 	private Void setSavePath(Arguments arguments) {
@@ -162,7 +158,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "addConfig",
 		desc = "Adds a config to the handler",
-		params = {CONFIG, "config", "The config to add"},
+		params = {@ParameterDoc(type = ConfigDef.class, name = "config", desc = "The config to add")},
 		examples =
 			"""
 				config = Config.fromMap({
@@ -179,13 +175,12 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	}
 
 	@FunctionDoc(
-		isVarArgs = true,
 		name = "addConfigs",
 		desc = {
 			"Adds multiple configs to the handler, you can pass in a list of configs",
 			"or a varargs of configs, this is for compatability with older scripts"
 		},
-		params = {CONFIG, "configs...", "The configs to add"},
+		params = @ParameterDoc(type = ConfigDef.class, name = "configs", desc = "The configs to add", isVarargs = true),
 		examples =
 			"""
 				config = Config.fromMap({
@@ -214,8 +209,8 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "getConfig",
 		desc = "Gets a config from the handler",
-		params = {STRING, "name", "The name of the config"},
-		returns = {CONFIG, "The config"},
+		params = {@ParameterDoc(type = StringDef.class, name = "name", desc = "The name of the config")},
+		returns = @ReturnDoc(type = ConfigDef.class, desc = "The config"),
 		examples = "configHandler.getConfig('MyConfig');"
 	)
 	private ClassInstance getConfig(Arguments arguments) {
@@ -225,7 +220,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "removeConfig",
 		desc = "Removes a config from the handler",
-		params = {STRING, "name", "The name of the config to remove"},
+		params = {@ParameterDoc(type = StringDef.class, name = "name", desc = "The name of the config to remove")},
 		examples = "configHandler.removeConfig('My Config');"
 	)
 	private Void removeConfig(Arguments arguments) {
@@ -246,7 +241,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "getAllConfigs",
 		desc = "Gets all the configs in the handler",
-		returns = {LIST, "All the configs in the handler"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "All the configs in the handler"),
 		examples = "configHandler.getAllConfigs();"
 	)
 	private ArucasList getAllConfigs(Arguments arguments) {
@@ -259,7 +254,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 			"Creates a new config screen containing all of the configs in the handler, in alphabetical order.",
 			"The screen name will be the default, the same as the name of the config handler"
 		},
-		returns = {SCREEN, "The new config screen"},
+		returns = @ReturnDoc(type = ScreenDef.class, desc = "The new config screen"),
 		examples = "configHandler.createScreen();"
 	)
 	private RulesScreen createScreen0(Arguments arguments) {
@@ -270,8 +265,8 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	@FunctionDoc(
 		name = "createScreen",
 		desc = "Creates a new config screen containing all of the configs in the handler, in alphabetical order",
-		params = {TEXT, "title", "The title of the screen"},
-		returns = {SCREEN, "The new config screen"},
+		params = {@ParameterDoc(type = TextDef.class, name = "title", desc = "The title of the screen")},
+		returns = @ReturnDoc(type = ScreenDef.class, desc = "The new config screen"),
 		examples = "configHandler.createScreen(Text.of('wow'));"
 	)
 	private RulesScreen createScreen1(Arguments arguments) {
@@ -282,10 +277,10 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 		name = "createScreen",
 		desc = "Creates a new config screen containing all of the configs in the handler",
 		params = {
-			TEXT, "title", "The title of the screen",
-			BOOLEAN, "alphabetical", "Whether or not to sort the configs alphabetically"
+			@ParameterDoc(type = TextDef.class, name = "title", desc = "The title of the screen"),
+			@ParameterDoc(type = BooleanDef.class, name = "alphabetical", desc = "Whether or not to sort the configs alphabetically")
 		},
-		returns = {SCREEN, "The new config screen"},
+		returns = @ReturnDoc(type = ScreenDef.class, desc = "The new config screen"),
 		examples = "configHandler.createScreen(Text.of('wow'), false);"
 	)
 	private RulesScreen createScreen2(Arguments arguments) {

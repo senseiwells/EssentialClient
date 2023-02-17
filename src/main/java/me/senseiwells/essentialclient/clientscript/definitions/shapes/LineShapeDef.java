@@ -1,8 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.ConstructorDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -19,14 +20,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LINE_SHAPE;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 @ClassDoc(
 	name = LINE_SHAPE,
 	desc = "This class allows you to create a line shape which can be used to draw lines in the world.",
-	importPath = "Minecraft",
 	superclass = CorneredShapeDef.class,
 	language = Util.Language.Java
 )
@@ -52,8 +50,8 @@ public class LineShapeDef extends CreatableDefinition<ScriptLine> {
 	@ConstructorDoc(
 		desc = "Creates a new line shape",
 		params = {
-			POS, "pos1", "The starting position of the line",
-			POS, "pos2", "The ending position of the line"
+			@ParameterDoc(type = PosDef.class, name = "pos1", desc = "The starting position of the line"),
+			@ParameterDoc(type = PosDef.class, name = "pos2", desc = "The ending position of the line")
 		},
 		examples = "new LineShape(new Pos(0, 0, 0), new Pos(1, 1, 1));"
 	)
@@ -68,12 +66,12 @@ public class LineShapeDef extends CreatableDefinition<ScriptLine> {
 	@ConstructorDoc(
 		desc = "Creates a new line shape",
 		params = {
-			NUMBER, "x1", "The x position of the starting position of the line",
-			NUMBER, "y1", "The y position of the starting position of the line",
-			NUMBER, "z1", "The z position of the starting position of the line",
-			NUMBER, "x2", "The x position of the ending position of the line",
-			NUMBER, "y2", "The y position of the ending position of the line",
-			NUMBER, "z2", "The z position of the ending position of the line"
+			@ParameterDoc(type = NumberDef.class, name = "x1", desc = "The x position of the starting position of the line"),
+			@ParameterDoc(type = NumberDef.class, name = "y1", desc = "The y position of the starting position of the line"),
+			@ParameterDoc(type = NumberDef.class, name = "z1", desc = "The z position of the starting position of the line"),
+			@ParameterDoc(type = NumberDef.class, name = "x2", desc = "The x position of the ending position of the line"),
+			@ParameterDoc(type = NumberDef.class, name = "y2", desc = "The y position of the ending position of the line"),
+			@ParameterDoc(type = NumberDef.class, name = "z2", desc = "The z position of the ending position of the line")
 		},
 		examples = "new LineShape(0, 0, 0, 1, 1, 1);"
 	)

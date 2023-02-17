@@ -1,10 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.builtin.BooleanDef;
-import me.senseiwells.arucas.builtin.NumberDef;
-import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -37,13 +37,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ENTITY;
 
 @ClassDoc(
 	name = ENTITY,
 	desc = "This class is mostly used to get data about entities.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class EntityDef extends PrimitiveDefinition<Entity> {
@@ -78,8 +76,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			"This converts an entityId into an entity instance.",
 			"This will throw an error if the id is not valid."
 		},
-		params = {STRING, "entityId", "the entityId to convert to an entity"},
-		returns = {ENTITY, "the entity instance from the id"},
+		params = {@ParameterDoc(type = StringDef.class, name = "entityId", desc = "the entityId to convert to an entity")},
+		returns = @ReturnDoc(type = EntityDef.class, desc = "the entity instance from the id"),
 		examples = "Entity.of('minecraft:pig');"
 	)
 	private ClassInstance of(Arguments arguments) {
@@ -140,7 +138,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isSneaking",
 		desc = "Returns true if the player is sneaking",
-		returns = {BOOLEAN, "true if the player is sneaking, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the player is sneaking, false if not"),
 		examples = "entity.isSneaking();"
 	)
 	private boolean isSneaking(Arguments arguments) {
@@ -150,7 +148,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isSprinting",
 		desc = "Returns true if the player is sprinting",
-		returns = {BOOLEAN, "true if the player is sprinting, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the player is sprinting, false if not"),
 		examples = "entity.isSprinting();"
 	)
 	private boolean isSprinting(Arguments arguments) {
@@ -160,7 +158,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isFalling",
 		desc = "Returns true if the entity is falling",
-		returns = {BOOLEAN, "true if the entity is falling, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is falling, false if not"),
 		examples = "entity.isFalling();"
 	)
 	private boolean isFalling(Arguments arguments) {
@@ -170,7 +168,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isOnGround",
 		desc = "Returns true if the entity is on the ground",
-		returns = {BOOLEAN, "true if the entity is on the ground, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is on the ground, false if not"),
 		examples = "entity.isOnGround();"
 	)
 	private boolean isOnGround(Arguments arguments) {
@@ -180,7 +178,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isTouchingWater",
 		desc = "Returns true if the entity is touching water",
-		returns = {BOOLEAN, "true if the entity is touching water, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is touching water, false if not"),
 		examples = "entity.isTouchingWater();"
 	)
 	private boolean isTouchingWater(Arguments arguments) {
@@ -190,7 +188,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isTouchingWaterOrRain",
 		desc = "Returns true if the entity is touching water or rain",
-		returns = {BOOLEAN, "true if the entity is touching water or rain, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is touching water or rain, false if not"),
 		examples = "entity.isTouchingWaterOrRain();"
 	)
 	private boolean isTouchingWaterOrRain(Arguments arguments) {
@@ -200,7 +198,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isSubmergedInWater",
 		desc = "Returns true if the entity is submerged in water",
-		returns = {BOOLEAN, "true if the entity is submerged in water, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is submerged in water, false if not"),
 		examples = "entity.isSubmergedInWater();"
 	)
 	private boolean isSubmergedInWater(Arguments arguments) {
@@ -210,7 +208,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isInLava",
 		desc = "Returns true if the entity is in lava",
-		returns = {BOOLEAN, "true if the entity is in lava, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is in lava, false if not"),
 		examples = "entity.isInLava();"
 	)
 	private boolean isInLava(Arguments arguments) {
@@ -220,7 +218,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isOnFire",
 		desc = "Returns true if the entity is on fire",
-		returns = {BOOLEAN, "true if the entity is on fire, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is on fire, false if not"),
 		examples = "entity.isOnFire();"
 	)
 	private boolean isOnFire(Arguments arguments) {
@@ -230,7 +228,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isGlowing",
 		desc = "Returns true if the entity is glowing",
-		returns = {BOOLEAN, "true if the entity is glowing, false if not"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is glowing, false if not"),
 		examples = "entity.isGlowing();"
 	)
 	private boolean isGlowing(Arguments arguments) {
@@ -243,7 +241,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			"This gets the block that the entity is currently looking at",
 			"with a max range of 20 blocks, if there is no block then it will return air"
 		},
-		returns = {BLOCK, "the block that the entity is looking at, containing the position"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the block that the entity is looking at, containing the position"),
 		examples = "entity.getLookingAtBlock();"
 	)
 	private ScriptBlockState getLookingAtBlock(Arguments arguments) {
@@ -262,8 +260,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			"This gets the block that the entity is currently looking at",
 			"with a specific max range, if there is no block then it will return air"
 		},
-		params = {NUMBER, "maxDistance", "the max range to ray cast"},
-		returns = {BLOCK, "the block that the entity is looking at, containing the position"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "maxDistance", desc = "the max range to ray cast")},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the block that the entity is looking at, containing the position"),
 		examples = "entity.getLookingAtBlock(10);"
 	)
 	private ScriptBlockState getLookingAtBlock1(Arguments arguments) {
@@ -285,10 +283,10 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			"be included, if there is no block then it will return air"
 		},
 		params = {
-			NUMBER, "maxDistance", "the max range to ray cast",
-			STRING, "fluidType", "the types of fluids to include, either 'none', 'sources', or 'all'"
+			@ParameterDoc(type = NumberDef.class, name = "maxDistance", desc = "the max range to ray cast"),
+			@ParameterDoc(type = StringDef.class, name = "fluidType", desc = "the types of fluids to include, either 'none', 'sources', or 'all'")
 		},
-		returns = {BLOCK, "the block that the entity is looking at, containing the position"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the block that the entity is looking at, containing the position"),
 		examples = "entity.getLookingAtBlock(10, 'sources');"
 	)
 	private ScriptBlockState getLookingAtBlock2(Arguments arguments) {
@@ -310,8 +308,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getLookingAtPos",
 		desc = "This gets the position that the entity is currently looking at with a specific max range",
-		params = {NUMBER, "maxDistance", "the max range to ray cast"},
-		returns = {POS, "the position that the entity is looking at, containing the x, y, and z"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "maxDistance", desc = "the max range to ray cast")},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the position that the entity is looking at, containing the x, y, and z"),
 		examples = "entity.getLookingAtPos(10);"
 	)
 	private Vec3d getLookingAtPos(Arguments arguments) {
@@ -323,7 +321,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getEntityIdNumber",
 		desc = "This gets the entity id number of the entity",
-		returns = {NUMBER, "the entity id number"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the entity id number"),
 		examples = "entity.getEntityIdNumber();"
 	)
 	private int getEntityIdNumber(Arguments arguments) {
@@ -333,7 +331,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getVelocity",
 		desc = "This gets the velocity of the entity in a list in the form [x, y, z]",
-		returns = {LIST, "the velocity of the entity"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the velocity of the entity"),
 		examples = "entity.getVelocity();"
 	)
 	private ArucasList getVelocity(Arguments arguments) {
@@ -350,7 +348,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getPos",
 		desc = "This gets the position of the entity",
-		returns = {POS, "the position of the entity"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the position of the entity"),
 		examples = "entity.getPos();"
 	)
 	private Vec3d getPos(Arguments arguments) {
@@ -360,7 +358,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getX",
 		desc = "This gets the x position of the entity",
-		returns = {NUMBER, "the x position of the entity"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the x position of the entity"),
 		examples = "entity.getX();"
 	)
 	private double getX(Arguments arguments) {
@@ -370,7 +368,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getY",
 		desc = "This gets the y position of the entity",
-		returns = {NUMBER, "the y position of the entity"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the y position of the entity"),
 		examples = "entity.getY();"
 	)
 	private double getY(Arguments arguments) {
@@ -380,7 +378,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getZ",
 		desc = "This gets the z position of the entity",
-		returns = {NUMBER, "the z position of the entity"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the z position of the entity"),
 		examples = "entity.getZ();"
 	)
 	private double getZ(Arguments arguments) {
@@ -390,7 +388,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getYaw",
 		desc = "This gets the yaw of the entity (horizontal head rotation)",
-		returns = {NUMBER, "the yaw of the entity, between -180 and 180"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the yaw of the entity, between -180 and 180"),
 		examples = "entity.getYaw();"
 	)
 	private float getYaw(Arguments arguments) {
@@ -402,7 +400,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getPitch",
 		desc = "This gets the pitch of the entity (vertical head rotation)",
-		returns = {NUMBER, "the pitch of the entity, between -90 and 90"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the pitch of the entity, between -90 and 90"),
 		examples = "entity.getPitch();"
 	)
 	private float getPitch(Arguments arguments) {
@@ -412,7 +410,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getDimension",
 		desc = "This gets the dimension of the entity",
-		returns = {STRING, "the dimension id of dimension the entity is in"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the dimension id of dimension the entity is in"),
 		examples = "entity.getDimension();"
 	)
 	private String getDimension(Arguments arguments) {
@@ -422,7 +420,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getWorld",
 		desc = "This gets the world the entity is in",
-		returns = {WORLD, "the world the entity is in"},
+		returns = @ReturnDoc(type = WorldDef.class, desc = "the world the entity is in"),
 		examples = "entity.getWorld();"
 	)
 	private ClientWorld getWorld(Arguments arguments) {
@@ -436,7 +434,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getBiome",
 		desc = "This gets the biome of the entity",
-		returns = {BIOME, "the biome the entity is in"},
+		returns = @ReturnDoc(type = BiomeDef.class, desc = "the biome the entity is in"),
 		examples = "entity.getBiome();"
 	)
 	private Biome getBiome(Arguments arguments) {
@@ -455,7 +453,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			"'minecraft:cow' you can find all entityNames on",
 			"[Joa's Entity Property Encyclopedia](https://joakimthorsen.github.io/MCPropertyEncyclopedia/entities.html)"
 		},
-		returns = {STRING, "the full id of the entity"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the full id of the entity"),
 		examples = "entity.getFullId();"
 	)
 	private String getFullId(Arguments arguments) {
@@ -465,7 +463,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getId",
 		desc = "This gets the id of the entity, this returns the id, so for examples 'cow'",
-		returns = {STRING, "the id of the entity"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the id of the entity"),
 		examples = "entity.getId();"
 	)
 	private String getId(Arguments arguments) {
@@ -475,8 +473,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "isOf",
 		desc = "This checks if the entity is of the given entity id",
-		params = {STRING, "entityId", "the entity id to check"},
-		returns = {BOOLEAN, "true if the entity is of the given entity id"},
+		params = {@ParameterDoc(type = StringDef.class, name = "entityId", desc = "the entity id to check")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the entity is of the given entity id"),
 		examples = "entity.isOf('cow');"
 	)
 	private boolean isOf(Arguments arguments) {
@@ -489,7 +487,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getAge",
 		desc = "This gets the age of the entity in ticks",
-		returns = {NUMBER, "the age of the entity in ticks"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the age of the entity in ticks"),
 		examples = "entity.getAge();"
 	)
 	private int getAge(Arguments arguments) {
@@ -499,7 +497,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getCustomName",
 		desc = "This gets the custom name of the entity if it has one",
-		returns = {STRING, "the custom name of the entity if it has one, otherwise null"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the custom name of the entity if it has one, otherwise null"),
 		examples = "entity.getCustomName();"
 	)
 	private String getCustomName(Arguments arguments) {
@@ -511,7 +509,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getEntityUuid",
 		desc = "This gets the uuid of the entity",
-		returns = {STRING, "the uuid of the entity"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the uuid of the entity"),
 		examples = "entity.getEntityUuid();"
 	)
 	private String getEntityUuid(Arguments arguments) {
@@ -521,7 +519,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "setGlowing",
 		desc = "This sets the entity to either start glowing or stop glowing on the client",
-		params = {BOOLEAN, "glowing", "the glowing state"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "glowing", desc = "the glowing state")},
 		examples = "entity.setGlowing(true);"
 	)
 	private Void setGlowing(Arguments arguments) {
@@ -533,8 +531,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getDistanceTo",
 		desc = "This gets the distance between the entity and the other entity",
-		params = {ENTITY, "otherEntity", "the other entity"},
-		returns = {NUMBER, "the distance between the entities"},
+		params = {@ParameterDoc(type = EntityDef.class, name = "otherEntity", desc = "the other entity")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the distance between the entities"),
 		examples = "entity.getDistanceTo(Player.get());"
 	)
 	private double getDistanceTo(Arguments arguments) {
@@ -545,8 +543,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getSquaredDistanceTo",
 		desc = "This gets the squared distance between the entity and the other entity",
-		params = {ENTITY, "otherEntity", "the other entity"},
-		returns = {NUMBER, "the squared distance between the entities"},
+		params = {@ParameterDoc(type = EntityDef.class, name = "otherEntity", desc = "the other entity")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the squared distance between the entities"),
 		examples = "entity.getSquaredDistanceTo(Player.get());"
 	)
 	private double getSquaredDistanceTo(Arguments arguments) {
@@ -557,7 +555,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getNbt",
 		desc = "This gets the nbt of the entity as a map",
-		returns = {MAP, "the nbt of the entity"},
+		returns = @ReturnDoc(type = MapDef.class, desc = "the nbt of the entity"),
 		examples = "entity.getNbt();"
 	)
 	private ArucasMap getNbt(Arguments arguments) {
@@ -569,7 +567,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getTranslatedName",
 		desc = "This gets the translated name of the entity, for examples 'minecraft:pig' would return 'Pig' if your language is in english",
-		returns = {STRING, "the translated name of the entity"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the translated name of the entity"),
 		examples = "entity.getTranslatedName();"
 	)
 	private String getTranslatedName(Arguments arguments) {
@@ -580,7 +578,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@FunctionDoc(
 		name = "getHitbox",
 		desc = "This gets the hitbox of the entity in a list containing the two corners of the hitbox, the minimum point and the maximum point",
-		returns = {LIST, "the hitbox of the entity"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the hitbox of the entity"),
 		examples = "entity.getHitbox();"
 	)
 	private ArucasList getHitbox(Arguments arguments) {
@@ -597,10 +595,10 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		name = "collidesWith",
 		desc = "This checks whether the entity collides with a block at a given position",
 		params = {
-			POS, "pos", "the position to check",
-			BLOCK, "block", "the block to check"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position to check"),
+			@ParameterDoc(type = BlockDef.class, name = "block", desc = "the block to check")
 		},
-		returns = {BOOLEAN, "whether the entity collides with the block"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether the entity collides with the block"),
 		examples = "entity.collidesWith(Pos.get(0, 0, 0), Block.of('minecraft:stone'));"
 	)
 	private boolean collidesWithBlockAtPos(Arguments arguments) {
@@ -614,9 +612,9 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		name = "canSpawnAt",
 		desc = "This checks whether the entity can spawn at given position with regard to light and hitbox",
 		params = {
-			POS, "pos", "the position to check"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position to check")
 		},
-		returns = {BOOLEAN, "whether entity type can spawn at given position"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether entity type can spawn at given position"),
 		examples = "entity.canSpawnAt(new Pos(0,0,0));"
 	)
 	private boolean canSpawnPos(Arguments arguments) {

@@ -1,8 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.ConstructorDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -19,14 +20,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.BOX_SHAPE;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 @ClassDoc(
 	name = BOX_SHAPE,
 	desc = "This class allows you to create box shapes that can be rendered in the world.",
-	importPath = "Minecraft",
 	superclass = CorneredShapeDef.class,
 	language = Util.Language.Java
 )
@@ -53,7 +51,7 @@ public class BoxShapeDef extends CreatableDefinition<ScriptBox> {
 
 	@ConstructorDoc(
 		desc = "Creates a new box shape, this is used to render boxes",
-		params = {POS, "pos", "The position which will be used for the first and second corner of the box"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "The position which will be used for the first and second corner of the box")},
 		examples = "new BoxShape(new Pos(0, 0, 0));"
 	)
 	private Unit construct1(Arguments arguments) {
@@ -66,8 +64,8 @@ public class BoxShapeDef extends CreatableDefinition<ScriptBox> {
 	@ConstructorDoc(
 		desc = "Creates a new box shape, this is used to render boxes",
 		params = {
-			POS, "pos1", "The position of the first corner of the box",
-			POS, "pos2", "The position of the second corner of the box"
+			@ParameterDoc(type = PosDef.class, name = "pos1", desc = "The position of the first corner of the box"),
+			@ParameterDoc(type = PosDef.class, name = "pos2", desc = "The position of the second corner of the box")
 		},
 		examples = "new BoxShape(new Pos(0, 0, 0), new Pos(10, 10, 10));"
 	)
@@ -82,9 +80,9 @@ public class BoxShapeDef extends CreatableDefinition<ScriptBox> {
 	@ConstructorDoc(
 		desc = "Creates a new box shape, this is used to render boxes",
 		params = {
-			NUMBER, "x", "The x position which will be used for the first and second corner of the box",
-			NUMBER, "y", "The y position which will be used for the first and second corner of the box",
-			NUMBER, "z", "The z position which will be used for the first and second corner of the box"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "The x position which will be used for the first and second corner of the box"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "The y position which will be used for the first and second corner of the box"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "The z position which will be used for the first and second corner of the box")
 		},
 		examples = "new BoxShape(0, 0, 0);"
 	)
@@ -101,12 +99,12 @@ public class BoxShapeDef extends CreatableDefinition<ScriptBox> {
 	@ConstructorDoc(
 		desc = "Creates a new box shape, this is used to render boxes",
 		params = {
-			NUMBER, "x1", "The x position of the first corner of the box",
-			NUMBER, "y1", "The y position of the first corner of the box",
-			NUMBER, "z1", "The z position of the first corner of the box",
-			NUMBER, "x2", "The x position of the second corner of the box",
-			NUMBER, "y2", "The y position of the second corner of the box",
-			NUMBER, "z2", "The z position of the second corner of the box"
+			@ParameterDoc(type = NumberDef.class, name = "x1", desc = "The x position of the first corner of the box"),
+			@ParameterDoc(type = NumberDef.class, name = "y1", desc = "The y position of the first corner of the box"),
+			@ParameterDoc(type = NumberDef.class, name = "z1", desc = "The z position of the first corner of the box"),
+			@ParameterDoc(type = NumberDef.class, name = "x2", desc = "The x position of the second corner of the box"),
+			@ParameterDoc(type = NumberDef.class, name = "y2", desc = "The y position of the second corner of the box"),
+			@ParameterDoc(type = NumberDef.class, name = "z2", desc = "The z position of the second corner of the box")
 		},
 		examples = "new BoxShape(0, 0, 0, 10, 10, 10);"
 	)

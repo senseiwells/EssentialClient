@@ -1,9 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.FunctionDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.builtin.StringDef;
@@ -22,9 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE_SCREEN;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
 
 @ClassDoc(
 	name = FAKE_SCREEN,
@@ -32,7 +28,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM
 		"This class extends Screen and so inherits all of their methods too,",
 		"this class is used to create client side inventory screens."
 	},
-	importPath = "Minecraft",
 	superclass = ScreenDef.class,
 	language = Util.Language.Java
 )
@@ -60,8 +55,8 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 			"this will throw an error if the rows are not between 1 and 6"
 		},
 		params = {
-			STRING, "name", "the name of the screen",
-			NUMBER, "rows", "the number of rows between 1 - 6"
+			@ParameterDoc(type = StringDef.class, name = "name", desc = "the name of the screen"),
+			@ParameterDoc(type = NumberDef.class, name = "rows", desc = "the number of rows between 1 - 6")
 		},
 		examples = "new FakeScreen('MyScreen', 6);"
 	)
@@ -95,7 +90,7 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 			"button string: right, left, middle."
 		},
 		params = {
-			FUNCTION, "function", "the callback function"
+			@ParameterDoc(type = FunctionDef.class, name = "function", desc = "the callback function")
 		},
 		examples =
 			"""
@@ -119,8 +114,8 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 		name = "setStackForSlot",
 		desc = "Sets the stack for the given slot, if the slot is out of bounds it won't be set",
 		params = {
-			NUMBER, "slotNum", "the slot number",
-			ITEM_STACK, "stack", "the stack to set"
+			@ParameterDoc(type = NumberDef.class, name = "slotNum", desc = "the slot number"),
+			@ParameterDoc(type = ItemStackDef.class, name = "stack", desc = "the stack to set")
 		},
 		examples = "fakeScreen.setStackForSlot(0, Material.DIAMOND_BLOCK.asItemStack());"
 	)
@@ -135,8 +130,8 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 	@FunctionDoc(
 		name = "getStackForSlot",
 		desc = "Gets the stack for the given slot, if the slot is out of bounds it returns null",
-		params = {NUMBER, "slotNum", "the slot number"},
-		returns = {ITEM_STACK, "the stack for the given slot"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slotNum", desc = "the slot number")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the stack for the given slot"),
 		examples = "fakeScreen.getStackForSlot(0);"
 	)
 	private ScriptItemStack getStackForSlot(Arguments arguments) {

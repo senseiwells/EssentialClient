@@ -1,7 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
@@ -58,8 +60,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.PLAYER;
 
 @ClassDoc(
 	name = PLAYER,
@@ -67,7 +68,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 		"This class is used to interact with the main player, this extends OtherPlayer",
 		"and so inherits all methods from that class."
 	},
-	importPath = "Minecraft",
 	superclass = OtherPlayerDef.class,
 	language = Util.Language.Java
 )
@@ -99,7 +99,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		isStatic = true,
 		name = "get",
 		desc = "This gets the main player",
-		returns = {PLAYER, "The main player"},
+		returns = @ReturnDoc(type = PlayerDef.class, desc = "The main player"),
 		examples = "player = Player.get();"
 	)
 	private ClassInstance get(Arguments arguments) {
@@ -178,7 +178,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"This allows you to make your player use, you must",
 			"pass 'hold', 'stop', or 'once' otherwise an error will be thrown"
 		},
-		params = {STRING, "action", "the type of action, either 'hold', 'stop', or 'once'"},
+		params = {@ParameterDoc(type = StringDef.class, name = "action", desc = "the type of action, either 'hold', 'stop', or 'once'")},
 		examples = "player.use('hold');"
 	)
 	private Void use(Arguments arguments) {
@@ -199,7 +199,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"This allows you to make your player attack, you must",
 			"pass 'hold', 'stop', or 'once' otherwise an error will be thrown"
 		},
-		params = {STRING, "action", "the type of action, either 'hold', 'stop', or 'once'"},
+		params = {@ParameterDoc(type = StringDef.class, name = "action", desc = "the type of action, either 'hold', 'stop', or 'once'")},
 		examples = "player.attack('once');"
 	)
 	private Void attack(Arguments arguments) {
@@ -220,7 +220,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"This allows you to set the slot number your player is holding.",
 			"If the number is not between 0 and 8 an error will be thrown"
 		},
-		params = {NUMBER, "slot", "the slot number, must be between 0 - 8"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slot", desc = "the slot number, must be between 0 - 8")},
 		examples = "player.setSelectedSlot(0);"
 	)
 	private Void setSelectedSlot(Arguments arguments) {
@@ -238,7 +238,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "getSelectedSlot",
 		desc = "This gets the current selected slot number your player is holding",
-		returns = {NUMBER, "the selected slot"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the selected slot"),
 		examples = "player.getSelectedSlot"
 	)
 	private int getSelectedSlot(Arguments arguments) {
@@ -248,7 +248,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "say",
 		desc = "This allows you to make your player send a message in chat, this includes commands",
-		params = {STRING, "message", "the message to send"},
+		params = {@ParameterDoc(type = StringDef.class, name = "message", desc = "the message to send")},
 		examples = "player.say('/help');"
 	)
 	private Void say(Arguments arguments) {
@@ -259,7 +259,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "message",
 		desc = "This allows you to send a message to your player, only they will see this, purely client side",
-		params = {TEXT, "message", "the message to send, can also be string"},
+		params = {@ParameterDoc(type = TextDef.class, name = "message", desc = "the message to send, can also be string")},
 		examples = "player.message('Hello World!');"
 	)
 	private Void message(Arguments arguments) {
@@ -274,7 +274,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "messageActionBar",
 		desc = "This allows you to set the current memssage displaying on the action bar",
-		params = {TEXT, "message", "the message to send, can also be string"},
+		params = {@ParameterDoc(type = TextDef.class, name = "message", desc = "the message to send, can also be string")},
 		examples = "player.messageActionBar('Hello World!');"
 	)
 	private Void messageActionBar(Arguments arguments) {
@@ -290,8 +290,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "showTitle",
 		desc = "THis allows you to show a title and subtitle to the player",
 		params = {
-			TEXT, "title", "the title to show, can be string or null",
-			TEXT, "subtitle", "the subtitle to show, can be string or null"
+			@ParameterDoc(type = TextDef.class, name = "title", desc = "the title to show, can be string or null"),
+			@ParameterDoc(type = TextDef.class, name = "subtitle", desc = "the subtitle to show, can be string or null")
 		},
 		examples = "player.showTitle('Title!', 'Subtitle!');"
 	)
@@ -330,7 +330,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"This opens a screen for the player, this cannot open server side screens.",
 			"This will throw an error if you are trying to open a handled screen"
 		},
-		params = {SCREEN, "screen", "the screen to open"},
+		params = {@ParameterDoc(type = ScreenDef.class, name = "screen", desc = "the screen to open")},
 		examples = "player.openScreen(new FakeScreen('MyScreen', 4));"
 	)
 	private Void openScreen(Arguments arguments) {
@@ -359,7 +359,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "setWalking",
 		desc = "This sets the player's walking state",
-		params = {BOOLEAN, "walking", "the walking state"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "walking", desc = "the walking state")},
 		examples = "player.setWalking(true);"
 	)
 	private Void setWalking(Arguments arguments) {
@@ -370,7 +370,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "setSneaking",
 		desc = "This sets the player's sneaking state",
-		params = {BOOLEAN, "sneaking", "the sneaking state"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "sneaking", desc = "the sneaking state")},
 		examples = "player.setSneaking(true);"
 	)
 	private Void setSneaking(Arguments arguments) {
@@ -381,7 +381,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "setSprinting",
 		desc = "This sets the player's sprinting state",
-		params = {BOOLEAN, "sprinting", "the sprinting state"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "sprinting", desc = "the sprinting state")},
 		examples = "player.setSprinting(true);"
 	)
 	private Void setSprinting(Arguments arguments) {
@@ -395,7 +395,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "dropItemInHand",
 		desc = "This drops the item(s) in the player's main hand",
-		params = {BOOLEAN, "dropAll", "if true, all items in the player's main hand will be dropped"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "dropAll", desc = "if true, all items in the player's main hand will be dropped")},
 		examples = "player.dropItemInHand(true);"
 	)
 	private Void dropItemInHand(Arguments arguments) {
@@ -409,7 +409,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "dropAll",
 		desc = "This drops all items of a given type in the player's inventory",
-		params = {MATERIAL, "material", "the item stack, or material type to drop"},
+		params = {@ParameterDoc(type = MaterialDef.class, name = "material", desc = "the item stack, or material type to drop")},
 		examples = "player.dropAll(Material.DIRT.asItemStack());"
 	)
 	private Void dropAll(Arguments arguments) {
@@ -423,7 +423,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "dropAllExact",
 		desc = "This drops all the items that have the same nbt as a given stack",
-		params = {ITEM_STACK, "itemStack", "the stack with nbt to drop"},
+		params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the stack with nbt to drop")},
 		examples = "player.dropAllExact(Material.GOLD_INGOT.asItemStack());"
 	)
 	private Void dropAllExact(Arguments arguments) {
@@ -438,8 +438,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "look",
 		desc = "This sets the player's look direction",
 		params = {
-			NUMBER, "yaw", "the yaw of the player's look direction",
-			NUMBER, "pitch", "the pitch of the player's look direction"
+			@ParameterDoc(type = NumberDef.class, name = "yaw", desc = "the yaw of the player's look direction"),
+			@ParameterDoc(type = NumberDef.class, name = "pitch", desc = "the pitch of the player's look direction")
 		},
 		examples = "player.look(0, 0);"
 	)
@@ -457,9 +457,9 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "lookAtPos",
 		desc = "This makes your player look towards a position",
 		params = {
-			NUMBER, "x", "the x coordinate of the position",
-			NUMBER, "y", "the y coordinate of the position",
-			NUMBER, "z", "the z coordinate of the position"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x coordinate of the position"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y coordinate of the position"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z coordinate of the position")
 		},
 		examples = "player.lookAtPos(0, 0, 0);"
 	)
@@ -476,7 +476,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "lookAtPos",
 		desc = "This makes your player look towards a position",
-		params = {POS, "pos", "the position to look at"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position to look at")},
 		examples = "player.lookAtPos(pos);"
 	)
 	private Void lookAtPosPos(Arguments arguments) {
@@ -491,8 +491,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "canPlaceBlockAt",
 		desc = "Checks block can be placed at given position",
 		params = {
-			BLOCK, "block", "the block to check for",
-			POS, "pos", "the position to check"
+			@ParameterDoc(type = BlockDef.class, name = "block", desc = "the block to check for"),
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position to check")
 		},
 		examples = "player.canPlaceBlockAt(block, pos);"
 	)
@@ -509,10 +509,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "canPlaceBlockAt",
 		desc = "Checks block can be placed at given position",
 		params = {
-			BLOCK, "block", "the block to check for",
-			NUMBER, "x", "the x coordinate of the position",
-			NUMBER, "y", "the y coordinate of the position",
-			NUMBER, "z", "the z coordinate of the position"
+			@ParameterDoc(type = BlockDef.class, name = "block", desc = "the block to check for"),
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x coordinate of the position"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y coordinate of the position"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z coordinate of the position")
 		},
 		examples = "player.canPlaceBlockAt(block, 0, 0, 0);"
 	)
@@ -547,7 +547,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "getLookingAtEntity",
 		desc = "This gets the entity that the player is currently looking at",
-		returns = {ENTITY, "the entity that the player is looking at"},
+		returns = @ReturnDoc(type = EntityDef.class, desc = "the entity that the player is looking at"),
 		examples = "player.getLookingAtEntity();"
 	)
 	private Entity getLookingAtEntity(Arguments arguments) {
@@ -566,8 +566,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"This will throw an errof if the slots are out of bounds"
 		},
 		params = {
-			NUMBER, "slot1", "the slot to swap with slot2",
-			NUMBER, "slot2", "the slot to swap with slot1"
+			@ParameterDoc(type = NumberDef.class, name = "slot1", desc = "the slot to swap with slot2"),
+			@ParameterDoc(type = NumberDef.class, name = "slot2", desc = "the slot to swap with slot1")
 		},
 		examples = "player.swapSlots(13, 14);"
 	)
@@ -609,7 +609,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"an enchantment that is in the hotbar, again going from the current slot",
 			"if there is no such slot it will return the current selected slot"
 		},
-		returns = {NUMBER, "the slot that is swappable"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the slot that is swappable"),
 		examples = "player.getSwappableHotbarSlot();"
 	)
 	private int getSwappableHotbarSlot(Arguments arguments) {
@@ -620,7 +620,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "spectatorTeleport",
 		desc = "This allows you to teleport to any entity as long as you are in spectator mode",
-		params = {ENTITY, "entity", "the entity to teleport to, this can also be a string (UUID of entity)"},
+		params = {@ParameterDoc(type = EntityDef.class, name = "entity", desc = "the entity to teleport to, this can also be a string (UUID of entity)")},
 		examples = "player.spectatorTeleport(player.getLookingAtEntity());"
 	)
 	private boolean spectatorTeleport(Arguments arguments) {
@@ -662,7 +662,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "swingHand",
 		desc = "This will play the player's hand swing animation for a given hand",
-		params = {STRING, "hand", "the hand to swing, this should be either 'main_hand' or 'off_hand'"},
+		params = {@ParameterDoc(type = StringDef.class, name = "hand", desc = "the hand to swing, this should be either 'main_hand' or 'off_hand'")},
 		examples = "player.swingHand('main_hand');"
 	)
 	private Void swingHand(Arguments arguments) {
@@ -683,9 +683,9 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"'throw', 'drag', or 'double_click' or an error will be thrown"
 		},
 		params = {
-			NUMBER, "slot", "the slot to click",
-			STRING, "click", "the click type, this should be either 'left' or 'right'",
-			STRING, "action", "the action to perform"
+			@ParameterDoc(type = NumberDef.class, name = "slot", desc = "the slot to click"),
+			@ParameterDoc(type = StringDef.class, name = "click", desc = "the click type, this should be either 'left' or 'right'"),
+			@ParameterDoc(type = StringDef.class, name = "action", desc = "the action to perform")
 		},
 		examples = "player.clickSlot(9, 'left', 'double_click');"
 	)
@@ -721,8 +721,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "clickCreativeStack",
 		desc = "This allows you to click Creative stack, but requires sync with server",
 		params = {
-			ITEM_STACK, "itemStack", "Stack to click",
-			NUMBER, "slot", "the slot to click"},
+			@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "Stack to click"),
+			@ParameterDoc(type = NumberDef.class, name = "slot", desc = "the slot to click")},
 		examples = "player.clickCreativeStack(Material.DIAMOND_SWORD.asItemStack(), 9);"
 	)
 	private Void clickCreativeStack(Arguments arguments) {
@@ -743,7 +743,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "shiftClickSlot",
 		desc = "This allows you to shift click a slot",
-		params = {NUMBER, "slot", "the slot to click"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slot", desc = "the slot to click")},
 		examples = "player.shiftClickSlot(9);"
 	)
 	private Void shiftClickSlot(Arguments arguments) {
@@ -763,7 +763,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "dropSlot",
 		desc = "This allows you to drop the items in a slot",
-		params = {NUMBER, "slot", "the slot to drop"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slot", desc = "the slot to drop")},
 		examples = "player.dropSlot(9);"
 	)
 	private Void dropSlot(Arguments arguments) {
@@ -783,7 +783,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "getCurrentScreen",
 		desc = "This gets the current screen the player is in",
-		returns = {SCREEN, "the screen the player is in, if the player is not in a screen it will return null"},
+		returns = @ReturnDoc(type = ScreenDef.class, desc = "the screen the player is in, if the player is not in a screen it will return null"),
 		examples = "screen = player.getCurrentScreen();"
 	)
 	private Screen getCurrentScreen(Arguments arguments) {
@@ -799,7 +799,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"Most of the time you should use craftRecipe instead. You must",
 			"be in an appropriate gui for the crafting recipe or an error will be thrown"
 		},
-		params = {LIST, "recipe", "a list of materials making up the recipe you want to craft including air"},
+		params = {@ParameterDoc(type = ListDef.class, name = "recipe", desc = "a list of materials making up the recipe you want to craft including air")},
 		examples = {
 			"""
 				chestRecipe = [
@@ -844,7 +844,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "craftRecipe",
 		desc = "This allows you to craft a predefined recipe",
-		params = {RECIPE, "recipe", "the recipe you want to craft"},
+		params = {@ParameterDoc(type = RecipeDef.class, name = "recipe", desc = "the recipe you want to craft")},
 		examples = "player.craftRecipe(Recipe.CHEST);"
 	)
 	private Void craftRecipe(Arguments arguments) {
@@ -859,8 +859,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "craftRecipe",
 		desc = "This allows you to craft a predefined recipe",
 		params = {
-			RECIPE, "recipe", "the recipe you want to craft",
-			BOOLEAN, "boolean", "whether result should be dropped or not"
+			@ParameterDoc(type = RecipeDef.class, name = "recipe", desc = "the recipe you want to craft"),
+			@ParameterDoc(type = BooleanDef.class, name = "boolean", desc = "whether result should be dropped or not")
 		},
 		examples = "player.craftRecipe(Recipe.CHEST, true);"
 	)
@@ -876,7 +876,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "clickRecipe",
 		desc = "This allows you to click a predefined recipe",
-		params = {RECIPE, "recipe", "the recipe you want to select"},
+		params = {@ParameterDoc(type = RecipeDef.class, name = "recipe", desc = "the recipe you want to select")},
 		examples = "player.clickRecipe(Recipe.CHEST);"
 	)
 	private Void clickRecipe1(Arguments arguments) {
@@ -891,8 +891,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "clickRecipe",
 		desc = "This allows you to click a predefined recipe",
 		params = {
-			RECIPE, "recipe", "the recipe you want to select",
-			BOOLEAN, "boolean", "whether to shift click the recipe"
+			@ParameterDoc(type = RecipeDef.class, name = "recipe", desc = "the recipe you want to select"),
+			@ParameterDoc(type = BooleanDef.class, name = "boolean", desc = "whether to shift click the recipe")
 		},
 		examples = "player.clickRecipe(Recipe.CHEST, true);"
 	)
@@ -908,7 +908,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "logout",
 		desc = "This forces the player to leave the world",
-		params = {STRING, "message", "the message to display to the player on the logout screen"},
+		params = {@ParameterDoc(type = StringDef.class, name = "message", desc = "the message to display to the player on the logout screen")},
 		examples = "player.logout('You've been lazy!');"
 	)
 	private Void logout(Arguments arguments) {
@@ -925,7 +925,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"This makes your player attack an entity without",
 			"having to be looking at it or clicking on the entity"
 		},
-		params = {ENTITY, "entity", "the entity to attack"},
+		params = {@ParameterDoc(type = EntityDef.class, name = "entity", desc = "the entity to attack")},
 		examples = """
 			allEntities = client.getWorld().getAllEntities();
 			foreach (entity : allEntities) {
@@ -950,7 +950,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"This allows your player to interact with an entity without",
 			"having to be looking at it or clicking on the entity"
 		},
-		params = {ENTITY, "entity", "the entity to interact with"},
+		params = {@ParameterDoc(type = EntityDef.class, name = "entity", desc = "the entity to interact with")},
 		examples = """
 			allEntities = client.getWorld().getAllEntities();
 			foreach (entity : allEntities) {
@@ -973,10 +973,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "anvil",
 		desc = "This allows you to combine two items in an anvil",
 		params = {
-			FUNCTION, "predicate1", "a function determining whether the first ItemStack meets a criteria",
-			FUNCTION, "predicate2", "a function determining whether the second ItemStack meets a criteria"
+			@ParameterDoc(type = FunctionDef.class, name = "predicate1", desc = "a function determining whether the first ItemStack meets a criteria"),
+			@ParameterDoc(type = FunctionDef.class, name = "predicate2", desc = "a function determining whether the second ItemStack meets a criteria")
 		},
-		returns = {FUTURE, "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"),
 		examples = """
 			// Enchant a pickaxe with mending
 			player.anvil(
@@ -1014,11 +1014,11 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "anvil",
 		desc = "This allows you to combine two items in an anvil",
 		params = {
-			FUNCTION, "predicate1", "a function determining whether the first ItemStack meets a criteria",
-			FUNCTION, "predicate2", "a function determining whether the second ItemStack meets a criteria",
-			BOOLEAN, "take", "whether you should take the item after putting items in the anvil"
+			@ParameterDoc(type = FunctionDef.class, name = "predicate1", desc = "a function determining whether the first ItemStack meets a criteria"),
+			@ParameterDoc(type = FunctionDef.class, name = "predicate2", desc = "a function determining whether the second ItemStack meets a criteria"),
+			@ParameterDoc(type = BooleanDef.class, name = "take", desc = "whether you should take the item after putting items in the anvil")
 		},
-		returns = {FUTURE, "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"),
 		examples = {
 			"""
 				// Enchant a pickaxe with mending
@@ -1060,10 +1060,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "anvilRename",
 		desc = "This allows you to name an item in an anvil",
 		params = {
-			STRING, "name", "the name you want to give the item",
-			FUNCTION, "predicate", "whether the ItemStack meets a certain criteria"
+			@ParameterDoc(type = StringDef.class, name = "name", desc = "the name you want to give the item"),
+			@ParameterDoc(type = FunctionDef.class, name = "predicate", desc = "whether the ItemStack meets a certain criteria")
 		},
-		returns = {FUTURE, "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "whether the anvilling was successful, if the player doesn't have enough levels it will return the xp cost"),
 		examples = {
 			"""
 				// Rename any shulker box
@@ -1089,10 +1089,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "stonecutter",
 		desc = "This allows you to use the stonecutter",
 		params = {
-			MATERIAL, "itemInput", "the item or material you want to input",
-			MATERIAL, "itemOutput", "the item or material you want to craft"
+			@ParameterDoc(type = MaterialDef.class, name = "itemInput", desc = "the item or material you want to input"),
+			@ParameterDoc(type = MaterialDef.class, name = "itemOutput", desc = "the item or material you want to craft")
 		},
-		returns = {FUTURE, "whether the result was successful"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "whether the result was successful"),
 		examples = "player.stonecutter(Material.STONE.asItemstack(), Material.STONE_BRICKS.asItemStack());"
 	)
 	private Future<Boolean> stonecutter(Arguments arguments) {
@@ -1110,10 +1110,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"used to place blocks in unusual orientations without moving the camera"
 		},
 		params = {
-			NUMBER, "yaw", "the yaw to look at",
-			NUMBER, "pitch", "the pitch to look at",
-			STRING, "direction", "the direction to look at",
-			NUMBER, "duration", "the duration of the look in ticks"
+			@ParameterDoc(type = NumberDef.class, name = "yaw", desc = "the yaw to look at"),
+			@ParameterDoc(type = NumberDef.class, name = "pitch", desc = "the pitch to look at"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction to look at"),
+			@ParameterDoc(type = NumberDef.class, name = "duration", desc = "the duration of the look in ticks")
 		},
 		examples = "player.fakeLook(90, 0, 'up', 100);"
 	)
@@ -1136,7 +1136,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "swapPlayerSlotWithHotbar",
 		desc = "This allows you to swap a slot in the player's inventory with the hotbar",
-		params = {NUMBER, "slot", "the slot to swap"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "slot", desc = "the slot to swap")},
 		examples = "player.swapPlayerSlotWithHotbar(15);"
 	)
 	private Void swapPlayerSlotWithHotbar(Arguments arguments) {
@@ -1158,8 +1158,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "breakBlock",
 		desc = "This breaks a block at a given position, if it is able to be broken",
-		params = {POS, "pos", "the position of the block"},
-		returns = {FUTURE, "the future will be completed when the block is broken"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block")},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the future will be completed when the block is broken"),
 		examples = "player.breakBlock(new Pos(0, 0, 0));"
 	)
 	private Future<Void> breakBlock(Arguments arguments) {
@@ -1176,9 +1176,9 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "updateBreakingBlock",
 		desc = "This allows you to update your block breaking progress at a position",
 		params = {
-			NUMBER, "x", "the x position",
-			NUMBER, "y", "the y position",
-			NUMBER, "z", "the z position"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position")
 		},
 		examples = "player.updateBreakingBlock(0, 0, 0);"
 	)
@@ -1198,7 +1198,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		deprecated = "Consider using other alternatives for breaking blocks, e.g. <Player>.breakBlock",
 		name = "updateBreakingBlock",
 		desc = "This allows you to update your block breaking progress at a position",
-		params = {POS, "pos", "the position of the block"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block")},
 		examples = "player.updateBreakingBlock(new Pos(0, 0, 0));"
 	)
 	private Void updateBreakingBlockPos(Arguments arguments) {
@@ -1214,10 +1214,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "attackBlock",
 		desc = "This allows you to attack a block at a position and direction",
 		params = {
-			NUMBER, "x", "the x position",
-			NUMBER, "y", "the y position",
-			NUMBER, "z", "the z position",
-			STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc."
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the attack, e.g. 'up', 'north', 'east', etc.")
 		},
 		examples = "player.attackBlock(0, 0, 0, 'up');"
 	)
@@ -1237,8 +1237,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "attackBlock",
 		desc = "This allows you to attack a block at a position and direction",
 		params = {
-			POS, "pos", "the position of the block",
-			STRING, "direction", "the direction of the attack, e.g. 'up', 'north', 'east', etc."
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the attack, e.g. 'up', 'north', 'east', etc.")
 		},
 		examples = "player.attackBlock(new Pos(0, 0, 0), 'up');"
 	)
@@ -1255,7 +1255,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "interactItem",
 		desc = "This allows you to interact item with given Hand",
-		params = {STRING, "hand", " Hand to use, either 'main' or 'offhand'"},
+		params = {@ParameterDoc(type = StringDef.class, name = "hand", desc = " Hand to use, either 'main' or 'offhand'")},
 		examples = "player.interactItem('main');"
 	)
 	private Void interactItem(Arguments arguments) {
@@ -1275,10 +1275,10 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "interactBlock",
 		desc = "This allows you to interact with a block at a position and direction",
 		params = {
-			POS, "pos", "the position of the block",
-			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc."
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the interaction, e.g. 'up', 'north', 'east', etc.")
 		},
-		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"),
 		examples = "player.interactBlock(new Pos(0, 0, 0), 'up');"
 	)
 	private Future<String> interactBlockPos(Arguments arguments) {
@@ -1298,11 +1298,11 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "interactBlock",
 		desc = "This allows you to interact with a block at a position, direction, and hand",
 		params = {
-			POS, "pos", "the position of the block",
-			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
-			STRING, "hand", "the hand to use, e.g. 'main_hand', 'off_hand'"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the interaction, e.g. 'up', 'north', 'east', etc."),
+			@ParameterDoc(type = StringDef.class, name = "hand", desc = "the hand to use, e.g. 'main_hand', 'off_hand'")
 		},
-		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"),
 		examples = "player.interactBlock(new Pos(0, 0, 0), 'up', 'off_hand');"
 	)
 	private Future<String> interactBlockPosHand(Arguments arguments) {
@@ -1329,16 +1329,16 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"coords is the exact position of the block, and the second set of coords is the position"
 		},
 		params = {
-			NUMBER, "x", "the exact x position",
-			NUMBER, "y", "the exact y position",
-			NUMBER, "z", "the exact z position",
-			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
-			NUMBER, "blockX", "the x position of the block",
-			NUMBER, "blockY", "the y position of the block",
-			NUMBER, "blockZ", "the z position of the block",
-			BOOLEAN, "insideBlock", "whether the player is inside the block"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the exact x position"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the exact y position"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the exact z position"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the interaction, e.g. 'up', 'north', 'east', etc."),
+			@ParameterDoc(type = NumberDef.class, name = "blockX", desc = "the x position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "blockY", desc = "the y position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "blockZ", desc = "the z position of the block"),
+			@ParameterDoc(type = BooleanDef.class, name = "insideBlock", desc = "whether the player is inside the block")
 		},
-		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"),
 		examples = "player.interactBlock(0, 100.5, 0, 'up', 0, 100, 0, true);"
 	)
 	private Future<String> interactBlockFull(Arguments arguments) {
@@ -1369,12 +1369,12 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"coords is the exact position of the block, and the second set of coords is the position"
 		},
 		params = {
-			POS, "pos", "the exact position of the block",
-			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
-			POS, "blockPos", "the position of the block",
-			BOOLEAN, "insideBlock", "whether the player is inside the block"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the exact position of the block"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the interaction, e.g. 'up', 'north', 'east', etc."),
+			@ParameterDoc(type = PosDef.class, name = "blockPos", desc = "the position of the block"),
+			@ParameterDoc(type = BooleanDef.class, name = "insideBlock", desc = "whether the player is inside the block")
 		},
-		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"),
 		examples = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true);"
 	)
 	private Future<String> interactBlockFullPos(Arguments arguments) {
@@ -1393,13 +1393,13 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			"coords is the exact position of the block, and the second set of coords is the position"
 		},
 		params = {
-			POS, "pos", "the exact position of the block",
-			STRING, "direction", "the direction of the interaction, e.g. 'up', 'north', 'east', etc.",
-			STRING, "hand", "the hand to use, e.g. 'main_hand', 'off_hand'",
-			POS, "blockPos", "the position of the block",
-			BOOLEAN, "insideBlock", "whether the player is inside the block"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the exact position of the block"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction of the interaction, e.g. 'up', 'north', 'east', etc."),
+			@ParameterDoc(type = StringDef.class, name = "hand", desc = "the hand to use, e.g. 'main_hand', 'off_hand'"),
+			@ParameterDoc(type = PosDef.class, name = "blockPos", desc = "the position of the block"),
+			@ParameterDoc(type = BooleanDef.class, name = "insideBlock", desc = "whether the player is inside the block")
 		},
-		returns = {FUTURE, "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the result of the placement as a string; this can be: 'success', 'pass', 'fail'"),
 		examples = "player.interactBlock(new Pos(0, 15.5, 0), 'up', new Pos(0, 15, 0), true, 'off_hand');"
 	)
 	private Future<String> interactBlockFullPosHand(Arguments arguments) {
@@ -1414,7 +1414,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@FunctionDoc(
 		name = "getBlockBreakingSpeed",
 		desc = "This returns the block breaking speed of the player on a block including enchanements and effects",
-		params = {ITEM_STACK, "itemStack", "item to test with", BLOCK, "block", "the block to get the speed of"},
+		params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "item to test with"), @ParameterDoc(type = BlockDef.class, name = "block", desc = "the block to get the speed of")},
 		examples = "speed = player.getBlockBreakingSpeed(Material.NETHERITE_PICKAXE.asItem(), Material.GOLD_BLOCK.asBlock());"
 	)
 	private float getBlockBreakingSpeed(Arguments arguments) {

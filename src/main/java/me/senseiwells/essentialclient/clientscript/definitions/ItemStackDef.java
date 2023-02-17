@@ -1,11 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.builtin.ListDef;
-import me.senseiwells.arucas.builtin.MapDef;
-import me.senseiwells.arucas.builtin.NumberDef;
-import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
@@ -41,13 +40,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
 
 @ClassDoc(
 	name = ITEM_STACK,
 	desc = "This class represents an item stack. It can be used to create new item stacks, or to modify existing ones.",
-	importPath = "Minecraft",
 	superclass = MaterialDef.class,
 	language = Util.Language.Java
 )
@@ -97,8 +94,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		isStatic = true,
 		name = "of",
 		desc = "This creates an ItemStack from a material or a string",
-		params = {MATERIAL, "material", "the material, item stack, block, or string to create the ItemStack from"},
-		returns = {ITEM_STACK, "the new ItemStack instance"},
+		params = {@ParameterDoc(type = MaterialDef.class, name = "material", desc = "the material, item stack, block, or string to create the ItemStack from")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack instance"),
 		examples = "ItemStack.of('dirt');"
 	)
 	private ItemStack of(Arguments arguments) {
@@ -123,8 +120,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			"This creates an ItemStack from a NBT string, this can be in the form of a map",
 			"or an ItemStack NBT, or like the item stack command format"
 		},
-		params = {STRING, "nbtString", "the NBT string to create the ItemStack from"},
-		returns = {ITEM_STACK, "the new ItemStack instance"},
+		params = {@ParameterDoc(type = StringDef.class, name = "nbtString", desc = "the NBT string to create the ItemStack from")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack instance"),
 		examples = "ItemStack.parse('{id:\"minecraft:dirt\",Count:64}')"
 	)
 	private ItemStack parse(Arguments arguments) {
@@ -169,7 +166,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getMaterial",
 		desc = "This gets the material of the ItemStack",
-		returns = {MATERIAL, "the material of the ItemStack"},
+		returns = @ReturnDoc(type = MaterialDef.class, desc = "the material of the ItemStack"),
 		examples = "itemStack.getMaterial();"
 	)
 	private Item getMaterial(Arguments arguments) {
@@ -179,7 +176,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getCount",
 		desc = "This gets the count of the ItemStack, the amount of items in the stack",
-		returns = {NUMBER, "the count of the ItemStack"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the count of the ItemStack"),
 		examples = "itemStack.getCount();"
 	)
 	private double getCount(Arguments arguments) {
@@ -189,7 +186,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getDurability",
 		desc = "This gets the durability of the item",
-		returns = {NUMBER, "the durability of the item"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the durability of the item"),
 		examples = "itemStack.getDurability();"
 	)
 	private double getDurability(Arguments arguments) {
@@ -200,7 +197,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getMaxDurability",
 		desc = "This gets the max durability of the item",
-		returns = {NUMBER, "the max durability of the item"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the max durability of the item"),
 		examples = "itemStack.getMaxDurability();"
 	)
 	private double getMaxDurability(Arguments arguments) {
@@ -213,7 +210,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			"This gets the enchantments of the item, in a map containing the",
 			"id of the enchantment as the key and the level of the enchantment as the value"
 		},
-		returns = {MAP, "the enchantments of the item, map may be empty"},
+		returns = @ReturnDoc(type = MapDef.class, desc = "the enchantments of the item, map may be empty"),
 		examples = "itemStack.getEnchantments();"
 	)
 	private ArucasMap getEnchantments(Arguments arguments) {
@@ -235,7 +232,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "isBlockItem",
 		desc = "This checks if the ItemStack can be placed as a block",
-		returns = {BOOLEAN, "true if the ItemStack can be placed as a block, false otherwise"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the ItemStack can be placed as a block, false otherwise"),
 		examples = "itemStack.isBlockItem();"
 	)
 	private boolean isBlockItem(Arguments arguments) {
@@ -245,7 +242,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "isStackable",
 		desc = "This checks if the ItemStack is stackable",
-		returns = {BOOLEAN, "true if the ItemStack is stackable, false otherwise"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the ItemStack is stackable, false otherwise"),
 		examples = "itemStack.isStackable();"
 	)
 	private boolean isStackable(Arguments arguments) {
@@ -255,7 +252,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getMaxCount",
 		desc = "This gets the max stack size of the ItemStack",
-		returns = {NUMBER, "the max stack size of the ItemStack"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the max stack size of the ItemStack"),
 		examples = "itemStack.getMaxCount();"
 	)
 	private double getMaxCount(Arguments arguments) {
@@ -265,7 +262,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "asEntity",
 		desc = "This creates an item entity with the item",
-		returns = {ITEM_ENTITY, "the entity of the ItemStack"},
+		returns = @ReturnDoc(type = ItemEntityDef.class, desc = "the entity of the ItemStack"),
 		examples = "itemStack.asEntity();"
 	)
 	private ItemEntity asEntity(Arguments arguments) {
@@ -282,7 +279,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getCustomName",
 		desc = "This gets the custom name of the ItemStack",
-		returns = {STRING, "the custom name of the ItemStack"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the custom name of the ItemStack"),
 		examples = "itemStack.getCustomName();"
 	)
 	private String getCustomName(Arguments arguments) {
@@ -292,8 +289,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "isNbtEqual",
 		desc = "This checks if the ItemStack has the same NBT data as the other given ItemStack",
-		params = {ITEM_STACK, "itemStack", "the other ItemStack to compare to"},
-		returns = {BOOLEAN, "true if the ItemStack has the same NBT data as the other given ItemStack"},
+		params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the other ItemStack to compare to")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the ItemStack has the same NBT data as the other given ItemStack"),
 		examples = "itemStack.isNbtEqual(Material.GOLD_INGOT.asItemStack());"
 	)
 	private boolean isNbtEqual(Arguments arguments) {
@@ -305,7 +302,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getNbt",
 		desc = "This gets the NBT data of the ItemStack as a Map",
-		returns = {MAP, "the NBT data of the ItemStack"},
+		returns = @ReturnDoc(type = MapDef.class, desc = "the NBT data of the ItemStack"),
 		examples = "itemStack.getNbt();"
 	)
 	private ArucasMap getNbt(Arguments arguments) {
@@ -317,7 +314,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "getNbtAsString",
 		desc = "This gets the NBT data of the ItemStack as a String",
-		returns = {STRING, "the NBT data of the ItemStack"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the NBT data of the ItemStack"),
 		examples = "itemStack.getNbtAsString();"
 	)
 	private String getNbtAsString(Arguments arguments) {
@@ -332,7 +329,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			"This gets the translated name of the ItemStack, for example",
 			"'diamond_sword' would return 'Diamond Sword' if your language is English"
 		},
-		returns = {STRING, "the translated name of the ItemStack"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the translated name of the ItemStack"),
 		examples = "itemStack.getTranslatedName();"
 	)
 	private String getTranslatedName(Arguments arguments) {
@@ -346,8 +343,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			"This gets the mining speed multiplier of the ItemStack for the given Block,",
 			"for example a diamond pickaxe on stone would have a higher multiplier than air on stone"
 		},
-		params = {BLOCK, "block", "the Block to get the mining speed multiplier for"},
-		returns = {NUMBER, "the mining speed multiplier of the ItemStack for the given Block"},
+		params = {@ParameterDoc(type = BlockDef.class, name = "block", desc = "the Block to get the mining speed multiplier for")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the mining speed multiplier of the ItemStack for the given Block"),
 		examples = """
 			pickaxe = Material.DIAMOND_PICKAXE.asItemStack();
 			goldBlock = Material.GOLD_BLOCK.asBlock();
@@ -364,8 +361,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "setCustomName",
 		desc = "This sets the custom name of the ItemStack",
-		params = {TEXT, "customName", "the custom name of the ItemStack, this can be text or string"},
-		returns = {ITEM_STACK, "the ItemStack with the new custom name"},
+		params = {@ParameterDoc(type = TextDef.class, name = "customName", desc = "the custom name of the ItemStack, this can be text or string")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new custom name"),
 		examples = "itemStack.setCustomName('My Pickaxe');"
 	)
 	private ClassInstance setCustomName(Arguments arguments) {
@@ -384,8 +381,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "setStackSize",
 		desc = "This sets the stack size of the ItemStack",
-		params = {NUMBER, "stackSize", "the stack size of the ItemStack"},
-		returns = {ITEM_STACK, "the ItemStack with the new stack size"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "stackSize", desc = "the stack size of the ItemStack")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new stack size"),
 		examples = "itemStack.setStackSize(5);"
 	)
 	private ClassInstance setStackSize(Arguments arguments) {
@@ -399,8 +396,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "setItemLore",
 		desc = "This sets the lore of the ItemStack",
-		params = {LIST, "lore", "the lore of the ItemStack as a list of Text"},
-		returns = {ITEM_STACK, "the ItemStack with the new lore"},
+		params = {@ParameterDoc(type = ListDef.class, name = "lore", desc = "the lore of the ItemStack as a list of Text")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new lore"),
 		examples = """
 			itemStack = Material.DIAMOND_PICKAXE.asItemStack();
 			itemStack.setItemLore([
@@ -428,8 +425,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "setNbtFromString",
 		desc = "This sets the NBT data of the ItemStack from an NBT string",
-		params = {STRING, "nbtString", "the NBT data of the ItemStack as a string"},
-		returns = {ITEM_STACK, "the ItemStack with the new NBT data"},
+		params = {@ParameterDoc(type = StringDef.class, name = "nbtString", desc = "the NBT data of the ItemStack as a string")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
 		examples = "itemStack.setNbtFromString(\"{\\\"Lore\\\": []}\");"
 	)
 	private Void setNbtFromString(Arguments arguments) {
@@ -446,8 +443,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@FunctionDoc(
 		name = "setNbt",
 		desc = "This sets the NBT data of the ItemStack",
-		params = {MAP, "nbtMap", "the NBT data of the ItemStack as a map"},
-		returns = {ITEM_STACK, "the ItemStack with the new NBT data"},
+		params = {@ParameterDoc(type = MapDef.class, name = "nbtMap", desc = "the NBT data of the ItemStack as a map")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
 		examples = "itemStack.setNbt({'Lore': []});"
 	)
 	private Void setNbt(Arguments arguments) {

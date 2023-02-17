@@ -1,8 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import kotlin.Triple;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
@@ -24,15 +25,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static me.senseiwells.arucas.utils.Util.Types.LIST;
-import static me.senseiwells.arucas.utils.Util.Types.STRING;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.RECIPE;
 
 @ClassDoc(
 	name = RECIPE,
 	desc = "This class represents recipes in Minecraft.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class RecipeDef extends CreatableDefinition<Recipe<?>> {
@@ -82,8 +79,8 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 			"This converts a recipe id into a Recipe if it's valid,",
 			"otherwise an error will be thrown"
 		},
-		params = {STRING, "recipeId", "the id of the recipe to convert to a Recipe"},
-		returns = {RECIPE, "the recipe instance from the id"},
+		params = {@ParameterDoc(type = StringDef.class, name = "recipeId", desc = "the id of the recipe to convert to a Recipe")},
+		returns = @ReturnDoc(type = RecipeDef.class, desc = "the recipe instance from the id"),
 		examples = "Recipe.of('redstone_block')"
 	)
 	private Recipe<?> of(Arguments arguments) {
@@ -111,7 +108,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	@FunctionDoc(
 		name = "getFullId",
 		desc = "This returns the full id of the recipe",
-		returns = {STRING, "the full id of the recipe"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the full id of the recipe"),
 		examples = "recipe.getFullId()"
 	)
 	private String getFullId(Arguments arguments) {
@@ -122,7 +119,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	@FunctionDoc(
 		name = "getId",
 		desc = "This returns the id of the recipe",
-		returns = {STRING, "the id of the recipe"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the id of the recipe"),
 		examples = "recipe.getId()"
 	)
 	private String getId(Arguments arguments) {
@@ -133,7 +130,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	@FunctionDoc(
 		name = "getCraftingType",
 		desc = "This returns the crafting type of the recipe",
-		returns = {STRING, "the crafting type of the recipe, for example: 'crafting', 'smelting', 'blasting'"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the crafting type of the recipe, for example: 'crafting', 'smelting', 'blasting'"),
 		examples = "recipe.getCraftingType()"
 	)
 	private String getCraftingType(Arguments arguments) {
@@ -145,7 +142,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	@FunctionDoc(
 		name = "getOutput",
 		desc = "This returns the output of the recipe",
-		returns = {ITEM_STACK, "the output of the recipe"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the output of the recipe"),
 		examples = "recipe.getOutput()"
 	)
 	private ScriptItemStack getOutput(Arguments arguments) {
@@ -156,7 +153,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	@FunctionDoc(
 		name = "getIngredients",
 		desc = "This returns all the possible ingredients of the recipe",
-		returns = {LIST, "list of lists, each inner lists contains possible recipe items"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "list of lists, each inner lists contains possible recipe items"),
 		examples = "recipe.getIngredients()"
 	)
 	private ArucasList getIngredients(Arguments arguments) {

@@ -1,9 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.builtin.NumberDef;
-import me.senseiwells.arucas.builtin.StringDef;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -22,7 +23,6 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
@@ -39,14 +39,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.WORLD;
 import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils.warnMainThread;
 
 @ClassDoc(
 	name = WORLD,
 	desc = "This class represents worlds, and allows you to interact with things inside of them.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class WorldDef extends CreatableDefinition<World> {
@@ -109,11 +107,11 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getBlockAt",
 		desc = "This function gets the block at the given coordinates",
 		params = {
-			NUMBER, "x", "the x coordinate",
-			NUMBER, "y", "the y coordinate",
-			NUMBER, "z", "the z coordinate"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z coordinate")
 		},
-		returns = {BLOCK, "the block at the given coordinates"},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the block at the given coordinates"),
 		examples = "world.getBlockAt(0, 100, 0);"
 	)
 	private ScriptBlockState getBlockAt(Arguments arguments) {
@@ -129,8 +127,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getBlockAt",
 		desc = "This function gets the block at the given coordinates",
-		params = {POS, "pos", "the position"},
-		returns = {BLOCK, "the block at the given coordinates"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position")},
+		returns = @ReturnDoc(type = BlockDef.class, desc = "the block at the given coordinates"),
 		examples = "world.getBlockAt(new Pos(0, 100, 0));"
 	)
 	private ScriptBlockState getBlockAtPos(Arguments arguments) {
@@ -144,8 +142,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "isLoaded",
 		desc = "This function returns loaded state of given coordinates(client side)",
-		params = {POS, "pos", "the position"},
-		returns = {BOOLEAN, "whether the block is loaded at the given coordinates"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether the block is loaded at the given coordinates"),
 		examples = "world.isLoaded(new Pos(0, 100, 0));"
 	)
 	private boolean isLoaded(Arguments arguments) {
@@ -160,11 +158,11 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getBiomeAt",
 		desc = "This function gets the biome at the given coordinates",
 		params = {
-			NUMBER, "x", "the x coordinate",
-			NUMBER, "y", "the y coordinate",
-			NUMBER, "z", "the z coordinate"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y coordinate"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z coordinate")
 		},
-		returns = {BIOME, "the biome at the given coordinates"},
+		returns = @ReturnDoc(type = BiomeDef.class, desc = "the biome at the given coordinates"),
 		examples = "world.getBiomeAt(0, 100, 0);"
 	)
 	private Biome getBiomeAt(Arguments arguments) {
@@ -184,8 +182,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getBiomeAt",
 		desc = "This function gets the biome at the given coordinates",
-		params = {POS, "pos", "the position"},
-		returns = {BIOME, "the biome at the given coordinates"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position")},
+		returns = @ReturnDoc(type = BiomeDef.class, desc = "the biome at the given coordinates"),
 		examples = "world.getBiomeAt(new Pos(0, 100, 0));"
 	)
 	private Biome getBiomeAtPos(Arguments arguments) {
@@ -203,8 +201,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getPlayer",
 		desc = "This function gets the player with the given name",
-		params = {STRING, "name", "the name of the player"},
-		returns = {PLAYER, "the player with the given name"},
+		params = {@ParameterDoc(type = StringDef.class, name = "name", desc = "the name of the player")},
+		returns = @ReturnDoc(type = PlayerDef.class, desc = "the player with the given name"),
 		examples = "world.getPlayer('player');"
 	)
 	private PlayerEntity getPlayer(Arguments arguments) {
@@ -221,7 +219,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getAllPlayers",
 		desc = "This function gets all players in the world that are loaded",
-		returns = {LIST, "all players in the world"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "all players in the world"),
 		examples = "world.getAllPlayers();"
 	)
 	private ArucasList getAllPlayers(Arguments arguments) {
@@ -238,8 +236,8 @@ public class WorldDef extends CreatableDefinition<World> {
 		deprecated = "Use '<World>.getPlayer(name)' instead",
 		name = "getOtherPlayer",
 		desc = "This gets another player from the given username",
-		params = {STRING, "username", "the username of the other player"},
-		returns = {PLAYER, "the other player, null if not found"},
+		params = {@ParameterDoc(type = StringDef.class, name = "username", desc = "the username of the other player")},
+		returns = @ReturnDoc(type = PlayerDef.class, desc = "the other player, null if not found"),
 		examples = "world.getOtherPlayer('senseiwells');"
 	)
 	private PlayerEntity getOtherPlayer(Arguments arguments) {
@@ -260,7 +258,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		deprecated = "Use '<World>.getAllPlayers()' instead",
 		name = "getAllOtherPlayers",
 		desc = "This will get all other players in the world",
-		returns = {LIST, "a list of all other players"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "a list of all other players"),
 		examples = "world.getAllOtherPlayers();"
 	)
 	private ArucasList getAllOtherPlayers(Arguments arguments) {
@@ -279,10 +277,10 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getClosestPlayer",
 		desc = "This will get the closest player to another entity in the world",
 		params = {
-			ENTITY, "entity", "the entity to get the closest player to",
-			NUMBER, "maxDistance", "the maximum distance to search for a player in blocks"
+			@ParameterDoc(type = EntityDef.class, name = "entity", desc = "the entity to get the closest player to"),
+			@ParameterDoc(type = NumberDef.class, name = "maxDistance", desc = "the maximum distance to search for a player in blocks")
 		},
-		returns = {PLAYER, "the closest player, null if not found"},
+		returns = @ReturnDoc(type = PlayerDef.class, desc = "the closest player, null if not found"),
 		examples = "world.getClosestPlayer(Player.get(), 100);"
 	)
 	private PlayerEntity getClosestPlayer(Arguments arguments) {
@@ -296,7 +294,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getAllEntities",
 		desc = "This will get all entities in the world",
-		returns = {LIST, "a list of all entities"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "a list of all entities"),
 		examples = "world.getAllEntities();"
 	)
 	private ArucasList getAllEntities(Arguments arguments) {
@@ -314,8 +312,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getEntityFromId",
 		desc = "This will get an entity from the given entity id",
-		params = {NUMBER, "entityId", "the entity id"},
-		returns = {ENTITY, "the entity, null if not found"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "entityId", desc = "the entity id")},
+		returns = @ReturnDoc(type = EntityDef.class, desc = "the entity, null if not found"),
 		examples = "world.getEntityFromId(1);"
 	)
 	private Object getEntityFromId(Arguments arguments) {
@@ -327,7 +325,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getFullId",
 		desc = "This will get the full id of the world",
-		returns = {STRING, "the full id of the world, for example: 'minecraft:overworld'"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the full id of the world, for example: 'minecraft:overworld'"),
 		examples = "world.getFullId();"
 	)
 	private String getFullId(Arguments arguments) {
@@ -337,7 +335,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getId",
 		desc = "This will get the id of the world",
-		returns = {STRING, "the id of the world, for example: 'overworld'"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the id of the world, for example: 'overworld'"),
 		examples = "world.getId();"
 	)
 	private String getId(Arguments arguments) {
@@ -348,7 +346,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		deprecated = "You should use 'world.getId()' instead",
 		name = "getDimensionName",
 		desc = "This will get the id of the world",
-		returns = {STRING, "the id of the world, for example: 'overworld'"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "the id of the world, for example: 'overworld'"),
 		examples = "world.getDimensionName();"
 	)
 	private String getDimensionName(Arguments arguments) {
@@ -358,7 +356,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "isRaining",
 		desc = "This will check if the world is currently raining",
-		returns = {BOOLEAN, "true if the world is currently raining"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the world is currently raining"),
 		examples = "world.isRaining();"
 	)
 	private boolean isRaining(Arguments arguments) {
@@ -368,7 +366,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "isThundering",
 		desc = "This will check if the world is currently thundering",
-		returns = {BOOLEAN, "true if the world is currently thundering"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the world is currently thundering"),
 		examples = "world.isThundering();"
 	)
 	private boolean isThundering(Arguments arguments) {
@@ -381,7 +379,7 @@ public class WorldDef extends CreatableDefinition<World> {
 			"This will get the time of day of the world",
 			"info on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle)"
 		},
-		returns = {NUMBER, "the time of day of the world, between 0 and 24000"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the time of day of the world, between 0 and 24000"),
 		examples = "world.getTimeOfDay();"
 	)
 	private long getTimeOfDay(Arguments arguments) {
@@ -396,10 +394,10 @@ public class WorldDef extends CreatableDefinition<World> {
 			"if the id is invalid it will throw an error"
 		},
 		params = {
-			STRING, "particleId", "the id of the particle",
-			NUMBER, "x", "the x position of the particle",
-			NUMBER, "y", "the y position of the particle",
-			NUMBER, "z", "the z position of the particle"
+			@ParameterDoc(type = StringDef.class, name = "particleId", desc = "the id of the particle"),
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position of the particle"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position of the particle"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position of the particle")
 		},
 		examples = "world.renderParticle('end_rod', 10, 10, 10);"
 	)
@@ -427,8 +425,8 @@ public class WorldDef extends CreatableDefinition<World> {
 			"this will throw an error if the id is invalid"
 		},
 		params = {
-			STRING, "particleId", "the id of the particle",
-			POS, "pos", "the position of the particle"
+			@ParameterDoc(type = StringDef.class, name = "particleId", desc = "the id of the particle"),
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the particle")
 		},
 		examples = "world.renderParticle('end_rod', pos);"
 	)
@@ -454,11 +452,11 @@ public class WorldDef extends CreatableDefinition<World> {
 			"this will throw an error if the id is invalid"
 		},
 		params = {
-			STRING, "particleId", "the id of the particle",
-			POS, "pos", "the position of the particle",
-			NUMBER, "velX", "the velocity of the particle on the x axis",
-			NUMBER, "velY", "the velocity of the particle on the y axis",
-			NUMBER, "velZ", "the velocity of the particle on the z axis"
+			@ParameterDoc(type = StringDef.class, name = "particleId", desc = "the id of the particle"),
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the particle"),
+			@ParameterDoc(type = NumberDef.class, name = "velX", desc = "the velocity of the particle on the x axis"),
+			@ParameterDoc(type = NumberDef.class, name = "velY", desc = "the velocity of the particle on the y axis"),
+			@ParameterDoc(type = NumberDef.class, name = "velZ", desc = "the velocity of the particle on the z axis")
 		},
 		examples = "world.renderParticle('end_rod', pos, 0.5, 0.5, 0.5);"
 	)
@@ -484,10 +482,10 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "setGhostBlock",
 		desc = "This sets a ghost block in the world as if it were a real block, may cause issues",
 		params = {
-			BLOCK, "block", "the block to set",
-			NUMBER, "x", "the x position of the block",
-			NUMBER, "y", "the y position of the block",
-			NUMBER, "z", "the z position of the block"
+			@ParameterDoc(type = BlockDef.class, name = "block", desc = "the block to set"),
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position of the block")
 		},
 		examples = "world.setGhostBlock(Material.BEDROCK.asBlock(), 0, 100, 0);"
 	)
@@ -509,8 +507,8 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "setGhostBlock",
 		desc = "This sets a ghost block in the world as if it were a real block, may cause issues",
 		params = {
-			BLOCK, "block", "the block to set",
-			POS, "pos", "the position of the block"
+			@ParameterDoc(type = BlockDef.class, name = "block", desc = "the block to set"),
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block")
 		},
 		examples = "world.setGhostBlock(Material.BEDROCK.asBlock(), new Pos(0, 100, 0));"
 	)
@@ -528,11 +526,11 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "isAir",
 		desc = "Returns true if the block at the given position is air",
 		params = {
-			NUMBER, "x", "the x position of the block",
-			NUMBER, "y", "the y position of the block",
-			NUMBER, "z", "the z position of the block"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position of the block")
 		},
-		returns = {BOOLEAN, "true if the block is air"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the block is air"),
 		examples = "world.isAir(0, 100, 0);"
 	)
 	private boolean isAir(Arguments arguments) {
@@ -547,8 +545,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "isAir",
 		desc = "Returns true if the block at the given position is air",
-		params = {POS, "pos", "the position of the block"},
-		returns = {BOOLEAN, "true if the block is air"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block")},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the block is air"),
 		examples = "world.isAir(new Pos(0, 100, 0));"
 	)
 	private boolean isAirPos(Arguments arguments) {
@@ -562,12 +560,12 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getEmittedRedstonePower",
 		desc = "Gets the emitted restone power at the given position and direction",
 		params = {
-			NUMBER, "x", "the x position of the block",
-			NUMBER, "y", "the y position of the block",
-			NUMBER, "z", "the z position of the block",
-			STRING, "direction", "the direction to check, for example 'north', 'east', 'up', etc."
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position of the block"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction to check, for example 'north', 'east', 'up', etc.")
 		},
-		returns = {NUMBER, "the emitted redstone power"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the emitted redstone power"),
 		examples = "world.getEmittedRedstonePower(0, 100, 0, 'north');"
 	)
 	private int getEmittedRedstonePower(Arguments arguments) {
@@ -586,10 +584,10 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getEmittedRedstonePower",
 		desc = "Gets the emitted restone power at the given position and direction",
 		params = {
-			POS, "pos", "the position of the block",
-			STRING, "direction", "the direction to check, for example 'north', 'east', 'up', etc."
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block"),
+			@ParameterDoc(type = StringDef.class, name = "direction", desc = "the direction to check, for example 'north', 'east', 'up', etc.")
 		},
-		returns = {NUMBER, "the emitted redstone power"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the emitted redstone power"),
 		examples = "world.getEmittedRedstonePower(new Pos(0, 100, 0), 'north');"
 	)
 	private int getEmittedRedstonePowerPos(Arguments arguments) {
@@ -605,11 +603,11 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getLight",
 		desc = "Gets the light level at the given position, takes the max of either sky light of block light",
 		params = {
-			NUMBER, "x", "the x position of the block",
-			NUMBER, "y", "the y position of the block",
-			NUMBER, "z", "the z position of the block"
+			@ParameterDoc(type = NumberDef.class, name = "x", desc = "the x position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "y", desc = "the y position of the block"),
+			@ParameterDoc(type = NumberDef.class, name = "z", desc = "the z position of the block")
 		},
-		returns = {NUMBER, "the light level between 0 - 15"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the light level between 0 - 15"),
 		examples = "world.getLight(0, 100, 0);"
 	)
 	private int getLight(Arguments arguments) {
@@ -624,8 +622,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getLight",
 		desc = "Gets the light level at the given position, takes the max of either sky light of block light",
-		params = {POS, "pos", "the position of the block"},
-		returns = {NUMBER, "the light level between 0 - 15"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the light level between 0 - 15"),
 		examples = "world.getLight(new Pos(0, 100, 0));"
 	)
 	private int getLightPos(Arguments arguments) {
@@ -638,8 +636,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getSkyLight",
 		desc = "Gets the sky light at the given position ignoring block light",
-		params = {POS, "pos", "the position of the block"},
-		returns = {NUMBER, "the light level between 0 - 15"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the light level between 0 - 15"),
 		examples = "world.getSkyLight(new Pos(0, 0, 0));"
 	)
 	private int getSkyLight(Arguments arguments) {
@@ -652,8 +650,8 @@ public class WorldDef extends CreatableDefinition<World> {
 	@FunctionDoc(
 		name = "getBlockLight",
 		desc = "Gets the block light at the given position ignoring sky light",
-		params = {POS, "pos", "the position of the block"},
-		returns = {NUMBER, "the light level between 0 - 15"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position of the block")},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the light level between 0 - 15"),
 		examples = "world.getBlockLight(new Pos(0, 0, 0));"
 	)
 	private int getBlockLight(Arguments arguments) {
@@ -668,10 +666,10 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getArea",
 		desc = "This gets a list of all block positions between the two positions",
 		params = {
-			POS, "pos1", "the first position",
-			POS, "pos2", "the second position"
+			@ParameterDoc(type = PosDef.class, name = "pos1", desc = "the first position"),
+			@ParameterDoc(type = PosDef.class, name = "pos2", desc = "the second position")
 		},
-		returns = {LIST, "the list of positions"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the list of positions"),
 		examples = "world.getArea(new Pos(0, 100, 0), new Pos(0, 100, 0));"
 	)
 	private ArucasList getArea(Arguments arguments) {
@@ -691,10 +689,10 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getAreaOfBlocks",
 		desc = "This gets a list of all blocks (with positions) between the two positions",
 		params = {
-			POS, "pos1", "the first position",
-			POS, "pos2", "the second position"
+			@ParameterDoc(type = PosDef.class, name = "pos1", desc = "the first position"),
+			@ParameterDoc(type = PosDef.class, name = "pos2", desc = "the second position")
 		},
-		returns = {LIST, "the list of blocks"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the list of blocks"),
 		examples = "world.getAreaOfBlocks(new Pos(0, 100, 0), new Pos(0, 100, 0));"
 	)
 	private Object getAreaOfBlocks(Arguments arguments) {
@@ -716,10 +714,10 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getPositions",
 		desc = "This gets an iterator for all positions between two positions",
 		params = {
-			POS, "pos1", "the first position",
-			POS, "pos2", "the second position"
+			@ParameterDoc(type = PosDef.class, name = "pos1", desc = "the first position"),
+			@ParameterDoc(type = PosDef.class, name = "pos2", desc = "the second position")
 		},
-		returns = {ITERABLE, "the iterator for the positions"},
+		returns = @ReturnDoc(type = IterableDef.class, desc = "the iterator for the positions"),
 		examples = "foreach (pos : world.getPositions(new Pos(0, 100, 100), new Pos(0, 100, 0)));"
 	)
 	private ArucasIterable getPositions(Arguments arguments) {
@@ -733,10 +731,10 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getBlocks",
 		desc = "This gets an iterator for all blocks (and positions) between two positions",
 		params = {
-			POS, "pos1", "the first position",
-			POS, "pos2", "the second position"
+			@ParameterDoc(type = PosDef.class, name = "pos1", desc = "the first position"),
+			@ParameterDoc(type = PosDef.class, name = "pos2", desc = "the second position")
 		},
-		returns = {ITERABLE, "the iterator for the blocks"},
+		returns = @ReturnDoc(type = IterableDef.class, desc = "the iterator for the blocks"),
 		examples = "foreach (block : world.getBlocks(new Pos(0, 100, 100), new Pos(0, 100, 0)));"
 	)
 	private ArucasIterable getBlocks(Arguments arguments) {
@@ -754,12 +752,12 @@ public class WorldDef extends CreatableDefinition<World> {
 			"The iterator iterates from the centre outwards"
 		},
 		params = {
-			POS, "centre", "the central position",
-			NUMBER, "xRange", "how far to iterate on the x axis",
-			NUMBER, "yRange", "how far to iterate on the y axis",
-			NUMBER, "zRange", "how far to iterate on the z axis"
+			@ParameterDoc(type = PosDef.class, name = "centre", desc = "the central position"),
+			@ParameterDoc(type = NumberDef.class, name = "xRange", desc = "how far to iterate on the x axis"),
+			@ParameterDoc(type = NumberDef.class, name = "yRange", desc = "how far to iterate on the y axis"),
+			@ParameterDoc(type = NumberDef.class, name = "zRange", desc = "how far to iterate on the z axis")
 		},
-		returns = {ITERABLE, "the iterator for the positions"},
+		returns = @ReturnDoc(type = IterableDef.class, desc = "the iterator for the positions"),
 		examples = "foreach (pos : world.getPositionsFromCentre(new Pos(0, 100, 100), 10, 10, 10));"
 	)
 	private ArucasIterable getPositionsFromCentre(Arguments arguments) {
@@ -778,12 +776,12 @@ public class WorldDef extends CreatableDefinition<World> {
 			"The iterator iterates from the centre outwards"
 		},
 		params = {
-			POS, "centre", "the central position",
-			NUMBER, "xRange", "how far to iterate on the x axis",
-			NUMBER, "yRange", "how far to iterate on the y axis",
-			NUMBER, "zRange", "how far to iterate on the z axis"
+			@ParameterDoc(type = PosDef.class, name = "centre", desc = "the central position"),
+			@ParameterDoc(type = NumberDef.class, name = "xRange", desc = "how far to iterate on the x axis"),
+			@ParameterDoc(type = NumberDef.class, name = "yRange", desc = "how far to iterate on the y axis"),
+			@ParameterDoc(type = NumberDef.class, name = "zRange", desc = "how far to iterate on the z axis")
 		},
-		returns = {ITERABLE, "the iterator for the blocks"},
+		returns = @ReturnDoc(type = IterableDef.class, desc = "the iterator for the blocks"),
 		examples = "foreach (block : world.getBlocksFromCentre(new Pos(0, 100, 100), 10, 5, 60));"
 	)
 	private ArucasIterable getBlocksFromCentre(Arguments arguments) {

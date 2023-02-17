@@ -1,11 +1,11 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.FunctionDef;
+import me.senseiwells.arucas.builtin.FutureDef;
+import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -19,13 +19,11 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptEvent;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.GAME_EVENT;
 
 @ClassDoc(
 	name = GAME_EVENT,
 	desc = "This class allows you to register listeners for game events in Minecraft.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class GameEventDef extends CreatableDefinition<ScriptEvent> {
@@ -44,8 +42,8 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	@ConstructorDoc(
 		desc = "This creates a new GameEvent, that is not cancellable",
 		params = {
-			STRING, "eventName", "The name of the event, you can find these on the GameEvents page",
-			FUNCTION, "onEvent", "The function to run when the event is called, some events may have parameters"
+			@ParameterDoc(type = StringDef.class, name = "eventName", desc = "The name of the event, you can find these on the GameEvents page"),
+			@ParameterDoc(type = FunctionDef.class, name = "onEvent", desc = "The function to run when the event is called, some events may have parameters")
 		},
 		examples = "new GameEvent('onClientTick', fun() { });"
 	)
@@ -66,9 +64,9 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	@ConstructorDoc(
 		desc = "This creates a new GameEvent",
 		params = {
-			STRING, "eventName", "The name of the event, you can find these on the GameEvents page",
-			FUNCTION, "onEvent", "The function to run when the event is called, some events may have parameters",
-			BOOLEAN, "cancellable", "Whether or not the event is cancellable, if it is then it will run on the main thread"
+			@ParameterDoc(type = StringDef.class, name = "eventName", desc = "The name of the event, you can find these on the GameEvents page"),
+			@ParameterDoc(type = FunctionDef.class, name = "onEvent", desc = "The function to run when the event is called, some events may have parameters"),
+			@ParameterDoc(type = BooleanDef.class, name = "cancellable", desc = "Whether or not the event is cancellable, if it is then it will run on the main thread")
 		},
 		examples = "new GameEvent('onClientTick', fun() { }, true);"
 	)
@@ -124,7 +122,7 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 		isStatic = true,
 		name = "future",
 		desc = "This returns a future that allows you to wait for an event to occur",
-		returns = {FUTURE, "the future, will complete once the event has occurred"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the future, will complete once the event has occurred"),
 		examples = "GameEvent.future('onClientTick').await();"
 	)
 	private Future<ClassInstance> future(Arguments arguments) {
@@ -148,7 +146,7 @@ public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	@FunctionDoc(
 		name = "isRegistered",
 		desc = "This returns whether or not the event is registered",
-		returns = {BOOLEAN, "Whether or not the event is registered"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "Whether or not the event is registered"),
 		examples = "gameEvent.isRegistered();"
 	)
 	private boolean isRegistered(Arguments arguments) {

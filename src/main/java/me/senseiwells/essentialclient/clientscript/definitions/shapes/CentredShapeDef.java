@@ -1,7 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
@@ -17,14 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.CENTRED_SHAPE;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.POS;
 
 @ClassDoc(
 	name = CENTRED_SHAPE,
 	desc = "This class represents shapes that are positioned centrally with a width",
-	importPath = "Minecraft",
 	superclass = OutlinedShapeDef.class,
 	language = Util.Language.Java
 )
@@ -53,7 +52,7 @@ public class CentredShapeDef extends PrimitiveDefinition<ScriptShape.Centred> {
 	@FunctionDoc(
 		name = "setPos",
 		desc = "This sets the central position of the shape",
-		params = {POS, "pos", "the central position of the shape"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "the central position of the shape")},
 		examples = "shape.setPos(new Pos(1, 0, 100));"
 	)
 	private Void setPos(Arguments arguments) {
@@ -66,7 +65,7 @@ public class CentredShapeDef extends PrimitiveDefinition<ScriptShape.Centred> {
 	@FunctionDoc(
 		name = "setWidth",
 		desc = "This sets the width of the shape",
-		params = {NUMBER, "width", "the width of the shape"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "width", desc = "the width of the shape")},
 		examples = "shape.setWidth(10.5);"
 	)
 	private Void setWidth(Arguments arguments) {
@@ -79,7 +78,7 @@ public class CentredShapeDef extends PrimitiveDefinition<ScriptShape.Centred> {
 	@FunctionDoc(
 		name = "getPos",
 		desc = "This gets the central position of the shape",
-		returns = {POS, "the central position of the shape"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "the central position of the shape"),
 		examples = "shape.getPos();"
 	)
 	private ScriptPos getPos(Arguments arguments) {
@@ -90,7 +89,7 @@ public class CentredShapeDef extends PrimitiveDefinition<ScriptShape.Centred> {
 	@FunctionDoc(
 		name = "getWidth",
 		desc = "This gets the width of the shape",
-		returns = {NUMBER, "the width of the shape"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the width of the shape"),
 		examples = "shape.getWidth();"
 	)
 	private float getWidth(Arguments arguments) {

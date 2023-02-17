@@ -1,9 +1,7 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
@@ -21,13 +19,11 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
+import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE_ENTITY;
 
 @ClassDoc(
 	name = FAKE_ENTITY,
 	desc = "This allows you to create a fake entity which can be rendered in the world.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
@@ -45,8 +41,8 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@ConstructorDoc(
 		desc = "Creates a new fake entity",
 		params = {
-			ENTITY, "entity", "The entity that you want to create into a fake entity",
-			WORLD, "world", "The world that the entity is being rendered in"
+			@ParameterDoc(type = EntityDef.class, name = "entity", desc = "The entity that you want to create into a fake entity"),
+			@ParameterDoc(type = WorldDef.class, name = "world", desc = "The world that the entity is being rendered in")
 		},
 		examples = "fakeEntity = new FakeEntity();"
 	)
@@ -88,7 +84,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "setWorld",
 		desc = "Sets the world that the entity is being rendered in",
-		params = {WORLD, "world", "The world that the entity is being rendered in"},
+		params = {@ParameterDoc(type = WorldDef.class, name = "world", desc = "The world that the entity is being rendered in")},
 		examples = "fakeEntity.setWorld(MinecraftClient.getClient().getWorld());"
 	)
 	private Void setWorld(Arguments arguments) {
@@ -104,7 +100,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "getWorld",
 		desc = "Gets the world that the entity is being rendered in",
-		returns = {WORLD, "The world that the entity is being rendered in"},
+		returns = @ReturnDoc(type = WorldDef.class, desc = "The world that the entity is being rendered in"),
 		examples = "world = fakeEntity.getWorld();"
 	)
 	private World getWorld(Arguments arguments) {
@@ -115,7 +111,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "setPos",
 		desc = "Sets the position of the entity with no interpolation",
-		params = {POS, "pos", "The new position of the entity"},
+		params = {@ParameterDoc(type = PosDef.class, name = "pos", desc = "The new position of the entity")},
 		examples = "fakeEntity.setPos(new Pos(0, 0, 0));"
 	)
 	private Void setPos1(Arguments arguments) {
@@ -129,8 +125,8 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 		name = "setPos",
 		desc = "Sets the position of the entity",
 		params = {
-			POS, "pos", "The new position of the entity",
-			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "The new position of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "interpolationSteps", desc = "The number of interpolation steps to take")
 		},
 		examples = "fakeEntity.setPos(new Pos(0, 0, 0), 0);"
 	)
@@ -145,7 +141,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "getPos",
 		desc = "Gets the position of the entity",
-		returns = {POS, "The position of the entity"},
+		returns = @ReturnDoc(type = PosDef.class, desc = "The position of the entity"),
 		examples = "pos = fakeEntity.getPos();"
 	)
 	private ScriptPos getPos(Arguments arguments) {
@@ -156,7 +152,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "setYaw",
 		desc = "Sets the yaw of the entity with no interpolation",
-		params = {NUMBER, "yaw", "The new yaw of the entity"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "yaw", desc = "The new yaw of the entity")},
 		examples = "fakeEntity.setYaw(0);"
 	)
 	private Void setYaw1(Arguments arguments) {
@@ -170,8 +166,8 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 		name = "setYaw",
 		desc = "Sets the yaw of the entity",
 		params = {
-			NUMBER, "yaw", "The new yaw of the entity",
-			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+			@ParameterDoc(type = NumberDef.class, name = "yaw", desc = "The new yaw of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "interpolationSteps", desc = "The number of interpolation steps to take")
 		},
 		examples = "fakeEntity.setYaw(0, 10);"
 	)
@@ -186,7 +182,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "getYaw",
 		desc = "Gets the yaw of the entity",
-		returns = {NUMBER, "The yaw of the entity"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "The yaw of the entity"),
 		examples = "yaw = fakeEntity.getYaw();"
 	)
 	private float getYaw(Arguments arguments) {
@@ -197,7 +193,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "setBodyYaw",
 		desc = "Sets the body yaw of the entity with no interpolation",
-		params = {NUMBER, "bodyYaw", "The new body yaw of the entity"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "bodyYaw", desc = "The new body yaw of the entity")},
 		examples = "fakeEntity.setBodyYaw(0);"
 	)
 	private Void setBodyYaw1(Arguments arguments) {
@@ -211,8 +207,8 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 		name = "setBodyYaw",
 		desc = "Sets the body yaw of the entity",
 		params = {
-			NUMBER, "bodyYaw", "The new body yaw of the entity",
-			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+			@ParameterDoc(type = NumberDef.class, name = "bodyYaw", desc = "The new body yaw of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "interpolationSteps", desc = "The number of interpolation steps to take")
 		},
 		examples = "fakeEntity.setBodyYaw(0, 10);"
 	)
@@ -227,7 +223,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "getBodyYaw",
 		desc = "Gets the body yaw of the entity",
-		returns = {NUMBER, "The body yaw of the entity"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "The body yaw of the entity"),
 		examples = "bodyYaw = fakeEntity.getBodyYaw();"
 	)
 	private float getBodyYaw(Arguments arguments) {
@@ -238,7 +234,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "setPitch",
 		desc = "Sets the pitch of the entity with no interpolation",
-		params = {NUMBER, "pitch", "The new pitch of the entity"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "pitch", desc = "The new pitch of the entity")},
 		examples = "fakeEntity.setPitch(0);"
 	)
 	private Void setPitch1(Arguments arguments) {
@@ -252,8 +248,8 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 		name = "setPitch",
 		desc = "Sets the pitch of the entity",
 		params = {
-			NUMBER, "pitch", "The new pitch of the entity",
-			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+			@ParameterDoc(type = NumberDef.class, name = "pitch", desc = "The new pitch of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "interpolationSteps", desc = "The number of interpolation steps to take")
 		},
 		examples = "fakeEntity.setPitch(0, 10);"
 	)
@@ -268,7 +264,7 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	@FunctionDoc(
 		name = "getPitch",
 		desc = "Gets the pitch of the entity",
-		returns = {NUMBER, "The pitch of the entity"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "The pitch of the entity"),
 		examples = "pitch = fakeEntity.getPitch();"
 	)
 	private float getPitch(Arguments arguments) {
@@ -280,9 +276,9 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 		name = "updatePosAndRotation",
 		desc = "Updates the position and rotation of the entity with no interpolation",
 		params = {
-			POS, "pos", "The new position of the entity",
-			NUMBER, "yaw", "The new yaw of the entity",
-			NUMBER, "pitch", "The new pitch of the entity"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "The new position of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "yaw", desc = "The new yaw of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "pitch", desc = "The new pitch of the entity")
 		},
 		examples = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0);"
 	)
@@ -299,10 +295,10 @@ public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 		name = "updatePosAndRotation",
 		desc = "Updates the position and rotation of the entity",
 		params = {
-			POS, "pos", "The new position of the entity",
-			NUMBER, "yaw", "The new yaw of the entity",
-			NUMBER, "pitch", "The new pitch of the entity",
-			NUMBER, "interpolationSteps", "The number of interpolation steps to take"
+			@ParameterDoc(type = PosDef.class, name = "pos", desc = "The new position of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "yaw", desc = "The new yaw of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "pitch", desc = "The new pitch of the entity"),
+			@ParameterDoc(type = NumberDef.class, name = "interpolationSteps", desc = "The number of interpolation steps to take")
 		},
 		examples = "fakeEntity.updatePosAndRotation(new Pos(100, 0, 100), 0, 0, 10);"
 	)

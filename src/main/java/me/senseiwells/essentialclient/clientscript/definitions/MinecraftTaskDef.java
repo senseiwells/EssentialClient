@@ -1,10 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import kotlin.Unit;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.ConstructorDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.FunctionDef;
+import me.senseiwells.arucas.builtin.FutureDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.builtin.TaskDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINECRAFT_TASK;
 
 @ClassDoc(
@@ -77,10 +75,10 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 			"return value will be determined by this function"
 		},
 		params = {
-			NUMBER, "ticks", "the amount of ticks delay before the function runs",
-			FUNCTION, "function", "the function to run after the delay"
+			@ParameterDoc(type = NumberDef.class, name = "ticks", desc = "the amount of ticks delay before the function runs"),
+			@ParameterDoc(type = FunctionDef.class, name = "function", desc = "the function to run after the delay")
 		},
-		returns = {MINECRAFT_TASK, "the task, this allows for chaining"},
+		returns = @ReturnDoc(type = MinecraftTaskDef.class, desc = "the task, this allows for chaining"),
 		examples =
 			"""
 				task = new MinecraftTask()
@@ -107,7 +105,7 @@ public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 			"which can be awaited, the last function in the chain will be used as",
 			"the return value for the future"
 		},
-		returns = {FUTURE, "the future value that can be awaited"},
+		returns = @ReturnDoc(type = FutureDef.class, desc = "the future value that can be awaited"),
 		examples =
 			"""
 				task = new MinecraftTask()

@@ -1,8 +1,11 @@
 package me.senseiwells.essentialclient.clientscript.definitions.shapes;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.BooleanDef;
+import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.core.Interpreter;
@@ -14,7 +17,6 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptShape;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SHAPE;
 
 @ClassDoc(
@@ -23,7 +25,6 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SHAP
 		"This class is the base class for all shapes that can be rendered,",
 		"providing the base functionality for all shapes"
 	},
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
@@ -80,7 +81,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 			"function also has a sibling named `setColor()` that has the same functionality.",
 			"The colour generally should be hexadecimal in the form 0xRRGGBB"
 		},
-		params = {NUMBER, "colour", "the colour you want to set"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "colour", desc = "the colour you want to set")},
 		examples = "shape.setColour(0xFF0000);"
 	)
 	private Void setColour1(Arguments arguments) {
@@ -98,9 +99,9 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 			"If the colours are not between 0 and 255 an error will be thrown"
 		},
 		params = {
-			NUMBER, "red", "the amount of red 0 - 255",
-			NUMBER, "green", "the amount of green 0 - 255",
-			NUMBER, "blue", "the amount of blue 0 - 255"
+			@ParameterDoc(type = NumberDef.class, name = "red", desc = "the amount of red 0 - 255"),
+			@ParameterDoc(type = NumberDef.class, name = "green", desc = "the amount of green 0 - 255"),
+			@ParameterDoc(type = NumberDef.class, name = "blue", desc = "the amount of blue 0 - 255")
 		},
 		examples = "shape.setColour(34, 55, 0);"
 	)
@@ -121,7 +122,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 			"This sets the red value of the shape, using a single value.",
 			"If the colour is not between 0 and 255 an error will be thrown"
 		},
-		params = {NUMBER, "red", "the amount of red between 0 - 255"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "red", desc = "the amount of red between 0 - 255")},
 		examples = "shape.setRed(34);"
 	)
 	private Void setRed(Arguments arguments) {
@@ -137,7 +138,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 			"This sets the green value of the shape, using a single value.",
 			"If the colour is not between 0 and 255 an error will be thrown"
 		},
-		params = {NUMBER, "green", "the amount of green between 0 - 255"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "green", desc = "the amount of green between 0 - 255")},
 		examples = "shape.setGreen(34);"
 	)
 	private Void setGreen(Arguments arguments) {
@@ -153,7 +154,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 			"This sets the blue value of the shape, using a single value.",
 			"If the colour is not between 0 and 255 an error will be thrown"
 		},
-		params = {NUMBER, "blue", "the amount of blue between 0 - 255"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "blue", desc = "the amount of blue between 0 - 255")},
 		examples = "shape.setBlue(34);"
 	)
 	private Void setBlue(Arguments arguments) {
@@ -169,7 +170,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 			"This sets the opacity of the shape, using a single value.",
 			"If the colour is not between 0 and 255 an error will be thrown"
 		},
-		params = {NUMBER, "opacity", "the amount of opacity between 0 - 255"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "opacity", desc = "the amount of opacity between 0 - 255")},
 		examples = "shape.setOpacity(34);"
 	)
 	private Void setOpacity(Arguments arguments) {
@@ -182,7 +183,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "setRenderThroughBlocks",
 		desc = "This sets whether the shape should render through blocks",
-		params = {BOOLEAN, "boolean", "whether the shape should render through blocks"},
+		params = {@ParameterDoc(type = BooleanDef.class, name = "boolean", desc = "whether the shape should render through blocks")},
 		examples = "shape.setRenderThroughBlocks(true);"
 	)
 	private Void setRenderThroughBlocks(Arguments arguments) {
@@ -195,7 +196,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "getRed",
 		desc = "This returns the red value of the shape",
-		returns = {NUMBER, "the red value of the shape"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the red value of the shape"),
 		examples = "shape.getRed();"
 	)
 	private int getRed(Arguments arguments) {
@@ -205,7 +206,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "getGreen",
 		desc = "This returns the green value of the shape",
-		returns = {NUMBER, "the green value of the shape"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the green value of the shape"),
 		examples = "shape.getGreen();"
 	)
 	private int getGreen(Arguments arguments) {
@@ -215,7 +216,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "getBlue",
 		desc = "This returns the blue value of the shape",
-		returns = {NUMBER, "the blue value of the shape"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the blue value of the shape"),
 		examples = "shape.getBlue();"
 	)
 	private int getBlue(Arguments arguments) {
@@ -225,7 +226,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "getOpacity",
 		desc = "This returns the opacity of the shape",
-		returns = {NUMBER, "the opacity of the shape"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the opacity of the shape"),
 		examples = "shape.getOpacity();"
 	)
 	private int getOpacity(Arguments arguments) {
@@ -235,7 +236,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "getRGB",
 		desc = "This returns the RGB value of the shape",
-		returns = {NUMBER, "the RGB value of the shape as a single number in the form 0xRRGGBB"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the RGB value of the shape as a single number in the form 0xRRGGBB"),
 		examples = "shape.getRGB();"
 	)
 	private int getRGB(Arguments arguments) {
@@ -245,7 +246,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "getRGBList",
 		desc = "This returns the RGB value of the shape as a list",
-		returns = {LIST, "the RGB value of the shape as a list in the form [red, green, blue]"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the RGB value of the shape as a list in the form [red, green, blue]"),
 		examples = "r, g, b = shape.getRGBList();"
 	)
 	private ArucasList getRGBList(Arguments arguments) {
@@ -261,7 +262,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "getRGBAList",
 		desc = "This returns the RGBA value of the shape as a list",
-		returns = {LIST, "the RGBA value of the shape as a list in the form [red, green, blue, opacity]"},
+		returns = @ReturnDoc(type = ListDef.class, desc = "the RGBA value of the shape as a list in the form [red, green, blue, opacity]"),
 		examples = "r, g, b, a = shape.getRGBAList();"
 	)
 	private ArucasList getRGBAList(Arguments arguments) { // Checkstyle ignore
@@ -278,7 +279,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "shouldRenderThroughBlocks",
 		desc = "This returns whether the shape should render through blocks",
-		returns = {BOOLEAN, "whether the shape should render through blocks"},
+		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether the shape should render through blocks"),
 		examples = "shape.shouldRenderThroughBlocks();"
 	)
 	private boolean shouldRenderThroughBlocks(Arguments arguments) {
@@ -314,9 +315,9 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 		name = "setScale",
 		desc = "This sets the scale of the shape",
 		params = {
-			NUMBER, "xScale", "the x scale of the shape",
-			NUMBER, "yScale", "the y scale of the shape",
-			NUMBER, "zScale", "the z scale of the shape"
+			@ParameterDoc(type = NumberDef.class, name = "xScale", desc = "the x scale of the shape"),
+			@ParameterDoc(type = NumberDef.class, name = "yScale", desc = "the y scale of the shape"),
+			@ParameterDoc(type = NumberDef.class, name = "zScale", desc = "the z scale of the shape")
 		},
 		examples = "shape.setScale(1.5, 2.5, 3.5);"
 	)
@@ -334,7 +335,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "setXScale",
 		desc = "This sets the x scale of the shape",
-		params = {NUMBER, "xScale", "the x scale of the shape"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "xScale", desc = "the x scale of the shape")},
 		examples = "shape.setXScale(1.5);"
 	)
 	private Void setXScale(Arguments arguments) {
@@ -347,7 +348,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "setYScale",
 		desc = "This sets the y scale of the shape",
-		params = {NUMBER, "yScale", "the y scale of the shape"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "yScale", desc = "the y scale of the shape")},
 		examples = "shape.setYScale(2.5);"
 	)
 	private Void setYScale(Arguments arguments) {
@@ -360,7 +361,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "setZScale",
 		desc = "This sets the z scale of the shape",
-		params = {NUMBER, "zScale", "the z scale of the shape"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "zScale", desc = "the z scale of the shape")},
 		examples = "shape.setZScale(3.5);"
 	)
 	private Void setZScale(Arguments arguments) {
@@ -404,9 +405,9 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 		name = "setTilt",
 		desc = "This sets the tilt of the shape",
 		params = {
-			NUMBER, "xTilt", "the x tilt",
-			NUMBER, "yTilt", "the y tilt",
-			NUMBER, "zTilt", "the z tilt"
+			@ParameterDoc(type = NumberDef.class, name = "xTilt", desc = "the x tilt"),
+			@ParameterDoc(type = NumberDef.class, name = "yTilt", desc = "the y tilt"),
+			@ParameterDoc(type = NumberDef.class, name = "zTilt", desc = "the z tilt")
 		},
 		examples = "shape.setTilt(100, 0, 80);"
 	)
@@ -424,7 +425,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "setXTilt",
 		desc = "This sets the x tilt of the shape",
-		params = {NUMBER, "xTilt", "the x tilt"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "xTilt", desc = "the x tilt")},
 		examples = "shape.setXTilt(100);"
 	)
 	private Void setXTilt(Arguments arguments) {
@@ -437,7 +438,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "setYTilt",
 		desc = "This sets the y tilt of the shape",
-		params = {NUMBER, "yTilt", "the y tilt"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "yTilt", desc = "the y tilt")},
 		examples = "shape.setYTilt(0);"
 	)
 	private Void setYTilt(Arguments arguments) {
@@ -450,7 +451,7 @@ public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	@FunctionDoc(
 		name = "setZTilt",
 		desc = "This sets the z tilt of the shape",
-		params = {NUMBER, "zTilt", "the z tilt"},
+		params = {@ParameterDoc(type = NumberDef.class, name = "zTilt", desc = "the z tilt")},
 		examples = "shape.setZTilt(80);"
 	)
 	private Void setZTilt(Arguments arguments) {

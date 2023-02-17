@@ -1,7 +1,9 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
@@ -17,14 +19,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM_STACK;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TRADE;
 
 @ClassDoc(
 	name = TRADE,
 	desc = "This class represents a trade offer, and allows you to get information about it.",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class TradeDef extends CreatableDefinition<TradeOffer> {
@@ -56,7 +55,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getSellItem",
 		desc = "Gets the item that is being sold by the merchant",
-		returns = {ITEM_STACK, "the item for sale"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the item for sale"),
 		examples = "trade.getSellItem();"
 	)
 	public ScriptItemStack getSellItem(Arguments arguments) {
@@ -67,7 +66,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getFirstBuyItem",
 		desc = "Gets the first item that the merchant will buy",
-		returns = {ITEM_STACK, "the first item to buy"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the first item to buy"),
 		examples = "trade.getFirstBuyItem();"
 	)
 	public ScriptItemStack getFirstBuyItem(Arguments arguments) {
@@ -78,7 +77,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getAdjustedFirstBuyItem",
 		desc = "Gets the first item that the merchant will buy, adjusted by the price multiplier",
-		returns = {ITEM_STACK, "the first item to buy"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the first item to buy"),
 		examples = "trade.getAdjustedFirstBuyItem();"
 	)
 	public ScriptItemStack getAdjustedFirstBuyItem(Arguments arguments) {
@@ -89,7 +88,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getSecondBuyItem",
 		desc = "Gets the second item that the merchant will buy",
-		returns = {ITEM_STACK, "the second item to buy"},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the second item to buy"),
 		examples = "trade.getSecondBuyItem();"
 	)
 	public ScriptItemStack getSecondBuyItem(Arguments arguments) {
@@ -100,7 +99,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getMaxUses",
 		desc = "Gets the maximum number of times the trade can be used",
-		returns = {NUMBER, "the maximum number of uses"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the maximum number of uses"),
 		examples = "trade.getMaxUses();"
 	)
 	public int getMaxUses(Arguments arguments) {
@@ -111,7 +110,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getUses",
 		desc = "Gets the number of times the trade has been used",
-		returns = {NUMBER, "the number of uses"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the number of uses"),
 		examples = "trade.getUses();"
 	)
 	public int getUses(Arguments arguments) {
@@ -122,7 +121,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getSpecialPrice",
 		desc = "This gets the special price which is used to adjust the price of the first buy item",
-		returns = {NUMBER, "the special price"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the special price"),
 		examples = "trade.getSpecialPrice();"
 	)
 	public int getSpecialPrice(Arguments arguments) {
@@ -133,7 +132,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	@FunctionDoc(
 		name = "getPriceMultiplier",
 		desc = "Gets the price multiplier which is used to adjust the price of the first buy item",
-		returns = {NUMBER, "the price multiplier"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the price multiplier"),
 		examples = "trade.getPriceMultiplier();"
 	)
 	public float getPriceMultiplier(Arguments arguments) {
@@ -147,7 +146,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 			"Returns the amount of xp the villager will get, which",
 			"goes towards them levelling up, from trading this offer"
 		},
-		returns = {NUMBER, "the amount of xp"},
+		returns = @ReturnDoc(type = NumberDef.class, desc = "the amount of xp"),
 		examples = "trade.getXpReward"
 	)
 	private int getXpReward(Arguments arguments) {

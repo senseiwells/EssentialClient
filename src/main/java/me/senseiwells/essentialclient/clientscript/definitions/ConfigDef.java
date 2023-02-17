@@ -1,15 +1,16 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import com.google.gson.JsonElement;
-import me.senseiwells.arucas.api.docs.ClassDoc;
-import me.senseiwells.arucas.api.docs.FunctionDoc;
-import me.senseiwells.arucas.builtin.FunctionDef;
-import me.senseiwells.arucas.builtin.ListDef;
-import me.senseiwells.arucas.builtin.MapDef;
+import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
+import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
+import me.senseiwells.arucas.api.docs.annotations.ParameterDoc;
+import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
+import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
+import me.senseiwells.arucas.extensions.JsonDef;
 import me.senseiwells.arucas.utils.*;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
@@ -21,14 +22,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.CONFIG;
-import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.JSON;
 
 @ClassDoc(
 	name = CONFIG,
 	desc = "This class allows you to create configs for your scripts",
-	importPath = "Minecraft",
 	language = Util.Language.Java
 )
 public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
@@ -73,8 +71,8 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 			"'min' which is the minimum value of the slider,",
 			"'max' which is the maximum value of the slider"
 		},
-		params = {MAP, "map", "The map to create the config from"},
-		returns = {CONFIG, "The config created from the map"},
+		params = {@ParameterDoc(type = MapDef.class, name = "map", desc = "The map to create the config from")},
+		returns = @ReturnDoc(type = ConfigDef.class, desc = "The config created from the map"),
 		examples = """
 			configMap = {
 				"type": "string",
@@ -99,8 +97,8 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 		isStatic = true,
 		name = "fromListOfMap",
 		desc = "Creates a config from a list of config maps",
-		params = {LIST, "list", "The list of config maps"},
-		returns = {LIST, "A list of configs created from the list of config maps"},
+		params = {@ParameterDoc(type = ListDef.class, name = "list", desc = "The list of config maps")},
+		returns = @ReturnDoc(type = ListDef.class, desc = "A list of configs created from the list of config maps"),
 		examples = """
 			configs = [
 				{
@@ -152,7 +150,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "getName",
 		desc = "Gets the name of the config",
-		returns = {STRING, "The name of the config"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "The name of the config"),
 		examples = "config.getName();"
 	)
 	private String getName(Arguments arguments) {
@@ -162,7 +160,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "getType",
 		desc = "Gets the type of the config",
-		returns = {STRING, "The type of the config"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "The type of the config"),
 		examples = "config.getType();"
 	)
 	private String getType(Arguments arguments) {
@@ -172,7 +170,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "getDescription",
 		desc = "Gets the description of the config",
-		returns = {STRING, "The description of the config"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "The description of the config"),
 		examples = "config.getDescription();"
 	)
 	private String getDescription(Arguments arguments) {
@@ -182,7 +180,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "getCategory",
 		desc = "Gets the category of the config",
-		returns = {STRING, "The category of the config"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "The category of the config"),
 		examples = "config.getCategory();"
 	)
 	private String getCategory(Arguments arguments) {
@@ -192,7 +190,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "getOptionalInfo",
 		desc = "Gets the optional info of the config",
-		returns = {STRING, "The optional info of the config"},
+		returns = @ReturnDoc(type = StringDef.class, desc = "The optional info of the config"),
 		examples = "config.getOptionalInfo();"
 	)
 	private String getOptionalInfo(Arguments arguments) {
@@ -202,7 +200,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "getDefaultValue",
 		desc = "Gets the default value of the config",
-		returns = {OBJECT, "The default value of the config"},
+		returns = @ReturnDoc(type = ObjectDef.class, desc = "The default value of the config"),
 		examples = "config.getDefaultValue();"
 	)
 	private Object getDefaultValue(Arguments arguments) {
@@ -212,7 +210,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "getValue",
 		desc = "Gets the value of the config",
-		returns = {OBJECT, "The value of the config"},
+		returns = @ReturnDoc(type = ObjectDef.class, desc = "The value of the config"),
 		examples = "config.getValue();"
 	)
 	private Object getValue(Arguments arguments) {
@@ -222,7 +220,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 	@FunctionDoc(
 		name = "toJson",
 		desc = "Converts the config into a json value, this will not keep the listeners",
-		returns = {JSON, "The config as a json value"},
+		returns = @ReturnDoc(type = JsonDef.class, desc = "The config as a json value"),
 		examples = "config.toJson();"
 	)
 	private JsonElement toJson(Arguments arguments) {
@@ -235,7 +233,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 			"Adds a listener to the config, the listener will be called when the config is changed",
 			"The listener must have one parameter, this is the new value that was set"
 		},
-		params = {FUNCTION, "listener", "The listener to add"},
+		params = {@ParameterDoc(type = FunctionDef.class, name = "listener", desc = "The listener to add")},
 		examples = """
 			config.addListener(function(newValue) {
 				print(newValue);
@@ -269,7 +267,7 @@ public class ConfigDef extends CreatableDefinition<ClientRule<?>> {
 			"Sets the value of the config, if the value is invalid it will not be changed",
 			"If you are modifying a list rule you must pass in a list to this method"
 		},
-		params = {OBJECT, "value", "The new value of the config"},
+		params = {@ParameterDoc(type = ObjectDef.class, name = "value", desc = "The new value of the config")},
 		examples = "config.setValue(10);"
 	)
 	private Void setValue(Arguments arguments) {
