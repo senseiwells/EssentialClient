@@ -40,6 +40,7 @@ import net.minecraft.client.util.InputUtil;
 //#if MC >= 11903
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 //#elseif MC >= 11901
 //$$import net.minecraft.command.CommandRegistryWrapper;
 //#endif
@@ -618,6 +619,11 @@ public class ClientScriptUtils {
 			FakeCommandSource source = new FakeCommandSource(EssentialUtils.getPlayer());
 			object = selector.isSingleTarget() ? selector.getEntity(source) : selector.getEntities(source);
 		}
+		//#if MC >= 11903
+		if (object instanceof RegistryEntry.Reference<?> reference) {
+			return interpreter.convertValue(reference.value());
+		}
+		//#endif
 		return interpreter.convertValue(object);
 	}
 
