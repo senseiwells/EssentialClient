@@ -132,7 +132,7 @@ public class PlayerClientCommand {
 		Vec3d playerPos = isHere ? source.getPosition() : Vec3ArgumentType.getVec3(context, "pos");
 		Vec2f playerRotation = isHere ? source.getRotation() : RotationArgumentType.getRotation(context, "rotation").toAbsoluteRotation(source);
 		WorldEnum playerWorld = isHere ? WorldEnum.fromRegistryKey(player.world.getRegistryKey()) : EnumArgumentType.getEnumeration(context, "dimension", WorldEnum.class);
-		GameMode playerGamemode = hasGamemode ? null : EnumArgumentType.getEnumeration(context, "gamemode", GameMode.class);
+		GameMode playerGamemode = !hasGamemode ? null : EnumArgumentType.getEnumeration(context, "gamemode", GameMode.class);
 		PlayerData playerData = new PlayerData(playerPos, playerRotation, playerWorld, playerGamemode);
 		ConfigPlayerClient.INSTANCE.set(playerName, playerData);
 		return 1;
