@@ -1982,7 +1982,7 @@
         },
         {
           "name": "addConfigs",
-          "is_arbitrary": false,
+          "is_arbitrary": true,
           "desc": [
             "Adds multiple configs to the handler, you can pass in a list of configs",
             "or a varargs of configs, this is for compatability with older scripts."
@@ -5876,14 +5876,14 @@
         },
         {
           "name": "setKeys",
-          "is_arbitrary": false,
+          "is_arbitrary": true,
           "desc": [
             "Sets the key bind to new keys, you may also pass",
             "in a list as the parameter, this is to keep compatability."
           ],
           "params": [
             {
-              "name": "keyNames...",
+              "name": "keyNames......",
               "type": "String",
               "desc": "The names of keys."
             }
@@ -7922,7 +7922,7 @@
         },
         {
           "name": "editSign",
-          "is_arbitrary": false,
+          "is_arbitrary": true,
           "desc": [
             "This allows you to edit sign at certain position with given string(lines), up to 4 lines.",
             "This function does not check if sign is editable / is in position."
@@ -7934,7 +7934,7 @@
               "desc": "The position of sign."
             },
             {
-              "name": "string...",
+              "name": "strings...",
               "type": "String",
               "desc": "The lines for the sign, requires 1 string and up to 4 strings."
             }
@@ -8437,7 +8437,7 @@
         },
         {
           "name": "sendScriptPacket",
-          "is_arbitrary": false,
+          "is_arbitrary": true,
           "desc": [
             "This sends a script packet to the server",
             "You can send the follow types of values:",
@@ -8446,7 +8446,7 @@
           ],
           "params": [
             {
-              "name": "values...",
+              "name": "values......",
               "type": "Object",
               "desc": "The data you want to send to the server."
             }

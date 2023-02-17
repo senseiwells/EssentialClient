@@ -902,7 +902,7 @@ configHandler.addConfig(config);
 ### `<ConfigHandler>.addConfigs(configs...)`
 - Description: Adds multiple configs to the handler, you can pass in a list of configs
 or a varargs of configs, this is for compatability with older scripts.
-- Parameter - Config (`configs...`): The configs to add.
+- Parameter - Config (`configs`): The configs to add.
 - Example:
 ```kotlin
 config = Config.fromMap({
@@ -3024,7 +3024,7 @@ keyBind.setCallback(fun() { print('My key was pressed'); });
 keyBind.setKey('f');
 ```
 
-### `<KeyBind>.setKeys(keyNames...)`
+### `<KeyBind>.setKeys(keyNames......)`
 - Description: Sets the key bind to new keys, you may also pass
 in a list as the parameter, this is to keep compatability.
 - Parameter - String (`keyNames...`): The names of keys.
@@ -4068,12 +4068,12 @@ client.canSendScriptPacket()
 client.clearChat();
 ```
 
-### `<MinecraftClient>.editSign(position, string...)`
+### `<MinecraftClient>.editSign(position, strings...)`
 - Description: This allows you to edit sign at certain position with given string(lines), up to 4 lines.
 This function does not check if sign is editable / is in position.
 - Parameters:
   - Pos (`position`): The position of sign.
-  - String (`string...`): The lines for the sign, requires 1 string and up to 4 strings.
+  - String (`strings`): The lines for the sign, requires 1 string and up to 4 strings.
 - Example:
 ```kotlin
 client.editSign(new Pos(0,0,0), '100', '101', 'this is third line', 'last line');
@@ -4337,7 +4337,7 @@ client.screenshot();
 client.screenshot('screenshot.png');
 ```
 
-### `<MinecraftClient>.sendScriptPacket(values...)`
+### `<MinecraftClient>.sendScriptPacket(values......)`
 - Description: This sends a script packet to the server
 You can send the follow types of values:
 Boolean, Number, String, List (of numbers), Text, ItemStack, Pos, and NbtMaps
