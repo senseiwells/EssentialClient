@@ -98,7 +98,7 @@ public class WorldDef extends CreatableDefinition<World> {
 			MemberFunction.of("getPositions", 2, this::getPositions),
 			MemberFunction.of("getBlocks", 2, this::getBlocks),
 			MemberFunction.of("getPositionsFromCentre", 4, this::getPositionsFromCentre),
-			MemberFunction.of("getBlocksFromCentre", 2, this::getBlocksFromCentre),
+			MemberFunction.of("getBlocksFromCentre", 4, this::getBlocksFromCentre),
 			MemberFunction.of("reloadChunks", this::reloadChunks)
 		);
 	}
