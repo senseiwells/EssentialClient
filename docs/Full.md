@@ -674,7 +674,7 @@ These values are used to do boolean logic, which we will cover in the operators 
 ### Null literal
 
 Null is as simple as it gets, there is only one literal for it:
-```
+```kotlin
 null;
 ```
 The `null` value represents nothing, it is used when a value doesn't exist, be careful will how it is used though, null safety is important, you don't want to get `null` values where you want other values.
