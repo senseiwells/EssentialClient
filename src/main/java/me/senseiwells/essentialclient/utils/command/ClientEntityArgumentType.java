@@ -56,7 +56,6 @@ import java.util.regex.Pattern;
 
 // Taken from ClientCommands
 public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelector> {
-
 	private static final Collection<String> EXAMPLES = Arrays.asList("Player", "0123", "@e", "@e[type=foo]");
 
 	private final boolean singleTarget;

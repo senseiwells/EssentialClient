@@ -47,7 +47,7 @@ public class CommandHelper {
 	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.UK));
 
 	private static CommandTreeS2CPacket fakeCommandPacket;
-	public static MethodHandle argumentHandle;
+	private static MethodHandle argumentHandle;
 
 	static {
 		DECIMAL_FORMAT.setGroupingUsed(false);
