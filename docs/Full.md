@@ -300,7 +300,7 @@ Example:
 ```kotlin
 // this does the same as the previous for loop example, just more consise
 list = [4, 5, 2, 7];
-for (value : list) {
+foreach (value : list) {
     print(value);
 }
 ```
@@ -961,7 +961,7 @@ false && false; // -> false
 
 The and operator takes two boolean values and will only return `true` if both boolean values are `true` otherwise it will return `false`.
 
-An important feature of this and operator is that it short circuits. Now to explain this you need to understand that the expressions are evaluated one at a time, and it goes from left to right. If the left expression of the and operator is `false` then it knows that no matter whether the right-hand side is `true` or fast it will always return `false` so it skips evaluating the right-hand side.
+An important feature of this and operator is that it short circuits. Now to explain this you need to understand that the expressions are evaluated one at a time, and it goes from left to right. If the left expression of the and operator is `false` then it knows that no matter whether the right-hand side is `true` or `false` it will always return `false` so it skips evaluating the right-hand side.
 
 If you want to use an and operator that evaluates both sides you can use the bitwise and operator `&`, we will go over this later.
 
@@ -1072,7 +1072,10 @@ These are the bit shifting operators, these by default only work on numbers, the
 
 ## Scopes
 
-Scopes are sections in your program that you define your code, scopes determine what variables, functions, and classes are accessible, by default the program runs in the global scope where everything is accessible to the rest of the program.
+Scopes are sections in your program that you define your code, 
+scopes determine what variables, functions, and classes are accessible, 
+by default the program runs in the global scope where everything is 
+accessible to the rest of the program.
 
 You are able to define scopes by using the `{` and `}`. For example:
 ```kotlin
@@ -1082,7 +1085,8 @@ You are able to define scopes by using the `{` and `}`. For example:
 }
 ```
 
-Anything that is defined in a scope is only accessible to that scope and any scopes inside that scope:
+Anything that is defined in a scope is only accessible to that scope and any 
+scopes inside that scope:
 ```kotlin
 // Global scope
 // Anything here is accessible ANYWHERE in the program
@@ -1108,7 +1112,9 @@ print(j);
 print(i); // -> 10
 ```
 
-Assigning variables in scope also works similarly, if a variable is defined in the global scope, and you reassign that variable in a scope than the variables in the global scope will be modified.
+Assigning variables in scope also works similarly, if a variable is defined 
+in the global scope, and you reassign that variable in a scope then the variables 
+in the global scope will be modified.
 ```kotlin
 i = 0;
 {
@@ -1377,25 +1383,25 @@ It may be the case that you would like to create your own class that is function
 
 ```kotlin
 class ExampleIterator(): Iterator {
-	var exampleValue = 0;
+    var exampleValue = 0;
 
-	ExampleIterator(): super();
+    ExampleIterator(): super();
 
-	// Overriden
-	fun hasNext() {
-		return exampleValue < 10;
-	}
+    // Overriden
+    fun hasNext() {
+        return exampleValue < 10;
+    }
 
-	// Overriden
-	fun next() {
-		return exampleValue++;
-	}
+    // Overriden
+    fun next() {
+        return exampleValue++;
+    }
 }
 
 class ExampleIterable: Iterable {
-	fun iterator() {
-		return new ExampleIterator();
-	}
+    fun iterator() {
+        return new ExampleIterator();
+    }
 }
 ```
 
@@ -1638,7 +1644,7 @@ Another example where the variable changed between function calls:
 variable = 10;
 
 fun printSomething() {
-	print(variable);
+    print(variable);
 }
 
 printSomething(); // prints 10
@@ -1677,7 +1683,7 @@ This however is not the case with built-in functions, since they are implemented
 Delegating a function is when instead of calling the function you use it as if it were an object and store the action function as a value much like a lambda:
 ```kotlin
 fun delegateExample() {
-	print("called");
+    print("called");
 }
 
 del = delegateExample; // We didn't call the function
@@ -1688,15 +1694,15 @@ del(); // prints 'called'
 Previously, before Arucas 2.0.0 you could not delegate a function that was overloaded however in Arucas 2.0.0+ we can now do that too.
 ```kotlin
 fun overload() {
-	print("0");
+    print("0");
 }
 
 fun overload(arg) {
-	print("1");
+    print("1");
 }
 
 fun overload(arg1, arg2) {
-	print("2");
+    print("2");
 }
 
 delegate = overload;
@@ -2000,9 +2006,9 @@ As previously mentioned it's possible to catch propagating errors. This can be d
 
 ```kotlin
 try {
-	throw new Error();
+    throw new Error();
 } catch (e) {
-	// Ignore
+    // Ignore
 }
 ```
 
@@ -2010,13 +2016,13 @@ You are also able to specify the type of error that you would like to catch by t
 
 ```kotlin
 class CustomError: Error {
-	CustomError(): super();
+    CustomError(): super();
 }
 
 try {
-	throw new CustomError();
+    throw new CustomError();
 } catch (e: CustomError) {
-	print("CustomError caught");
+    print("CustomError caught");
 }
 ```
 
@@ -2028,17 +2034,17 @@ Finally is a useful keyword, it allows for code to be executed if an error is th
 
 ```kotlin
 fun something() {
-	// May throw error here
+    // May throw error here
 }
 
 state = false;
 
 try {
-	state = true;
-	something();
+    state = true;
+    something();
 } finally {
-	// Reset
-	state = false;
+    // Reset
+    state = false;
 }
 ```
 
@@ -2046,12 +2052,12 @@ Using finally is essentially the equivalent to:
 
 ```kotlin
 try {
-	// ...
+    // ...
 } catch (e) {
-	// Finally code here
-	
-	// Re-throw the error
-	throw e;
+    // Finally code here
+    
+    // Re-throw the error
+    throw e;
 }
 ```
 
@@ -2061,11 +2067,11 @@ Something to also note is that the `catch` and `finally` keywords can be used in
 
 ```kotlin
 try {
-	// ...
+    // ...
 } catch (e) {
-	// ...
+    // ...
 } finally {
-	// ...
+    // ...
 }
 ```
 
@@ -2105,10 +2111,10 @@ The reason imports are done this way is to allow for cyclical imports:
 import ClassB from B;
 
 class ClassA {
-	static fun doSomething() {
-		// ClassB is only imported once we get here
-		B.doSomething();
-	}
+    static fun doSomething() {
+        // ClassB is only imported once we get here
+        B.doSomething();
+    }
 }
 ```
 
@@ -2118,9 +2124,9 @@ class ClassA {
 import ClassA from A;
 
 class ClassB {
-	static fun doSomething() {
-		print("B does something!");
-	}
+    static fun doSomething() {
+        print("B does something!");
+    }
 }
 
 // ClassA is only imported once we get here
@@ -2182,12 +2188,12 @@ class ExampleClass {
 Since Arucas 2.0.0 you can also call an overloaded constructor inside another constructor. This can be done by calling `this` after your constructor definition:
 ```kotlin
 class ExampleClass {
-	ExampleClass(number) {
-	}
-	// Here we call this() constructor
-	// with a parameter of 10
-	ExampleClass(): this(10) {
-	}
+    ExampleClass(number) {
+    }
+    // Here we call this() constructor
+    // with a parameter of 10
+    ExampleClass(): this(10) {
+    }
 }
 ```
 
@@ -2200,26 +2206,26 @@ Fields are essentially variables that are stored in a class and can be accessed 
 Fields are defined in the class body using the `var` keyword and can also optionally be type hinted to enforce only specific types to be allowed in the field.
 ```kotlin
 class Example {
-	var exampleField;
-	var typedField: String;
+    var exampleField;
+    var typedField: String;
 }
 ```
 
 An issue with the current version is that typed fields will always be null until they are assigned a value, this essentially means that you you cannot have a typed field without it accepting `Null` or having it assigned when created. Which brings me onto the next point, fields can be initialised in the body, the expression will be re-evaluated everytime a class is created:
 ```kotlin
 class Example {
-	var exampleField = "initialised";
+    var exampleField = "initialised";
 }
 ```
 
 Fields are what allows for encapsulation since you can have as many fields as you want in a class:
 ```kotlin
 class Person {
-	var name;
-	var age;
-	var height;
-	var gender;
-	// ...
+    var name;
+    var age;
+    var height;
+    var gender;
+    // ...
 }
 ```
 
@@ -2228,9 +2234,9 @@ class Person {
 Methods are just functions that belong to a class. Methods are defined like functions but instead they are declated inside the class body.
 ```kotlin
 class Example {
-	fun sayHello() {
-		print("hello!");
-	}
+    fun sayHello() {
+        print("hello!");
+    }
 }
 ```
 
@@ -2243,17 +2249,17 @@ e.sayHello(); // prints 'hello!'
 Methods are special in the fact that they implicitly pass the calling object into the method allowing you to access fields and other methods from within that method, you can reference this calling object with the keyword `this`.
 ```kotlin
 class Example {
-	var string;
-	Example(string) {
-		// this references this object
-		// you are setting the field 'string'
-		this.string = string;
-	}
-	fun say() {
-		// We access the 'string'
-		// field on this
-		print(this.string);
-	}
+    var string;
+    Example(string) {
+        // this references this object
+        // you are setting the field 'string'
+        this.string = string;
+    }
+    fun say() {
+        // We access the 'string'
+        // field on this
+        print(this.string);
+    }
 }
 ```
 
@@ -2262,13 +2268,13 @@ This may seem confusing, what does `this` mean? Well internally it works the sam
 // this is a keyword thus this example
 // would fail to compile, but just an example
 fun say(this) {
-	print(this.string);
+    print(this.string);
 }
 class Example {
-	var string;
-	Example(string) {
-		this.string = string;
-	}
+    var string;
+    Example(string) {
+        this.string = string;
+    }
 }
 e = new Example("foo");
 say(e); // prints 'foo'
@@ -2281,10 +2287,10 @@ Other than that methods work exactly the same as functions which you can read ab
 Arucas allows you to declare how operations should work between classes. You defined operations much like methods but instead of using `fun` you use the `operator` keyword and instead of being followed by a name you follow it with the operator you want to override:
 ```kotlin
 class Example {
-	var number = 10;
-	operator + (other: Example) {
-		return this.number + other.number;
-	}
+    var number = 10;
+    operator + (other: Example) {
+        return this.number + other.number;
+    }
 }
 e1 = new Example();
 e1.number = 22;
@@ -2338,9 +2344,9 @@ Static methods and fields work very much like the global scope, you can define v
 Defining a static field or method is extremely easy, it is the same as a regular method or field but instead has the `static` keywork before it.
 ```kotlin
 class Example {
-	static fun staticMethod() {
-		print("Called static method");
-	}
+    static fun staticMethod() {
+        print("Called static method");
+    }
 }
 ```
 
@@ -2367,22 +2373,22 @@ When inheriting from a parent class (or superclass) you must initialise the pare
 
 ```kotlin
 class Parent {
-	Parent() {
-		print("Constructing parent!");
-	}
+    Parent() {
+        print("Constructing parent!");
+    }
 }
 class BadChild: Parent {
-	// This will throw an error because
-	// the child class is not initialising
-	// the parents constructor
-	BadChild() {
-	}
+    // This will throw an error because
+    // the child class is not initialising
+    // the parents constructor
+    BadChild() {
+    }
 }
 // Assuming it were to compile
 new BadChild(); // this would print nothing
 class GoodChild: Parent {
-	GoodChild(): super() {
-	}
+    GoodChild(): super() {
+    }
 }
 new GoodChild(); // This will print 'Constructing parent!'
 ```
@@ -2390,17 +2396,17 @@ new GoodChild(); // This will print 'Constructing parent!'
 Another thing to note is that the child class does not need to directly call the super constructor, as long as it is called at some point it is allowed. For example you can call an overloaded constructor that eventually calls the super constructor:
 ```kotlin
 class Parent {
-	Parent() {
-		print("Constructing parent!");
-	}
+    Parent() {
+        print("Constructing parent!");
+    }
 }
 class Child: Parent {
-	// This calls super
-	Child(): super() {
-	}
-	// This class constructor with no args
-	Child(argument): this() {
-	}
+    // This calls super
+    Child(): super() {
+    }
+    // This class constructor with no args
+    Child(argument): this() {
+    }
 }
 new Child(); // prints 'Constructing parent!'
 ```
@@ -2408,19 +2414,19 @@ new Child(); // prints 'Constructing parent!'
 As mentioned child classes inherit methods and fields from their parent classes:
 ```kotlin
 class Parent {
-	var foo;
-	Parent(bar) {
-		this.foo = bar;
-	}
-	fun printFoo() {
-		print(this.foo);
-	}
+    var foo;
+    Parent(bar) {
+        this.foo = bar;
+    }
+    fun printFoo() {
+        print(this.foo);
+    }
 }
 class Child: Parent {
-	Child(bar): super(bar);
-	fun getFoo() {
-		return this.foo;
-	}
+    Child(bar): super(bar);
+    fun getFoo() {
+        return this.foo;
+    }
 }
 c = new Child("foo");
 c.getFoo(); // -> 'foo'
@@ -2431,22 +2437,22 @@ c.foo; // -> 'foo'
 As well as inheriting child classes can override methods.
 ```kotlin
 class Parent {
-	var foo;
-	Parent(bar) {
-		this.foo = bar;
-	}
-	fun something() {
-		print("Parent something!");
-	}
-	fun callSomething() {
-		this.something();
-	}
+    var foo;
+    Parent(bar) {
+        this.foo = bar;
+    }
+    fun something() {
+        print("Parent something!");
+    }
+    fun callSomething() {
+        this.something();
+    }
 }
 class Child: Parent {
-	Child(): super("foo!");
-	fun something() {
-		print("Child something!");
-	}
+    Child(): super("foo!");
+    fun something() {
+        print("Child something!");
+    }
 }
 c = new Child();
 p = new Parent("bar");
@@ -2457,27 +2463,27 @@ p.callSomething(); // prints 'Parent something!'
 Even if a child overrides a parents method or operator it can still access it by using the `super` keyword, this just calls the method belonging to the parent.
 ```kotlin
 class Parent {
-	operator + (other) {
-		return -1;
-	}
-	fun getSomething() {
-		return "Parent";
-	}
+    operator + (other) {
+        return -1;
+    }
+    fun getSomething() {
+        return "Parent";
+    }
 }
 class Child: Parent {
-	Child(): super();
-	operator + (other) {
-		if (other == 3) {
-			return this.getSomething();
-		}
-		if (other == 4) {
-			return super.getSomething();
-		}
-		return super + other;
-	}
-	fun getSomething() {
-		return "Child";
-	}
+    Child(): super();
+    operator + (other) {
+        if (other == 3) {
+            return this.getSomething();
+        }
+        if (other == 4) {
+            return super.getSomething();
+        }
+        return super + other;
+    }
+    fun getSomething() {
+        return "Child";
+    }
 }
 c = new Child();
 c + 3; // -> "Child"
@@ -2488,12 +2494,12 @@ c + 0; // -> -1
 An interesting thing to also note is how types work with inheritance. using the static method `Type.of(<Object>)` gets the exact type of the object:
 ```kotlin
 class Parent {
-	fun getTypeName() {
-		return Type.of(this).getName();
-	}
+    fun getTypeName() {
+        return Type.of(this).getName();
+    }
 }
 class Child: Parent {
-	Child(): super();
+    Child(): super();
 }
 new Parent().getTypeName(); // "Parent"
 new Child().getTypeName(); // "Child"
@@ -2504,17 +2510,17 @@ This is because the `this` reference inside of the `Parent` class is of a type t
 It is also worthy to note that you are able to extend some built-in classes if they allow it. For example you are permitted to extend the `Function` class:
 ```kotlin
 class Example: Function {
-	Example(): super();
-	// This is the method that gets called
-	// when you call a function with '()'
-	fun invoke() {
-		print("hi");
-	}
-	// You can also define
-	// invoke with multiple parameters
-	fun invoke(arg1, arg2) {
-		print("hi two!");
-	}
+    Example(): super();
+    // This is the method that gets called
+    // when you call a function with '()'
+    fun invoke() {
+        print("hi");
+    }
+    // You can also define
+    // invoke with multiple parameters
+    fun invoke(arg1, arg2) {
+        print("hi two!");
+    }
 }
 // So you can do stuff like this:
 e = new Example();
@@ -2529,21 +2535,21 @@ While interfaces are still technically inheritance I split it up since the last 
 A class can implement multiple interfaces and if the methods are not implemented an error will be thrown. This is useful to be able to ensure that the values you pass around have specific methods. The requirements for a method to be implemented is for it to have the same name and same number of parameters. Like regular overriding of methods this does not force you to inherit the types however it is good practice to do so.
 ```kotlin
 interface Addable {
-	fun add(other);
+    fun add(other);
 }
 class NoAdd {
 }
 class Add: Addable {
-	fun add(other) {
-		return 10;
-	}
+    fun add(other) {
+        return 10;
+    }
 }
 // We specifically tell this function that
 // the first parameter must be of the type
 // Addable, this ensures that we have a method
 // 'add' that we can call.
 fun addAny(first: Addable, second) {
-	first.add(second);
+    first.add(second);
 }
 addAny(new Add(), "foobar"); // -> 10
 addAny(new NoAdd(), "foobar"); // Error
@@ -2558,13 +2564,17 @@ interface B { }
 class Parent { }
 // This doesn't need to be in a specific order
 class Child: Parent, A, B {
-	Child(): super();
+    Child(): super();
 }
 ```
 
 ## Enums
 
-Enums provide a nice way to program constants. This is done by using an enum class which can be declared using the `enum` keyword, much like a regular class enums can have defined methods and fields.
+Enums provide a nice way to program constants. 
+This is done by using an enum class which can be declared using the `enum` keyword, 
+much like a regular class enums can have defined methods and fields.
+Enums only provide the constants that you specify and the user cannot
+construct more instances of the enum class later.
 
 ### Syntax
 
@@ -2572,7 +2582,7 @@ The syntax to declare an enum class is very simple, just the `enum` keyword foll
 
 ```kotlin
 enum Direction {
-	NORTH, EAST, SOUTH, WEST
+    NORTH, EAST, SOUTH, WEST
 }
 ```
 
@@ -2585,7 +2595,74 @@ Direction.SOUTH;
 Direction.WEST;
 ```
 
-### Constructors
+### Constructors, Fields, and Methods
+
+Much like when constructing a class instance, you can pass in parameters to an
+enum constructor. This is called when the enums are initialised and cannot be
+called later at runtime.
+
+```kotlin
+enum Direction {
+    NORTH, EAST, SOUTH, WEST;
+    
+    Direction() {
+        print(this.getName());
+    }
+}
+
+// NORTH, EAST, SOUTH, WEST would be printed
+```
+
+The enum values can also be constructed with parameters:
+
+```kotlin
+enum Direction {
+    NORTH("North"), 
+    EAST("East"), 
+    SOUTH("South"), 
+    WEST("West");
+    
+    var pretty;
+    
+    Direction(pretty: String) {
+        this.pretty = pretty;
+    }
+}
+```
+
+As you can see in the example above enum values can also have fields.
+These can help you have multiple objects in a single constant and allow you
+add properties to your constant.
+
+Much like this your enum values can have methods:
+
+```kotlin
+enum Direction {
+    NORTH, EAST, SOUTH, WEST;
+    
+    fun opposite() {
+        switch (this) {
+            case NORTH -> return SOUTH;
+            case SOUTH -> return NORTH;
+            case EAST -> return WEST;
+            case WEST -> return EAST;
+        }
+    }
+}
+
+Direction.NORTH.opposite(); // -> Direction.SOUTH
+```
+
+### Built-In
+
+Since enums are a feature of the language there are a few methods that 
+are pre-existing and unique to enums. The enum class will have 2 existing
+static methods, `values()` which provides a list of all the enums in the
+order that they are declared, and `fromString(string)` which will convert
+a string into an enum value by its name - this is case-sensitive.
+
+Enum values also have 2 existing methods, `getName()` which gets the name
+of the enum. And `ordinal()` which returns the index of the enum.
 
 ## Threads
 
@@ -10618,6 +10695,17 @@ new GameEvent("onEat", fun(food) {
 - Cancellable: false
 ```kotlin
 new GameEvent("onEntitySpawn", fun(entity) {
+    // Code
+});
+```
+
+
+## `"onClickTrade"`
+- This event is fired when trade is clicked
+- Parameter - Number (`index`): the trade index that was clicked
+- Cancellable: false
+```kotlin
+new GameEvent("onClickTrade", fun(index) {
     // Code
 });
 ```
