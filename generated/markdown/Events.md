@@ -171,6 +171,17 @@ new GameEvent("onEntitySpawn", fun(entity) {
 ```
 
 
+## `"onClickTrade"`
+- This event is fired when trade is clicked
+- Parameter - Number (`index`): the trade index that was clicked
+- Cancellable: false
+```kotlin
+new GameEvent("onClickTrade", fun(index) {
+    // Code
+});
+```
+
+
 ## `"onAttackBlock"`
 - This event is fired when the player attacks a block
 - Parameter - Block (`block`): the block that was attacked
