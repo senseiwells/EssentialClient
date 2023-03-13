@@ -8,11 +8,15 @@ import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.compiler.LocatableTrace;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
@@ -51,7 +55,7 @@ import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtil
 	name = BLOCK,
 	desc = "This class allows interactions with blocks in Minecraft.",
 	superclass = MaterialDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	public BlockDef(Interpreter interpreter) {

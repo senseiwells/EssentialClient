@@ -7,9 +7,13 @@ import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.compiler.LocatableTrace;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
@@ -29,7 +33,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MATE
 		"This class represents all possible item and block types",
 		"and allows you to convert them into instances of ItemStacks and Blocks"
 	},
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	public MaterialDef(Interpreter interpreter) {

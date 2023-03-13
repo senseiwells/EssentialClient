@@ -8,9 +8,13 @@ import me.senseiwells.arucas.builtin.FutureDef;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
@@ -24,7 +28,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.GAME
 @ClassDoc(
 	name = GAME_EVENT,
 	desc = "This class allows you to register listeners for game events in Minecraft.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class GameEventDef extends CreatableDefinition<ScriptEvent> {
 	public GameEventDef(Interpreter interpreter) {

@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.ArucasFunction;
+import me.senseiwells.arucas.functions.ArucasFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 

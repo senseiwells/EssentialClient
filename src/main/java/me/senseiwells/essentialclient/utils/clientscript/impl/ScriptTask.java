@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.DelayedFunction;
 import me.senseiwells.arucas.utils.impl.Task;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;

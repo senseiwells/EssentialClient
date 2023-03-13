@@ -8,11 +8,11 @@ import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ConstructorFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.definitions.BlockDef;
 import me.senseiwells.essentialclient.clientscript.definitions.MaterialDef;
 import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
@@ -27,15 +27,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.BOOLEAN;
-import static me.senseiwells.arucas.utils.Util.Types.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 @ClassDoc(
 	name = FAKE_BLOCK,
 	desc = "This class can be used to create fake blocks which can be rendered in the world.",
 	superclass = ShapeDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	public FakeBlockShapeDef(Interpreter interpreter) {

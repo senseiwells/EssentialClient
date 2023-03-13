@@ -7,14 +7,14 @@ import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.compiler.LocatableTrace;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.LocatableTrace;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasIterable;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.PosIterator;
@@ -45,7 +45,7 @@ import static me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtil
 @ClassDoc(
 	name = WORLD,
 	desc = "This class represents worlds, and allows you to interact with things inside of them.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class WorldDef extends CreatableDefinition<World> {
 	public WorldDef(Interpreter interpreter) {

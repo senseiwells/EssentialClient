@@ -8,9 +8,14 @@ import me.senseiwells.arucas.builtin.ObjectDef;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.compiler.LocatableTrace;
 import me.senseiwells.arucas.extensions.JsonDef;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -28,7 +33,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TEXT
 @ClassDoc(
 	name = TEXT,
 	desc = "This class is used to create formatted strings used inside Minecraft.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class TextDef extends CreatableDefinition<MutableText> {
 	public TextDef(Interpreter interpreter) {
@@ -71,7 +76,7 @@ public class TextDef extends CreatableDefinition<MutableText> {
 	)
 	private Object parse(Arguments arguments) {
 		if (arguments.isNext(JsonDef.class)) {
-			return Text.Serializer.fromJson(Util.Json.INSTANCE.serialize(arguments.nextPrimitive(JsonDef.class)));
+			return Text.Serializer.fromJson(JsonUtils.GSON.toJson(arguments.nextPrimitive(JsonDef.class)));
 		}
 		return Text.Serializer.fromJson(arguments.nextPrimitive(StringDef.class));
 	}

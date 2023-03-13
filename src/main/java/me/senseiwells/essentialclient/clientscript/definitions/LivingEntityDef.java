@@ -8,12 +8,12 @@ import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.LocatableTrace;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.compiler.LocatableTrace;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.entity.LivingEntity;
@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LIVING_ENTITY;
 
 @ClassDoc(
@@ -32,7 +31,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LIVI
 		"LivingEntities are any entities that are alive, so all mobs"
 	},
 	superclass = EntityDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 	public LivingEntityDef(Interpreter interpreter) {

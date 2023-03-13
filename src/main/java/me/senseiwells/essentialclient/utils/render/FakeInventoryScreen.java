@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.utils.render;
 
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.builtin.StringDef;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.ArucasFunction;
+import me.senseiwells.arucas.functions.ArucasFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.essentialclient.clientscript.definitions.ItemStackDef;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;

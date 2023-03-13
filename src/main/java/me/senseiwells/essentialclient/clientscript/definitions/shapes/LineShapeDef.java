@@ -8,10 +8,10 @@ import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ConstructorFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptLine;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
@@ -26,7 +26,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.LINE
 	name = LINE_SHAPE,
 	desc = "This class allows you to create a line shape which can be used to draw lines in the world.",
 	superclass = CorneredShapeDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class LineShapeDef extends CreatableDefinition<ScriptLine> {
 	public LineShapeDef(Interpreter interpreter) {

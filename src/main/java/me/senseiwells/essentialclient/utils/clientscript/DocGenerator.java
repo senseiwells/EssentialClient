@@ -8,7 +8,8 @@ import me.senseiwells.arucas.api.docs.visitor.ArucasDocParser;
 import me.senseiwells.arucas.api.docs.visitor.impl.JsonDocVisitor;
 import me.senseiwells.arucas.api.docs.visitor.impl.MarkdownDocVisitor;
 import me.senseiwells.arucas.api.docs.visitor.impl.VSCSnippetDocVisitor;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.FileUtils;
+import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.misc.WikiParser;
 import net.fabricmc.api.ModInitializer;
@@ -38,14 +39,13 @@ public class DocGenerator implements ModInitializer {
 			return;
 		}
 
-		Util.File file = Util.File.INSTANCE;
-		Path path = file.ensureExists(Path.of(options.valueOf(pathSpec)));
+		Path path = FileUtils.ensureExists(Path.of(options.valueOf(pathSpec)));
 		ArucasAPI api = ClientScriptInstance.getApi();
-		Path libPath = file.ensureExists(path.resolve("libs"));
-		Path docPath = file.ensureExists(path.getParent().resolve("docs"));
-		Path jsonPath = file.ensureExists(path.resolve("json"));
-		Path mdPath = file.ensureExists(path.resolve("markdown"));
-		Path snippetPath = file.ensureExists(path.resolve("snippets"));
+		Path libPath = FileUtils.ensureExists(path.resolve("libs"));
+		Path docPath = FileUtils.ensureExists(path.getParent().resolve("docs"));
+		Path jsonPath = FileUtils.ensureExists(path.resolve("json"));
+		Path mdPath = FileUtils.ensureExists(path.resolve("markdown"));
+		Path snippetPath = FileUtils.ensureExists(path.resolve("snippets"));
 
 		JsonDocVisitor jsonVisitor = new JsonDocVisitor();
 		MarkdownDocVisitor markdownVisitor = new MarkdownDocVisitor();
@@ -66,9 +66,9 @@ public class DocGenerator implements ModInitializer {
 			Files.writeString(mdPath.resolve("Classes.md"), classes);
 			Files.writeString(mdPath.resolve("Events.md"), events);
 
-			Files.writeString(file.ensureParentExists(docPath.resolve("wiki/Home.md")), WikiParser.generateWiki());
+			Files.writeString(FileUtils.ensureParentExists(docPath.resolve("wiki/Home.md")), WikiParser.generateWiki());
 
-			String full = Util.Network.INSTANCE.getStringFromUrl("https://raw.githubusercontent.com/senseiwells/Arucas/main/docs/FullLang.md");
+			String full = NetworkUtils.getStringFromUrl("https://raw.githubusercontent.com/senseiwells/Arucas/main/docs/FullLang.md");
 			full += "\n\n" + extensions;
 			full += "\n\n" + classes;
 			full += "\n\n" + events;

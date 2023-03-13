@@ -2,15 +2,14 @@ package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.ArucasInput;
 import me.senseiwells.arucas.api.ArucasOutput;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.LocatableTrace;
+import me.senseiwells.arucas.compiler.LocatableTrace;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public enum ClientScriptIO implements ArucasInput, ArucasOutput {

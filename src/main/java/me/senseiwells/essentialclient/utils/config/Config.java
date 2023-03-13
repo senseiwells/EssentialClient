@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.config;
 
 import com.google.gson.*;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.FileUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 
@@ -76,7 +76,7 @@ public interface Config<T extends JsonElement> {
 	 */
 	default Path getConfigRootPath() {
 		Path root = EssentialUtils.getEssentialConfigFile();
-		Util.File.INSTANCE.ensureExists(root);
+		FileUtils.ensureExists(root);
 		return root;
 	}
 

@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
 import com.google.gson.*;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.text.Text;
@@ -33,7 +33,7 @@ public class ScriptRepositoryManager {
 		if (fromCache && scriptFile.content != null) {
 			return scriptFile.content;
 		}
-		String content = Util.Network.INSTANCE.getStringFromUrl(scriptFile.downloadUrl);
+		String content = NetworkUtils.getStringFromUrl(scriptFile.downloadUrl);
 		if (content == null) {
 			return null;
 		}
@@ -92,7 +92,7 @@ public class ScriptRepositoryManager {
 	}
 
 	private boolean loadChildren(Category category) {
-		String response = Util.Network.INSTANCE.getStringFromUrl(this.REPOSITORY_URL + "/" + category.toString());
+		String response = NetworkUtils.getStringFromUrl(this.REPOSITORY_URL + "/" + category.toString());
 		if (response == null) {
 			return false;
 		}

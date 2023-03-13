@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static me.senseiwells.arucas.utils.Util.Types.*;
+import static me.senseiwells.arucas.utils.misc.Types.*;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 public class MinecraftScriptEvents {

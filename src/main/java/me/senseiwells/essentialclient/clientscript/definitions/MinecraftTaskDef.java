@@ -9,9 +9,13 @@ import me.senseiwells.arucas.builtin.TaskDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.functions.ArucasFunction;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +32,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINE
 		"behaviors work as intended."
 	},
 	superclass = TaskDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class MinecraftTaskDef extends CreatableDefinition<ScriptTask> {
 	public MinecraftTaskDef(Interpreter interpreter) {

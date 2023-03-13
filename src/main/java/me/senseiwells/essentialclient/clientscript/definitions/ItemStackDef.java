@@ -8,11 +8,15 @@ import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.compiler.LocatableTrace;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.impl.ArucasMap;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.mixins.clientScript.NbtListMixin;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
@@ -46,7 +50,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.ITEM
 	name = ITEM_STACK,
 	desc = "This class represents an item stack. It can be used to create new item stacks, or to modify existing ones.",
 	superclass = MaterialDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	public ItemStackDef(Interpreter interpreter) {

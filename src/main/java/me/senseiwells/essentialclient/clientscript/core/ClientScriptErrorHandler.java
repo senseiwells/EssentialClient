@@ -1,12 +1,12 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
+import me.senseiwells.arucas.Arucas;
 import me.senseiwells.arucas.api.ArucasErrorHandler;
-import me.senseiwells.arucas.core.Arucas;
-import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.ArucasError;
 import me.senseiwells.arucas.exceptions.FatalError;
 import me.senseiwells.arucas.exceptions.Propagator;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.FileUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -97,7 +97,7 @@ public enum ClientScriptErrorHandler implements ArucasErrorHandler {
 			""".formatted(
 			EssentialUtils.getMinecraftVersion(),
 			EssentialClient.VERSION,
-			Arucas.getVERSION(),
+			Arucas.VERSION,
 			interpreter.getName(),
 			interpreter.getContent(),
 			scriptTrace,
@@ -105,9 +105,8 @@ public enum ClientScriptErrorHandler implements ArucasErrorHandler {
 		);
 		String date = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss").format(new Date());
 		Path crashPath = EssentialUtils.getEssentialConfigFile().resolve("script-crashes").resolve("crash-" + date + ".txt");
-		Util.File.INSTANCE.ensureParentExists(crashPath);
 		try {
-			Files.writeString(crashPath, report);
+			Files.writeString(FileUtils.ensureParentExists(crashPath), report);
 		} catch (IOException e) {
 			EssentialClient.LOGGER.error("Failed to write script crash report:\n{}\n\n{}", report, e);
 		}

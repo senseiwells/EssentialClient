@@ -8,11 +8,11 @@ import me.senseiwells.arucas.builtin.BooleanDef;
 import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptShape;
 
 import java.util.List;
@@ -25,7 +25,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SHAP
 		"This class is the base class for all shapes that can be rendered,",
 		"providing the base functionality for all shapes"
 	},
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class ShapeDef extends PrimitiveDefinition<ScriptShape> {
 	public ShapeDef(Interpreter interpreter) {

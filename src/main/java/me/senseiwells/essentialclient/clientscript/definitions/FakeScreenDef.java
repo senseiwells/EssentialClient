@@ -8,9 +8,13 @@ import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.functions.ArucasFunction;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
@@ -29,7 +33,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE
 		"this class is used to create client side inventory screens."
 	},
 	superclass = ScreenDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 	public FakeScreenDef(Interpreter interpreter) {

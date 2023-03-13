@@ -7,13 +7,13 @@ import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ConstructorFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.feature.keybinds.MultiKeyBind;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptKeyBind;
 import me.senseiwells.essentialclient.utils.keyboard.KeyboardHelper;
@@ -30,7 +30,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.KEY_
 		"handled for you internally so you just need to regers the key bind and",
 		"the function you want to run when it is pressed."
 	},
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class KeyBindDef extends CreatableDefinition<ScriptKeyBind> {
 	public KeyBindDef(Interpreter interpreter) {

@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.utils.clientscript.impl;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
 import net.minecraft.client.world.ClientWorld;

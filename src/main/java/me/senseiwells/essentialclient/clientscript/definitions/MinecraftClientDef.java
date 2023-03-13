@@ -10,10 +10,15 @@ import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.compiler.LocatableTrace;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.functions.ArucasFunction;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
@@ -64,7 +69,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINE
 @ClassDoc(
 	name = MINECRAFT_CLIENT,
 	desc = "This allows for many core interactions with the MinecraftClient",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	public final ClassInstance instance = this.create(EssentialUtils.getClient());

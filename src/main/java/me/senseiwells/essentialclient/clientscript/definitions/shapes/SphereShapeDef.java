@@ -6,11 +6,11 @@ import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ConstructorFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptSphere;
@@ -25,7 +25,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SPHE
 	name = SPHERE_SHAPE,
 	desc = "This class is used to create a sphere shape which can be rendered in the world.",
 	superclass = CentredShapeDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class SphereShapeDef extends CreatableDefinition<ScriptSphere> {
 	public SphereShapeDef(Interpreter interpreter) {

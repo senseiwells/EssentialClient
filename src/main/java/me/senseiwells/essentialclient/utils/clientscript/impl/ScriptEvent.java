@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.utils.clientscript.impl;
 
 import me.senseiwells.arucas.builtin.FunctionDef;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Trace;
+import me.senseiwells.arucas.compiler.Trace;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.essentialclient.clientscript.events.CancelEvent;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvent;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
@@ -47,19 +47,19 @@ public class ScriptEvent {
 
 	public boolean invoke(List<ClassInstance> arguments) {
 		Interpreter branch = this.interpreter.branch();
-		int count = this.function.getPrimitive(FunctionDef.class).getCount();
+		int count = this.function.asPrimitive(FunctionDef.class).getCount();
 		List<ClassInstance> newArgs = count >= 0 && count < arguments.size() ? arguments.subList(0, count) : arguments;
 
 		if (this.event.isThreadDefinable() && !this.cancellable && EssentialUtils.getClient().isOnThread()) {
 			branch.runAsync(() -> {
-				branch.call(this.function, newArgs, Trace.getINTERNAL());
+				branch.call(this.function, newArgs, Trace.INTERNAL);
 				return null;
 			});
 			return false;
 		}
 		return branch.runSafe(false, (Supplier<Boolean>) () -> {
 			try {
-				branch.call(this.function, newArgs, Trace.getINTERNAL());
+				branch.call(this.function, newArgs, Trace.INTERNAL);
 				return Boolean.FALSE;
 			} catch (CancelEvent cancelEvent) {
 				if (this.event.canCancel() && EssentialUtils.getClient().isOnThread()) {

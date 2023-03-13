@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.utils.network;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.NetworkUtils;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class MojangAPI {
 		if (nameToUuidCache != null && (uuid = nameToUuidCache.get(name)) != null) {
 			return uuid;
 		}
-		String response = Util.Network.INSTANCE.getStringFromUrl(NAME_TO_UUID_LINK + name);
+		String response = NetworkUtils.getStringFromUrl(NAME_TO_UUID_LINK + name);
 		JsonObject object = GSON.fromJson(response, JsonObject.class);
 		if (object == null || object.has("error")) {
 			if (invalidNames == null) {
@@ -53,7 +53,7 @@ public class MojangAPI {
 		if (uuidToNameCache != null && (name = uuidToNameCache.get(uuid)) != null) {
 			return name;
 		}
-		String response = Util.Network.INSTANCE.getStringFromUrl(UUID_TO_NAME_LINK + uuid.toString());
+		String response = NetworkUtils.getStringFromUrl(UUID_TO_NAME_LINK + uuid.toString());
 		JsonObject object = GSON.fromJson(response, JsonObject.class);
 		if (object == null || object.has("error")) {
 			if (invalidUuids == null) {

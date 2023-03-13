@@ -5,12 +5,12 @@ import me.senseiwells.arucas.api.docs.annotations.*;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ConstructorFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptFakeEntity;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import net.minecraft.client.world.ClientWorld;
@@ -24,7 +24,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.FAKE
 @ClassDoc(
 	name = FAKE_ENTITY,
 	desc = "This allows you to create a fake entity which can be rendered in the world.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class FakeEntityDef extends CreatableDefinition<ScriptFakeEntity> {
 	public FakeEntityDef(Interpreter interpreter) {

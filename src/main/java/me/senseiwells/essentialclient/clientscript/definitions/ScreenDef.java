@@ -6,11 +6,11 @@ import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.LocatableTrace;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.compiler.LocatableTrace;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.ScreenRemapper;
 import net.minecraft.client.gui.screen.Screen;
@@ -31,7 +31,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SCRE
 @ClassDoc(
 	name = SCREEN,
 	desc = "This allows you to get information about the player's current screen.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class ScreenDef extends PrimitiveDefinition<Screen> {
 	public ScreenDef(Interpreter interpreter) {

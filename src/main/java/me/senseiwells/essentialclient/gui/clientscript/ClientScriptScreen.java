@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.gui.clientscript;
 
-import me.senseiwells.arucas.core.Arucas;
+import me.senseiwells.arucas.Arucas;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
@@ -56,7 +56,7 @@ public class ClientScriptScreen extends ChildScreen {
 		this.renderBackground(matrices);
 		this.scriptWidget.render(matrices, mouseX, mouseY, delta);
 		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		drawCenteredText(matrices, this.textRenderer, ARUCAS_VERSION.generate(Arucas.getVERSION()), this.width / 2, 24, 0x949494);
+		drawCenteredText(matrices, this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 

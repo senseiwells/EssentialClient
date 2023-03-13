@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.ArucasFunction;
+import me.senseiwells.arucas.functions.ArucasFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import net.minecraft.text.ClickEvent;
 
 import java.util.List;

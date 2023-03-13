@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
-import me.senseiwells.arucas.core.Interpreter;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;

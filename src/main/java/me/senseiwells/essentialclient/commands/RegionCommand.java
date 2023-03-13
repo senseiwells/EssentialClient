@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
-import me.senseiwells.essentialclient.utils.render.ChatColour;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.argument.Vec2ArgumentType;

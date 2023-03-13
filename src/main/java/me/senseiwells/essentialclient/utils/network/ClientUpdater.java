@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.network;
 
 import com.google.gson.*;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -26,7 +26,7 @@ public class ClientUpdater {
 	}
 
 	public void tryUpdate() {
-		String content = Util.Network.INSTANCE.getStringFromUrl(this.RELEASES_URL);
+		String content = NetworkUtils.getStringFromUrl(this.RELEASES_URL);
 		if (content == null) {
 			return;
 		}

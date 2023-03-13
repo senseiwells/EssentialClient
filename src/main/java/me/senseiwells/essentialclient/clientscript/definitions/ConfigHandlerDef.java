@@ -8,12 +8,12 @@ import me.senseiwells.arucas.builtin.ListDef;
 import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.ConstructorFunction;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.ConstructorFunction;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptConfigHandler;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -25,7 +25,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.CONF
 @ClassDoc(
 	name = CONFIG_HANDLER,
 	desc = "This class allows you to easily read and write config files.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	public ConfigHandlerDef(Interpreter interpreter) {

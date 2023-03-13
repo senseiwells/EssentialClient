@@ -6,11 +6,11 @@ import me.senseiwells.arucas.api.docs.annotations.ReturnDoc;
 import me.senseiwells.arucas.builtin.NumberDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.LocatableTrace;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.compiler.LocatableTrace;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
@@ -24,7 +24,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TRAD
 @ClassDoc(
 	name = TRADE,
 	desc = "This class represents a trade offer, and allows you to get information about it.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class TradeDef extends CreatableDefinition<TradeOffer> {
 	public TradeDef(Interpreter interpreter) {

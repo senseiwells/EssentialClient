@@ -8,11 +8,11 @@ import me.senseiwells.arucas.builtin.StringDef;
 import me.senseiwells.arucas.classes.CreatableDefinition;
 import me.senseiwells.arucas.classes.PrimitiveDefinition;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.LocatableTrace;
-import me.senseiwells.arucas.utils.MemberFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.compiler.LocatableTrace;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.MemberFunction;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ThreadSafeUtils;
@@ -24,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-import static me.senseiwells.arucas.utils.Util.Types.NUMBER;
-import static me.senseiwells.arucas.utils.Util.Types.STRING;
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 
 @ClassDoc(
@@ -35,7 +33,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.*;
 		"ItemEntities are entities that are dropped items."
 	},
 	superclass = EntityDef.class,
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 	public ItemEntityDef(Interpreter interpreter) {

@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.clientscript.core;
 
 import me.senseiwells.arucas.api.ArucasAPI;
 import me.senseiwells.arucas.api.impl.GitHubArucasLibrary;
-import me.senseiwells.arucas.core.Interpreter;
-import me.senseiwells.arucas.utils.Properties;
+import me.senseiwells.arucas.interpreter.Interpreter;
+import me.senseiwells.arucas.interpreter.Properties;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.api.ClientScriptAPI;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;

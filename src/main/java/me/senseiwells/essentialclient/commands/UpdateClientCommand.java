@@ -9,13 +9,13 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class UpdateClientCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-		CommandHelper.CLIENT_COMMANDS.add("updateclient");
-
-		dispatcher.register(literal("updateclient")
-			.executes(context -> {
-				ClientUpdater.INSTANCE.tryUpdate();
-				return 0;
-			})
-		);
+		// CommandHelper.CLIENT_COMMANDS.add("updateclient");
+		//
+		// dispatcher.register(literal("updateclient")
+		// 	.executes(context -> {
+		// 		ClientUpdater.INSTANCE.tryUpdate();
+		// 		return 0;
+		// 	})
+		// );
 	}
 }

@@ -4,10 +4,10 @@ import me.senseiwells.arucas.api.ArucasExtension;
 import me.senseiwells.arucas.api.docs.annotations.ExtensionDoc;
 import me.senseiwells.arucas.api.docs.annotations.FunctionDoc;
 import me.senseiwells.arucas.exceptions.RuntimeError;
-import me.senseiwells.arucas.utils.Arguments;
-import me.senseiwells.arucas.utils.BuiltInFunction;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.functions.builtin.Arguments;
+import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
 import me.senseiwells.arucas.utils.impl.ArucasThread;
+import me.senseiwells.arucas.utils.misc.Language;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 @ExtensionDoc(
 	name = "MinecraftExtension",
 	desc = "Extension that provides simple functions related to Minecraft.",
-	language = Util.Language.Java
+	language = Language.Java
 )
 public class ArucasMinecraftExtension implements ArucasExtension {
 	@NotNull
@@ -24,7 +24,6 @@ public class ArucasMinecraftExtension implements ArucasExtension {
 		return "MinecraftExtension";
 	}
 
-	@NotNull
 	@Override
 	public List<BuiltInFunction> getBuiltInFunctions() {
 		return List.of(

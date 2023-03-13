@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.senseiwells.arucas.utils.Util;
+import me.senseiwells.arucas.utils.NetworkUtils;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.rule.carpet.*;
@@ -303,7 +303,7 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 	}
 
 	private JsonArray getData(JsonArray fallback) {
-		String content = Util.Network.INSTANCE.getStringFromUrl(this.DATA_URL);
+		String content = NetworkUtils.getStringFromUrl(this.DATA_URL);
 		if (content == null) {
 			EssentialClient.LOGGER.error("Failed to fetch rule data");
 			return fallback;
