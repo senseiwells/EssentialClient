@@ -1389,6 +1389,26 @@
     "body": "new Iterable()",
     "description": "new Iterable()\nThis creates an iterable, this cannot be called directly, only from child classes.\n"
   },
+  "Method <Iterable>.all(predicate)": {
+    "prefix": ".all($predicate)",
+    "body": ".all($predicate)",
+    "description": "<Iterable>.all(predicate)\nThis checks whether all the elements in the iterable meet a condition.\n- Parameter - Function (`predicate`): The predicate to check if the elements meet the conditions, must return a boolean.\n"
+  },
+  "Method <Iterable>.first(predicate)": {
+    "prefix": ".first($predicate)",
+    "body": ".first($predicate)",
+    "description": "<Iterable>.first(predicate)\nThis finds the first element in the iterable that meets a condition.\nIf no element is found then an error will be thrown.\n- Parameter - Function (`predicate`): The predicate to check if the element meets the conditions, must return a boolean.\n"
+  },
+  "Method <Iterable>.forEach(consumer)": {
+    "prefix": ".forEach($consumer)",
+    "body": ".forEach($consumer)",
+    "description": "<Iterable>.forEach(consumer)\nThis allows you to iterate over all the elements in the iterable with a lambda.\n- Parameter - Function (`consumer`): The consumer that accepts one element at a time.\n"
+  },
+  "Method <Iterable>.has(predicate)": {
+    "prefix": ".has($predicate)",
+    "body": ".has($predicate)",
+    "description": "<Iterable>.has(predicate)\nChecks whether the iterable has a given elements that meets a given condition.\n- Parameter - Function (`predicate`): The predicate to check if the element meets the conditions, must return a boolean.\n"
+  },
   "Method <Iterable>.iterator()": {
     "prefix": ".iterator()",
     "body": ".iterator()",
@@ -1807,7 +1827,7 @@
   "Method <List>.reverse()": {
     "prefix": ".reverse()",
     "body": ".reverse()",
-    "description": "<List>.reverse()\nThis allows you to reverse the list.\n"
+    "description": "<List>.reverse()\nThis allows you to reverse the list - this mutates the existing list.\n"
   },
   "Method <List>.set(value, index)": {
     "prefix": ".set($value, $index)",
@@ -1817,7 +1837,12 @@
   "Method <List>.shuffle()": {
     "prefix": ".shuffle()",
     "body": ".shuffle()",
-    "description": "<List>.shuffle()\nThis allows you to shuffle the list.\n"
+    "description": "<List>.shuffle()\nThis allows you to shuffle the list - this mutates the existing list.\n"
+  },
+  "Method <List>.slice(indexes)": {
+    "prefix": ".slice($indexes)",
+    "body": ".slice($indexes)",
+    "description": "<List>.slice(indexes)\nThis creates a new list with the desired contents from the list.\n- Parameter - Iterable (`indexes`): An iterable object containing the indexes you want to slice.\n"
   },
   "Method <List>.sort()": {
     "prefix": ".sort()",
@@ -3277,7 +3302,7 @@
   "Method <Set>.filter(function)": {
     "prefix": ".filter($function)",
     "body": ".filter($function)",
-    "description": "<Set>.filter(function)\nThis allows you to filter the set.\n- Parameter - Function (`function`): The function you want to filter the set by.\n"
+    "description": "<Set>.filter(function)\nThis allows you to filter the set, this returns a new set.\n- Parameter - Function (`function`): The function you want to filter the set by.\n"
   },
   "Method <Set>.get(value)": {
     "prefix": ".get($value)",

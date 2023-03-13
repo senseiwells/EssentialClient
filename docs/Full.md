@@ -5420,6 +5420,42 @@ class IterableImpl: Iterable {
 
 ## Methods
 
+### `<Iterable>.all(predicate)`
+- Description: This checks whether all the elements in the iterable meet a condition.
+- Parameter - Function (`predicate`): The predicate to check if the elements meet the conditions, must return a boolean.
+- Returns - Boolean: Whether all the elements meet the condition.
+- Example:
+```kotlin
+[0, 1, 2, 3].all(fun(x) x >= 0); // true
+```
+
+### `<Iterable>.first(predicate)`
+- Description: This finds the first element in the iterable that meets a condition.
+If no element is found then an error will be thrown.
+- Parameter - Function (`predicate`): The predicate to check if the element meets the conditions, must return a boolean.
+- Returns - Object: The first element that meets the condition.
+- Example:
+```kotlin
+[0, 1, 2, 3].first(fun(x) x > 2); // 3
+```
+
+### `<Iterable>.forEach(consumer)`
+- Description: This allows you to iterate over all the elements in the iterable with a lambda.
+- Parameter - Function (`consumer`): The consumer that accepts one element at a time.
+- Example:
+```kotlin
+[0, 1, 2, 3].forEach(fun(x) print(x));
+```
+
+### `<Iterable>.has(predicate)`
+- Description: Checks whether the iterable has a given elements that meets a given condition.
+- Parameter - Function (`predicate`): The predicate to check if the element meets the conditions, must return a boolean.
+- Returns - Boolean: Whether the iterable has an element that meets the condition.
+- Example:
+```kotlin
+[0, 1, 2, 3].has(fun(x) x < -2); // false
+```
+
 ### `<Iterable>.iterator()`
 - Description: This gets the generated iterator.
 - Returns - Iterator: The generated iterator.
@@ -6195,7 +6231,7 @@ collections will not be flattened, this is returned as a new list.
 - Returns - List: The flattened list.
 - Example:
 ```kotlin
-(list = [1, 2, 3, [4, 5], [6, [7]]]).flatten();
+list = [1, 2, 3, [4, 5], [6, [7]]].flatten();
 // list = [1, 2, 3, 4, 5, 6, [7]]
 ```
 
@@ -6319,7 +6355,7 @@ This will throw an error if the index is out of bounds.
 ```
 
 ### `<List>.reverse()`
-- Description: This allows you to reverse the list.
+- Description: This allows you to reverse the list - this mutates the existing list.
 - Returns - List: The reversed list.
 - Example:
 ```kotlin
@@ -6339,11 +6375,23 @@ this will throw an erroor if the index given is out of bounds.
 ```
 
 ### `<List>.shuffle()`
-- Description: This allows you to shuffle the list.
+- Description: This allows you to shuffle the list - this mutates the existing list.
 - Returns - List: The shuffled list.
 - Example:
 ```kotlin
 ['a', 'b', 'c', 'd'].shuffle(); // some random order ¯\_(ツ)_/¯
+```
+
+### `<List>.slice(indexes)`
+- Description: This creates a new list with the desired contents from the list.
+- Parameter - Iterable (`indexes`): An iterable object containing the indexes you want to slice.
+- Returns - List: The sliced list.
+- Examples:
+```kotlin
+['a', 'b', 'c', 'd'].slice([2, 0]); // ['c', 'a']
+```
+```kotlin
+['a', 'b', 'c', 'd', 'e'].slice(range(1, 4)); // ['b', 'c', 'd']
 ```
 
 ### `<List>.sort()`
@@ -9130,7 +9178,7 @@ Set.of('object').containsAll(Set.of('object', 81, 96, 'case'));
 ```
 
 ### `<Set>.filter(function)`
-- Description: This allows you to filter the set.
+- Description: This allows you to filter the set, this returns a new set.
 - Parameter - Function (`function`): The function you want to filter the set by.
 - Returns - Set: The filtered set.
 - Example:

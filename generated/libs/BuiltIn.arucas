@@ -232,6 +232,34 @@ class Iterable {
     Iterable();
 
     /*
+     * This checks whether all the elements in the iterable meet a condition.
+     * Parameter - Function (predicate): The predicate to check if the elements meet the conditions, must return a boolean.
+     * Returns - Boolean: Whether all the elements meet the condition.
+     */
+    fun all(predicate: Function): Boolean;
+
+    /*
+     * This finds the first element in the iterable that meets a condition.
+     * If no element is found then an error will be thrown.
+     * Parameter - Function (predicate): The predicate to check if the element meets the conditions, must return a boolean.
+     * Returns - Object: The first element that meets the condition.
+     */
+    fun first(predicate: Function): Object;
+
+    /*
+     * This allows you to iterate over all the elements in the iterable with a lambda.
+     * Parameter - Function (consumer): The consumer that accepts one element at a time.
+     */
+    fun forEach(consumer: Function): Null;
+
+    /*
+     * Checks whether the iterable has a given elements that meets a given condition.
+     * Parameter - Function (predicate): The predicate to check if the element meets the conditions, must return a boolean.
+     * Returns - Boolean: Whether the iterable has an element that meets the condition.
+     */
+    fun has(predicate: Function): Boolean;
+
+    /*
      * This gets the generated iterator.
      * Returns - Iterator: The generated iterator.
      */
@@ -408,7 +436,7 @@ class List: Collection {
     fun retainAll(list: List): List;
 
     /*
-     * This allows you to reverse the list.
+     * This allows you to reverse the list - this mutates the existing list.
      * Returns - List: The reversed list.
      */
     fun reverse(): List;
@@ -423,10 +451,17 @@ class List: Collection {
     fun set(value: Object, index: Number): List;
 
     /*
-     * This allows you to shuffle the list.
+     * This allows you to shuffle the list - this mutates the existing list.
      * Returns - List: The shuffled list.
      */
     fun shuffle(): List;
+
+    /*
+     * This creates a new list with the desired contents from the list.
+     * Parameter - Iterable (indexes): An iterable object containing the indexes you want to slice.
+     * Returns - List: The sliced list.
+     */
+    fun slice(indexes: Iterable): List;
 
     /*
      * This allows you to sort the list using the elements compare method.
@@ -940,7 +975,7 @@ class Set: Collection {
     fun containsAll(collection: Collection): Boolean;
 
     /*
-     * This allows you to filter the set.
+     * This allows you to filter the set, this returns a new set.
      * Parameter - Function (function): The function you want to filter the set by.
      * Returns - Set: The filtered set.
      */

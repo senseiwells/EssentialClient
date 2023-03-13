@@ -1,5 +1,5 @@
 {
-  "version": "2.1.0",
+  "version": "2.3.0",
   "extensions": {
     "BuiltInExtension": [
       {
@@ -4611,6 +4611,87 @@
       ],
       "methods": [
         {
+          "name": "all",
+          "is_arbitrary": false,
+          "desc": [
+            "This checks whether all the elements in the iterable meet a condition."
+          ],
+          "params": [
+            {
+              "name": "predicate",
+              "type": "Function",
+              "desc": "The predicate to check if the elements meet the conditions, must return a boolean."
+            }
+          ],
+          "returns": {
+            "type": "Boolean",
+            "desc": "Whether all the elements meet the condition."
+          },
+          "examples": [
+            "[0, 1, 2, 3].all(fun(x) x >= 0); // true"
+          ]
+        },
+        {
+          "name": "first",
+          "is_arbitrary": false,
+          "desc": [
+            "This finds the first element in the iterable that meets a condition.",
+            "If no element is found then an error will be thrown."
+          ],
+          "params": [
+            {
+              "name": "predicate",
+              "type": "Function",
+              "desc": "The predicate to check if the element meets the conditions, must return a boolean."
+            }
+          ],
+          "returns": {
+            "type": "Object",
+            "desc": "The first element that meets the condition."
+          },
+          "examples": [
+            "[0, 1, 2, 3].first(fun(x) x > 2); // 3"
+          ]
+        },
+        {
+          "name": "forEach",
+          "is_arbitrary": false,
+          "desc": [
+            "This allows you to iterate over all the elements in the iterable with a lambda."
+          ],
+          "params": [
+            {
+              "name": "consumer",
+              "type": "Function",
+              "desc": "The consumer that accepts one element at a time."
+            }
+          ],
+          "examples": [
+            "[0, 1, 2, 3].forEach(fun(x) print(x));"
+          ]
+        },
+        {
+          "name": "has",
+          "is_arbitrary": false,
+          "desc": [
+            "Checks whether the iterable has a given elements that meets a given condition."
+          ],
+          "params": [
+            {
+              "name": "predicate",
+              "type": "Function",
+              "desc": "The predicate to check if the element meets the conditions, must return a boolean."
+            }
+          ],
+          "returns": {
+            "type": "Boolean",
+            "desc": "Whether the iterable has an element that meets the condition."
+          },
+          "examples": [
+            "[0, 1, 2, 3].has(fun(x) x < -2); // false"
+          ]
+        },
+        {
           "name": "iterator",
           "is_arbitrary": false,
           "desc": [
@@ -6117,7 +6198,7 @@
             "desc": "The flattened list."
           },
           "examples": [
-            "(list = [1, 2, 3, [4, 5], [6, [7]]]).flatten();\n// list = [1, 2, 3, 4, 5, 6, [7]]"
+            "list = [1, 2, 3, [4, 5], [6, [7]]].flatten();\n// list = [1, 2, 3, 4, 5, 6, [7]]"
           ]
         },
         {
@@ -6369,7 +6450,7 @@
           "name": "reverse",
           "is_arbitrary": false,
           "desc": [
-            "This allows you to reverse the list."
+            "This allows you to reverse the list - this mutates the existing list."
           ],
           "returns": {
             "type": "List",
@@ -6410,7 +6491,7 @@
           "name": "shuffle",
           "is_arbitrary": false,
           "desc": [
-            "This allows you to shuffle the list."
+            "This allows you to shuffle the list - this mutates the existing list."
           ],
           "returns": {
             "type": "List",
@@ -6418,6 +6499,28 @@
           },
           "examples": [
             "['a', 'b', 'c', 'd'].shuffle(); // some random order ¯\\_(ツ)_/¯"
+          ]
+        },
+        {
+          "name": "slice",
+          "is_arbitrary": false,
+          "desc": [
+            "This creates a new list with the desired contents from the list."
+          ],
+          "params": [
+            {
+              "name": "indexes",
+              "type": "Iterable",
+              "desc": "An iterable object containing the indexes you want to slice."
+            }
+          ],
+          "returns": {
+            "type": "List",
+            "desc": "The sliced list."
+          },
+          "examples": [
+            "['a', 'b', 'c', 'd'].slice([2, 0]); // ['c', 'a']",
+            "['a', 'b', 'c', 'd', 'e'].slice(range(1, 4)); // ['b', 'c', 'd']"
           ]
         },
         {
@@ -11794,7 +11897,7 @@
           "name": "filter",
           "is_arbitrary": false,
           "desc": [
-            "This allows you to filter the set."
+            "This allows you to filter the set, this returns a new set."
           ],
           "params": [
             {
