@@ -1,6 +1,10 @@
 package me.senseiwells.essentialclient.clientscript.definitions;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.suggestion.Suggestion;
+import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.senseiwells.arucas.api.docs.annotations.ClassDoc;
@@ -48,6 +52,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
 import net.minecraft.server.command.ServerCommandSource;
@@ -62,6 +67,7 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.MINECRAFT_CLIENT;
@@ -133,6 +139,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			MemberFunction.of("clearChat", this::clearChat),
 			MemberFunction.of("getLatestChatMessage", this::getLatestChatMessage),
 			MemberFunction.of("addCommand", 1, this::addCommand),
+			MemberFunction.of("completionsForCommand", 1, this::completionsForCommand),
 			MemberFunction.of("isInSinglePlayer", this::isInSinglePlayer),
 			MemberFunction.of("getOnlinePlayerNames", this::getOnlinePlayerNames),
 			MemberFunction.of("getOnlinePlayerUuids", this::getOnlinePlayerUuids),
@@ -404,6 +411,32 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			EssentialUtils.getPlayer().networkHandler.onCommandTree(CommandHelper.getCommandPacket());
 		});
 		return null;
+	}
+
+	@FunctionDoc(
+		name = "completionsForCommand",
+		desc = "This gets a list of completions for a given command",
+		params = @ParameterDoc(type = StringDef.class, name = "command", desc = "The command to get suggestions for."),
+		returns = @ReturnDoc(type = ListDef.class, desc = "A list of all the suggestions as strings."),
+		examples = "client.completionsForCommand('/gamemode '); // ['adventure', 'creative', 'spectator', 'survival']"
+	)
+	private ArucasList completionsForCommand(Arguments arguments) {
+		arguments.skip();
+		String command = arguments.nextPrimitive(StringDef.class);
+		if (command.startsWith("/")) {
+			command = command.substring(1);
+		}
+		CommandDispatcher<CommandSource> dispatcher = EssentialUtils.getNetworkHandler().getCommandDispatcher();
+		CommandSource source = EssentialUtils.getNetworkHandler().getCommandSource();
+		ParseResults<CommandSource> result = dispatcher.parse(command, source);
+		Suggestions suggestions = arguments.getInterpreter().canInterrupt((Supplier<Suggestions>) () ->
+			EssentialUtils.throwAsUnchecked(() -> dispatcher.getCompletionSuggestions(result).get())
+		);
+		ArucasList list = new ArucasList();
+		for (Suggestion suggestion : suggestions.getList()) {
+			list.add(arguments.getInterpreter().convertValue(suggestion.getText()));
+		}
+		return list;
 	}
 
 	@FunctionDoc(
