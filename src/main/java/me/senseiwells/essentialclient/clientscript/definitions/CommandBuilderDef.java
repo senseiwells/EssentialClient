@@ -129,8 +129,9 @@ public class CommandBuilderDef extends CreatableDefinition<ArgumentBuilder<Serve
 			"You can also optionally have 'suggests' which has the value of a list of strings that are suggestions for the argument.",
 			"You can also optionally have 'suggester' which has the value of a function that will be called to get suggestions for the argument,",
 			"this function should have arbitrary number of parameters which will be the arguments that the user has entered so far.",
-			"The possible argument types are: 'PlayerName', 'Word', 'GreedyString', 'Double', 'Integer', 'Boolean', 'Enum',",
-			"'ItemStack', 'Particle', 'RecipeId', 'EntityId', 'EnchantmentId'"
+			"The possible argument types are: 'PlayerName', 'Word' 'String', 'GreedyString', 'Double', 'Integer', 'Boolean', 'Enum',",
+			"'ItemStack', 'Block', 'Particle', 'RecipeId', 'EntityId', 'EnchantmentId', 'Entity', 'Entities', 'BlockPos', 'Pos', 'Effect',",
+			"'BiomeId'."
 		},
 		params = {@ParameterDoc(type = MapDef.class, name = "argumentMap", desc = "the map of arguments")},
 		returns = @ReturnDoc(type = CommandBuilderDef.class, desc = "the argument builder"),

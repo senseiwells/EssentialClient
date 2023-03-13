@@ -529,6 +529,7 @@ public class ClientScriptUtils {
 		SuggestionProvider<ServerCommandSource> extraSuggestion = null;
 		ArgumentType<?> type = switch (typeName.toLowerCase()) {
 			case "word" -> StringArgumentType.word();
+			case "string", "quote" -> StringArgumentType.word();
 			case "boolean" -> BoolArgumentType.bool();
 			//#if MC >= 11901
 			case "itemstack" -> ItemStackArgumentType.itemStack(CommandRegister.getRegistryAccess());
@@ -563,7 +564,15 @@ public class ClientScriptUtils {
 				extraSuggestion = SuggestionProviders.ALL_RECIPES;
 				yield IdentifierArgumentType.identifier();
 			}
-
+			case "biomeid" -> {
+				//#if MC >= 11903
+				yield RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.BIOME);
+				//#else
+				//$$extraSuggestion = (commandContext, suggestionsBuilder) ->
+				//$$	CommandSource.suggestIdentifiers(commandContext.getSource().getRegistryManager().get(Registry.BIOME_KEY).getIds(), suggestionsBuilder);
+				//$$yield IdentifierArgumentType.identifier();
+				//#endif
+			}
 			case "playername" -> {
 				extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
 				yield StringArgumentType.word();
