@@ -47,6 +47,10 @@ public interface Rule<T> {
 		return true;
 	}
 
+	default boolean display() {
+		return true;
+	}
+
 	default JsonElement getValueAsJson() {
 		return this.toJson(this.getValue());
 	}

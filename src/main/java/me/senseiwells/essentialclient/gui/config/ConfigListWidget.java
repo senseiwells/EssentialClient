@@ -23,6 +23,9 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 		SortedMap<String, Set<BaseListEntry<?>>> sortedEntries = new TreeMap<>();
 		rules.forEach(rule -> {
+			if (!rule.display()) {
+				return;
+			}
 			String ruleName = rule.getName();
 			if (filter != null && !ruleName.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT))) {
 				return;

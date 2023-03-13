@@ -8,6 +8,7 @@ public abstract class SimpleRule<T> implements Rule<T> {
 	private final T defaultValue;
 
 	private String optionalInfo;
+	private boolean display;
 	private T value;
 
 	public SimpleRule(String name, String description, T defaultValue) {
@@ -50,5 +51,14 @@ public abstract class SimpleRule<T> implements Rule<T> {
 	@Override
 	public final void setOptionalInfo(String optionalInfo) {
 		this.optionalInfo = optionalInfo;
+	}
+
+	@Override
+	public boolean display() {
+		return this.display;
+	}
+
+	public final void display(boolean shouldDisplay) {
+		this.display = shouldDisplay;
 	}
 }

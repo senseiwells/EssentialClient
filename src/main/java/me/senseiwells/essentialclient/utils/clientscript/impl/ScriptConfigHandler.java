@@ -159,6 +159,9 @@ public class ScriptConfigHandler implements Config.CList {
 		objectElement = object.get("category");
 		String category = objectElement != null && objectElement.isJsonPrimitive() ? objectElement.getAsString() : null;
 
+		objectElement = object.get("display");
+		boolean display = objectElement == null || (objectElement.isJsonPrimitive() && objectElement.getAsBoolean());
+
 		JsonElement defaultValue = object.get("default_value");
 		ClientRule<T> rule = (ClientRule<T>) switch (type) {
 			case "boolean" -> new BooleanClientRule(name, description, defaultValue != null && defaultValue.getAsBoolean(), category);
@@ -211,6 +214,7 @@ public class ScriptConfigHandler implements Config.CList {
 		}
 
 		rule.setOptionalInfo(optionalInfo);
+		rule.display(display);
 
 		this.configs.put(name, this.interpreter.create(ConfigDef.class, rule));
 	}
