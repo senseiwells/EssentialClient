@@ -10,7 +10,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemUsageContext.class)
 public class ItemUsageContextMixin {
-	@Inject(method = "getPlayerFacing", at = @At("HEAD"), cancellable = true)
+	@Inject(
+		//#if MC >= 11904
+		method = "getHorizontalPlayerFacing",
+		//#else
+		//$$method = "getPlayerFacing",
+		//#endif
+		at = @At("HEAD"),
+		cancellable = true
+	)
 	private void onGetFacing(CallbackInfoReturnable<Direction> cir) {
 		Direction direction = BetterAccurateBlockPlacement.fakeDirection;
 		if (direction != null && direction.getAxis() != Direction.Axis.Y) {

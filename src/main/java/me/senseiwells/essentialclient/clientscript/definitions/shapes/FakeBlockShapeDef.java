@@ -16,12 +16,12 @@ import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.definitions.BlockDef;
 import me.senseiwells.essentialclient.clientscript.definitions.MaterialDef;
 import me.senseiwells.essentialclient.clientscript.definitions.PosDef;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptFakeBlock;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
@@ -118,7 +118,7 @@ public class FakeBlockShapeDef extends CreatableDefinition<ScriptFakeBlock> {
 	)
 	private ScriptMaterial getBlock(Arguments arguments) {
 		ScriptFakeBlock block = arguments.nextPrimitive(this);
-		return new ScriptBlockState(block.getState(), new BlockPos(block.getPosition()));
+		return new ScriptBlockState(block.getState(), EssentialUtils.vec3dToBlockPos(block.getPosition()));
 	}
 
 	@FunctionDoc(

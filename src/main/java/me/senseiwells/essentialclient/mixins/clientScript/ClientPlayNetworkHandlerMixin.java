@@ -69,12 +69,34 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Final
 	private Map<UUID, PlayerListEntry> playerListEntries;
 
-	@Inject(method = "onHealthUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	@Inject(
+		method = "onHealthUpdate",
+		at = @At(
+			value = "INVOKE",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#else
+			//$$target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#endif
+			shift = At.Shift.AFTER
+		)
+	)
 	private void onHealthUpdate(HealthUpdateS2CPacket packet, CallbackInfo ci) {
 		MinecraftScriptEvents.ON_HEALTH_UPDATE.run(packet.getHealth());
 	}
 
-	@Inject(method = "onBlockUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	@Inject(
+		method = "onBlockUpdate",
+		at = @At(
+			value = "INVOKE",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#else
+			//$$target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#endif
+			shift = At.Shift.AFTER
+		)
+	)
 	private void onBlockUpdate(BlockUpdateS2CPacket packet, CallbackInfo ci) {
 		MinecraftScriptEvents.ON_BLOCK_UPDATE.run(new ScriptBlockState(packet.getState(), packet.getPos()));
 	}
@@ -89,7 +111,18 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		MinecraftScriptEvents.ON_GAMEMODE_CHANGE.run(GameMode.byId((int) packet.getValue()).getName());
 	}
 
-	@Inject(method = "onItemPickupAnimation", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	@Inject(
+		method = "onItemPickupAnimation",
+		at = @At(
+			value = "INVOKE",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#else
+			//$$target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#endif
+			shift = At.Shift.AFTER
+		)
+	)
 	private void onPickUp(ItemPickupAnimationS2CPacket packet, CallbackInfo ci) {
 		Entity entity = this.world.getEntityById(packet.getEntityId());
 		LivingEntity livingEntity = (LivingEntity) this.world.getEntityById(packet.getCollectorEntityId());
@@ -130,7 +163,19 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	//#endif
 
 	//#if MC >= 11901
-	@Inject(method = "onGameMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
+	@Inject(
+		method = "onGameMessage",
+		at = @At(
+			value = "INVOKE",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#else
+			//$$target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#endif
+			shift = At.Shift.AFTER
+		),
+		cancellable = true
+	)
 	private void onGameMessage(GameMessageS2CPacket packet, CallbackInfo ci) {
 		String content = packet.content().getString();
 		String type = packet.overlay() ? "overlay" : "system";
@@ -160,7 +205,18 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	//$$}
 	//#endif
 
-	@Inject(method = "onPlayerList", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	@Inject(
+		method = "onPlayerList",
+		at = @At(
+			value = "INVOKE",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#else
+			//$$target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#endif
+			shift = At.Shift.AFTER
+		)
+	)
 	private void onPlayerList(PlayerListS2CPacket packet, CallbackInfo info) {
 		//#if MC >= 11903
 		for (PlayerListS2CPacket.Action action : packet.getActions()) {
@@ -178,7 +234,18 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	}
 
 	//#if MC >= 11903
-	@Inject(method = "onPlayerRemove", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER))
+	@Inject(
+		method = "onPlayerRemove",
+		at = @At(
+			value = "INVOKE",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#else
+			//$$target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",
+			//#endif
+			shift = At.Shift.AFTER
+		)
+	)
 	private void onPlayerRemove(PlayerRemoveS2CPacket packet, CallbackInfo ci) {
 		for (UUID uuid : packet.profileIds()) {
 			MinecraftScriptEvents.ON_PLAYER_LEAVE.run(this.playerListEntries.get(uuid).getProfile().getName(), uuid.toString());

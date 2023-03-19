@@ -57,8 +57,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 			MemberFunction.of("isCold", 1, this::isColdPos),
 			MemberFunction.of("isCold", 3, this::isColdFull),
 			MemberFunction.of("getId", this::getId),
-			MemberFunction.of("getSkyColor", this::getSkyColor),
-			MemberFunction.of("hasHighHumidity", this::hasHighHumidity)
+			MemberFunction.of("getSkyColor", this::getSkyColor)
 		);
 	}
 
@@ -226,17 +225,6 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 		return biome.getSkyColor();
 	}
 
-	@FunctionDoc(
-		name = "hasHighHumidity",
-		desc = "This function returns if biome has high humidity",
-		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether biome has high humidity"),
-		examples = "biome.hasHighHumidity();"
-	)
-	private boolean hasHighHumidity(Arguments arguments) {
-		Biome biome = arguments.nextPrimitive(this);
-		return biome.hasHighHumidity();
-	}
-
 	private static boolean isCold(Biome biome, BlockPos pos) {
 		//#if MC >= 11700
 		return biome.isCold(pos);
@@ -246,8 +234,10 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	}
 
 	private static boolean isHot(Biome biome, BlockPos pos) {
-		//#if MC >= 11800
-		return biome.isHot(pos);
+		//#if MC >= 11904
+		return biome.getTemperature() > 1.0F;
+		//#elseif MC >= 11800
+		//$$return biome.isHot(pos);
 		//#else
 		//$$return biome.getTemperature(pos) > 1.0F;
 		//#endif

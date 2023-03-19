@@ -105,7 +105,7 @@ public abstract class RulesScreen extends ChildScreen {
 		this.renderBackground(matrices);
 		this.widget.render(matrices, mouseX, mouseY, delta);
 		super.render(matrices, mouseX, mouseY, delta);
-		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 		if (this.invalid) {
 			String text = this.isEmpty ? "You can't leave a field empty!" : "Invalid value!";
 			this.fillGradient(matrices, 8, 9, 20 + this.textRenderer.getWidth(text), 14 + this.textRenderer.fontHeight, 0x68000000, 0x68000000);
@@ -128,7 +128,7 @@ public abstract class RulesScreen extends ChildScreen {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		this.searchBox.setTextFieldFocused(false);
+		this.searchBox.setFocused(false);
 		this.widget.unFocusAll();
 		return super.mouseClicked(mouseX, mouseY, button);
 	}

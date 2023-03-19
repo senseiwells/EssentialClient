@@ -1191,7 +1191,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		double x = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		double y = arguments.nextPrimitive(NumberDef.class).intValue();
 		double z = arguments.nextPrimitive(NumberDef.class).intValue();
-		BlockPos blockPos = new BlockPos(x, y, z);
+		BlockPos blockPos = EssentialUtils.vec3dToBlockPos(x, y, z);
 		ClientScriptUtils.ensureMainThread("updateBreakingBlock", arguments.getInterpreter(), () -> {
 			EssentialUtils.getInteractionManager().updateBlockBreakingProgress(blockPos, Direction.UP);
 			EssentialUtils.getPlayer().swingHand(Hand.MAIN_HAND);
@@ -1233,7 +1233,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		String stringDirection = arguments.nextConstant();
 		Direction direction = ClientScriptUtils.stringToDirection(stringDirection, Direction.DOWN);
 		ClientScriptUtils.ensureMainThread("attackBlock", arguments.getInterpreter(), () -> {
-			EssentialUtils.getInteractionManager().attackBlock(new BlockPos(x, y, z), direction);
+			EssentialUtils.getInteractionManager().attackBlock(EssentialUtils.vec3dToBlockPos(x, y, z), direction);
 		});
 		return null;
 	}
@@ -1360,7 +1360,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			direction,
 			EssentialUtils.getPlayer().getActiveHand(),
 			new Vec3d(px, py, pz),
-			new BlockPos(bx, by, bz),
+			EssentialUtils.vec3dToBlockPos(bx, by, bz),
 			bool
 		);
 	}

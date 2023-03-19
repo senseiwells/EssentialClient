@@ -44,8 +44,8 @@ public class ConfigScreen extends ChildScreen {
 		this.renderBackground(matrices);
 		int width = this.width / 2;
 		TextRenderer renderer = this.textRenderer;
-		drawCenteredText(matrices, renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
-		drawCenteredText(matrices, renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
+		drawCenteredTextWithShadow(matrices, renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
+		drawCenteredTextWithShadow(matrices, renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
@@ -70,7 +70,7 @@ public class ConfigScreen extends ChildScreen {
 			int width = this.width / 4;
 			matrices.push();
 			matrices.scale(2.0F, 2.0F, 2.0F);
-			drawCenteredText(matrices, this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
+			drawCenteredTextWithShadow(matrices, this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
 			matrices.pop();
 		}
 	}

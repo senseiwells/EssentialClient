@@ -26,6 +26,7 @@
     "clientScript.EntityMixin",
     "clientScript.FishingBobberEntityMixin",
     "clientScript.HandledScreenMixin",
+    "clientScript.ItemEntityAccessor",
     "clientScript.KeyBindingAccessor",
     "clientScript.KeyboardMixin",
     "clientScript.LivingEntityMixin",

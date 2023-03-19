@@ -79,16 +79,20 @@ public class CreateClientScriptScreen extends ChildScreen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ENTER && this.nameBox.isFocused()) {
-			this.nameBox.changeFocus(false);
+			this.nameBox.setFocused(false);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers) || this.nameBox.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(0);
+		//#if MC >= 11904
+		this.renderBackgroundTexture(matrices);
+		//#else
+		//$$this.renderBackground(0);
+		//#endif
 		this.textRenderer.draw(matrices, SCRIPT_NAME, this.width / 2.0F - 100, this.height / 2.0F - 33, 0x949494);
-		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 }

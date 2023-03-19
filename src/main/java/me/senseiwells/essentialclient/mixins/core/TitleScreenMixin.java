@@ -46,7 +46,18 @@ public abstract class TitleScreenMixin extends Screen {
 	}
 	//#endif
 
-	@ModifyArg(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"), index = 4)
+	@ModifyArg(
+		method = "render",
+		at = @At(
+			value = "INVOKE",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawTextWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"
+			//#elseif
+			//$$target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"
+			//#endif
+		),
+		index = 4
+	)
 	private int onDrawText(int y) {
 		return ClientRules.TITLE_TEXT_TO_TOP.getValue() ? 5 : y;
 	}

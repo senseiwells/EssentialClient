@@ -6,7 +6,7 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 
 //#if MC >= 11901 && MC < 11903
 //$$import net.minecraft.network.encryption.PlayerPublicKey;
@@ -37,7 +37,11 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		method = "sendMovementPackets",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
+			//#else
+			//$$target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			//#endif
 			ordinal = 0
 		),
 		slice = @Slice(
@@ -63,7 +67,11 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		method = "sendMovementPackets",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
+			//#else
+			//$$target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			//#endif
 			ordinal = 1
 		),
 		slice = @Slice(
@@ -91,7 +99,11 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		method = "sendMovementPackets",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			//#if MC >= 11904
+			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
+			//#else
+			//$$target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
+			//#endif
 			ordinal = 3
 		),
 		slice = @Slice(

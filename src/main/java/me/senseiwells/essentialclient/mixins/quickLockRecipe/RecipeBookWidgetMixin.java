@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.quickLockRecipe;
 
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -27,7 +28,7 @@ public abstract class RecipeBookWidgetMixin {
 	private void isMiddleClick(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
 		Recipe<?> recipe = this.recipesArea.getLastClickedRecipe();
 		if (button == 2 && recipe != null) {
-			String itemName = recipe.getOutput().getItem().getTranslationKey();
+			String itemName = recipe.getOutput(EssentialUtils.getRegistryManager()).getItem().getTranslationKey();
 			if (I18n.hasTranslation(itemName)) {
 				this.searchField.setText(I18n.translate(itemName));
 				this.refreshResults(true);

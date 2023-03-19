@@ -255,7 +255,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
 			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
 		}
-		return new ScriptBlockState(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+		return new ScriptBlockState(Blocks.AIR.getDefaultState(), EssentialUtils.vec3dToBlockPos(result.getPos()));
 	}
 
 	@FunctionDoc(
@@ -276,7 +276,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
 			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
 		}
-		return new ScriptBlockState(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+		return new ScriptBlockState(Blocks.AIR.getDefaultState(), EssentialUtils.vec3dToBlockPos(result.getPos()));
 	}
 
 	@FunctionDoc(
@@ -306,7 +306,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			BlockPos blockPos = result.getBlockPos();
 			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
 		}
-		return new ScriptBlockState(Blocks.AIR.getDefaultState(), new BlockPos(result.getPos()));
+		return new ScriptBlockState(Blocks.AIR.getDefaultState(), EssentialUtils.vec3dToBlockPos(result.getPos()));
 	}
 
 	@FunctionDoc(

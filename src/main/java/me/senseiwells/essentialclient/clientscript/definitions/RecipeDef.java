@@ -151,7 +151,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	)
 	private ScriptItemStack getOutput(Arguments arguments) {
 		Recipe<?> recipe = arguments.nextPrimitive(this);
-		return new ScriptItemStack(recipe.getOutput());
+		return new ScriptItemStack(recipe.getOutput(EssentialUtils.getRegistryManager()));
 	}
 
 	@FunctionDoc(

@@ -43,7 +43,7 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
 		this.renderBackground(matrices);
 		this.widget.render(matrices, mouseX, mouseY, delta);
 		super.render(matrices, mouseX, mouseY, delta);
-		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 	}
 
 	@Override

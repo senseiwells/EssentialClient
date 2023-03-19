@@ -56,7 +56,7 @@ public class ControlsScreen extends ChildScreen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 		this.controlWidget.render(matrices, mouseX, mouseY, delta);
-		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 		if (this.hoveredKeyBinding != null) {
 			String display = this.hoveredKeyBinding.getDisplay();

@@ -53,7 +53,7 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ENTER) {
-			this.editButton.changeFocus(false);
+			this.editButton.setFocused(false);
 			if (!this.invalid) {
 				this.changed = false;
 				this.rule.setValueFromString(this.editButton.getText());
@@ -70,7 +70,14 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 		this.editButton.setEditableColor(this.invalid ? 16733525 : 16777215);
 		if (this.invalid) {
 			DiffuseLighting.enableGuiDepthLighting();
-			this.client.getItemRenderer().renderGuiItemIcon(Items.BARRIER.getDefaultStack(), xi + this.editButton.getWidth() - 18, yi - 1);
+			this.client.getItemRenderer().renderGuiItemIcon(
+				//#if MC >= 11904
+				matrices,
+				//#endif
+				Items.BARRIER.getDefaultStack(),
+				xi + this.editButton.getWidth() - 18,
+				yi - 1
+			);
 			DiffuseLighting.disableGuiDepthLighting();
 		}
 		this.editButton.render(matrices, mouseX, mouseY, delta);
@@ -89,7 +96,7 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 
 	@Override
 	public void unFocus() {
-		this.editButton.setTextFieldFocused(false);
+		this.editButton.setFocused(false);
 	}
 
 	@Override

@@ -38,6 +38,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.WorldView;
 
@@ -260,6 +262,14 @@ public class EssentialUtils {
 			multiplier /= 5.0F;
 		}
 		return multiplier;
+	}
+
+	public static BlockPos vec3dToBlockPos(Vec3d position) {
+		return new BlockPos(MathHelper.floor(position.x), MathHelper.floor(position.y), MathHelper.floor(position.z));
+	}
+
+	public static BlockPos vec3dToBlockPos(double x, double y, double z) {
+		return new BlockPos(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z));
 	}
 
 	public static <T extends Entity> boolean canSpawn(WorldView world, BlockPos pos, EntityType<T> entityType) {

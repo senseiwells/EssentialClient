@@ -15,6 +15,7 @@ public abstract class SimpleRule<T> implements Rule<T> {
 		this.name = name;
 		this.description = description;
 		this.defaultValue = defaultValue;
+		this.display = true;
 		this.value = defaultValue;
 	}
 

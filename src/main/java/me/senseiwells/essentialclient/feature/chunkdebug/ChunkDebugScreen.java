@@ -152,7 +152,9 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {
-		RenderSystem.disableTexture();
+		//#if MC < 11904
+		//$$RenderSystem.disableTexture();
+		//#endif
 		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -178,7 +180,9 @@ public class ChunkDebugScreen extends ChildScreen {
 		RenderHelper.bindTexture(OPTIONS_BACKGROUND_TEXTURE);
 
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.enableTexture();
+		//#if MC < 11904
+		//$$RenderSystem.enableTexture();
+		//#endif
 		RenderSystem.disableBlend();
 
 		RenderHelper.startQuads(bufferBuilder, VertexFormats.POSITION_TEXTURE_COLOR);
@@ -240,8 +244,13 @@ public class ChunkDebugScreen extends ChildScreen {
 			return this.lastValidValue;
 		}
 
+		//#if MC >= 11904
 		@Override
-		public void setTextFieldFocused(boolean focused) {
+		public void setFocused(boolean focused) {
+			//#else
+			//$$@Override
+			//$$public void setTextFieldFocused(boolean focused) {
+			//#endif
 			if (this.isFocused() && !focused) {
 				try {
 					int newValue = Integer.parseInt(this.getText());
@@ -256,7 +265,7 @@ public class ChunkDebugScreen extends ChildScreen {
 					this.setText(String.valueOf(this.lastValidValue));
 				}
 			}
-			super.setTextFieldFocused(focused);
+			super.setFocused(focused);
 		}
 	}
 }

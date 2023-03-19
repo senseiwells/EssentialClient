@@ -601,7 +601,7 @@ public class InventoryUtils {
 		}
 		List<StonecuttingRecipe> stonecuttingRecipes = cutterHandler.getAvailableRecipes();
 		for (int i = 0; i < stonecuttingRecipes.size(); i++) {
-			if (stonecuttingRecipes.get(i).getOutput().getItem() == output) {
+			if (stonecuttingRecipes.get(i).getOutput(EssentialUtils.getRegistryManager()).getItem() == output) {
 				cutterHandler.onButtonClick(getPlayer(), i);
 				getInteractionManager().clickButton(cutterHandler.syncId, i);
 				if (cutterHandler.getSlot(1).hasStack()) {

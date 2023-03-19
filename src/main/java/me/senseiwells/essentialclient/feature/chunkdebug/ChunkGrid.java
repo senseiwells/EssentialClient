@@ -83,7 +83,9 @@ public class ChunkGrid {
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 		RenderSystem.enableDepthTest();
-		RenderSystem.disableTexture();
+		//#if MC < 11904
+		//$$RenderSystem.disableTexture();
+		//#endif
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -153,7 +155,9 @@ public class ChunkGrid {
 		}
 
 		RenderSystem.disableBlend();
-		RenderSystem.enableTexture();
+		//#if MC < 11904
+		//$$RenderSystem.enableTexture();
+		//#endif
 	}
 
 	public void renderMinimap(int width, int height) {

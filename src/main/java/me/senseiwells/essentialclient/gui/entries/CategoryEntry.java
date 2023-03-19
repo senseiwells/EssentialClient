@@ -32,6 +32,6 @@ public class CategoryEntry extends ConfigListWidget.Entry {
 	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		int fontX = (x + entryWidth) / 2;
 		int fontY = (y + entryHeight / 2 - 9 / 2);
-		DrawableHelper.drawCenteredText(matrices, EssentialUtils.getClient().textRenderer, this.name, fontX, fontY, 16777215);
+		DrawableHelper.drawCenteredTextWithShadow(matrices, EssentialUtils.getClient().textRenderer, this.name, fontX, fontY, 16777215);
 	}
 }

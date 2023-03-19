@@ -48,7 +48,7 @@ public class RenderHelper {
 		matrices.translate(x, y, 0.0D);
 		matrices.scale(scale, scale, 0.0F);
 		if (center) {
-			DrawableHelper.drawCenteredText(matrices, client.textRenderer, text, 0, 0, 0xFFFFFF);
+			DrawableHelper.drawCenteredTextWithShadow(matrices, client.textRenderer, text, 0, 0, 0xFFFFFF);
 		} else {
 			DrawableHelper.drawTextWithShadow(matrices, client.textRenderer, text, 0, 0, 0xFFFFFF);
 		}
@@ -69,7 +69,9 @@ public class RenderHelper {
 	public static void setupArucasRendering() {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		RenderSystem.disableTexture();
+		//#if MC < 11904
+		//$$RenderSystem.disableTexture();
+		//#endif
 		RenderSystem.depthMask(false);
 		RenderSystem.disableCull();
 	}
@@ -78,7 +80,9 @@ public class RenderHelper {
 		RenderSystem.lineWidth(1);
 		RenderSystem.enableCull();
 		RenderSystem.depthMask(true);
-		RenderSystem.enableTexture();
+		//#if MC < 11904
+		//$$RenderSystem.enableTexture();
+		//#endif
 		RenderSystem.disableBlend();
 		setPositionColourShader();
 	}
@@ -501,7 +505,7 @@ public class RenderHelper {
 
 		matrices.translate(-0.5, -0.5, -0.5);
 
-		BlockPos blockPos = new BlockPos(pos);
+		BlockPos blockPos = EssentialUtils.vec3dToBlockPos(pos);
 		int light = LightmapTextureManager.pack(
 			client.world.getLightLevel(LightType.BLOCK, blockPos),
 			client.world.getLightLevel(LightType.SKY, blockPos)

@@ -40,7 +40,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 	}
 
 	public void unFocusAll() {
-		this.children().stream().map(e -> e.textField).forEach(t -> t.setTextFieldFocused(false));
+		this.children().stream().map(e -> e.textField).forEach(t -> t.setFocused(false));
 	}
 
 	public void tick() {
@@ -101,7 +101,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 		@Override
 		public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 			if (keyCode == GLFW.GLFW_KEY_ENTER) {
-				this.textField.changeFocus(false);
+				this.textField.setFocused(false);
 				return true;
 			}
 			return super.keyPressed(keyCode, scanCode, modifiers) || this.textField.keyPressed(keyCode, scanCode, modifiers);

@@ -14,6 +14,7 @@ import me.senseiwells.arucas.functions.builtin.MemberFunction;
 import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
+import me.senseiwells.essentialclient.mixins.clientScript.ItemEntityAccessor;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ThreadSafeUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
@@ -103,7 +104,7 @@ public class ItemEntityDef extends CreatableDefinition<ItemEntity> {
 		examples = "itemEntity.getThrower();"
 	)
 	private Object getThrower(Arguments arguments) {
-		UUID throwerUuid = arguments.nextPrimitive(this).getThrower();
+		UUID throwerUuid = ((ItemEntityAccessor) arguments.nextPrimitive(this)).getThrower();
 		return throwerUuid == null ? null : ThreadSafeUtils.getPlayerByUuid(EssentialUtils.getWorld(), throwerUuid);
 	}
 }

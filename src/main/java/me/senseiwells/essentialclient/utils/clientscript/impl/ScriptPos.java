@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -26,7 +27,7 @@ public class ScriptPos {
 
 	public BlockPos getBlockPos() {
 		if (this.blockPos == null) {
-			this.blockPos = new BlockPos(this.pos);
+			this.blockPos = EssentialUtils.vec3dToBlockPos(this.pos);
 		}
 		return this.blockPos;
 	}

@@ -55,8 +55,8 @@ public class ClientScriptScreen extends ChildScreen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 		this.scriptWidget.render(matrices, mouseX, mouseY, delta);
-		drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		drawCenteredText(matrices, this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
+		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		drawCenteredTextWithShadow(matrices, this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
@@ -204,17 +204,21 @@ public class ClientScriptScreen extends ChildScreen {
 			}
 			if (keyCode == GLFW.GLFW_KEY_ENTER && this.nameBox.isFocused()) {
 				this.newName = this.nameBox.getText();
-				this.nameBox.changeFocus(false);
+				this.nameBox.setFocused(false);
 			}
 			return super.keyPressed(keyCode, scanCode, modifiers) || this.nameBox.keyPressed(keyCode, scanCode, modifiers);
 		}
 
 		@Override
 		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-			this.renderBackgroundTexture(0);
+			//#if MC >= 11904
+			this.renderBackgroundTexture(matrices);
+			//#else
+			//$$this.renderBackground(0);
+			//#endif
 			this.textRenderer.draw(matrices, SCRIPT_NAME, this.width / 2.0F - 100, this.height / 2.0F - 68, 0x949494);
 			this.textRenderer.draw(matrices, KEYBIND, this.width / 2.0F - 100, this.height / 2.0F + 30, 0xE0E0E0);
-			drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+			drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
 
