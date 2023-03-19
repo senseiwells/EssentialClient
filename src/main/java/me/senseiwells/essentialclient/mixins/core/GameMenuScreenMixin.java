@@ -5,12 +5,13 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 
-//#if MC == 11903
+//#if MC >= 11904
+import net.minecraft.client.gui.widget.Widget;
+//#elseif MC == 11903
 //$$import net.minecraft.client.gui.widget.ClickableWidget;
 //#endif
 

@@ -16,7 +16,7 @@ public class WidgetHelper {
 	public static void setPosition(ClickableWidget widget, int x, int y) {
 		//#if MC >= 11904
 		widget.setPosition(x, y);
-		//#if MC >= 11903
+		//#elseif MC >= 11903
 		//$$widget.setPos(x, y);
 		//#else
 		//$$widget.x = x;

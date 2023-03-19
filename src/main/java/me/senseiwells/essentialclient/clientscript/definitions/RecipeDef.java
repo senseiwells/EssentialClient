@@ -20,6 +20,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
+import me.senseiwells.essentialclient.utils.misc.RecipeHelper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -151,7 +152,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	)
 	private ScriptItemStack getOutput(Arguments arguments) {
 		Recipe<?> recipe = arguments.nextPrimitive(this);
-		return new ScriptItemStack(recipe.getOutput(EssentialUtils.getRegistryManager()));
+		return new ScriptItemStack(RecipeHelper.getOutput(recipe));
 	}
 
 	@FunctionDoc(

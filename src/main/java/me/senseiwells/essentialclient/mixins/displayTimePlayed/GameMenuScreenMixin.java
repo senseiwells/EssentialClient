@@ -28,7 +28,11 @@ public class GameMenuScreenMixin extends Screen {
 
 		String draw = DurationFormatUtils.formatDuration(duration.toMillis(), "H:mm:ss", true);
 		if (ClientRules.DISPLAY_TIME_PLAYED.getValue()) {
+			//#if MC >= 11904
 			drawTextWithShadow(matrixStack, this.textRenderer, draw, 8, 8, 16777215);
+			//#else
+			//$$drawStringWithShadow(matrixStack, this.textRenderer, draw, 8, 8, 16777215);
+			//#endif
 		}
 	}
 }

@@ -1,4 +1,3 @@
 net.minecraft.network.packet.Packet net.minecraft.network.Packet
-net.minecraft.client.gui.DrawableHelper drawTextWithShadow() drawStringWithShadow()
 net.minecraft.client.gui.DrawableHelper drawCenteredTextWithShadow() drawCenteredText()
 net.minecraft.client.gui.widget.TextFieldWidget setFocused() setTextFieldFocused()

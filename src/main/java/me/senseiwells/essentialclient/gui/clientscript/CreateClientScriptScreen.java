@@ -89,7 +89,7 @@ public class CreateClientScriptScreen extends ChildScreen {
 		//#if MC >= 11904
 		this.renderBackgroundTexture(matrices);
 		//#else
-		//$$this.renderBackground(0);
+		//$$this.renderBackgroundTexture(0);
 		//#endif
 		this.textRenderer.draw(matrices, SCRIPT_NAME, this.width / 2.0F - 100, this.height / 2.0F - 33, 0x949494);
 		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);

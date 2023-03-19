@@ -13,6 +13,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.interfaces.IGhostRecipeBookWidget;
 import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
+import me.senseiwells.essentialclient.utils.misc.RecipeHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -601,7 +602,7 @@ public class InventoryUtils {
 		}
 		List<StonecuttingRecipe> stonecuttingRecipes = cutterHandler.getAvailableRecipes();
 		for (int i = 0; i < stonecuttingRecipes.size(); i++) {
-			if (stonecuttingRecipes.get(i).getOutput(EssentialUtils.getRegistryManager()).getItem() == output) {
+			if (RecipeHelper.getOutput(stonecuttingRecipes.get(i)).getItem() == output) {
 				cutterHandler.onButtonClick(getPlayer(), i);
 				getInteractionManager().clickButton(cutterHandler.syncId, i);
 				if (cutterHandler.getSlot(1).hasStack()) {

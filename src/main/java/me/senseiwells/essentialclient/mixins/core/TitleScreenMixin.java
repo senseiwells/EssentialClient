@@ -52,7 +52,7 @@ public abstract class TitleScreenMixin extends Screen {
 			value = "INVOKE",
 			//#if MC >= 11904
 			target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawTextWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"
-			//#elseif
+			//#else
 			//$$target = "Lnet/minecraft/client/gui/screen/TitleScreen;drawStringWithShadow(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"
 			//#endif
 		),
