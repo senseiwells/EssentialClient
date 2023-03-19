@@ -103,7 +103,7 @@ fun print(value: Object): Null;
  * other wise it will print the contents without a new line.
  * Parameter - Object (value): The value to print.
  */
-fun print(value...: Object): Null;
+fun print(value...): Null;
 
 /*
  * This logs something to the debug output.

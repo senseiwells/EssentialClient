@@ -1110,7 +1110,7 @@ class String {
      * Parameter - Object (objects): The objects to insert.
      * Returns - String: The formatted string.
      */
-    fun format(objects...: Object): String;
+    fun format(objects...): String;
 
     /*
      * This returns the length of the string.

@@ -618,20 +618,6 @@
           ]
         },
         {
-          "name": "hasHighHumidity",
-          "is_arbitrary": false,
-          "desc": [
-            "This function returns if biome has high humidity."
-          ],
-          "returns": {
-            "type": "Boolean",
-            "desc": "Whether biome has high humidity."
-          },
-          "examples": [
-            "biome.hasHighHumidity();"
-          ]
-        },
-        {
           "name": "isCold",
           "is_arbitrary": false,
           "desc": [
@@ -8022,6 +8008,27 @@
           ],
           "examples": [
             "client.clearChat();"
+          ]
+        },
+        {
+          "name": "completionsForCommand",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets a list of completions for a given command."
+          ],
+          "params": [
+            {
+              "name": "command",
+              "type": "String",
+              "desc": "The command to get suggestions for."
+            }
+          ],
+          "returns": {
+            "type": "List",
+            "desc": "A list of all the suggestions as strings."
+          },
+          "examples": [
+            "client.completionsForCommand('/gamemode '); // ['adventure', 'creative', 'spectator', 'survival']"
           ]
         },
         {

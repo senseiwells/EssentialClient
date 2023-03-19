@@ -15,7 +15,7 @@ class Java {
      * Parameter - Object (parameters): The parameters to call the method with.
      * Returns - Java: The return value of the method call wrapped in the Java wrapper.
      */
-    fun callMethod(methodName: String, parameters...: Object): Java;
+    fun callMethod(methodName: String, parameters...): Java;
 
     /*
      * Deprecated: You should call the method directly on the value: `Java.constructClass('me.senseiwells.impl.Test').A;`
@@ -63,7 +63,7 @@ class Java {
      * Parameter - Object (values): The values to add to the array.
      * Returns - Java: The Java Object array.
      */
-    static fun arrayOf(values...: Object): Java;
+    static fun arrayOf(values...): Java;
 
     /*
      * Creates a Java boolean array with a given size, the array is filled with false
@@ -105,7 +105,7 @@ class Java {
      * Parameter - Object (parameters): Any parameters to call the method with.
      * Returns - Java: The return value of the method wrapped in the Java wrapper.
      */
-    static fun callStaticMethod(className: String, methodName: String, parameters...: Object): Java;
+    static fun callStaticMethod(className: String, methodName: String, parameters...): Java;
 
     /*
      * Creates a Java char array with a given size, the array is filled with null characters's
@@ -146,7 +146,7 @@ class Java {
      * Parameter - Object (parameters): Any parameters to pass to the constructor.
      * Returns - Java: The constructed Java Object wrapped in the Java wrapper.
      */
-    static fun constructClass(className: String, parameters...: Object): Java;
+    static fun constructClass(className: String, parameters...): Java;
 
     /*
      * Creates a Java Consumer object from a given function, it must have one
@@ -323,7 +323,7 @@ class Java {
      * Parameter - Java (values): The values to add to the array.
      * Returns - Java: The typed object array.
      */
-    static fun typedArrayOf(castType: JavaClass, values...: Java): Java;
+    static fun typedArrayOf(castType: JavaClass, values...): Java;
 
     /*
      * Converts any Arucas value into a Java value then wraps it in the Java wrapper and returns it.

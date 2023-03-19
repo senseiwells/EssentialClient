@@ -174,11 +174,6 @@
     "body": ".getWaterFogColor()",
     "description": "<Biome>.getWaterFogColor()\nThis function returns water fog color of the biome.\n"
   },
-  "Method <Biome>.hasHighHumidity()": {
-    "prefix": ".hasHighHumidity()",
-    "body": ".hasHighHumidity()",
-    "description": "<Biome>.hasHighHumidity()\nThis function returns if biome has high humidity.\n"
-  },
   "Method <Biome>.isCold(pos)": {
     "prefix": ".isCold($pos)",
     "body": ".isCold($pos)",
@@ -2248,6 +2243,11 @@
     "prefix": ".clearChat()",
     "body": ".clearChat()",
     "description": "<MinecraftClient>.clearChat()\nThis will clear the chat hud.\n"
+  },
+  "Method <MinecraftClient>.completionsForCommand(command)": {
+    "prefix": ".completionsForCommand($command)",
+    "body": ".completionsForCommand($command)",
+    "description": "<MinecraftClient>.completionsForCommand(command)\nThis gets a list of completions for a given command.\n- Parameter - String (`command`): The command to get suggestions for.\n"
   },
   "Method <MinecraftClient>.editSign(position, strings)": {
     "prefix": ".editSign($position, $strings)",

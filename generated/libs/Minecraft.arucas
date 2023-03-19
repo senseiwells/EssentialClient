@@ -56,12 +56,6 @@ class Biome {
     fun getWaterFogColor(): Number;
 
     /*
-     * This function returns if biome has high humidity.
-     * Returns - Boolean: Whether biome has high humidity.
-     */
-    fun hasHighHumidity(): Boolean;
-
-    /*
      * This function calculates whether biome is cold at given position.
      * Parameter - Pos (pos): The position.
      * Returns - Boolean: Whether temperature is cold at given position.
@@ -575,7 +569,7 @@ class ConfigHandler {
      * or a varargs of configs, this is for compatability with older scripts.
      * Parameter - Config (configs): The configs to add.
      */
-    fun addConfigs(configs...: Config): Null;
+    fun addConfigs(configs...): Null;
 
     /*
      * Creates a new config screen containing all of the configs in the handler, in alphabetical order.
@@ -1466,7 +1460,7 @@ class KeyBind {
      * in a list as the parameter, this is to keep compatability.
      * Parameter - String (keyNames...): The names of keys.
      */
-    fun setKeys(keyNames......: String): Null;
+    fun setKeys(keyNames......): Null;
 }
 
 /* Native, implemented in Java
@@ -1705,12 +1699,19 @@ class MinecraftClient {
     fun clearChat(): Null;
 
     /*
+     * This gets a list of completions for a given command.
+     * Parameter - String (command): The command to get suggestions for.
+     * Returns - List: A list of all the suggestions as strings.
+     */
+    fun completionsForCommand(command: String): List;
+
+    /*
      * This allows you to edit sign at certain position with given string(lines), up to 4 lines.
      * This function does not check if sign is editable / is in position.
      * Parameter - Pos (position): The position of sign.
      * Parameter - String (strings): The lines for the sign, requires 1 string and up to 4 strings.
      */
-    fun editSign(position: Pos, strings...: String): Null;
+    fun editSign(position: Pos, strings...): Null;
 
     /*
      * This returns the current render distance set on the client.
@@ -1915,7 +1916,7 @@ class MinecraftClient {
      * You can send byte, int, and long arrays by using the strings 'b', 'i', and 'l' at the start of the list.
      * Parameter - Object (values...): The data you want to send to the server.
      */
-    fun sendScriptPacket(values......: Object): Null;
+    fun sendScriptPacket(values......): Null;
 
     /*
      * This sets the render distance on the client.

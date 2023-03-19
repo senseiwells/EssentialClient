@@ -75,14 +75,6 @@ biome.getWaterColor();
 biome.getWaterFogColor();
 ```
 
-### `<Biome>.hasHighHumidity()`
-- Description: This function returns if biome has high humidity.
-- Returns - Boolean: Whether biome has high humidity.
-- Example:
-```kotlin
-biome.hasHighHumidity();
-```
-
 ### `<Biome>.isCold(pos)`
 - Description: This function calculates whether biome is cold at given position.
 - Parameter - Pos (`pos`): The position.
@@ -4115,6 +4107,15 @@ client.canSendScriptPacket()
 - Example:
 ```kotlin
 client.clearChat();
+```
+
+### `<MinecraftClient>.completionsForCommand(command)`
+- Description: This gets a list of completions for a given command.
+- Parameter - String (`command`): The command to get suggestions for.
+- Returns - List: A list of all the suggestions as strings.
+- Example:
+```kotlin
+client.completionsForCommand('/gamemode '); // ['adventure', 'creative', 'spectator', 'survival']
 ```
 
 ### `<MinecraftClient>.editSign(position, strings...)`
