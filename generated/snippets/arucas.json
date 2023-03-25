@@ -1269,6 +1269,16 @@
     "body": ".asEntity()",
     "description": "<ItemStack>.asEntity()\nThis creates an item entity with the item.\n"
   },
+  "Method <ItemStack>.clone()": {
+    "prefix": ".clone()",
+    "body": ".clone()",
+    "description": "<ItemStack>.clone()\nThis creates a copy of the ItemStack.\n"
+  },
+  "Method <ItemStack>.decrement(count)": {
+    "prefix": ".decrement($count)",
+    "body": ".decrement($count)",
+    "description": "<ItemStack>.decrement(count)\nThis decrements the stack size of the ItemStack by number.\n- Parameter - Number (`count`): Number to decrease.\n"
+  },
   "Method <ItemStack>.getCount()": {
     "prefix": ".getCount()",
     "body": ".getCount()",
@@ -1309,6 +1319,11 @@
     "body": ".getMiningSpeedMultiplier($block)",
     "description": "<ItemStack>.getMiningSpeedMultiplier(block)\nThis gets the mining speed multiplier of the ItemStack for the given Block,\nfor example a diamond pickaxe on stone would have a higher multiplier than air on stone.\n- Parameter - Block (`block`): The Block to get the mining speed multiplier for.\n"
   },
+  "Method <ItemStack>.getName()": {
+    "prefix": ".getName()",
+    "body": ".getName()",
+    "description": "<ItemStack>.getName()\nThis gets the name of the Item.\n"
+  },
   "Method <ItemStack>.getNbt()": {
     "prefix": ".getNbt()",
     "body": ".getNbt()",
@@ -1323,6 +1338,11 @@
     "prefix": ".getTranslatedName()",
     "body": ".getTranslatedName()",
     "description": "<ItemStack>.getTranslatedName()\nThis gets the translated name of the ItemStack, for example\n'diamond_sword' would return 'Diamond Sword' if your language is English.\n"
+  },
+  "Method <ItemStack>.increment(count)": {
+    "prefix": ".increment($count)",
+    "body": ".increment($count)",
+    "description": "<ItemStack>.increment(count)\nThis increments the stack size of the ItemStack by number.\n- Parameter - Number (`count`): Number to increase.\n"
   },
   "Method <ItemStack>.isBlockItem()": {
     "prefix": ".isBlockItem()",

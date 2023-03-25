@@ -4212,6 +4212,41 @@
           ]
         },
         {
+          "name": "clone",
+          "is_arbitrary": false,
+          "desc": [
+            "This creates a copy of the ItemStack."
+          ],
+          "returns": {
+            "type": "ItemStack",
+            "desc": "The new ItemStack instance."
+          },
+          "examples": [
+            "ItemStack.of('dirt').clone()"
+          ]
+        },
+        {
+          "name": "decrement",
+          "is_arbitrary": false,
+          "desc": [
+            "This decrements the stack size of the ItemStack by number."
+          ],
+          "params": [
+            {
+              "name": "count",
+              "type": "Number",
+              "desc": "Number to decrease."
+            }
+          ],
+          "returns": {
+            "type": "ItemStack",
+            "desc": "The ItemStack with the new stack size."
+          },
+          "examples": [
+            "itemStack.decrement(5);"
+          ]
+        },
+        {
           "name": "getCount",
           "is_arbitrary": false,
           "desc": [
@@ -4333,6 +4368,20 @@
           ]
         },
         {
+          "name": "getName",
+          "is_arbitrary": false,
+          "desc": [
+            "This gets the name of the Item."
+          ],
+          "returns": {
+            "type": "String",
+            "desc": "The name of the ItemStack."
+          },
+          "examples": [
+            "itemStack.getName();"
+          ]
+        },
+        {
           "name": "getNbt",
           "is_arbitrary": false,
           "desc": [
@@ -4373,6 +4422,27 @@
           },
           "examples": [
             "itemStack.getTranslatedName();"
+          ]
+        },
+        {
+          "name": "increment",
+          "is_arbitrary": false,
+          "desc": [
+            "This increments the stack size of the ItemStack by number."
+          ],
+          "params": [
+            {
+              "name": "count",
+              "type": "Number",
+              "desc": "Number to increase."
+            }
+          ],
+          "returns": {
+            "type": "ItemStack",
+            "desc": "The ItemStack with the new stack size."
+          },
+          "examples": [
+            "itemStack.increment(5);"
           ]
         },
         {
