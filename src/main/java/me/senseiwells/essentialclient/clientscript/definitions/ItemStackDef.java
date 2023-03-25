@@ -152,14 +152,12 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			MemberFunction.of("isStackable", this::isStackable),
 			MemberFunction.of("getMaxCount", this::getMaxCount),
 			MemberFunction.of("asEntity", this::asEntity),
-			MemberFunction.of("getName", this::getName),
 			MemberFunction.of("getCustomName", this::getCustomName),
 			MemberFunction.of("isNbtEqual", 1, this::isNbtEqual),
 			MemberFunction.of("getNbt", this::getNbt),
 			MemberFunction.of("getNbtAsString", this::getNbtAsString),
 			MemberFunction.of("getTranslatedName", this::getTranslatedName),
 			MemberFunction.of("getMiningSpeedMultiplier", 1, this::getMiningSpeedMultiplier),
-			MemberFunction.of("copy", this::copy),
 			MemberFunction.of("setCustomName", 1, this::setCustomName),
 			MemberFunction.of("setStackSize", 1, this::setStackSize),
 			MemberFunction.of("increment", 1, this::increment),
@@ -294,16 +292,6 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	}
 
 	@FunctionDoc(
-		name = "getName",
-		desc = "This gets the name of the Item",
-		returns = @ReturnDoc(type = StringDef.class, desc = "the name of the ItemStack"),
-		examples = "itemStack.getName();"
-	)
-	private String getName(Arguments arguments) {
-		return arguments.nextPrimitive(this).stack.getItem().getName().getString();
-	}
-
-	@FunctionDoc(
 		name = "isNbtEqual",
 		desc = "This checks if the ItemStack has the same NBT data as the other given ItemStack",
 		params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the other ItemStack to compare to")},
@@ -393,18 +381,6 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		}
 		itemStack.setCustomName(text);
 		return instance;
-	}
-
-	@FunctionDoc(
-		name = "copy",
-		desc = "This creates a copy of the ItemStack",
-		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack object"),
-		examples = "ItemStack.of('dirt').copy()"
-	)
-	private ItemStack copy(Arguments arguments) {
-		ClassInstance instance = arguments.next(this);
-		ItemStack itemStack = instance.asPrimitive(this).stack;
-		return itemStack.copy();
 	}
 
 	@FunctionDoc(
