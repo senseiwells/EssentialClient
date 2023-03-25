@@ -159,7 +159,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			MemberFunction.of("getNbtAsString", this::getNbtAsString),
 			MemberFunction.of("getTranslatedName", this::getTranslatedName),
 			MemberFunction.of("getMiningSpeedMultiplier", 1, this::getMiningSpeedMultiplier),
-			MemberFunction.of("clone", this::clone),
+			MemberFunction.of("copy", this::copy),
 			MemberFunction.of("setCustomName", 1, this::setCustomName),
 			MemberFunction.of("setStackSize", 1, this::setStackSize),
 			MemberFunction.of("increment", 1, this::increment),
@@ -395,14 +395,13 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		return instance;
 	}
 
-	// clone itemStack
 	@FunctionDoc(
-		name = "clone",
+		name = "copy",
 		desc = "This creates a copy of the ItemStack",
-		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack instance"),
-		examples = "ItemStack.of('dirt').clone()"
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack object"),
+		examples = "ItemStack.of('dirt').copy()"
 	)
-	private ItemStack clone(Arguments arguments) {
+	private ItemStack copy(Arguments arguments) {
 		ClassInstance instance = arguments.next(this);
 		ItemStack itemStack = instance.asPrimitive(this).stack;
 		return itemStack.copy();
