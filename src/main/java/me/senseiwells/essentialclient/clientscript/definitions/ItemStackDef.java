@@ -87,6 +87,11 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	}
 
 	@Override
+	public @NotNull ClassInstance copy(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
+		return this.create(new ScriptItemStack(instance.asPrimitive(this).stack.copy()));
+	}
+
+	@Override
 	public List<BuiltInFunction> defineStaticMethods() {
 		return List.of(
 			BuiltInFunction.of("of", 1, this::of),
