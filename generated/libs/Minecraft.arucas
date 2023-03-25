@@ -1280,9 +1280,9 @@ class ItemStack: Material {
 
     /*
      * This creates a copy of the ItemStack.
-     * Returns - ItemStack: The new ItemStack instance.
+     * Returns - ItemStack: The new ItemStack object.
      */
-    fun clone(): ItemStack;
+    fun copy(): ItemStack;
 
     /*
      * This decrements the stack size of the ItemStack by number.

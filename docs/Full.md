@@ -5195,12 +5195,12 @@ Import with `import ItemStack from Minecraft;`
 itemStack.asEntity();
 ```
 
-### `<ItemStack>.clone()`
+### `<ItemStack>.copy()`
 - Description: This creates a copy of the ItemStack.
-- Returns - ItemStack: The new ItemStack instance.
+- Returns - ItemStack: The new ItemStack object.
 - Example:
 ```kotlin
-ItemStack.of('dirt').clone()
+ItemStack.of('dirt').copy()
 ```
 
 ### `<ItemStack>.decrement(count)`
