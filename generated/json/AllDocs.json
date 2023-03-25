@@ -4212,17 +4212,17 @@
           ]
         },
         {
-          "name": "clone",
+          "name": "copy",
           "is_arbitrary": false,
           "desc": [
             "This creates a copy of the ItemStack."
           ],
           "returns": {
             "type": "ItemStack",
-            "desc": "The new ItemStack instance."
+            "desc": "The new ItemStack object."
           },
           "examples": [
-            "ItemStack.of('dirt').clone()"
+            "ItemStack.of('dirt').copy()"
           ]
         },
         {

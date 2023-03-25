@@ -1269,10 +1269,10 @@
     "body": ".asEntity()",
     "description": "<ItemStack>.asEntity()\nThis creates an item entity with the item.\n"
   },
-  "Method <ItemStack>.clone()": {
-    "prefix": ".clone()",
-    "body": ".clone()",
-    "description": "<ItemStack>.clone()\nThis creates a copy of the ItemStack.\n"
+  "Method <ItemStack>.copy()": {
+    "prefix": ".copy()",
+    "body": ".copy()",
+    "description": "<ItemStack>.copy()\nThis creates a copy of the ItemStack.\n"
   },
   "Method <ItemStack>.decrement(count)": {
     "prefix": ".decrement($count)",
