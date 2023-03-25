@@ -152,15 +152,18 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			MemberFunction.of("isStackable", this::isStackable),
 			MemberFunction.of("getMaxCount", this::getMaxCount),
 			MemberFunction.of("asEntity", this::asEntity),
+			MemberFunction.of("getName", this::getName),
 			MemberFunction.of("getCustomName", this::getCustomName),
 			MemberFunction.of("isNbtEqual", 1, this::isNbtEqual),
 			MemberFunction.of("getNbt", this::getNbt),
 			MemberFunction.of("getNbtAsString", this::getNbtAsString),
 			MemberFunction.of("getTranslatedName", this::getTranslatedName),
 			MemberFunction.of("getMiningSpeedMultiplier", 1, this::getMiningSpeedMultiplier),
-
+			MemberFunction.of("clone", this::clone),
 			MemberFunction.of("setCustomName", 1, this::setCustomName),
 			MemberFunction.of("setStackSize", 1, this::setStackSize),
+			MemberFunction.of("increment", 1, this::increment),
+			MemberFunction.of("decrement", 1, this::decrement),
 			MemberFunction.of("setItemLore", 1, this::setLore),
 			MemberFunction.of("setNbtFromString", 1, this::setNbtFromString),
 			MemberFunction.of("setNbt", 1, this::setNbt)
@@ -291,6 +294,16 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	}
 
 	@FunctionDoc(
+		name = "getName",
+		desc = "This gets the name of the Item",
+		returns = @ReturnDoc(type = StringDef.class, desc = "the name of the ItemStack"),
+		examples = "itemStack.getName();"
+	)
+	private String getName(Arguments arguments) {
+		return arguments.nextPrimitive(this).stack.getItem().getName().getString();
+	}
+
+	@FunctionDoc(
 		name = "isNbtEqual",
 		desc = "This checks if the ItemStack has the same NBT data as the other given ItemStack",
 		params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the other ItemStack to compare to")},
@@ -382,6 +395,19 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		return instance;
 	}
 
+	// clone itemStack
+	@FunctionDoc(
+		name = "clone",
+		desc = "This creates a copy of the ItemStack",
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack instance"),
+		examples = "ItemStack.of('dirt').clone()"
+	)
+	private ItemStack clone(Arguments arguments) {
+		ClassInstance instance = arguments.next(this);
+		ItemStack itemStack = instance.asPrimitive(this).stack;
+		return itemStack.copy();
+	}
+
 	@FunctionDoc(
 		name = "setStackSize",
 		desc = "This sets the stack size of the ItemStack",
@@ -394,6 +420,36 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		ItemStack itemStack = instance.asPrimitive(this).stack;
 		double count = arguments.nextPrimitive(NumberDef.class);
 		itemStack.setCount((int) count);
+		return instance;
+	}
+
+	@FunctionDoc(
+		name = "increment",
+		desc = "This increments the stack size of the ItemStack by number",
+		params = {@ParameterDoc(type = NumberDef.class, name = "count", desc = "number to increase")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new stack size"),
+		examples = "itemStack.increment(5);"
+	)
+	private ClassInstance increment(Arguments arguments) {
+		ClassInstance instance = arguments.next(this);
+		ItemStack itemStack = instance.asPrimitive(this).stack;
+		double count = arguments.nextPrimitive(NumberDef.class);
+		itemStack.increment((int) count);
+		return instance;
+	}
+
+	@FunctionDoc(
+		name = "decrement",
+		desc = "This decrements the stack size of the ItemStack by number",
+		params = {@ParameterDoc(type = NumberDef.class, name = "count", desc = "number to decrease")},
+		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new stack size"),
+		examples = "itemStack.decrement(5);"
+	)
+	private ClassInstance decrement(Arguments arguments) {
+		ClassInstance instance = arguments.next(this);
+		ItemStack itemStack = instance.asPrimitive(this).stack;
+		double count = arguments.nextPrimitive(NumberDef.class);
+		itemStack.decrement((int) count);
 		return instance;
 	}
 
@@ -433,15 +489,16 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
 		examples = "itemStack.setNbtFromString(\"{\\\"Lore\\\": []}\");"
 	)
-	private Void setNbtFromString(Arguments arguments) {
-		ItemStack itemStack = arguments.nextPrimitive(this).stack;
+	private ClassInstance setNbtFromString(Arguments arguments) {
+		ClassInstance instance = arguments.next(this);
+		ItemStack itemStack = instance.asPrimitive(this).stack;
 		String nbtString = arguments.nextPrimitive(StringDef.class);
 		NbtElement nbt = ClientScriptUtils.stringToNbt(nbtString);
 		if (!(nbt instanceof NbtCompound compound)) {
 			throw new RuntimeError("'%s' cannot be converted into an nbt compound".formatted(nbtString));
 		}
 		itemStack.setNbt(compound);
-		return null;
+		return instance;
 	}
 
 	@FunctionDoc(
@@ -451,10 +508,11 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
 		examples = "itemStack.setNbt({'Lore': []});"
 	)
-	private Void setNbt(Arguments arguments) {
-		ItemStack itemStack = arguments.nextPrimitive(this).stack;
+	private ClassInstance setNbt(Arguments arguments) {
+		ClassInstance instance = arguments.next(this);
+		ItemStack itemStack = instance.asPrimitive(this).stack;
 		ArucasMap map = arguments.nextPrimitive(MapDef.class);
 		itemStack.setNbt(ClientScriptUtils.mapToNbt(arguments.getInterpreter(), map, 10));
-		return null;
+		return instance;
 	}
 }
