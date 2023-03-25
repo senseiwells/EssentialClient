@@ -4212,20 +4212,6 @@
           ]
         },
         {
-          "name": "copy",
-          "is_arbitrary": false,
-          "desc": [
-            "This creates a copy of the ItemStack."
-          ],
-          "returns": {
-            "type": "ItemStack",
-            "desc": "The new ItemStack object."
-          },
-          "examples": [
-            "ItemStack.of('dirt').copy()"
-          ]
-        },
-        {
           "name": "decrement",
           "is_arbitrary": false,
           "desc": [
@@ -4365,20 +4351,6 @@
           },
           "examples": [
             "pickaxe = Material.DIAMOND_PICKAXE.asItemStack();\ngoldBlock = Material.GOLD_BLOCK.asBlock();\n\npickaxe.getMiningSpeedMultiplier(goldBlock);"
-          ]
-        },
-        {
-          "name": "getName",
-          "is_arbitrary": false,
-          "desc": [
-            "This gets the name of the Item."
-          ],
-          "returns": {
-            "type": "String",
-            "desc": "The name of the ItemStack."
-          },
-          "examples": [
-            "itemStack.getName();"
           ]
         },
         {

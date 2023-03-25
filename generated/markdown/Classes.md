@@ -2152,14 +2152,6 @@ Import with `import ItemStack from Minecraft;`
 itemStack.asEntity();
 ```
 
-### `<ItemStack>.copy()`
-- Description: This creates a copy of the ItemStack.
-- Returns - ItemStack: The new ItemStack object.
-- Example:
-```kotlin
-ItemStack.of('dirt').copy()
-```
-
 ### `<ItemStack>.decrement(count)`
 - Description: This decrements the stack size of the ItemStack by number.
 - Parameter - Number (`count`): Number to decrease.
@@ -2237,14 +2229,6 @@ pickaxe = Material.DIAMOND_PICKAXE.asItemStack();
 goldBlock = Material.GOLD_BLOCK.asBlock();
 
 pickaxe.getMiningSpeedMultiplier(goldBlock);
-```
-
-### `<ItemStack>.getName()`
-- Description: This gets the name of the Item.
-- Returns - String: The name of the ItemStack.
-- Example:
-```kotlin
-itemStack.getName();
 ```
 
 ### `<ItemStack>.getNbt()`
