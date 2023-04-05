@@ -2,6 +2,9 @@ name: Dev Build
 on:
   push:
     branches: [ '*' ]
+    paths-ignore:
+      - '**.md'
+      - '**.yml'
 jobs:
   build:
     name: Build
@@ -9,6 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: gradle/wrapper-validation-action@v1
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - uses: actions/setup-java@v3
         with:
           distribution: temurin
