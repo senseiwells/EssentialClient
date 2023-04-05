@@ -6,6 +6,7 @@ on:
       - '**.yml'
 jobs:
   compile-docs:
+    if: github.repository == 'senseiwells/EssentialClient'
     name: Generate Documentation
     runs-on: ubuntu-latest
     steps:
