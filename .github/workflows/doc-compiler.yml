@@ -2,6 +2,8 @@ name: Doc Compiler
 on:
   push:
     branches: [ '*' ]
+    paths-ignore:
+      - '**.yml'
 jobs:
   compile-docs:
     name: Generate Documentation
