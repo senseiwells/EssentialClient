@@ -67,6 +67,12 @@ This allows you to change the font for client script errors
 - Type: Cycle
 - Default Value: Minecraft
 
+# clientScriptRepos
+This allows you to define where you can download your scripts from
+- Category: Miscellaneous
+- Type: List
+- Default Value: [https://api.github.com/repos/senseiwells/clientscript/contents/scripts]
+
 # clientscriptDebugger
 You probably shouldn't touch this
 - Category: Utility
