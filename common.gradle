@@ -64,11 +64,11 @@ dependencies {
 
 	// Runtime Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	if (project.minecraft_version in ["1.16.5", "1.17.1", "1.18.2"]) {
-		modImplementation fabricApi.module("fabric-textures-v0", project.fabric_version)
-	}
-	modImplementation fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
-	
+	// if (project.minecraft_version in ["1.16.5", "1.17.1", "1.18.2"]) {
+	//     modImplementation fabricApi.module("fabric-textures-v0", project.fabric_version)
+	// }
+	// modImplementation fabricApi.module("fabric-rendering-fluids-v1", project.fabric_version)
+
 	// Account authentication at runtime
 	modRuntimeOnly "me.djtheredstoner:DevAuth-fabric:1.0.0"
 
