@@ -492,10 +492,10 @@ public class InventoryUtils {
 
 	// ClientScript stuff
 
-	public static void craftRecipe(Recipe<?> recipe, boolean shouldDrop) {
-		ScreenHandler handler = clickRecipe(recipe, true);
+	public static void craftRecipe(Recipe<?> recipe, boolean shouldDrop, boolean craftAll) {
+		ScreenHandler handler = clickRecipe(recipe, craftAll);
 		if (shouldDrop) {
-			InventoryUtils.dropStackScheduled(handler, true);
+			InventoryUtils.dropStackScheduled(handler, craftAll);
 		} else {
 			InventoryUtils.shiftClickSlot(handler, 0);
 		}

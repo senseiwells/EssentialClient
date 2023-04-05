@@ -143,6 +143,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			MemberFunction.of("craft", 1, this::craft),
 			MemberFunction.of("craftRecipe", 1, this::craftRecipe),
 			MemberFunction.of("craftRecipe", 2, this::craftRecipeDrop),
+			MemberFunction.of("craftRecipe", 3, this::craftRecipeDropAll),
 			MemberFunction.of("clickRecipe", 1, this::clickRecipe1),
 			MemberFunction.of("clickRecipe", 2, this::clickRecipe2),
 			MemberFunction.of("logout", 1, this::logout),
@@ -855,7 +856,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Void craftRecipe(Arguments arguments) {
 		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
 		ClientScriptUtils.ensureMainThread("craftRecipe", arguments.getInterpreter(), () -> {
-			InventoryUtils.craftRecipe(recipe, false);
+			InventoryUtils.craftRecipe(recipe, false, true);
 		});
 		return null;
 	}
@@ -873,7 +874,27 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
 		boolean shouldDrop = arguments.nextPrimitive(BooleanDef.class);
 		ClientScriptUtils.ensureMainThread("craftRecipe", arguments.getInterpreter(), () -> {
-			InventoryUtils.craftRecipe(recipe, shouldDrop);
+			InventoryUtils.craftRecipe(recipe, shouldDrop, true);
+		});
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "craftRecipe",
+		desc = "This allows you to craft a predefined recipe",
+		params = {
+			@ParameterDoc(type = RecipeDef.class, name = "recipe", desc = "the recipe you want to craft"),
+			@ParameterDoc(type = BooleanDef.class, name = "boolean", desc = "whether result should be dropped or not"),
+			@ParameterDoc(type = BooleanDef.class, name = "boolean", desc = "whether whole stack should be crafted or not")
+		},
+		examples = "player.craftRecipe(Recipe.CHEST, true, false);"
+	)
+	private Void craftRecipeDropAll(Arguments arguments) {
+		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		boolean shouldDrop = arguments.nextPrimitive(BooleanDef.class);
+		boolean shouldCraftAll = arguments.nextPrimitive(BooleanDef.class);
+		ClientScriptUtils.ensureMainThread("craftRecipe", arguments.getInterpreter(), () -> {
+			InventoryUtils.craftRecipe(recipe, shouldDrop, shouldCraftAll);
 		});
 		return null;
 	}
