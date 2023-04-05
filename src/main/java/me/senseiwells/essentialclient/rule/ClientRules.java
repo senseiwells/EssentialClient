@@ -98,7 +98,12 @@ public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 		DISABLE_ARMOUR_RENDERING = register(new CycleClientRule("disableArmourRendering", "This allows you to disable armour rendering for entities", List.of("None", "You", "Players", "Entities"), RENDERING)),
 		DISPLAY_RULE_TYPE = register(new CycleClientRule("displayRuleType", "This allows you to choose the order you want rules to be displayed", List.of("Alphabetical", "Rule Type", "Categories"), MISCELLANEOUS, ClientRules::refreshScreen));
 
+	public static final ListClientRule
+		CLIENT_SCRIPT_REPOS = register(new ListClientRule("clientScriptRepos", "This allows you to define where you can download your scripts from", List.of("https://api.github.com/repos/senseiwells/clientscript/contents/scripts"), MISCELLANEOUS));
+
 	static {
+		CLIENT_SCRIPT_REPOS.setMaxLength(Integer.MAX_VALUE);
+
 		AFKRules.load();
 		BetterAccurateBlockPlacement.load();
 
