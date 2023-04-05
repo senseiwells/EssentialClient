@@ -2,7 +2,9 @@ package me.senseiwells.essentialclient.utils.clientscript;
 
 import com.google.gson.*;
 import me.senseiwells.arucas.utils.NetworkUtils;
+import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.text.Text;
 
@@ -13,16 +15,24 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class ScriptRepositoryManager {
+	private static final Gson GSON = new GsonBuilder().create();
+
 	public static final ScriptRepositoryManager INSTANCE = new ScriptRepositoryManager();
 
-	private final String REPOSITORY_URL;
-	private final Gson GSON;
 	private final Map<Category, Set<ScriptFile>> children;
 
 	private ScriptRepositoryManager() {
-		this.REPOSITORY_URL = "https://api.github.com/repos/senseiwells/clientscript/contents/scripts";
-		this.GSON = new GsonBuilder().create();
 		this.children = new HashMap<>();
+
+		ClientRules.CLIENT_SCRIPT_REPOS.addListener(v -> {
+			Thread thread = new Thread(() -> {
+				for (Category category : Category.values()) {
+					this.loadChildren(category);
+				}
+			}, "ClientScriptRepoLoader");
+			thread.setDaemon(false);
+			thread.start();
+		});
 	}
 
 	public String getScriptFromWeb(Category category, String name, boolean fromCache) {
@@ -92,26 +102,34 @@ public class ScriptRepositoryManager {
 	}
 
 	private boolean loadChildren(Category category) {
-		String response = NetworkUtils.getStringFromUrl(this.REPOSITORY_URL + "/" + category.toString());
-		if (response == null) {
-			return false;
-		}
-		JsonArray childrenFiles = this.GSON.fromJson(response, JsonArray.class);
-		Set<ScriptFile> scriptFileSet = new HashSet<>();
-		for (JsonElement element : childrenFiles) {
-			JsonObject object = element.getAsJsonObject();
-			String childName = object.get("name").getAsString();
-			if (!childName.endsWith(".arucas")) {
+		for (String repo : ClientRules.CLIENT_SCRIPT_REPOS.getValue()) {
+			String response = NetworkUtils.getStringFromUrl(repo + "/" + category.toString());
+			if (response == null) {
+				EssentialClient.LOGGER.error("Couldn't request data from: " + repo + "/" + category);
 				continue;
 			}
-			childName = childName.substring(0, childName.length() - 7);
-			String childDownload = object.get("download_url").getAsString();
-			JsonObject links = object.get("_links").getAsJsonObject();
-			String viewableUrl = links.get("html").getAsString();
-			scriptFileSet.add(new ScriptFile(childName, childDownload, viewableUrl));
+			try {
+				JsonArray childrenFiles = GSON.fromJson(response, JsonArray.class);
+				Set<ScriptFile> scriptFileSet = new HashSet<>();
+				for (JsonElement element : childrenFiles) {
+					JsonObject object = element.getAsJsonObject();
+					String childName = object.get("name").getAsString();
+					if (!childName.endsWith(".arucas")) {
+						continue;
+					}
+					childName = childName.substring(0, childName.length() - 7);
+					String childDownload = object.get("download_url").getAsString();
+					JsonObject links = object.get("_links").getAsJsonObject();
+					String viewableUrl = links.get("html").getAsString();
+					scriptFileSet.add(new ScriptFile(childName, childDownload, viewableUrl));
+				}
+				Set<ScriptFile> files = this.children.computeIfAbsent(category, c -> new LinkedHashSet<>());
+				files.addAll(scriptFileSet);
+			} catch (Exception e) {
+				EssentialClient.LOGGER.error("Failed to load scripts from: " + repo, e);
+			}
 		}
-		this.children.put(category, scriptFileSet);
-		return true;
+		return this.children.containsKey(category);
 	}
 
 	private static class ScriptFile {
