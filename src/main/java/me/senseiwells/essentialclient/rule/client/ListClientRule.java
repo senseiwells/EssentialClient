@@ -13,7 +13,7 @@ public class ListClientRule extends ClientRule<List<String>> implements Rule.Lis
 	private int maxLength;
 
 	public ListClientRule(String name, String description, List<String> defaultValue, String category, RuleListener<List<String>> ruleListener) {
-		super(name, description, defaultValue, category);
+		super(name, description, new java.util.ArrayList<>(defaultValue), category);
 		this.addListener(ruleListener);
 		this.maxLength = 32;
 	}

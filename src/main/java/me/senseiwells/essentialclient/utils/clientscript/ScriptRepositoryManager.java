@@ -101,9 +101,43 @@ public class ScriptRepositoryManager {
 		return this.children.get(category);
 	}
 
+	// Can accept senseiwells/clientscript/tree/main/scripts, senseiwells/clientscript/scripts, senseiwells/clientscript, https links
+	private String getApiAddress(String targetString) {
+		if (targetString.startsWith("https://github.com/")) {
+			targetString = targetString.substring(19);
+		}
+		if (!targetString.startsWith("https://github.com/") && targetString.contains("/tree/")) {
+			String[] split = targetString.split("/");
+			if (split.length < 4) {
+				return targetString;
+			}
+			String authorName = split[0];
+			String repositoryName = split[1];
+			String branchName = split[3];
+			return "https://api.github.com/repos/" + authorName + "/" + repositoryName + "/contents/scripts?ref=" + branchName;
+		}
+		else if (!targetString.startsWith("https://api.github.com/repos/")) {
+			String[] split = targetString.split("/");
+			if (split.length < 2) {
+				return targetString;
+			}
+			String authorName = split[0];
+			String repositoryName = split[1];
+			return "https://api.github.com/repos/" + authorName + "/" + repositoryName + "/contents/scripts";
+		}
+		return targetString;
+	}
+
 	private boolean loadChildren(Category category) {
 		for (String repo : ClientRules.CLIENT_SCRIPT_REPOS.getValue()) {
-			String response = NetworkUtils.getStringFromUrl(repo + "/" + category.toString());
+			repo = this.getApiAddress(repo);
+			// get ?ref=main if exists
+			String reference = "";
+			if (repo.contains("?")) {
+				 reference = repo.substring(repo.indexOf("?"));
+				 repo = repo.substring(0, repo.indexOf("?"));
+			}
+			String response = NetworkUtils.getStringFromUrl(repo + "/" + category.toString() + reference);
 			if (response == null) {
 				EssentialClient.LOGGER.error("Couldn't request data from: " + repo + "/" + category);
 				continue;
