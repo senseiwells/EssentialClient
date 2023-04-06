@@ -110,8 +110,8 @@ public class ScriptRepositoryManager {
 		if (targetString.startsWith("https://github.com/")) {
 			targetString = targetString.substring(19);
 		}
+		String[] split = targetString.split("/");
 		if (targetString.contains("/tree/") || targetString.contains("/blob/")) {
-			String[] split = targetString.split("/");
 			if (split.length < 4) {
 				return targetString;
 			}
@@ -121,7 +121,6 @@ public class ScriptRepositoryManager {
 			return "https://api.github.com/repos/" + authorName + "/" + repositoryName + "/contents/scripts?ref=" + branchName;
 		}
 		else {
-			String[] split = targetString.split("/");
 			if (split.length < 2) {
 				return targetString;
 			}
@@ -141,11 +140,10 @@ public class ScriptRepositoryManager {
 	private boolean loadChildren(Category category) {
 		for (String repo : ClientRules.CLIENT_SCRIPT_REPOS.getValue()) {
 			repo = this.getApiAddress(repo);
-			// get ?ref=main if exists
 			String reference = "";
 			if (repo.contains("?")) {
-				 reference = repo.substring(repo.indexOf("?"));
-				 repo = repo.substring(0, repo.indexOf("?"));
+				reference = repo.substring(repo.indexOf("?"));
+				repo = repo.substring(0, repo.indexOf("?"));
 			}
 			String response = NetworkUtils.getStringFromUrl(repo + "/" + category.toString() + reference);
 			if (response == null) {
