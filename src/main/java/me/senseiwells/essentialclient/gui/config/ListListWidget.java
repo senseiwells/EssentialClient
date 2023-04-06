@@ -81,12 +81,12 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 
 			this.addButton = WidgetHelper.newButton(0, 0, 20, 20, Text.of("+"), button -> {
 				ListListWidget.this.listScreen.saveEntries();
-				ListListWidget.this.listScreen.getValues().add(index, "");
+				ListListWidget.this.listScreen.modify(l -> l.add(index, ""));
 				ListListWidget.this.reloadEntries();
 			});
 			this.removeButton = WidgetHelper.newButton(0, 0, 20, 20, Text.of("-"), button -> {
 				ListListWidget.this.listScreen.saveEntries();
-				ListListWidget.this.listScreen.getValues().remove(index - 1);
+				ListListWidget.this.listScreen.modify(l -> l.remove(index - 1));
 				ListListWidget.this.reloadEntries();
 			});
 

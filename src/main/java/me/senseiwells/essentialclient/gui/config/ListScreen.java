@@ -8,7 +8,9 @@ import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ListScreen extends ChildScreen.Typed<RulesScreen> {
 	private final Rule.ListRule rule;
@@ -21,6 +23,12 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
 
 	public List<String> getValues() {
 		return this.rule.getValue();
+	}
+
+	public void modify(Consumer<List<String>> consumer) {
+		List<String> strings = new ArrayList<>(this.rule.getValue());
+		consumer.accept(strings);
+		this.rule.setValue(strings);
 	}
 
 	public void saveEntries() {
