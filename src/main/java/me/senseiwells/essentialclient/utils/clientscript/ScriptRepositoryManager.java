@@ -119,8 +119,7 @@ public class ScriptRepositoryManager {
 			String repositoryName = split[1];
 			String branchName = split[3];
 			return "https://api.github.com/repos/" + authorName + "/" + repositoryName + "/contents/scripts?ref=" + branchName;
-		}
-		else {
+		} else {
 			if (split.length < 2) {
 				return targetString;
 			}
