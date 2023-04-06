@@ -27,6 +27,7 @@ public class ScriptRepositoryManager {
 		ClientRules.CLIENT_SCRIPT_REPOS.addListener(v -> {
 			Thread thread = new Thread(() -> {
 				for (Category category : Category.values()) {
+					this.clearChildren(category);
 					this.loadChildren(category);
 				}
 			}, "ClientScriptRepoLoader");
@@ -103,10 +104,13 @@ public class ScriptRepositoryManager {
 
 	// Can accept senseiwells/clientscript/tree/main/scripts, senseiwells/clientscript/scripts, senseiwells/clientscript, https links
 	private String getApiAddress(String targetString) {
+		if (targetString.startsWith("https://api.github.com/repos/")) {
+			return targetString;
+		}
 		if (targetString.startsWith("https://github.com/")) {
 			targetString = targetString.substring(19);
 		}
-		if (!targetString.startsWith("https://github.com/") && targetString.contains("/tree/")) {
+		if (targetString.contains("/tree/") || targetString.contains("/blob/")) {
 			String[] split = targetString.split("/");
 			if (split.length < 4) {
 				return targetString;
@@ -116,7 +120,7 @@ public class ScriptRepositoryManager {
 			String branchName = split[3];
 			return "https://api.github.com/repos/" + authorName + "/" + repositoryName + "/contents/scripts?ref=" + branchName;
 		}
-		else if (!targetString.startsWith("https://api.github.com/repos/")) {
+		else {
 			String[] split = targetString.split("/");
 			if (split.length < 2) {
 				return targetString;
@@ -125,7 +129,13 @@ public class ScriptRepositoryManager {
 			String repositoryName = split[1];
 			return "https://api.github.com/repos/" + authorName + "/" + repositoryName + "/contents/scripts";
 		}
-		return targetString;
+	}
+
+	private void clearChildren(Category category) {
+		if (!this.children.containsKey(category)) {
+			return;
+		}
+		this.children.get(category).clear();
 	}
 
 	private boolean loadChildren(Category category) {
