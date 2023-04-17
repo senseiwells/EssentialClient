@@ -1138,7 +1138,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "clickStonecuttingRecipe",
 		desc = "This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.",
 		params = {
-			@ParameterDoc(type = RecipeDef.class, name = "cuttingRecipe", desc = "Stone cutting recipe"),
+			@ParameterDoc(type = RecipeDef.class, name = "cuttingRecipe", desc = "Stone cutting recipe")
 		},
 		examples = "player.clickCuttingRecipe(cuttingRecipe);"
 	)
