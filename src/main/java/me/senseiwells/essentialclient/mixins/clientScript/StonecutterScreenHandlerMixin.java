@@ -17,10 +17,12 @@ import static me.senseiwells.essentialclient.clientscript.events.MinecraftScript
 @Mixin(net.minecraft.screen.StonecutterScreenHandler.class)
 public abstract class StonecutterScreenHandlerMixin {
 
+	@Shadow
+	@Final
+	private Property selectedRecipe;
 
-	@Shadow @Final private Property selectedRecipe;
-
-	@Shadow private List<StonecuttingRecipe> availableRecipes;
+	@Shadow
+	private List<StonecuttingRecipe> availableRecipes;
 
 	@Inject(method = "onButtonClick", at = @At(target = "Lnet/minecraft/screen/StonecutterScreenHandler;populateResult()V", value = "INVOKE"))
 	private void onButtonClick(PlayerEntity player, int id, CallbackInfoReturnable<Boolean> cir) {
