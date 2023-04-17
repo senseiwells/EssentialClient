@@ -47,7 +47,9 @@ import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.SpectatorTeleportC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.recipe.CuttingRecipe;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
@@ -146,6 +148,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			MemberFunction.of("craftRecipe", 3, this::craftRecipeDropAll),
 			MemberFunction.of("clickRecipe", 1, this::clickRecipe1),
 			MemberFunction.of("clickRecipe", 2, this::clickRecipe2),
+			MemberFunction.of("clickStonecuttingRecipe", 1, this::clickCuttingRecipe),
+			MemberFunction.of("clickStonecuttingRecipe", 2, this::clickCuttingRecipe2),
 			MemberFunction.of("logout", 1, this::logout),
 			MemberFunction.of("attackEntity", 1, this::attackEntity),
 			MemberFunction.of("interactWithEntity", 1, this::interactWithEntity),
@@ -1127,6 +1131,45 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		return ClientScriptUtils.ensureMainThread("stonecutter", arguments.getInterpreter(), () -> {
 			return InventoryUtils.stonecutter(itemInput, itemOutput);
 		});
+	}
+
+	// Try casting recipe to CuttingRecipe, then execute stonecutter
+	@FunctionDoc(
+		name = "clickStonecuttingRecipe",
+		desc = "This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.",
+		params = {
+			@ParameterDoc(type = RecipeDef.class, name = "cuttingRecipe", desc = "Stone cutting recipe"),
+		},
+		examples = "player.clickCuttingRecipe(cuttingRecipe);"
+	)
+	private Void clickCuttingRecipe(Arguments arguments) {
+		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		if (recipe instanceof StonecuttingRecipe cuttingRecipe) {
+			ClientScriptUtils.ensureMainThread("clickCuttingRecipe", arguments.getInterpreter(), () -> {
+				InventoryUtils.clickCuttingRecipe(cuttingRecipe);
+				return null;
+			});
+		}
+		return null;
+	}
+
+	@FunctionDoc(
+		name = "clickStonecuttingRecipe",
+		desc = "This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.",
+		params = {
+			@ParameterDoc(type = ItemStackDef.class, name = "inputItem", desc = "Stone cutting recipe input item"),
+			@ParameterDoc(type = ItemStackDef.class, name = "outputItem", desc = "Stone cutting recipe output item")
+		},
+		examples = "player.clickCuttingRecipe(ItemStack.of('cobblestone'), ItemStack.of('cobblestone_slab');"
+	)
+	private Void clickCuttingRecipe2(Arguments arguments) {
+		Item inputItem = arguments.skip().nextPrimitive(ItemStackDef.class).asItem();
+		Item outputItem = arguments.nextPrimitive(ItemStackDef.class).asItem();
+		ClientScriptUtils.ensureMainThread("clickCuttingRecipe", arguments.getInterpreter(), () -> {
+			InventoryUtils.clickCuttingRecipe(inputItem, outputItem);
+			return null;
+		});
+		return null;
 	}
 
 	@FunctionDoc(
