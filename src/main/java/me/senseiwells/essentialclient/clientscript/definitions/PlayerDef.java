@@ -1157,14 +1157,14 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		name = "clickStonecuttingRecipe",
 		desc = "This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.",
 		params = {
-			@ParameterDoc(type = ItemStackDef.class, name = "inputItem", desc = "Stone cutting recipe input item"),
-			@ParameterDoc(type = ItemStackDef.class, name = "outputItem", desc = "Stone cutting recipe output item")
+			@ParameterDoc(type = MaterialDef.class, name = "inputItem", desc = "Stone cutting recipe input item"),
+			@ParameterDoc(type = MaterialDef.class, name = "outputItem", desc = "Stone cutting recipe output item")
 		},
 		examples = "player.clickCuttingRecipe(ItemStack.of('cobblestone'), ItemStack.of('cobblestone_slab');"
 	)
 	private Void clickCuttingRecipe2(Arguments arguments) {
-		Item inputItem = arguments.skip().nextPrimitive(ItemStackDef.class).asItem();
-		Item outputItem = arguments.nextPrimitive(ItemStackDef.class).asItem();
+		Item inputItem = arguments.skip().nextPrimitive(MaterialDef.class).asItem();
+		Item outputItem = arguments.nextPrimitive(MaterialDef.class).asItem();
 		ClientScriptUtils.ensureMainThread("clickCuttingRecipe", arguments.getInterpreter(), () -> {
 			InventoryUtils.clickCuttingRecipe(inputItem, outputItem);
 			return null;
