@@ -1,6 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
-import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 
+import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.Property;
