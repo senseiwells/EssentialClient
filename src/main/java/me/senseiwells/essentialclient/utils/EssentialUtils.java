@@ -190,7 +190,7 @@ public class EssentialUtils {
 	}
 
 	public static boolean isStackableShulkers(Item item) {
-		if (isRuleWithCarpet(ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES)) {
+		if (getClient() != null && isRuleWithCarpet(ClientRules.STACKABLE_SHULKERS_IN_PLAYER_INVENTORIES)) {
 			return item instanceof BlockItem b && b.getBlock() instanceof ShulkerBoxBlock;
 		}
 		return false;
