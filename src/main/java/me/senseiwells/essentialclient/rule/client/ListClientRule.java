@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListClientRule extends ClientRule<List<String>> implements Rule.ListRule {
@@ -13,7 +14,7 @@ public class ListClientRule extends ClientRule<List<String>> implements Rule.Lis
 	private int maxLength;
 
 	public ListClientRule(String name, String description, List<String> defaultValue, String category, RuleListener<List<String>> ruleListener) {
-		super(name, description, new java.util.ArrayList<>(defaultValue), category);
+		super(name, description, new ArrayList<>(defaultValue), category);
 		this.addListener(ruleListener);
 		this.maxLength = 32;
 	}

@@ -13,13 +13,4 @@ public class RecipeHelper {
 		//$$return recipe.getOutput();
 		//#endif
 	}
-
-	public static ItemStack getOutput(StonecuttingRecipe recipe) {
-		//#if MC >= 11904
-		return recipe.getOutput(EssentialUtils.getRegistryManager());
-		//#else
-		//$$return recipe.getOutput();
-		//#endif
-	}
-
 }
