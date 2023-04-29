@@ -1279,6 +1279,13 @@ class ItemStack: Material {
     fun asEntity(): ItemEntity;
 
     /*
+     * This decrements the stack size of the ItemStack by number.
+     * Parameter - Number (count): Number to decrease.
+     * Returns - ItemStack: The ItemStack with the new stack size.
+     */
+    fun decrement(count: Number): ItemStack;
+
+    /*
      * This gets the count of the ItemStack, the amount of items in the stack.
      * Returns - Number: The count of the ItemStack.
      */
@@ -1347,6 +1354,13 @@ class ItemStack: Material {
      * Returns - String: The translated name of the ItemStack.
      */
     fun getTranslatedName(): String;
+
+    /*
+     * This increments the stack size of the ItemStack by number.
+     * Parameter - Number (count): Number to increase.
+     * Returns - ItemStack: The ItemStack with the new stack size.
+     */
+    fun increment(count: Number): ItemStack;
 
     /*
      * This checks if the ItemStack can be placed as a block.

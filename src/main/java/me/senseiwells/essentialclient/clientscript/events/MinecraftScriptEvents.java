@@ -53,7 +53,8 @@ public class MinecraftScriptEvents {
 		ON_CLICK_RECIPE = registerCancellable("onClickRecipe", "This event is fired when the player clicks on a recipe in the recipe book", RECIPE, "recipe", "the recipe that was clicked"),
 		ON_ATTACK_BLOCK = registerCancellable("onAttackBlock", "This event is fired when the player attacks a block", BLOCK, "block", "the block that was attacked"),
 		ON_ATTACK_ENTITY = registerCancellable("onAttackEntity", "This event is fired when the player attacks an entity", ENTITY, "entity", "the entity that was attacked"),
-		ON_CLICK_TRADE = register("onClickTrade", "This event is fired when trade is clicked", NUMBER, "index", "the trade index that was clicked");
+		ON_CLICK_TRADE = register("onClickTrade", "This event is fired when trade is clicked", NUMBER, "index", "the trade index that was clicked"),
+		ON_CLICK_STONECUTTER_RECIPE = register("onClickStonecutterRecipe", "This event is fired when the player clicks on a recipe in the stonecutter", RECIPE, "recipe", "the recipe that was clicked");
 
 	public static final MinecraftScriptEvent.Unique
 		ON_SCRIPT_END = registerUnique("onScriptEnd", "This event is fired when the script is ends");

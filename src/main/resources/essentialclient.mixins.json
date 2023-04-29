@@ -36,6 +36,7 @@
     "clientScript.MouseMixin",
     "clientScript.NbtListMixin",
     "clientScript.ScreenMixin",
+    "clientScript.StonecutterScreenHandlerMixin",
     "clientScript.WorldRendererMixin",
     "commandSuggestorIgnoresSpaces.ChatInputSuggestorMixin",
     "core.ClientPlayerEntityMixin",

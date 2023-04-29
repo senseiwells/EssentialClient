@@ -30,10 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeMatcher;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.recipe.StonecuttingRecipe;
+import net.minecraft.recipe.*;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -492,10 +489,10 @@ public class InventoryUtils {
 
 	// ClientScript stuff
 
-	public static void craftRecipe(Recipe<?> recipe, boolean shouldDrop) {
-		ScreenHandler handler = clickRecipe(recipe, true);
+	public static void craftRecipe(Recipe<?> recipe, boolean shouldDrop, boolean craftAll) {
+		ScreenHandler handler = clickRecipe(recipe, craftAll);
 		if (shouldDrop) {
-			InventoryUtils.dropStackScheduled(handler, true);
+			InventoryUtils.dropStackScheduled(handler, craftAll);
 		} else {
 			InventoryUtils.shiftClickSlot(handler, 0);
 		}
@@ -744,5 +741,37 @@ public class InventoryUtils {
 
 	private static void throwOutOfBounds() {
 		throw new RuntimeError("That trade is out of bounds");
+	}
+
+	public static void clickCuttingRecipe(StonecuttingRecipe cuttingRecipe) {
+		if (!(EssentialUtils.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
+			throw new RuntimeError("Must be in a stonecutting GUI");
+		}
+		ScreenHandler handler = handledScreen.getScreenHandler();
+		if (!(handler instanceof StonecutterScreenHandler stonecutterScreenHandler)) {
+			throw new RuntimeError("Must be in a stonecutting GUI");
+		}
+		CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+		List<StonecuttingRecipe> recipes = stonecutterScreenHandler.getAvailableRecipes();
+		int id = recipes.stream().filter(
+			recipe -> RecipeHelper.getOutput(recipe).getItem() == RecipeHelper.getOutput(cuttingRecipe).getItem()
+		).findFirst().map(recipes::indexOf).orElse(-1);
+		stonecutterScreenHandler.onButtonClick(getPlayer(), id);
+	}
+
+	public static void clickCuttingRecipe(Item inputItem, Item outputItem) {
+		if (!(EssentialUtils.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
+			throw new RuntimeError("Must be in a stonecutting GUI");
+		}
+		ScreenHandler handler = handledScreen.getScreenHandler();
+		if (!(handler instanceof StonecutterScreenHandler stonecutterScreenHandler)) {
+			throw new RuntimeError("Must be in a stonecutting GUI");
+		}
+		CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
+		List<StonecuttingRecipe> recipes = stonecutterScreenHandler.getAvailableRecipes();
+		int id = recipes.stream().filter(
+			recipe -> RecipeHelper.getOutput(recipe).getItem() == outputItem && recipe.getIngredients().stream().anyMatch(ingredient -> ingredient.test(new ItemStack(inputItem)))
+		).findFirst().map(recipes::indexOf).orElse(-1);
+		stonecutterScreenHandler.onButtonClick(getPlayer(), id);
 	}
 }

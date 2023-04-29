@@ -2152,6 +2152,15 @@ Import with `import ItemStack from Minecraft;`
 itemStack.asEntity();
 ```
 
+### `<ItemStack>.decrement(count)`
+- Description: This decrements the stack size of the ItemStack by number.
+- Parameter - Number (`count`): Number to decrease.
+- Returns - ItemStack: The ItemStack with the new stack size.
+- Example:
+```kotlin
+itemStack.decrement(5);
+```
+
 ### `<ItemStack>.getCount()`
 - Description: This gets the count of the ItemStack, the amount of items in the stack.
 - Returns - Number: The count of the ItemStack.
@@ -2245,6 +2254,15 @@ itemStack.getNbtAsString();
 - Example:
 ```kotlin
 itemStack.getTranslatedName();
+```
+
+### `<ItemStack>.increment(count)`
+- Description: This increments the stack size of the ItemStack by number.
+- Parameter - Number (`count`): Number to increase.
+- Returns - ItemStack: The ItemStack with the new stack size.
+- Example:
+```kotlin
+itemStack.increment(5);
 ```
 
 ### `<ItemStack>.isBlockItem()`
