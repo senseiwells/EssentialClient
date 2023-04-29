@@ -15,11 +15,9 @@ import java.util.List;
 
 @Mixin(StonecutterScreenHandler.class)
 public abstract class StonecutterScreenHandlerMixin {
-
 	@Shadow
 	@Final
 	private Property selectedRecipe;
-
 	@Shadow
 	private List<StonecuttingRecipe> availableRecipes;
 
