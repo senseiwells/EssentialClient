@@ -2912,6 +2912,7 @@ isMain();
 ### `len(sizable)`
 - Description: This is used to get the length of a collection or string.
 - Parameter - String (`sizable`): The collection or string.
+- Returns - Number: The size of the given object.
 - Example:
 ```kotlin
 len("Hello World");
@@ -8246,6 +8247,24 @@ The action must be either 'click', 'shift_click', 'swap', 'middle_click',
 player.clickSlot(9, 'left', 'double_click');
 ```
 
+### `<Player>.clickStonecuttingRecipe(cuttingRecipe)`
+- Description: This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.
+- Parameter - Recipe (`cuttingRecipe`): Stone cutting recipe.
+- Example:
+```kotlin
+player.clickCuttingRecipe(cuttingRecipe);
+```
+
+### `<Player>.clickStonecuttingRecipe(inputItem, outputItem)`
+- Description: This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.
+- Parameters:
+  - Material (`inputItem`): Stone cutting recipe input item.
+  - Material (`outputItem`): Stone cutting recipe output item.
+- Example:
+```kotlin
+player.clickCuttingRecipe(ItemStack.of('cobblestone'), ItemStack.of('cobblestone_slab');
+```
+
 ### `<Player>.closeScreen()`
 - Description: This closes the current screen.
 - Example:
@@ -8285,6 +8304,17 @@ player.craftRecipe(Recipe.CHEST);
 - Example:
 ```kotlin
 player.craftRecipe(Recipe.CHEST, true);
+```
+
+### `<Player>.craftRecipe(recipe, boolean, boolean)`
+- Description: This allows you to craft a predefined recipe.
+- Parameters:
+  - Recipe (`recipe`): The recipe you want to craft.
+  - Boolean (`boolean`): Whether result should be dropped or not.
+  - Boolean (`boolean`): Whether whole stack should be crafted or not.
+- Example:
+```kotlin
+player.craftRecipe(Recipe.CHEST, true, false);
 ```
 
 ### `<Player>.dropAll(material)`
@@ -10719,6 +10749,17 @@ new GameEvent("onDeath", fun(entity, message) {
 - Cancellable: true
 ```kotlin
 new GameEvent("onInteractItem", fun(itemStack) {
+    // Code
+});
+```
+
+
+## `"onClickStonecutterRecipe"`
+- This event is fired when the player clicks on a recipe in the stonecutter
+- Parameter - Recipe (`recipe`): the recipe that was clicked
+- Cancellable: false
+```kotlin
+new GameEvent("onClickStonecutterRecipe", fun(recipe) {
     // Code
 });
 ```

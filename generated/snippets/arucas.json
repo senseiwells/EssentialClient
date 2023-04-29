@@ -2804,6 +2804,16 @@
     "body": ".clickSlot($slot, $click, $action)",
     "description": "<Player>.clickSlot(slot, click, action)\nThis allows you to click a slot with either right or left click\nand a slot action, the click must be either 'left' or 'right' or a number (for swap).\nThe action must be either 'click', 'shift_click', 'swap', 'middle_click',\n'throw', 'drag', or 'double_click' or an error will be thrown.\n- Parameter - Number (`slot`): The slot to click.\n- Parameter - String (`click`): The click type, this should be either 'left' or 'right'.\n- Parameter - String (`action`): The action to perform.\n"
   },
+  "Method <Player>.clickStonecuttingRecipe(cuttingRecipe)": {
+    "prefix": ".clickStonecuttingRecipe($cuttingRecipe)",
+    "body": ".clickStonecuttingRecipe($cuttingRecipe)",
+    "description": "<Player>.clickStonecuttingRecipe(cuttingRecipe)\nThis allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.\n- Parameter - Recipe (`cuttingRecipe`): Stone cutting recipe.\n"
+  },
+  "Method <Player>.clickStonecuttingRecipe(inputItem, outputItem)": {
+    "prefix": ".clickStonecuttingRecipe($inputItem, $outputItem)",
+    "body": ".clickStonecuttingRecipe($inputItem, $outputItem)",
+    "description": "<Player>.clickStonecuttingRecipe(inputItem, outputItem)\nThis allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.\n- Parameter - Material (`inputItem`): Stone cutting recipe input item.\n- Parameter - Material (`outputItem`): Stone cutting recipe output item.\n"
+  },
   "Method <Player>.closeScreen()": {
     "prefix": ".closeScreen()",
     "body": ".closeScreen()",
@@ -2823,6 +2833,11 @@
     "prefix": ".craftRecipe($recipe, $boolean)",
     "body": ".craftRecipe($recipe, $boolean)",
     "description": "<Player>.craftRecipe(recipe, boolean)\nThis allows you to craft a predefined recipe.\n- Parameter - Recipe (`recipe`): The recipe you want to craft.\n- Parameter - Boolean (`boolean`): Whether result should be dropped or not.\n"
+  },
+  "Method <Player>.craftRecipe(recipe, boolean, boolean)": {
+    "prefix": ".craftRecipe($recipe, $boolean, $boolean)",
+    "body": ".craftRecipe($recipe, $boolean, $boolean)",
+    "description": "<Player>.craftRecipe(recipe, boolean, boolean)\nThis allows you to craft a predefined recipe.\n- Parameter - Recipe (`recipe`): The recipe you want to craft.\n- Parameter - Boolean (`boolean`): Whether result should be dropped or not.\n- Parameter - Boolean (`boolean`): Whether whole stack should be crafted or not.\n"
   },
   "Method <Player>.dropAll(material)": {
     "prefix": ".dropAll($material)",

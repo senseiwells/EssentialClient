@@ -2354,6 +2354,19 @@ class Player: OtherPlayer {
     fun clickSlot(slot: Number, click: String, action: String): Null;
 
     /*
+     * This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.
+     * Parameter - Recipe (cuttingRecipe): Stone cutting recipe.
+     */
+    fun clickStonecuttingRecipe(cuttingRecipe: Recipe): Null;
+
+    /*
+     * This allows you to click the stonecutter recipe. Unlike clickRecipe, stonecutter wants you to manually send input items.
+     * Parameter - Material (inputItem): Stone cutting recipe input item.
+     * Parameter - Material (outputItem): Stone cutting recipe output item.
+     */
+    fun clickStonecuttingRecipe(inputItem: Material, outputItem: Material): Null;
+
+    /*
      * This closes the current screen.
      */
     fun closeScreen(): Null;
@@ -2379,6 +2392,14 @@ class Player: OtherPlayer {
      * Parameter - Boolean (boolean): Whether result should be dropped or not.
      */
     fun craftRecipe(recipe: Recipe, boolean: Boolean): Null;
+
+    /*
+     * This allows you to craft a predefined recipe.
+     * Parameter - Recipe (recipe): The recipe you want to craft.
+     * Parameter - Boolean (boolean): Whether result should be dropped or not.
+     * Parameter - Boolean (boolean): Whether whole stack should be crafted or not.
+     */
+    fun craftRecipe(recipe: Recipe, boolean: Boolean, boolean: Boolean): Null;
 
     /*
      * This drops all items of a given type in the player's inventory.

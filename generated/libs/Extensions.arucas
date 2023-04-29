@@ -88,8 +88,9 @@ fun isMain(): Boolean;
 /*
  * This is used to get the length of a collection or string.
  * Parameter - String (sizable): The collection or string.
+ * Returns - Number: The size of the given object.
  */
-fun len(sizable: String): Null;
+fun len(sizable: String): Number;
 
 /*
  * This prints a value to the output handler.

@@ -127,6 +127,17 @@ new GameEvent("onInteractItem", fun(itemStack) {
 ```
 
 
+## `"onClickStonecutterRecipe"`
+- This event is fired when the player clicks on a recipe in the stonecutter
+- Parameter - Recipe (`recipe`): the recipe that was clicked
+- Cancellable: false
+```kotlin
+new GameEvent("onClickStonecutterRecipe", fun(recipe) {
+    // Code
+});
+```
+
+
 ## `"onDisconnect"`
 - This event is fired when the player disconnects from a server
 - Cancellable: false

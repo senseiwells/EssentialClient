@@ -109,6 +109,7 @@ isMain();
 ### `len(sizable)`
 - Description: This is used to get the length of a collection or string.
 - Parameter - String (`sizable`): The collection or string.
+- Returns - Number: The size of the given object.
 - Example:
 ```kotlin
 len("Hello World");
