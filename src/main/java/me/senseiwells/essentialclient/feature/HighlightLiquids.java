@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.feature;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 //#if MC < 11903
@@ -25,6 +26,8 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
@@ -41,11 +44,24 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 	public static Sprite defaultWaterSourceFlowSprite;
 	public static Sprite defaultWaterSourceStillSprite;
 
-	private static final Identifier LAVA_FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/lava_flow");
-	private static final Identifier LAVA_STILL_SPRITE_ID = new Identifier("essentialclient", "block/lava_still");
+	private static final Identifier LAVA_FLOWING_SPRITE_ID;
+	private static final Identifier LAVA_STILL_SPRITE_ID;
 
-	private static final Identifier WATER_FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/water_flow");
-	private static final Identifier WATER_STILL_SPRITE_ID = new Identifier("essentialclient", "block/water_still");
+	private static final Identifier WATER_FLOWING_SPRITE_ID;
+	private static final Identifier WATER_STILL_SPRITE_ID;
+
+	private static final int DEFAULT_WATER_COLOUR;
+
+	static {
+		LAVA_FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/lava_flow");
+		LAVA_STILL_SPRITE_ID = new Identifier("essentialclient", "block/lava_still");
+		WATER_FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/water_flow");
+		WATER_STILL_SPRITE_ID = new Identifier("essentialclient", "block/water_still");
+
+		// Possible they have a texture pack to recolour ocean water colour?
+		Biome ocean = RegistryHelper.getBiomeRegistry().get(BiomeKeys.OCEAN);
+		DEFAULT_WATER_COLOUR = ocean == null ? 0x3F76E4 : ocean.getWaterColor();
+	}
 
 	public static void load() {
 		if (EssentialUtils.isModInstalled("fabric-rendering-fluids-v1")
@@ -107,7 +123,11 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 
 			@Override
 			public int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
-				return (ClientRules.HIGHLIGHT_WATER_SOURCES.getValue() && state.getLevel() == 8) || view == null ? -1 : BiomeColors.getWaterColor(view, pos);
+				if (ClientRules.HIGHLIGHT_WATER_SOURCES.getValue() && state.getLevel() == 8) {
+					// Returns blank colour
+					return -1;
+				}
+				return (view == null || pos == null) ? DEFAULT_WATER_COLOUR : BiomeColors.getWaterColor(view, pos);
 			}
 		};
 		FluidRenderHandlerRegistry.INSTANCE.register(Fluids.WATER, waterSourceRenderHandler);
