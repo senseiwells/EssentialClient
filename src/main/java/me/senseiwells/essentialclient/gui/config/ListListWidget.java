@@ -1,15 +1,16 @@
 package me.senseiwells.essentialclient.gui.config;
 
 import com.google.common.collect.ImmutableList;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
+import me.senseiwells.essentialclient.gui.entries.AbstractListEntry;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -65,7 +66,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 		return 360;
 	}
 
-	public class Entry extends ElementListWidget.Entry<ListListWidget.Entry> {
+	public class Entry extends AbstractListEntry<Entry> {
 		private final MinecraftClient client;
 		private final TextFieldWidget textField;
 		private final ButtonWidget addButton;
@@ -107,21 +108,22 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 			return super.keyPressed(keyCode, scanCode, modifiers) || this.textField.keyPressed(keyCode, scanCode, modifiers);
 		}
 
-		@Override
-		public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
-			TextRenderer font = this.client.textRenderer;
-			float fontX = (float) (x + 90 - 100);
-			float fontY = (float) (y + height / 2 - 9 / 2);
 
-			font.draw(matrices, String.valueOf(this.index), fontX, fontY, 0xFFFFFF);
+		@Override
+		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float delta) {
+			TextRenderer font = this.client.textRenderer;
+			int fontX = x + 90 - 100;
+			int fontY = y + height / 2 - 9 / 2;
+
+			wrapper.drawTextWithShadow(font, Texts.literal(String.valueOf(this.index)), fontX, fontY, 0xFFFFFF);
 
 			WidgetHelper.setPosition(this.textField, x + 65, y);
 			WidgetHelper.setPosition(this.addButton, x + 235, y);
 			WidgetHelper.setPosition(this.removeButton, x + 255, y);
 
-			this.textField.render(matrices, mouseX, mouseY, delta);
-			this.addButton.render(matrices, mouseX, mouseY, delta);
-			this.removeButton.render(matrices, mouseX, mouseY, delta);
+			this.textField.render(wrapper.getContext(), mouseX, mouseY, delta);
+			this.addButton.render(wrapper.getContext(), mouseX, mouseY, delta);
+			this.removeButton.render(wrapper.getContext(), mouseX, mouseY, delta);
 		}
 
 		@Override

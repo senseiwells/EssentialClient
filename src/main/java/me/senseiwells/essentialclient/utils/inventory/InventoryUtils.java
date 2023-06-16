@@ -95,7 +95,11 @@ public class InventoryUtils {
 		ScreenHandler containerPlayer = player.currentScreenHandler;
 		for (Slot slot : containerPlayer.slots) {
 			ItemStack stack = slot.getStack();
-			if (stack.isItemEqual(test) && ItemStack.areNbtEqual(stack, test)) {
+			//#if MC >= 12000
+			if (ItemStack.canCombine(stack, test)) {
+				//#else
+				//$$if (stack.isItemEqual(test) && ItemStack.areNbtEqual(stack, test)) {
+				//#endif
 				interactionManager.clickSlot(containerPlayer.syncId, slot.id, 1, SlotActionType.THROW, player);
 			}
 		}
@@ -116,7 +120,7 @@ public class InventoryUtils {
 			if (itemStack.isEmpty()) {
 				return true;
 			}
-			if (itemStack.isItemEqual(stack)) {
+			if (itemStack.getItem() == stack.getItem()) {
 				count -= itemStack.getMaxCount() - itemStack.getCount();
 				if (count <= 0) {
 					return true;
@@ -234,11 +238,19 @@ public class InventoryUtils {
 	}
 
 	public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2) {
-		return !stack1.isEmpty() && stack1.isItemEqual(stack2);
+		//#if MC >= 12000
+		return !stack1.isEmpty() && stack1.getItem() == stack2.getItem();
+		//#else
+		//$$return !stack1.isEmpty() && stack1.isItemEqual(stack2);
+		//#endif
 	}
 
 	public static boolean areStacksTotallyEqual(ItemStack stack1, ItemStack stack2) {
-		return !stack1.isEmpty() && stack1.isItemEqual(stack2) && ItemStack.areNbtEqual(stack1, stack2);
+		//#if MC >= 12000
+		return !stack1.isEmpty() && ItemStack.canCombine(stack1, stack2);
+		//#else
+		//$$return !stack1.isEmpty() && stack1.isItemEqual(stack2) && ItemStack.areNbtEqual(stack1, stack2);
+		//#endif
 	}
 
 	private static int matchSlot(ScreenHandler container, Slot slotReference, ItemStack stackReference) {

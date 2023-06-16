@@ -1,7 +1,6 @@
 package me.senseiwells.essentialclient.utils.render;
 
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class RuleWidget {
 	private final String name;
@@ -27,8 +26,8 @@ public class RuleWidget {
 		this.y = y;
 	}
 
-	public void drawRule(MatrixStack matrices, TextRenderer font, float fontX, float fontY, int colour) {
-		font.draw(matrices, getShortName(this.name), fontX, fontY, colour);
+	public void drawRule(RenderContextWrapper wrapper, TextRenderer font, float fontX, float fontY, int colour) {
+		wrapper.drawTextWithShadow(font, Texts.literal(getShortName(this.name)), (int) fontX, (int) fontY, colour);
 	}
 
 	public boolean isHovered(int mouseX, int mouseY) {

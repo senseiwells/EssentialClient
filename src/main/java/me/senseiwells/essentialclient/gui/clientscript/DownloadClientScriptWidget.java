@@ -1,8 +1,10 @@
 package me.senseiwells.essentialclient.gui.clientscript;
 
 import com.google.common.collect.ImmutableList;
+import me.senseiwells.essentialclient.gui.entries.AbstractListEntry;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager.Category;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
@@ -11,7 +13,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.ToastManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -38,7 +39,7 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		}
 	}
 
-	abstract static class Entry extends ElementListWidget.Entry<Entry> { }
+	abstract static class Entry extends AbstractListEntry<Entry> { }
 
 	class CategoryEntry extends Entry {
 		private final int textWidth;
@@ -50,9 +51,9 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			TextRenderer renderer = DownloadClientScriptWidget.this.client.textRenderer;
-			renderer.draw(matrices, this.text, DownloadClientScriptWidget.this.downloadScreen.width / 2.0F - this.textWidth / 2.0F, y + entryHeight - 9 - 1, 0xFFFFFF);
+			wrapper.drawTextWithShadow(renderer, this.text, (int) (DownloadClientScriptWidget.this.downloadScreen.width / 2.0F - this.textWidth / 2.0F), y + entryHeight - 9 - 1, 0xFFFFFF);
 		}
 
 		//#if MC >= 11700
@@ -96,13 +97,13 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			float width = x - 20 - DownloadClientScriptWidget.this.maxScriptNameLength;
-			DownloadClientScriptWidget.this.client.textRenderer.draw(matrices, this.scriptName, width, y + entryHeight / 2.0F - 9 / 2.0F, 0xFFFFFF);
+			wrapper.drawTextWithShadow(DownloadClientScriptWidget.this.client.textRenderer, Texts.literal(this.scriptName), (int) width, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF);
 			WidgetHelper.setPosition(this.downloadButton, x + 155, y);
 			WidgetHelper.setPosition(this.viewButton, x + 100, y);
-			this.viewButton.render(matrices, mouseX, mouseY, tickDelta);
-			this.downloadButton.render(matrices, mouseX, mouseY, tickDelta);
+			this.viewButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
+			this.downloadButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
 		}
 
 		//#if MC >= 11700

@@ -6,15 +6,15 @@ import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -52,12 +52,12 @@ public class ClientScriptScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
-		this.scriptWidget.render(matrices, mouseX, mouseY, delta);
-		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		drawCenteredTextWithShadow(matrices, this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
-		super.render(matrices, mouseX, mouseY, delta);
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+		this.renderBackground(wrapper.getContext());
+		this.scriptWidget.render(wrapper.getContext(), mouseX, mouseY, delta);
+		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		wrapper.drawCenteredTextWithShadow(this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
+		super.render(wrapper, mouseX, mouseY, delta);
 	}
 
 	public void refresh() {
@@ -210,15 +210,15 @@ public class ClientScriptScreen extends ChildScreen {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
 			//#if MC >= 11904
-			this.renderBackgroundTexture(matrices);
+			this.renderBackgroundTexture(wrapper.getContext());
 			//#else
 			//$$this.renderBackgroundTexture(0);
 			//#endif
-			this.textRenderer.draw(matrices, SCRIPT_NAME, this.width / 2.0F - 100, this.height / 2.0F - 68, 0x949494);
-			this.textRenderer.draw(matrices, KEYBIND, this.width / 2.0F - 100, this.height / 2.0F + 30, 0xE0E0E0);
-			drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+			wrapper.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 68), 0x949494);
+			wrapper.drawTextWithShadow(this.textRenderer, KEYBIND, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F + 30), 0xE0E0E0);
+			wrapper.drawTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
 
@@ -241,10 +241,14 @@ public class ClientScriptScreen extends ChildScreen {
 					Texts.literal(keyBinding.getName()).formatted(Formatting.GOLD),
 					display.isEmpty() ? NO_KEYBINDING : Texts.literal(display)
 				);
-				this.renderTooltip(matrices, textList, mouseX, mouseY);
+				//#if MC >= 12000
+				wrapper.getContext().drawTooltip(this.textRenderer, textList, mouseX, mouseY);
+				//#else
+				//$$this.renderTooltip(wrapper.getMatrices(), textList, mouseX, mouseY);
+				//#endif
 			}
 
-			super.render(matrices, mouseX, mouseY, delta);
+			super.render(wrapper, mouseX, mouseY, delta);
 		}
 	}
 }

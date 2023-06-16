@@ -7,7 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import org.spongepowered.asm.mixin.Final;
@@ -17,6 +16,12 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+//#if MC >= 12000
+import net.minecraft.client.gui.DrawContext;
+//#else
+//$$import net.minecraft.client.util.math.MatrixStack;
+//#endif
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
@@ -42,7 +47,15 @@ public class InGameHudMixin {
 	}
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(I)Lnet/minecraft/scoreboard/ScoreboardObjective;", shift = At.Shift.BEFORE, ordinal = 2))
-	private void onRenderTab(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+	private void onRenderTab(
+		//#if MC >= 12000
+		DrawContext context,
+		//#else
+		//$$MatrixStack context,
+		//#endif
+		float tickDelta,
+		CallbackInfo ci
+	) {
 		if (this.client.world == null || this.client.player == null) {
 			return;
 		}
@@ -53,7 +66,7 @@ public class InGameHudMixin {
 
 		this.setPlayerListHudVisible(shouldRender);
 		if (this.tabVisible) {
-			this.playerListHud.render(matrices, this.scaledWidth, scoreboard, objective);
+			this.playerListHud.render(context, this.scaledWidth, scoreboard, objective);
 		}
 	}
 

@@ -4,12 +4,12 @@ import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
@@ -85,14 +85,14 @@ public class CreateClientScriptScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
 		//#if MC >= 11904
-		this.renderBackgroundTexture(matrices);
+		this.renderBackgroundTexture(wrapper.getContext());
 		//#else
 		//$$this.renderBackgroundTexture(0);
 		//#endif
-		this.textRenderer.draw(matrices, SCRIPT_NAME, this.width / 2.0F - 100, this.height / 2.0F - 33, 0x949494);
-		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		super.render(matrices, mouseX, mouseY, delta);
+		wrapper.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 33), 0x949494);
+		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		super.render(wrapper, mouseX, mouseY, delta);
 	}
 }

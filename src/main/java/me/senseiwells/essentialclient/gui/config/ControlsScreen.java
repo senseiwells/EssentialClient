@@ -1,12 +1,12 @@
 package me.senseiwells.essentialclient.gui.config;
 
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
@@ -53,10 +53,10 @@ public class ControlsScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
-		this.controlWidget.render(matrices, mouseX, mouseY, delta);
-		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+		this.renderBackground(wrapper.getContext());
+		this.controlWidget.render(wrapper.getContext(), mouseX, mouseY, delta);
+		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 		if (this.hoveredKeyBinding != null) {
 			String display = this.hoveredKeyBinding.getDisplay();
@@ -64,11 +64,15 @@ public class ControlsScreen extends ChildScreen {
 				Texts.literal(this.hoveredKeyBinding.getName()).formatted(Formatting.GOLD),
 				display.isEmpty() ? Texts.NO_KEYBINDING : Texts.literal(display)
 			);
-			this.renderTooltip(matrices, textList, mouseX, mouseY);
+			//#if MC >= 12000
+			wrapper.getContext().drawTooltip(this.textRenderer, textList, mouseX, mouseY);
+			//#else
+			//$$this.renderTooltip(wrapper.getMatrices(), textList, mouseX, mouseY);
+			//#endif
 			this.hoveredKeyBinding = null;
 		}
 
-		super.render(matrices, mouseX, mouseY, delta);
+		super.render(wrapper, mouseX, mouseY, delta);
 	}
 
 	@Override

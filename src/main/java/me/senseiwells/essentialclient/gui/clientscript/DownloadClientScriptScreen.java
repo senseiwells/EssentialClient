@@ -1,9 +1,9 @@
 package me.senseiwells.essentialclient.gui.clientscript;
 
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
-import net.minecraft.client.util.math.MatrixStack;
 
 import static me.senseiwells.essentialclient.utils.render.Texts.DONE;
 
@@ -25,10 +25,10 @@ public class DownloadClientScriptScreen extends ChildScreen.Typed<ClientScriptSc
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
-		this.widget.render(matrices, mouseX, mouseY, delta);
-		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		super.render(matrices, mouseX, mouseY, delta);
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+		this.renderBackground(wrapper.getContext());
+		this.widget.render(wrapper.getContext(), mouseX, mouseY, delta);
+		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		super.render(wrapper, mouseX, mouseY, delta);
 	}
 }

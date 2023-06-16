@@ -71,7 +71,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@Override
 	public boolean equals(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull ClassInstance other, @NotNull LocatableTrace trace) {
 		ScriptItemStack stack = other.getPrimitive(this);
-		return stack != null && instance.asPrimitive(this).stack.isItemEqual(stack.stack);
+		return stack != null && instance.asPrimitive(this).stack.getItem() == stack.stack.getItem();
 	}
 
 	@Override
@@ -306,7 +306,11 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	private boolean isNbtEqual(Arguments arguments) {
 		ItemStack itemStack = arguments.nextPrimitive(this).stack;
 		ItemStack otherItemStack = arguments.nextPrimitive(this).stack;
-		return ItemStack.areNbtEqual(itemStack, otherItemStack);
+		//#if MC >= 12000
+		return ItemStack.canCombine(itemStack, otherItemStack);
+		//#else
+		//$$return ItemStack.areNbtEqual(itemStack, otherItemStack);
+		//#endif
 	}
 
 	@FunctionDoc(

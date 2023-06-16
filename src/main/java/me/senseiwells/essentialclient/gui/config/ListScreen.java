@@ -2,10 +2,10 @@ package me.senseiwells.essentialclient.gui.config;
 
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
-import net.minecraft.client.util.math.MatrixStack;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -47,11 +47,11 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
-		this.widget.render(matrices, mouseX, mouseY, delta);
-		super.render(matrices, mouseX, mouseY, delta);
-		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+		this.renderBackground(wrapper.getContext());
+		this.widget.render(wrapper.getContext(), mouseX, mouseY, delta);
+		super.render(wrapper, mouseX, mouseY, delta);
+		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 	}
 
 	@Override

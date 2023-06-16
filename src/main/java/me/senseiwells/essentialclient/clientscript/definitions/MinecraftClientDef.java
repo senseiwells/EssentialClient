@@ -341,7 +341,16 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		String second = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
 		String third = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
 		String fourth = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
-		EssentialUtils.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(pos.getBlockPos(), first, second, third, fourth));
+		EssentialUtils.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(
+			pos.getBlockPos(),
+			//#if MC >= 12000
+			true,
+			//#endif
+			first,
+			second,
+			third,
+			fourth
+		));
 		return null;
 	}
 

@@ -253,7 +253,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		HitResult result = entity.raycast(20D, 0.0F, true);
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
+			return new ScriptBlockState(entity.getEntityWorld().getBlockState(blockPos), blockPos);
 		}
 		return new ScriptBlockState(Blocks.AIR.getDefaultState(), EssentialUtils.vec3dToBlockPos(result.getPos()));
 	}
@@ -274,7 +274,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		HitResult result = entity.raycast(maxDistance, 0.0F, true);
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockPos blockPos = ((BlockHitResult) result).getBlockPos();
-			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
+			return new ScriptBlockState(entity.getEntityWorld().getBlockState(blockPos), blockPos);
 		}
 		return new ScriptBlockState(Blocks.AIR.getDefaultState(), EssentialUtils.vec3dToBlockPos(result.getPos()));
 	}
@@ -301,10 +301,10 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		Vec3d camera = entity.getCameraPosVec(0.0F);
 		Vec3d rotation = entity.getRotationVec(0.0F);
 		Vec3d end = camera.add(rotation.x * maxDistance, rotation.y * maxDistance, rotation.z * maxDistance);
-		BlockHitResult result = entity.world.raycast(new RaycastContext(camera, end, RaycastContext.ShapeType.OUTLINE, fluidType, entity));
+		BlockHitResult result = entity.getEntityWorld().raycast(new RaycastContext(camera, end, RaycastContext.ShapeType.OUTLINE, fluidType, entity));
 		if (result.getType() == HitResult.Type.BLOCK) {
 			BlockPos blockPos = result.getBlockPos();
-			return new ScriptBlockState(entity.world.getBlockState(blockPos), blockPos);
+			return new ScriptBlockState(entity.getEntityWorld().getBlockState(blockPos), blockPos);
 		}
 		return new ScriptBlockState(Blocks.AIR.getDefaultState(), EssentialUtils.vec3dToBlockPos(result.getPos()));
 	}
@@ -429,7 +429,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	)
 	private ClientWorld getWorld(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
-		if (entity.world instanceof ClientWorld world) {
+		if (entity.getEntityWorld() instanceof ClientWorld world) {
 			return world;
 		}
 		throw new RuntimeError("Could not get entity '%s's world".formatted(entity));

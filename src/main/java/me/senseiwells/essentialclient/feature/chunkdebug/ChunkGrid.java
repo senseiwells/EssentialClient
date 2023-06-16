@@ -58,7 +58,7 @@ public class ChunkGrid {
 		ClientPlayerEntity player = client.player;
 		if (player != null) {
 			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(EntityHelper.getEntityChunkX(player), EntityHelper.getEntityChunkZ(player)));
-			String playerDimension = player.world.getRegistryKey().getValue().getPath();
+			String playerDimension = player.getEntityWorld().getRegistryKey().getValue().getPath();
 			int dimensionIndex = this.dimensions.indexOf(playerDimension);
 			this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
 		} else {
@@ -178,7 +178,7 @@ public class ChunkGrid {
 				ClientPlayerEntity player = this.client.player;
 				if (player != null) {
 					if (!this.isPlayerInDimension(player)) {
-						this.setDimension(player.world);
+						this.setDimension(player.getEntityWorld());
 						EssentialClient.CHUNK_NET_HANDLER.requestChunkData(this.getDimension());
 					}
 					Point minimapCorner = this.getCornerOfCentre(EntityHelper.getEntityChunkX(player), EntityHelper.getEntityChunkZ(player));
@@ -392,7 +392,7 @@ public class ChunkGrid {
 	}
 
 	public boolean isPlayerInDimension(PlayerEntity player) {
-		return this.getDimension().equals(player.world.getRegistryKey().getValue().getPath());
+		return this.getDimension().equals(player.getEntityWorld().getRegistryKey().getValue().getPath());
 	}
 
 	private DraggablePoint getSelectionPoint() {

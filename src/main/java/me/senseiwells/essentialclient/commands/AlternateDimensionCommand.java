@@ -30,11 +30,11 @@ public class AlternateDimensionCommand {
 			String dimension;
 			double newX;
 			double newZ;
-			if (playerEntity.world.getRegistryKey() == World.OVERWORLD) {
+			if (playerEntity.getEntityWorld().getRegistryKey() == World.OVERWORLD) {
 				dimension = "the_nether";
 				newX = playerEntity.getX() / 8;
 				newZ = playerEntity.getZ() / 8;
-			} else if (playerEntity.world.getRegistryKey() == World.NETHER) {
+			} else if (playerEntity.getEntityWorld().getRegistryKey() == World.NETHER) {
 				dimension = "overworld";
 				newX = playerEntity.getX() * 8;
 				newZ = playerEntity.getZ() * 8;
@@ -62,11 +62,11 @@ public class AlternateDimensionCommand {
 					String dimension;
 					double newX;
 					double newZ;
-					if (playerEntity.world.getRegistryKey() == World.OVERWORLD) {
+					if (playerEntity.getEntityWorld().getRegistryKey() == World.OVERWORLD) {
 						dimension = "the_nether";
 						newX = playerEntity.getX() / 8;
 						newZ = playerEntity.getZ() / 8;
-					} else if (playerEntity.world.getRegistryKey() == World.NETHER) {
+					} else if (playerEntity.getEntityWorld().getRegistryKey() == World.NETHER) {
 						dimension = "overworld";
 						newX = playerEntity.getX() * 8;
 						newZ = playerEntity.getZ() * 8;

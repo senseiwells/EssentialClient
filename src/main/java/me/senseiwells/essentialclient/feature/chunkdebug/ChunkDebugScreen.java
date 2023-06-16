@@ -4,17 +4,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
-import me.senseiwells.essentialclient.utils.render.ChildScreen;
-import me.senseiwells.essentialclient.utils.render.RenderHelper;
-import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.text.Text;
 
 public class ChunkDebugScreen extends ChildScreen {
@@ -50,7 +48,7 @@ public class ChunkDebugScreen extends ChildScreen {
 		}));
 		this.addDrawableChild(WidgetHelper.newButton(buttonWidth + FOOTER_ROW_PADDING * 2, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.RETURN_TO_PLAYER, button -> {
 			if (this.client.player != null) {
-				ChunkGrid.instance.setDimension(this.client.player.world);
+				ChunkGrid.instance.setDimension(this.client.player.getWorld());
 				dimensionButton.setMessage(ChunkGrid.instance.getPrettyDimension());
 				int chunkX = EntityHelper.getEntityChunkX(this.client.player);
 				int chunkZ = EntityHelper.getEntityChunkZ(this.client.player);
@@ -117,8 +115,8 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+		this.renderBackground(wrapper.getContext());
 
 		ChunkGrid.instance.render(0, HEADER_HEIGHT, this.width, this.height - HEADER_HEIGHT - FOOTER_HEIGHT, false);
 
@@ -133,22 +131,22 @@ public class ChunkDebugScreen extends ChildScreen {
 			this.zPositionBox.setText(String.valueOf(ChunkGrid.instance.getCentreZ()));
 		}
 
-		RenderHelper.drawScaledText(matrices, Texts.CHUNK_SCREEN, this.width / 2, 12, 1.5F, true);
+		RenderHelper.drawScaledText(wrapper, Texts.CHUNK_SCREEN, this.width / 2, 12, 1.5F, true);
 		if (ChunkGrid.instance.getSelectionText() != null) {
-			RenderHelper.drawScaledText(matrices, ChunkGrid.instance.getSelectionText(), this.width / 2, HEADER_HEIGHT + 10, 1, true);
+			RenderHelper.drawScaledText(wrapper, ChunkGrid.instance.getSelectionText(), this.width / 2, HEADER_HEIGHT + 10, 1, true);
 		}
 
-		this.xPositionBox.render(matrices, mouseX, mouseY, delta);
-		this.zPositionBox.render(matrices, mouseX, mouseY, delta);
+		this.xPositionBox.render(wrapper.getContext(), mouseX, mouseY, delta);
+		this.zPositionBox.render(wrapper.getContext(), mouseX, mouseY, delta);
 
 		int textHeight = this.height - 20;
 		int xOffset = FOOTER_ROW_PADDING + 10;
 		int zOffset = this.xPositionBox.getWidth() + 50;
 
-		RenderHelper.drawScaledText(matrices, Texts.X, xOffset, textHeight, 1.5F, false);
-		RenderHelper.drawScaledText(matrices, Texts.Z, zOffset, textHeight, 1.5F, false);
+		RenderHelper.drawScaledText(wrapper, Texts.X, xOffset, textHeight, 1.5F, false);
+		RenderHelper.drawScaledText(wrapper, Texts.Z, zOffset, textHeight, 1.5F, false);
 
-		super.render(matrices, mouseX, mouseY, delta);
+		super.render(wrapper, mouseX, mouseY, delta);
 	}
 
 	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {

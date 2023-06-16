@@ -5,7 +5,6 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
@@ -42,15 +41,16 @@ public class RenderHelper {
 	public static final RenderLayer CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucentCull(BLOCK_ATLAS_TEXTURE);
 	public static final RenderLayer NO_CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucent(BLOCK_ATLAS_TEXTURE);
 
-	public static void drawScaledText(MatrixStack matrices, Text text, int x, int y, float scale, boolean center) {
+	public static void drawScaledText(RenderContextWrapper wrapper, Text text, int x, int y, float scale, boolean center) {
 		MinecraftClient client = EssentialUtils.getClient();
+		MatrixStack matrices = wrapper.getMatrices();
 		matrices.push();
 		matrices.translate(x, y, 0.0D);
 		matrices.scale(scale, scale, 0.0F);
 		if (center) {
-			DrawableHelper.drawCenteredTextWithShadow(matrices, client.textRenderer, text, 0, 0, 0xFFFFFF);
+			wrapper.drawCenteredTextWithShadow(client.textRenderer, text, 0, 0, 0xFFFFFF);
 		} else {
-			DrawableHelper.drawTextWithShadow(matrices, client.textRenderer, text, 0, 0, 0xFFFFFF);
+			wrapper.drawTextWithShadow(client.textRenderer, text, 0, 0, 0xFFFFFF);
 		}
 		matrices.pop();
 	}

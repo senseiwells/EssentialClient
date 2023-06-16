@@ -3,13 +3,13 @@ package me.senseiwells.essentialclient.gui.config;
 import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
+import me.senseiwells.essentialclient.gui.entries.AbstractListEntry;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -54,7 +54,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 		return super.getRowWidth() + 32;
 	}
 
-	abstract static class Entry extends ElementListWidget.Entry<ControlsListWidget.Entry> { }
+	abstract static class Entry extends AbstractListEntry<Entry> { }
 
 	class CategoryEntry extends Entry {
 		private final int textWidth;
@@ -66,9 +66,8 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			TextRenderer renderer = ControlsListWidget.this.client.textRenderer;
-			renderer.draw(matrices, this.text, ControlsListWidget.this.controlsScreen.width / 2.0F - this.textWidth / 2.0F, y + entryHeight - 9 - 1, 0xFFFFFF);
+		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			wrapper.drawTextWithShadow(ControlsListWidget.this.client.textRenderer, this.text, (int) (ControlsListWidget.this.controlsScreen.width / 2.0F - this.textWidth / 2.0F), y + entryHeight - 9 - 1, 0xFFFFFF);
 		}
 
 		//#if MC >= 11700
@@ -115,14 +114,15 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 			return ImmutableList.of(this.editButton, this.resetButton);
 		}
 
+
 		@Override
-		public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			boolean focused = ControlsListWidget.this.controlsScreen.isBindingFocused(this.keyBind);
 			float width = x + 90 - ControlsListWidget.this.maxKeyNameLength;
-			ControlsListWidget.this.client.textRenderer.draw(matrices, this.bindingText, width, y + entryHeight / 2.0F - 9 / 2.0F, 0xFFFFFF);
+			wrapper.drawTextWithShadow(ControlsListWidget.this.client.textRenderer, this.bindingText, (int) width, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF);
 			WidgetHelper.setPosition(this.resetButton, x + 190, y);
 			this.resetButton.active = !this.keyBind.isDefault();
-			this.resetButton.render(matrices, mouseX, mouseY, tickDelta);
+			this.resetButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
 			WidgetHelper.setPosition(this.editButton, x + 105, y);
 
 			MutableText editMessage = Texts.literal(this.keyBind.getDisplay());
@@ -139,7 +139,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 				this.editButton.setMessage(editMessage);
 			}
 
-			this.editButton.render(matrices, mouseX, mouseY, tickDelta);
+			this.editButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
 
 			if (this.editButton.isMouseOver(mouseX, mouseY)) {
 				ControlsListWidget.this.controlsScreen.setHoveredKeyBinding(this.keyBind);

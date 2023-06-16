@@ -214,13 +214,13 @@ public class EssentialUtils {
 		double x = player.getX() - pos.getX() - 0.5;
 		double y = player.getY() - pos.getY() + 1.0;
 		double z = player.getZ() - pos.getZ() - 0.5;
-		if (x * x + y * y + z * z > 36 || WorldHelper.isPositionOutOfWorld(player.world, pos) || !player.world.getWorldBorder().contains(pos)) {
+		if (x * x + y * y + z * z > 36 || WorldHelper.isPositionOutOfWorld(player.getEntityWorld(), pos) || !player.getEntityWorld().getWorldBorder().contains(pos)) {
 			return false;
 		}
-		if (player.isBlockBreakingRestricted(player.world, pos, getInteractionManager().getCurrentGameMode())) {
+		if (player.isBlockBreakingRestricted(player.getEntityWorld(), pos, getInteractionManager().getCurrentGameMode())) {
 			return false;
 		}
-		BlockState state = player.world.getBlockState(pos);
+		BlockState state = player.getEntityWorld().getBlockState(pos);
 		return !state.isAir() && !state.contains(FluidBlock.LEVEL) && state.getHardness(getWorld(), pos) >= 0;
 	}
 

@@ -41,7 +41,7 @@ public abstract class ClientPlayerEntityMixin {
 	//$$		ci.cancel();
 	//$$	}
 	//$$}
-	//#else
+	//#elseif MC < 11901
 	//$$@Shadow
 	//$$public abstract void sendChatMessage(String message);
 	//$$@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)

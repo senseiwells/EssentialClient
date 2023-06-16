@@ -8,12 +8,12 @@ import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.rule.game.VanillaGameRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -101,19 +101,22 @@ public abstract class RulesScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
-		this.widget.render(matrices, mouseX, mouseY, delta);
-		super.render(matrices, mouseX, mouseY, delta);
-		drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+		this.renderBackground(wrapper.getContext());
+		this.widget.render(wrapper.getContext(), mouseX, mouseY, delta);
+		super.render(wrapper, mouseX, mouseY, delta);
+		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 		if (this.invalid) {
 			String text = this.isEmpty ? "You can't leave a field empty!" : "Invalid value!";
-			this.fillGradient(matrices, 8, 9, 20 + this.textRenderer.getWidth(text), 14 + this.textRenderer.fontHeight, 0x68000000, 0x68000000);
-			this.drawTexture(matrices, 10, 10, 0, 54, 3, 11);
-			this.textRenderer.draw(matrices, text, 18, 12, 16733525);
+			wrapper.fillGradient(8, 9, 20 + this.textRenderer.getWidth(text), 14 + this.textRenderer.fontHeight, 0x68000000, 0x68000000);
+			wrapper.drawTextWithShadow(this.textRenderer, Texts.literal(text), 18, 12, 16733525);
 		}
 		if (this.tooltip != null) {
-			this.renderOrderedTooltip(matrices, this.tooltip, mouseX, mouseY);
+			//#if MC >= 12000
+			wrapper.getContext().drawOrderedTooltip(this.textRenderer, this.tooltip, mouseX, mouseY);
+			//#else
+			//$$this.renderOrderedTooltip(wrapper.getMatrices(), this.tooltip, mouseX, mouseY);
+			//#endif
 			this.tooltip = null;
 		}
 	}

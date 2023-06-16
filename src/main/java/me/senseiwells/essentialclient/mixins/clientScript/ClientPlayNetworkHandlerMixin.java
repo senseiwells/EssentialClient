@@ -276,7 +276,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		//#endif
 		if (entity == this.client.player) {
 			//#if MC >= 11700
-			Entity killer = this.world.getEntityById(packet.getKillerId());
+			//#if MC >= 12000
+			Entity killer = null;
+			//#else
+			//$$Entity killer = this.world.getEntityById(packet.getKillerId());
+			//#endif
 			MinecraftScriptEvents.ON_DEATH.run(killer, packet.getMessage());
 			//#else
 			//$$Entity killer = this.world.getEntityById(packet.attackerEntityId);

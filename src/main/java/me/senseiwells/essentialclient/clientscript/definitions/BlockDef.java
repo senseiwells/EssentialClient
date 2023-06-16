@@ -434,7 +434,11 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	)
 	private Object isReplaceable(Arguments arguments) {
 		ScriptBlockState blockState = arguments.nextPrimitive(this);
-		return blockState.state.getMaterial().isReplaceable();
+		//#if MC >= 12000
+		return blockState.state.isReplaceable();
+		//#else
+		//$$return blockState.state.getMaterial().isReplaceable();
+		//#endif
 	}
 
 	@FunctionDoc(

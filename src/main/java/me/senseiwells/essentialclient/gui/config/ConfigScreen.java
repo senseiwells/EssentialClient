@@ -5,6 +5,7 @@ import me.senseiwells.essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.gui.clientscript.ClientScriptScreen;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
@@ -40,13 +41,13 @@ public class ConfigScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
+	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+		this.renderBackground(wrapper.getContext());
 		int width = this.width / 2;
 		TextRenderer renderer = this.textRenderer;
-		drawCenteredTextWithShadow(matrices, renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
-		drawCenteredTextWithShadow(matrices, renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
-		super.render(matrices, mouseX, mouseY, delta);
+		wrapper.drawCenteredTextWithShadow(renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
+		wrapper.drawCenteredTextWithShadow(renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
+		super.render(wrapper, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -64,13 +65,13 @@ public class ConfigScreen extends ChildScreen {
 		}
 
 		@Override
-		public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-			this.renderBackground(matrices);
-			super.render(matrices, mouseX, mouseY, delta);
-			int width = this.width / 4;
+		public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
+			this.renderBackground(wrapper.getContext());
+			super.render(wrapper, mouseX, mouseY, delta);
+			MatrixStack matrices = wrapper.getMatrices();
 			matrices.push();
 			matrices.scale(2.0F, 2.0F, 2.0F);
-			drawCenteredTextWithShadow(matrices, this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
+			wrapper.drawCenteredTextWithShadow(this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
 			matrices.pop();
 		}
 	}

@@ -2,12 +2,12 @@ package me.senseiwells.essentialclient.gui.entries;
 
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
+import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
@@ -63,24 +63,32 @@ public class StringListEntry extends BaseListEntry<TextFieldWidget> {
 	}
 
 	@Override
-	protected void renderEditButton(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float delta) {
+	protected void renderEditButton(RenderContextWrapper wrapper, int x, int y, int mouseX, int mouseY, float delta) {
 		int xi = x + 182;
 		int yi = y + 3;
 		WidgetHelper.setPosition(this.editButton, xi, yi);
 		this.editButton.setEditableColor(this.invalid ? 16733525 : 16777215);
 		if (this.invalid) {
 			DiffuseLighting.enableGuiDepthLighting();
-			this.client.getItemRenderer().renderGuiItemIcon(
-				//#if MC >= 11904
-				matrices,
-				//#endif
+			//#if MC >= 12000
+			wrapper.getContext().drawItem(
 				Items.BARRIER.getDefaultStack(),
 				xi + this.editButton.getWidth() - 18,
 				yi - 1
 			);
+			//#else
+			//$$this.client.getItemRenderer().renderGuiItemIcon(
+			//$$	//#if MC >= 11904
+			//$$	wrapper.getMatrices(),
+			//$$	//#endif
+			//$$	Items.BARRIER.getDefaultStack(),
+			//$$	xi + this.editButton.getWidth() - 18,
+			//$$	yi - 1
+			//$$);
+			//#endif
 			DiffuseLighting.disableGuiDepthLighting();
 		}
-		this.editButton.render(matrices, mouseX, mouseY, delta);
+		this.editButton.render(wrapper.getContext(), mouseX, mouseY, delta);
 	}
 
 	@Override
