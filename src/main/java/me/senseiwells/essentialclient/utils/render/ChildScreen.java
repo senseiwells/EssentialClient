@@ -30,7 +30,7 @@ public class ChildScreen extends Screen {
 
 	@Override
 	public final void render(
-		//#if MC >= 1200
+		//#if MC >= 12000
 		DrawContext context,
 		//#else
 		//$$MatrixStack context,

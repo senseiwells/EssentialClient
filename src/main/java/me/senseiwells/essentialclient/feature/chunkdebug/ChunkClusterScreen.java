@@ -2,9 +2,9 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import me.senseiwells.essentialclient.gui.entries.AbstractListEntry;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.*;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.util.math.ChunkPos;
@@ -59,7 +59,7 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 		}
 	}
 
-	private static class Entry extends ElementListWidget.Entry<Entry> {
+	private static class Entry extends AbstractListEntry<Entry> {
 		private final ButtonWidget viewButton;
 		private final LongSet group;
 		private final ChunkPos around;
@@ -89,22 +89,12 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 			return ImmutableList.of(this.viewButton);
 		}
 
-		//#if MC >= 12000
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawText(EssentialUtils.getClient().textRenderer, "Cluster of " + this.group.size() + " chunks around " + this.around, x - 30, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF, false);
+		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			wrapper.drawTextWithShadow(EssentialUtils.getClient().textRenderer, Texts.literal("Cluster of " + this.group.size() + " chunks around " + this.around), x - 30, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF);
 			WidgetHelper.setPosition(this.viewButton, x + 190, y);
 
-			this.viewButton.render(context, mouseX, mouseY, tickDelta);
+			this.viewButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
 		}
-		//#else
-		//$$@Override
-		//$$public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-		//$$	EssentialUtils.getClient().textRenderer.draw(matrices, "Cluster of " + this.group.size() + " chunks around " + this.around, x - 30, y + entryHeight / 2.0F - 9 / 2.0F, 0xFFFFFF);
-		//$$	WidgetHelper.setPosition(this.viewButton, x + 190, y);
-		//$$
-		//$$	this.viewButton.render(matrices, mouseX, mouseY, tickDelta);
-		//$$}
-		//#endif
 	}
 }

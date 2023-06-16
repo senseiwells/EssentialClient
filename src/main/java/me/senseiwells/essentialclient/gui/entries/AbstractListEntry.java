@@ -13,7 +13,7 @@ import net.minecraft.client.gui.DrawContext;
 public abstract class AbstractListEntry<E extends AbstractListEntry<E>> extends ElementListWidget.Entry<E> implements ParentElement {
 	@Override
 	public final void render(
-		//#if MC >= 1200
+		//#if MC >= 12000
 		DrawContext context,
 		//#else
 		//$$MatrixStack context,

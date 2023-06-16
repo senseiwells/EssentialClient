@@ -108,7 +108,7 @@ public abstract class RulesScreen extends ChildScreen {
 		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 		if (this.invalid) {
 			String text = this.isEmpty ? "You can't leave a field empty!" : "Invalid value!";
-			wrapper.fillGradient(8, 9, 20 + this.textRenderer.getWidth(text), 14 + this.textRenderer.fontHeight, 0x68000000, 0x68000000);
+			wrapper.fill(8, 9, 20 + this.textRenderer.getWidth(text), 14 + this.textRenderer.fontHeight, 0x68000000);
 			wrapper.drawTextWithShadow(this.textRenderer, Texts.literal(text), 18, 12, 16733525);
 		}
 		if (this.tooltip != null) {

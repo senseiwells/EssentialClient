@@ -21,7 +21,7 @@ public class RenderContextWrapper {
 		this.context = context;
 	}
 	//#else
-	//$$public ContextWrapper(MatrixStack context) {
+	//$$public RenderContextWrapper(MatrixStack context) {
 	//$$	this.context = context;
 	//$$}
 	//#endif
@@ -59,11 +59,11 @@ public class RenderContextWrapper {
 		//#endif
 	}
 
-	public void fillGradient(int startX, int startY, int endX, int endY, int colorStart, int colorEnd) {
+	public void fill(int startX, int startY, int endX, int endY, int color) {
 		//#if MC >= 12000
-		this.context.fillGradient(startX, startY, endX, endY, colorStart, colorEnd);
+		this.context.fill(startX, startY, endX, endY, color);
 		//#else
-		//$$DrawableHelper.fillGradient(this.getMatrices(), startX, startY, endX, endY, colorStart, colorEnd);
+		//$$DrawableHelper.fill(this.getMatrices(), startX, startY, endX, endY, color);
 		//#endif
 	}
 }

@@ -48,7 +48,7 @@ public class ChunkDebugScreen extends ChildScreen {
 		}));
 		this.addDrawableChild(WidgetHelper.newButton(buttonWidth + FOOTER_ROW_PADDING * 2, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.RETURN_TO_PLAYER, button -> {
 			if (this.client.player != null) {
-				ChunkGrid.instance.setDimension(this.client.player.getWorld());
+				ChunkGrid.instance.setDimension(this.client.player.getEntityWorld());
 				dimensionButton.setMessage(ChunkGrid.instance.getPrettyDimension());
 				int chunkX = EntityHelper.getEntityChunkX(this.client.player);
 				int chunkZ = EntityHelper.getEntityChunkZ(this.client.player);

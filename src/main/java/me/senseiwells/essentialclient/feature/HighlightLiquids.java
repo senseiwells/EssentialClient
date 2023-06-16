@@ -58,9 +58,7 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 		WATER_FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/water_flow");
 		WATER_STILL_SPRITE_ID = new Identifier("essentialclient", "block/water_still");
 
-		// Possible they have a texture pack to recolour ocean water colour?
-		Biome ocean = RegistryHelper.getBiomeRegistry().get(BiomeKeys.OCEAN);
-		DEFAULT_WATER_COLOUR = ocean == null ? 0x3F76E4 : ocean.getWaterColor();
+		DEFAULT_WATER_COLOUR = 0x3F76E4;
 	}
 
 	public static void load() {
