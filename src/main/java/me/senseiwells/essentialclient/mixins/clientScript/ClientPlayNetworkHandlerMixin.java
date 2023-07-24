@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptIO;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
@@ -137,15 +138,13 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	}
 
 	//#if MC >= 11903
-	@Redirect(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/message/MessageHandler;onChatMessage(Lnet/minecraft/network/message/SignedMessage;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/network/message/MessageType$Parameters;)V"))
-	private void onChatMessage(MessageHandler instance, SignedMessage message, GameProfile sender, MessageType.Parameters params) {
+	@WrapWithCondition(method = "onChatMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/message/MessageHandler;onChatMessage(Lnet/minecraft/network/message/SignedMessage;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/network/message/MessageType$Parameters;)V"))
+	private boolean onChatMessage(MessageHandler instance, SignedMessage message, GameProfile sender, MessageType.Parameters params) {
 		MessageType messageType = params.type();
 		Identifier typeId = this.combinedDynamicRegistries.getCombinedRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getId(messageType);
 		String content = message.getContent().getString();
 		String type = typeId == null ? "unknown" : typeId.getPath();
-		if (!MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(sender.getId().toString(), content, type)) {
-			instance.onChatMessage(message, sender, params);
-		}
+		return !MinecraftScriptEvents.ON_RECEIVE_MESSAGE.run(sender.getId().toString(), content, type);
 	}
 	//#elseif MC >= 11901
 	//$$@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // Not much we can do about that one
