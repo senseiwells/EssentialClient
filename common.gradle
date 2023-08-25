@@ -4,6 +4,7 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.2"
 	id "io.github.juuxel.loom-quiltflower" version "1.7.0"
 	id "com.replaymod.preprocess" version "897c4096e2"
+	id 'me.modmuss50.mod-publish-plugin' version '0.3.4'
 }
 
 int mcVersion = 1
@@ -116,6 +117,35 @@ shadowJar {
 	from "LICENSE"
 
 	relocate("com.llamalad7", "shadow.llamalad7")
+}
+
+publishMods {
+	file = remapJar.archiveFile
+	changelog = """
+	Fixed bug with Chunk Debug that caused incorrect chunk colours
+	Fixed Compatability with Chat Heads
+	Fixed issue with ClientScript screen
+	"""
+	type = STABLE
+	modLoaders.add("fabric")
+
+	displayName = "EssentialClient ${project.minecraft_version} v${project.mod_version}"
+
+	modrinth {
+		accessToken = providers.environmentVariable("MODRINTH_API_KEY")
+		projectId = "sH0dfrKf"
+		minecraftVersions.add(project.minecraft_version)
+
+		requires {
+			id = "P7dR8mSH"
+		}
+		requires {
+			id = "TQTTVgYE"
+		}
+		optional {
+			id = "mOgUt4GM"
+		}
+	}
 }
 
 
