@@ -95,10 +95,17 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 
 		@Override
 		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			wrapper.drawTextWithShadow(this.client.textRenderer, Texts.literal(this.name), x - 50, y + ClientScriptWidget.this.height / 2 - 9 / 2, 16777215);
-			WidgetHelper.setPosition(this.checkButton, x + width - 20, y);
-			WidgetHelper.setPosition(this.startButton, x + width - 70, y);
-			WidgetHelper.setPosition(this.configButton, x + width - 120, y);
+			//#if MC >= 12000
+			wrapper.drawTextWithShadow(this.client.textRenderer, Texts.literal(this.name), x - 50, y, 16777215);
+			WidgetHelper.setPosition(this.checkButton, x + 70, y);
+			WidgetHelper.setPosition(this.startButton, x + 100, y);
+			WidgetHelper.setPosition(this.configButton, x + 150, y);
+			//#else
+			//$$wrapper.drawTextWithShadow(this.client.textRenderer, Texts.literal(this.name), x - 50, y + ClientScriptWidget.this.height / 2 - 9 / 2, 16777215);
+			//$$WidgetHelper.setPosition(this.checkButton, x + width - 20, y);
+			//$$WidgetHelper.setPosition(this.startButton, x + width - 70, y);
+			//$$WidgetHelper.setPosition(this.configButton, x + width - 120, y);
+			//#endif
 			this.startButton.active = this.client.player != null;
 			this.startButton.setMessage(this.scriptInstance.isScriptRunning() ? STOP : START);
 			this.configButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
