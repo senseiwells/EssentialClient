@@ -377,7 +377,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "getTimeOfDay",
 		desc = {
 			"This will get the time of day of the world",
-			"info on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle)"
+			"info on the time of day [here](https://minecraft.wiki/w/Daylight_cycle)"
 		},
 		returns = @ReturnDoc(type = NumberDef.class, desc = "the time of day of the world, between 0 and 24000"),
 		examples = "world.getTimeOfDay();"
@@ -390,7 +390,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "renderParticle",
 		desc = {
 			"This will render a particle in the world, you can find a list of all",
-			"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),",
+			"the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),",
 			"if the id is invalid it will throw an error"
 		},
 		params = {
@@ -421,7 +421,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "renderParticle",
 		desc = {
 			"This will render a particle in the world, you can find a list of all",
-			"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),",
+			"the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),",
 			"this will throw an error if the id is invalid"
 		},
 		params = {
@@ -448,7 +448,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		name = "renderParticle",
 		desc = {
 			"This will render a particle in the world with a velocity, you can find a list of all",
-			"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),",
+			"the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),",
 			"this will throw an error if the id is invalid"
 		},
 		params = {
