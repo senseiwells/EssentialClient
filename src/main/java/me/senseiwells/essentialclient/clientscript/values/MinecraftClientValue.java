@@ -670,7 +670,7 @@ public class MinecraftClientValue extends GenericValue<MinecraftClient> {
 			name = "playSound",
 			desc = {
 				"This plays the given sound with the given volume and pitch around the player",
-				"sound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events)"
+				"sound id's can be found [here](https://minecraft.wiki/w/Sounds.json#Sound_events)"
 			},
 			params = {
 				STRING, "soundId", "the sound id you want to play",

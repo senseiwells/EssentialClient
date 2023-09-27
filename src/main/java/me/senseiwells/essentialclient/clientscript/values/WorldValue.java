@@ -280,7 +280,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			name = "getTimeOfDay",
 			desc = {
 				"This will get the time of day of the world",
-				"info on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle)"
+				"info on the time of day [here](https://minecraft.wiki/w/Daylight_cycle)"
 			},
 			returns = {NUMBER, "the time of day of the world, between 0 and 24000"},
 			example = "world.getTimeOfDay();"
@@ -293,7 +293,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			name = "renderParticle",
 			desc = {
 				"This will render a particle in the world, you can find a list of all",
-				"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles)"
+				"the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles)"
 			},
 			params = {
 				STRING, "particleId", "the id of the particle",
@@ -323,7 +323,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			name = "renderParticle",
 			desc = {
 				"This will render a particle in the world, you can find a list of all",
-				"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles)"
+				"the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles)"
 			},
 			params = {
 				STRING, "particleId", "the id of the particle",
@@ -357,7 +357,7 @@ public class WorldValue extends GenericValue<ClientWorld> {
 			name = "renderParticle",
 			desc = {
 				"This will render a particle in the world with a velocity, you can find a list of all",
-				"the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles)"
+				"the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles)"
 			},
 			params = {
 				STRING, "particleId", "the id of the particle",

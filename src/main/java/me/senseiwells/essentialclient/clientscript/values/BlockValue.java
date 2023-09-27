@@ -311,7 +311,7 @@ public class BlockValue extends GenericValue<BlockState> implements MaterialLike
 			desc = {
 				"This gets the properties of the Block",
 				"You can find a list of all block properties",
-				"[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)"
+				"[here](https://minecraft.wiki/w/Java_Edition_data_values#Block_states)"
 			},
 			returns = {MAP, "the properties of the Block, may be empty if there are no properties"},
 			example = "block.getBlockProperties();"

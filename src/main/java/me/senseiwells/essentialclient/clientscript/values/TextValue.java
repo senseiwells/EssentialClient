@@ -216,7 +216,7 @@ public class TextValue extends GenericValue<MutableText> {
 			name = "format",
 			desc = {
 				"This allows you to add a formatting to a text instance",
-				"A list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes)"
+				"A list of formatting names can be found [here](https://minecraft.wiki/w/Formatting_codes)"
 			},
 			params = {STRING, "formatting", "the name of the formatting"},
 			returns = {TEXT, "the text instance with the formatting added"},
