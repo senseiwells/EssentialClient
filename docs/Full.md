@@ -3190,7 +3190,7 @@ block.getBlockEntityNbt();
 ### `<Block>.getBlockProperties()`
 - Description: This gets the properties of the Block
 You can find a list of all block properties
-[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states).
+[here](https://minecraft.wiki/w/Java_Edition_data_values#Block_states).
 - Returns - Map: The properties of the Block, may be empty if there are no properties.
 - Example:
 ```kotlin
@@ -6445,7 +6445,7 @@ livingEntity.getHealth();
 ### `<LivingEntity>.getStatusEffects()`
 - Description: This gets the LivingEntity's status effects, you can find
 a list of all the ids of the status effects
-[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects).
+[here](https://minecraft.wiki/w/Java_Edition_data_values#Effects).
 - Returns - List: A list of status effects, may be empty.
 - Example:
 ```kotlin
@@ -7360,7 +7360,7 @@ client.parseStringToNbt('{"test":"test"}');
 
 ### `<MinecraftClient>.playSound(soundId, volume, pitch)`
 - Description: This plays the given sound with the given volume and pitch around the player
-sound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events).
+sound id's can be found [here](https://minecraft.wiki/w/Sounds.json#Sound_events).
 - Parameters:
   - String (`soundId`): The sound id you want to play.
   - Number (`volume`): The volume of the sound.
@@ -9921,7 +9921,7 @@ Text.of('Hello').append(Text.of(' world!'));
 
 ### `<Text>.format(formatting)`
 - Description: This allows you to add a formatting to a text instance.
-A list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes).
+A list of formatting names can be found [here](https://minecraft.wiki/w/Formatting_codes).
 This will throw an error if the formatting is invalid.
 - Parameter - String (`formatting`): The name of the formatting.
 - Returns - Text: The text instance with the formatting added.
@@ -10498,7 +10498,7 @@ world.getSkyLight(new Pos(0, 0, 0));
 
 ### `<World>.getTimeOfDay()`
 - Description: This will get the time of day of the world
-info on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle).
+info on the time of day [here](https://minecraft.wiki/w/Daylight_cycle).
 - Returns - Number: The time of day of the world, between 0 and 24000.
 - Example:
 ```kotlin
@@ -10560,7 +10560,7 @@ world.reloadChunks();
 
 ### `<World>.renderParticle(particleId, pos)`
 - Description: This will render a particle in the world, you can find a list of all
-the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),
+the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),
 this will throw an error if the id is invalid.
 - Parameters:
   - String (`particleId`): The id of the particle.
@@ -10572,7 +10572,7 @@ world.renderParticle('end_rod', pos);
 
 ### `<World>.renderParticle(particleId, x, y, z)`
 - Description: This will render a particle in the world, you can find a list of all
-the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),
+the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),
 if the id is invalid it will throw an error.
 - Parameters:
   - String (`particleId`): The id of the particle.
@@ -10586,7 +10586,7 @@ world.renderParticle('end_rod', 10, 10, 10);
 
 ### `<World>.renderParticle(particleId, pos, velX, velY, velZ)`
 - Description: This will render a particle in the world with a velocity, you can find a list of all
-the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),
+the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),
 this will throw an error if the id is invalid.
 - Parameters:
   - String (`particleId`): The id of the particle.

@@ -212,7 +212,7 @@
   "Method <Block>.getBlockProperties()": {
     "prefix": ".getBlockProperties()",
     "body": ".getBlockProperties()",
-    "description": "<Block>.getBlockProperties()\nThis gets the properties of the Block\nYou can find a list of all block properties\n[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states).\n"
+    "description": "<Block>.getBlockProperties()\nThis gets the properties of the Block\nYou can find a list of all block properties\n[here](https://minecraft.wiki/w/Java_Edition_data_values#Block_states).\n"
   },
   "Method <Block>.getDefaultState()": {
     "prefix": ".getDefaultState()",
@@ -1872,7 +1872,7 @@
   "Method <LivingEntity>.getStatusEffects()": {
     "prefix": ".getStatusEffects()",
     "body": ".getStatusEffects()",
-    "description": "<LivingEntity>.getStatusEffects()\nThis gets the LivingEntity's status effects, you can find\na list of all the ids of the status effects\n[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects).\n"
+    "description": "<LivingEntity>.getStatusEffects()\nThis gets the LivingEntity's status effects, you can find\na list of all the ids of the status effects\n[here](https://minecraft.wiki/w/Java_Edition_data_values#Effects).\n"
   },
   "Method <LivingEntity>.isFlyFalling()": {
     "prefix": ".isFlyFalling()",
@@ -2367,7 +2367,7 @@
   "Method <MinecraftClient>.playSound(soundId, volume, pitch)": {
     "prefix": ".playSound($soundId, $volume, $pitch)",
     "body": ".playSound($soundId, $volume, $pitch)",
-    "description": "<MinecraftClient>.playSound(soundId, volume, pitch)\nThis plays the given sound with the given volume and pitch around the player\nsound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events).\n- Parameter - String (`soundId`): The sound id you want to play.\n- Parameter - Number (`volume`): The volume of the sound.\n- Parameter - Number (`pitch`): The pitch of the sound.\n"
+    "description": "<MinecraftClient>.playSound(soundId, volume, pitch)\nThis plays the given sound with the given volume and pitch around the player\nsound id's can be found [here](https://minecraft.wiki/w/Sounds.json#Sound_events).\n- Parameter - String (`soundId`): The sound id you want to play.\n- Parameter - Number (`volume`): The volume of the sound.\n- Parameter - Number (`pitch`): The pitch of the sound.\n"
   },
   "Method <MinecraftClient>.playerNameFromUuid(uuid)": {
     "prefix": ".playerNameFromUuid($uuid)",
@@ -3702,7 +3702,7 @@
   "Method <Text>.format(formatting)": {
     "prefix": ".format($formatting)",
     "body": ".format($formatting)",
-    "description": "<Text>.format(formatting)\nThis allows you to add a formatting to a text instance.\nA list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes).\nThis will throw an error if the formatting is invalid.\n- Parameter - String (`formatting`): The name of the formatting.\n"
+    "description": "<Text>.format(formatting)\nThis allows you to add a formatting to a text instance.\nA list of formatting names can be found [here](https://minecraft.wiki/w/Formatting_codes).\nThis will throw an error if the formatting is invalid.\n- Parameter - String (`formatting`): The name of the formatting.\n"
   },
   "Method <Text>.withClickEvent(event, value)": {
     "prefix": ".withClickEvent($event, $value)",
@@ -3987,7 +3987,7 @@
   "Method <World>.getTimeOfDay()": {
     "prefix": ".getTimeOfDay()",
     "body": ".getTimeOfDay()",
-    "description": "<World>.getTimeOfDay()\nThis will get the time of day of the world\ninfo on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle).\n"
+    "description": "<World>.getTimeOfDay()\nThis will get the time of day of the world\ninfo on the time of day [here](https://minecraft.wiki/w/Daylight_cycle).\n"
   },
   "Method <World>.isAir(pos)": {
     "prefix": ".isAir($pos)",
@@ -4022,17 +4022,17 @@
   "Method <World>.renderParticle(particleId, pos)": {
     "prefix": ".renderParticle($particleId, $pos)",
     "body": ".renderParticle($particleId, $pos)",
-    "description": "<World>.renderParticle(particleId, pos)\nThis will render a particle in the world, you can find a list of all\nthe particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),\nthis will throw an error if the id is invalid.\n- Parameter - String (`particleId`): The id of the particle.\n- Parameter - Pos (`pos`): The position of the particle.\n"
+    "description": "<World>.renderParticle(particleId, pos)\nThis will render a particle in the world, you can find a list of all\nthe particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),\nthis will throw an error if the id is invalid.\n- Parameter - String (`particleId`): The id of the particle.\n- Parameter - Pos (`pos`): The position of the particle.\n"
   },
   "Method <World>.renderParticle(particleId, x, y, z)": {
     "prefix": ".renderParticle($particleId, $x, $y, $z)",
     "body": ".renderParticle($particleId, $x, $y, $z)",
-    "description": "<World>.renderParticle(particleId, x, y, z)\nThis will render a particle in the world, you can find a list of all\nthe particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),\nif the id is invalid it will throw an error.\n- Parameter - String (`particleId`): The id of the particle.\n- Parameter - Number (`x`): The x position of the particle.\n- Parameter - Number (`y`): The y position of the particle.\n- Parameter - Number (`z`): The z position of the particle.\n"
+    "description": "<World>.renderParticle(particleId, x, y, z)\nThis will render a particle in the world, you can find a list of all\nthe particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),\nif the id is invalid it will throw an error.\n- Parameter - String (`particleId`): The id of the particle.\n- Parameter - Number (`x`): The x position of the particle.\n- Parameter - Number (`y`): The y position of the particle.\n- Parameter - Number (`z`): The z position of the particle.\n"
   },
   "Method <World>.renderParticle(particleId, pos, velX, velY, velZ)": {
     "prefix": ".renderParticle($particleId, $pos, $velX, $velY, $velZ)",
     "body": ".renderParticle($particleId, $pos, $velX, $velY, $velZ)",
-    "description": "<World>.renderParticle(particleId, pos, velX, velY, velZ)\nThis will render a particle in the world with a velocity, you can find a list of all\nthe particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),\nthis will throw an error if the id is invalid.\n- Parameter - String (`particleId`): The id of the particle.\n- Parameter - Pos (`pos`): The position of the particle.\n- Parameter - Number (`velX`): The velocity of the particle on the x axis.\n- Parameter - Number (`velY`): The velocity of the particle on the y axis.\n- Parameter - Number (`velZ`): The velocity of the particle on the z axis.\n"
+    "description": "<World>.renderParticle(particleId, pos, velX, velY, velZ)\nThis will render a particle in the world with a velocity, you can find a list of all\nthe particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),\nthis will throw an error if the id is invalid.\n- Parameter - String (`particleId`): The id of the particle.\n- Parameter - Pos (`pos`): The position of the particle.\n- Parameter - Number (`velX`): The velocity of the particle on the x axis.\n- Parameter - Number (`velY`): The velocity of the particle on the y axis.\n- Parameter - Number (`velZ`): The velocity of the particle on the z axis.\n"
   },
   "Method <World>.setGhostBlock(block, pos)": {
     "prefix": ".setGhostBlock($block, $pos)",

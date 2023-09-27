@@ -160,7 +160,7 @@ public class TextDef extends CreatableDefinition<MutableText> {
 		name = "format",
 		desc = {
 			"This allows you to add a formatting to a text instance.",
-			"A list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes).",
+			"A list of formatting names can be found [here](https://minecraft.wiki/w/Formatting_codes).",
 			"This will throw an error if the formatting is invalid"
 		},
 		params = {@ParameterDoc(type = StringDef.class, name = "formatting", desc = "the name of the formatting")},

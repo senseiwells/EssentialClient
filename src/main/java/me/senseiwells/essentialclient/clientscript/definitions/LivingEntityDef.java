@@ -71,7 +71,7 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 		desc = {
 			"This gets the LivingEntity's status effects, you can find",
 			"a list of all the ids of the status effects",
-			"[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects)"
+			"[here](https://minecraft.wiki/w/Java_Edition_data_values#Effects)"
 		},
 		returns = @ReturnDoc(type = ListDef.class, desc = "a list of status effects, may be empty"),
 		examples = "livingEntity.getStatusEffects();"

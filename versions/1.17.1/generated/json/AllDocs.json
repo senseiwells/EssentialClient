@@ -781,7 +781,7 @@
           "desc": [
             "This gets the properties of the Block",
             "You can find a list of all block properties",
-            "[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)"
+            "[here](https://minecraft.wiki/w/Java_Edition_data_values#Block_states)"
           ],
           "returns": {
             "type": "Map",
@@ -6360,7 +6360,7 @@
           "desc": [
             "This gets the LivingEntity's status effects, you can find",
             "a list of all the ids of the status effects",
-            "[here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Effects)"
+            "[here](https://minecraft.wiki/w/Java_Edition_data_values#Effects)"
           ],
           "returns": {
             "type": "List",
@@ -8082,7 +8082,7 @@
           "is_arbitrary": false,
           "desc": [
             "This plays the given sound with the given volume and pitch around the player",
-            "sound id's can be found [here](https://minecraft.fandom.com/wiki/Sounds.json#Sound_events)"
+            "sound id's can be found [here](https://minecraft.wiki/w/Sounds.json#Sound_events)"
           ],
           "params": [
             {
@@ -12963,7 +12963,7 @@
           "is_arbitrary": false,
           "desc": [
             "This allows you to add a formatting to a text instance.",
-            "A list of formatting names can be found [here](https://minecraft.fandom.com/wiki/Formatting_codes).",
+            "A list of formatting names can be found [here](https://minecraft.wiki/w/Formatting_codes).",
             "This will throw an error if the formatting is invalid"
           ],
           "params": [
@@ -14101,7 +14101,7 @@
           "is_arbitrary": false,
           "desc": [
             "This will get the time of day of the world",
-            "info on the time of day [here](https://minecraft.fandom.com/wiki/Daylight_cycle)"
+            "info on the time of day [here](https://minecraft.wiki/w/Daylight_cycle)"
           ],
           "returns": {
             "type": "Number",
@@ -14217,7 +14217,7 @@
           "is_arbitrary": false,
           "desc": [
             "This will render a particle in the world, you can find a list of all",
-            "the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),",
+            "the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),",
             "this will throw an error if the id is invalid"
           ],
           "params": [
@@ -14241,7 +14241,7 @@
           "is_arbitrary": false,
           "desc": [
             "This will render a particle in the world, you can find a list of all",
-            "the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),",
+            "the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),",
             "if the id is invalid it will throw an error"
           ],
           "params": [
@@ -14275,7 +14275,7 @@
           "is_arbitrary": false,
           "desc": [
             "This will render a particle in the world with a velocity, you can find a list of all",
-            "the particle ids [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Particles),",
+            "the particle ids [here](https://minecraft.wiki/w/Java_Edition_data_values#Particles),",
             "this will throw an error if the id is invalid"
           ],
           "params": [
