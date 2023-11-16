@@ -1,8 +1,8 @@
 package me.senseiwells.essentialclient.utils.clientscript.impl;
 
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -17,7 +17,7 @@ public class ScriptBlockState implements ScriptMaterial {
 
 	@Override
 	public Identifier getId() {
-		return RegistryHelper.getBlockRegistry().getId(this.asBlock());
+		return Registries.BLOCK.getId(this.asBlock());
 	}
 
 	@Override

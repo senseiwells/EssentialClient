@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.mixins.core;
 
 import me.senseiwells.essentialclient.gui.config.ConfigScreen;
 import me.senseiwells.essentialclient.rule.ClientRules;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.text.Text;
@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
-
 	protected TitleScreenMixin(Text title) {
 		super(title);
 	}

@@ -23,8 +23,6 @@ import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.Enchantment;
@@ -36,6 +34,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -111,7 +110,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		if (arguments.isNext(StringDef.class)) {
 			String id = arguments.nextPrimitive(StringDef.class);
 			Identifier identifier = ClientScriptUtils.stringToIdentifier(id);
-			return RegistryHelper.getItemRegistry().getOrEmpty(identifier).orElseThrow(
+			return Registries.ITEM.getOrEmpty(identifier).orElseThrow(
 				() -> new RuntimeError("'%s' is not a valid item stack".formatted(id))
 			).getDefaultStack();
 		}
@@ -229,7 +228,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		Interpreter interpreter = arguments.getInterpreter();
 		ArucasMap enchantmentMap = new ArucasMap();
 		for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.fromNbt(nbtList).entrySet()) {
-			Identifier enchantmentId = RegistryHelper.getEnchantmentRegistry().getId(entry.getKey());
+			Identifier enchantmentId = Registries.ENCHANTMENT.getId(entry.getKey());
 			enchantmentMap.put(
 				interpreter,
 				enchantmentId == null ? interpreter.getNull() : interpreter.create(StringDef.class, enchantmentId.getPath()),
@@ -386,7 +385,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		if (arguments.isNext(TextDef.class)) {
 			text = arguments.nextPrimitive(TextDef.class);
 		} else {
-			text = Texts.literal(arguments.next().toString(arguments.getInterpreter()));
+			text = Text.literal(arguments.next().toString(arguments.getInterpreter()));
 		}
 		itemStack.setCustomName(text);
 		return instance;

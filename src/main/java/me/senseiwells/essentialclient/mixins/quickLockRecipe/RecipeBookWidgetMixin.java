@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,11 +26,18 @@ public abstract class RecipeBookWidgetMixin {
 	@Shadow
 	protected abstract void refreshResults(boolean resetCurrentPage);
 
-	@Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/recipebook/RecipeBookResults;getLastClickedRecipe()Lnet/minecraft/recipe/Recipe;"), cancellable = true)
+	@Inject(
+		method = "mouseClicked",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/gui/screen/recipebook/RecipeBookResults;getLastClickedRecipe()Lnet/minecraft/recipe/RecipeEntry;"
+		),
+		cancellable = true
+	)
 	private void isMiddleClick(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-		Recipe<?> recipe = this.recipesArea.getLastClickedRecipe();
+		RecipeEntry<?> recipe = this.recipesArea.getLastClickedRecipe();
 		if (button == 2 && recipe != null) {
-			String itemName = RecipeHelper.getOutput(recipe).getItem().getTranslationKey();
+			String itemName = recipe.value().getResult(EssentialUtils.getRegistryManager()).getItem().getTranslationKey();
 			if (I18n.hasTranslation(itemName)) {
 				this.searchField.setText(I18n.translate(itemName));
 				this.refreshResults(true);

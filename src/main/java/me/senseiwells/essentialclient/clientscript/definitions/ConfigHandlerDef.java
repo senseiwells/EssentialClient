@@ -16,7 +16,7 @@ import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptConfigHandler;
-import me.senseiwells.essentialclient.utils.render.Texts;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -259,7 +259,7 @@ public class ConfigHandlerDef extends CreatableDefinition<ScriptConfigHandler> {
 	)
 	private RulesScreen createScreen0(Arguments arguments) {
 		ScriptConfigHandler handler = arguments.nextPrimitive(this);
-		return handler.createScreen(Texts.literal(handler.getConfigName()), true);
+		return handler.createScreen(Text.literal(handler.getConfigName()), true);
 	}
 
 	@FunctionDoc(

@@ -2,9 +2,9 @@ package me.senseiwells.essentialclient.mixins.clientNick;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
@@ -14,9 +14,6 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-//#if MC >= 11700
-import net.minecraft.client.render.entity.EntityRendererFactory;
 //#else
 //$$import net.minecraft.client.render.entity.EntityRenderDispatcher;
 //#endif
@@ -40,7 +37,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			String playerName = entity.getEntityName();
 			String newPlayerName = ConfigClientNick.INSTANCE.get(playerName);
-			text = newPlayerName != null ? Texts.literal(newPlayerName) : text;
+			text = newPlayerName != null ? Text.literal(newPlayerName) : text;
 		}
 		super.renderLabelIfPresent((AbstractClientPlayerEntity) entity, text, matrices, vertexConsumers, light);
 	}

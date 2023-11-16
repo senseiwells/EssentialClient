@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.utils.render;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
 
 public class RuleWidget {
 	private final String name;
@@ -26,8 +28,8 @@ public class RuleWidget {
 		this.y = y;
 	}
 
-	public void drawRule(RenderContextWrapper wrapper, TextRenderer font, float fontX, float fontY, int colour) {
-		wrapper.drawTextWithShadow(font, Texts.literal(getShortName(this.name)), (int) fontX, (int) fontY, colour);
+	public void drawRule(DrawContext context, TextRenderer font, float fontX, float fontY, int colour) {
+		context.drawTextWithShadow(font, Text.literal(getShortName(this.name)), (int) fontX, (int) fontY, colour);
 	}
 
 	public boolean isHovered(int mouseX, int mouseY) {

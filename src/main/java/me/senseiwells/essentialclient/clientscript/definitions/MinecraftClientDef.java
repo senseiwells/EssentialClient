@@ -39,7 +39,6 @@ import me.senseiwells.essentialclient.utils.command.CommandHelper;
 import me.senseiwells.essentialclient.utils.interfaces.ChatHudAccessor;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
 import me.senseiwells.essentialclient.utils.keyboard.KeyboardHelper;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.network.MojangAPI;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
@@ -55,6 +54,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.UpdateSignC2SPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -374,7 +374,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		MinecraftClient client = arguments.nextPrimitive(this);
 
 		//#if MC >= 11901
-		ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
+		ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).essentialclient$getMessages().toArray(ChatHudLine[]::new);
 		//#else
 		//$$ChatHudLine<Text>[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
 		//#endif
@@ -704,7 +704,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		String soundId = arguments.skip().nextPrimitive(StringDef.class);
 		Double volume = arguments.nextPrimitive(NumberDef.class);
 		Double pitch = arguments.nextPrimitive(NumberDef.class);
-		SoundEvent soundEvent = RegistryHelper.getSoundEventRegistry().get(ClientScriptUtils.stringToIdentifier(soundId));
+		SoundEvent soundEvent = Registries.SOUND_EVENT.get(ClientScriptUtils.stringToIdentifier(soundId));
 		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
 		return null;
 	}
@@ -751,7 +751,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 			"This sets the item stack that is currently being held by the cursor, this does not work",
 			"in normal screens only in FakeScreens, this does not actually pick up an item just display like you have"
 		},
-		params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the item stack to set")},
+		params = @ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the item stack to set"),
 		examples = "client.setCursorStack(Material.DIAMOND.asItemStack());"
 	)
 	private boolean setCursorStack(Arguments arguments) {
@@ -771,11 +771,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	)
 	private double getClientRenderDistance(Arguments arguments) {
 		MinecraftClient client = arguments.nextPrimitive(this);
-		//#if MC >= 11900
 		return client.options.getViewDistance().getValue();
-		//#else
-		//$$return client.options.viewDistance;
-		//#endif
 	}
 
 	@FunctionDoc(

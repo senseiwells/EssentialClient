@@ -12,8 +12,6 @@ import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.interfaces.IGhostRecipeBookWidget;
-import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
-import me.senseiwells.essentialclient.utils.misc.RecipeHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -31,6 +29,7 @@ import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.RenameItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
 import net.minecraft.recipe.*;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.*;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -69,7 +68,7 @@ public class InventoryUtils {
 				return;
 			}
 			if (slotType == EquipmentSlot.MAINHAND) {
-				int currentHotbarSlot = PlayerHelper.getPlayerInventory().selectedSlot;
+				int currentHotbarSlot = playerEntity.getInventory().selectedSlot;
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, currentHotbarSlot, SlotActionType.SWAP, client.player);
 			} else if (slotType == EquipmentSlot.OFFHAND) {
 				client.interactionManager.clickSlot(container.syncId, sourceSlot, 40, SlotActionType.SWAP, client.player);
@@ -95,11 +94,7 @@ public class InventoryUtils {
 		ScreenHandler containerPlayer = player.currentScreenHandler;
 		for (Slot slot : containerPlayer.slots) {
 			ItemStack stack = slot.getStack();
-			//#if MC >= 12000
 			if (ItemStack.canCombine(stack, test)) {
-				//#else
-				//$$if (stack.isItemEqual(test) && ItemStack.areNbtEqual(stack, test)) {
-				//#endif
 				interactionManager.clickSlot(containerPlayer.syncId, slot.id, 1, SlotActionType.THROW, player);
 			}
 		}
@@ -163,7 +158,12 @@ public class InventoryUtils {
 		}
 	}
 
-	private static void fillCraftingGrid(ScreenHandler screenHandler, Slot slotGridFirst, ItemStack ingredientReference, List<Integer> targetSlots) {
+	private static void fillCraftingGrid(
+		ScreenHandler screenHandler,
+		Slot slotGridFirst,
+		ItemStack ingredientReference,
+		List<Integer> targetSlots
+	) {
 		PlayerEntity player = EssentialUtils.getPlayer();
 		if (player == null) {
 			return;
@@ -238,19 +238,11 @@ public class InventoryUtils {
 	}
 
 	public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2) {
-		//#if MC >= 12000
 		return !stack1.isEmpty() && stack1.getItem() == stack2.getItem();
-		//#else
-		//$$return !stack1.isEmpty() && stack1.isItemEqual(stack2);
-		//#endif
 	}
 
 	public static boolean areStacksTotallyEqual(ItemStack stack1, ItemStack stack2) {
-		//#if MC >= 12000
 		return !stack1.isEmpty() && ItemStack.canCombine(stack1, stack2);
-		//#else
-		//$$return !stack1.isEmpty() && stack1.isItemEqual(stack2) && ItemStack.areNbtEqual(stack1, stack2);
-		//#endif
 	}
 
 	private static int matchSlot(ScreenHandler container, Slot slotReference, ItemStack stackReference) {
@@ -310,19 +302,11 @@ public class InventoryUtils {
 	}
 
 	public static ItemStack getCursorStack() {
-		//#if MC >= 11700
 		return getPlayer().currentScreenHandler.getCursorStack();
-		//#else
-		//$$return getPlayer().inventory.getCursorStack();
-		//#endif
 	}
 
 	public static boolean setCursorStack(ItemStack stack) {
-		//#if MC >= 11700
 		getPlayer().currentScreenHandler.setCursorStack(stack);
-		//#else
-		//$$getPlayer().inventory.getCursorStack();
-		//#endif
 		return true;
 	}
 
@@ -330,11 +314,11 @@ public class InventoryUtils {
 		return screenHandler.slots.get(slotId).getStack();
 	}
 
-	public static boolean areRecipesEqual(Recipe<?> recipe, Recipe<?> other) {
+	public static boolean areRecipesEqual(RecipeEntry<?> recipe, RecipeEntry<?> other) {
 		if (recipe == null || other == null) {
 			return false;
 		}
-		return recipe.getId().equals(other.getId());
+		return recipe.id().equals(other.id());
 	}
 
 	public static boolean areTradesEqual(TradeOffer trade, TradeOffer other) {
@@ -381,11 +365,11 @@ public class InventoryUtils {
 	}
 
 	@SuppressWarnings("unused")
-	public static void doCraftingSlotsFillAction(Recipe<?> recipe, HandledScreen<?> handledScreen, boolean craftAll) {
+	public static void doCraftingSlotsFillAction(RecipeEntry<?> recipe, HandledScreen<?> handledScreen, boolean craftAll) {
 		doCraftingSlotsFillAction(recipe, null, handledScreen, craftAll);
 	}
 
-	public static void doCraftingSlotsFillAction(Recipe<?> recipe, Recipe<?> lastRecipe, HandledScreen<?> handledScreen, boolean craftAll) {
+	public static void doCraftingSlotsFillAction(RecipeEntry<?> recipe, RecipeEntry<?> lastRecipe, HandledScreen<?> handledScreen, boolean craftAll) {
 		RecipeBookWidget widget;
 		if (handledScreen instanceof InventoryScreen playerScreen) {
 			widget = playerScreen.getRecipeBookWidget();
@@ -418,8 +402,8 @@ public class InventoryUtils {
 		if (totalCraftOps == 0 && isGridEmpty(handler, gridLength)) {
 			widget.showGhostRecipe(recipe, player.currentScreenHandler.slots);
 		} else {
-			((IGhostRecipeBookWidget) widget).clearGhostSlots();
-			parseRecipeAndCacheInventory(handler, gridLength, recipe, craftInputIds, craftAll ? totalCraftOps : 1);
+			((IGhostRecipeBookWidget) widget).essentialclient$clearGhostSlots();
+			parseRecipeAndCacheInventory(handler, gridLength, recipe.value(), craftInputIds, craftAll ? totalCraftOps : 1);
 		}
 		matcher.clear();
 	}
@@ -501,7 +485,7 @@ public class InventoryUtils {
 
 	// ClientScript stuff
 
-	public static void craftRecipe(Recipe<?> recipe, boolean shouldDrop, boolean craftAll) {
+	public static void craftRecipe(RecipeEntry<?> recipe, boolean shouldDrop, boolean craftAll) {
 		ScreenHandler handler = clickRecipe(recipe, craftAll);
 		if (shouldDrop) {
 			InventoryUtils.dropStackScheduled(handler, craftAll);
@@ -510,7 +494,7 @@ public class InventoryUtils {
 		}
 	}
 
-	public static ScreenHandler clickRecipe(Recipe<?> recipe, boolean craftAll) {
+	public static ScreenHandler clickRecipe(RecipeEntry<?> recipe, boolean craftAll) {
 		if (!(EssentialUtils.getClient().currentScreen instanceof HandledScreen<?> handledScreen)) {
 			throw new RuntimeError("Must be in a crafting GUI");
 		}
@@ -609,9 +593,10 @@ public class InventoryUtils {
 		if (!valid) {
 			return false;
 		}
-		List<StonecuttingRecipe> stonecuttingRecipes = cutterHandler.getAvailableRecipes();
+		List<RecipeEntry<StonecuttingRecipe>> stonecuttingRecipes = cutterHandler.getAvailableRecipes();
 		for (int i = 0; i < stonecuttingRecipes.size(); i++) {
-			if (RecipeHelper.getOutput(stonecuttingRecipes.get(i)).getItem() == output) {
+			ItemStack result = stonecuttingRecipes.get(i).value().getResult(EssentialUtils.getRegistryManager());
+			if (result.getItem() == output) {
 				cutterHandler.onButtonClick(getPlayer(), i);
 				getInteractionManager().clickButton(cutterHandler.syncId, i);
 				if (cutterHandler.getSlot(1).hasStack()) {
@@ -670,7 +655,7 @@ public class InventoryUtils {
 	}
 
 	public static void clearTradeInputSlot(MerchantScreenHandler handler) {
-		PlayerInventory inventory = PlayerHelper.getPlayerInventory();
+		PlayerInventory inventory = EssentialUtils.getPlayer().getInventory();
 		Slot slot = handler.getSlot(0);
 		if (slot.hasStack()) {
 			if (canMergeIntoMain(inventory, slot.getStack())) {
@@ -764,10 +749,11 @@ public class InventoryUtils {
 			throw new RuntimeError("Must be in a stonecutting GUI");
 		}
 		CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
-		List<StonecuttingRecipe> recipes = stonecutterScreenHandler.getAvailableRecipes();
-		int id = recipes.stream().filter(
-			recipe -> RecipeHelper.getOutput(recipe).getItem() == RecipeHelper.getOutput(cuttingRecipe).getItem()
-		).findFirst().map(recipes::indexOf).orElse(-1);
+		List<RecipeEntry<StonecuttingRecipe>> recipes = stonecutterScreenHandler.getAvailableRecipes();
+		int id = recipes.stream().filter(recipe -> {
+			DynamicRegistryManager access = EssentialUtils.getRegistryManager();
+			return recipe.value().getResult(access).getItem() == cuttingRecipe.getResult(access).getItem();
+		}).findFirst().map(recipes::indexOf).orElse(-1);
 		stonecutterScreenHandler.onButtonClick(getPlayer(), id);
 	}
 
@@ -780,10 +766,12 @@ public class InventoryUtils {
 			throw new RuntimeError("Must be in a stonecutting GUI");
 		}
 		CraftingSharedConstants.IS_SCRIPT_CLICK.set(true);
-		List<StonecuttingRecipe> recipes = stonecutterScreenHandler.getAvailableRecipes();
-		int id = recipes.stream().filter(
-			recipe -> RecipeHelper.getOutput(recipe).getItem() == outputItem && recipe.getIngredients().stream().anyMatch(ingredient -> ingredient.test(new ItemStack(inputItem)))
-		).findFirst().map(recipes::indexOf).orElse(-1);
+		List<RecipeEntry<StonecuttingRecipe>> recipes = stonecutterScreenHandler.getAvailableRecipes();
+		int id = recipes.stream().filter(recipe -> {
+			DynamicRegistryManager access = EssentialUtils.getRegistryManager();
+			Item result = recipe.value().getResult(access).getItem();
+			return result == outputItem && recipe.value().getIngredients().stream().anyMatch(ingredient -> ingredient.test(new ItemStack(inputItem)));
+		}).findFirst().map(recipes::indexOf).orElse(-1);
 		stonecutterScreenHandler.onButtonClick(getPlayer(), id);
 	}
 }

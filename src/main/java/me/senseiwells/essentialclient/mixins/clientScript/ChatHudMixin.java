@@ -16,7 +16,7 @@ public class ChatHudMixin implements ChatHudAccessor {
 	private List<ChatHudLine> messages;
 
 	@Override
-	public List<ChatHudLine> getMessages() {
+	public List<ChatHudLine> essentialclient$getMessages() {
 		return this.messages;
 	}
 }

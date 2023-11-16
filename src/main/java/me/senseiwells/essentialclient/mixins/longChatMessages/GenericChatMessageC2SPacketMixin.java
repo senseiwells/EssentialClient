@@ -2,14 +2,7 @@ package me.senseiwells.essentialclient.mixins.longChatMessages;
 
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
-
-//#if MC >= 11903
 import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
-//#elseif MC >= 11901
-//$$import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
-//$$import net.minecraft.network.packet.c2s.play.RequestChatPreviewC2SPacket;
-//#endif
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;

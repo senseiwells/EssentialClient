@@ -18,16 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import javax.annotation.Nullable;
-
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
 	@Shadow
-	@Nullable
 	public ClientPlayerEntity player;
 
 	@Shadow
-	@org.jetbrains.annotations.Nullable
 	public Screen currentScreen;
 
 	@Shadow
@@ -40,19 +36,11 @@ public class MinecraftClientMixin {
 	}
 
 	@Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
-	//#if MC >= 11800
 	private void onAttack(CallbackInfoReturnable<Boolean> cir) {
 		if (MinecraftScriptEvents.ON_ATTACK.run()) {
 			cir.setReturnValue(false);
 		}
 	}
-	//#else
-	//$$private void onAttack(CallbackInfo ci) {
-	//$$	if (MinecraftScriptEvents.ON_ATTACK.run()) {
-	//$$		ci.cancel();
-	//$$	}
-	//$$}
-	//#endif
 
 	@Inject(method = "doItemUse", at = @At("HEAD"), cancellable = true)
 	private void onUse(CallbackInfo ci) {
@@ -61,7 +49,15 @@ public class MinecraftClientMixin {
 		}
 	}
 
-	@Inject(method = "doItemPick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(
+		method = "doItemPick",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"
+		),
+		locals = LocalCapture.CAPTURE_FAILHARD,
+		cancellable = true
+	)
 	private void onPickBlock(CallbackInfo ci, boolean bl, BlockEntity blockEntity, ItemStack itemStack12) {
 		if (MinecraftScriptEvents.ON_PICK_BLOCK.run(itemStack12)) {
 			ci.cancel();

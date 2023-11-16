@@ -10,9 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
-	//#if MC >= 11700
 	@Shadow
-	public World world;
+	private World world;
 
 	@Shadow
 	public abstract boolean isGlowingLocal();
@@ -23,5 +22,4 @@ public abstract class EntityMixin {
 			cir.setReturnValue(true);
 		}
 	}
-	//#endif
 }

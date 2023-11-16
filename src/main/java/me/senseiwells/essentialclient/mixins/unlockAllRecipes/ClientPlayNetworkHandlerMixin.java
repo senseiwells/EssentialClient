@@ -1,10 +1,13 @@
 package me.senseiwells.essentialclient.mixins.unlockAllRecipes;
 
-import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.feature.RecipeBookCache;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.recipebook.ClientRecipeBook;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
 import net.minecraft.network.packet.s2c.play.UnlockRecipesS2CPacket;
 import net.minecraft.recipe.RecipeManager;
@@ -17,15 +20,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin {
-
-	@Final
-	@Shadow
-	private MinecraftClient client;
-
+public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler {
 	@Shadow
 	@Final
 	private RecipeManager recipeManager;
+
+	protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
+		super(client, connection, connectionState);
+	}
 
 	@Inject(method = "onSynchronizeRecipes", at = @At("HEAD"))
 	private void onSyncRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {

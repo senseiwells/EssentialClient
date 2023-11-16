@@ -12,7 +12,6 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,7 +28,8 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -39,8 +39,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-
-//#if MC >= 11903
 import org.joml.Vector3f;
 //#else
 //$$import net.minecraft.util.math.Vec3f;
@@ -154,7 +152,7 @@ public class MinecraftAPI {
 		builder.addConversion(ScriptItemStack.class, (s, i) -> i.create(ItemStackDef.class, s));
 		builder.addConversion(ScriptPos.class, (p, i) -> i.create(PosDef.class, p));
 		builder.addConversion(ScriptMaterial.class, (m, i) -> i.create(MaterialDef.class, m));
-		builder.addConversion(Recipe.class, (r, i) -> i.create(RecipeDef.class, r));
+		builder.addConversion(RecipeEntry.class, (r, i) -> i.create(RecipeDef.class, r));
 		builder.addConversion(TradeOffer.class, (t, i) -> i.create(TradeDef.class, t));
 		builder.addConversion(ArgumentBuilder.class, (a, i) -> i.create(CommandBuilderDef.class, a));
 		builder.addConversion(ClientRule.class, (c, i) -> i.create(ConfigDef.class, c));
@@ -162,6 +160,6 @@ public class MinecraftAPI {
 		builder.addConversion(ItemStackArgument.class, (s, i) -> EssentialUtils.throwAsUnchecked(() -> i.create(ItemStackDef.class, new ScriptItemStack(s.createStack(1, false)))));
 		builder.addConversion(BlockStateArgument.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b.getBlockState(), null)));
 		builder.addConversion(Identifier.class, (id, i) -> i.create(StringDef.class, id.toString()));
-		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(RegistryHelper.getEnchantmentRegistry().getId(e)));
+		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(Registries.ENCHANTMENT.getId(e)));
 	}
 }

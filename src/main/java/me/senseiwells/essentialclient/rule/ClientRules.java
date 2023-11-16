@@ -16,7 +16,8 @@ import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public class ClientRules extends MappedStringConfig<ClientRule<?>> {
 	public static final ClientRules INSTANCE = new ClientRules();

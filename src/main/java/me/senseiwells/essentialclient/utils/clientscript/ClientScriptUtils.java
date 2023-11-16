@@ -31,24 +31,11 @@ import me.senseiwells.essentialclient.rule.client.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.command.*;
-import me.senseiwells.essentialclient.utils.misc.Events;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-
-//#if MC >= 11903
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-//#elseif MC >= 11901
-//$$import net.minecraft.command.CommandRegistryWrapper;
-//#endif
-
-//#if MC < 11903
-//$$import net.minecraft.util.registry.Registry;
-//#endif
-
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.*;
 import net.minecraft.command.suggestion.SuggestionProviders;
@@ -56,6 +43,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -69,6 +59,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.RaycastContext;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -76,14 +67,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
-import org.lwjgl.glfw.GLFW;
-
 public class ClientScriptUtils {
 	private static final Set<String> WARNED = ConcurrentHashMap.newKeySet();
 	private static final Map<String, TickedKey> HELD_KEYS = new ConcurrentHashMap<>();
 
 	static {
-		Events.ON_TICK_POST.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			for (TickedKey key : HELD_KEYS.values()) {
 				key.tick();
 			}
@@ -306,7 +295,7 @@ public class ClientScriptUtils {
 
 	public static Text instanceToText(ClassInstance instance, Interpreter interpreter) {
 		Text text = instance.getPrimitive(TextDef.class);
-		return text != null ? text : Texts.literal(instance.toString(interpreter));
+		return text != null ? text : Text.literal(instance.toString(interpreter));
 	}
 
 	public static ArucasMap nbtToMap(Interpreter interpreter, NbtCompound compound, int depth) {
@@ -525,54 +514,36 @@ public class ClientScriptUtils {
 		return new CommandParser(arucasMap, interpreter).parse();
 	}
 
-	public static RequiredArgumentBuilder<ServerCommandSource, ?> parseArgument(String argumentName, String typeName, Collection<String> suggests, CommandParser.ArgumentGetter getter) {
+	public static RequiredArgumentBuilder<ServerCommandSource, ?> parseArgument(
+		String argumentName,
+		String typeName,
+		Collection<String> suggests,
+		CommandParser.ArgumentGetter getter
+	) {
 		SuggestionProvider<ServerCommandSource> extraSuggestion = null;
 		ArgumentType<?> type = switch (typeName.toLowerCase()) {
 			case "word" -> StringArgumentType.word();
 			case "string", "quote" -> StringArgumentType.word();
 			case "boolean" -> BoolArgumentType.bool();
-			//#if MC >= 11901
 			case "itemstack" -> ItemStackArgumentType.itemStack(CommandRegister.getRegistryAccess());
 			case "block" -> BlockStateArgumentType.blockState(CommandRegister.getRegistryAccess());
-			//#else
-			//$$case "itemstack" -> ItemStackArgumentType.itemStack();
-			//$$case "block" -> BlockStateArgumentType.blockState();
-			//#endif
 			case "greedystring" -> StringArgumentType.greedyString();
 			case "entity" -> ClientEntityArgumentType.entity();
 			case "entities" -> ClientEntityArgumentType.entities();
 			case "blockpos" -> BlockPosArgumentType.blockPos();
 			case "pos" -> Vec3ArgumentType.vec3();
-			//#if MC >= 11903
 			case "effect" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.STATUS_EFFECT);
 			case "particle" -> ParticleEffectArgumentType.particleEffect(CommandRegister.getRegistryAccess());
 			case "enchantmentid" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENCHANTMENT);
-			//#else
-			//$$case "effect" -> StatusEffectArgumentType.statusEffect();
-			//$$case "particle" -> ParticleEffectArgumentType.particleEffect();
-			//$$case "enchantmentid" -> EnchantmentArgumentType.enchantment();
-			//#endif
 			case "entityid" -> {
 				extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
-				//#if MC >= 11903
 				yield RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENTITY_TYPE);
-				//#else
-				//$$yield EntitySummonArgumentType.entitySummon();
-				//#endif
 			}
 			case "recipeid" -> {
 				extraSuggestion = SuggestionProviders.ALL_RECIPES;
 				yield IdentifierArgumentType.identifier();
 			}
-			case "biomeid" -> {
-				//#if MC >= 11903
-				yield RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.BIOME);
-				//#else
-				//$$extraSuggestion = (commandContext, suggestionsBuilder) ->
-				//$$	CommandSource.suggestIdentifiers(commandContext.getSource().getRegistryManager().get(Registry.BIOME_KEY).getIds(), suggestionsBuilder);
-				//$$yield IdentifierArgumentType.identifier();
-				//#endif
-			}
+			case "biomeid" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.BIOME);
 			case "playername" -> {
 				extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
 				yield StringArgumentType.word();
@@ -628,11 +599,9 @@ public class ClientScriptUtils {
 			FakeCommandSource source = new FakeCommandSource(EssentialUtils.getPlayer());
 			object = selector.isSingleTarget() ? selector.getEntity(source) : selector.getEntities(source);
 		}
-		//#if MC >= 11903
 		if (object instanceof RegistryEntry.Reference<?> reference) {
 			return interpreter.convertValue(reference.value());
 		}
-		//#endif
 		return interpreter.convertValue(object);
 	}
 
@@ -797,7 +766,7 @@ public class ClientScriptUtils {
 			return argumentBuilder;
 		}
 
-		private interface ArgumentGetter {
+		public interface ArgumentGetter {
 			<T extends PrimitiveDefinition<V>, V> V get(String fieldName, Class<T> clazz);
 		}
 	}

@@ -3,26 +3,30 @@ package me.senseiwells.essentialclient.mixins.customClientCape;
 import me.senseiwells.essentialclient.feature.CustomClientCape;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.util.SkinTextures;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@SuppressWarnings("ConstantConditions")
 @Mixin(AbstractClientPlayerEntity.class)
 public class AbstractClientPlayerEntityMixin {
-	@Inject(method = "getCapeTexture", at = @At("RETURN"), cancellable = true)
-	private void onGetCapeTexture(CallbackInfoReturnable<Identifier> cir) {
-		if (CustomClientCape.getCurrentCape() != null && (Object) this instanceof ClientPlayerEntity) {
-			cir.setReturnValue(CustomClientCape.getCurrentCape());
+	@SuppressWarnings("ConstantConditions")
+	@Inject(method = "getSkinTextures", at = @At("RETURN"), cancellable = true)
+	private void onGetCapeTexture(CallbackInfoReturnable<SkinTextures> cir) {
+		if ((Object) this instanceof ClientPlayerEntity) {
+			if (CustomClientCape.getCurrentCape() != null) {
+				SkinTextures old = cir.getReturnValue();
+				cir.setReturnValue(new SkinTextures(
+					old.texture(),
+					old.textureUrl(),
+					CustomClientCape.getCurrentCape(),
+					CustomClientCape.getCurrentCape(),
+					old.model(),
+					old.secure()
+				));
+			}
 		}
 	}
 
-	@Inject(method = "getElytraTexture", at = @At("RETURN"), cancellable = true)
-	private void onGetElytraTexture(CallbackInfoReturnable<Identifier> cir) {
-		if (CustomClientCape.getCapeNames() != null && (Object) this instanceof ClientPlayerEntity) {
-			cir.setReturnValue(CustomClientCape.getCurrentCape());
-		}
-	}
 }

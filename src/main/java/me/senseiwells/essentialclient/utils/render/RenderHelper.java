@@ -5,6 +5,7 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
@@ -14,7 +15,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LightType;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
@@ -22,35 +28,22 @@ import java.nio.IntBuffer;
 import java.util.List;
 import java.util.function.Consumer;
 
-//#if MC >= 11903
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-//#endif
-
-//#if MC >= 11700
-import net.minecraft.util.math.random.Random;
-//#else
-//$$import org.lwjgl.opengl.GL20;
-//#endif
-
 public class RenderHelper {
 	@SuppressWarnings("deprecation")
 	public static final Identifier BLOCK_ATLAS_TEXTURE = SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
 	public static final RenderLayer CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucentCull(BLOCK_ATLAS_TEXTURE);
 	public static final RenderLayer NO_CULL_BLOCK_LAYER = RenderLayer.getEntityTranslucent(BLOCK_ATLAS_TEXTURE);
 
-	public static void drawScaledText(RenderContextWrapper wrapper, Text text, int x, int y, float scale, boolean center) {
+	public static void drawScaledText(DrawContext context, Text text, int x, int y, float scale, boolean center) {
 		MinecraftClient client = EssentialUtils.getClient();
-		MatrixStack matrices = wrapper.getMatrices();
+		MatrixStack matrices = context.getMatrices();
 		matrices.push();
 		matrices.translate(x, y, 0.0D);
 		matrices.scale(scale, scale, 0.0F);
 		if (center) {
-			wrapper.drawCenteredTextWithShadow(client.textRenderer, text, 0, 0, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(client.textRenderer, text, 0, 0, 0xFFFFFF);
 		} else {
-			wrapper.drawTextWithShadow(client.textRenderer, text, 0, 0, 0xFFFFFF);
+			context.drawTextWithShadow(client.textRenderer, text, 0, 0, 0xFFFFFF);
 		}
 		matrices.pop();
 	}
@@ -69,9 +62,6 @@ public class RenderHelper {
 	public static void setupArucasRendering() {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		//#if MC < 11904
-		//$$RenderSystem.disableTexture();
-		//#endif
 		RenderSystem.depthMask(false);
 		RenderSystem.disableCull();
 	}
@@ -80,9 +70,6 @@ public class RenderHelper {
 		RenderSystem.lineWidth(1);
 		RenderSystem.enableCull();
 		RenderSystem.depthMask(true);
-		//#if MC < 11904
-		//$$RenderSystem.enableTexture();
-		//#endif
 		RenderSystem.disableBlend();
 		setPositionColourShader();
 	}
@@ -305,15 +292,9 @@ public class RenderHelper {
 					float x = radius * MathHelper.sin(phi) * MathHelper.cos(theta);
 					float z = radius * MathHelper.sin(phi) * MathHelper.sin(theta);
 					float y = radius * MathHelper.cos(phi);
-					//#if MC >= 11903
 					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
 					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.x, normalVector.y, normalVector.z).next();
-					//#else
-					//$$Vec3f normalVector = new Vec3f(x, y, z);
-					//$$normalVector.normalize();
-					//$$builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.getX(), normalVector.getY(), normalVector.getZ()).next();
-					//#endif
 				}
 			}
 			for (int j = 0; j <= totalSteps; j++) {
@@ -323,15 +304,9 @@ public class RenderHelper {
 					float x = radius * MathHelper.sin(phi) * MathHelper.cos(theta);
 					float z = radius * MathHelper.sin(phi) * MathHelper.sin(theta);
 					float y = radius * MathHelper.cos(phi);
-					//#if MC >= 11903
 					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
 					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.x, normalVector.y, normalVector.z).next();
-					//#else
-					//$$Vec3f normalVector = new Vec3f(x, y, z);
-					//$$normalVector.normalize();
-					//$$builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.getX(), normalVector.getY(), normalVector.getZ()).next();
-					//#endif
 				}
 			}
 			return;
@@ -405,11 +380,7 @@ public class RenderHelper {
 		tilt(matrices, line);
 		addLineVertices(
 			builder, matrices,
-			//#if MC >= 11903
 			pos1.toVector3f(), pos2.toVector3f(),
-			//#else
-			//$$new Vec3f(pos1), new Vec3f(pos2),
-			//#endif
 			red / 255.0F,
 			green / 255.0F,
 			blue / 255.0F,
@@ -418,31 +389,18 @@ public class RenderHelper {
 		matrices.pop();
 	}
 
-	//#if MC >= 11903
 	private static void addLineVertices(BufferBuilder builder, MatrixStack matrices, Vector3f pos1, Vector3f pos2, float red, float green, float blue, float alpha) {
 		float dx = pos1.x - pos2.x;
 		float dy = pos1.y - pos2.y;
 		float dz = pos1.z - pos2.z;
 		Vector3f normalVec = new Vector3f(dx, dy, dz);
-		//#else
-		//$$private static void addLineVertices(BufferBuilder builder, MatrixStack matrices, Vec3f pos1, Vec3f pos2, float red, float green, float blue, float alpha) {
-		//$$float dx = pos1.getX() - pos2.getX();
-		//$$float dy = pos1.getY() - pos2.getY();
-		//$$float dz = pos1.getZ() - pos2.getZ();
-		//$$Vec3f normalVec = new Vec3f(dx, dy, dz);
-		//#endif
 		normalVec.normalize();
 
 		MatrixStack.Entry entry = matrices.peek();
 		Matrix4f model = entry.getPositionMatrix();
 		Matrix3f normal = entry.getNormalMatrix();
-		//#if MC >= 11903
 		builder.vertex(model, pos1.x, pos1.y, pos1.z).color(red, green, blue, alpha).normal(normal, normalVec.x, normalVec.y, normalVec.z).next();
 		builder.vertex(model, pos2.x, pos2.y, pos2.z).color(red, green, blue, alpha).normal(normal, normalVec.x, normalVec.y, normalVec.z).next();
-		//#else
-		//$$builder.vertex(model, pos1.getX(), pos1.getY(), pos1.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
-		//$$builder.vertex(model, pos2.getX(), pos2.getY(), pos2.getZ()).color(red, green, blue, alpha).normal(normal, normalVec.getX(), normalVec.getY(), normalVec.getZ()).next();
-		//#endif
 	}
 
 	public static void renderBlocks(MatrixStack matrices) {
@@ -478,26 +436,14 @@ public class RenderHelper {
 		);
 		if (fakeBlock.getDirection() == null) {
 			matrices.multiply(client.gameRenderer.getCamera().getRotation());
-			//#if MC >= 11903
 			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-			//#else
-			//$$matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
-			//#endif
 		} else {
 			switch (fakeBlock.getDirection()) {
-				//#if MC >= 11903
 				case SOUTH -> matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
 				case EAST -> matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(270));
 				case WEST -> matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
 				case UP -> matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
 				case DOWN -> matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
-				//#else
-				//$$case SOUTH -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
-				//$$case EAST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(270));
-				//$$case WEST -> matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90));
-				//$$case UP -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
-				//$$case DOWN -> matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
-				//#endif
 			}
 		}
 		tilt(matrices, fakeBlock);
@@ -511,15 +457,12 @@ public class RenderHelper {
 			client.world.getLightLevel(LightType.SKY, blockPos)
 		);
 
-		// client.getBlockRenderManager().renderBlockAsEntity(fakeBlock.blockState, matrices, immediate, light, OverlayTexture.DEFAULT_UV);
-
 		renderBlockAsEntity(fakeBlock.getState(), matrices, immediate, fakeBlock.getAlpha() / 255.0F, light, OverlayTexture.DEFAULT_UV, fakeBlock.shouldCull());
 
 		matrices.pop();
 	}
 
 	private static void tilt(MatrixStack matrices, ScriptShape tiltable) {
-		//#if MC >= 11903
 		if (tiltable.getXTilt() != 0.0F) {
 			matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(tiltable.getXTilt()));
 		}
@@ -529,17 +472,6 @@ public class RenderHelper {
 		if (tiltable.getZTilt() != 0.0F) {
 			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(tiltable.getZTilt()));
 		}
-		//#else
-		//$$if (tiltable.getXTilt() != 0.0F) {
-		//$$	matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(tiltable.getXTilt()));
-		//$$}
-		//$$if (tiltable.getYTilt() != 0.0F) {
-		//$$	matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(tiltable.getYTilt()));
-		//$$}
-		//$$if (tiltable.getZTilt() != 0.0F) {
-		//$$	matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(tiltable.getZTilt()));
-		//$$}
-		//#endif
 	}
 
 	private static void scale(MatrixStack matrices, ScriptShape scalable) {
@@ -565,11 +497,7 @@ public class RenderHelper {
 	}
 
 	public static void renderBlock(MatrixStack.Entry entry, VertexConsumer vertexConsumer, BlockState state, BakedModel bakedModel, float red, float green, float blue, float alpha, int light, int overlay) {
-		//#if MC >= 11900
 		Random random = Random.create();
-		//#else
-		//$$java.util.Random random = new java.util.Random();
-		//#endif
 		long seed = 42L;
 		for (Direction direction : Direction.values()) {
 			random.setSeed(seed);
@@ -603,14 +531,8 @@ public class RenderHelper {
 		int[] is = {lights[0], lights[1], lights[2], lights[3]};
 		int[] js = quad.getVertexData();
 		Vec3i vec3i = quad.getFace().getVector();
-		//#if MC >= 11903
 		Matrix4f matrix4f = matrixEntry.getPositionMatrix();
 		Vector3f vec3f = matrixEntry.getNormalMatrix().transform(new Vector3f(vec3i.getX(), vec3i.getY(), vec3i.getZ()));
-		//#else
-		//$$Vec3f vec3f = new Vec3f(vec3i.getX(), vec3i.getY(), vec3i.getZ());
-		//$$Matrix4f matrix4f = matrixEntry.getPositionMatrix();
-		//$$vec3f.transform(matrixEntry.getNormalMatrix());
-		//#endif
 		int i = 8;
 		int j = js.length / i;
 		try (MemoryStack memoryStack = MemoryStack.stackPush()) {
@@ -642,65 +564,37 @@ public class RenderHelper {
 				int r = is[k];
 				m = byteBuffer.getFloat(16);
 				n = byteBuffer.getFloat(20);
-				//#if MC >= 11903
 				Vector4f vector4f = matrix4f.transform(new Vector4f(f, g, h, 1.0F));
 				consumer.vertex(vector4f.x, vector4f.y, vector4f.z, o, p, q, alpha, m, n, overlay, r, vec3f.x, vec3f.y, vec3f.z);
-				//#else
-				//$$Vector4f vector4f = new Vector4f(f, g, h, 1.0f);
-				//$$vector4f.transform(matrix4f);
-				//$$consumer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), o, p, q, alpha, m, n, overlay, r, vec3f.getX(), vec3f.getY(), vec3f.getZ());
-				//#endif
 			}
 		}
 	}
 
 	public static void startLines(BufferBuilder builder) {
-		//#if MC >= 11700
 		builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-		//#else
-		//$$builder.begin(GL20.GL_LINES, VertexFormats.POSITION_COLOR);
-		//#endif
 	}
 
 	public static void startDebugLines(BufferBuilder builder, VertexFormat format) {
-		//#if MC >= 11700
 		builder.begin(VertexFormat.DrawMode.DEBUG_LINES, format);
-		//#else
-		//$$builder.begin(GL20.GL_LINES, format);
-		//#endif
 	}
 
 	public static void startQuads(BufferBuilder builder, VertexFormat format) {
-		//#if MC >= 11700
 		builder.begin(VertexFormat.DrawMode.QUADS, format);
-		//#else
-		//$$builder.begin(GL20.GL_QUADS, format);
-		//#endif
 	}
 
 	public static void setLineShader() {
-		//#if MC >= 11700
 		RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-		//#endif
 	}
 
 	public static void setPositionColourShader() {
-		//#if MC >= 11700
 		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-		//#endif
 	}
 
 	public static void setPositionTextureColourShader() {
-		//#if MC >= 11700
 		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-		//#endif
 	}
 
 	public static void bindTexture(Identifier texture) {
-		//#if MC >= 11700
 		RenderSystem.setShaderTexture(0, texture);
-		//#else
-		//$$EssentialUtils.getClient().getTextureManager().bindTexture(texture);
-		//#endif
 	}
 }

@@ -14,11 +14,10 @@ import me.senseiwells.arucas.functions.builtin.Arguments;
 import me.senseiwells.arucas.functions.builtin.BuiltInFunction;
 import me.senseiwells.arucas.functions.builtin.MemberFunction;
 import me.senseiwells.arucas.interpreter.Interpreter;
-import me.senseiwells.arucas.utils.*;
+import me.senseiwells.arucas.utils.JsonUtils;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -63,7 +62,7 @@ public class TextDef extends CreatableDefinition<MutableText> {
 		examples = "Text.of('Hello World!');"
 	)
 	private Text of(Arguments arguments) {
-		return Texts.literal(arguments.nextPrimitive(StringDef.class));
+		return Text.literal(arguments.nextPrimitive(StringDef.class));
 	}
 
 	@FunctionDoc(

@@ -11,6 +11,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
@@ -42,7 +43,7 @@ public class AlternateDimensionCommand {
 				throw new SimpleCommandExceptionType(Texts.INVALID_DIMENSION).create();
 			}
 			MutableText message = Texts.COORDINATES.generate(dimension).formatted(Formatting.GREEN);
-			MutableText clickable = Texts.literal(" [%s, %s, %s]".formatted(
+			MutableText clickable = Text.literal(" [%s, %s, %s]".formatted(
 				CommandHelper.DECIMAL_FORMAT.format(newX),
 				CommandHelper.DECIMAL_FORMAT.format(playerEntity.getY()),
 				CommandHelper.DECIMAL_FORMAT.format(newZ)

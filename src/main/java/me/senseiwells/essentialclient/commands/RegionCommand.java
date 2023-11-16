@@ -29,14 +29,14 @@ public class RegionCommand {
 				.then(argument("pos", Vec2ArgumentType.vec2())
 					.executes(context -> {
 						Vec2f v = Vec2ArgumentType.getVec2(context, "pos");
-						Text coords = Texts.literal((int) Math.floor(v.x / 512) + "." + (int) Math.floor(v.y / 512)).formatted(Formatting.GREEN);
+						Text coords = Text.literal((int) Math.floor(v.x / 512) + "." + (int) Math.floor(v.y / 512)).formatted(Formatting.GREEN);
 						EssentialUtils.sendMessage(Texts.DISTANT_REGION.generate(coords).formatted(Formatting.GOLD));
 						return 0;
 					})
 				)
 				.executes(context -> {
 					ClientPlayerEntity playerEntity = EssentialUtils.getPlayer();
-					Text coords = Texts.literal((int) Math.floor(playerEntity.getX() / 512) + "." + (int) Math.floor(playerEntity.getZ() / 512)).formatted(Formatting.GREEN);
+					Text coords = Text.literal((int) Math.floor(playerEntity.getX() / 512) + "." + (int) Math.floor(playerEntity.getZ() / 512)).formatted(Formatting.GREEN);
 					EssentialUtils.sendMessage(Texts.CURRENT_REGION.generate(coords).formatted(Formatting.GOLD));
 					return 0;
 				})

@@ -10,26 +10,21 @@ import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
-import me.senseiwells.essentialclient.utils.network.NetworkHandler;
+import me.senseiwells.essentialclient.utils.network.HandlerPayload;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-
-//#if MC >= 11903
+import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.client.network.ClientConnectionState;
 import net.minecraft.client.network.ClientDynamicRegistryType;
-import net.minecraft.registry.CombinedDynamicRegistries;
-import net.minecraft.resource.featuretoggle.FeatureSet;
-//#elseif MC >= 11901
-//$$import net.minecraft.util.registry.DynamicRegistryManager;
-//#endif
-
-//#if MC >= 11901
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandRegistryAccess;
-//#endif
-
 import net.minecraft.command.CommandSource;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
+import net.minecraft.registry.CombinedDynamicRegistries;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.command.ServerCommandSource;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,46 +36,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 900)
-public abstract class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkHandler {
 	@Shadow
 	private CommandDispatcher<CommandSource> commandDispatcher;
 
-	@Shadow
 	@Final
-	private MinecraftClient client;
-
-	//#if MC >= 11903
 	@Shadow
-	private CombinedDynamicRegistries<ClientDynamicRegistryType> combinedDynamicRegistries;
+	private DynamicRegistryManager.Immutable combinedDynamicRegistries;
 
+	@Final
 	@Shadow
 	private FeatureSet enabledFeatures;
-	//#elseif MC >= 11901
-	//$$@Shadow
-	//$$private DynamicRegistryManager.Immutable registryManager;
-	//#endif
 
-	//#if MC >= 11903
+	protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
+		super(client, connection, connectionState);
+	}
+
 	@Shadow
-	public abstract boolean sendCommand(String par1);
-	//#endif
+	public abstract boolean sendCommand(String command);
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "onCommandTree", at = @At("TAIL"))
 	public void onOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
-		//#if MC >= 11903
-		CommandRegistryAccess access = CommandRegistryAccess.of(this.combinedDynamicRegistries.getCombinedRegistryManager(), this.enabledFeatures);
-		//#elseif MC >= 11901
-		//$$CommandRegistryAccess access = new CommandRegistryAccess(this.registryManager);
-		//#endif
-
-		//#if MC >= 11901
+		CommandRegistryAccess access = CommandRegistryAccess.of(this.combinedDynamicRegistries, this.enabledFeatures);
 		CommandHelper.setCommandPacket(packet, access);
 		CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher, access);
-		//#else
-		//$$CommandHelper.setCommandPacket(packet);
-		//$$CommandRegister.registerCommands((CommandDispatcher<ServerCommandSource>) (Object) this.commandDispatcher);
-		//#endif
 	}
 
 	@Inject(method = "onGameJoin", at = @At("TAIL"))
@@ -96,18 +76,14 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	}
 
 	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "onCustomPayload", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;getChannel()Lnet/minecraft/util/Identifier;"), cancellable = true)
-	private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci) {
-		for (NetworkHandler networkHandler : EssentialClient.NETWORK_HANDLERS) {
-			if (networkHandler.getNetworkChannel().equals(packet.getChannel())) {
-				networkHandler.handlePacket(packet.getData(), (ClientPlayNetworkHandler) (Object) this);
-				ci.cancel();
-				break;
-			}
+	@Inject(method = "method_52801", at = @At(value = "HEAD"), cancellable = true)
+	private void onCustomPayload(CustomPayload payload, CallbackInfo ci) {
+		if (payload instanceof HandlerPayload handled) {
+			handled.handle((ClientPlayNetworkHandler) (Object) this);
+			ci.cancel();
 		}
 	}
 
-	//#if MC >= 11903
 	@Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
 	private void onCommand(String command, CallbackInfo ci) {
 		if (this.onCommand(command)) {
@@ -143,5 +119,4 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		}
 		return false;
 	}
-	//#endif
 }

@@ -11,18 +11,10 @@ public enum ChunkStatus implements Colourable {
 	NOISE(Texts.NOISE, 0x61857F), // Grey-blue
 	SURFACE(Texts.SURFACE, 0x013220), // Pine green
 	CARVERS(Texts.CARVERS, 0x88631F), // Brown
-	//#if MC < 12000
-	//$$LIQUID_CARVERS(Texts.LIQUID_CARVERS, 0x9EEEF5), // Baby blue
-	//#endif
 	FEATURES(Texts.FEATURES, 0x3659DE), // Blue
-	//#if MC > 12000
 	INITIALIZE_LIGHT(Texts.TICKET_LIGHT, -1),
-	//#endif
 	LIGHT(Texts.TICKET_LIGHT, -1),
 	SPAWN(Texts.SPAWN, 0xBFFF00), // Lime green
-	//#if MC < 12000
-	//##HEIGHTMAPS(Texts.HEIGHTMAPS, 0xF8518D), // Pink
-	//#endif
 	FULL(Texts.FULL, 0x0A18D8); // Dark blue
 
 	private static final int COUNT = ChunkStatus.values().length;

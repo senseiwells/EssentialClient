@@ -36,7 +36,7 @@ public enum ClientScriptErrorHandler implements ArucasErrorHandler {
 			case "Jetbrains" -> Texts.JETBRAINS_MONO;
 			default -> null;
 		};
-		EssentialUtils.sendMessage(Texts.literal(arucasError.format(interpreter)).styled(s -> s.withFont(identifier).withColor(Formatting.RED)));
+		EssentialUtils.sendMessage(Text.literal(arucasError.format(interpreter)).styled(s -> s.withFont(identifier).withColor(Formatting.RED)));
 	}
 
 	@Override
@@ -51,19 +51,19 @@ public enum ClientScriptErrorHandler implements ArucasErrorHandler {
 
 	@Override
 	public void handleFatalError(@NotNull Throwable throwable, @NotNull Interpreter interpreter) {
-		Text error = Texts.literal("\n").formatted(Formatting.RED).append(Texts.FATAL_ERROR.generate(interpreter.getName()));
+		Text error = Text.literal("\n").formatted(Formatting.RED).append(Texts.FATAL_ERROR.generate(interpreter.getName()));
 		EssentialUtils.sendMessage(error);
 
 		String path = this.writeCrashReport(interpreter, throwable).toAbsolutePath().toString();
 		Text crashReport = Texts.CRASH_REPORT.generate(
-			Texts.literal("\n" + path + "\n")
+			Text.literal("\n" + path + "\n")
 				.formatted(Formatting.UNDERLINE)
 				.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, path)))
 		).formatted(Formatting.RED);
 		EssentialUtils.sendMessage(crashReport);
 
 		EssentialUtils.sendMessage(Texts.CRASH_BUG);
-		Text issueTracker = Texts.literal(ISSUE_TRACKER + "\n")
+		Text issueTracker = Text.literal(ISSUE_TRACKER + "\n")
 			.formatted(Formatting.UNDERLINE)
 			.styled((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, ISSUE_TRACKER)));
 

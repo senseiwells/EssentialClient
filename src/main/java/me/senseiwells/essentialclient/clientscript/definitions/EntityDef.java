@@ -21,14 +21,13 @@ import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
-import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -63,7 +62,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	@NotNull
 	@Override
 	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
-		return "Entity{id=%s}".formatted(RegistryHelper.getEntityTypeRegistry().getId(instance.asPrimitive(this).getType()));
+		return "Entity{id=%s}".formatted(Registries.ENTITY_TYPE.getId(instance.asPrimitive(this).getType()));
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		ClientWorld world = EssentialUtils.getWorld();
 		String string = arguments.nextPrimitive(StringDef.class);
 		return arguments.getInterpreter().convertValue(
-			RegistryHelper.getEntityTypeRegistry().getOrEmpty(ClientScriptUtils.stringToIdentifier(string)).orElseThrow(
+			Registries.ENTITY_TYPE.getOrEmpty(ClientScriptUtils.stringToIdentifier(string)).orElseThrow(
 				() -> new RuntimeError("'%s' is not a valid entity".formatted(string))
 			).create(world)
 		);
@@ -397,7 +396,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	)
 	private float getYaw(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
-		float yaw = EntityHelper.getEntityYaw(entity) % 360;
+		float yaw = entity.getYaw() % 360;
 		return yaw < -180 ? 360 + yaw : yaw;
 	}
 
@@ -408,7 +407,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		examples = "entity.getPitch();"
 	)
 	private float getPitch(Arguments arguments) {
-		return EntityHelper.getEntityPitch(arguments.nextPrimitive(this));
+		return arguments.nextPrimitive(this).getPitch();
 	}
 
 	@FunctionDoc(
@@ -461,7 +460,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		examples = "entity.getFullId();"
 	)
 	private String getFullId(Arguments arguments) {
-		return RegistryHelper.getEntityTypeRegistry().getId(arguments.nextPrimitive(this).getType()).toString();
+		return Registries.ENTITY_TYPE.getId(arguments.nextPrimitive(this).getType()).toString();
 	}
 
 	@FunctionDoc(
@@ -471,7 +470,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		examples = "entity.getId();"
 	)
 	private String getId(Arguments arguments) {
-		return RegistryHelper.getEntityTypeRegistry().getId(arguments.nextPrimitive(this).getType()).getPath();
+		return Registries.ENTITY_TYPE.getId(arguments.nextPrimitive(this).getType()).getPath();
 	}
 
 	@FunctionDoc(
@@ -484,7 +483,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	private boolean isOf(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
 		String id = arguments.nextPrimitive(StringDef.class);
-		EntityType<?> type = RegistryHelper.getEntityTypeRegistry().getOrEmpty(ClientScriptUtils.stringToIdentifier(id)).orElse(null);
+		EntityType<?> type = Registries.ENTITY_TYPE.getOrEmpty(ClientScriptUtils.stringToIdentifier(id)).orElse(null);
 		return entity.getType() == type;
 	}
 

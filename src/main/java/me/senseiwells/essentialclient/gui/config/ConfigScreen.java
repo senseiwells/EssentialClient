@@ -5,11 +5,11 @@ import me.senseiwells.essentialclient.feature.chunkdebug.ChunkDebugScreen;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.gui.clientscript.ClientScriptScreen;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -41,13 +41,13 @@ public class ConfigScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-		this.renderBackground(wrapper.getContext());
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
 		int width = this.width / 2;
 		TextRenderer renderer = this.textRenderer;
-		wrapper.drawCenteredTextWithShadow(renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
-		wrapper.drawCenteredTextWithShadow(renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
-		super.render(wrapper, mouseX, mouseY, delta);
+		context.drawCenteredTextWithShadow(renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
+		context.drawCenteredTextWithShadow(renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
+		super.render(context, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -65,13 +65,13 @@ public class ConfigScreen extends ChildScreen {
 		}
 
 		@Override
-		public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-			this.renderBackground(wrapper.getContext());
-			super.render(wrapper, mouseX, mouseY, delta);
-			MatrixStack matrices = wrapper.getMatrices();
+		public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+			this.renderBackgroundTexture(context);
+			super.render(context, mouseX, mouseY, delta);
+			MatrixStack matrices = context.getMatrices();
 			matrices.push();
 			matrices.scale(2.0F, 2.0F, 2.0F);
-			wrapper.drawCenteredTextWithShadow(this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
 			matrices.pop();
 		}
 	}

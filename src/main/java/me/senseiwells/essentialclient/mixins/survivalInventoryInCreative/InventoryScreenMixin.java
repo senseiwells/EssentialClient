@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.mixins.survivalInventoryInCreative;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.interfaces.IScreenInventory;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -54,14 +54,14 @@ public class InventoryScreenMixin extends Screen implements IScreenInventory {
 					//$$this.client.player
 					//#endif
 				);
-				((IScreenInventory) screen).setForced();
+				((IScreenInventory) screen).essentialclient$setForced();
 				this.client.setScreen(screen);
 			}));
 		}
 	}
 
 	@Override
-	public void setForced() {
+	public void essentialclient$setForced() {
 		this.forced = true;
 	}
 }

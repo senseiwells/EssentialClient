@@ -18,11 +18,7 @@ import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandException;
-
-//#if MC >= 11901
 import net.minecraft.command.CommandRegistryAccess;
-//#endif
-
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
@@ -109,7 +105,7 @@ public class CommandHelper {
 			EssentialUtils.sendMessage(ChatColour.RED + e.getMessage());
 			if (e.getInput() != null && e.getCursor() >= 0) {
 				int cursor = Math.min(e.getCursor(), e.getInput().length());
-				MutableText text = Texts.literal("").formatted(Formatting.GRAY)
+				MutableText text = Text.literal("").formatted(Formatting.GRAY)
 					.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
 				if (cursor > 10) {
 					text.append("...");
@@ -117,33 +113,26 @@ public class CommandHelper {
 
 				text.append(e.getInput().substring(Math.max(0, cursor - 10), cursor));
 				if (cursor < e.getInput().length()) {
-					text.append(Texts.literal(e.getInput().substring(cursor)).formatted(Formatting.RED, Formatting.UNDERLINE));
+					text.append(Text.literal(e.getInput().substring(cursor)).formatted(Formatting.RED, Formatting.UNDERLINE));
 				}
 
-				text.append(Texts.translatable("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
+				text.append(Text.translatable("command.context.here").formatted(Formatting.RED, Formatting.ITALIC));
 				EssentialUtils.sendMessage(text);
 			}
 		} catch (Exception e) {
-			Text error = Texts.literal(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
-			EssentialUtils.getPlayer().sendMessage(Texts.translatable("command.failed")
+			Text error = Text.literal(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
+			EssentialUtils.getPlayer().sendMessage(Text.translatable("command.failed")
 				.styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, error))), false);
 			e.printStackTrace();
 		}
 	}
 
-	//#if MC >= 11901
 	public static void setCommandPacket(CommandTreeS2CPacket packet, CommandRegistryAccess registryAccess) {
 		if (packet == null) {
 			return;
 		}
 		Collection<CommandNode<CommandSource>> commandNodes = packet.getCommandTree(registryAccess).getChildren();
-		//#else
-		//$$public static void setCommandPacket(CommandTreeS2CPacket packet) {
-		//$$	if (packet == null) {
-		//$$		return;
-		//$$	}
-		//$$	Collection<CommandNode<CommandSource>> commandNodes = packet.getCommandTree().getChildren();
-		//#endif
+
 		RootCommandNode<CommandSource> newRootCommandNode = new RootCommandNode<>();
 		for (CommandNode<CommandSource> commandNode : commandNodes) {
 			newRootCommandNode.addChild(commandNode);

@@ -44,19 +44,5 @@
     "carpet": "${carpet_dependency}",
     "fabric": "*",
     "minecraft": "${minecraft_dependency}"
-  },
-  "custom": {
-    "multiconnect": {
-      "custom_payloads": {
-        "allowed_clientbound": [
-          "carpet:hello",
-          "essentialclient:*"
-        ],
-        "allowed_serverbound": [
-          "carpet:hello",
-          "essentialclient:*"
-        ]
-      }
-    }
   }
 }

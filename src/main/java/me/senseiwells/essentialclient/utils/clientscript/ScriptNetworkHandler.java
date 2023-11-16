@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.utils.clientscript;
 
-import io.netty.buffer.Unpooled;
 import me.senseiwells.arucas.builtin.*;
 import me.senseiwells.arucas.classes.instance.ClassInstance;
 import me.senseiwells.arucas.exceptions.RuntimeError;
@@ -16,7 +15,6 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
@@ -53,8 +51,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 			throw new RuntimeError("Server is not accepting client script packets");
 		}
 
-		ArgumentParser parser = new ArgumentParser(arguments);
-		this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(this.getNetworkChannel(), parser.parse()));
+		this.sendDataPacket(buf -> new ArgumentParser(arguments, buf).parse());
 	}
 
 	private record PacketParser(PacketByteBuf buf) {
@@ -79,11 +76,7 @@ public class ScriptNetworkHandler extends NetworkHandler {
 				case DOUBLE -> this.buf.readDouble();
 				case BYTE_ARRAY -> this.buf.readByteArray();
 				case INT_ARRAY -> this.buf.readIntArray();
-				//#if MC >= 11700
 				case LONG_ARRAY -> this.buf.readLongArray();
-				//#else
-				//$$case LONG_ARRAY -> this.buf.readLongArray(null);
-				//#endif
 				case STRING -> this.buf.readString();
 				case TEXT -> this.buf.readText();
 				case UUID -> this.buf.readUuid();
@@ -96,17 +89,8 @@ public class ScriptNetworkHandler extends NetworkHandler {
 		}
 	}
 
-	private static class ArgumentParser {
-		private final Arguments arguments;
-		private final PacketByteBuf buf;
-
-		private ArgumentParser(Arguments arguments) {
-			this.arguments = arguments;
-			this.buf = new PacketByteBuf(Unpooled.buffer());
-			this.buf.writeVarInt(16);
-		}
-
-		private PacketByteBuf parse() {
+	private record ArgumentParser(Arguments arguments, PacketByteBuf buf) {
+		private void parse() {
 			while (this.arguments.hasNext()) {
 				if (this.arguments.isNext(BooleanDef.class)) {
 					this.buf.writeByte(BOOLEAN);
@@ -140,7 +124,6 @@ public class ScriptNetworkHandler extends NetworkHandler {
 					throw new RuntimeError("Cannot serialize unknown type: '%s'".formatted(this.arguments.next().getDefinition().getName()));
 				}
 			}
-			return this.buf;
 		}
 
 		private void parseList(ArucasList list) {

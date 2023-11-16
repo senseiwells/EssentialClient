@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.gui.entries.AbstractListEntry;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.text.MutableText;
@@ -31,9 +31,9 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 		}
 
 		sortedKeys.forEach((category, keys) -> {
-			this.addEntry(new CategoryEntry(Texts.translatable(category)));
+			this.addEntry(new CategoryEntry(Text.translatable(category)));
 			for (ClientKeyBind keyBind : keys) {
-				Text text = Texts.translatable(keyBind.getName());
+				Text text = Text.translatable(keyBind.getName());
 				int i = client.textRenderer.getWidth(text);
 				if (i > this.maxKeyNameLength) {
 					this.maxKeyNameLength = i;
@@ -66,16 +66,14 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 		}
 
 		@Override
-		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			wrapper.drawTextWithShadow(ControlsListWidget.this.client.textRenderer, this.text, (int) (ControlsListWidget.this.controlsScreen.width / 2.0F - this.textWidth / 2.0F), y + entryHeight - 9 - 1, 0xFFFFFF);
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			context.drawTextWithShadow(ControlsListWidget.this.client.textRenderer, this.text, (int) (ControlsListWidget.this.controlsScreen.width / 2.0F - this.textWidth / 2.0F), y + entryHeight - 9 - 1, 0xFFFFFF);
 		}
 
-		//#if MC >= 11700
 		@Override
 		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
-		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {
@@ -102,12 +100,10 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 			this.resetButton.active = !this.keyBind.isDefault();
 		}
 
-		//#if MC >= 11700
 		@Override
 		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
-		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {
@@ -116,30 +112,30 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 
 
 		@Override
-		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			boolean focused = ControlsListWidget.this.controlsScreen.isBindingFocused(this.keyBind);
 			float width = x + 90 - ControlsListWidget.this.maxKeyNameLength;
-			wrapper.drawTextWithShadow(ControlsListWidget.this.client.textRenderer, this.bindingText, (int) width, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF);
+			context.drawTextWithShadow(ControlsListWidget.this.client.textRenderer, this.bindingText, (int) width, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF);
 			WidgetHelper.setPosition(this.resetButton, x + 190, y);
 			this.resetButton.active = !this.keyBind.isDefault();
-			this.resetButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
+			this.resetButton.render(context, mouseX, mouseY, tickDelta);
 			WidgetHelper.setPosition(this.editButton, x + 105, y);
 
-			MutableText editMessage = Texts.literal(this.keyBind.getDisplay());
+			MutableText editMessage = Text.literal(this.keyBind.getDisplay());
 			int textWidth = ControlsListWidget.this.client.textRenderer.getWidth(editMessage);
 			if (textWidth > 70) {
-				editMessage = Texts.literal("...");
+				editMessage = Text.literal("...");
 			}
 
 			if (focused) {
 				this.editButton.setMessage(
-					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
+					Text.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
 			} else {
 				this.editButton.setMessage(editMessage);
 			}
 
-			this.editButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
+			this.editButton.render(context, mouseX, mouseY, tickDelta);
 
 			if (this.editButton.isMouseOver(mouseX, mouseY)) {
 				ControlsListWidget.this.controlsScreen.setHoveredKeyBinding(this.keyBind);

@@ -1,14 +1,12 @@
 package me.senseiwells.essentialclient.mixins.disableBossBar;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-//#if MC >= 12000
-import net.minecraft.client.gui.DrawContext;
 //#else
 //$$import net.minecraft.client.util.math.MatrixStack;
 //#endif

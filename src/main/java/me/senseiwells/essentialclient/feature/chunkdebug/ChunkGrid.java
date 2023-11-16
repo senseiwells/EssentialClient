@@ -3,12 +3,13 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
-import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
 import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -57,7 +58,8 @@ public class ChunkGrid {
 		this.dimensions = this.dimensionPoints.keySet().stream().toList();
 		ClientPlayerEntity player = client.player;
 		if (player != null) {
-			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(EntityHelper.getEntityChunkX(player), EntityHelper.getEntityChunkZ(player)));
+			ChunkPos pos = player.getChunkPos();
+			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(pos.x, pos.z));
 			String playerDimension = player.getEntityWorld().getRegistryKey().getValue().getPath();
 			int dimensionIndex = this.dimensions.indexOf(playerDimension);
 			this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
@@ -83,9 +85,6 @@ public class ChunkGrid {
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 		RenderSystem.enableDepthTest();
-		//#if MC < 11904
-		//$$RenderSystem.disableTexture();
-		//#endif
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -125,7 +124,7 @@ public class ChunkGrid {
 
 		ClientPlayerEntity player = this.client.player;
 		if (player != null && this.isPlayerInDimension(player)) {
-			ChunkPos playerChunkPos = EntityHelper.getEntityChunkPos(player);
+			ChunkPos playerChunkPos = player.getChunkPos();
 			int x = playerChunkPos.x - (isMinimap ? this.minimapCornerPoint.x : this.cornerPoint.getX());
 			int z = playerChunkPos.z - (isMinimap ? this.minimapCornerPoint.y : this.cornerPoint.getY());
 			if (x >= 0 && x <= this.columns && z >= 0 && z <= this.rows) {
@@ -181,7 +180,8 @@ public class ChunkGrid {
 						this.setDimension(player.getEntityWorld());
 						EssentialClient.CHUNK_NET_HANDLER.requestChunkData(this.getDimension());
 					}
-					Point minimapCorner = this.getCornerOfCentre(EntityHelper.getEntityChunkX(player), EntityHelper.getEntityChunkZ(player));
+					ChunkPos pos = player.getChunkPos();
+					Point minimapCorner = this.getCornerOfCentre(pos.x, pos.z);
 					this.minimapCornerPoint.setLocation(minimapCorner);
 				}
 			}
@@ -260,7 +260,7 @@ public class ChunkGrid {
 	}
 
 	private void updateCornerScroll(double scrollAmount) {
-		this.scale += scrollAmount;
+		this.scale += (int) scrollAmount;
 		Point centre = this.getCentre();
 		this.updateRowsAndColumns();
 		this.cornerPoint.setLocation(this.getCornerOfCentre(centre.x, centre.y));

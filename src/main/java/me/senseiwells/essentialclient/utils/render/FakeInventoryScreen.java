@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class FakeInventoryScreen extends GenericContainerScreen {
 	private ArucasFunction function;
 
 	public FakeInventoryScreen(Interpreter interpreter, PlayerInventory inventory, String title, int rows) {
-		super(getHandler(inventory, rows), inventory, Texts.literal(title));
+		super(getHandler(inventory, rows), inventory, Text.literal(title));
 		super.init(EssentialUtils.getClient(), this.width, this.height);
 		this.interpreter = interpreter;
 	}

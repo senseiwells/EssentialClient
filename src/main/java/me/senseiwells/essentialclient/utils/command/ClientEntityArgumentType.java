@@ -6,8 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelectorOptions;
@@ -23,24 +21,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.predicate.NumberRange;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.command.ServerCommandSource;
-
-//#if MC >= 11903
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-//#elseif MC >= 11800
-//$$import net.minecraft.tag.TagKey;
-//#else
-//$$import net.minecraft.tag.EntityTypeTags;
-//$$import net.minecraft.tag.Tag;
-//#endif
-
-//#if MC < 11903
-//$$import net.minecraft.util.registry.Registry;
-//#endif
-
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -357,11 +343,11 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 
 		@SuppressWarnings("unused")
 		private CompletableFuture<Suggestions> suggestAtSelectors(SuggestionsBuilder builder, Consumer<SuggestionsBuilder> playerNameSuggestor) {
-			builder.suggest("@p", Texts.translatable("argument.entity.selector.nearestPlayer"));
-			builder.suggest("@a", Texts.translatable("argument.entity.selector.allPlayers"));
-			builder.suggest("@r", Texts.translatable("argument.entity.selector.randomPlayer"));
-			builder.suggest("@s", Texts.translatable("argument.entity.selector.self"));
-			builder.suggest("@e", Texts.translatable("argument.entity.selector.allEntities"));
+			builder.suggest("@p", Text.translatable("argument.entity.selector.nearestPlayer"));
+			builder.suggest("@a", Text.translatable("argument.entity.selector.allPlayers"));
+			builder.suggest("@r", Text.translatable("argument.entity.selector.randomPlayer"));
+			builder.suggest("@s", Text.translatable("argument.entity.selector.self"));
+			builder.suggest("@e", Text.translatable("argument.entity.selector.allEntities"));
 			return builder.buildFuture();
 		}
 
@@ -404,8 +390,8 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 					@Override
 					void apply(Parser parser) throws CommandSyntaxException {
 						int cursor = parser.reader.getCursor();
-						NumberRange.FloatRange range = NumberRange.FloatRange.parse(parser.reader);
-						if ((range.getMin() != null && range.getMin() < 0) || (range.getMax() != null && range.getMax() < 0)) {
+						NumberRange.DoubleRange range = NumberRange.DoubleRange.parse(parser.reader);
+						if ((range.min().isPresent() && range.min().get() < 0) || (range.max().isPresent() && range.max().get() < 0)) {
 							parser.reader.setCursor(cursor);
 							throw EntitySelectorOptions.NEGATIVE_DISTANCE_EXCEPTION.createWithContext(parser.reader);
 						}
@@ -488,12 +474,12 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 					@Override
 					void apply(Parser parser) throws CommandSyntaxException {
 						FloatRangeArgument range = FloatRangeArgument.parse(parser.reader, true, MathHelper::wrapDegrees);
-						float min = range.getMin() == null ? 0 : range.getMin();
-						float max = range.getMax() == null ? 359 : range.getMax();
+						float min = range.min() == null ? 0 : range.min();
+						float max = range.max() == null ? 359 : range.max();
 						if (max < min) {
-							parser.addFilter((origin, entity) -> EntityHelper.getEntityPitch(entity) >= min || EntityHelper.getEntityPitch(entity) <= max);
+							parser.addFilter((origin, entity) -> entity.getPitch() >= min || entity.getPitch() <= max);
 						} else {
-							parser.addFilter((origin, entity) -> EntityHelper.getEntityPitch(entity) >= min && EntityHelper.getEntityPitch(entity) <= max);
+							parser.addFilter((origin, entity) -> entity.getPitch() >= min && entity.getPitch() <= max);
 						}
 						parser.hasXRotation = true;
 					}
@@ -507,12 +493,12 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 					@Override
 					void apply(Parser parser) throws CommandSyntaxException {
 						FloatRangeArgument range = FloatRangeArgument.parse(parser.reader, true, MathHelper::wrapDegrees);
-						float min = range.getMin() == null ? 0 : range.getMin();
-						float max = range.getMax() == null ? 359 : range.getMax();
+						float min = range.min() == null ? 0 : range.min();
+						float max = range.max() == null ? 359 : range.max();
 						if (max < min) {
-							parser.addFilter((origin, entity) -> EntityHelper.getEntityYaw(entity) >= min || EntityHelper.getEntityYaw(entity) <= max);
+							parser.addFilter((origin, entity) -> entity.getYaw() >= min || entity.getYaw() <= max);
 						} else {
-							parser.addFilter((origin, entity) -> EntityHelper.getEntityYaw(entity) >= min && EntityHelper.getEntityYaw(entity) <= max);
+							parser.addFilter((origin, entity) -> entity.getYaw() >= min && entity.getYaw() <= max);
 						}
 						parser.hasYRotation = true;
 					}
@@ -568,23 +554,15 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 					@Override
 					void apply(Parser parser) throws CommandSyntaxException {
 						parser.suggestor = (builder, playerNameSuggest) -> {
-							Registry<EntityType<?>> entityTypes = RegistryHelper.getEntityTypeRegistry();
+							Registry<EntityType<?>> entityTypes = Registries.ENTITY_TYPE;
 
 							CommandSource.suggestIdentifiers(entityTypes.getIds(), builder, "!");
 
-							//#if MC >= 11800
 							CommandSource.suggestIdentifiers(entityTypes.streamTags().map(TagKey::id), builder, "!#");
-							//#else
-							//$$CommandSource.suggestIdentifiers(EntityTypeTags.getTagGroup().getTagIds(), builder, "!#");
-							//#endif
 
 							if (!parser.hasType) {
 								CommandSource.suggestIdentifiers(entityTypes.getIds(), builder);
-								//#if MC >= 11800
 								CommandSource.suggestIdentifiers(entityTypes.streamTags().map(TagKey::id), builder, String.valueOf('#'));
-								//#else
-								//$$CommandSource.suggestIdentifiers(EntityTypeTags.getTagGroup().getTagIds(), builder, String.valueOf('#'));
-								//#endif
 							}
 							return builder.buildFuture();
 						};
@@ -593,34 +571,12 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 						boolean neg = parser.readNegationCharacter();
 
 						if (parser.readTagCharacter()) {
-							//#if MC >= 11903
 							RegistryKey<Registry<EntityType<?>>> keyEntityTypes = RegistryKeys.ENTITY_TYPE;
-							//#else
-							//$$RegistryKey<Registry<EntityType<?>>> keyEntityTypes = Registry.ENTITY_TYPE_KEY;
-							//#endif
 
-							//#if MC >= 11800
 							TagKey<EntityType<?>> tagKey = TagKey.of(keyEntityTypes, Identifier.fromCommandInput(parser.reader));
 							parser.addFilter((origin, entity) -> entity.getType().isIn(tagKey) != neg);
-							//#else
-							//$$Identifier typeId = Identifier.fromCommandInput(parser.reader);
-							//$$parser.addFilter((origin, entity) -> {
-							//$$	try {
-							//$$		Tag<EntityType<?>> tag = entity.getEntityWorld().getTagManager()
-							//#if MC >= 11700
-							//$$.getTag(Registry.ENTITY_TYPE_KEY, typeId, id -> new IllegalArgumentException());
-							//#else
-							//$$.getEntityTypes().getTag(typeId);
-							//#endif
-							//$$		return tag.contains(entity.getType()) != neg;
-							//$$	}
-							//$$	catch (IllegalArgumentException e) {
-							//$$		return neg;
-							//$$	}
-							//$$});
-							//#endif
 						} else {
-							Registry<EntityType<?>> entityTypes = RegistryHelper.getEntityTypeRegistry();
+							Registry<EntityType<?>> entityTypes = Registries.ENTITY_TYPE;
 
 							Identifier typeId = Identifier.fromCommandInput(parser.reader);
 							EntityType<?> type = entityTypes.getOrEmpty(typeId).orElseThrow(() -> {
@@ -670,7 +626,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 			final Text desc;
 
 			private Option(String desc) {
-				this.desc = Texts.translatable(desc);
+				this.desc = Text.translatable(desc);
 			}
 
 			abstract void apply(Parser parser) throws CommandSyntaxException;

@@ -4,10 +4,10 @@ import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.clientscript.core.ClientScript;
 import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.lwjgl.glfw.GLFW;
@@ -60,9 +60,9 @@ public class CreateClientScriptScreen extends ChildScreen {
 		}
 		int halfHeight = this.height / 2;
 		int halfWidth = this.width / 2;
-		WidgetHelper.setPosition(this.nameBox, halfWidth - 100, halfHeight - 20);
-		WidgetHelper.setPosition(this.createButton, halfWidth + 5, halfHeight + 10);
-		WidgetHelper.setPosition(this.cancelButton, halfWidth - 85, halfHeight + 10);
+		this.nameBox.setPosition(halfWidth - 100, halfHeight - 20);
+		this.createButton.setPosition(halfWidth + 5, halfHeight + 10);
+		this.cancelButton.setPosition(halfWidth - 85, halfHeight + 10);
 		this.addDrawableChild(this.nameBox);
 		this.addDrawableChild(this.createButton);
 		this.addDrawableChild(this.cancelButton);
@@ -72,7 +72,6 @@ public class CreateClientScriptScreen extends ChildScreen {
 
 	@Override
 	public void tick() {
-		this.nameBox.tick();
 		super.tick();
 	}
 
@@ -85,14 +84,11 @@ public class CreateClientScriptScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-		//#if MC >= 11904
-		this.renderBackgroundTexture(wrapper.getContext());
-		//#else
-		//$$this.renderBackgroundTexture(0);
-		//#endif
-		wrapper.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 33), 0x949494);
-		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		super.render(wrapper, mouseX, mouseY, delta);
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
+
+		context.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 33), 0x949494);
+		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		super.render(context, mouseX, mouseY, delta);
 	}
 }

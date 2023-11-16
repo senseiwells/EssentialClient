@@ -19,12 +19,12 @@ import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
-import me.senseiwells.essentialclient.utils.misc.RecipeHelper;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +37,7 @@ import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.RECI
 	desc = "This class represents recipes in Minecraft.",
 	language = Language.Java
 )
-public class RecipeDef extends CreatableDefinition<Recipe<?>> {
+public class RecipeDef extends CreatableDefinition<RecipeEntry<Recipe<?>>> {
 	public RecipeDef(Interpreter interpreter) {
 		super(RECIPE, interpreter);
 	}
@@ -45,7 +45,7 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 	@NotNull
 	@Override
 	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
-		return "Recipe{id=" + instance.asPrimitive(this).getId() + "}";
+		return "Recipe{id=" + instance.asPrimitive(this).id() + "}";
 	}
 
 	@Override
@@ -56,8 +56,9 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		}
 
 		SortedMap<String, ClassInstance> map = new TreeMap<>();
-		for (Recipe<?> recipe : networkHandler.getRecipeManager().values()) {
-			map.put(recipe.toString().toUpperCase(), this.create(recipe));
+		for (RecipeEntry<?> recipe : networkHandler.getRecipeManager().values()) {
+			//noinspection unchecked
+			map.put(recipe.toString().toUpperCase(), this.create((RecipeEntry<Recipe<?>>) recipe));
 		}
 
 		ArucasList list = new ArucasList();
@@ -88,11 +89,11 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		returns = @ReturnDoc(type = RecipeDef.class, desc = "the recipe instance from the id"),
 		examples = "Recipe.of('redstone_block')"
 	)
-	private Recipe<?> of(Arguments arguments) {
+	private RecipeEntry<?> of(Arguments arguments) {
 		String id = arguments.nextPrimitive(StringDef.class);
 		ClientPlayNetworkHandler networkHandler = EssentialUtils.getNetworkHandler();
 		Identifier identifier = ClientScriptUtils.stringToIdentifier(id);
-		Optional<? extends Recipe<?>> recipe = networkHandler.getRecipeManager().get(identifier);
+		Optional<RecipeEntry<?>> recipe = networkHandler.getRecipeManager().get(identifier);
 		if (recipe.isEmpty()) {
 			throw new RuntimeError("Recipe with id '%s' doesn't exist".formatted(id));
 		}
@@ -117,8 +118,8 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		examples = "recipe.getFullId()"
 	)
 	private String getFullId(Arguments arguments) {
-		Recipe<?> recipe = arguments.nextPrimitive(this);
-		return recipe.getId().toString();
+		RecipeEntry<?> recipe = arguments.nextPrimitive(this);
+		return recipe.id().toString();
 	}
 
 	@FunctionDoc(
@@ -128,8 +129,8 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		examples = "recipe.getId()"
 	)
 	private String getId(Arguments arguments) {
-		Recipe<?> recipe = arguments.nextPrimitive(this);
-		return recipe.getId().toString();
+		RecipeEntry<?> recipe = arguments.nextPrimitive(this);
+		return recipe.id().toString();
 	}
 
 	@FunctionDoc(
@@ -139,8 +140,8 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		examples = "recipe.getCraftingType()"
 	)
 	private String getCraftingType(Arguments arguments) {
-		Recipe<?> recipe = arguments.nextPrimitive(this);
-		Identifier identifier = RegistryHelper.getRecipeTypeRegistry().getId(recipe.getType());
+		RecipeEntry<?> recipe = arguments.nextPrimitive(this);
+		Identifier identifier = Registries.RECIPE_TYPE.getId(recipe.value().getType());
 		return identifier == null ? null : identifier.getPath();
 	}
 
@@ -151,8 +152,8 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		examples = "recipe.getOutput()"
 	)
 	private ScriptItemStack getOutput(Arguments arguments) {
-		Recipe<?> recipe = arguments.nextPrimitive(this);
-		return new ScriptItemStack(RecipeHelper.getOutput(recipe));
+		RecipeEntry<?> recipe = arguments.nextPrimitive(this);
+		return new ScriptItemStack(recipe.value().getResult(EssentialUtils.getRegistryManager()));
 	}
 
 	@FunctionDoc(
@@ -162,10 +163,10 @@ public class RecipeDef extends CreatableDefinition<Recipe<?>> {
 		examples = "recipe.getIngredients()"
 	)
 	private ArucasList getIngredients(Arguments arguments) {
-		Recipe<?> recipe = arguments.nextPrimitive(this);
+		RecipeEntry<?> recipe = arguments.nextPrimitive(this);
 		ArucasList recipeIngredients = new ArucasList();
 		Interpreter interpreter = arguments.getInterpreter();
-		for (Ingredient ingredient : recipe.getIngredients()) {
+		for (Ingredient ingredient : recipe.value().getIngredients()) {
 			ArucasList slotIngredients = new ArucasList();
 			for (ItemStack itemStack : ingredient.getMatchingStacks()) {
 				slotIngredients.add(interpreter.create(ItemStackDef.class, new ScriptItemStack(itemStack)));

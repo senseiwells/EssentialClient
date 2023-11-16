@@ -2,11 +2,10 @@ package me.senseiwells.essentialclient.gui.config;
 
 import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.gui.entries.AbstractListEntry;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
@@ -45,7 +44,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 	}
 
 	public void tick() {
-		this.children().stream().map(e -> e.textField).forEach(TextFieldWidget::tick);
+
 	}
 
 	public List<String> getTextValues() {
@@ -76,7 +75,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 		public Entry(MinecraftClient client, int index, String value, int maxLength) {
 			this.client = client;
 
-			this.textField = new TextFieldWidget(client.textRenderer, 0, 0, 150, 14, Texts.literal(value));
+			this.textField = new TextFieldWidget(client.textRenderer, 0, 0, 150, 14, Text.literal(value));
 			this.textField.setMaxLength(maxLength);
 			this.textField.setText(value);
 
@@ -110,20 +109,20 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 
 
 		@Override
-		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float delta) {
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float delta) {
 			TextRenderer font = this.client.textRenderer;
 			int fontX = x + 90 - 100;
 			int fontY = y + height / 2 - 9 / 2;
 
-			wrapper.drawTextWithShadow(font, Texts.literal(String.valueOf(this.index)), fontX, fontY, 0xFFFFFF);
+			context.drawTextWithShadow(font, Text.literal(String.valueOf(this.index)), fontX, fontY, 0xFFFFFF);
 
 			WidgetHelper.setPosition(this.textField, x + 65, y);
 			WidgetHelper.setPosition(this.addButton, x + 235, y);
 			WidgetHelper.setPosition(this.removeButton, x + 255, y);
 
-			this.textField.render(wrapper.getContext(), mouseX, mouseY, delta);
-			this.addButton.render(wrapper.getContext(), mouseX, mouseY, delta);
-			this.removeButton.render(wrapper.getContext(), mouseX, mouseY, delta);
+			this.textField.render(context, mouseX, mouseY, delta);
+			this.addButton.render(context, mouseX, mouseY, delta);
+			this.removeButton.render(context, mouseX, mouseY, delta);
 		}
 
 		@Override
@@ -131,11 +130,9 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 			return ImmutableList.of(this.textField, this.addButton, this.removeButton);
 		}
 
-		//#if MC >= 11700
 		@Override
 		public List<ClickableWidget> selectableChildren() {
 			return this.children();
 		}
-		//#endif
 	}
 }

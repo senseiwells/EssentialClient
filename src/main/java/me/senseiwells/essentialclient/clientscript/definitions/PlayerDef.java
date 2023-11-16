@@ -25,9 +25,7 @@ import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
 import me.senseiwells.essentialclient.utils.interfaces.MinecraftClientInvoker;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
-import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
@@ -47,8 +45,7 @@ import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.SpectatorTeleportC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.recipe.CuttingRecipe;
-import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
@@ -197,7 +194,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		switch (action.toLowerCase()) {
 			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.useKey, 3);
 			case "stop" -> ClientScriptUtils.releaseKey(client.options.useKey);
-			case "once" -> ((MinecraftClientInvoker) client).rightClickMouseAccessor();
+			case "once" -> ((MinecraftClientInvoker) client).essentialclient$rightClick();
 			default -> throw new RuntimeError("Must pass 'hold', 'stop' or 'once' into use()");
 		}
 		return null;
@@ -218,7 +215,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		switch (action.toLowerCase()) {
 			case "hold" -> ClientScriptUtils.holdKey(arguments.getInterpreter(), client.options.attackKey, 1);
 			case "stop" -> ClientScriptUtils.releaseKey(client.options.attackKey);
-			case "once" -> ((MinecraftClientInvoker) client).leftClickMouseAccessor();
+			case "once" -> ((MinecraftClientInvoker) client).essentialclient$leftClick();
 			default -> throw new RuntimeError("Must pass 'hold', 'stop' or 'once' into attack()");
 		}
 		return null;
@@ -239,7 +236,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			throw new RuntimeError("Number must be between 0 - 8");
 		}
 		ClientScriptUtils.ensureMainThread("setSelectedSlot", arguments.getInterpreter(), () -> {
-			PlayerHelper.getPlayerInventory().selectedSlot = index;
+			EssentialUtils.getPlayer().getInventory().selectedSlot = index;
 			EssentialUtils.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(index));
 		});
 		return null;
@@ -252,7 +249,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.getSelectedSlot"
 	)
 	private int getSelectedSlot(Arguments arguments) {
-		return PlayerHelper.getPlayerInventory().selectedSlot;
+		return EssentialUtils.getPlayer().getInventory().selectedSlot;
 	}
 
 	@FunctionDoc(
@@ -457,8 +454,9 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		float yaw = arguments.skip().nextPrimitive(NumberDef.class).floatValue();
 		float pitch = arguments.nextPrimitive(NumberDef.class).floatValue();
 		ClientScriptUtils.ensureMainThread("look", arguments.getInterpreter(), () -> {
-			PlayerHelper.setPlayerYaw(yaw);
-			PlayerHelper.setPlayerPitch(pitch);
+			ClientPlayerEntity player = EssentialUtils.getPlayer();
+			player.setYaw(yaw);
+			player.setPitch(pitch);
 		});
 		return null;
 	}
@@ -599,7 +597,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 					interactionManager.clickSlot(screenHandler.syncId, slot1, 0, SlotActionType.SWAP, player);
 					interactionManager.clickSlot(screenHandler.syncId, slot2, 0, SlotActionType.SWAP, player);
 					interactionManager.clickSlot(screenHandler.syncId, slot1, 0, SlotActionType.SWAP, player);
-					PlayerHelper.getPlayerInventory().updateItems();
+					player.getInventory().updateItems();
 				} else {
 					InventoryUtils.swapSlot(screenHandler, slot1, secondMapped);
 				}
@@ -624,7 +622,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	)
 	private int getSwappableHotbarSlot(Arguments arguments) {
 		// Return predicted current swappable hotbar slot
-		return PlayerHelper.getPlayerInventory().getSwappableHotbarSlot();
+		return EssentialUtils.getPlayer().getInventory().getSwappableHotbarSlot();
 	}
 
 	@FunctionDoc(
@@ -858,7 +856,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.craftRecipe(Recipe.CHEST);"
 	)
 	private Void craftRecipe(Arguments arguments) {
-		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		RecipeEntry<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
 		ClientScriptUtils.ensureMainThread("craftRecipe", arguments.getInterpreter(), () -> {
 			InventoryUtils.craftRecipe(recipe, false, true);
 		});
@@ -875,7 +873,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.craftRecipe(Recipe.CHEST, true);"
 	)
 	private Void craftRecipeDrop(Arguments arguments) {
-		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		RecipeEntry<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
 		boolean shouldDrop = arguments.nextPrimitive(BooleanDef.class);
 		ClientScriptUtils.ensureMainThread("craftRecipe", arguments.getInterpreter(), () -> {
 			InventoryUtils.craftRecipe(recipe, shouldDrop, true);
@@ -894,7 +892,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.craftRecipe(Recipe.CHEST, true, false);"
 	)
 	private Void craftRecipeDropAll(Arguments arguments) {
-		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		RecipeEntry<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
 		boolean shouldDrop = arguments.nextPrimitive(BooleanDef.class);
 		boolean shouldCraftAll = arguments.nextPrimitive(BooleanDef.class);
 		ClientScriptUtils.ensureMainThread("craftRecipe", arguments.getInterpreter(), () -> {
@@ -910,7 +908,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.clickRecipe(Recipe.CHEST);"
 	)
 	private Void clickRecipe1(Arguments arguments) {
-		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		RecipeEntry<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
 		ClientScriptUtils.ensureMainThread("clickRecipe", arguments.getInterpreter(), () -> {
 			InventoryUtils.clickRecipe(recipe, false);
 		});
@@ -927,7 +925,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.clickRecipe(Recipe.CHEST, true);"
 	)
 	private Void clickRecipe2(Arguments arguments) {
-		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		RecipeEntry<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
 		boolean craftAll = arguments.nextPrimitive(BooleanDef.class);
 		ClientScriptUtils.ensureMainThread("clickRecipe", arguments.getInterpreter(), () -> {
 			InventoryUtils.clickRecipe(recipe, craftAll);
@@ -944,7 +942,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Void logout(Arguments arguments) {
 		String reason = arguments.skip().nextPrimitive(StringDef.class);
 		ClientScriptUtils.ensureMainThread("logout", arguments.getInterpreter(), () -> {
-			EssentialUtils.getNetworkHandler().onDisconnected(Texts.literal(reason));
+			EssentialUtils.getNetworkHandler().onDisconnected(Text.literal(reason));
 		});
 		return null;
 	}
@@ -1143,8 +1141,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		examples = "player.clickCuttingRecipe(cuttingRecipe);"
 	)
 	private Void clickCuttingRecipe(Arguments arguments) {
-		Recipe<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
-		if (recipe instanceof StonecuttingRecipe cuttingRecipe) {
+		RecipeEntry<?> recipe = arguments.skip().nextPrimitive(RecipeDef.class);
+		if (recipe.value() instanceof StonecuttingRecipe cuttingRecipe) {
 			ClientScriptUtils.ensureMainThread("clickCuttingRecipe", arguments.getInterpreter(), () -> {
 				InventoryUtils.clickCuttingRecipe(cuttingRecipe);
 				return null;
@@ -1211,7 +1209,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Void swapPlayerSlotWithHotbar(Arguments arguments) {
 		int slotToSwap = arguments.skip().nextPrimitive(NumberDef.class).intValue();
 		ClientScriptUtils.ensureMainThread("swapPlayerSlotWithHotbar", arguments.getInterpreter(), () -> {
-			PlayerInventory inventory = PlayerHelper.getPlayerInventory();
+			PlayerInventory inventory = EssentialUtils.getPlayer().getInventory();
 			if (slotToSwap < 0 || slotToSwap > inventory.main.size()) {
 				throw new RuntimeError("That slot is out of bounds");
 			}

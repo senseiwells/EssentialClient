@@ -4,11 +4,11 @@ import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.gui.entries.AbstractListEntry;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager;
 import me.senseiwells.essentialclient.utils.clientscript.ScriptRepositoryManager.Category;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.toast.SystemToast;
@@ -51,17 +51,15 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		}
 
 		@Override
-		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			TextRenderer renderer = DownloadClientScriptWidget.this.client.textRenderer;
-			wrapper.drawTextWithShadow(renderer, this.text, (int) (DownloadClientScriptWidget.this.downloadScreen.width / 2.0F - this.textWidth / 2.0F), y + entryHeight - 9 - 1, 0xFFFFFF);
+			context.drawTextWithShadow(renderer, this.text, (int) (DownloadClientScriptWidget.this.downloadScreen.width / 2.0F - this.textWidth / 2.0F), y + entryHeight - 9 - 1, 0xFFFFFF);
 		}
 
-		//#if MC >= 11700
 		@Override
 		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
-		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {
@@ -97,21 +95,19 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 		}
 
 		@Override
-		public void render(RenderContextWrapper wrapper, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 			float width = x - 20 - DownloadClientScriptWidget.this.maxScriptNameLength;
-			wrapper.drawTextWithShadow(DownloadClientScriptWidget.this.client.textRenderer, Texts.literal(this.scriptName), (int) width, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF);
+			context.drawTextWithShadow(DownloadClientScriptWidget.this.client.textRenderer, Text.literal(this.scriptName), (int) width, (int) (y + entryHeight / 2.0F - 9 / 2.0F), 0xFFFFFF);
 			WidgetHelper.setPosition(this.downloadButton, x + 155, y);
 			WidgetHelper.setPosition(this.viewButton, x + 100, y);
-			this.viewButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
-			this.downloadButton.render(wrapper.getContext(), mouseX, mouseY, tickDelta);
+			this.viewButton.render(context, mouseX, mouseY, tickDelta);
+			this.downloadButton.render(context, mouseX, mouseY, tickDelta);
 		}
 
-		//#if MC >= 11700
 		@Override
 		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
-		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {

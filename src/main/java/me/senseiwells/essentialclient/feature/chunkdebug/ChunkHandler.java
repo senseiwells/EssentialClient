@@ -2,7 +2,7 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
-import me.senseiwells.essentialclient.utils.misc.Events;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.util.math.ChunkPos;
 
 import java.util.HashMap;
@@ -14,8 +14,7 @@ public class ChunkHandler {
 	private static final Map<String, Chunks> CHUNK_DATA_MAP = new HashMap<>();
 
 	static {
-		Events.ON_DISCONNECT.register(v -> {
-			EssentialClient.onDisconnect();
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			ChunkHandler.clearAllChunks();
 			ChunkGrid.instance = null;
 		});

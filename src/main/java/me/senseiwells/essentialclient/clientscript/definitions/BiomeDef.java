@@ -15,8 +15,9 @@ import me.senseiwells.arucas.functions.builtin.MemberFunction;
 import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
@@ -39,7 +40,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	@NotNull
 	@Override
 	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
-		Identifier id = RegistryHelper.getBiomeRegistry().getId(instance.asPrimitive(this));
+		Identifier id = EssentialUtils.getRegistryManager().get(RegistryKeys.BIOME).getId(instance.asPrimitive(this));
 		return "Biome{id=" + (id == null ? "plains" : id.getPath()) + "}";
 	}
 
@@ -210,7 +211,7 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	)
 	private String getId(Arguments arguments) {
 		Biome biome = arguments.nextPrimitive(this);
-		Identifier id = RegistryHelper.getBiomeRegistry().getId(biome);
+		Identifier id = EssentialUtils.getRegistryManager().get(RegistryKeys.BIOME).getId(biome);
 		return id == null ? "plains" : id.getPath();
 	}
 

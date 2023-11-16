@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,13 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin {
-
 	@Shadow
 	@Final
 	private MinecraftClient client;
 
 	@Inject(method = "clickRecipe", at = @At("RETURN"))
-	public void onRecipeClick(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
+	public void onRecipeClick(int syncId, RecipeEntry<?> recipe, boolean craftAll, CallbackInfo ci) {
 		if (ClientRules.CRAFTING_HAX.getValue() && CraftingSharedConstants.IS_VANILLA_CLICK.get()) {
 			if (Screen.hasControlDown() && this.client.currentScreen instanceof HandledScreen<?> handledScreen) {
 				InventoryUtils.dropStackScheduled(handledScreen.getScreenHandler(), craftAll);

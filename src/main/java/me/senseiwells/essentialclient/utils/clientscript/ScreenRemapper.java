@@ -28,9 +28,7 @@ public class ScreenRemapper {
 		map.put(ChatOptionsScreen.class, "ChatOptions");
 		map.put(ChatScreen.class, "Chat");
 		map.put(CommandBlockScreen.class, "CommandBlock");
-		//#if MC >= 11901
-		//$$map.put(ConfirmLinkScreen.class, "ConfirmChatLink");
-		//#endif
+		map.put(ConfirmLinkScreen.class, "ConfirmChatLink");
 		map.put(ConfirmScreen.class, "Confirm");
 		map.put(ConnectScreen.class, "Connect");
 		map.put(ControlsOptionsScreen.class, "ControlOptions");

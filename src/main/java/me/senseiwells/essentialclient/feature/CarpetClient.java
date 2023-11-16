@@ -1,6 +1,8 @@
 package me.senseiwells.essentialclient.feature;
 
 import carpet.CarpetExtension;
+import carpet.api.settings.CarpetRule;
+import carpet.api.settings.SettingsManager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,12 +12,12 @@ import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.rule.carpet.*;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import me.senseiwells.essentialclient.utils.carpet.CarpetUtils;
 import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
-import me.senseiwells.essentialclient.utils.mapping.CarpetRuleHelper;
-import me.senseiwells.essentialclient.utils.misc.Events;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 
@@ -36,13 +38,11 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 	private boolean isServerCarpet;
 
 	static {
-		Events.ON_DISCONNECT.register(v -> {
-			INSTANCE.onDisconnect();
-		});
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> INSTANCE.onDisconnect());
 
-		CarpetRuleHelper.registerCarpetRuleObserver((source, rule, value) -> {
+		SettingsManager.registerGlobalRuleObserver((source, rule, value) -> {
 			INSTANCE.loadSinglePlayerRules();
-			CarpetClientRule<?> clientRule = INSTANCE.CURRENT_RULES.get(rule.getName());
+			CarpetClientRule<?> clientRule = INSTANCE.CURRENT_RULES.get(rule.name());
 			if (clientRule != null) {
 				clientRule.setFromServer(value);
 			}
@@ -67,7 +67,7 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 	}
 
 	public boolean isServerCarpet() {
-		return this.isServerCarpet | EssentialUtils.getClient().isInSingleplayer();
+		return this.isServerCarpet || EssentialUtils.getClient().isInSingleplayer();
 	}
 
 	public boolean isCarpetManager(String name) {
@@ -101,29 +101,37 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 
 	public void syncCarpetRule(NbtCompound compound) {
 		this.isServerCarpet = true;
-		// We run on main thread to prevent concurrent modification exceptions
+		// We run on the main thread to prevent concurrent modification exceptions
 		// This method will be called from the network thread
 		EssentialUtils.getClient().execute(() -> {
 			String name = compound.getString("Rule");
 			String value = compound.getString("Value");
 			String manager = compound.getString("Manager");
-			CarpetClientRule<?> rule = this.CURRENT_RULES.get(name);
-			if (rule == null) {
-				CarpetRuleHelper.Wrapper carpetRule = CarpetRuleHelper.getCarpetRule(name);
-				rule = this.ALL_RULES.get(name);
-				if (carpetRule != null) {
-					rule = rule == null ? this.parseRuleToClientRule(carpetRule, manager) : this.parseRuleToClientRule(carpetRule, rule.getDescription(), rule.getOptionalInfo(), manager);
+			CarpetClientRule<?> wrapped = this.CURRENT_RULES.get(name);
+			if (wrapped == null) {
+				CarpetRule<?> rule = CarpetUtils.getCarpetRule(name);
+				wrapped = this.ALL_RULES.get(name);
+				if (rule != null) {
+					if (wrapped == null) {
+						wrapped = this.parseRuleToClientRule(rule, manager);
+					} else {
+						wrapped = this.parseRuleToClientRule(rule, wrapped.getDescription(), wrapped.getOptionalInfo(), manager);
+					}
 				} else {
 					// We must copy otherwise we will be modifying the global CarpetRule
-					rule = rule != null ? rule.shallowCopy() : new StringCarpetRule(name, this.LOADNT, value);
+					wrapped = wrapped != null ? wrapped.shallowCopy() : new StringCarpetRule(name, this.LOADNT, value);
 				}
-				this.CURRENT_RULES.put(name, rule);
+				this.CURRENT_RULES.put(name, wrapped);
 			}
 
 			this.HANDLING_DATA.set(true);
-			rule.setFromServer(value);
+			wrapped.setFromServer(value);
 			this.HANDLING_DATA.set(false);
-			if (EssentialUtils.getClient().currentScreen instanceof RulesScreen rulesScreen && rulesScreen.getTitle() == Texts.SERVER_SCREEN) {
+
+			if (
+				EssentialUtils.getClient().currentScreen instanceof RulesScreen rulesScreen &&
+				rulesScreen.getTitle() == Texts.SERVER_SCREEN
+			) {
 				rulesScreen.refreshRules(rulesScreen.getSearchBoxText());
 			}
 		});
@@ -133,11 +141,11 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 		if (this.CURRENT_RULES.isEmpty() && EssentialUtils.getClient().isInSingleplayer()) {
 			this.HANDLING_DATA.set(true);
 
-			CarpetRuleHelper.forEachCarpetRule((rule, managerId) -> {
-				CarpetClientRule<?> clientRule = this.ALL_RULES.get(rule.getName());
+			CarpetUtils.forEachCarpetRule((rule, managerId) -> {
+				CarpetClientRule<?> clientRule = this.ALL_RULES.get(rule.name());
 				clientRule = clientRule == null ? this.parseRuleToClientRule(rule, managerId) :
 					this.parseRuleToClientRule(rule, clientRule.getDescription(), clientRule.getOptionalInfo(), managerId);
-				clientRule.setFromServer(rule.getValueAsString());
+				clientRule.setFromServer(CarpetUtils.getRuleValueAsString(rule));
 				this.CURRENT_RULES.put(clientRule.getName(), clientRule);
 			});
 
@@ -157,7 +165,8 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 			return null;
 		}
 		String name = nameElement.getAsString();
-		CarpetRuleHelper.Wrapper carpetRule = CarpetRuleHelper.getCarpetRule(name);
+
+		CarpetRule<?> rule = CarpetUtils.getCarpetRule(name);
 		try {
 			String description = ruleObject.get("description").getAsString();
 			JsonElement repo = ruleObject.get("repo");
@@ -181,8 +190,8 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 					optionalInfo = extraInfo.getAsString();
 				}
 			}
-			if (carpetRule != null) {
-				return this.parseRuleToClientRule(carpetRule, description, optionalInfo, carpetRule.getSettingsManagerId());
+			if (rule != null) {
+				return this.parseRuleToClientRule(rule, description, optionalInfo, rule.settingsManager().identifier());
 			}
 			Rule.Type type = Rule.Type.fromString(ruleObject.get("type").getAsString());
 			JsonElement defaultValue = ruleObject.get("default");
@@ -191,86 +200,74 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 			}
 			JsonElement categories = ruleObject.get("categories");
 			if (categories != null && categories.getAsJsonArray().contains(this.COMMAND) && type != Rule.Type.BOOLEAN) {
-				CycleCarpetRule rule = CycleCarpetRule.commandOf(name, description, defaultValue.getAsString());
-				rule.setOptionalInfo(optionalInfo);
-				return rule;
+				CycleCarpetRule wrapped = CycleCarpetRule.commandOf(name, description, defaultValue.getAsString());
+				wrapped.setOptionalInfo(optionalInfo);
+				return wrapped;
 			}
-			JsonElement strictElement = ruleObject.get("strict");
-			if (strictElement != null && strictElement.getAsBoolean() && type != Rule.Type.BOOLEAN) {
+			JsonElement isStrict = ruleObject.get("strict");
+			if (isStrict != null && isStrict.getAsBoolean() && type != Rule.Type.BOOLEAN) {
 				List<String> validValues = new ArrayList<>();
 				JsonElement options = ruleObject.get("options");
 				if (options.isJsonArray()) {
 					JsonArray values = options.getAsJsonArray();
 					values.forEach(element -> validValues.add(element.getAsString()));
-					CycleCarpetRule rule = new CycleCarpetRule(name, description, validValues, defaultValue.getAsString());
-					rule.setOptionalInfo(optionalInfo);
-					return rule;
+					CycleCarpetRule wrapped = new CycleCarpetRule(name, description, validValues, defaultValue.getAsString());
+					wrapped.setOptionalInfo(optionalInfo);
+					return wrapped;
 				}
 			}
-			CarpetClientRule<?> rule = switch (type) {
+			CarpetClientRule<?> wrapped = switch (type) {
 				case CYCLE -> {
 					JsonArray validCycles = ruleObject.get("cycles").getAsJsonArray();
 					List<String> cycles = new ArrayList<>();
 					validCycles.forEach(element -> cycles.add(element.getAsString()));
 					yield new CycleCarpetRule(name, description, cycles, defaultValue.getAsString());
 				}
-				case BOOLEAN -> {
-					yield new BooleanCarpetRule(name, description, defaultValue.getAsBoolean());
-				}
-				case INTEGER -> {
-					yield new IntegerCarpetRule(name, description, defaultValue.getAsInt());
-				}
-				case DOUBLE -> {
-					yield new DoubleCarpetRule(name, description, defaultValue.getAsDouble());
-				}
-				default -> {
-					yield new StringCarpetRule(name, description, defaultValue.getAsString());
-				}
+				case BOOLEAN -> new BooleanCarpetRule(name, description, defaultValue.getAsBoolean());
+				case INTEGER -> new IntegerCarpetRule(name, description, defaultValue.getAsInt());
+				case DOUBLE -> new DoubleCarpetRule(name, description, defaultValue.getAsDouble());
+				default -> new StringCarpetRule(name, description, defaultValue.getAsString());
 			};
-			rule.setOptionalInfo(optionalInfo);
-			return rule;
+			wrapped.setOptionalInfo(optionalInfo);
+			return wrapped;
 		} catch (Exception e) {
-			if (carpetRule != null) {
-				return this.parseRuleToClientRule(carpetRule, carpetRule.getSettingsManagerId());
+			if (rule != null) {
+				return this.parseRuleToClientRule(rule, CarpetUtils.getRuleSettingsManagerId(rule));
 			}
-			EssentialClient.LOGGER.error("Failed to load Carpet Rule '{}'", name, e);
+			// EssentialClient.LOGGER.error("Failed to load Carpet Rule '{}'", name, e);
 			return null;
 		}
 	}
 
-	private CarpetClientRule<?> parseRuleToClientRule(CarpetRuleHelper.Wrapper carpetRule, String manager) {
-		return this.parseRuleToClientRule(carpetRule, null, null, manager);
+	private CarpetClientRule<?> parseRuleToClientRule(CarpetRule<?> rule, String manager) {
+		return this.parseRuleToClientRule(rule, null, null, manager);
 	}
 
-	private CarpetClientRule<?> parseRuleToClientRule(CarpetRuleHelper.Wrapper carpetRule, String description, String optionalInfo, String manager) {
-		String name = carpetRule.getName();
-		Rule.Type type = Rule.Type.fromClass(carpetRule.getType());
-		String defaultValue = carpetRule.getDefaultValueAsString();
+	private CarpetClientRule<?> parseRuleToClientRule(CarpetRule<?> rule, String description, String optionalInfo, String manager) {
+		String name = rule.name();
+		Rule.Type type = Rule.Type.fromClass(rule.type());
+		String defaultValue = CarpetUtils.getRuleDefaultValueAsString(rule);
 		if (description == null) {
-			description = carpetRule.getDescription();
+			description = CarpetUtils.getRuleDescription(rule);
 		}
 		if (optionalInfo == null) {
-			optionalInfo = carpetRule.getExtraInfo();
+			optionalInfo = CarpetUtils.getRuleExtraInfo(rule);
 			if (optionalInfo.isBlank()) {
 				optionalInfo = null;
 			}
 		}
-		if (carpetRule.isCommand()) {
-			CycleCarpetRule rule = CycleCarpetRule.commandOf(name, description, defaultValue);
-			rule.setOptionalInfo(optionalInfo);
-			return rule;
+		if (CarpetUtils.isRuleCommand(rule)) {
+			CycleCarpetRule wrapped = CycleCarpetRule.commandOf(name, description, defaultValue);
+			wrapped.setOptionalInfo(optionalInfo);
+			return wrapped;
 		}
-		/* This might work...?
-		if (carpetRule.isStrict && type != Rule.Type.BOOLEAN) {
-			CycleCarpetRule rule = new CycleCarpetRule(name, description, carpetRule.options, defaultValue);
-			rule.setOptionalInfo(optionalInfo);
-			return rule;
+		if (rule.strict() && type != Rule.Type.BOOLEAN) {
+			CycleCarpetRule wrapped = new CycleCarpetRule(name, description, new ArrayList<>(rule.suggestions()), defaultValue);
+			wrapped.setOptionalInfo(optionalInfo);
+			return wrapped;
 		}
-		 */
-		CarpetClientRule<?> rule = switch (type) {
-			case BOOLEAN -> {
-				yield new BooleanCarpetRule(name, description, "true".equals(defaultValue));
-			}
+		CarpetClientRule<?> wrapped = switch (type) {
+			case BOOLEAN -> new BooleanCarpetRule(name, description, "true".equals(defaultValue));
 			case INTEGER -> {
 				Integer integer;
 				try {
@@ -292,14 +289,14 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 			default -> null;
 		};
 
-		if (rule == null) {
-			rule = new StringCarpetRule(name, description, defaultValue);
+		if (wrapped == null) {
+			wrapped = new StringCarpetRule(name, description, defaultValue);
 		}
 
 		this.MANAGERS.add(manager);
-		rule.setCustomManager(manager);
-		rule.setOptionalInfo(optionalInfo);
-		return rule;
+		wrapped.setCustomManager(manager);
+		wrapped.setOptionalInfo(optionalInfo);
+		return wrapped;
 	}
 
 	private JsonArray getData(JsonArray fallback) {

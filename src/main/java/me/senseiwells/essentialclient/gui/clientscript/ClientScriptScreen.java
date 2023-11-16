@@ -7,9 +7,8 @@ import me.senseiwells.essentialclient.clientscript.core.ClientScriptInstance;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
@@ -43,7 +42,7 @@ public class ClientScriptScreen extends ChildScreen {
 		}
 		int height = this.height - 27;
 		this.scriptWidget = new ClientScriptWidget(this.client, this);
-		this.addSelectableChild(this.scriptWidget);
+		this.addDrawableChild(this.scriptWidget);
 		this.addDrawableChild(WidgetHelper.newButton(10, height, 100, 20, REFRESH, button -> this.refresh()));
 		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, height, 200, 20, DONE, button -> this.close()));
 		this.addDrawableChild(WidgetHelper.newButton(this.width - 110, height, 100, 20, DOCUMENTATION, button -> Util.getOperatingSystem().open(EssentialUtils.SCRIPT_WIKI_URL)));
@@ -52,12 +51,12 @@ public class ClientScriptScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-		this.renderBackground(wrapper.getContext());
-		this.scriptWidget.render(wrapper.getContext(), mouseX, mouseY, delta);
-		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
-		wrapper.drawCenteredTextWithShadow(this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
-		super.render(wrapper, mouseX, mouseY, delta);
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
+		this.scriptWidget.render(context, mouseX, mouseY, delta);
+		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		context.drawCenteredTextWithShadow(this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
+		super.render(context, mouseX, mouseY, delta);
 	}
 
 	public void refresh() {
@@ -118,7 +117,7 @@ public class ClientScriptScreen extends ChildScreen {
 					EssentialClient.LOGGER.error("Failed to delete script", e);
 				}
 			});
-			this.keyBindBox = WidgetHelper.newButton(0, 0, 75, 20, Texts.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
+			this.keyBindBox = WidgetHelper.newButton(0, 0, 75, 20, Text.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
 			this.selectedCheck = new SelectedCheckBox(scriptName);
 			this.newName = "";
 		}
@@ -127,11 +126,11 @@ public class ClientScriptScreen extends ChildScreen {
 		protected void init() {
 			int halfHeight = this.height / 2;
 			int halfWidth = this.width / 2;
-			WidgetHelper.setPosition(this.nameBox, halfWidth - 100, halfHeight - 55);
-			WidgetHelper.setPosition(this.openBox, halfWidth - 100, halfHeight - 25);
-			WidgetHelper.setPosition(this.deleteBox, halfWidth - 100, halfHeight);
-			WidgetHelper.setPosition(this.keyBindBox, halfWidth - 50, halfHeight + 25);
-			WidgetHelper.setPosition(this.selectedCheck, WidgetHelper.getX(this.keyBindBox) + 80, halfHeight + 25);
+			this.nameBox.setPosition(halfWidth - 100, halfHeight - 55);
+			this.openBox.setPosition(halfWidth - 100, halfHeight - 25);
+			this.deleteBox.setPosition(halfWidth - 100, halfHeight);
+			this.keyBindBox.setPosition(halfWidth - 50, halfHeight + 25);
+			this.selectedCheck.setPosition(this.keyBindBox.getX() + 80, halfHeight + 25);
 			this.addDrawableChild(this.nameBox);
 			this.addDrawableChild(this.openBox);
 			this.addDrawableChild(this.deleteBox);
@@ -140,12 +139,6 @@ public class ClientScriptScreen extends ChildScreen {
 			this.addDrawableChild(WidgetHelper.newButton(halfWidth - 100, this.height - 27, 200, 20, DONE, button -> this.close()));
 			this.setFocused(this.nameBox);
 			super.init();
-		}
-
-		@Override
-		public void tick() {
-			this.nameBox.tick();
-			super.tick();
 		}
 
 		@Override
@@ -210,26 +203,22 @@ public class ClientScriptScreen extends ChildScreen {
 		}
 
 		@Override
-		public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-			//#if MC >= 11904
-			this.renderBackgroundTexture(wrapper.getContext());
-			//#else
-			//$$this.renderBackgroundTexture(0);
-			//#endif
-			wrapper.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 68), 0x949494);
-			wrapper.drawTextWithShadow(this.textRenderer, KEYBIND, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F + 30), 0xE0E0E0);
-			wrapper.drawTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+		public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+			this.renderBackgroundTexture(context);
+			context.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 68), 0x949494);
+			context.drawTextWithShadow(this.textRenderer, KEYBIND, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F + 30), 0xE0E0E0);
+			context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
 
-			MutableText editMessage = Texts.literal(keyBinding.getDisplay());
+			MutableText editMessage = Text.literal(keyBinding.getDisplay());
 			if (this.client != null && this.client.textRenderer.getWidth(editMessage) > 70) {
-				editMessage = Texts.literal("...");
+				editMessage = Text.literal("...");
 			}
 
 			if (this.editingKeyBind) {
 				this.keyBindBox.setMessage(
-					Texts.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
+					Text.literal("> ").append(editMessage.formatted(Formatting.YELLOW)).append(" <").formatted(Formatting.YELLOW)
 				);
 			} else {
 				this.keyBindBox.setMessage(editMessage);
@@ -238,17 +227,13 @@ public class ClientScriptScreen extends ChildScreen {
 			if (this.keyBindBox.isMouseOver(mouseX, mouseY)) {
 				String display = keyBinding.getDisplay();
 				List<Text> textList = List.of(
-					Texts.literal(keyBinding.getName()).formatted(Formatting.GOLD),
-					display.isEmpty() ? NO_KEYBINDING : Texts.literal(display)
+					Text.literal(keyBinding.getName()).formatted(Formatting.GOLD),
+					display.isEmpty() ? NO_KEYBINDING : Text.literal(display)
 				);
-				//#if MC >= 12000
-				wrapper.getContext().drawTooltip(this.textRenderer, textList, mouseX, mouseY);
-				//#else
-				//$$this.renderTooltip(wrapper.getMatrices(), textList, mouseX, mouseY);
-				//#endif
+				context.drawTooltip(this.textRenderer, textList, mouseX, mouseY);
 			}
 
-			super.render(wrapper, mouseX, mouseY, delta);
+			super.render(context, mouseX, mouseY, delta);
 		}
 	}
 }

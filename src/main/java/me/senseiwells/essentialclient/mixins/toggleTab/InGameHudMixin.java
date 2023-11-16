@@ -4,10 +4,12 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,12 +18,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-//#if MC >= 12000
-import net.minecraft.client.gui.DrawContext;
-//#else
-//$$import net.minecraft.client.util.math.MatrixStack;
-//#endif
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
@@ -46,13 +42,17 @@ public class InGameHudMixin {
 		return false;
 	}
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(I)Lnet/minecraft/scoreboard/ScoreboardObjective;", shift = At.Shift.BEFORE, ordinal = 2))
+	@Inject(
+		method = "render",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(Lnet/minecraft/scoreboard/ScoreboardDisplaySlot;)Lnet/minecraft/scoreboard/ScoreboardObjective;",
+			shift = At.Shift.BEFORE,
+			ordinal = 2
+		)
+	)
 	private void onRenderTab(
-		//#if MC >= 12000
 		DrawContext context,
-		//#else
-		//$$MatrixStack context,
-		//#endif
 		float tickDelta,
 		CallbackInfo ci
 	) {
@@ -61,7 +61,7 @@ public class InGameHudMixin {
 		}
 
 		Scoreboard scoreboard = this.client.world.getScoreboard();
-		ScoreboardObjective objective = scoreboard.getObjectiveForSlot(0);
+		ScoreboardObjective objective = scoreboard.getObjectiveForSlot(ScoreboardDisplaySlot.LIST);
 		boolean shouldRender = ClientRules.TOGGLE_TAB.getValue() || this.client.options.playerListKey.isPressed();
 
 		this.setPlayerListHudVisible(shouldRender);

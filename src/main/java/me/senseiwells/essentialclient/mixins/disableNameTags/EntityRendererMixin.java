@@ -14,7 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
 	@Inject(method = "renderLabelIfPresent", at = @At("HEAD"), cancellable = true)
-	private void onRender(Entity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+	private void onRender(
+		Entity entity,
+		Text text,
+		MatrixStack matrices,
+		VertexConsumerProvider vertexConsumers,
+		int light,
+		CallbackInfo ci
+	) {
 		if (ClientRules.DISABLE_NAME_TAGS.getValue()) {
 			ci.cancel();
 		}

@@ -15,8 +15,8 @@ import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.impl.ArucasList;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +54,7 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 	@NotNull
 	@Override
 	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
-		return "LivingEntity{id=%s}".formatted(RegistryHelper.getEntityTypeRegistry().getId(instance.asPrimitive(this).getType()).getPath());
+		return "LivingEntity{id=%s}".formatted(Registries.ENTITY_TYPE.getId(instance.asPrimitive(this).getType()).getPath());
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 		ArucasList potionList = new ArucasList();
 		Interpreter interpreter = arguments.getInterpreter();
 		livingEntity.getStatusEffects().forEach(s -> {
-			Identifier effectId = RegistryHelper.getStatusEffectRegistry().getId(s.getEffectType());
+			Identifier effectId = Registries.STATUS_EFFECT.getId(s.getEffectType());
 			potionList.add(effectId == null ? interpreter.getNull() : interpreter.convertValue(effectId.getPath()));
 		});
 		return potionList;

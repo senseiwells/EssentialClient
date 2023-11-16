@@ -3,10 +3,13 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
-import me.senseiwells.essentialclient.utils.render.*;
+import me.senseiwells.essentialclient.utils.render.ChildScreen;
+import me.senseiwells.essentialclient.utils.render.RenderHelper;
+import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -50,8 +53,8 @@ public class ChunkDebugScreen extends ChildScreen {
 			if (this.client.player != null) {
 				ChunkGrid.instance.setDimension(this.client.player.getEntityWorld());
 				dimensionButton.setMessage(ChunkGrid.instance.getPrettyDimension());
-				int chunkX = EntityHelper.getEntityChunkX(this.client.player);
-				int chunkZ = EntityHelper.getEntityChunkZ(this.client.player);
+				int chunkX = this.client.player.getChunkPos().x;
+				int chunkZ = this.client.player.getChunkPos().z;
 				ChunkGrid.instance.setCentre(chunkX, chunkZ);
 				this.xPositionBox.setText(String.valueOf(chunkX));
 				this.zPositionBox.setText(String.valueOf(chunkZ));
@@ -94,13 +97,6 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-		this.xPositionBox.tick();
-		this.zPositionBox.tick();
-	}
-
-	@Override
 	public void close() {
 		this.removed();
 		super.close();
@@ -115,8 +111,8 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-		this.renderBackground(wrapper.getContext());
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
 
 		ChunkGrid.instance.render(0, HEADER_HEIGHT, this.width, this.height - HEADER_HEIGHT - FOOTER_HEIGHT, false);
 
@@ -131,23 +127,24 @@ public class ChunkDebugScreen extends ChildScreen {
 			this.zPositionBox.setText(String.valueOf(ChunkGrid.instance.getCentreZ()));
 		}
 
-		RenderHelper.drawScaledText(wrapper, Texts.CHUNK_SCREEN, this.width / 2, 12, 1.5F, true);
+		RenderHelper.drawScaledText(context, Texts.CHUNK_SCREEN, this.width / 2, 12, 1.5F, true);
 		if (ChunkGrid.instance.getSelectionText() != null) {
-			RenderHelper.drawScaledText(wrapper, ChunkGrid.instance.getSelectionText(), this.width / 2, HEADER_HEIGHT + 10, 1, true);
+			RenderHelper.drawScaledText(context, ChunkGrid.instance.getSelectionText(), this.width / 2, HEADER_HEIGHT + 10, 1, true);
 		}
 
-		this.xPositionBox.render(wrapper.getContext(), mouseX, mouseY, delta);
-		this.zPositionBox.render(wrapper.getContext(), mouseX, mouseY, delta);
+		this.xPositionBox.render(context, mouseX, mouseY, delta);
+		this.zPositionBox.render(context, mouseX, mouseY, delta);
 
 		int textHeight = this.height - 20;
 		int xOffset = FOOTER_ROW_PADDING + 10;
 		int zOffset = this.xPositionBox.getWidth() + 50;
 
-		RenderHelper.drawScaledText(wrapper, Texts.X, xOffset, textHeight, 1.5F, false);
-		RenderHelper.drawScaledText(wrapper, Texts.Z, zOffset, textHeight, 1.5F, false);
+		RenderHelper.drawScaledText(context, Texts.X, xOffset, textHeight, 1.5F, false);
+		RenderHelper.drawScaledText(context, Texts.Z, zOffset, textHeight, 1.5F, false);
 
-		super.render(wrapper, mouseX, mouseY, delta);
+		super.render(context, mouseX, mouseY, delta);
 	}
+
 
 	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {
 		//#if MC < 11904
@@ -201,8 +198,8 @@ public class ChunkDebugScreen extends ChildScreen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-		return ChunkGrid.instance.onScroll(mouseX, mouseY, amount);
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		return ChunkGrid.instance.onScroll(mouseX, mouseY, horizontalAmount + verticalAmount);
 	}
 
 	@Override
@@ -242,13 +239,8 @@ public class ChunkDebugScreen extends ChildScreen {
 			return this.lastValidValue;
 		}
 
-		//#if MC >= 11904
 		@Override
 		public void setFocused(boolean focused) {
-			//#else
-			//$$@Override
-			//$$public void setTextFieldFocused(boolean focused) {
-			//#endif
 			if (this.isFocused() && !focused) {
 				try {
 					int newValue = Integer.parseInt(this.getText());

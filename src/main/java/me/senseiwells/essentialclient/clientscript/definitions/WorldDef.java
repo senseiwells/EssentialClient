@@ -21,7 +21,6 @@ import me.senseiwells.essentialclient.utils.clientscript.PosIterator;
 import me.senseiwells.essentialclient.utils.clientscript.ThreadSafeUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptBlockState;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptPos;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
@@ -30,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.LightType;
@@ -404,7 +404,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	private Void renderParticle(Arguments arguments) {
 		World world = arguments.nextPrimitive(this);
 		String particleName = arguments.nextPrimitive(StringDef.class);
-		ParticleType<?> particleType = RegistryHelper.getParticleTypeRegistry().get(ClientScriptUtils.stringToIdentifier(particleName));
+		ParticleType<?> particleType = Registries.PARTICLE_TYPE.get(ClientScriptUtils.stringToIdentifier(particleName));
 		if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
 			throw new RuntimeError("Particle Invalid");
 		}
@@ -433,7 +433,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	private Void renderParticlePos(Arguments arguments) {
 		World world = arguments.nextPrimitive(this);
 		String particleName = arguments.nextPrimitive(StringDef.class);
-		ParticleType<?> particleType = RegistryHelper.getParticleTypeRegistry().get(ClientScriptUtils.stringToIdentifier(particleName));
+		ParticleType<?> particleType = Registries.PARTICLE_TYPE.get(ClientScriptUtils.stringToIdentifier(particleName));
 		if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
 			throw new RuntimeError("Particle Invalid");
 		}
@@ -463,7 +463,7 @@ public class WorldDef extends CreatableDefinition<World> {
 	private Void renderParticleVel(Arguments arguments) {
 		World world = arguments.nextPrimitive(this);
 		String particleName = arguments.nextPrimitive(StringDef.class);
-		ParticleType<?> particleType = RegistryHelper.getParticleTypeRegistry().get(ClientScriptUtils.stringToIdentifier(particleName));
+		ParticleType<?> particleType = Registries.PARTICLE_TYPE.get(ClientScriptUtils.stringToIdentifier(particleName));
 		if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
 			throw new RuntimeError("Particle Invalid");
 		}

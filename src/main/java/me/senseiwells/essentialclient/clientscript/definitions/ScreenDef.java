@@ -18,12 +18,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
-//#if MC < 11903
-//$$import me.senseiwells.essentialclient.utils.render.Texts;
-//$$import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-//$$import net.minecraft.item.ItemGroup;
-//#endif
-
 import java.util.List;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.SCREEN;
@@ -81,7 +75,7 @@ public class ScreenDef extends PrimitiveDefinition<Screen> {
 		//#if MC < 11903
 		//$$if (screen instanceof CreativeInventoryScreen creativeInventoryScreen) {
 		//$$	int tabIndex = creativeInventoryScreen.getSelectedTab();
-		//$$	return Texts.literal(ItemGroup.GROUPS[tabIndex].getName());
+		//$$	return Text.literal(ItemGroup.GROUPS[tabIndex].getName());
 		//$$}
 		//#endif
 		return title == null ? null : title.copy();

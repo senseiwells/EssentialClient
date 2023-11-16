@@ -3,12 +3,8 @@ package me.senseiwells.essentialclient.feature;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-//#if MC < 11903
-//$$import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-//#endif
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.block.BlockState;
@@ -26,8 +22,6 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
@@ -62,20 +56,7 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 	}
 
 	public static void load() {
-		if (EssentialUtils.isModInstalled("fabric-rendering-fluids-v1")
-			//#if MC < 11903
-			//$$&& EssentialUtils.isModInstalled("fabric-textures-v0")
-			//#endif
-		) {
-			// Vanilla now allows for atlas configs in 1.19.3+
-			//#if MC < 11903
-			//$$ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-			//$$	registry.register(LAVA_FLOWING_SPRITE_ID);
-			//$$	registry.register(LAVA_STILL_SPRITE_ID);
-			//$$	registry.register(WATER_FLOWING_SPRITE_ID);
-			//$$	registry.register(WATER_STILL_SPRITE_ID);
-			//$$});
-			//#endif
+		if (EssentialUtils.isModInstalled("fabric-rendering-fluids-v1")) {
 			ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new HighlightLiquids());
 		} else {
 			EssentialClient.LOGGER.info("Highlight Liquids not functional - no Fabric API");

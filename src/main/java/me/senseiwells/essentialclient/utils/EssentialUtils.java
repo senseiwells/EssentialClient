@@ -6,9 +6,7 @@ import me.senseiwells.essentialclient.rule.carpet.CarpetClientRule;
 import me.senseiwells.essentialclient.rule.carpet.IntegerCarpetRule;
 import me.senseiwells.essentialclient.rule.carpet.StringCarpetRule;
 import me.senseiwells.essentialclient.rule.client.BooleanClientRule;
-import me.senseiwells.essentialclient.utils.mapping.WorldHelper;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.MinecraftVersion;
@@ -34,6 +32,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -50,13 +49,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-
-//#if MC >= 11903
-import net.minecraft.registry.tag.FluidTags;
-//#else
-//$$import net.minecraft.tag.FluidTags;
-//$$import net.minecraft.util.registry.Registry;
-//#endif
 
 public class EssentialUtils {
 	private static final Path ESSENTIAL_CLIENT_PATH;
@@ -88,7 +80,7 @@ public class EssentialUtils {
 	public static void sendMessageToActionBar(String message) {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
-			client.execute(() -> client.player.sendMessage(Texts.literal(message), true));
+			client.execute(() -> client.player.sendMessage(Text.literal(message), true));
 		}
 	}
 
@@ -102,7 +94,7 @@ public class EssentialUtils {
 	public static void sendMessage(String message) {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
-			client.execute(() -> client.player.sendMessage(Texts.literal(message), false));
+			client.execute(() -> client.player.sendMessage(Text.literal(message), false));
 		}
 	}
 
@@ -117,21 +109,11 @@ public class EssentialUtils {
 		MinecraftClient client = getClient();
 		if (client.player != null) {
 			client.execute(() -> {
-				//#if MC >= 11903
 				if (message.startsWith("/")) {
 					client.player.networkHandler.sendChatCommand(message.substring(1));
 					return;
 				}
 				client.player.networkHandler.sendChatMessage(message);
-				//#elseif MC >= 11900
-				//$$if (message.startsWith("/")) {
-				//$$	client.player.sendCommand(message.substring(1));
-				//$$	return;
-				//$$}
-				//$$client.player.sendChatMessage(message, null);
-				//#else
-				//$$client.player.sendChatMessage(message);
-				//#endif
 			});
 		}
 	}
@@ -161,7 +143,7 @@ public class EssentialUtils {
 	}
 
 	public static DynamicRegistryManager getRegistryManager() {
-		return getNetworkHandler().getRegistryManager();
+		return getWorld().getRegistryManager();
 	}
 
 	public static PlayerListEntry getPlayerListEntry() {
@@ -214,7 +196,7 @@ public class EssentialUtils {
 		double x = player.getX() - pos.getX() - 0.5;
 		double y = player.getY() - pos.getY() + 1.0;
 		double z = player.getZ() - pos.getZ() - 0.5;
-		if (x * x + y * y + z * z > 36 || WorldHelper.isPositionOutOfWorld(player.getEntityWorld(), pos) || !player.getEntityWorld().getWorldBorder().contains(pos)) {
+		if (x * x + y * y + z * z > 36 || player.getEntityWorld().isOutOfHeightLimit(pos) || !player.getEntityWorld().getWorldBorder().contains(pos)) {
 			return false;
 		}
 		if (player.isBlockBreakingRestricted(player.getEntityWorld(), pos, getInteractionManager().getCurrentGameMode())) {

@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mixin(NbtList.class)
 public interface NbtListMixin {
-	@SuppressWarnings("unused")
 	@Invoker("<init>")
 	static NbtList createNbtList(List<NbtElement> list, byte type) {
 		throw new AssertionError();

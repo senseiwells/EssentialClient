@@ -2,10 +2,10 @@ package me.senseiwells.essentialclient.mixins.autoWalk;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,16 +27,12 @@ public class KeyboardInputMixin extends Input {
 	private boolean shouldAutoHold = false;
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z", ordinal = 3, shift = At.Shift.AFTER))
-	//#if MC >= 11900
 	private void onTick(boolean slowDown, float f, CallbackInfo ci) {
-		//#else
-		//$$private void onTick(boolean slowDown, CallbackInfo ci) {
-		//#endif
 		if (this.settings.forwardKey.isPressed()) {
 			int autoWalk = ClientRules.AUTO_WALK.getValue();
 			this.shouldAutoHold = autoWalk > 0 && this.ticks++ > autoWalk;
 			if (this.shouldAutoHold) {
-				EssentialUtils.sendMessageToActionBar(Texts.literal("You are now autowalking").formatted(Formatting.GREEN));
+				EssentialUtils.sendMessageToActionBar(Text.literal("You are now autowalking").formatted(Formatting.GREEN));
 			}
 			this.pressingForward = true;
 		} else {

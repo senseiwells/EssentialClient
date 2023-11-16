@@ -4,12 +4,12 @@ import com.google.common.collect.ImmutableList;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.gui.config.ConfigListWidget;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.RuleWidget;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.OrderedText;
@@ -44,7 +44,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		});
 		this.resetConsumer = buttonWidget -> {
 			this.rule.resetToDefault();
-			this.editButton.setMessage(Texts.literal(this.rule.getDefaultValue().toString()));
+			this.editButton.setMessage(Text.literal(this.rule.getDefaultValue().toString()));
 		};
 		this.checkDisabled();
 	}
@@ -53,9 +53,9 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		this.resetConsumer = consumer;
 	}
 
-	protected void renderEditButton(RenderContextWrapper wrapper, int x, int y, int mouseX, int mouseY, float delta) {
-		WidgetHelper.setPosition(this.editButton, x + 180, y);
-		this.editButton.render(wrapper.getContext(), mouseX, mouseY, delta);
+	protected void renderEditButton(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+		this.editButton.setPosition(x + 180, y);
+		this.editButton.render(context, mouseX, mouseY, delta);
 	}
 
 	protected void checkDisabled() {
@@ -87,15 +87,15 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	}
 
 	@Override
-	public void render(RenderContextWrapper wrapper, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
+	public void render(DrawContext context, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
 		TextRenderer font = this.client.textRenderer;
 		float fontX = (float) (x + 90 - ConfigListWidget.LENGTH);
 		float fontY = (float) (y + height / 2 - 9 / 2);
 		this.ruleWidget.setPos(x - 50, y + 2);
-		this.ruleWidget.drawRule(wrapper, font, fontX, fontY, 16777215);
+		this.ruleWidget.drawRule(context, font, fontX, fontY, 16777215);
 		if (this.isRuleWidgetHovered(mouseX, mouseY)) {
 			List<OrderedText> lines = new ArrayList<>();
-			Text nameText = Texts.literal(this.ruleName).formatted(Formatting.GOLD);
+			Text nameText = Text.literal(this.ruleName).formatted(Formatting.GOLD);
 			lines.add(nameText.asOrderedText());
 			String info;
 			if (this.ruleWidget.isToggled() && this.rule.getOptionalInfo() != null) {
@@ -108,11 +108,11 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 				this.rulesScreen.setCurrentTooltip(lines);
 			}
 		}
-		WidgetHelper.setPosition(this.resetButton, x + 290, y);
+		this.resetButton.setPosition(x + 290, y);
 		this.resetButton.active = this.rule.isAvailable() && this.rule.changeable() && this.rule.isNotDefault();
-		this.resetButton.render(wrapper.getContext(), mouseX, mouseY, delta);
+		this.resetButton.render(context, mouseX, mouseY, delta);
 
-		this.renderEditButton(wrapper, x, y, mouseX, mouseY, delta);
+		this.renderEditButton(context, x, y, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -120,13 +120,8 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 		return ImmutableList.of(this.editButton, this.resetButton);
 	}
 
-	//#if MC >= 11700
 	@Override
 	public List<ClickableWidget> selectableChildren() {
 		return this.children();
 	}
-	//#endif
-
-	@Override
-	public void updateEntryOnClose() { }
 }

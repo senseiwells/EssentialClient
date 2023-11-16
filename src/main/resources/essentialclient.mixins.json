@@ -39,7 +39,6 @@
     "clientScript.StonecutterScreenHandlerMixin",
     "clientScript.WorldRendererMixin",
     "commandSuggestorIgnoresSpaces.ChatInputSuggestorMixin",
-    "core.ClientPlayerEntityMixin",
     "core.ClientPlayNetworkHandlerMixin",
     "core.GameMenuScreenMixin",
     "core.KeyboardMixin",
@@ -94,5 +93,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "core.CustomPayloadS2CPacketMixin"
+  ]
 }

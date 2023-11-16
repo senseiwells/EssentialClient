@@ -1,15 +1,10 @@
 package me.senseiwells.essentialclient.feature.chunkdebug;
 
-import io.netty.buffer.Unpooled;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
-
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.RELOAD;
 
 public class ChunkClientNetworkHandler extends NetworkHandler {
 	public static final Identifier CHUNK_DEBUG_CHANNEL = new Identifier("essentialclient", "chunkdebug");
@@ -57,21 +52,11 @@ public class ChunkClientNetworkHandler extends NetworkHandler {
 		this.requestChunkData(new Identifier(worldName));
 	}
 
-	private void requestChunkData(Identifier worldIdentifier) {
-		if (this.getNetworkHandler() != null) {
-			this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
-				CHUNK_DEBUG_CHANNEL,
-				new PacketByteBuf(Unpooled.buffer()).writeVarInt(DATA).writeIdentifier(worldIdentifier)
-			));
-		}
+	private void requestChunkData(Identifier world) {
+		this.sendDataPacket(buf -> buf.writeIdentifier(world));
 	}
 
 	protected void requestServerRefresh() {
-		if (this.getNetworkHandler() != null) {
-			this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
-				CHUNK_DEBUG_CHANNEL,
-				new PacketByteBuf(Unpooled.buffer()).writeVarInt(RELOAD)
-			));
-		}
+		this.sendReloadPacket();
 	}
 }

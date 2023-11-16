@@ -4,6 +4,7 @@ import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +20,7 @@ public class RecipeBookResultsMixin {
 	@Final
 	private List<AnimatedResultButton> resultButtons;
 	@Shadow
-	private Recipe<?> lastClickedRecipe;
+	private RecipeEntry<?> lastClickedRecipe;
 	@Shadow
 	private RecipeResultCollection resultCollection;
 

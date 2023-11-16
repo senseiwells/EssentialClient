@@ -2,8 +2,8 @@ package me.senseiwells.essentialclient.mixins.survivalInventoryInCreative;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.interfaces.IScreenInventory;
-import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import me.senseiwells.essentialclient.utils.render.WidgetHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -26,11 +26,7 @@ public class CreativeInventoryScreenMixin extends Screen implements IScreenInven
 	}
 
 	@Redirect(
-		//#if MC >= 11700
 		method = "handledScreenTick",
-		//#else
-		//$$method = "tick",
-		//#endif
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;hasCreativeInventory()Z"),
 		require = 0
 	)
@@ -48,14 +44,14 @@ public class CreativeInventoryScreenMixin extends Screen implements IScreenInven
 		if (ClientRules.SURVIVAL_INVENTORY_IN_CREATIVE.getValue() && this.client != null && this.client.player != null) {
 			this.addDrawableChild(WidgetHelper.newButton(5, 5, 100, 20, Texts.SWAP_INVENTORY, button -> {
 				InventoryScreen screen = new InventoryScreen(this.client.player);
-				((IScreenInventory) screen).setForced();
+				((IScreenInventory) screen).essentialclient$setForced();
 				this.client.setScreen(screen);
 			}));
 		}
 	}
 
 	@Override
-	public void setForced() {
+	public void essentialclient$setForced() {
 		this.forced = true;
 	}
 }

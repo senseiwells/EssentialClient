@@ -5,13 +5,10 @@ import me.senseiwells.essentialclient.utils.interfaces.IEntityList;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.EntityList;
 import net.minecraft.world.World;
 
 import java.util.UUID;
-
-//#if MC >= 11700
-import net.minecraft.world.EntityList;
-//#endif
 
 /**
  * Utility class that makes some Minecraft
@@ -20,12 +17,8 @@ import net.minecraft.world.EntityList;
  */
 public class ThreadSafeUtils {
 	public static Entity[] getEntitiesSafe(ClientWorld world) {
-		//#if MC >= 11700
 		EntityList entityList = ((ClientWorldAccessor) world).getEntityList();
-		//#else
-		//$$ClientWorld entityList = world;
-		//#endif
-		return ((IEntityList) entityList).getAllEntities();
+		return ((IEntityList) entityList).essentialclient$getAllEntities();
 	}
 
 	public static PlayerEntity[] getPlayersSafe(World world) {

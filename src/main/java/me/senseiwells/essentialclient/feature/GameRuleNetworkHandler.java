@@ -1,6 +1,5 @@
 package me.senseiwells.essentialclient.feature;
 
-import io.netty.buffer.Unpooled;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.mixins.gameRuleSync.RuleInvoker;
@@ -14,11 +13,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
-
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
 
 public class GameRuleNetworkHandler extends NetworkHandler {
 	public static final Identifier GAME_RULE_CHANNEL = new Identifier("essentialclient", "gamerule");
@@ -98,18 +94,13 @@ public class GameRuleNetworkHandler extends NetworkHandler {
 			if (gameRule.getKey() != null) {
 				GameRules.Rule<?> rule = client.getServer().getGameRules().get(gameRule.getKey());
 				((RuleInvoker) rule).deserialize(newValue);
-				((IGameRule) rule).ruleChanged(gameRule.getName(), client.getServer());
+				((IGameRule) rule).essentialclient$ruleChanged(gameRule.getName(), client.getServer());
 				gameRule.setFromServer(newValue);
 				this.refreshScreen();
 			}
 			return;
 		}
-		if (this.getNetworkHandler() != null) {
-			this.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(
-				this.getNetworkChannel(),
-				new PacketByteBuf(Unpooled.buffer()).writeVarInt(DATA).writeString(gameRule.getName()).writeString(newValue)
-			));
-		}
+		this.sendDataPacket(buf -> buf.writeString(gameRule.getName()).writeString(newValue));
 	}
 
 	private void refreshScreen() {

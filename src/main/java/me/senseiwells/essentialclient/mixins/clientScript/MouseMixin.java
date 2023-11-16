@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -20,16 +21,12 @@ public class MouseMixin {
 	@Inject(
 		method = "onMouseScroll",
 		at = @At(
-			//#if MC >= 11700
 			value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getOverlay()Lnet/minecraft/client/gui/screen/Overlay;"
-			//#else
-			//$$value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;overlay:Lnet/minecraft/client/gui/screen/Overlay;"
-			//#endif
 		),
 		cancellable = true,
 		locals = LocalCapture.CAPTURE_FAILHARD
 	)
-	private void mouseScroll(long window, double horizontal, double vertical, CallbackInfo ci, double d) {
+	private void mouseScroll(long window, double horizontal, double vertical, CallbackInfo ci, @Local(ordinal = 0) double d) {
 		if (window == this.client.getWindow().getHandle() && MinecraftScriptEvents.ON_MOUSE_SCROLL.run(d)) {
 			ci.cancel();
 		}

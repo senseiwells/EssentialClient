@@ -2,9 +2,9 @@ package me.senseiwells.essentialclient.gui.config;
 
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBind;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
@@ -39,7 +39,7 @@ public class ControlsScreen extends ChildScreen {
 	@Override
 	protected void init() {
 		this.controlWidget = new ControlsListWidget(this.client, this);
-		this.addSelectableChild(this.controlWidget);
+		this.addDrawableChild(this.controlWidget);
 		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
 	}
 
@@ -53,26 +53,22 @@ public class ControlsScreen extends ChildScreen {
 	}
 
 	@Override
-	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-		this.renderBackground(wrapper.getContext());
-		this.controlWidget.render(wrapper.getContext(), mouseX, mouseY, delta);
-		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
+		this.controlWidget.render(context, mouseX, mouseY, delta);
+		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 		if (this.hoveredKeyBinding != null) {
 			String display = this.hoveredKeyBinding.getDisplay();
 			List<Text> textList = List.of(
-				Texts.literal(this.hoveredKeyBinding.getName()).formatted(Formatting.GOLD),
-				display.isEmpty() ? Texts.NO_KEYBINDING : Texts.literal(display)
+				Text.literal(this.hoveredKeyBinding.getName()).formatted(Formatting.GOLD),
+				display.isEmpty() ? Texts.NO_KEYBINDING : Text.literal(display)
 			);
-			//#if MC >= 12000
-			wrapper.getContext().drawTooltip(this.textRenderer, textList, mouseX, mouseY);
-			//#else
-			//$$this.renderTooltip(wrapper.getMatrices(), textList, mouseX, mouseY);
-			//#endif
+			context.drawTooltip(this.textRenderer, textList, mouseX, mouseY);
 			this.hoveredKeyBinding = null;
 		}
 
-		super.render(wrapper, mouseX, mouseY, delta);
+		super.render(context, mouseX, mouseY, delta);
 	}
 
 	@Override

@@ -5,5 +5,5 @@ import net.minecraft.client.gui.hud.ChatHudLine;
 import java.util.List;
 
 public interface ChatHudAccessor {
-	List<ChatHudLine> getMessages();
+	List<ChatHudLine> essentialclient$getMessages();
 }

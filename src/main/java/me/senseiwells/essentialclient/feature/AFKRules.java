@@ -2,8 +2,9 @@ package me.senseiwells.essentialclient.feature;
 
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.misc.Events;
 import me.senseiwells.essentialclient.utils.render.Texts;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
@@ -16,10 +17,10 @@ public class AFKRules {
 	private static boolean wasAfk = false;
 
 	static {
-		Events.ON_DISCONNECT.register(client -> {
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			wasAfk = false;
 		});
-		Events.ON_TICK_POST.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			ClientPlayerEntity playerEntity = client.player;
 			int announceAfk = ClientRules.ANNOUNCE_AFK.getValue();
 			int logout = ClientRules.AFK_LOGOUT.getValue();

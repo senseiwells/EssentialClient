@@ -5,7 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import me.senseiwells.essentialclient.EssentialClient;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public interface Rule<T> {

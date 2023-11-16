@@ -1,26 +1,15 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
 import com.mojang.authlib.GameProfile;
-
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import me.senseiwells.essentialclient.utils.mapping.EntityHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-
-//#if MC >= 11901 && MC < 11903
-//$$import net.minecraft.network.encryption.PlayerPublicKey;
-//$$import net.minecraft.text.Text;
-//#endif
-
-//#if MC < 11903
-//$$import me.senseiwells.essentialclient.clientscript.core.ClientScriptIO;
-//#endif
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,15 +17,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
-	//#if MC >= 11901 && MC < 11903
-	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, PlayerPublicKey publicKey) {
-	//$$	super(world, pos, yaw, gameProfile, publicKey);
-	//$$}
-	//#else
+	@Shadow public abstract float getPitch(float tickDelta);
+
+	@Shadow public abstract float getYaw(float tickDelta);
+
 	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
 		super(world, pos, yaw, profile);
 	}
-	//#endif
 
 	@Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
 	private void onDropItem(boolean dropEntireStack, CallbackInfoReturnable<Boolean> cir) {
@@ -83,8 +70,8 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	public void changeLookDirection(double cursorDeltaX, double cursorDeltaY) {
 		float deltaPitch = (float) cursorDeltaY * 0.15F;
 		float deltaYaw = (float) cursorDeltaX * 0.15F;
-		float newPitch = EntityHelper.getEntityPitch(this) + deltaPitch;
-		float newYaw = EntityHelper.getEntityYaw(this) + deltaYaw;
+		float newPitch = this.getPitch() + deltaPitch;
+		float newYaw = this.getYaw() + deltaYaw;
 
 		if (this.prevPitch == newPitch && this.prevYaw == newYaw) {
 			return;

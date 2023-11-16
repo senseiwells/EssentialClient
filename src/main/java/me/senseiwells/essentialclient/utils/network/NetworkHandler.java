@@ -1,14 +1,12 @@
 package me.senseiwells.essentialclient.utils.network;
 
-import io.netty.buffer.Unpooled;
 import me.senseiwells.essentialclient.EssentialClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.HELLO;
+import static me.senseiwells.essentialclient.utils.network.NetworkUtils.*;
 
 public abstract class NetworkHandler {
 	private boolean available;
@@ -57,13 +55,27 @@ public abstract class NetworkHandler {
 
 	protected void onHelloFail() { }
 
-	private void respondHello() {
+	protected void sendReloadPacket() {
+		this.sendPacket(buf -> buf.writeVarInt(RELOAD));
+	}
+
+	protected void sendDataPacket(PacketWriter writer) {
+		this.sendPacket(buf -> {
+			buf.writeVarInt(DATA);
+			writer.write(buf);
+		});
+	}
+
+	private void sendPacket(PacketWriter writer) {
 		if (this.networkHandler != null) {
 			this.networkHandler.sendPacket(new CustomPayloadC2SPacket(
-				this.getNetworkChannel(),
-				new PacketByteBuf(Unpooled.buffer()).writeVarInt(HELLO).writeString(EssentialClient.VERSION).writeVarInt(this.getVersion())
+				new CustomPacketWriter(this.getNetworkChannel(), writer)
 			));
 		}
+	}
+
+	private void respondHello() {
+		this.sendPacket(buf -> buf.writeVarInt(HELLO).writeString(EssentialClient.VERSION).writeVarInt(this.getVersion()));
 	}
 
 	protected abstract void processData(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler);

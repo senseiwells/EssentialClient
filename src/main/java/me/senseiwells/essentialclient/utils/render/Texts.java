@@ -6,10 +6,8 @@ import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-//#if MC < 11900
-//$$import net.minecraft.text.LiteralText;
-//$$import net.minecraft.text.TranslatableText;
-//#endif
+import static net.minecraft.text.Text.literal;
+import static net.minecraft.text.Text.translatable;
 
 public class Texts {
 	public static final Text EMPTY = literal("");
@@ -155,29 +153,8 @@ public class Texts {
 	public static final Identifier JETBRAINS_MONO = new Identifier("essentialclient", "jetbrainsmono");
 	public static final Identifier MINECRAFT_MONO = new Identifier("essentialclient", "monocraft");
 
-	// These allow for easy porting to later versions
-	public static MutableText literal(String message) {
-		//#if MC >= 11900
-		return Text.literal(message);
-		//#else
-		//$$return new LiteralText(message);
-		//#endif
-	}
-
-	public static MutableText translatable(String translatable, Object... args) {
-		//#if MC >= 11900
-		return Text.translatable(translatable, args);
-		//#else
-		//$$return new TranslatableText(translatable, args);
-		//#endif
-	}
-
 	public static String getTranslatableKey(Text text) {
-		//#if MC >= 11900
 		if (text.getContent() instanceof TranslatableTextContent translatableText) {
-			//#else
-			//$$if (text instanceof TranslatableText translatableText) {
-			//#endif
 			return translatableText.getKey();
 		}
 		return null;

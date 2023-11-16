@@ -18,10 +18,11 @@ import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerList;
-import me.senseiwells.essentialclient.utils.misc.Events;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,8 +52,8 @@ public class EssentialClient implements ModInitializer, CarpetExtension {
 		CONFIG_SET = new LinkedHashSet<>();
 		registerConfigs();
 
-		Events.ON_CLOSE.register(client -> EssentialClient.saveConfigs());
-		Events.ON_DISCONNECT_POST.register(v -> EssentialClient.saveConfigs());
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> saveConfigs());
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> onDisconnect());
 
 		NETWORK_HANDLERS.add(CHUNK_NET_HANDLER);
 		NETWORK_HANDLERS.add(GAME_RULE_NET_HANDLER);
@@ -90,5 +91,6 @@ public class EssentialClient implements ModInitializer, CarpetExtension {
 
 	public static void onDisconnect() {
 		NETWORK_HANDLERS.forEach(NetworkHandler::onDisconnect);
+		EssentialClient.saveConfigs();
 	}
 }

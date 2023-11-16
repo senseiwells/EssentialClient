@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.utils.interfaces;
 
 public interface MinecraftClientInvoker {
-	void rightClickMouseAccessor();
+	void essentialclient$rightClick();
 
-	void leftClickMouseAccessor();
+	void essentialclient$leftClick();
 }

@@ -16,10 +16,10 @@ import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptMaterial;
-import me.senseiwells.essentialclient.utils.mapping.RegistryHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,16 +66,14 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	public List<PrimitiveField> defineStaticFields() {
 		SortedMap<String, ClassInstance> map = new TreeMap<>();
 
-		for (Item item : RegistryHelper.getItemRegistry()) {
+		for (Item item : Registries.ITEM) {
 			map.put(item.toString().toUpperCase(), this.create(ScriptMaterial.materialOf(item)));
 		}
-		for (Block block : RegistryHelper.getBlockRegistry()) {
-			Identifier identifier = RegistryHelper.getBlockRegistry().getId(block);
-			if (identifier != null) {
-				map.computeIfAbsent(identifier.getPath().toUpperCase(), s -> {
-					return this.create(ScriptMaterial.materialOf(block));
-				});
-			}
+		for (Block block : Registries.BLOCK) {
+			Identifier identifier = Registries.BLOCK.getId(block);
+			map.computeIfAbsent(identifier.getPath().toUpperCase(), s -> {
+				return this.create(ScriptMaterial.materialOf(block));
+			});
 		}
 
 		List<PrimitiveField> fields = new ArrayList<>(map.size());
@@ -105,9 +103,9 @@ public class MaterialDef extends CreatableDefinition<ScriptMaterial> {
 	private Object of(Arguments arguments) {
 		String id = arguments.nextPrimitive(StringDef.class);
 		Identifier identifier = ClientScriptUtils.stringToIdentifier(id);
-		Optional<Item> item = RegistryHelper.getItemRegistry().getOrEmpty(identifier);
+		Optional<Item> item = Registries.ITEM.getOrEmpty(identifier);
 		if (item.isEmpty()) {
-			Optional<Block> block = RegistryHelper.getBlockRegistry().getOrEmpty(identifier);
+			Optional<Block> block = Registries.BLOCK.getOrEmpty(identifier);
 			if (block.isPresent()) {
 				return block.get();
 			}

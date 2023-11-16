@@ -7,11 +7,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.Packet;
-
-//#if MC >= 11901 && MC < 11903
-//$$import net.minecraft.network.encryption.PlayerPublicKey;
-//#endif
-
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -23,25 +18,15 @@ import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends PlayerEntity {
-	//#if MC >= 11901 && MC < 11903
-	//$$public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile, PlayerPublicKey publicKey) {
-	//$$	super(world, pos, yaw, gameProfile, publicKey);
-	//$$}
-	//#else
 	public ClientPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
 		super(world, pos, yaw, profile);
 	}
-	//#endif
 
 	@Redirect(
 		method = "sendMovementPackets",
 		at = @At(
 			value = "INVOKE",
-			//#if MC >= 11904
 			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
-			//#else
-			//$$target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
-			//#endif
 			ordinal = 0
 		),
 		slice = @Slice(
@@ -67,11 +52,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		method = "sendMovementPackets",
 		at = @At(
 			value = "INVOKE",
-			//#if MC >= 11904
 			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
-			//#else
-			//$$target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
-			//#endif
 			ordinal = 1
 		),
 		slice = @Slice(
@@ -99,11 +80,7 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		method = "sendMovementPackets",
 		at = @At(
 			value = "INVOKE",
-			//#if MC >= 11904
 			target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/packet/Packet;)V",
-			//#else
-			//$$target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V",
-			//#endif
 			ordinal = 3
 		),
 		slice = @Slice(

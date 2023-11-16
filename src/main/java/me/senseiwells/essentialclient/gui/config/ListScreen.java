@@ -3,9 +3,9 @@ package me.senseiwells.essentialclient.gui.config;
 import me.senseiwells.essentialclient.gui.RulesScreen;
 import me.senseiwells.essentialclient.utils.interfaces.Rule;
 import me.senseiwells.essentialclient.utils.render.ChildScreen;
-import me.senseiwells.essentialclient.utils.render.RenderContextWrapper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import me.senseiwells.essentialclient.utils.render.WidgetHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -42,16 +42,16 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
 			return;
 		}
 		this.widget = new ListListWidget(this, this.client);
-		this.addSelectableChild(this.widget);
+		this.addDrawableChild(this.widget);
 		this.addDrawableChild(WidgetHelper.newButton(this.width / 2 - 100, this.height - 27, 200, 20, Texts.DONE, buttonWidget -> this.close()));
 	}
 
 	@Override
-	public void render(RenderContextWrapper wrapper, int mouseX, int mouseY, float delta) {
-		this.renderBackground(wrapper.getContext());
-		this.widget.render(wrapper.getContext(), mouseX, mouseY, delta);
-		super.render(wrapper, mouseX, mouseY, delta);
-		wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
+		this.widget.render(context, mouseX, mouseY, delta);
+		super.render(context, mouseX, mouseY, delta);
+		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 	}
 
 	@Override
