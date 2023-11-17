@@ -57,8 +57,9 @@ public class RecipeDef extends CreatableDefinition<RecipeEntry<Recipe<?>>> {
 
 		SortedMap<String, ClassInstance> map = new TreeMap<>();
 		for (RecipeEntry<?> recipe : networkHandler.getRecipeManager().values()) {
-			//noinspection unchecked
-			map.put(recipe.toString().toUpperCase(), this.create((RecipeEntry<Recipe<?>>) recipe));
+			@SuppressWarnings("unchecked")
+			ClassInstance instance = this.create((RecipeEntry<Recipe<?>>) recipe);
+			map.put(recipe.toString().toUpperCase(), instance);
 		}
 
 		ArucasList list = new ArucasList();

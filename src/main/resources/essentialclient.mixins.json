@@ -93,8 +93,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "core.CustomPayloadS2CPacketMixin"
-  ]
+  }
 }

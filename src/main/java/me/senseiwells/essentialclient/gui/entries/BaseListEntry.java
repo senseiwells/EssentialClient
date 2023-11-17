@@ -89,7 +89,7 @@ public abstract class BaseListEntry<T extends ClickableWidget> extends ConfigLis
 	@Override
 	public void render(DrawContext context, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float delta) {
 		TextRenderer font = this.client.textRenderer;
-		float fontX = (float) (x + 90 - ConfigListWidget.LENGTH);
+		float fontX = (float) (x + 100 - ConfigListWidget.LENGTH);
 		float fontY = (float) (y + height / 2 - 9 / 2);
 		this.ruleWidget.setPos(x - 50, y + 2);
 		this.ruleWidget.drawRule(context, font, fontX, fontY, 16777215);

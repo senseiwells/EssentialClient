@@ -1,22 +1,34 @@
 package me.senseiwells.essentialclient.utils.network;
 
 import me.senseiwells.essentialclient.EssentialClient;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
 import static me.senseiwells.essentialclient.utils.network.NetworkUtils.*;
 
 public abstract class NetworkHandler {
+	private final Identifier channel;
 	private boolean available;
 	private ClientPlayNetworkHandler networkHandler;
 
-	public abstract Identifier getNetworkChannel();
+	public NetworkHandler(Identifier channel) {
+		this.channel = channel;
+		ClientPlayNetworking.registerGlobalReceiver(
+			channel,
+			(c, handler, buf, r) -> c.execute(() -> this.handlePacket(buf, handler))
+		);
+	}
 
 	public abstract int getVersion();
 
-	public void handlePacket(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
+	public final Identifier getNetworkChannel() {
+		return this.channel;
+	}
+
+	public final void handlePacket(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
 		if (packetByteBuf != null) {
 			int varInt = packetByteBuf.readVarInt();
 			switch (varInt) {
@@ -68,9 +80,9 @@ public abstract class NetworkHandler {
 
 	private void sendPacket(PacketWriter writer) {
 		if (this.networkHandler != null) {
-			this.networkHandler.sendPacket(new CustomPayloadC2SPacket(
-				new CustomPacketWriter(this.getNetworkChannel(), writer)
-			));
+			PacketByteBuf buf = PacketByteBufs.create();
+			writer.write(buf);
+			this.networkHandler.sendPacket(ClientPlayNetworking.createC2SPacket(this.getNetworkChannel(), buf));
 		}
 	}
 

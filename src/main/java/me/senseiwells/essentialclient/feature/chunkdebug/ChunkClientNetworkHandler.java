@@ -7,14 +7,10 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 public class ChunkClientNetworkHandler extends NetworkHandler {
-	public static final Identifier CHUNK_DEBUG_CHANNEL = new Identifier("essentialclient", "chunkdebug");
 	public static final int VERSION = 1_0_3;
 
-	public ChunkClientNetworkHandler() { }
-
-	@Override
-	public Identifier getNetworkChannel() {
-		return CHUNK_DEBUG_CHANNEL;
+	public ChunkClientNetworkHandler() {
+		super(new Identifier("essentialclient", "chunkdebug"));
 	}
 
 	@Override

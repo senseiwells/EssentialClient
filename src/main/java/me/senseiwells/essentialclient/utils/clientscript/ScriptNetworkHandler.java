@@ -23,11 +23,8 @@ import java.util.List;
 import static me.senseiwells.essentialclient.utils.network.NetworkUtils.*;
 
 public class ScriptNetworkHandler extends NetworkHandler {
-	private static final Identifier SCRIPT_HANDLER = new Identifier("essentialclient", "clientscript");
-
-	@Override
-	public Identifier getNetworkChannel() {
-		return SCRIPT_HANDLER;
+	public ScriptNetworkHandler() {
+		super(new Identifier("essentialclient", "clientscript"));
 	}
 
 	@Override

@@ -33,7 +33,7 @@
   "essentialclient.configs.editList": "Edit List",
   "essentialclient.configs.editingList": "Editing List: %s",
   "essentialclient.configs.wiki": "Wiki Page",
-  "essentialclient.configs.configFolder": "Open Config Folder",
+  "essentialclient.configs.configFolder": "Config Folder",
   "essentialclient.script.arucasVersion": "Arucas Version: %s",
   "essentialclient.script.noScript": "Script with name %s doesn't exist",
   "essentialclient.script.downloadSuccess": "Successfully downloaded %s",

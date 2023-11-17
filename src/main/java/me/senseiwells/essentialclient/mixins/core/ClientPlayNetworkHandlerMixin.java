@@ -10,11 +10,9 @@ import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.command.CommandHelper;
-import me.senseiwells.essentialclient.utils.network.HandlerPayload;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConnectionState;
-import net.minecraft.client.network.ClientDynamicRegistryType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
@@ -22,7 +20,6 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.registry.CombinedDynamicRegistries;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.server.command.ServerCommandSource;
@@ -69,18 +66,9 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 			ClientScript.INSTANCE.startAllInstances();
 		}
 		MinecraftScriptEvents.ON_CONNECT.run(EssentialUtils.getPlayer(), EssentialUtils.getWorld());
-		if (this.client.getServer() != null) {
+		if (this.client.getServer() != null && !EssentialUtils.isModInstalled("essentialaddons")) {
 			EssentialClient.GAME_RULE_NET_HANDLER.onHelloSinglePlayer();
 			EssentialClient.GAME_RULE_NET_HANDLER.processRawData(this.client.getServer().getGameRules().toNbt());
-		}
-	}
-
-	@SuppressWarnings("ConstantConditions")
-	@Inject(method = "method_52801", at = @At(value = "HEAD"), cancellable = true)
-	private void onCustomPayload(CustomPayload payload, CallbackInfo ci) {
-		if (payload instanceof HandlerPayload handled) {
-			handled.handle((ClientPlayNetworkHandler) (Object) this);
-			ci.cancel();
 		}
 	}
 

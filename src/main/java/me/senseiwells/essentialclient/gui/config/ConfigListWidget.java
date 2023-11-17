@@ -65,7 +65,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 
 	@Override
 	protected int getScrollbarPositionX() {
-		return this.width / 2 + this.getRowWidth() / 2 + 4;
+		return this.width / 2 + this.getRowWidth() / 2;
 	}
 
 	@Override

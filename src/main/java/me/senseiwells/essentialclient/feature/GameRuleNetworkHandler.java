@@ -17,20 +17,16 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
 
 public class GameRuleNetworkHandler extends NetworkHandler {
-	public static final Identifier GAME_RULE_CHANNEL = new Identifier("essentialclient", "gamerule");
 	public static final int VERSION = 1_0_0;
 
 	private boolean canModifyRules = false;
 
-	public GameRuleNetworkHandler() { }
+	public GameRuleNetworkHandler() {
+		super(new Identifier("essentialclient", "gamerule"));
+	}
 
 	public boolean canModifyRules() {
 		return this.canModifyRules || EssentialUtils.getClient().isInSingleplayer();
-	}
-
-	@Override
-	public Identifier getNetworkChannel() {
-		return GAME_RULE_CHANNEL;
 	}
 
 	@Override
