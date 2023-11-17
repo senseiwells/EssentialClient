@@ -107,3 +107,13 @@ publishMods {
 		}
 	}
 }
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(jar) {
+				builtBy remapJar
+			}
+		}
+	}
+}
