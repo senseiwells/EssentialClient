@@ -208,10 +208,6 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		MinecraftClient client = arguments.nextPrimitive(this);
 		ScreenshotRecorder.saveScreenshot(
 			client.runDirectory,
-			//#if MC < 11700
-			//$$client.getWindow().getFramebufferHeight(),
-			//$$client.getWindow().getFramebufferWidth(),
-			//#endif
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);
@@ -230,10 +226,6 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		ScreenshotRecorder.saveScreenshot(
 			client.runDirectory,
 			name.endsWith(".png") ? name : name + ".png",
-			//#if MC < 11700
-			//$$client.getWindow().getFramebufferHeight(),
-			//$$client.getWindow().getFramebufferWidth(),
-			//#endif
 			client.getFramebuffer(),
 			text -> client.execute(() -> client.inGameHud.getChatHud().addMessage(text))
 		);
@@ -343,9 +335,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		String fourth = arguments.hasNext() ? arguments.nextPrimitive(StringDef.class) : "";
 		EssentialUtils.getNetworkHandler().sendPacket(new UpdateSignC2SPacket(
 			pos.getBlockPos(),
-			//#if MC >= 12000
 			true,
-			//#endif
 			first,
 			second,
 			third,
@@ -373,21 +363,13 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	private Text getLatestChatMessage(Arguments arguments) {
 		MinecraftClient client = arguments.nextPrimitive(this);
 
-		//#if MC >= 11901
 		ChatHudLine[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).essentialclient$getMessages().toArray(ChatHudLine[]::new);
-		//#else
-		//$$ChatHudLine<Text>[] chat = ((ChatHudAccessor) client.inGameHud.getChatHud()).getMessages().toArray(ChatHudLine[]::new);
-		//#endif
 
 		if (chat.length == 0) {
 			return null;
 		}
 
-		//#if MC >= 11901
 		return chat[0].content();
-		//#else
-		//$$return chat[0].getText().copy();
-		//#endif
 	}
 
 	@FunctionDoc(
@@ -783,11 +765,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	private Void setClientRenderDistance(Arguments arguments) {
 		MinecraftClient client = arguments.nextPrimitive(this);
 		int distance = arguments.nextPrimitive(NumberDef.class).intValue();
-		//#if MC >= 11900
 		client.options.getViewDistance().setValue(distance);
-		//#else
-		//$$client.options.viewDistance = distance;
-		//#endif
 		client.worldRenderer.scheduleTerrainUpdate();
 		return null;
 	}

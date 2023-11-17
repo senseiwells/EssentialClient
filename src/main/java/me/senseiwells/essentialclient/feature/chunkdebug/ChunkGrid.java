@@ -154,9 +154,6 @@ public class ChunkGrid {
 		}
 
 		RenderSystem.disableBlend();
-		//#if MC < 11904
-		//$$RenderSystem.enableTexture();
-		//#endif
 	}
 
 	public void renderMinimap(int width, int height) {

@@ -78,6 +78,10 @@ java {
 	withSourcesJar()
 }
 
+jar {
+	from "LICENSE"
+}
+
 publishMods {
 	file = remapJar.archiveFile
 	changelog = """
@@ -100,16 +104,6 @@ publishMods {
 		}
 		optional {
 			id = "mOgUt4GM"
-		}
-	}
-}
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			artifact(jar) {
-				builtBy remapJar
-			}
 		}
 	}
 }

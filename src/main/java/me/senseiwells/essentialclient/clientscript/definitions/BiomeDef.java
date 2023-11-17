@@ -227,20 +227,10 @@ public class BiomeDef extends CreatableDefinition<Biome> {
 	}
 
 	private static boolean isCold(Biome biome, BlockPos pos) {
-		//#if MC >= 11700
 		return biome.isCold(pos);
-		//#else
-		//$$return biome.getTemperature(pos) < 0.15F;
-		//#endif
 	}
 
 	private static boolean isHot(Biome biome, BlockPos pos) {
-		//#if MC >= 11904
 		return biome.getTemperature() > 1.0F;
-		//#elseif MC >= 11800
-		//$$return biome.isHot(pos);
-		//#else
-		//$$return biome.getTemperature(pos) > 1.0F;
-		//#endif
 	}
 }

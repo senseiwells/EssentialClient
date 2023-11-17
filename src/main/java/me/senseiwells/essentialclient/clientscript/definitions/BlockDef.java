@@ -429,11 +429,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	)
 	private Object isReplaceable(Arguments arguments) {
 		ScriptBlockState blockState = arguments.nextPrimitive(this);
-		//#if MC >= 12000
 		return blockState.state.isReplaceable();
-		//#else
-		//$$return blockState.state.getMaterial().isReplaceable();
-		//#endif
 	}
 
 	@FunctionDoc(
@@ -538,11 +534,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		ScriptBlockState blockState = this.ensurePosition(arguments);
 		BlockEntity blockEntity = EssentialUtils.getWorld().getBlockEntity(blockState.pos);
 		if (blockEntity != null) {
-			//#if MC >= 11800
 			NbtCompound compound = blockEntity.createNbt();
-			//#else
-			//$$NbtCompound compound = blockEntity.writeNbt(new NbtCompound());
-			//#endif
 			return ClientScriptUtils.nbtToMap(arguments.getInterpreter(), compound, 10);
 		}
 		return null;

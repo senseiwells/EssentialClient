@@ -305,11 +305,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	private boolean isNbtEqual(Arguments arguments) {
 		ItemStack itemStack = arguments.nextPrimitive(this).stack;
 		ItemStack otherItemStack = arguments.nextPrimitive(this).stack;
-		//#if MC >= 12000
 		return ItemStack.canCombine(itemStack, otherItemStack);
-		//#else
-		//$$return ItemStack.areNbtEqual(itemStack, otherItemStack);
-		//#endif
 	}
 
 	@FunctionDoc(

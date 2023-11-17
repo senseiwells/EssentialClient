@@ -309,12 +309,8 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		Text subTitle = ClientScriptUtils.instanceToText(subTitleInstance, arguments.getInterpreter());
 		ClientScriptUtils.ensureMainThread("showTitle", arguments.getInterpreter(), () -> {
 			MinecraftClient client = EssentialUtils.getClient();
-			//#if MC >= 11700
 			client.inGameHud.setTitle(title);
 			client.inGameHud.setSubtitle(subTitle);
-			//#else
-			//$$client.inGameHud.setTitles(title, subTitle, -1, -1, -1);
-			//#endif
 		});
 		return null;
 	}
@@ -1329,11 +1325,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		String handAsString = arguments.skip().nextConstant();
 		Hand hand = ClientScriptUtils.stringToHand(handAsString);
 		ClientScriptUtils.ensureMainThread("interactItem", arguments.getInterpreter(), () -> {
-			//#if MC >= 11900
 			EssentialUtils.getInteractionManager().interactItem(EssentialUtils.getPlayer(), hand);
-			//#else
-			//$$EssentialUtils.getInteractionManager().interactItem(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), hand);
-			//#endif
 		});
 		return null;
 	}
@@ -1496,11 +1488,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 		Direction direction = ClientScriptUtils.stringToDirection(directionAsString, Direction.DOWN);
 		BlockHitResult hitResult = new BlockHitResult(pos, direction, blockPos, insideBlock);
 		return ClientScriptUtils.ensureMainThread("interactBlock", interpreter, () -> {
-			//#if MC >= 11900
 			return EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), finalHand, hitResult).toString().toLowerCase(Locale.ROOT);
-			//#else
-			//$$return EssentialUtils.getInteractionManager().interactBlock(EssentialUtils.getPlayer(), EssentialUtils.getWorld(), finalHand, hitResult).toString().toLowerCase(Locale.ROOT);
-			//#endif
 		});
 	}
 }

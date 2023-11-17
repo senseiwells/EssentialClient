@@ -147,9 +147,6 @@ public class ChunkDebugScreen extends ChildScreen {
 
 
 	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {
-		//#if MC < 11904
-		//$$RenderSystem.disableTexture();
-		//#endif
 		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -175,9 +172,6 @@ public class ChunkDebugScreen extends ChildScreen {
 		RenderHelper.bindTexture(OPTIONS_BACKGROUND_TEXTURE);
 
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		//#if MC < 11904
-		//$$RenderSystem.enableTexture();
-		//#endif
 		RenderSystem.disableBlend();
 
 		RenderHelper.startQuads(bufferBuilder, VertexFormats.POSITION_TEXTURE_COLOR);

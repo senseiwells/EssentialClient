@@ -267,23 +267,11 @@ public class ClientScriptUtils {
 
 	public static ItemStack stringToItemStack(String string) {
 		try {
-			//#if MC >= 11903
 			RegistryWrapper<Item> wrapper = CommandRegister.getRegistryAccess().createWrapper(RegistryKeys.ITEM);
-			//#elseif MC >= 11901
-			//$$CommandRegistryWrapper<Item> wrapper = CommandRegistryWrapper.of(Registry.ITEM);
-			//#endif
-
-			//#if MC >= 11901
 			ItemStringReader.ItemResult reader = ItemStringReader.item(wrapper, new StringReader(string));
 			ItemStack itemStack = new ItemStack(reader.item());
 			itemStack.setNbt(reader.nbt());
 			return itemStack;
-			//#else
-			//$$ItemStringReader reader = new ItemStringReader(new StringReader(string), false).consume();
-			//$$ItemStack itemStack = new ItemStack(reader.getItem());
-			//$$itemStack.setNbt(reader.getNbt());
-			//$$return itemStack;
-			//#endif
 		} catch (CommandSyntaxException cse) {
 			NbtElement element = stringToNbt(string);
 			if (element instanceof NbtCompound nbtCompound) {

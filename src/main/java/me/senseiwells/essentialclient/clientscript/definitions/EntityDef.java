@@ -442,11 +442,7 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 	)
 	private Biome getBiome(Arguments arguments) {
 		Entity entity = arguments.nextPrimitive(this);
-		//#if MC >= 11800
 		return entity.getEntityWorld().getBiome(entity.getBlockPos()).value();
-		//#else
-		//$$return entity.getEntityWorld().getBiome(entity.getBlockPos());
-		//#endif
 	}
 
 	@FunctionDoc(

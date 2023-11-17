@@ -71,23 +71,17 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 
 		public Entry(ChunkClusterScreen parent, LongSet group) {
 			this.group = group;
-			//#if MC >= 11800
 			this.around = new ChunkPos(group.longStream().findAny().orElse(0L));
-			//#else
-			//$$this.around = new ChunkPos(group.stream().findAny().orElse(0L));
-			//#endif
 			this.viewButton = WidgetHelper.newButton(0, 0, 75, 20, Texts.VIEW, button -> {
 				ChunkGrid.instance.setCentre(this.around.x, this.around.z);
 				EssentialUtils.getClient().setScreen(new ChunkDebugScreen(parent.getParent().getParent()));
 			});
 		}
 
-		//#if MC >= 11700
 		@Override
 		public List<ButtonWidget> selectableChildren() {
 			return this.children();
 		}
-		//#endif
 
 		@Override
 		public List<ButtonWidget> children() {

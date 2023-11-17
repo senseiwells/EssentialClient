@@ -143,13 +143,7 @@ public class ScriptFakeEntity {
 				ClientWorld world = EssentialUtils.getWorld();
 				if (ids != null && world != null) {
 					EssentialUtils.getClient().execute(() -> {
-						//#if MC >= 11800
 						ids.forEach(i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
-						//#elseif MC >= 11700
-						//$$ids.forEach((java.util.function.IntConsumer) i -> world.removeEntity(i, Entity.RemovalReason.DISCARDED));
-						//#else
-						//$$ids.forEach((java.util.function.IntConsumer) i -> world.removeEntity(i));
-						//#endif
 					});
 				}
 			});

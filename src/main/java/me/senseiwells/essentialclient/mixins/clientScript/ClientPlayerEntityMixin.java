@@ -33,28 +33,6 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 		}
 	}
 
-	//#if MC == 11902
-	//$$@Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
-	//$$public void onChatMessage(String message, Text preview, CallbackInfo ci) {
-	//$$	if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
-	//$$		ci.cancel();
-	//$$	}
-	//$$}
-	//$$@Inject(method = "sendCommand(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
-	//$$public void onCommandMessage(String message, Text preview, CallbackInfo ci) {
-	//$$	if (ClientScriptIO.INSTANCE.submitInput("/" + message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run("/" + message)) {
-	//$$		ci.cancel();
-	//$$	}
-	//$$}
-	//#elseif MC < 11902
-	//$$@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
-	//$$public void onChatMessage(String message, CallbackInfo ci) {
-	//$$	if (ClientScriptIO.INSTANCE.submitInput(message) || MinecraftScriptEvents.ON_SEND_MESSAGE.run(message)) {
-	//$$		ci.cancel();
-	//$$	}
-	//$$}
-	//#endif
-
 	@Inject(method = "closeScreen", at = @At("HEAD"))
 	private void onCloseScreen(CallbackInfo ci) {
 		MinecraftScriptEvents.ON_CLOSE_SCREEN.run(EssentialUtils.getClient().currentScreen);

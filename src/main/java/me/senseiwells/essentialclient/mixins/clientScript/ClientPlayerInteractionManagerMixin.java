@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -60,34 +61,22 @@ public class ClientPlayerInteractionManagerMixin {
 		int button,
 		SlotActionType actionType,
 		PlayerEntity player,
-		//#if MC >= 11700
 		CallbackInfo ci
-		//#else
-		//$$CallbackInfoReturnable<ItemStack> cir
-		//#endif
 	) {
 		if (MinecraftScriptEvents.ON_CLICK_SLOT.run(slotId, actionType.name(), new ScriptItemStack(slotId < 0 ? ItemStack.EMPTY : player.currentScreenHandler.slots.get(slotId).getStack().copy()))) {
-			//#if MC >= 11700
 			ci.cancel();
-			//#else
-			//$$cir.setReturnValue(ItemStack.EMPTY);
-			//#endif
 		}
 	}
 
 	@Inject(method = "clickRecipe", at = @At("HEAD"), cancellable = true)
-	private void onClickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
+	private void onClickRecipe(int syncId, RecipeEntry<?> recipe, boolean craftAll, CallbackInfo ci) {
 		if (MinecraftScriptEvents.ON_CLICK_RECIPE.run(recipe)) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "interactItem", at = @At("HEAD"), cancellable = true)
-	//#if MC >= 11900
 	private void onInteractItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		//#else
-		//$$private void onInteractItem(PlayerEntity player, World world, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		//#endif
 		ItemStack itemStack = player.getStackInHand(hand);
 		if (MinecraftScriptEvents.ON_INTERACT_ITEM.run(new ScriptItemStack(itemStack))) {
 			cir.setReturnValue(ActionResult.PASS);
@@ -95,11 +84,7 @@ public class ClientPlayerInteractionManagerMixin {
 	}
 
 	@Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
-	//#if MC >= 11900
 	private void onInteractBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
-		//#else
-		//$$private void onInteractBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
-		//#endif
 		BlockPos pos = hitResult.getBlockPos();
 		if (this.client.world != null && MinecraftScriptEvents.ON_INTERACT_BLOCK.run(new ScriptBlockState(this.client.world.getBlockState(pos), pos), new ScriptItemStack(player.getStackInHand(hand)))) {
 			cir.setReturnValue(ActionResult.PASS);

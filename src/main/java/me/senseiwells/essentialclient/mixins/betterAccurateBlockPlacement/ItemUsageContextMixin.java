@@ -11,11 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemUsageContext.class)
 public class ItemUsageContextMixin {
 	@Inject(
-		//#if MC >= 11904
 		method = "getHorizontalPlayerFacing",
-		//#else
-		//$$method = "getPlayerFacing",
-		//#endif
 		at = @At("HEAD"),
 		cancellable = true
 	)

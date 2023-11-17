@@ -7,19 +7,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-//#else
-//$$import net.minecraft.client.util.math.MatrixStack;
-//#endif
 
 @Mixin(BossBarHud.class)
 public class BossBarHudMixin {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void onRender(
-		//#if MC >= 12000
 		DrawContext context,
-		//#else
-		//$$MatrixStack matrices,
-		//#endif
 		CallbackInfo ci
 	) {
 		if (ClientRules.DISABLE_BOSS_BAR.getValue()) {

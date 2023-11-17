@@ -14,20 +14,13 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-//#else
-//$$import net.minecraft.client.render.entity.EntityRenderDispatcher;
-//#endif
 
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-	public PlayerEntityRendererMixin( // Checkstyle ignore
-									  //#if MC >= 11700
-									  EntityRendererFactory.Context context,
-									  //#else
-									  //$$EntityRenderDispatcher context,
-									  //#endif
-									  PlayerEntityModel<AbstractClientPlayerEntity> model,
-									  float shadowRadius
+	public PlayerEntityRendererMixin(
+		EntityRendererFactory.Context context,
+		PlayerEntityModel<AbstractClientPlayerEntity> model,
+		float shadowRadius
 	) {
 		super(context, model, shadowRadius);
 	}
