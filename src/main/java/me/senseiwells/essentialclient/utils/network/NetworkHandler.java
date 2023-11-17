@@ -67,10 +67,6 @@ public abstract class NetworkHandler {
 
 	protected void onHelloFail() { }
 
-	protected void sendReloadPacket() {
-		this.sendPacket(buf -> buf.writeVarInt(RELOAD));
-	}
-
 	protected void sendDataPacket(PacketWriter writer) {
 		this.sendPacket(buf -> {
 			buf.writeVarInt(DATA);
@@ -78,7 +74,7 @@ public abstract class NetworkHandler {
 		});
 	}
 
-	private void sendPacket(PacketWriter writer) {
+	protected void sendPacket(PacketWriter writer) {
 		if (this.networkHandler != null) {
 			PacketByteBuf buf = PacketByteBufs.create();
 			writer.write(buf);

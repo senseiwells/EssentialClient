@@ -105,7 +105,7 @@ public class ChunkDebugScreen extends ChildScreen {
 	@Override
 	public void removed() {
 		if (ChunkGrid.instance.getMinimapMode() == ChunkGrid.Minimap.NONE) {
-			EssentialClient.CHUNK_NET_HANDLER.requestChunkData();
+			EssentialClient.CHUNK_NET_HANDLER.removeChunkData();
 			ChunkHandler.clearAllChunks();
 		}
 	}

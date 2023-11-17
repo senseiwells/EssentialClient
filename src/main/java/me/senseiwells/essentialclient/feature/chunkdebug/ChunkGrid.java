@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
+import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.MinecraftClient;
@@ -11,9 +12,9 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -38,12 +39,8 @@ public class ChunkGrid {
 	private final Point staticCentrePoint = new Point();
 	private final Point minimapCornerPoint = new Point();
 	private final Point mouseDown = new Point();
-	private final List<String> dimensions;
-	private final Map<String, DraggablePoint> dimensionPoints = Util.make(new LinkedHashMap<>(), map -> {
-		map.put("overworld", null);
-		map.put("the_nether", null);
-		map.put("the_end", null);
-	});
+	private final List<RegistryKey<World>> dimensions;
+	private final Map<RegistryKey<World>, DraggablePoint> dimensionPoints = new LinkedHashMap<>();
 
 	private boolean panning = false;
 	private int dimensionIndex = 0;
@@ -55,13 +52,17 @@ public class ChunkGrid {
 		this.width = width;
 		this.height = height;
 		this.updateRowsAndColumns();
+
+		for (RegistryKey<World> key : EssentialUtils.getNetworkHandler().getWorldKeys()) {
+			this.dimensionPoints.put(key, null);
+		}
+
 		this.dimensions = this.dimensionPoints.keySet().stream().toList();
 		ClientPlayerEntity player = client.player;
 		if (player != null) {
 			ChunkPos pos = player.getChunkPos();
 			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(pos.x, pos.z));
-			String playerDimension = player.getEntityWorld().getRegistryKey().getValue().getPath();
-			int dimensionIndex = this.dimensions.indexOf(playerDimension);
+			int dimensionIndex = this.dimensions.indexOf(player.getEntityWorld().getRegistryKey());
 			this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
 		} else {
 			this.cornerPoint = new DraggablePoint(this.getCornerOfCentre(0, 0));
@@ -173,7 +174,7 @@ public class ChunkGrid {
 			case FOLLOW -> {
 				ClientPlayerEntity player = this.client.player;
 				if (player != null) {
-					if (!this.isPlayerInDimension(player)) {
+					if (!this.isPlayerInDimension(player) && !(this.client.currentScreen instanceof ChunkDebugScreen)) {
 						this.setDimension(player.getEntityWorld());
 						EssentialClient.CHUNK_NET_HANDLER.requestChunkData(this.getDimension());
 					}
@@ -384,12 +385,12 @@ public class ChunkGrid {
 		return this.getCentre().y;
 	}
 
-	public String getDimension() {
+	public RegistryKey<World> getDimension() {
 		return this.dimensions.get(this.dimensionIndex);
 	}
 
 	public boolean isPlayerInDimension(PlayerEntity player) {
-		return this.getDimension().equals(player.getEntityWorld().getRegistryKey().getValue().getPath());
+		return this.getDimension().equals(player.getEntityWorld().getRegistryKey());
 	}
 
 	private DraggablePoint getSelectionPoint() {
@@ -405,16 +406,21 @@ public class ChunkGrid {
 	}
 
 	public Text getPrettyDimension() {
-		return switch (this.getDimension()) {
-			case "overworld" -> Texts.OVERWORLD;
-			case "the_nether" -> Texts.NETHER;
-			case "the_end" -> Texts.END;
-			default -> Texts.UNKNOWN;
-		};
+		RegistryKey<World> dimension = this.getDimension();
+		if (dimension == World.OVERWORLD) {
+			return Texts.OVERWORLD;
+		}
+		if (dimension == World.NETHER) {
+			return Texts.NETHER;
+		}
+		if (dimension == World.END) {
+			return Texts.END;
+		}
+		return Text.literal(dimension.getValue().getPath());
 	}
 
 	public void setDimension(World world) {
-		int dimensionIndex = this.dimensions.indexOf(world.getRegistryKey().getValue().getPath());
+		int dimensionIndex = this.dimensions.indexOf(world.getRegistryKey());
 		this.dimensionIndex = dimensionIndex == -1 ? 0 : dimensionIndex;
 	}
 

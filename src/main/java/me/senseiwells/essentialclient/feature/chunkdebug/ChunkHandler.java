@@ -3,7 +3,9 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ChunkHandler {
-	private static final Map<String, Chunks> CHUNK_DATA_MAP = new HashMap<>();
+	private static final Map<RegistryKey<World>, Chunks> CHUNK_DATA_MAP = new HashMap<>();
 
 	static {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
@@ -20,7 +22,7 @@ public class ChunkHandler {
 		});
 	}
 
-	public static ChunkData[] getChunks(String world) {
+	public static ChunkData[] getChunks(RegistryKey<World> world) {
 		Chunks chunks = CHUNK_DATA_MAP.get(world);
 		if (chunks == null) {
 			return new ChunkData[0];
@@ -32,12 +34,18 @@ public class ChunkHandler {
 		CHUNK_DATA_MAP.forEach((s, chunkData) -> chunkData.clear());
 	}
 
-	public static ChunkCluster getChunkCluster(String world) {
+	public static ChunkCluster getChunkCluster(RegistryKey<World> world) {
 		Chunks chunks = CHUNK_DATA_MAP.get(world);
 		return chunks == null ? null : chunks.cluster;
 	}
 
-	public static void deserializeAndProcess(String world, long[] chunkPositions, byte[] levelTypes, byte[] statusTypes, byte[] ticketTypes) {
+	public static void deserializeAndProcess(
+		RegistryKey<World> world,
+		long[] chunkPositions,
+		byte[] levelTypes,
+		byte[] statusTypes,
+		byte[] ticketTypes
+	) {
 		int size = chunkPositions.length;
 		if (size != levelTypes.length || size != ticketTypes.length || size != statusTypes.length) {
 			EssentialClient.LOGGER.error("Chunk debug received bad packet!");
