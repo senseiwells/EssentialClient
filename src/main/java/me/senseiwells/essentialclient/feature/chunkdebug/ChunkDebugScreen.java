@@ -112,15 +112,14 @@ public class ChunkDebugScreen extends ChildScreen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-
+		this.renderInGameBackground(context);
 		ChunkGrid.instance.render(0, HEADER_HEIGHT, this.width, this.height - HEADER_HEIGHT - FOOTER_HEIGHT, false);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
-
 		this.drawHeaderAndFooterGradient(tessellator, bufferBuilder);
 		this.drawHeaderAndFooterTexture(tessellator, bufferBuilder);
+		super.render(context, mouseX, mouseY, delta);
 
 		if (ChunkGrid.instance.isPanning()) {
 			this.xPositionBox.setText(String.valueOf(ChunkGrid.instance.getCentreX()));
@@ -141,10 +140,12 @@ public class ChunkDebugScreen extends ChildScreen {
 
 		RenderHelper.drawScaledText(context, Texts.X, xOffset, textHeight, 1.5F, false);
 		RenderHelper.drawScaledText(context, Texts.Z, zOffset, textHeight, 1.5F, false);
-
-		super.render(context, mouseX, mouseY, delta);
 	}
 
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+
+	}
 
 	private void drawHeaderAndFooterGradient(Tessellator tessellator, BufferBuilder bufferBuilder) {
 		RenderSystem.enableBlend();

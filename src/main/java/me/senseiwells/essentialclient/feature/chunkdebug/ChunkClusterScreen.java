@@ -37,11 +37,14 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
+		super.render(context, mouseX, mouseY, delta);
 		this.chunkWidget.render(context, mouseX, mouseY, delta);
 		RenderHelper.drawScaledText(context, this.title, this.width / 2, 20, 1.5F, true);
+	}
 
-		super.render(context, mouseX, mouseY, delta);
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
 	}
 
 	private class ChunkListWidget extends ElementListWidget<Entry> {

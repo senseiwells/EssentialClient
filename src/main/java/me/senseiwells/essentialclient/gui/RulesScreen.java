@@ -89,9 +89,8 @@ public abstract class RulesScreen extends ChildScreen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-		this.widget.render(context, mouseX, mouseY, delta);
 		super.render(context, mouseX, mouseY, delta);
+		this.widget.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 		if (this.invalid) {
 			String text = this.isEmpty ? "You can't leave a field empty!" : "Invalid value!";
@@ -102,6 +101,11 @@ public abstract class RulesScreen extends ChildScreen {
 			context.drawOrderedTooltip(this.textRenderer, this.tooltip, mouseX, mouseY);
 			this.tooltip = null;
 		}
+	}
+
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
 	}
 
 	@Override

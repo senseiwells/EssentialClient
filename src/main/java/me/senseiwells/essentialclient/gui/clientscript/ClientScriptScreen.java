@@ -52,11 +52,15 @@ public class ClientScriptScreen extends ChildScreen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
+		super.render(context, mouseX, mouseY, delta);
 		this.scriptWidget.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 		context.drawCenteredTextWithShadow(this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
-		super.render(context, mouseX, mouseY, delta);
+	}
+
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
 	}
 
 	public void refresh() {
@@ -204,7 +208,7 @@ public class ClientScriptScreen extends ChildScreen {
 
 		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-			this.renderBackgroundTexture(context);
+			super.render(context, mouseX, mouseY, delta);
 			context.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 68), 0x949494);
 			context.drawTextWithShadow(this.textRenderer, KEYBIND, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F + 30), 0xE0E0E0);
 			context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
@@ -232,8 +236,11 @@ public class ClientScriptScreen extends ChildScreen {
 				);
 				context.drawTooltip(this.textRenderer, textList, mouseX, mouseY);
 			}
+		}
 
-			super.render(context, mouseX, mouseY, delta);
+		@Override
+		public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+			this.renderBackgroundTexture(context);
 		}
 	}
 }

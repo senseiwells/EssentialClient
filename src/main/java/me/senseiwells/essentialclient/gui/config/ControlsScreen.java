@@ -54,7 +54,7 @@ public class ControlsScreen extends ChildScreen {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
+		super.render(context, mouseX, mouseY, delta);
 		this.controlWidget.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
@@ -67,8 +67,11 @@ public class ControlsScreen extends ChildScreen {
 			context.drawTooltip(this.textRenderer, textList, mouseX, mouseY);
 			this.hoveredKeyBinding = null;
 		}
+	}
 
-		super.render(context, mouseX, mouseY, delta);
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
 	}
 
 	@Override

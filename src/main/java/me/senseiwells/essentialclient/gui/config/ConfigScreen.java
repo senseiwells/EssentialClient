@@ -36,18 +36,17 @@ public class ConfigScreen extends ChildScreen {
 		this.addDrawableChild(WidgetHelper.newButton(width, height + 96, 200, 20, CONTROLS_SCREEN, button -> this.client.setScreen(new ControlsScreen(this))));
 		this.addDrawableChild(WidgetHelper.newButton(width, height + 120, 200, 20, CHUNK_SCREEN, button -> this.client.setScreen(new ChunkDebugScreen(this)))).active = EssentialClient.CHUNK_NET_HANDLER.isAvailable();
 		this.addDrawableChild(WidgetHelper.newButton(width, this.height - 27, 200, 20, DONE, button -> this.close()));
-		this.addDrawableChild(WidgetHelper.newButton(this.width - 110, this.height - 27, 100, 20, WIKI_PAGE, button -> Util.getOperatingSystem().open(EssentialUtils.WIKI_URL)));
-		this.addDrawableChild(WidgetHelper.newButton(9, this.height - 27, 100, 20, CONFIG_FOLDER, button -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
+		this.addDrawableChild(WidgetHelper.newButton(this.width - 89, this.height - 27, 80, 20, WIKI_PAGE, button -> Util.getOperatingSystem().open(EssentialUtils.WIKI_URL)));
+		this.addDrawableChild(WidgetHelper.newButton(9, this.height - 27, 80, 20, CONFIG_FOLDER, button -> Util.getOperatingSystem().open(EssentialUtils.getEssentialConfigFile().toFile())));
 	}
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
+		super.render(context, mouseX, mouseY, delta);
 		int width = this.width / 2;
 		TextRenderer renderer = this.textRenderer;
 		context.drawCenteredTextWithShadow(renderer, ESSENTIAL_CLIENT, width, 8, 0xFFFFFF);
 		context.drawCenteredTextWithShadow(renderer, VERSION.generate(EssentialClient.VERSION), width, 8 + renderer.fontHeight + 8, 0x949494);
-		super.render(context, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -66,12 +65,11 @@ public class ConfigScreen extends ChildScreen {
 
 		@Override
 		public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-			this.renderBackgroundTexture(context);
 			super.render(context, mouseX, mouseY, delta);
 			MatrixStack matrices = context.getMatrices();
 			matrices.push();
 			matrices.scale(2.0F, 2.0F, 2.0F);
-			context.drawCenteredTextWithShadow(this.textRenderer, TOP_SECRET, width, 8, 0xFFFFFF);
+			context.drawCenteredTextWithShadow(this.textRenderer, TOP_SECRET, this.width / 2, 8, 0xFFFFFF);
 			matrices.pop();
 		}
 	}

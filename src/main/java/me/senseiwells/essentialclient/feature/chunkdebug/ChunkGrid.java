@@ -70,7 +70,7 @@ public class ChunkGrid {
 	}
 
 	private void updateRowsAndColumns() {
-		this.rows = (int) Math.ceil((float) this.height / this.scale);
+		this.rows = (int) Math.floor((float) this.height / this.scale);
 		this.columns = (int) Math.ceil((float) this.width / this.scale);
 	}
 

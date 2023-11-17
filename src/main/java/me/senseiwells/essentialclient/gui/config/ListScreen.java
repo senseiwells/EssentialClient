@@ -48,10 +48,14 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
 
 	@Override
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-		this.widget.render(context, mouseX, mouseY, delta);
 		super.render(context, mouseX, mouseY, delta);
+		this.widget.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+	}
+
+	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(context);
 	}
 
 	@Override
