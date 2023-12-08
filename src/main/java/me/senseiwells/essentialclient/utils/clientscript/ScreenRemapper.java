@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.option.*;
 import net.minecraft.client.gui.screen.pack.PackScreen;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.screen.world.EditWorldScreen;
+import net.minecraft.client.gui.screen.world.PresetsScreen;
 import net.minecraft.client.realms.gui.screen.DisconnectedRealmsScreen;
 import net.minecraft.util.Util;
 
@@ -30,7 +31,6 @@ public class ScreenRemapper {
 		map.put(CommandBlockScreen.class, "CommandBlock");
 		map.put(ConfirmLinkScreen.class, "ConfirmChatLink");
 		map.put(ConfirmScreen.class, "Confirm");
-		map.put(ConnectScreen.class, "Connect");
 		map.put(ControlsOptionsScreen.class, "ControlOptions");
 		map.put(CraftingScreen.class, "Crafting");
 		map.put(CreativeInventoryScreen.class, "CreativeInventory");
@@ -56,7 +56,6 @@ public class ScreenRemapper {
 		map.put(JigsawBlockScreen.class, "JigsawBlock");
 		map.put(LanguageOptionsScreen.class, "LanguageOptions");
 		map.put(LecternScreen.class, "Lectern");
-		map.put(LevelLoadingScreen.class, "LevelLoading");
 		map.put(LoomScreen.class, "LoomScreen");
 		map.put(MerchantScreen.class, "Merchant");
 		map.put(MinecartCommandBlockScreen.class, "MinecrartCommandBlock");

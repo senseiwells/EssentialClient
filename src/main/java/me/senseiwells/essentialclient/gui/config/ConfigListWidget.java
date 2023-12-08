@@ -13,7 +13,7 @@ public class ConfigListWidget extends ElementListWidget<ConfigListWidget.Entry> 
 	public static final int LENGTH = 136;
 
 	public ConfigListWidget(RulesScreen rulesScreen, MinecraftClient client, String filter) {
-		super(client, rulesScreen.width + 45, rulesScreen.height, 43, rulesScreen.height - 32, 20);
+		super(client, rulesScreen.width + 45, rulesScreen.height - 43 - 32, 43, 20);
 		this.reloadEntries(rulesScreen, filter);
 	}
 

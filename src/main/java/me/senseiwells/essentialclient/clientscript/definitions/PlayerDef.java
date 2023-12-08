@@ -89,7 +89,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	@NotNull
 	@Override
 	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
-		return "Player{name=" + instance.asPrimitive(this).getEntityName() + "}";
+		return "Player{name=" + instance.asPrimitive(this).getNameForScoreboard() + "}";
 	}
 
 	@Override

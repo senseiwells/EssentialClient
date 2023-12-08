@@ -49,7 +49,7 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 
 	private class ChunkListWidget extends ElementListWidget<Entry> {
 		public ChunkListWidget() {
-			super(ChunkClusterScreen.this.client, ChunkClusterScreen.this.width + 45, ChunkClusterScreen.this.height, 43, ChunkClusterScreen.this.height - 32, 20);
+			super(ChunkClusterScreen.this.client, ChunkClusterScreen.this.width + 45, ChunkClusterScreen.this.height - 43 - 32, 43, 20);
 
 			for (LongSet group : ChunkClusterScreen.this.cluster.getGroups()) {
 				this.addEntry(new ChunkClusterScreen.Entry(ChunkClusterScreen.this, group));

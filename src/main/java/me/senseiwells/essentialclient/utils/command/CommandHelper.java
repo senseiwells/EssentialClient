@@ -14,10 +14,8 @@ import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.essentialclient.EssentialClient;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
-import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
@@ -95,12 +93,11 @@ public class CommandHelper {
 		CLIENT_COMMANDS.clear();
 	}
 
+	// TODO: Use fabric command source!
 	public static void executeCommand(StringReader reader, String command) {
 		ClientPlayerEntity player = EssentialUtils.getPlayer();
 		try {
 			player.networkHandler.getCommandDispatcher().execute(reader, new FakeCommandSource(player));
-		} catch (CommandException e) {
-			EssentialUtils.sendMessage(ChatColour.RED + e.getTextMessage());
 		} catch (CommandSyntaxException e) {
 			EssentialUtils.sendMessage(ChatColour.RED + e.getMessage());
 			if (e.getInput() != null && e.getCursor() >= 0) {

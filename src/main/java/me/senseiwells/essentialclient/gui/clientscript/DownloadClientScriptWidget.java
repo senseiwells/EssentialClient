@@ -24,7 +24,7 @@ public class DownloadClientScriptWidget extends ElementListWidget<DownloadClient
 	private int maxScriptNameLength;
 
 	public DownloadClientScriptWidget(MinecraftClient minecraftClient, DownloadClientScriptScreen downloadScreen) {
-		super(minecraftClient, downloadScreen.width + 45, downloadScreen.height, 43, downloadScreen.height - 32, 20);
+		super(minecraftClient, downloadScreen.width + 45, downloadScreen.height - 43 - 32, 43, 20);
 		this.downloadScreen = downloadScreen;
 
 		for (Category category : Category.values()) {

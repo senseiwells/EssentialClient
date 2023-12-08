@@ -454,7 +454,7 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			if (text == null) {
 				throw new RuntimeError("List must contain only Text");
 			}
-			textList.add(NbtString.of(Text.Serializer.toJson(text)));
+			textList.add(NbtString.of(Text.Serialization.toJsonString(text)));
 		}
 		ItemStack itemStack = instance.asPrimitive(this).stack;
 		itemStack.getOrCreateSubNbt("display").put("Lore", NbtListMixin.createNbtList(textList, (byte) 8));

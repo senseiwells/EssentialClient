@@ -47,7 +47,14 @@ public class ClientPlayerInteractionManagerMixin {
 		}
 	}
 
-	@Inject(method = "breakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V", shift = At.Shift.BEFORE))
+	@Inject(
+		method = "breakBlock",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)Lnet/minecraft/block/BlockState;",
+			shift = At.Shift.BEFORE
+		)
+	)
 	private void onBreakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
 		if (this.client.world != null) {
 			MinecraftScriptEvents.ON_BLOCK_BROKEN.run(new ScriptBlockState(this.client.world.getBlockState(pos), pos));

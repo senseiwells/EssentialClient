@@ -20,7 +20,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 	private final ListScreen listScreen;
 
 	public ListListWidget(ListScreen listScreen, MinecraftClient client) {
-		super(client, listScreen.width + 45, listScreen.height, 43, listScreen.height - 32, 20);
+		super(client, listScreen.width + 45, listScreen.height - 43 - 32, 43, 20);
 		this.listScreen = listScreen;
 		this.reloadEntries();
 	}

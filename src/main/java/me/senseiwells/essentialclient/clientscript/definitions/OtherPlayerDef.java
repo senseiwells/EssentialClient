@@ -60,7 +60,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 	@NotNull
 	@Override
 	public String toString(@NotNull ClassInstance instance, @NotNull Interpreter interpreter, @NotNull LocatableTrace trace) {
-		return "OtherPlayer{name=%s}".formatted(instance.asPrimitive(this).getEntityName());
+		return "OtherPlayer{name=%s}".formatted(instance.asPrimitive(this).getNameForScoreboard());
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class OtherPlayerDef extends PrimitiveDefinition<AbstractClientPlayerEnti
 		examples = "otherPlayer.getPlayerName();"
 	)
 	private String getPlayerName(Arguments arguments) {
-		return arguments.nextPrimitive(this).getEntityName();
+		return arguments.nextPrimitive(this).getNameForScoreboard();
 	}
 
 	@FunctionDoc(

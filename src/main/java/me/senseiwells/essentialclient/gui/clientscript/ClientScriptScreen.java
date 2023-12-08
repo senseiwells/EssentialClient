@@ -73,25 +73,6 @@ public class ClientScriptScreen extends ChildScreen {
 		EssentialUtils.getClient().setScreen(configScreen);
 	}
 
-	public static class SelectedCheckBox extends CheckboxWidget {
-		private final String scriptName;
-
-		public SelectedCheckBox(String scriptName) {
-			super(0, 0, 20, 20, SELECTED, ClientScript.INSTANCE.isSelected(scriptName));
-			this.scriptName = scriptName;
-		}
-
-		@Override
-		public void onPress() {
-			if (this.isChecked()) {
-				ClientScript.INSTANCE.removeSelectedInstance(this.scriptName);
-			} else {
-				ClientScript.INSTANCE.addSelectedInstance(this.scriptName);
-			}
-			super.onPress();
-		}
-	}
-
 	static class ScriptConfigScreen extends ChildScreen.Typed<ClientScriptScreen> {
 		private final ClientScriptInstance scriptInstance;
 		private final TextFieldWidget nameBox;
@@ -122,7 +103,17 @@ public class ClientScriptScreen extends ChildScreen {
 				}
 			});
 			this.keyBindBox = WidgetHelper.newButton(0, 0, 75, 20, Text.translatable(scriptInstance.getKeyBind().getDisplay()), button -> this.firstKey = this.editingKeyBind = true);
-			this.selectedCheck = new SelectedCheckBox(scriptName);
+			this.selectedCheck = CheckboxWidget.builder(SELECTED, EssentialUtils.getClient().textRenderer)
+				.pos(0, 0)
+				.checked(ClientScript.INSTANCE.isSelected(scriptName))
+				.callback((w, b) -> {
+					if (b) {
+						ClientScript.INSTANCE.removeSelectedInstance(scriptName);
+					} else {
+						ClientScript.INSTANCE.addSelectedInstance(scriptName);
+					}
+				})
+				.build();
 			this.newName = "";
 		}
 

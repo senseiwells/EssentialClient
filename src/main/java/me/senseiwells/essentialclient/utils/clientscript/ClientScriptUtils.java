@@ -179,10 +179,10 @@ public class ClientScriptUtils {
 				yield new FunctionClickEvent(interpreter, function);
 			}
 			default -> {
-				ClickEvent.Action action = ClickEvent.Action.byName(string.toLowerCase());
-				if (action == null) {
-					throw new RuntimeError("Invalid click event action: %s".formatted(string));
-				}
+				ClickEvent.Action action = Arrays.stream(ClickEvent.Action.values())
+					.filter(a -> a.asString().equalsIgnoreCase(string))
+					.findFirst()
+					.orElseThrow(() -> new RuntimeError("Invalid click event action: %s".formatted(string)));
 				String eventString = object.getPrimitive(StringDef.class);
 				if (eventString == null) {
 					throw new RuntimeError("Invalid event value: %s".formatted(object.toString(interpreter)));

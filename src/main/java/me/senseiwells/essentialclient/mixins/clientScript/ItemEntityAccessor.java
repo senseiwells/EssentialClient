@@ -8,6 +8,6 @@ import java.util.UUID;
 
 @Mixin(ItemEntity.class)
 public interface ItemEntityAccessor {
-	@Accessor("thrower")
+	@Accessor("throwerUuid")
 	UUID getThrower();
 }

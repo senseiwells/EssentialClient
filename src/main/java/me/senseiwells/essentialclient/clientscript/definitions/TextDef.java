@@ -75,9 +75,9 @@ public class TextDef extends CreatableDefinition<MutableText> {
 	)
 	private Object parse(Arguments arguments) {
 		if (arguments.isNext(JsonDef.class)) {
-			return Text.Serializer.fromJson(JsonUtils.GSON.toJson(arguments.nextPrimitive(JsonDef.class)));
+			return Text.Serialization.fromJson(JsonUtils.GSON.toJson(arguments.nextPrimitive(JsonDef.class)));
 		}
-		return Text.Serializer.fromJson(arguments.nextPrimitive(StringDef.class));
+		return Text.Serialization.fromJson(arguments.nextPrimitive(StringDef.class));
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 	private final ClientScriptScreen parent;
 
 	public ClientScriptWidget(MinecraftClient minecraftClient, ClientScriptScreen scriptScreen) {
-		super(minecraftClient, scriptScreen.width + 45, scriptScreen.height, 43, scriptScreen.height - 32, 20);
+		super(minecraftClient, scriptScreen.width + 45, scriptScreen.height - 43 - 32, 43, 20);
 		this.parent = scriptScreen;
 		this.load(minecraftClient);
 	}
@@ -66,18 +66,17 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 				}
 				this.scriptInstance.toggleScript();
 			});
-			this.checkButton = new CheckboxWidget(0, 0, 20, 20, EMPTY, ClientScript.INSTANCE.isSelected(this.name)) {
-				@Override
-				public void onPress() {
-					String instanceName = ScriptListEntry.this.name;
-					if (this.isChecked()) {
-						ClientScript.INSTANCE.removeSelectedInstance(instanceName);
+			this.checkButton = CheckboxWidget.builder(EMPTY, client.textRenderer)
+				.pos(0, 0)
+				.checked(ClientScript.INSTANCE.isSelected(this.name))
+				.callback((w, b) -> {
+					if (b) {
+						ClientScript.INSTANCE.removeSelectedInstance(this.name);
 					} else {
-						ClientScript.INSTANCE.addSelectedInstance(instanceName);
+						ClientScript.INSTANCE.addSelectedInstance(this.name);
 					}
-					super.onPress();
-				}
-			};
+				})
+				.build();
 			this.checkButton.active = !isTemporary;
 		}
 

@@ -21,7 +21,7 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 	private int maxKeyNameLength;
 
 	public ControlsListWidget(MinecraftClient client, ControlsScreen controlsScreen) {
-		super(client, controlsScreen.width + 45, controlsScreen.height, 43, controlsScreen.height - 32, 20);
+		super(client, controlsScreen.width + 45, controlsScreen.height - 43 - 32, 43, 20);
 		this.controlsScreen = controlsScreen;
 
 		SortedMap<String, Set<ClientKeyBind>> sortedKeys = new TreeMap<>();
