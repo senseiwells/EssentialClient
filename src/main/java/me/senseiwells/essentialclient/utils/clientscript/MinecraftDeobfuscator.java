@@ -3,12 +3,13 @@ package me.senseiwells.essentialclient.utils.clientscript;
 import com.google.common.net.UrlEscapers;
 import com.google.gson.Gson;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
-import net.fabricmc.mapping.reader.v2.MappingGetter;
-import net.fabricmc.mapping.reader.v2.TinyMetadata;
-import net.fabricmc.mapping.reader.v2.TinyV2Factory;
-import net.fabricmc.mapping.reader.v2.TinyVisitor;
+import net.fabricmc.loader.impl.lib.mappingio.MappedElementKind;
+import net.fabricmc.loader.impl.lib.mappingio.MappingVisitor;
+import net.fabricmc.loader.impl.lib.mappingio.format.tiny.Tiny2FileReader;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.URL;
@@ -60,7 +61,7 @@ public final class MinecraftDeobfuscator {
 		}
 	}
 
-	public static void load() { }
+	public static void load() {  }
 
 	public static String obfuscate(String name) {
 		if (!triedLoadingMappings) {
@@ -68,7 +69,9 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = OBFUSCATION_MAPPINGS.get(name);
-		EssentialClient.LOGGER.info("Obfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		if (ClientRules.CLIENTSCRIPT_DEBUGGER.getValue()) {
+			EssentialClient.LOGGER.info("Obfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		}
 		return mapped == null ? name : mapped;
 	}
 
@@ -78,7 +81,9 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = CLASS_DEOBFUSCATION_MAPPINGS.get(name);
-		EssentialClient.LOGGER.info("Deobfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		if (ClientRules.CLIENTSCRIPT_DEBUGGER.getValue()) {
+			EssentialClient.LOGGER.info("Deobfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		}
 		return mapped == null ? name : mapped;
 	}
 
@@ -122,7 +127,7 @@ public final class MinecraftDeobfuscator {
 
 		triedLoadingMappings = true;
 		try (BufferedReader mappingReader = Files.newBufferedReader(CACHED_MAPPINGS)) {
-			TinyV2Factory.visit(mappingReader, new TinyVisitorImpl());
+			Tiny2FileReader.read(mappingReader, new MappingVisitorImpl());
 		} catch (IOException e) {
 			EssentialClient.LOGGER.error("Could not load mappings", e);
 		}
@@ -132,53 +137,72 @@ public final class MinecraftDeobfuscator {
 	 * This maps Intermediary -> Yarn (For classes only),
 	 * and also maps Yarn -> Intermediary
 	 */
-	private static class TinyVisitorImpl implements TinyVisitor {
+	private static class MappingVisitorImpl implements MappingVisitor {
 		private String fromClass;
 		private String toClass;
-		private int fromIndex;
-		private int toIndex;
+		private String intermediary;
 
 		@Override
-		public void start(TinyMetadata metadata) {
-			this.fromIndex = metadata.index("intermediary");
-			this.toIndex = metadata.index("named");
+		public void visitNamespaces(String s, List<String> list) {
+
 		}
 
-		/**
-		 * Whenever we push into a class we need to remember the class name
-		 * since we need them for field and method names, unlike Intermediary
-		 * Yarn can have clashing method names and fields between classes, so
-		 * we need to know the declaring class too.
-		 */
 		@Override
-		public void pushClass(MappingGetter name) {
-			this.fromClass = name.get(this.fromIndex).replace('/', '.');
-			this.toClass = name.get(this.toIndex).replace('/', '.');
-
-			CLASS_DEOBFUSCATION_MAPPINGS.put(this.fromClass, this.toClass);
-			OBFUSCATION_MAPPINGS.put(this.toClass, this.fromClass);
+		public boolean visitClass(String s) {
+			this.fromClass = s.replace('/', '.');
+			return true;
 		}
 
-		/**
-		 * Methods are mapped: abc#def() -> net.package.ClassName#MethodName()
-		 */
 		@Override
-		public void pushMethod(MappingGetter name, String descriptor) {
-			String from = this.fromClass + "#" + name.get(this.fromIndex) + "()";
-			String to = this.toClass + "#" + name.get(this.toIndex) + "()";
-
-			OBFUSCATION_MAPPINGS.put(to, from);
+		public boolean visitField(String s, @Nullable String s1) {
+			this.intermediary = s;
+			return true;
 		}
 
-		/**
-		 * Fields are mapped: abc#def -> net.package.ClassName#FieldName
-		 */
 		@Override
-		public void pushField(MappingGetter name, String descriptor) {
-			String from = this.fromClass + "#" + name.get(this.fromIndex);
-			String to = this.toClass + "#" + name.get(this.toIndex);
+		public boolean visitMethod(String s, @Nullable String s1) {
+			this.intermediary = s;
+			return true;
+		}
 
-			OBFUSCATION_MAPPINGS.put(to, from);
+		@Override
+		public boolean visitMethodArg(int i, int i1, @Nullable String s) {
+			return true;
+		}
+
+		@Override
+		public boolean visitMethodVar(int i, int i1, int i2, int i3, @Nullable String s) {
+			return true;
+		}
+
+		@Override
+		public void visitDstName(MappedElementKind mappedElementKind, int i, String s) {
+			if (s.equals("<init>")) {
+				return;
+			}
+
+			if (mappedElementKind == MappedElementKind.CLASS) {
+				this.toClass = s.replace('/', '.');
+				CLASS_DEOBFUSCATION_MAPPINGS.put(this.fromClass, this.toClass);
+				OBFUSCATION_MAPPINGS.put(this.toClass, this.fromClass);
+				return;
+			}
+
+			String from = this.fromClass + "#" + this.intermediary;
+			String to = this.toClass + "#" + s;
+			if (mappedElementKind == MappedElementKind.METHOD) {
+				from += "()";
+				to += "()";
+			} else if (mappedElementKind != MappedElementKind.FIELD) {
+				return;
+			}
+
+			OBFUSCATION_MAPPINGS.put(from, to);
+		}
+
+		@Override
+		public void visitComment(MappedElementKind mappedElementKind, String s) {
+
 		}
 	}
 
