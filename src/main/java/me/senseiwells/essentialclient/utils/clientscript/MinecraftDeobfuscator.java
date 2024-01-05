@@ -127,7 +127,7 @@ public final class MinecraftDeobfuscator {
 
 		triedLoadingMappings = true;
 		try (BufferedReader mappingReader = Files.newBufferedReader(CACHED_MAPPINGS)) {
-			Tiny2FileReader.read(mappingReader, new TinyVisitorImpl());
+			Tiny2FileReader.read(mappingReader, new MappingVisitorImpl());
 		} catch (IOException e) {
 			EssentialClient.LOGGER.error("Could not load mappings", e);
 		}
@@ -137,7 +137,7 @@ public final class MinecraftDeobfuscator {
 	 * This maps Intermediary -> Yarn (For classes only),
 	 * and also maps Yarn -> Intermediary
 	 */
-	private static class TinyVisitorImpl implements MappingVisitor {
+	private static class MappingVisitorImpl implements MappingVisitor {
 		private String fromClass;
 		private String toClass;
 		private String intermediary;
