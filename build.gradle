@@ -44,6 +44,7 @@ dependencies {
 	include implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
 	var arucas = arucas_version.length() > 10 ? arucas_version.substring(0, 10) : arucas_version
 	include implementation("com.github.senseiwells:Arucas:${arucas}")
+	include implementation("net.bytebuddy:byte-buddy:${bytebuddy_version}")
 
 	// Mixin Extras
 	//include implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${mixin_extras_version}"))
