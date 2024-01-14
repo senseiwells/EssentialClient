@@ -218,7 +218,7 @@ public class ClientScriptScreen extends ChildScreen {
 			//#endif
 			wrapper.drawTextWithShadow(this.textRenderer, SCRIPT_NAME, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F - 68), 0x949494);
 			wrapper.drawTextWithShadow(this.textRenderer, KEYBIND, (int) (this.width / 2.0F - 100), (int) (this.height / 2.0F + 30), 0xE0E0E0);
-			wrapper.drawTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+			wrapper.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 
 			ClientKeyBind keyBinding = this.scriptInstance.getKeyBind();
 
