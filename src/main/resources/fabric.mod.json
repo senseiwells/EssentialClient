@@ -25,9 +25,6 @@
   "icon": "assets/essentialclient/icon.png",
   "environment": "client",
   "entrypoints": {
-    "preLaunch": [
-      "me.senseiwells.essentialclient.feature.MixinExtraSupport::load"
-    ],
     "main": [
       "me.senseiwells.essentialclient.EssentialClient",
       "me.senseiwells.essentialclient.utils.clientscript.DocGenerator"
