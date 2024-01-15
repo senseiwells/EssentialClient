@@ -91,11 +91,11 @@ public class ClientScriptWidget extends ElementListWidget<ClientScriptWidget.Scr
 		}
 
 		@Override
-		public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-			context.drawTextWithShadow(this.client.textRenderer, Text.literal(this.name), x - 50, y + 2, 16777215);
-			WidgetHelper.setPosition(this.checkButton, x + 70, y);
-			WidgetHelper.setPosition(this.startButton, x + 100, y);
-			WidgetHelper.setPosition(this.configButton, x + 150, y);
+		public void render(DrawContext context, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+			context.drawTextWithShadow(this.client.textRenderer, Text.literal(this.name), x - 50, y + height / 2 - 9 / 2, 16777215);
+			WidgetHelper.setPosition(this.checkButton, x + width - 20, y);
+			WidgetHelper.setPosition(this.startButton, x + width - 70, y);
+			WidgetHelper.setPosition(this.configButton, x + width - 120, y);
 
 			this.startButton.active = this.client.player != null;
 			this.startButton.setMessage(this.scriptInstance.isScriptRunning() ? STOP : START);
