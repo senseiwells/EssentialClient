@@ -167,6 +167,7 @@ public class ClientScriptInstance {
 			.setObfuscator(new ClientScriptObfuscator())
 			.setInput(ClientScriptIO.INSTANCE)
 			.setOutput(ClientScriptIO.INSTANCE)
+			.setFileHandler(ClientScriptIO.INSTANCE)
 			.setErrorHandler(ClientScriptErrorHandler.INSTANCE)
 			.setInterpreterProperties(() -> {
 				Properties properties = new Properties();
