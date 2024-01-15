@@ -168,6 +168,7 @@ public class ClientScriptInstance {
 			.setInput(ClientScriptIO.INSTANCE)
 			.setOutput(ClientScriptIO.INSTANCE)
 			.setErrorHandler(ClientScriptErrorHandler.INSTANCE)
+			.setFileHandler(ClientScriptIO.INSTANCE)
 			.setInterpreterProperties(() -> {
 				Properties properties = new Properties();
 				properties.setErrorMaxLength(40);

@@ -1,18 +1,21 @@
 package me.senseiwells.essentialclient.clientscript.core;
 
+import me.senseiwells.arucas.api.ArucasFileHandler;
 import me.senseiwells.arucas.api.ArucasInput;
 import me.senseiwells.arucas.api.ArucasOutput;
 import me.senseiwells.arucas.compiler.LocatableTrace;
 import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.render.ChatColour;
+import net.minecraft.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
-public enum ClientScriptIO implements ArucasInput, ArucasOutput {
+public enum ClientScriptIO implements ArucasInput, ArucasOutput, ArucasFileHandler {
 	INSTANCE;
 
 	private final Logger logger = LogManager.getLogger("ClientScript");
@@ -89,5 +92,10 @@ public enum ClientScriptIO implements ArucasInput, ArucasOutput {
 	@Override
 	public String formatStackTrace(@NotNull Interpreter interpreter, String message, @NotNull LocatableTrace trace) {
 		return ArucasOutput.defaultFormatStackTrace(interpreter, message, trace);
+	}
+
+	@Override
+	public void open(@NotNull File file) {
+		Util.getOperatingSystem().open(file);
 	}
 }

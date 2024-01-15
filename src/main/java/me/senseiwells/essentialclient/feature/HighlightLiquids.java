@@ -93,7 +93,7 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 			public Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
 				if (view != null && pos != null && ClientRules.HIGHLIGHT_WATER_SOURCES.getValue()) {
 					BlockState blockState = view.getBlockState(pos);
-					if (blockState.contains(FluidBlock.LEVEL) && blockState.get(FluidBlock.LEVEL) == 0) {
+					if (blockState.getFluidState().isStill()) {
 						return new Sprite[]{waterSourceStillSprite, waterSourceFlowSprite};
 					}
 				}
@@ -102,10 +102,10 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 
 			@Override
 			public int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
-				if (ClientRules.HIGHLIGHT_WATER_SOURCES.getValue() && state.getLevel() == 8) {
-					// Returns blank colour
-					return -1;
-				}
+				// if (ClientRules.HIGHLIGHT_WATER_SOURCES.getValue() && state.getLevel() == 8) {
+				// 	// Returns blank colour
+				// 	return -1;
+				// }
 				return (view == null || pos == null) ? DEFAULT_WATER_COLOUR : BiomeColors.getWaterColor(view, pos);
 			}
 		};
