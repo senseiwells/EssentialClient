@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.longChatMessages;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 
@@ -11,6 +12,7 @@ import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 //#endif
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
@@ -23,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 //#endif
 public class GenericChatMessageC2SPacketMixin {
 	//#if MC >= 11901
-	@ModifyConstant(method = "write", constant = @Constant(intValue = 256))
+	@ModifyExpressionValue(method = "write", at = @At(value = "CONSTANT", args = "intValue=256"))
 	//#else
-	//$$@ModifyConstant(method = "<init>(Ljava/lang/String;)V", constant = @Constant(intValue = 256))
+	//$$@ModifyExpressionValue(method = "<init>(Ljava/lang/String;)V", at = @At(value = "CONSTANT", args = "intValue=256"))
 	//#endif
 	private static int getMaxLength(int constant) {
 		return EssentialUtils.getMaxChatLength(constant);
