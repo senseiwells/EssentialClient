@@ -408,7 +408,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	)
 	private Object isFluid(Arguments arguments) {
 		ScriptBlockState blockState = arguments.nextPrimitive(this);
-		return blockState.state.contains(FluidBlock.LEVEL);
+		return !blockState.state.getFluidState().isEmpty();
 	}
 
 	@FunctionDoc(
@@ -419,11 +419,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 	)
 	private Object isFluidSource(Arguments arguments) {
 		ScriptBlockState blockState = arguments.nextPrimitive(this);
-		Block block = blockState.asBlock();
-		if ((block instanceof FluidBlock && blockState.state.get(FluidBlock.LEVEL) == 0) || block instanceof BubbleColumnBlock) {
-			return true;
-		}
-		return block instanceof Waterloggable && blockState.state.get(Properties.WATERLOGGED);
+		return blockState.state.getFluidState().isStill();
 	}
 
 	@FunctionDoc(

@@ -233,7 +233,7 @@ public class CarpetClient implements CarpetExtension, Config.CList {
 			if (carpetRule != null) {
 				return this.parseRuleToClientRule(carpetRule, carpetRule.getSettingsManagerId());
 			}
-			EssentialClient.LOGGER.error("Failed to load Carpet Rule '{}'", name, e);
+			// EssentialClient.LOGGER.error("Failed to load Carpet Rule '{}'", name, e);
 			return null;
 		}
 	}
