@@ -16,6 +16,7 @@ import me.senseiwells.arucas.functions.builtin.MemberFunction;
 import me.senseiwells.arucas.interpreter.Interpreter;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
+import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.mapping.PlayerHelper;
 import me.senseiwells.essentialclient.utils.render.FakeInventoryScreen;
@@ -127,7 +128,9 @@ public class FakeScreenDef extends CreatableDefinition<FakeInventoryScreen> {
 		FakeInventoryScreen fakeScreen = arguments.nextPrimitive(FakeScreenDef.class);
 		int slotNum = arguments.nextPrimitive(NumberDef.class).intValue();
 		ScriptItemStack itemStack = arguments.nextPrimitive(ItemStackDef.class);
-		fakeScreen.setStack(slotNum, itemStack.stack);
+		ClientScriptUtils.ensureMainThread("setStackForSlot", arguments.getInterpreter(), () -> {
+			fakeScreen.setStack(slotNum, itemStack.stack);
+		});
 		return null;
 	}
 
