@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-@Mixin(Keyboard.class)
+@Mixin(value = Keyboard.class, priority = 1100)
 public class KeyboardMixin {
 	@ModifyConstant(method = "onKey", constant = @Constant(intValue = 66), require = 0)
 	private int disableNarrator(int old) {
