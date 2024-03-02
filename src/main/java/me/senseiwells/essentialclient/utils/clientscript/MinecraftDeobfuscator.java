@@ -197,7 +197,7 @@ public final class MinecraftDeobfuscator {
 				return;
 			}
 
-			OBFUSCATION_MAPPINGS.put(from, to);
+			OBFUSCATION_MAPPINGS.put(to, from);
 		}
 
 		@Override
