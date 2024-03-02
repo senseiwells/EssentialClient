@@ -90,9 +90,8 @@ java {
 publishMods {
 	file = remapJar.archiveFile
 	changelog = """
-	- Fixed multiple rendering issues in ClientScript screens
-	- Updated to fabric loader 15+
-	- Updated Arucas
+	- Fixed a conflict with ViaFabricPlus
+	- Fixed some obfuscation issues with clientscript
 	"""
 	type = STABLE
 	modLoaders.add("fabric")
