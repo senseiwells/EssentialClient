@@ -29,7 +29,7 @@ public class GenericChatMessageC2SPacketMixin {
 	//#else
 	//$$@ModifyExpressionValue(method = "<init>(Ljava/lang/String;)V", at = @At(value = "CONSTANT", args = "intValue=256"))
 	//#endif
-	private static int getMaxLength(int constant) {
+	private int getMaxLength(int constant) {
 		return EssentialUtils.getMaxChatLength(constant);
 	}
 }

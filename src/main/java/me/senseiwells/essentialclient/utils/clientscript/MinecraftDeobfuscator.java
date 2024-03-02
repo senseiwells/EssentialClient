@@ -3,6 +3,7 @@ package me.senseiwells.essentialclient.utils.clientscript;
 import com.google.common.net.UrlEscapers;
 import com.google.gson.Gson;
 import me.senseiwells.essentialclient.EssentialClient;
+import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.fabricmc.loader.impl.lib.mappingio.MappedElementKind;
 import net.fabricmc.loader.impl.lib.mappingio.MappingVisitor;
@@ -60,7 +61,7 @@ public final class MinecraftDeobfuscator {
 		}
 	}
 
-	public static void load() { }
+	public static void load() {  }
 
 	public static String obfuscate(String name) {
 		if (!triedLoadingMappings) {
@@ -68,7 +69,9 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = OBFUSCATION_MAPPINGS.get(name);
-		EssentialClient.LOGGER.info("Obfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		if (ClientRules.CLIENTSCRIPT_DEBUGGER.getValue()) {
+			EssentialClient.LOGGER.info("Obfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		}
 		return mapped == null ? name : mapped;
 	}
 
@@ -78,7 +81,9 @@ public final class MinecraftDeobfuscator {
 		}
 
 		String mapped = CLASS_DEOBFUSCATION_MAPPINGS.get(name);
-		EssentialClient.LOGGER.info("Deobfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		if (ClientRules.CLIENTSCRIPT_DEBUGGER.getValue()) {
+			EssentialClient.LOGGER.info("Deobfuscating {} -> {}", name, Objects.requireNonNullElse(mapped, name));
+		}
 		return mapped == null ? name : mapped;
 	}
 
@@ -192,7 +197,7 @@ public final class MinecraftDeobfuscator {
 				return;
 			}
 
-			OBFUSCATION_MAPPINGS.put(from, to);
+			OBFUSCATION_MAPPINGS.put(to, from);
 		}
 
 		@Override
