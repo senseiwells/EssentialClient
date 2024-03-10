@@ -207,6 +207,9 @@ public class EssentialUtils {
 	}
 
 	public static void mineBlock(BlockPos pos, Supplier<Boolean> condition, CompletableFuture<Void> future) {
+		if (future.isCancelled()) {
+			return;
+		}
 		if (canMineBlock(pos) && condition.get()) {
 			getInteractionManager().updateBlockBreakingProgress(pos, Direction.DOWN);
 			getPlayer().swingHand(Hand.MAIN_HAND);
