@@ -177,7 +177,10 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 	)
 	private void onPlayerRemove(PlayerRemoveS2CPacket packet, CallbackInfo ci) {
 		for (UUID uuid : packet.profileIds()) {
-			MinecraftScriptEvents.ON_PLAYER_LEAVE.run(this.playerListEntries.get(uuid).getProfile().getName(), uuid.toString());
+			PlayerListEntry entry = this.playerListEntries.get(uuid);
+			if (entry != null) {
+				MinecraftScriptEvents.ON_PLAYER_LEAVE.run(entry.getProfile().getName(), uuid.toString());
+			}
 		}
 	}
 
