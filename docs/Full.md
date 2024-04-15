@@ -27,6 +27,8 @@ This page is a step-by-step guide to get you started with Arucas, showing you ho
 > #### [Threads](https://github.com/senseiwells/Arucas/blob/main/docs/Language%20Documentation/22.%20Threads%20(Incomplete).md)
 > #### [Java](https://github.com/senseiwells/Arucas/blob/main/docs/Language%20Documentation/23.%20Java%20Integration.md)
 
+> #### [Interfacing with Minecraft](#interfacing-with-minecraft)
+
 
 ## Installation
 
@@ -49,12 +51,15 @@ run("path/of/arucas/file.arucas");
 
 ## Development Environment
 
-We recommend thhe use of VSCode, with the [Arucas Language Extension](https://marketplace.visualstudio.com/items?itemName=Arucas.arucas), this provides syntax highlighting for Arucas along with some simple code snippets.
+We recommend the use of VSCode, with the [Arucas Language Extension](https://marketplace.visualstudio.com/items?itemName=Arucas.arucas), this provides syntax highlighting for Arucas along with some simple code snippets.
+
+In order to get auto-complete for the functions and classes of EssentialClient, you must add the following natives inside `arucas.natives` in your VSCode settings: `https://raw.githubusercontent.com/senseiwells/EssentialClient/main/generated/json/AllDocs.json` 
+
+---
 
 If you are developing for an older version of Arucas, you can use the [Arucas Plugin](https://github.com/Kariaro/ArucasHighlighter/tree/main) designed for IntelliJ by [HardCoded](https://github.com/Kariaro), this highlights your code informing you of errors in your code, and adding nice colours :).
 
 So now that you are able to run Arucas files, what do we put inside? If you have not already, you should take a look at the [Language Syntax](https://github.com/senseiwells/Arucas/blob/main/docs/Language%20Documentation/3.%20Syntax.md) page briefly, but we will cover everything in detail here.
-
 
 # Language Syntax
 
@@ -3032,6 +3037,11 @@ stop();
 ```kotlin
 suppressDeprecated(true);
 ```
+
+
+# Interfacing with Minecraft
+These methods and classes are specific to EssentialClient, allowing you to interact with the game _(fetching blocks, creating fake/ghost blocks and entities, fetching data from the player, send chat messages, run commands, etc)_
+
 ## MinecraftExtension
 
 ### `hold()`
