@@ -7,7 +7,8 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.*;
+import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
+import static me.senseiwells.essentialclient.utils.network.NetworkUtils.HELLO;
 
 public abstract class NetworkHandler {
 	private final Identifier channel;

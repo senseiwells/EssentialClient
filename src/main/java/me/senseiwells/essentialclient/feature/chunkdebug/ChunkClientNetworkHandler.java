@@ -5,7 +5,6 @@ import me.senseiwells.essentialclient.utils.network.NetworkHandler;
 import me.senseiwells.essentialclient.utils.network.NetworkUtils;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
