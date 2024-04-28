@@ -1,7 +1,7 @@
 plugins {
 	id "maven-publish"
-	id "fabric-loom" version "1.4-SNAPSHOT"
-	id 'me.modmuss50.mod-publish-plugin' version '0.3.4'
+	id "fabric-loom" version "1.6-SNAPSHOT"
+	id 'me.modmuss50.mod-publish-plugin' version '0.5.1'
 }
 
 repositories {
@@ -21,9 +21,12 @@ repositories {
 	maven {
 		url 'https://www.cursemaven.com'
 	}
+	maven {
+		url = "https://api.modrinth.com/maven"
+	}
 }
 
-version = project.minecraft_version + "-" + project.mod_version
+version = "${mod_version}+mc${minecraft_version}"
 group = project.maven_group
 
 //configurations.configureEach {
@@ -37,7 +40,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${loader_version}"
 
-	modImplementation "com.github.gnembon:fabric-carpet:${carpet_version}"
+	modImplementation "com.github.senseiwells:fabric-carpet:${carpet_version}"
 	modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 
 	// Required for Arucas
@@ -46,8 +49,7 @@ dependencies {
 	include implementation("com.github.senseiwells:Arucas:${arucas}")
 	include implementation("net.bytebuddy:byte-buddy:${bytebuddy_version}")
 
-	// Mixin Extras
-	//include implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${mixin_extras_version}"))
+	modCompileOnly "maven.modrinth:essentialaddons:1.4.1+mc1.20.5"
 
 	// Runtime Fabric API
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
@@ -62,7 +64,7 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		def map = [
 			"version"             : mod_version,
-			"carpet_dependency"   : ">=" + carpet_version,
+//			"carpet_dependency"   : ">=" + carpet_version,
 			"minecraft_dependency": minecraft_dependency
 		]
 		expand map

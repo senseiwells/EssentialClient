@@ -67,7 +67,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		MinecraftScriptEvents.ON_CONNECT.run(EssentialUtils.getPlayer(), EssentialUtils.getWorld());
 		if (this.client.getServer() != null && !EssentialUtils.isModInstalled("essentialaddons")) {
 			EssentialClient.GAME_RULE_NET_HANDLER.onHelloSinglePlayer();
-			EssentialClient.GAME_RULE_NET_HANDLER.processRawData(this.client.getServer().getGameRules().toNbt());
+			EssentialClient.GAME_RULE_NET_HANDLER.processGamerules(this.client.getServer().getGameRules().toNbt());
 		}
 	}
 

@@ -687,7 +687,7 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		Double volume = arguments.nextPrimitive(NumberDef.class);
 		Double pitch = arguments.nextPrimitive(NumberDef.class);
 		SoundEvent soundEvent = Registries.SOUND_EVENT.get(ClientScriptUtils.stringToIdentifier(soundId));
-		player.playSound(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
+		player.playSoundToPlayer(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
 		return null;
 	}
 
@@ -838,16 +838,18 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 	}
 
 	@FunctionDoc(
+		deprecated = "This features is no longer supported",
 		name = "canSendScriptPacket",
 		desc = "Returns whether the server supports client script packets",
 		returns = @ReturnDoc(type = BooleanDef.class, desc = "Whether the client can send packets to the server"),
 		examples = "client.canSendScriptPacket()"
 	)
 	private boolean canSendScriptPacket(Arguments arguments) {
-		return EssentialClient.SCRIPT_NET_HANDLER.isAvailable();
+		return false;
 	}
 
 	@FunctionDoc(
+		deprecated = "This features is no longer supported",
 		name = "sendScriptPacket",
 		desc = {
 			"This sends a script packet to the server",
@@ -859,7 +861,6 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		examples = "client.sendScriptPacket('test', false, ['l', 9999, 0, 45]);"
 	)
 	private Void sendScriptPacket(Arguments arguments) {
-		EssentialClient.SCRIPT_NET_HANDLER.sendScriptPacket(arguments.skip());
 		return null;
 	}
 }

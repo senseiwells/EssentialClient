@@ -18,6 +18,8 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.text.Text;
 
+import java.util.Optional;
+
 public class ChunkDebugScreen extends ChildScreen {
 	public static final int
 		HEADER_HEIGHT = 30,
@@ -73,15 +75,14 @@ public class ChunkDebugScreen extends ChildScreen {
 		this.zPositionBox.setInitialValue(ChunkGrid.instance.getCentreZ());
 		this.addDrawableChild(WidgetHelper.newButton(buttonWidth * 2 + FOOTER_ROW_PADDING * 3, buttonHeight, buttonWidth, FOOTER_ROW_HEIGHT, Texts.REFRESH, button -> {
 			if (hasControlDown()) {
-				ChunkHandler.clearAllChunks();
 				EssentialClient.CHUNK_NET_HANDLER.requestServerRefresh();
 			} else {
-				ChunkHandler.clearAllChunks();
 				EssentialClient.CHUNK_NET_HANDLER.requestChunkData(ChunkGrid.instance.getDimension());
 			}
 		}));
 		this.addDrawableChild(WidgetHelper.newButton(5, 5, 90, 20, Texts.CHUNK_CLUSTER_SCREEN, button -> {
-			this.client.setScreen(new ChunkClusterScreen(ChunkHandler.getChunkCluster(ChunkGrid.instance.getDimension()), this));
+			Optional<ChunkClusters> optional = EssentialClient.CHUNK_NET_HANDLER.getChunkCluster(ChunkGrid.instance.getDimension());
+			optional.ifPresent(clusters -> this.client.setScreen(new ChunkClusterScreen(clusters, this)));
 		}));
 
 		this.addDrawableChild(this.xPositionBox);
@@ -106,7 +107,7 @@ public class ChunkDebugScreen extends ChildScreen {
 	public void removed() {
 		if (ChunkGrid.instance.getMinimapMode() == ChunkGrid.Minimap.NONE) {
 			EssentialClient.CHUNK_NET_HANDLER.removeChunkData();
-			ChunkHandler.clearAllChunks();
+			EssentialClient.CHUNK_NET_HANDLER.clearAllChunks();
 		}
 	}
 
@@ -170,7 +171,7 @@ public class ChunkDebugScreen extends ChildScreen {
 
 	private void drawHeaderAndFooterTexture(Tessellator tessellator, BufferBuilder bufferBuilder) {
 		RenderHelper.setPositionTextureColourShader();
-		RenderHelper.bindTexture(OPTIONS_BACKGROUND_TEXTURE);
+		// RenderHelper.bindTexture(OPTIONS_BACKGROUND_TEXTURE);
 
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableBlend();

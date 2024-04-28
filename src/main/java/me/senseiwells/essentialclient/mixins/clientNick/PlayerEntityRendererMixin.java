@@ -25,13 +25,28 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 		super(context, model, shadowRadius);
 	}
 
-	@Redirect(method = "renderLabelIfPresent(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", ordinal = 1))
-	private void onRenderLabel(LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> livingEntityRenderer, Entity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+	@Redirect(
+		method = "renderLabelIfPresent(Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V",
+			ordinal = 1
+		)
+	)
+	private void onRenderLabel(
+		LivingEntityRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> instance,
+		Entity entity,
+		Text text,
+		MatrixStack matrices,
+		VertexConsumerProvider vertexConsumers,
+		int light,
+		float tickDelta
+	) {
 		if (ClientRules.COMMAND_CLIENT_NICK.getValue()) {
 			String playerName = entity.getNameForScoreboard();
 			String newPlayerName = ConfigClientNick.INSTANCE.get(playerName);
 			text = newPlayerName != null ? Text.literal(newPlayerName) : text;
 		}
-		super.renderLabelIfPresent((AbstractClientPlayerEntity) entity, text, matrices, vertexConsumers, light);
+		super.renderLabelIfPresent((AbstractClientPlayerEntity) entity, text, matrices, vertexConsumers, light, tickDelta);
 	}
 }

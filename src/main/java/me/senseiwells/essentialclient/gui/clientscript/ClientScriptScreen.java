@@ -58,11 +58,6 @@ public class ClientScriptScreen extends ChildScreen {
 		context.drawCenteredTextWithShadow(this.textRenderer, ARUCAS_VERSION.generate(Arucas.VERSION), this.width / 2, 24, 0x949494);
 	}
 
-	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-	}
-
 	public void refresh() {
 		ClientScript.INSTANCE.refresh();
 		this.scriptWidget.load(this.client);
@@ -227,11 +222,6 @@ public class ClientScriptScreen extends ChildScreen {
 				);
 				context.drawTooltip(this.textRenderer, textList, mouseX, mouseY);
 			}
-		}
-
-		@Override
-		public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-			this.renderBackgroundTexture(context);
 		}
 	}
 }

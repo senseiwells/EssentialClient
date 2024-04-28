@@ -7,13 +7,13 @@ import me.senseiwells.essentialclient.feature.CarpetClient;
 import me.senseiwells.essentialclient.feature.CraftingSharedConstants;
 import me.senseiwells.essentialclient.feature.GameRuleNetworkHandler;
 import me.senseiwells.essentialclient.feature.chunkdebug.ChunkClientNetworkHandler;
+import me.senseiwells.essentialclient.feature.chunkdebug.ChunkGrid;
 import me.senseiwells.essentialclient.feature.keybinds.ClientKeyBinds;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
 import me.senseiwells.essentialclient.utils.clientscript.ClientTickSyncer;
 import me.senseiwells.essentialclient.utils.clientscript.MinecraftDeobfuscator;
-import me.senseiwells.essentialclient.utils.clientscript.ScriptNetworkHandler;
 import me.senseiwells.essentialclient.utils.config.Config;
 import me.senseiwells.essentialclient.utils.config.ConfigClientNick;
 import me.senseiwells.essentialclient.utils.config.ConfigPlayerClient;
@@ -33,7 +33,6 @@ import java.util.Set;
 public class EssentialClient implements ModInitializer, CarpetExtension {
 	public static final ChunkClientNetworkHandler CHUNK_NET_HANDLER;
 	public static final GameRuleNetworkHandler GAME_RULE_NET_HANDLER;
-	public static final ScriptNetworkHandler SCRIPT_NET_HANDLER;
 
 	public static final Logger LOGGER;
 	public static final LocalDateTime START_TIME;
@@ -45,7 +44,6 @@ public class EssentialClient implements ModInitializer, CarpetExtension {
 		LOGGER = LogManager.getLogger("EssentialClient");
 		CHUNK_NET_HANDLER = new ChunkClientNetworkHandler();
 		GAME_RULE_NET_HANDLER = new GameRuleNetworkHandler();
-		SCRIPT_NET_HANDLER = new ScriptNetworkHandler();
 		START_TIME = LocalDateTime.now();
 		VERSION = EssentialUtils.getEssentialVersion();
 		NETWORK_HANDLERS = new LinkedHashSet<>();
@@ -57,12 +55,13 @@ public class EssentialClient implements ModInitializer, CarpetExtension {
 
 		NETWORK_HANDLERS.add(CHUNK_NET_HANDLER);
 		NETWORK_HANDLERS.add(GAME_RULE_NET_HANDLER);
-		NETWORK_HANDLERS.add(SCRIPT_NET_HANDLER);
 	}
 
 	@Override
 	public void onInitialize() {
 		CarpetServer.manageExtension(CarpetClient.INSTANCE);
+		NETWORK_HANDLERS.forEach(NetworkHandler::registerCustomPayloads);
+
 		// Run async for faster boot, saves ~2000ms on my machine
 		new Thread(() -> {
 			CONFIG_SET.forEach(Config::readConfig);

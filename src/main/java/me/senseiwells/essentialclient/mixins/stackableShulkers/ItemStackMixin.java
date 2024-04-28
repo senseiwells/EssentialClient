@@ -1,7 +1,8 @@
 package me.senseiwells.essentialclient.mixins.stackableShulkers;
 
-import carpet.helpers.InventoryHelper;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,8 +22,8 @@ public abstract class ItemStackMixin {
 		if (EssentialUtils.isStackableShulkers(this.getItem())) {
 			@SuppressWarnings("ConstantConditions")
 			ItemStack stack = (ItemStack) (Object) this;
-			if (!InventoryHelper.shulkerBoxHasItems(stack)) {
-				stack.removeSubNbt("BlockEntityTag");
+			ContainerComponent container = stack.get(DataComponentTypes.CONTAINER);
+			if (container == null || container.streamNonEmpty().findAny().isEmpty()) {
 				cir.setReturnValue(64);
 			} else if (EssentialUtils.isStackableShulkerWithItems()) {
 				cir.setReturnValue(64);

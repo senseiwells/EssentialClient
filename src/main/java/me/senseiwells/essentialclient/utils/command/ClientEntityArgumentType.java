@@ -608,7 +608,7 @@ public class ClientEntityArgumentType implements ArgumentType<ClientEntitySelect
 							if (entity instanceof PlayerEntity) {
 								ItemStack heldItem = ((PlayerEntity) entity).getEquippedStack(EquipmentSlot.MAINHAND);
 								if (!heldItem.isEmpty()) {
-									entityNbt.put("SelectedItem", heldItem.writeNbt(new NbtCompound()));
+									// entityNbt.put("SelectedItem", heldItem.writeNbt(new NbtCompound()));
 								}
 							}
 							return NbtHelper.matches(nbt, entityNbt, true) != neg;

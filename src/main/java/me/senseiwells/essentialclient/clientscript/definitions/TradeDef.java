@@ -14,10 +14,13 @@ import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.impl.ScriptItemStack;
 import me.senseiwells.essentialclient.utils.inventory.InventoryUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradedItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import static me.senseiwells.essentialclient.clientscript.core.MinecraftAPI.TRADE;
 
@@ -82,7 +85,7 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	)
 	public ScriptItemStack getAdjustedFirstBuyItem(Arguments arguments) {
 		TradeOffer offer = arguments.nextPrimitive(this);
-		return new ScriptItemStack(offer.getAdjustedFirstBuyItem());
+		return new ScriptItemStack(offer.getDisplayedFirstBuyItem());
 	}
 
 	@FunctionDoc(
@@ -93,7 +96,8 @@ public class TradeDef extends CreatableDefinition<TradeOffer> {
 	)
 	public ScriptItemStack getSecondBuyItem(Arguments arguments) {
 		TradeOffer offer = arguments.nextPrimitive(this);
-		return new ScriptItemStack(offer.getSecondBuyItem());
+		Optional<TradedItem> traded = offer.getSecondBuyItem();
+		return traded.map(item -> new ScriptItemStack(item.itemStack())).orElseGet(() -> new ScriptItemStack(ItemStack.EMPTY));
 	}
 
 	@FunctionDoc(

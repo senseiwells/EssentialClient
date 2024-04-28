@@ -531,7 +531,7 @@ public class BlockDef extends CreatableDefinition<ScriptBlockState> {
 		ScriptBlockState blockState = this.ensurePosition(arguments);
 		BlockEntity blockEntity = EssentialUtils.getWorld().getBlockEntity(blockState.pos);
 		if (blockEntity != null) {
-			NbtCompound compound = blockEntity.createNbt();
+			NbtCompound compound = blockEntity.createNbt(EssentialUtils.getWorld().getRegistryManager());
 			return ClientScriptUtils.nbtToMap(arguments.getInterpreter(), compound, 10);
 		}
 		return null;

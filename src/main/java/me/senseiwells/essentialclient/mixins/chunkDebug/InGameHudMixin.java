@@ -11,18 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Shadow
-	private int scaledWidth;
-	@Shadow
-	private int scaledHeight;
-
 	@Inject(
-		method = "render",
-		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/client/gui/hud/InGameHud;renderCrosshair(Lnet/minecraft/client/gui/DrawContext;)V",
-			shift = At.Shift.AFTER
-		)
+		method = "renderCrosshair",
+		at = @At(value = "TAIL")
 	)
 	private void afterCrossHairRender(
 		DrawContext context,
@@ -30,7 +21,7 @@ public class InGameHudMixin {
 		CallbackInfo ci
 	) {
 		if (ChunkGrid.instance != null) {
-			ChunkGrid.instance.renderMinimap(this.scaledWidth, this.scaledHeight);
+			ChunkGrid.instance.renderMinimap(context.getScaledWindowWidth(), context.getScaledWindowWidth());
 		}
 	}
 }

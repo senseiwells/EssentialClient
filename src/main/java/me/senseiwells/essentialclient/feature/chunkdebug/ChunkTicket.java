@@ -3,7 +3,7 @@ package me.senseiwells.essentialclient.feature.chunkdebug;
 import me.senseiwells.essentialclient.utils.render.Texts;
 import net.minecraft.text.Text;
 
-public enum TicketType implements Colourable {
+public enum ChunkTicket implements Colourable {
 	START(Texts.TICKET_SPAWN, 0xBFFF00), // Lime green
 	DRAGON(Texts.DRAGON, 0xCC00CC), // Magenta
 	PLAYER(Texts.PLAYER, -1), // Green
@@ -17,7 +17,7 @@ public enum TicketType implements Colourable {
 	private final Text prettyName;
 	private final int colour;
 
-	TicketType(Text prettyName, int colour) {
+	ChunkTicket(Text prettyName, int colour) {
 		this.prettyName = prettyName;
 		this.colour = colour;
 	}
@@ -37,10 +37,10 @@ public enum TicketType implements Colourable {
 		return this.prettyName;
 	}
 
-	public static TicketType decodeTicketType(int code) {
+	public static ChunkTicket decodeTicketType(int code) {
 		if (code < 1 || code > 9) {
 			return null;
 		}
-		return TicketType.values()[code - 1];
+		return ChunkTicket.values()[code - 1];
 	}
 }

@@ -20,6 +20,7 @@ public class EntityRendererMixin {
 		MatrixStack matrices,
 		VertexConsumerProvider vertexConsumers,
 		int light,
+		float tickDelta,
 		CallbackInfo ci
 	) {
 		if (ClientRules.DISABLE_NAME_TAGS.getValue()) {

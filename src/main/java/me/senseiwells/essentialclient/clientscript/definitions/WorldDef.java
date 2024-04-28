@@ -27,8 +27,8 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
+import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -397,7 +397,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		World world = arguments.nextPrimitive(this);
 		String particleName = arguments.nextPrimitive(StringDef.class);
 		ParticleType<?> particleType = Registries.PARTICLE_TYPE.get(ClientScriptUtils.stringToIdentifier(particleName));
-		if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
+		if (!(particleType instanceof SimpleParticleType defaultParticleType)) {
 			throw new RuntimeError("Particle Invalid");
 		}
 		double x = arguments.nextPrimitive(NumberDef.class);
@@ -426,7 +426,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		World world = arguments.nextPrimitive(this);
 		String particleName = arguments.nextPrimitive(StringDef.class);
 		ParticleType<?> particleType = Registries.PARTICLE_TYPE.get(ClientScriptUtils.stringToIdentifier(particleName));
-		if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
+		if (!(particleType instanceof SimpleParticleType defaultParticleType)) {
 			throw new RuntimeError("Particle Invalid");
 		}
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
@@ -456,7 +456,7 @@ public class WorldDef extends CreatableDefinition<World> {
 		World world = arguments.nextPrimitive(this);
 		String particleName = arguments.nextPrimitive(StringDef.class);
 		ParticleType<?> particleType = Registries.PARTICLE_TYPE.get(ClientScriptUtils.stringToIdentifier(particleName));
-		if (!(particleType instanceof DefaultParticleType defaultParticleType)) {
+		if (!(particleType instanceof SimpleParticleType defaultParticleType)) {
 			throw new RuntimeError("Particle Invalid");
 		}
 		ScriptPos pos = arguments.nextPrimitive(PosDef.class);

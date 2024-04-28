@@ -45,8 +45,8 @@ public class ControlsListWidget extends ElementListWidget<ControlsListWidget.Ent
 	}
 
 	@Override
-	protected int getScrollbarPositionX() {
-		return super.getScrollbarPositionX() + 15;
+	protected int getScrollbarX() {
+		return super.getScrollbarX() + 15;
 	}
 
 	@Override

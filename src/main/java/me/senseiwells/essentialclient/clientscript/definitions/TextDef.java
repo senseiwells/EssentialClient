@@ -18,6 +18,8 @@ import me.senseiwells.arucas.utils.JsonUtils;
 import me.senseiwells.arucas.utils.misc.Language;
 import me.senseiwells.essentialclient.clientscript.core.MinecraftAPI;
 import me.senseiwells.essentialclient.utils.clientscript.ClientScriptUtils;
+import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
+import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -75,9 +77,15 @@ public class TextDef extends CreatableDefinition<MutableText> {
 	)
 	private Object parse(Arguments arguments) {
 		if (arguments.isNext(JsonDef.class)) {
-			return Text.Serialization.fromJson(JsonUtils.GSON.toJson(arguments.nextPrimitive(JsonDef.class)));
+			return Text.Serialization.fromJson(
+				JsonUtils.GSON.toJson(arguments.nextPrimitive(JsonDef.class)),
+				BuiltinRegistries.createWrapperLookup()
+			);
 		}
-		return Text.Serialization.fromJson(arguments.nextPrimitive(StringDef.class));
+		return Text.Serialization.fromJson(
+			arguments.nextPrimitive(StringDef.class),
+			BuiltinRegistries.createWrapperLookup()
+		);
 	}
 
 	@Override

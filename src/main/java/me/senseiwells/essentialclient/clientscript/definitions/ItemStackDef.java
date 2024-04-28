@@ -93,8 +93,8 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 	@Override
 	public List<BuiltInFunction> defineStaticMethods() {
 		return List.of(
-			BuiltInFunction.of("of", 1, this::of),
-			BuiltInFunction.of("parse", 1, this::parse)
+			BuiltInFunction.of("of", 1, this::of)
+			// BuiltInFunction.of("parse", 1, this::parse)
 		);
 	}
 
@@ -121,28 +121,28 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		throw new RuntimeError("Parameter must be of type String or Material");
 	}
 
-	@FunctionDoc(
-		isStatic = true,
-		name = "parse",
-		desc = {
-			"This creates an ItemStack from a NBT string, this can be in the form of a map",
-			"or an ItemStack NBT, or like the item stack command format"
-		},
-		params = {@ParameterDoc(type = StringDef.class, name = "nbtString", desc = "the NBT string to create the ItemStack from")},
-		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack instance"),
-		examples = "ItemStack.parse('{id:\"minecraft:dirt\",Count:64}')"
-	)
-	private ItemStack parse(Arguments arguments) {
-		if (arguments.isNext(StringDef.class)) {
-			String nbt = arguments.nextPrimitive(StringDef.class);
-			return ClientScriptUtils.stringToItemStack(nbt);
-		}
-		if (arguments.isNext(MapDef.class)) {
-			ArucasMap map = arguments.nextPrimitive(MapDef.class);
-			return ItemStack.fromNbt(ClientScriptUtils.mapToNbt(arguments.getInterpreter(), map, 100));
-		}
-		throw new RuntimeError("Argument must be able to convert to NBT");
-	}
+	// @FunctionDoc(
+	// 	isStatic = true,
+	// 	name = "parse",
+	// 	desc = {
+	// 		"This creates an ItemStack from a NBT string, this can be in the form of a map",
+	// 		"or an ItemStack NBT, or like the item stack command format"
+	// 	},
+	// 	params = {@ParameterDoc(type = StringDef.class, name = "nbtString", desc = "the NBT string to create the ItemStack from")},
+	// 	returns = @ReturnDoc(type = ItemStackDef.class, desc = "the new ItemStack instance"),
+	// 	examples = "ItemStack.parse('{id:\"minecraft:dirt\",Count:64}')"
+	// )
+	// private ItemStack parse(Arguments arguments) {
+	// 	if (arguments.isNext(StringDef.class)) {
+	// 		String nbt = arguments.nextPrimitive(StringDef.class);
+	// 		return ClientScriptUtils.stringToItemStack(nbt);
+	// 	}
+	// 	if (arguments.isNext(MapDef.class)) {
+	// 		ArucasMap map = arguments.nextPrimitive(MapDef.class);
+	// 		return ItemStack.fromNbt(ClientScriptUtils.mapToNbt(arguments.getInterpreter(), map, 100));
+	// 	}
+	// 	throw new RuntimeError("Argument must be able to convert to NBT");
+	// }
 
 	@Override
 	public List<MemberFunction> defineMethods() {
@@ -151,24 +151,24 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 			MemberFunction.of("getCount", this::getCount),
 			MemberFunction.of("getDurability", this::getDurability),
 			MemberFunction.of("getMaxDurability", this::getMaxDurability),
-			MemberFunction.of("getEnchantments", this::getEnchantments),
+			// MemberFunction.of("getEnchantments", this::getEnchantments),
 			MemberFunction.of("isBlockItem", this::isBlockItem),
 			MemberFunction.of("isStackable", this::isStackable),
 			MemberFunction.of("getMaxCount", this::getMaxCount),
 			MemberFunction.of("asEntity", this::asEntity),
 			MemberFunction.of("getCustomName", this::getCustomName),
-			MemberFunction.of("isNbtEqual", 1, this::isNbtEqual),
-			MemberFunction.of("getNbt", this::getNbt),
-			MemberFunction.of("getNbtAsString", this::getNbtAsString),
+			// MemberFunction.of("isNbtEqual", 1, this::isNbtEqual),
+			// MemberFunction.of("getNbt", this::getNbt),
+			// MemberFunction.of("getNbtAsString", this::getNbtAsString),
 			MemberFunction.of("getTranslatedName", this::getTranslatedName),
 			MemberFunction.of("getMiningSpeedMultiplier", 1, this::getMiningSpeedMultiplier),
-			MemberFunction.of("setCustomName", 1, this::setCustomName),
+			// MemberFunction.of("setCustomName", 1, this::setCustomName),
 			MemberFunction.of("setStackSize", 1, this::setStackSize),
 			MemberFunction.of("increment", 1, this::increment),
-			MemberFunction.of("decrement", 1, this::decrement),
-			MemberFunction.of("setItemLore", 1, this::setLore),
-			MemberFunction.of("setNbtFromString", 1, this::setNbtFromString),
-			MemberFunction.of("setNbt", 1, this::setNbt)
+			MemberFunction.of("decrement", 1, this::decrement)
+			// MemberFunction.of("setItemLore", 1, this::setLore),
+			// MemberFunction.of("setNbtFromString", 1, this::setNbtFromString),
+			// MemberFunction.of("setNbt", 1, this::setNbt)
 		);
 	}
 
@@ -213,30 +213,30 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		return arguments.nextPrimitive(this).stack.getMaxDamage();
 	}
 
-	@FunctionDoc(
-		name = "getEnchantments",
-		desc = {
-			"This gets the enchantments of the item, in a map containing the",
-			"id of the enchantment as the key and the level of the enchantment as the value"
-		},
-		returns = @ReturnDoc(type = MapDef.class, desc = "the enchantments of the item, map may be empty"),
-		examples = "itemStack.getEnchantments();"
-	)
-	private ArucasMap getEnchantments(Arguments arguments) {
-		ItemStack itemStack = arguments.nextPrimitive(this).stack;
-		NbtList nbtList = itemStack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantmentNbt(itemStack) : itemStack.getEnchantments();
-		Interpreter interpreter = arguments.getInterpreter();
-		ArucasMap enchantmentMap = new ArucasMap();
-		for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.fromNbt(nbtList).entrySet()) {
-			Identifier enchantmentId = Registries.ENCHANTMENT.getId(entry.getKey());
-			enchantmentMap.put(
-				interpreter,
-				enchantmentId == null ? interpreter.getNull() : interpreter.create(StringDef.class, enchantmentId.getPath()),
-				interpreter.create(NumberDef.class, entry.getValue().doubleValue())
-			);
-		}
-		return enchantmentMap;
-	}
+	// @FunctionDoc(
+	// 	name = "getEnchantments",
+	// 	desc = {
+	// 		"This gets the enchantments of the item, in a map containing the",
+	// 		"id of the enchantment as the key and the level of the enchantment as the value"
+	// 	},
+	// 	returns = @ReturnDoc(type = MapDef.class, desc = "the enchantments of the item, map may be empty"),
+	// 	examples = "itemStack.getEnchantments();"
+	// )
+	// private ArucasMap getEnchantments(Arguments arguments) {
+	// 	ItemStack itemStack = arguments.nextPrimitive(this).stack;
+	// 	NbtList nbtList = itemStack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantmentNbt(itemStack) : itemStack.getEnchantments();
+	// 	Interpreter interpreter = arguments.getInterpreter();
+	// 	ArucasMap enchantmentMap = new ArucasMap();
+	// 	for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.fromNbt(nbtList).entrySet()) {
+	// 		Identifier enchantmentId = Registries.ENCHANTMENT.getId(entry.getKey());
+	// 		enchantmentMap.put(
+	// 			interpreter,
+	// 			enchantmentId == null ? interpreter.getNull() : interpreter.create(StringDef.class, enchantmentId.getPath()),
+	// 			interpreter.create(NumberDef.class, entry.getValue().doubleValue())
+	// 		);
+	// 	}
+	// 	return enchantmentMap;
+	// }
 
 	@FunctionDoc(
 		name = "isBlockItem",
@@ -295,42 +295,42 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		return arguments.nextPrimitive(this).stack.getName().getString();
 	}
 
-	@FunctionDoc(
-		name = "isNbtEqual",
-		desc = "This checks if the ItemStack has the same NBT data as the other given ItemStack",
-		params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the other ItemStack to compare to")},
-		returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the ItemStack has the same NBT data as the other given ItemStack"),
-		examples = "itemStack.isNbtEqual(Material.GOLD_INGOT.asItemStack());"
-	)
-	private boolean isNbtEqual(Arguments arguments) {
-		ItemStack itemStack = arguments.nextPrimitive(this).stack;
-		ItemStack otherItemStack = arguments.nextPrimitive(this).stack;
-		return ItemStack.canCombine(itemStack, otherItemStack);
-	}
+	// @FunctionDoc(
+	// 	name = "isNbtEqual",
+	// 	desc = "This checks if the ItemStack has the same NBT data as the other given ItemStack",
+	// 	params = {@ParameterDoc(type = ItemStackDef.class, name = "itemStack", desc = "the other ItemStack to compare to")},
+	// 	returns = @ReturnDoc(type = BooleanDef.class, desc = "true if the ItemStack has the same NBT data as the other given ItemStack"),
+	// 	examples = "itemStack.isNbtEqual(Material.GOLD_INGOT.asItemStack());"
+	// )
+	// private boolean isNbtEqual(Arguments arguments) {
+	// 	ItemStack itemStack = arguments.nextPrimitive(this).stack;
+	// 	ItemStack otherItemStack = arguments.nextPrimitive(this).stack;
+	// 	return ItemStack.canCombine(itemStack, otherItemStack);
+	// }
+	//
+	// @FunctionDoc(
+	// 	name = "getNbt",
+	// 	desc = "This gets the NBT data of the ItemStack as a Map",
+	// 	returns = @ReturnDoc(type = MapDef.class, desc = "the NBT data of the ItemStack"),
+	// 	examples = "itemStack.getNbt();"
+	// )
+	// private ArucasMap getNbt(Arguments arguments) {
+	// 	ItemStack itemStack = arguments.nextPrimitive(this).stack;
+	// 	NbtCompound nbtCompound = itemStack.getNbt();
+	// 	return ClientScriptUtils.nbtToMap(arguments.getInterpreter(), nbtCompound, 10);
+	// }
 
-	@FunctionDoc(
-		name = "getNbt",
-		desc = "This gets the NBT data of the ItemStack as a Map",
-		returns = @ReturnDoc(type = MapDef.class, desc = "the NBT data of the ItemStack"),
-		examples = "itemStack.getNbt();"
-	)
-	private ArucasMap getNbt(Arguments arguments) {
-		ItemStack itemStack = arguments.nextPrimitive(this).stack;
-		NbtCompound nbtCompound = itemStack.getNbt();
-		return ClientScriptUtils.nbtToMap(arguments.getInterpreter(), nbtCompound, 10);
-	}
-
-	@FunctionDoc(
-		name = "getNbtAsString",
-		desc = "This gets the NBT data of the ItemStack as a String",
-		returns = @ReturnDoc(type = StringDef.class, desc = "the NBT data of the ItemStack"),
-		examples = "itemStack.getNbtAsString();"
-	)
-	private String getNbtAsString(Arguments arguments) {
-		ItemStack itemStack = arguments.nextPrimitive(this).stack;
-		NbtCompound nbtCompound = itemStack.getNbt();
-		return nbtCompound == null ? "" : itemStack.getNbt().toString();
-	}
+	// @FunctionDoc(
+	// 	name = "getNbtAsString",
+	// 	desc = "This gets the NBT data of the ItemStack as a String",
+	// 	returns = @ReturnDoc(type = StringDef.class, desc = "the NBT data of the ItemStack"),
+	// 	examples = "itemStack.getNbtAsString();"
+	// )
+	// private String getNbtAsString(Arguments arguments) {
+	// 	ItemStack itemStack = arguments.nextPrimitive(this).stack;
+	// 	NbtCompound nbtCompound = itemStack.getNbt();
+	// 	return nbtCompound == null ? "" : itemStack.getNbt().toString();
+	// }
 
 	@FunctionDoc(
 		name = "getTranslatedName",
@@ -367,25 +367,25 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		return itemStack.getMiningSpeedMultiplier(blockState.state);
 	}
 
-	@FunctionDoc(
-		name = "setCustomName",
-		desc = "This sets the custom name of the ItemStack",
-		params = {@ParameterDoc(type = TextDef.class, name = "customName", desc = "the custom name of the ItemStack, this can be text or string")},
-		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new custom name"),
-		examples = "itemStack.setCustomName('My Pickaxe');"
-	)
-	private ClassInstance setCustomName(Arguments arguments) {
-		ClassInstance instance = arguments.next(this);
-		ItemStack itemStack = instance.asPrimitive(this).stack;
-		Text text;
-		if (arguments.isNext(TextDef.class)) {
-			text = arguments.nextPrimitive(TextDef.class);
-		} else {
-			text = Text.literal(arguments.next().toString(arguments.getInterpreter()));
-		}
-		itemStack.setCustomName(text);
-		return instance;
-	}
+	// @FunctionDoc(
+	// 	name = "setCustomName",
+	// 	desc = "This sets the custom name of the ItemStack",
+	// 	params = {@ParameterDoc(type = TextDef.class, name = "customName", desc = "the custom name of the ItemStack, this can be text or string")},
+	// 	returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new custom name"),
+	// 	examples = "itemStack.setCustomName('My Pickaxe');"
+	// )
+	// private ClassInstance setCustomName(Arguments arguments) {
+	// 	ClassInstance instance = arguments.next(this);
+	// 	ItemStack itemStack = instance.asPrimitive(this).stack;
+	// 	Text text;
+	// 	if (arguments.isNext(TextDef.class)) {
+	// 		text = arguments.nextPrimitive(TextDef.class);
+	// 	} else {
+	// 		text = Text.literal(arguments.next().toString(arguments.getInterpreter()));
+	// 	}
+	// 	itemStack.setCustomName(text);
+	// 	return instance;
+	// }
 
 	@FunctionDoc(
 		name = "setStackSize",
@@ -432,66 +432,66 @@ public class ItemStackDef extends CreatableDefinition<ScriptItemStack> {
 		return instance;
 	}
 
-	@FunctionDoc(
-		name = "setItemLore",
-		desc = "This sets the lore of the ItemStack",
-		params = {@ParameterDoc(type = ListDef.class, name = "lore", desc = "the lore of the ItemStack as a list of Text")},
-		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new lore"),
-		examples = """
-			itemStack = Material.DIAMOND_PICKAXE.asItemStack();
-			itemStack.setItemLore([
-				Text.of('This is a pickaxe'),
-				Text.of('It is made of diamond')
-			]);
-			"""
-	)
-	private ClassInstance setLore(Arguments arguments) {
-		ClassInstance instance = arguments.next(this);
-		ArucasList list = arguments.nextPrimitive(ListDef.class);
-		List<NbtElement> textList = new ArrayList<>();
-		for (ClassInstance value : list) {
-			Text text = value.getPrimitive(TextDef.class);
-			if (text == null) {
-				throw new RuntimeError("List must contain only Text");
-			}
-			textList.add(NbtString.of(Text.Serialization.toJsonString(text)));
-		}
-		ItemStack itemStack = instance.asPrimitive(this).stack;
-		itemStack.getOrCreateSubNbt("display").put("Lore", NbtListMixin.createNbtList(textList, (byte) 8));
-		return instance;
-	}
+	// @FunctionDoc(
+	// 	name = "setItemLore",
+	// 	desc = "This sets the lore of the ItemStack",
+	// 	params = {@ParameterDoc(type = ListDef.class, name = "lore", desc = "the lore of the ItemStack as a list of Text")},
+	// 	returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new lore"),
+	// 	examples = """
+	// 		itemStack = Material.DIAMOND_PICKAXE.asItemStack();
+	// 		itemStack.setItemLore([
+	// 			Text.of('This is a pickaxe'),
+	// 			Text.of('It is made of diamond')
+	// 		]);
+	// 		"""
+	// )
+	// private ClassInstance setLore(Arguments arguments) {
+	// 	ClassInstance instance = arguments.next(this);
+	// 	ArucasList list = arguments.nextPrimitive(ListDef.class);
+	// 	List<NbtElement> textList = new ArrayList<>();
+	// 	for (ClassInstance value : list) {
+	// 		Text text = value.getPrimitive(TextDef.class);
+	// 		if (text == null) {
+	// 			throw new RuntimeError("List must contain only Text");
+	// 		}
+	// 		textList.add(NbtString.of(Text.Serialization.toJsonString(text)));
+	// 	}
+	// 	ItemStack itemStack = instance.asPrimitive(this).stack;
+	// 	itemStack.getOrCreateSubNbt("display").put("Lore", NbtListMixin.createNbtList(textList, (byte) 8));
+	// 	return instance;
+	// }
 
-	@FunctionDoc(
-		name = "setNbtFromString",
-		desc = "This sets the NBT data of the ItemStack from an NBT string",
-		params = {@ParameterDoc(type = StringDef.class, name = "nbtString", desc = "the NBT data of the ItemStack as a string")},
-		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
-		examples = "itemStack.setNbtFromString(\"{\\\"Lore\\\": []}\");"
-	)
-	private ClassInstance setNbtFromString(Arguments arguments) {
-		ClassInstance instance = arguments.next(this);
-		ItemStack itemStack = instance.asPrimitive(this).stack;
-		String nbtString = arguments.nextPrimitive(StringDef.class);
-		NbtElement nbt = ClientScriptUtils.stringToNbt(nbtString);
-		if (!(nbt instanceof NbtCompound compound)) {
-			throw new RuntimeError("'%s' cannot be converted into an nbt compound".formatted(nbtString));
-		}
-		itemStack.setNbt(compound);
-		return instance;
-	}
-
-	@FunctionDoc(
-		name = "setNbt",
-		desc = "This sets the NBT data of the ItemStack",
-		params = {@ParameterDoc(type = MapDef.class, name = "nbtMap", desc = "the NBT data of the ItemStack as a map")},
-		returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
-		examples = "itemStack.setNbt({'Lore': []});"
-	)
-	private ClassInstance setNbt(Arguments arguments) {
-		ClassInstance instance = arguments.next(this);
-		ItemStack itemStack = instance.asPrimitive(this).stack;
-		ArucasMap map = arguments.nextPrimitive(MapDef.class);
-		itemStack.setNbt(ClientScriptUtils.mapToNbt(arguments.getInterpreter(), map, 10));
-		return instance;
-	}
+	// @FunctionDoc(
+	// 	name = "setNbtFromString",
+	// 	desc = "This sets the NBT data of the ItemStack from an NBT string",
+	// 	params = {@ParameterDoc(type = StringDef.class, name = "nbtString", desc = "the NBT data of the ItemStack as a string")},
+	// 	returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
+	// 	examples = "itemStack.setNbtFromString(\"{\\\"Lore\\\": []}\");"
+	// )
+	// private ClassInstance setNbtFromString(Arguments arguments) {
+	// 	ClassInstance instance = arguments.next(this);
+	// 	ItemStack itemStack = instance.asPrimitive(this).stack;
+	// 	String nbtString = arguments.nextPrimitive(StringDef.class);
+	// 	NbtElement nbt = ClientScriptUtils.stringToNbt(nbtString);
+	// 	if (!(nbt instanceof NbtCompound compound)) {
+	// 		throw new RuntimeError("'%s' cannot be converted into an nbt compound".formatted(nbtString));
+	// 	}
+	// 	itemStack.setNbt(compound);
+	// 	return instance;
+	// }
+	//
+	// @FunctionDoc(
+	// 	name = "setNbt",
+	// 	desc = "This sets the NBT data of the ItemStack",
+	// 	params = {@ParameterDoc(type = MapDef.class, name = "nbtMap", desc = "the NBT data of the ItemStack as a map")},
+	// 	returns = @ReturnDoc(type = ItemStackDef.class, desc = "the ItemStack with the new NBT data"),
+	// 	examples = "itemStack.setNbt({'Lore': []});"
+	// )
+	// private ClassInstance setNbt(Arguments arguments) {
+	// 	ClassInstance instance = arguments.next(this);
+	// 	ItemStack itemStack = instance.asPrimitive(this).stack;
+	// 	ArucasMap map = arguments.nextPrimitive(MapDef.class);
+	// 	itemStack.setNbt(ClientScriptUtils.mapToNbt(arguments.getInterpreter(), map, 10));
+	// 	return instance;
+	// }
 }

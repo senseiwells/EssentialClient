@@ -265,21 +265,21 @@ public class ClientScriptUtils {
 		}
 	}
 
-	public static ItemStack stringToItemStack(String string) {
-		try {
-			RegistryWrapper<Item> wrapper = CommandRegister.getRegistryAccess().createWrapper(RegistryKeys.ITEM);
-			ItemStringReader.ItemResult reader = ItemStringReader.item(wrapper, new StringReader(string));
-			ItemStack itemStack = new ItemStack(reader.item());
-			itemStack.setNbt(reader.nbt());
-			return itemStack;
-		} catch (CommandSyntaxException cse) {
-			NbtElement element = stringToNbt(string);
-			if (element instanceof NbtCompound nbtCompound) {
-				return ItemStack.fromNbt(nbtCompound);
-			}
-			throw new RuntimeError("'%s' couldn't be parsed".formatted(string));
-		}
-	}
+	// public static ItemStack stringToItemStack(String string) {
+	// 	try {
+	// 		RegistryWrapper<Item> wrapper = CommandRegister.getRegistryAccess().createWrapper(RegistryKeys.ITEM);
+	// 		ItemStringReader.ItemResult reader = ItemStringReader.item(wrapper, new StringReader(string));
+	// 		ItemStack itemStack = new ItemStack(reader.item());
+	// 		itemStack.setNbt(reader.nbt());
+	// 		return itemStack;
+	// 	} catch (CommandSyntaxException cse) {
+	// 		NbtElement element = stringToNbt(string);
+	// 		if (element instanceof NbtCompound nbtCompound) {
+	// 			return ItemStack.fromNbt(nbtCompound);
+	// 		}
+	// 		throw new RuntimeError("'%s' couldn't be parsed".formatted(string));
+	// 	}
+	// }
 
 	public static Text instanceToText(ClassInstance instance, Interpreter interpreter) {
 		Text text = instance.getPrimitive(TextDef.class);
@@ -520,18 +520,18 @@ public class ClientScriptUtils {
 			case "entities" -> ClientEntityArgumentType.entities();
 			case "blockpos" -> BlockPosArgumentType.blockPos();
 			case "pos" -> Vec3ArgumentType.vec3();
-			case "effect" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.STATUS_EFFECT);
+			case "effect" -> RegistryEntryReferenceArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.STATUS_EFFECT);
 			case "particle" -> ParticleEffectArgumentType.particleEffect(CommandRegister.getRegistryAccess());
-			case "enchantmentid" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENCHANTMENT);
+			case "enchantmentid" -> RegistryEntryReferenceArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENCHANTMENT);
 			case "entityid" -> {
 				extraSuggestion = SuggestionProviders.SUMMONABLE_ENTITIES;
-				yield RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENTITY_TYPE);
+				yield RegistryEntryReferenceArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.ENTITY_TYPE);
 			}
 			case "recipeid" -> {
 				extraSuggestion = SuggestionProviders.ALL_RECIPES;
 				yield IdentifierArgumentType.identifier();
 			}
-			case "biomeid" -> RegistryEntryArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.BIOME);
+			case "biomeid" -> RegistryEntryReferenceArgumentType.registryEntry(CommandRegister.getRegistryAccess(), RegistryKeys.BIOME);
 			case "playername" -> {
 				extraSuggestion = (c, b) -> CommandHelper.suggestOnlinePlayers(b);
 				yield StringArgumentType.word();

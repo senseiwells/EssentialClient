@@ -27,7 +27,13 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 		super(entityType, world);
 	}
 
-	@Inject(method = "getFovMultiplier", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D"))
+	@Inject(
+		method = "getFovMultiplier",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/registry/entry/RegistryEntry;)D"
+		)
+	)
 	public void injectedBefore(CallbackInfoReturnable<Float> cir) {
 		EntityAttributeInstance genericSpeedAttribute = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
 		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(this.SOUL_SPEED_BOOST_ID) != null) {
@@ -36,12 +42,19 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 				this.SOUL_SPEED_BOOST_ID,
 				"Soul speed boost",
 				0.01 * ClientRules.SOUL_SPEED_FOV_MULTIPLIER.getValue() * (0.03F * (1.0F + EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, this) * 0.35F)),
-				EntityAttributeModifier.Operation.ADDITION
+				EntityAttributeModifier.Operation.ADD_VALUE
 			));
 		}
 	}
 
-	@Inject(method = "getFovMultiplier", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D", shift = At.Shift.AFTER))
+	@Inject(
+		method = "getFovMultiplier",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/registry/entry/RegistryEntry;)D",
+			shift = At.Shift.AFTER
+		)
+	)
 	private void injectedAfter(CallbackInfoReturnable<Float> cir) {
 		EntityAttributeInstance genericSpeedAttribute = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
 		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(this.SOUL_SPEED_BOOST_ID) != null) {
@@ -50,7 +63,7 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 				this.SOUL_SPEED_BOOST_ID,
 				"Soul speed boost",
 				(0.03F * (1.0F + (float) EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, this) * 0.35F)),
-				EntityAttributeModifier.Operation.ADDITION
+				EntityAttributeModifier.Operation.ADD_VALUE
 			));
 		}
 	}

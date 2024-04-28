@@ -128,7 +128,7 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		)
 	)
 	private boolean onChatMessage(MessageHandler instance, SignedMessage message, GameProfile sender, MessageType.Parameters params) {
-		MessageType messageType = params.type();
+		MessageType messageType = params.type().value();
 		Identifier typeId = this.combinedDynamicRegistries.get(RegistryKeys.MESSAGE_TYPE).getId(messageType);
 		String content = message.getContent().getString();
 		String type = typeId == null ? "unknown" : typeId.getPath();
@@ -193,10 +193,10 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
 		DeathMessageS2CPacket packet,
 		CallbackInfo ci
 	) {
-		Entity entity = this.world.getEntityById(packet.getEntityId());
+		Entity entity = this.world.getEntityById(packet.playerId());
 		if (entity == this.client.player) {
 			Entity killer = null;
-			MinecraftScriptEvents.ON_DEATH.run(killer, packet.getMessage());
+			MinecraftScriptEvents.ON_DEATH.run(killer, packet.message());
 		}
 	}
 

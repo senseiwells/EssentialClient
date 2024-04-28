@@ -23,6 +23,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnLocation;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffectUtil;
@@ -257,13 +258,13 @@ public class EssentialUtils {
 		return new BlockPos(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z));
 	}
 
-	public static <T extends Entity> boolean canSpawn(WorldView world, BlockPos pos, EntityType<T> entityType) {
-		SpawnRestriction.Location location = SpawnRestriction.getLocation(entityType);
-		if (!SpawnHelper.canSpawn(location, world, pos, entityType)) {
-			return false;
-		}
-		return world.isSpaceEmpty(entityType.createSimpleBoundingBox((double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D));
-	}
+	// public static <T extends Entity> boolean canSpawn(WorldView world, BlockPos pos, EntityType<T> entityType) {
+	// 	SpawnLocation location = SpawnRestriction.getLocation(entityType);
+	// 	if (!SpawnHelper.canSpawn(location, world, pos, entityType)) {
+	// 		return false;
+	// 	}
+	// 	return world.isSpaceEmpty(entityType.createSimpleBoundingBox((double) pos.getX() + 0.5D, pos.getY(), (double) pos.getZ() + 0.5D));
+	// }
 
 	public static int getMaxChatLength(int fallback) {
 		if (CarpetClient.INSTANCE.isServerCarpet()) {

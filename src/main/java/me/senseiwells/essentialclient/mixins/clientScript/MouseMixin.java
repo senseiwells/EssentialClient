@@ -23,11 +23,17 @@ public class MouseMixin {
 		at = @At(
 			value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getOverlay()Lnet/minecraft/client/gui/screen/Overlay;"
 		),
-		cancellable = true,
-		locals = LocalCapture.CAPTURE_FAILHARD
+		cancellable = true
 	)
-	private void mouseScroll(long window, double horizontal, double vertical, CallbackInfo ci, @Local(ordinal = 0) double d) {
-		if (window == this.client.getWindow().getHandle() && MinecraftScriptEvents.ON_MOUSE_SCROLL.run(d)) {
+	private void mouseScroll(
+		long window,
+		double horizontal,
+		double vertical,
+		CallbackInfo ci,
+		@Local(name = "f") double d,
+		@Local(name = "e") double e
+	) {
+		if (window == this.client.getWindow().getHandle() && MinecraftScriptEvents.ON_MOUSE_SCROLL.run(d, e)) {
 			ci.cancel();
 		}
 	}

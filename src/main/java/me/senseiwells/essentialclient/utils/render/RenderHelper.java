@@ -147,73 +147,72 @@ public class RenderHelper {
 
 		MatrixStack.Entry entry = matrices.peek();
 		Matrix4f model = entry.getPositionMatrix();
-		Matrix3f normal = entry.getNormalMatrix();
 
 		if (outline) {
 			// idk man
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(normal, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(normal, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, -1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(normal, -1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(normal, 0.0F, -1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(normal, 0.0F, -1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(normal, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(normal, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, -1.0F).next();
-			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, -1.0F).next();
-			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(normal, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(normal, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 0.0F, 0.0F, 1.0F).next();
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
+			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
+			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, -1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, -1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
+			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
+			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, -1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, -1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, -1.0F).next();
+			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, -1.0F).next();
+			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
+			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
+			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
 			return;
 		}
 
 		// West Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
 
 		// East Face
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
 
 
 		// North Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
 
 		// South Face
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
 
 		// Down Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
 
 		// Up Face
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
 	}
 
 	private static void renderSpheres(MatrixStack matrices) {
@@ -278,7 +277,6 @@ public class RenderHelper {
 	private static void addSphereVertices(BufferBuilder builder, MatrixStack matrices, float radius, float steps, float red, float green, float blue, float alpha, boolean outline) {
 		MatrixStack.Entry entry = matrices.peek();
 		Matrix4f model = entry.getPositionMatrix();
-		Matrix3f normal = entry.getNormalMatrix();
 
 		float step = (float) (2 * Math.PI / steps);
 		int halfSteps = (int) (Math.PI / step) + 1;
@@ -294,7 +292,7 @@ public class RenderHelper {
 					float y = radius * MathHelper.cos(phi);
 					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
-					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.x, normalVector.y, normalVector.z).next();
+					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, normalVector.x, normalVector.y, normalVector.z).next();
 				}
 			}
 			for (int j = 0; j <= totalSteps; j++) {
@@ -306,7 +304,7 @@ public class RenderHelper {
 					float y = radius * MathHelper.cos(phi);
 					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
-					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, normalVector.x, normalVector.y, normalVector.z).next();
+					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, normalVector.x, normalVector.y, normalVector.z).next();
 				}
 			}
 			return;
@@ -327,10 +325,10 @@ public class RenderHelper {
 				float y = radius * MathHelper.cos(phi);
 				float xp = radius * MathHelper.sin(phi) * MathHelper.cos(thetaPrime);
 				float zp = radius * MathHelper.sin(phi) * MathHelper.sin(thetaPrime);
-				builder.vertex(model, xb, yp, zb).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-				builder.vertex(model, xbp, yp, zbp).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-				builder.vertex(model, xp, y, zp).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
-				builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(normal, 0, 0, 0).next();
+				builder.vertex(model, xb, yp, zb).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+				builder.vertex(model, xbp, yp, zbp).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+				builder.vertex(model, xp, y, zp).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+				builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
 				xb = x;
 				zb = z;
 				xbp = xp;
@@ -398,9 +396,8 @@ public class RenderHelper {
 
 		MatrixStack.Entry entry = matrices.peek();
 		Matrix4f model = entry.getPositionMatrix();
-		Matrix3f normal = entry.getNormalMatrix();
-		builder.vertex(model, pos1.x, pos1.y, pos1.z).color(red, green, blue, alpha).normal(normal, normalVec.x, normalVec.y, normalVec.z).next();
-		builder.vertex(model, pos2.x, pos2.y, pos2.z).color(red, green, blue, alpha).normal(normal, normalVec.x, normalVec.y, normalVec.z).next();
+		builder.vertex(model, pos1.x, pos1.y, pos1.z).color(red, green, blue, alpha).normal(entry, normalVec.x, normalVec.y, normalVec.z).next();
+		builder.vertex(model, pos2.x, pos2.y, pos2.z).color(red, green, blue, alpha).normal(entry, normalVec.x, normalVec.y, normalVec.z).next();
 	}
 
 	public static void renderBlocks(MatrixStack matrices) {

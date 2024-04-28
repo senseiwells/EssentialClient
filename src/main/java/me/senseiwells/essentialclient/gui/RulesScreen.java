@@ -104,11 +104,6 @@ public abstract class RulesScreen extends ChildScreen {
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-	}
-
-	@Override
 	public void close() {
 		if (this.client != null) {
 			this.widget.updateAllEntriesOnClose();

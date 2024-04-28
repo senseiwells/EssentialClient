@@ -56,7 +56,7 @@ public class ListListWidget extends ElementListWidget<ListListWidget.Entry> {
 	}
 
 	@Override
-	protected int getScrollbarPositionX() {
+	protected int getScrollbarX() {
 		return this.width / 2 + this.getRowWidth() / 2 + 4;
 	}
 

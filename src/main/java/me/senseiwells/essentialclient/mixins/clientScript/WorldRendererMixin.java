@@ -1,5 +1,6 @@
 package me.senseiwells.essentialclient.mixins.clientScript;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import me.senseiwells.essentialclient.utils.render.RenderHelper;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
@@ -15,7 +16,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/BackgroundRenderer;clearFog()V", shift = At.Shift.BEFORE))
-	private void postRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
+	private void postRender(
+		float tickDelta,
+		long limitTime,
+		boolean renderBlockOutline,
+		Camera camera,
+		GameRenderer gameRenderer,
+		LightmapTextureManager lightmapTextureManager,
+		Matrix4f matrix4f,
+		Matrix4f matrix4f2,
+		CallbackInfo ci,
+		@Local MatrixStack matrices
+	) {
 		RenderHelper.renderAllShapes(matrices);
 		// Rendering blocks needs to come after rendering
 		// shapes because it clears the depth buffer

@@ -13,8 +13,7 @@ public interface Colourable {
 		return this.getColour() >= 0;
 	}
 
-	static Colourable getHighestPriority(Colourable colourable, Colourable... colourables) {
-		Colourable highest = colourable;
+	static Colourable getHighestPriority(Colourable highest, Colourable... colourables) {
 		for (Colourable other : colourables) {
 			if (other != null && other.getPriority() > highest.getPriority()) {
 				highest = other;

@@ -30,9 +30,4 @@ public class DownloadClientScriptScreen extends ChildScreen.Typed<ClientScriptSc
 		this.widget.render(context, mouseX, mouseY, delta);
 		context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
 	}
-
-	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-	}
 }

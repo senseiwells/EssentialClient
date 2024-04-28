@@ -1,62 +1,43 @@
 package me.senseiwells.essentialclient.utils.network;
 
-import me.senseiwells.essentialclient.EssentialClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.packet.CustomPayload;
 
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.DATA;
-import static me.senseiwells.essentialclient.utils.network.NetworkUtils.HELLO;
+import java.util.function.Supplier;
 
 public abstract class NetworkHandler {
-	private final Identifier channel;
 	private boolean available;
 	private ClientPlayNetworkHandler networkHandler;
 
-	public NetworkHandler(Identifier channel) {
-		this.channel = channel;
-		ClientPlayNetworking.registerGlobalReceiver(
-			channel,
-			(c, handler, buf, r) -> c.execute(() -> this.handlePacket(buf, handler))
-		);
-	}
+	public NetworkHandler() {
 
-	public abstract int getVersion();
-
-	public final Identifier getNetworkChannel() {
-		return this.channel;
-	}
-
-	public final void handlePacket(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
-		if (packetByteBuf != null) {
-			int varInt = packetByteBuf.readVarInt();
-			switch (varInt) {
-				case HELLO -> this.onHello(packetByteBuf, networkHandler);
-				case DATA -> this.processData(packetByteBuf, networkHandler);
-				default -> this.customData(varInt, packetByteBuf, networkHandler);
-			}
-		}
 	}
 
 	public final ClientPlayNetworkHandler getNetworkHandler() {
 		return this.networkHandler;
 	}
 
+	public final void sendPayload(Supplier<CustomPayload> supplier) {
+		if (this.networkHandler != null) {
+			this.networkHandler.sendPacket(ClientPlayNetworking.createC2SPacket(supplier.get()));
+		}
+	}
+
 	public final boolean isAvailable() {
 		return this.available;
 	}
 
-	public final void onHello(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) {
-		if (packetByteBuf.readableBytes() == 0 || packetByteBuf.readVarInt() < this.getVersion()) {
+	public final void onHello(ClientPlayNetworkHandler handler, HelloPayload payload) {
+		if (payload.version < this.getVersion()) {
 			this.onHelloFail();
 			return;
 		}
 		this.onHelloSuccess();
 		this.available = true;
-		this.networkHandler = networkHandler;
-		this.respondHello();
+		this.networkHandler = handler;
+		this.sendPayload(() -> this.createHelloPayload("essential_client", this.getVersion()));
 	}
 
 	public final void onHelloSinglePlayer() {
@@ -64,34 +45,36 @@ public abstract class NetworkHandler {
 		this.available = true;
 	}
 
+	public void onDisconnect() {
+		this.available = false;
+	}
+
+	public abstract int getVersion();
+
+	public abstract void registerCustomPayloads();
+
+	protected abstract CustomPayload createHelloPayload(String brand, int version);
+
 	protected void onHelloSuccess() { }
 
 	protected void onHelloFail() { }
 
-	protected void sendDataPacket(PacketWriter writer) {
-		this.sendPacket(buf -> {
-			buf.writeVarInt(DATA);
-			writer.write(buf);
-		});
-	}
+	public static abstract class HelloPayload implements CustomPayload {
+		public final String brand;
+		public final int version;
 
-	protected void sendPacket(PacketWriter writer) {
-		if (this.networkHandler != null) {
-			PacketByteBuf buf = PacketByteBufs.create();
-			writer.write(buf);
-			this.networkHandler.sendPacket(ClientPlayNetworking.createC2SPacket(this.getNetworkChannel(), buf));
+		public HelloPayload(String brand, int version) {
+			this.brand = brand;
+			this.version = version;
 		}
-	}
 
-	private void respondHello() {
-		this.sendPacket(buf -> buf.writeVarInt(HELLO).writeString(EssentialClient.VERSION).writeVarInt(this.getVersion()));
-	}
+		public HelloPayload(PacketByteBuf buf) {
+			this(buf.readString(), buf.readInt());
+		}
 
-	protected abstract void processData(PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler);
-
-	protected void customData(int varInt, PacketByteBuf packetByteBuf, ClientPlayNetworkHandler networkHandler) { }
-
-	public void onDisconnect() {
-		this.available = false;
+		public void write(PacketByteBuf buf) {
+			buf.writeString(this.brand);
+			buf.writeInt(this.version);
+		}
 	}
 }

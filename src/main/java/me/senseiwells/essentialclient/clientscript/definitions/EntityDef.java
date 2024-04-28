@@ -133,8 +133,8 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 			MemberFunction.of("getNbt", this::getNbt),
 			MemberFunction.of("getTranslatedName", this::getTranslatedName),
 			MemberFunction.of("getHitbox", this::getHitbox),
-			MemberFunction.of("collidesWith", 2, this::collidesWithBlockAtPos),
-			MemberFunction.of("canSpawnAt", 1, this::canSpawnPos)
+			MemberFunction.of("collidesWith", 2, this::collidesWithBlockAtPos)
+			// MemberFunction.of("canSpawnAt", 1, this::canSpawnPos)
 		);
 	}
 
@@ -607,18 +607,18 @@ public class EntityDef extends PrimitiveDefinition<Entity> {
 		return entity.collidesWithStateAtPos(pos.getBlockPos(), block.state);
 	}
 
-	@FunctionDoc(
-		name = "canSpawnAt",
-		desc = "This checks whether the entity can spawn at given position with regard to light and hitbox",
-		params = {
-			@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position to check")
-		},
-		returns = @ReturnDoc(type = BooleanDef.class, desc = "whether entity type can spawn at given position"),
-		examples = "entity.canSpawnAt(new Pos(0,0,0));"
-	)
-	private boolean canSpawnPos(Arguments arguments) {
-		Entity entity = arguments.nextPrimitive(this);
-		ScriptPos pos = arguments.nextPrimitive(PosDef.class);
-		return EssentialUtils.canSpawn(EssentialUtils.getWorld(), pos.getBlockPos(), entity.getType());
-	}
+	// @FunctionDoc(
+	// 	name = "canSpawnAt",
+	// 	desc = "This checks whether the entity can spawn at given position with regard to light and hitbox",
+	// 	params = {
+	// 		@ParameterDoc(type = PosDef.class, name = "pos", desc = "the position to check")
+	// 	},
+	// 	returns = @ReturnDoc(type = BooleanDef.class, desc = "whether entity type can spawn at given position"),
+	// 	examples = "entity.canSpawnAt(new Pos(0,0,0));"
+	// )
+	// private boolean canSpawnPos(Arguments arguments) {
+	// 	Entity entity = arguments.nextPrimitive(this);
+	// 	ScriptPos pos = arguments.nextPrimitive(PosDef.class);
+	// 	return EssentialUtils.canSpawn(EssentialUtils.getWorld(), pos.getBlockPos(), entity.getType());
+	// }
 }

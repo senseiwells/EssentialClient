@@ -35,6 +35,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
+import net.minecraft.village.TradedItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public class InventoryUtils {
 		ScreenHandler containerPlayer = player.currentScreenHandler;
 		for (Slot slot : containerPlayer.slots) {
 			ItemStack stack = slot.getStack();
-			if (ItemStack.canCombine(stack, test)) {
+			if (ItemStack.areItemsAndComponentsEqual(stack, test)) {
 				interactionManager.clickSlot(containerPlayer.syncId, slot.id, 1, SlotActionType.THROW, player);
 			}
 		}
@@ -242,7 +243,7 @@ public class InventoryUtils {
 	}
 
 	public static boolean areStacksTotallyEqual(ItemStack stack1, ItemStack stack2) {
-		return !stack1.isEmpty() && ItemStack.canCombine(stack1, stack2);
+		return !stack1.isEmpty() && ItemStack.areItemsAndComponentsEqual(stack1, stack2);
 	}
 
 	private static int matchSlot(ScreenHandler container, Slot slotReference, ItemStack stackReference) {
@@ -323,7 +324,7 @@ public class InventoryUtils {
 
 	public static boolean areTradesEqual(TradeOffer trade, TradeOffer other) {
 		return areStacksTotallyEqual(trade.getOriginalFirstBuyItem(), other.getOriginalFirstBuyItem())
-			&& areStacksTotallyEqual(trade.getSecondBuyItem(), other.getSecondBuyItem())
+			&& areStacksTotallyEqual(trade.getSecondBuyItem().map(TradedItem::itemStack).orElse(ItemStack.EMPTY), other.getSecondBuyItem().map(TradedItem::itemStack).orElse(ItemStack.EMPTY))
 			&& areStacksTotallyEqual(trade.getSellItem(), other.getSellItem());
 	}
 
@@ -688,7 +689,7 @@ public class InventoryUtils {
 		if (index > tradeOffers.size() - 1) {
 			throwOutOfBounds();
 		}
-		return tradeOffers.get(index).getAdjustedFirstBuyItem().getCount();
+		return tradeOffers.get(index).getDisplayedFirstBuyItem().getCount();
 	}
 
 	public static boolean checkHasTrade(Item item) {

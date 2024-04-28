@@ -4,6 +4,7 @@ import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.misc.Scheduler;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
@@ -65,7 +66,7 @@ public class MinecraftClientMixin {
 	}
 
 	@Inject(method = "joinWorld", at = @At("TAIL"))
-	private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
+	private void onJoinWorld(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
 		if (world != null) {
 			MinecraftScriptEvents.ON_DIMENSION_CHANGE.run(world);
 		}

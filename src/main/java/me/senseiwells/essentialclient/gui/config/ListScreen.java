@@ -54,11 +54,6 @@ public class ListScreen extends ChildScreen.Typed<RulesScreen> {
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-	}
-
-	@Override
 	public void tick() {
 		this.widget.tick();
 	}

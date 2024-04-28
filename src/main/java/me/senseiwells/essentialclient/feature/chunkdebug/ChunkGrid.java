@@ -108,18 +108,18 @@ public class ChunkGrid {
 			bufferBuilder.vertex(thatX, thisY, 0).color(45, 52, 54, 200).next();
 		}
 
-		for (ChunkHandler.ChunkData chunkData : ChunkHandler.getChunks(this.getDimension())) {
-			if (chunkData.getChunkType() == ChunkType.UNLOADED && !ClientRules.CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS.getValue()) {
+		for (ChunkInfo info : EssentialClient.CHUNK_NET_HANDLER.getChunks(this.getDimension())) {
+			if (info.level() == ChunkLevel.UNLOADED && !ClientRules.CHUNK_DEBUG_SHOW_UNLOADED_CHUNKS.getValue()) {
 				continue;
 			}
-			int x = chunkData.getPosX() - (isMinimap ? this.minimapCornerPoint.x : this.cornerPoint.getX());
-			int z = chunkData.getPosZ() - (isMinimap ? this.minimapCornerPoint.y : this.cornerPoint.getY());
+			int x = info.getX() - (isMinimap ? this.minimapCornerPoint.x : this.cornerPoint.getX());
+			int z = info.getZ() - (isMinimap ? this.minimapCornerPoint.y : this.cornerPoint.getY());
 			if (x < 0 || x > this.columns || z < 0 || z > this.rows) {
 				continue;
 			}
 			int cellX = thisX + x * this.scale;
 			int cellY = thisY + z * this.scale;
-			this.drawBox(bufferBuilder, cellX, cellY, x, z, chunkData.getProminentColour());
+			this.drawBox(bufferBuilder, cellX, cellY, x, z, info.getColour());
 		}
 		tessellator.draw();
 
@@ -353,21 +353,19 @@ public class ChunkGrid {
 		DraggablePoint selectionPoint = this.getSelectionPoint();
 		if (selectionPoint != null) {
 			ChunkPos chunkPos = new ChunkPos(this.cornerPoint.getX() + selectionPoint.getX(), this.cornerPoint.getY() + selectionPoint.getY());
-			ChunkHandler.ChunkData filterData = new ChunkHandler.ChunkData(chunkPos.x, chunkPos.z, ChunkType.UNLOADED, ChunkStatus.EMPTY, TicketType.UNKNOWN);
-			Optional<ChunkHandler.ChunkData> chunkData = Arrays.stream(ChunkHandler.getChunks(this.getDimension()))
-				.filter(c -> c.equals(filterData)).findFirst();
+			Optional<ChunkInfo> chunkData = EssentialClient.CHUNK_NET_HANDLER.getChunk(this.getDimension(), chunkPos);
 			boolean isEmpty = chunkData.isEmpty();
 			MutableText selection = Texts.SELECTED_CHUNK.generate("X: " + chunkPos.x + ", Z: " + chunkPos.z);
 			selection.append(" || ");
-			selection.append(Texts.CHUNK_STATUS.generate((isEmpty ? ChunkType.UNLOADED : chunkData.get().getChunkType()).getName()));
+			selection.append(Texts.CHUNK_STATUS.generate((isEmpty ? ChunkLevel.UNLOADED : chunkData.get().level()).getName()));
 			if (!isEmpty) {
-				ChunkHandler.ChunkData data = chunkData.get();
-				if (data.hasTicketType()) {
+				ChunkInfo data = chunkData.get();
+				if (data.hasTicket()) {
 					selection.append(" || ");
-					selection.append(Texts.CHUNK_TICKET.generate(data.getTicketType().getName()));
+					selection.append(Texts.CHUNK_TICKET.generate(data.ticket().getName()));
 				}
 				selection.append(" || ");
-				selection.append(Texts.CHUNK_STAGE.generate(data.getChunkStatus().getName()));
+				selection.append(Texts.CHUNK_STAGE.generate(data.status().getName()));
 			}
 			this.selectionText = selection;
 		}

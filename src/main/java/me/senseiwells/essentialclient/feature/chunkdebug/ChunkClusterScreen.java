@@ -17,12 +17,12 @@ import net.minecraft.util.math.ChunkPos;
 import java.util.List;
 
 public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
-	private final ChunkCluster cluster;
+	private final ChunkClusters cluster;
 	private ChunkListWidget chunkWidget;
 
-	public ChunkClusterScreen(ChunkCluster cluster, ChunkDebugScreen parent) {
+	public ChunkClusterScreen(ChunkClusters clusters, ChunkDebugScreen parent) {
 		super(Texts.CHUNK_CLUSTER_SCREEN, parent);
-		this.cluster = cluster;
+		this.cluster = clusters;
 	}
 
 	@Override
@@ -42,11 +42,6 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 		RenderHelper.drawScaledText(context, this.title, this.width / 2, 20, 1.5F, true);
 	}
 
-	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-	}
-
 	private class ChunkListWidget extends ElementListWidget<Entry> {
 		public ChunkListWidget() {
 			super(ChunkClusterScreen.this.client, ChunkClusterScreen.this.width + 45, ChunkClusterScreen.this.height - 43 - 32, 43, 20);
@@ -57,7 +52,7 @@ public class ChunkClusterScreen extends ChildScreen.Typed<ChunkDebugScreen> {
 		}
 
 		@Override
-		protected int getScrollbarPositionX() {
+		protected int getScrollbarX() {
 			return this.width / 2 + this.getRowWidth() / 2 - 20;
 		}
 

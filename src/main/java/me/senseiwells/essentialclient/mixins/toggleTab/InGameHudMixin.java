@@ -1,7 +1,7 @@
 package me.senseiwells.essentialclient.mixins.toggleTab;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import me.senseiwells.essentialclient.rule.ClientRules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -27,28 +27,38 @@ public class InGameHudMixin {
 	@Shadow
 	@Final
 	private PlayerListHud playerListHud;
-	@Shadow
-	private int scaledWidth;
 	@Unique
 	private boolean tabVisible = false;
 
-	@ModifyExpressionValue(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"))
+	@ModifyExpressionValue(
+		method = "renderPlayerList",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"
+		)
+	)
 	private boolean isPressed(boolean original) {
 		return false;
 	}
 
-	@WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setVisible(Z)V", ordinal = 0))
+	@WrapWithCondition(
+		method = "renderPlayerList",
+		at = @At(
+			value = "INVOKE",
+			target = "Lnet/minecraft/client/gui/hud/PlayerListHud;setVisible(Z)V",
+			ordinal = 0
+		)
+	)
 	private boolean shouldSetVisible(PlayerListHud instance, boolean shouldBeVisible) {
 		return false;
 	}
 
 	@Inject(
-		method = "render",
+		method = "renderPlayerList",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/scoreboard/Scoreboard;getObjectiveForSlot(Lnet/minecraft/scoreboard/ScoreboardDisplaySlot;)Lnet/minecraft/scoreboard/ScoreboardObjective;",
-			shift = At.Shift.BEFORE,
-			ordinal = 2
+			shift = At.Shift.BEFORE
 		)
 	)
 	private void onRenderTab(
@@ -66,7 +76,7 @@ public class InGameHudMixin {
 
 		this.setPlayerListHudVisible(shouldRender);
 		if (this.tabVisible) {
-			this.playerListHud.render(context, this.scaledWidth, scoreboard, objective);
+			this.playerListHud.render(context, context.getScaledWindowWidth(), scoreboard, objective);
 		}
 	}
 

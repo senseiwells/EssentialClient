@@ -70,11 +70,6 @@ public class ControlsScreen extends ChildScreen {
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-		this.renderBackgroundTexture(context);
-	}
-
-	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (this.focusedKeyBinding != null) {
 			if (this.focusedKeyBinding.isSingleKey()) {

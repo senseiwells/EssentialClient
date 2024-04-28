@@ -81,7 +81,7 @@ public class LivingEntityDef extends PrimitiveDefinition<LivingEntity> {
 		ArucasList potionList = new ArucasList();
 		Interpreter interpreter = arguments.getInterpreter();
 		livingEntity.getStatusEffects().forEach(s -> {
-			Identifier effectId = Registries.STATUS_EFFECT.getId(s.getEffectType());
+			Identifier effectId = Registries.STATUS_EFFECT.getId(s.getEffectType().value());
 			potionList.add(effectId == null ? interpreter.getNull() : interpreter.convertValue(effectId.getPath()));
 		});
 		return potionList;

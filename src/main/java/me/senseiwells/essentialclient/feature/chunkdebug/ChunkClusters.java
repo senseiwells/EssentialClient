@@ -6,16 +6,16 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChunkCluster {
+public class ChunkClusters {
 	private final List<LongSet> groups;
 	private final LongSet chunks;
 
-	public ChunkCluster() {
+	public ChunkClusters() {
 		this.groups = new ArrayList<>();
 		this.chunks = new LongOpenHashSet();
 	}
 
-	public void addChunk(long position) {
+	public void add(long position) {
 		if (!this.chunks.add(position)) {
 			return;
 		}
@@ -63,7 +63,7 @@ public class ChunkCluster {
 		}
 	}
 
-	public void removeChunk(long position) {
+	public void remove(long position) {
 		if (!this.chunks.remove(position)) {
 			return;
 		}
