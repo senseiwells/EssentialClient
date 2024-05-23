@@ -30,8 +30,8 @@ public class MouseMixin {
 		double horizontal,
 		double vertical,
 		CallbackInfo ci,
-		@Local(name = "f") double d,
-		@Local(name = "e") double e
+		@Local(ordinal = 4) double d,
+		@Local(ordinal = 3) double e
 	) {
 		if (window == this.client.getWindow().getHandle() && MinecraftScriptEvents.ON_MOUSE_SCROLL.run(d, e)) {
 			ci.cancel();

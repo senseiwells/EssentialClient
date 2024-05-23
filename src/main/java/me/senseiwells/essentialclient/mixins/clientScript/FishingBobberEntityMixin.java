@@ -23,11 +23,19 @@ public abstract class FishingBobberEntityMixin extends Entity {
 	@Shadow
 	public abstract PlayerEntity getPlayerOwner();
 
-	@Inject(method = "onTrackedDataSet", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/FishingBobberEntity;setVelocity(DDD)V", shift = At.Shift.BEFORE))
-	private void onFishBite(TrackedData<?> data, CallbackInfo ci) {
-		PlayerEntity playerEntity = this.getPlayerOwner();
-		if (playerEntity != null && playerEntity == EssentialUtils.getPlayer()) {
-			MinecraftScriptEvents.ON_FISH_BITE.run(this);
-		}
-	}
+	// @Inject(
+	// 	method = "onTrackedDataSet",
+	// 	at = @At(
+	// 		value = "INVOKE",
+	// 		target = "Lnet/minecraft/entity/projectile/FishingBobberEntity;setVelocity(DDD)V",
+	// 		shift = At.Shift.BEFORE
+	// 	),
+	// 	remap = true
+	// )
+	// private void onFishBite(TrackedData<?> data, CallbackInfo ci) {
+	// 	PlayerEntity playerEntity = this.getPlayerOwner();
+	// 	if (playerEntity != null && playerEntity == EssentialUtils.getPlayer()) {
+	// 		MinecraftScriptEvents.ON_FISH_BITE.run(this);
+	// 	}
+	// }
 }

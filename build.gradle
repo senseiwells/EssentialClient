@@ -40,7 +40,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${loader_version}"
 
-	modImplementation "com.github.senseiwells:fabric-carpet:${carpet_version}"
+	modImplementation "com.github.gnembon:fabric-carpet:${carpet_version}"
 	modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 
 	// Required for Arucas
@@ -87,8 +87,11 @@ jar {
 publishMods {
 	file = remapJar.archiveFile
 	changelog = """
-	- Fixed a conflict with ViaFabricPlus
-	- Fixed some obfuscation issues with clientscript
+	- Updated to 1.20.5
+	
+	There are still a number of issues with this update, namely clientscript issues (to do with item nbt).
+	As well as networking issues. GameRule syncing between EssentialAddons and EssentialClient will work
+	however ChunkDebug is not fully supported yet and will be ported later.
 	"""
 	type = STABLE
 	modLoaders.add("fabric")
