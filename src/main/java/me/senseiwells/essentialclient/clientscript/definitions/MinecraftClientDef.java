@@ -687,7 +687,9 @@ public class MinecraftClientDef extends PrimitiveDefinition<MinecraftClient> {
 		Double volume = arguments.nextPrimitive(NumberDef.class);
 		Double pitch = arguments.nextPrimitive(NumberDef.class);
 		SoundEvent soundEvent = Registries.SOUND_EVENT.get(ClientScriptUtils.stringToIdentifier(soundId));
-		player.playSoundToPlayer(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
+		ClientScriptUtils.ensureMainThread("playSound", arguments.getInterpreter(), () -> {
+			player.playSoundToPlayer(soundEvent, SoundCategory.MASTER, volume.floatValue(), pitch.floatValue());
+		});
 		return null;
 	}
 
