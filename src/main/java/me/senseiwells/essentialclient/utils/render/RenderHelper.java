@@ -17,14 +17,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LightType;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
-import org.lwjgl.system.MemoryStack;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -76,42 +71,39 @@ public class RenderHelper {
 
 	private static void renderBoxes(MatrixStack matrices) {
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		Vec3d cameraPos = camera.getPos();
 
 		if (ScriptBox.hasRegular()) {
-			drawBoxOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachRegular);
-			drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachRegular);
+			drawBoxOutlines(tessellator, matrices, cameraPos, ScriptBox::forEachRegular);
+			drawBoxes(tessellator, matrices, cameraPos, ScriptBox::forEachRegular);
 		}
 
 		if (ScriptBox.hasIgnoreDepth()) {
 			RenderSystem.disableDepthTest();
-			drawBoxOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachIgnoreDepth);
-			drawBoxes(tessellator, bufferBuilder, matrices, cameraPos, ScriptBox::forEachIgnoreDepth);
+			drawBoxOutlines(tessellator, matrices, cameraPos, ScriptBox::forEachIgnoreDepth);
+			drawBoxes(tessellator, matrices, cameraPos, ScriptBox::forEachIgnoreDepth);
 			RenderSystem.enableDepthTest();
 		}
 	}
 
-	private static void drawBoxOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptBox>> forEach) {
+	private static void drawBoxOutlines(Tessellator tessellator, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptBox>> forEach) {
 		setLineShader();
-		startLines(bufferBuilder);
+		BufferBuilder bufferBuilder = startLines(tessellator);
 		forEach.accept(box -> {
 			if (box.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(box.getOutlineWidth());
 				addBoxToBuffer(bufferBuilder, matrices, camera, box, true);
 			}
 		});
-		tessellator.draw();
 	}
 
-	private static void drawBoxes(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptBox>> forEach) {
+	private static void drawBoxes(Tessellator tessellator, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptBox>> forEach) {
 		setPositionColourShader();
-		startQuads(bufferBuilder, VertexFormats.POSITION_COLOR);
+		BufferBuilder bufferBuilder = startQuads(tessellator, VertexFormats.POSITION_COLOR);
 		forEach.accept(box -> {
 			addBoxToBuffer(bufferBuilder, matrices, cameraPos, box, false);
 		});
-		tessellator.draw();
 	}
 
 	private static Vec3d getMinimumPos(Vec3d pos1, Vec3d pos2) {
@@ -150,109 +142,106 @@ public class RenderHelper {
 
 		if (outline) {
 			// idk man
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, -1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, -1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, -1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, -1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, -1.0F).next();
-			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, -1.0F).next();
-			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F).next();
-			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
-			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F).next();
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F);
+			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F);
+			bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F);
+			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F);
+			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, -1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, -1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F);
+			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F);
+			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, -1.0F, 0.0F);
+			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, -1.0F, 0.0F);
+			bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, -1.0F);
+			bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, -1.0F);
+			bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 1.0F, 0.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 1.0F, 0.0F);
+			bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F);
+			bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0.0F, 0.0F, 1.0F);
 			return;
 		}
 
 		// West Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
 
 		// East Face
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
 
 
 		// North Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
 
 		// South Face
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
 
 		// Down Face
-		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, c0, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, c0, c0, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
 
 		// Up Face
-		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+		bufferBuilder.vertex(model, c0, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, c0, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, y1, z1).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+		bufferBuilder.vertex(model, x1, y1, c0).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
 	}
 
 	private static void renderSpheres(MatrixStack matrices) {
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		Vec3d cameraPos = camera.getPos();
 
 		if (ScriptSphere.hasRegular()) {
-			drawSpheresOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachRegular);
-			drawSpheres(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachRegular);
+			drawSpheresOutlines(tessellator, matrices, cameraPos, ScriptSphere::forEachRegular);
+			drawSpheres(tessellator, matrices, cameraPos, ScriptSphere::forEachRegular);
 		}
 
 		if (ScriptSphere.hasIgnoreDepth()) {
 			RenderSystem.disableDepthTest();
-			drawSpheresOutlines(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachIgnoreDepth);
-			drawSpheres(tessellator, bufferBuilder, matrices, cameraPos, ScriptSphere::forEachIgnoreDepth);
+			drawSpheresOutlines(tessellator, matrices, cameraPos, ScriptSphere::forEachIgnoreDepth);
+			drawSpheres(tessellator, matrices, cameraPos, ScriptSphere::forEachIgnoreDepth);
 			RenderSystem.enableDepthTest();
 		}
 	}
 
-	private static void drawSpheresOutlines(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptSphere>> forEach) {
+	private static void drawSpheresOutlines(Tessellator tessellator, MatrixStack matrices, Vec3d camera, Consumer<Consumer<ScriptSphere>> forEach) {
 		setLineShader();
-		startLines(bufferBuilder);
+		BufferBuilder bufferBuilder = startLines(tessellator);
 		forEach.accept(sphere -> {
 			if (sphere.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(sphere.getOutlineWidth());
 				addSphereToBuffer(bufferBuilder, matrices, camera, sphere, true);
 			}
 		});
-		tessellator.draw();
 	}
 
-	private static void drawSpheres(Tessellator tessellator, BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptSphere>> forEach) {
+	private static void drawSpheres(Tessellator tessellator, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptSphere>> forEach) {
 		setPositionColourShader();
-		startQuads(bufferBuilder, VertexFormats.POSITION_COLOR);
+		BufferBuilder bufferBuilder = startQuads(tessellator, VertexFormats.POSITION_COLOR);
 		forEach.accept(sphere -> {
 			addSphereToBuffer(bufferBuilder, matrices, cameraPos, sphere, false);
 		});
-		tessellator.draw();
 	}
 
 	private static void addSphereToBuffer(BufferBuilder bufferBuilder, MatrixStack matrices, Vec3d cameraPos, ScriptSphere sphere, boolean outline) {
@@ -292,7 +281,7 @@ public class RenderHelper {
 					float y = radius * MathHelper.cos(phi);
 					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
-					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, normalVector.x, normalVector.y, normalVector.z).next();
+					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, normalVector.x, normalVector.y, normalVector.z);
 				}
 			}
 			for (int j = 0; j <= totalSteps; j++) {
@@ -304,7 +293,7 @@ public class RenderHelper {
 					float y = radius * MathHelper.cos(phi);
 					Vector3f normalVector = new Vector3f(x, y, z);
 					normalVector.normalize();
-					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, normalVector.x, normalVector.y, normalVector.z).next();
+					builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, normalVector.x, normalVector.y, normalVector.z);
 				}
 			}
 			return;
@@ -325,10 +314,10 @@ public class RenderHelper {
 				float y = radius * MathHelper.cos(phi);
 				float xp = radius * MathHelper.sin(phi) * MathHelper.cos(thetaPrime);
 				float zp = radius * MathHelper.sin(phi) * MathHelper.sin(thetaPrime);
-				builder.vertex(model, xb, yp, zb).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-				builder.vertex(model, xbp, yp, zbp).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-				builder.vertex(model, xp, y, zp).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
-				builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, 0, 0, 0).next();
+				builder.vertex(model, xb, yp, zb).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+				builder.vertex(model, xbp, yp, zbp).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+				builder.vertex(model, xp, y, zp).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
+				builder.vertex(model, x, y, z).color(red, green, blue, alpha).normal(entry, 0, 0, 0);
 				xb = x;
 				zb = z;
 				xbp = xp;
@@ -340,32 +329,30 @@ public class RenderHelper {
 
 	private static void renderLines(MatrixStack matrices) {
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		Vec3d cameraPos = camera.getPos();
 
 		if (ScriptLine.hasRegular()) {
 			RenderSystem.enableDepthTest();
-			drawLines(tessellator, bufferBuilder, matrices, cameraPos, ScriptLine::forEachRegular);
+			drawLines(tessellator, matrices, cameraPos, ScriptLine::forEachRegular);
 		}
 
 		if (ScriptLine.hasIgnoreDepth()) {
 			RenderSystem.disableDepthTest();
-			drawLines(tessellator, bufferBuilder, matrices, cameraPos, ScriptLine::forEachIgnoreDepth);
+			drawLines(tessellator, matrices, cameraPos, ScriptLine::forEachIgnoreDepth);
 			RenderSystem.enableDepthTest();
 		}
 	}
 
-	private static void drawLines(Tessellator tessellator, BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptLine>> forEach) {
+	private static void drawLines(Tessellator tessellator, MatrixStack matrices, Vec3d cameraPos, Consumer<Consumer<ScriptLine>> forEach) {
 		setLineShader();
-		startLines(builder);
+		BufferBuilder builder = startLines(tessellator);
 		forEach.accept(line -> {
 			if (line.getOutlineWidth() >= 1) {
 				RenderSystem.lineWidth(line.getOutlineWidth());
 				addLineToBuffer(builder, matrices, cameraPos, line);
 			}
 		});
-		tessellator.draw();
 	}
 
 	private static void addLineToBuffer(BufferBuilder builder, MatrixStack matrices, Vec3d cameraPos, ScriptLine line) {
@@ -396,8 +383,8 @@ public class RenderHelper {
 
 		MatrixStack.Entry entry = matrices.peek();
 		Matrix4f model = entry.getPositionMatrix();
-		builder.vertex(model, pos1.x, pos1.y, pos1.z).color(red, green, blue, alpha).normal(entry, normalVec.x, normalVec.y, normalVec.z).next();
-		builder.vertex(model, pos2.x, pos2.y, pos2.z).color(red, green, blue, alpha).normal(entry, normalVec.x, normalVec.y, normalVec.z).next();
+		builder.vertex(model, pos1.x, pos1.y, pos1.z).color(red, green, blue, alpha).normal(entry, normalVec.x, normalVec.y, normalVec.z);
+		builder.vertex(model, pos2.x, pos2.y, pos2.z).color(red, green, blue, alpha).normal(entry, normalVec.x, normalVec.y, normalVec.z);
 	}
 
 	public static void renderBlocks(MatrixStack matrices) {
@@ -515,68 +502,20 @@ public class RenderHelper {
 				g = MathHelper.clamp(green, 0.0f, 1.0F);
 				b = MathHelper.clamp(blue, 0.0f, 1.0F);
 			}
-			vertexConsumerQuad(vertexConsumer, entry, bakedQuad, r, g, b, a, light, overlay);
+			vertexConsumer.quad(entry, bakedQuad, r, g, b, a, light, overlay);
 		}
 	}
 
-	private static void vertexConsumerQuad(VertexConsumer consumer, MatrixStack.Entry matrixEntry, BakedQuad quad, float red, float green, float blue, float alpha, int light, int overlay) {
-		vertexConsumerQuad(consumer, matrixEntry, quad, new float[]{1.0f, 1.0f, 1.0f, 1.0f}, red, green, blue, alpha, new int[]{light, light, light, light}, overlay, false);
+	public static BufferBuilder startLines(Tessellator tessellator) {
+		return tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 	}
 
-	private static void vertexConsumerQuad(VertexConsumer consumer, MatrixStack.Entry matrixEntry, BakedQuad quad, float[] brightnesses, float red, float green, float blue, float alpha, int[] lights, int overlay, @SuppressWarnings("SameParameterValue") boolean useQuadColorData) {
-		float[] fs = {brightnesses[0], brightnesses[1], brightnesses[2], brightnesses[3]};
-		int[] is = {lights[0], lights[1], lights[2], lights[3]};
-		int[] js = quad.getVertexData();
-		Vec3i vec3i = quad.getFace().getVector();
-		Matrix4f matrix4f = matrixEntry.getPositionMatrix();
-		Vector3f vec3f = matrixEntry.getNormalMatrix().transform(new Vector3f(vec3i.getX(), vec3i.getY(), vec3i.getZ()));
-		int i = 8;
-		int j = js.length / i;
-		try (MemoryStack memoryStack = MemoryStack.stackPush()) {
-			ByteBuffer byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSizeByte());
-			IntBuffer intBuffer = byteBuffer.asIntBuffer();
-			for (int k = 0; k < j; ++k) {
-				float q;
-				float p;
-				float o;
-				float n;
-				float m;
-				intBuffer.clear();
-				intBuffer.put(js, k * 8, 8);
-				float f = byteBuffer.getFloat(0);
-				float g = byteBuffer.getFloat(4);
-				float h = byteBuffer.getFloat(8);
-				if (useQuadColorData) {
-					float l = (float) (byteBuffer.get(12) & 0xFF) / 255.0f;
-					m = (float) (byteBuffer.get(13) & 0xFF) / 255.0f;
-					n = (float) (byteBuffer.get(14) & 0xFF) / 255.0f;
-					o = l * fs[k] * red;
-					p = m * fs[k] * green;
-					q = n * fs[k] * blue;
-				} else {
-					o = fs[k] * red;
-					p = fs[k] * green;
-					q = fs[k] * blue;
-				}
-				int r = is[k];
-				m = byteBuffer.getFloat(16);
-				n = byteBuffer.getFloat(20);
-				Vector4f vector4f = matrix4f.transform(new Vector4f(f, g, h, 1.0F));
-				consumer.vertex(vector4f.x, vector4f.y, vector4f.z, o, p, q, alpha, m, n, overlay, r, vec3f.x, vec3f.y, vec3f.z);
-			}
-		}
+	public static BufferBuilder startDebugLines(Tessellator tessellator, VertexFormat format) {
+		return tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, format);
 	}
 
-	public static void startLines(BufferBuilder builder) {
-		builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
-	}
-
-	public static void startDebugLines(BufferBuilder builder, VertexFormat format) {
-		builder.begin(VertexFormat.DrawMode.DEBUG_LINES, format);
-	}
-
-	public static void startQuads(BufferBuilder builder, VertexFormat format) {
-		builder.begin(VertexFormat.DrawMode.QUADS, format);
+	public static BufferBuilder startQuads(Tessellator tessellator, VertexFormat format) {
+		return tessellator.begin(VertexFormat.DrawMode.QUADS, format);
 	}
 
 	public static void setLineShader() {

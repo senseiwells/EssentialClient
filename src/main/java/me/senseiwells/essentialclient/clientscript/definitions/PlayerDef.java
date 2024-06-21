@@ -41,6 +41,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.DisconnectionInfo;
 import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.SpectatorTeleportC2SPacket;
@@ -938,7 +939,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 	private Void logout(Arguments arguments) {
 		String reason = arguments.skip().nextPrimitive(StringDef.class);
 		ClientScriptUtils.ensureMainThread("logout", arguments.getInterpreter(), () -> {
-			EssentialUtils.getNetworkHandler().onDisconnected(Text.literal(reason));
+			EssentialUtils.getNetworkHandler().onDisconnected(new DisconnectionInfo(Text.literal(reason)));
 		});
 		return null;
 	}

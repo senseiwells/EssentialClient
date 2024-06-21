@@ -221,7 +221,7 @@ public class ClientScriptUtils {
 
 	public static Identifier stringToIdentifier(String string) {
 		try {
-			return new Identifier(string);
+			return Identifier.of(string);
 		} catch (InvalidIdentifierException e) {
 			throw new RuntimeError("Invalid id '%s'".formatted(string), e);
 		}

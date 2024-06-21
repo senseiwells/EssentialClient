@@ -53,6 +53,6 @@ public class CustomClientCape {
 	}
 
 	private static Identifier id(String name) {
-		return new Identifier("essentialclient", "textures/capes/" + name + ".png");
+		return Identifier.of("essentialclient", "textures/capes/" + name + ".png");
 	}
 }

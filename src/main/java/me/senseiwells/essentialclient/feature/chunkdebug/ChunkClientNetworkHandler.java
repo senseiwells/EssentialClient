@@ -10,6 +10,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 
@@ -128,7 +129,7 @@ public class ChunkClientNetworkHandler extends NetworkHandler {
 	}
 
 	private static class ChunkDebugHelloPayload extends HelloPayload {
-		public static final Id<ChunkDebugHelloPayload> ID = CustomPayload.id("chunk_debug:hello");
+		public static final Id<ChunkDebugHelloPayload> ID = new CustomPayload.Id<>(Identifier.of("chunk_debug:hello"));
 		public static final PacketCodec<PacketByteBuf, ChunkDebugHelloPayload> CODEC = PacketCodec.of(
 			ChunkDebugHelloPayload::write,
 			ChunkDebugHelloPayload::new
@@ -152,7 +153,7 @@ public class ChunkClientNetworkHandler extends NetworkHandler {
 		RegistryKey<World> world,
 		List<ChunkInfo> infos
 	) implements CustomPayload {
-		public static final Id<BatchedChunkInfoPayload> ID = CustomPayload.id("chunk_debug:batched_chunk_info");
+		public static final Id<BatchedChunkInfoPayload> ID = new CustomPayload.Id<>(Identifier.of("chunk_debug:batched_chunk_info"));
 		public static final PacketCodec<PacketByteBuf, BatchedChunkInfoPayload> CODEC = PacketCodec.of(
 			BatchedChunkInfoPayload::write,
 			BatchedChunkInfoPayload::read
@@ -207,7 +208,7 @@ public class ChunkClientNetworkHandler extends NetworkHandler {
 	}
 
 	private record StopChunkInfoPayload() implements CustomPayload {
-		public static final Id<StopChunkInfoPayload> ID = CustomPayload.id("chunk_debug:stop");
+		public static final Id<StopChunkInfoPayload> ID = new CustomPayload.Id<>(Identifier.of("chunk_debug:stop"));
 		public static final PacketCodec<PacketByteBuf, StopChunkInfoPayload> CODEC = PacketCodec.unit(new StopChunkInfoPayload());
 
 		@Override
@@ -217,7 +218,7 @@ public class ChunkClientNetworkHandler extends NetworkHandler {
 	}
 
 	private record SetChunkDimensionPayload(RegistryKey<World> dimension) implements CustomPayload {
-		public static final Id<SetChunkDimensionPayload> ID = CustomPayload.id("chunk_debug:set_dimension");
+		public static final Id<SetChunkDimensionPayload> ID = new CustomPayload.Id<>(Identifier.of("chunk_debug:set_dimension"));
 		public static final PacketCodec<PacketByteBuf, SetChunkDimensionPayload> CODEC = PacketCodec.of(
 			SetChunkDimensionPayload::write,
 			SetChunkDimensionPayload::new
@@ -238,7 +239,7 @@ public class ChunkClientNetworkHandler extends NetworkHandler {
 	}
 
 	private record ReloadChunkDebugPayload() implements CustomPayload {
-		public static final Id<ReloadChunkDebugPayload> ID = CustomPayload.id("chunk_debug:reload");
+		public static final Id<ReloadChunkDebugPayload> ID = new CustomPayload.Id<>(Identifier.of("chunk_debug:reload"));
 		public static final PacketCodec<PacketByteBuf, ReloadChunkDebugPayload> CODEC = PacketCodec.unit(new ReloadChunkDebugPayload());
 
 		@Override

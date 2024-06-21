@@ -9,6 +9,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -21,7 +23,7 @@ import java.util.UUID;
 @Mixin(AbstractClientPlayerEntity.class)
 public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 	@Unique
-	private final UUID SOUL_SPEED_BOOST_ID = UUID.fromString("87f46a96-686f-4796-b035-22e16ee9e038");
+	private static final Identifier SOUL_SPEED_BOOST_ID = Identifier.ofVanilla("enchantment.soul_speed");
 
 	protected AbstractClientPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
@@ -36,12 +38,13 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 	)
 	public void injectedBefore(CallbackInfoReturnable<Float> cir) {
 		EntityAttributeInstance genericSpeedAttribute = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(this.SOUL_SPEED_BOOST_ID) != null) {
-			genericSpeedAttribute.removeModifier(this.SOUL_SPEED_BOOST_ID);
+		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(SOUL_SPEED_BOOST_ID) != null) {
+			var enchants = this.getRegistryManager().getWrapperOrThrow(RegistryKeys.ENCHANTMENT);
+			var soulSpeed = enchants.getOrThrow(Enchantments.SOUL_SPEED);
+			genericSpeedAttribute.removeModifier(SOUL_SPEED_BOOST_ID);
 			genericSpeedAttribute.addTemporaryModifier(new EntityAttributeModifier(
-				this.SOUL_SPEED_BOOST_ID,
-				"Soul speed boost",
-				0.01 * ClientRules.SOUL_SPEED_FOV_MULTIPLIER.getValue() * (0.03F * (1.0F + EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, this) * 0.35F)),
+				SOUL_SPEED_BOOST_ID,
+				0.01 * ClientRules.SOUL_SPEED_FOV_MULTIPLIER.getValue() * (0.03F * (1.0F + EnchantmentHelper.getEquipmentLevel(soulSpeed, this) * 0.35F)),
 				EntityAttributeModifier.Operation.ADD_VALUE
 			));
 		}
@@ -57,12 +60,13 @@ public abstract class AbstractClientPlayerEntityMixin extends LivingEntity {
 	)
 	private void injectedAfter(CallbackInfoReturnable<Float> cir) {
 		EntityAttributeInstance genericSpeedAttribute = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(this.SOUL_SPEED_BOOST_ID) != null) {
-			genericSpeedAttribute.removeModifier(this.SOUL_SPEED_BOOST_ID);
+		if (genericSpeedAttribute != null && genericSpeedAttribute.getModifier(SOUL_SPEED_BOOST_ID) != null) {
+			var enchants = this.getRegistryManager().getWrapperOrThrow(RegistryKeys.ENCHANTMENT);
+			var soulSpeed = enchants.getOrThrow(Enchantments.SOUL_SPEED);
+			genericSpeedAttribute.removeModifier(SOUL_SPEED_BOOST_ID);
 			genericSpeedAttribute.addTemporaryModifier(new EntityAttributeModifier(
-				this.SOUL_SPEED_BOOST_ID,
-				"Soul speed boost",
-				(0.03F * (1.0F + (float) EnchantmentHelper.getEquipmentLevel(Enchantments.SOUL_SPEED, this) * 0.35F)),
+				SOUL_SPEED_BOOST_ID,
+				(0.03F * (1.0F + (float) EnchantmentHelper.getEquipmentLevel(soulSpeed, this) * 0.35F)),
 				EntityAttributeModifier.Operation.ADD_VALUE
 			));
 		}

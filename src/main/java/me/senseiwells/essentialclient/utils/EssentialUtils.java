@@ -19,12 +19,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnLocation;
-import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.entity.effect.StatusEffects;
@@ -40,11 +35,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.SpawnHelper;
-import net.minecraft.world.WorldView;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -56,8 +50,8 @@ public class EssentialUtils {
 	private static final ModContainer ESSENTIAL_CONTAINER;
 	private static final boolean DEV;
 
-	public static final URL WIKI_URL;
-	public static final URL SCRIPT_WIKI_URL;
+	public static final URI WIKI_URL;
+	public static final URI SCRIPT_WIKI_URL;
 
 	static {
 		ESSENTIAL_CLIENT_PATH = FabricLoader.getInstance().getConfigDir().resolve("EssentialClient");
@@ -70,10 +64,10 @@ public class EssentialUtils {
 		ESSENTIAL_CONTAINER = optional.get();
 
 		try {
-			WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki");
-			SCRIPT_WIKI_URL = new URL("https://github.com/senseiwells/EssentialClient/wiki/ClientScript");
+			WIKI_URL = new URI("https://github.com/senseiwells/EssentialClient/wiki");
+			SCRIPT_WIKI_URL = new URI("https://github.com/senseiwells/EssentialClient/wiki/ClientScript");
 			Files.createDirectories(ESSENTIAL_CLIENT_PATH);
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -223,10 +217,7 @@ public class EssentialUtils {
 	public static float getBlockBreakingSpeed(ItemStack itemStack, BlockState blockState, PlayerEntity player) {
 		float multiplier = itemStack.getMiningSpeedMultiplier(blockState);
 		if (multiplier > 1.0F) {
-			int efficiencyLevel = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, itemStack);
-			if (efficiencyLevel > 0) {
-				multiplier += efficiencyLevel * efficiencyLevel + 1.0F;
-			}
+			multiplier += (float) player.getAttributeValue(EntityAttributes.PLAYER_MINING_EFFICIENCY);
 		}
 
 		if (StatusEffectUtil.hasHaste(player)) {
@@ -241,8 +232,11 @@ public class EssentialUtils {
 				default -> 8.1e-4F;
 			};
 		}
-		if (player.isSubmergedIn(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
-			multiplier /= 5.0F;
+		if (player.isSubmergedIn(FluidTags.WATER)) {
+			var attribute = player.getAttributeInstance(EntityAttributes.PLAYER_SUBMERGED_MINING_SPEED);
+			if (attribute != null) {
+				multiplier *= (float) attribute.getValue();
+			}
 		}
 		if (!player.isOnGround()) {
 			multiplier /= 5.0F;

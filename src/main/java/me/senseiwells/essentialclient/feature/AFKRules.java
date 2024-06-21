@@ -6,6 +6,7 @@ import me.senseiwells.essentialclient.utils.render.Texts;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.network.DisconnectionInfo;
 import net.minecraft.util.math.Vec3d;
 
 public class AFKRules {
@@ -37,7 +38,7 @@ public class AFKRules {
 					wasAfk = true;
 				}
 				if (logout >= 200 && ticks == logout) {
-					playerEntity.networkHandler.onDisconnected(Texts.AFK);
+					playerEntity.networkHandler.onDisconnected(new DisconnectionInfo(Texts.AFK));
 				}
 				return;
 			}

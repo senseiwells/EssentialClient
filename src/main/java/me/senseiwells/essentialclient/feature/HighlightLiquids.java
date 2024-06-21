@@ -47,10 +47,10 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 	private static final int DEFAULT_WATER_COLOUR;
 
 	static {
-		LAVA_FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/lava_flow");
-		LAVA_STILL_SPRITE_ID = new Identifier("essentialclient", "block/lava_still");
-		WATER_FLOWING_SPRITE_ID = new Identifier("essentialclient", "block/water_flow");
-		WATER_STILL_SPRITE_ID = new Identifier("essentialclient", "block/water_still");
+		LAVA_FLOWING_SPRITE_ID = Identifier.of("essentialclient", "block/lava_flow");
+		LAVA_STILL_SPRITE_ID = Identifier.of("essentialclient", "block/lava_still");
+		WATER_FLOWING_SPRITE_ID = Identifier.of("essentialclient", "block/water_flow");
+		WATER_STILL_SPRITE_ID = Identifier.of("essentialclient", "block/water_still");
 
 		DEFAULT_WATER_COLOUR = 0x3F76E4;
 	}
@@ -115,6 +115,6 @@ public class HighlightLiquids implements SimpleSynchronousResourceReloadListener
 
 	@Override
 	public Identifier getFabricId() {
-		return new Identifier("lava_reload_listener");
+		return Identifier.of("lava_reload_listener");
 	}
 }

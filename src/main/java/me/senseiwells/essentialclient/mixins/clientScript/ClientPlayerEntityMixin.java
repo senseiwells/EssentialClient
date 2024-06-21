@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import me.senseiwells.essentialclient.clientscript.events.MinecraftScriptEvents;
 import me.senseiwells.essentialclient.utils.EssentialUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -39,9 +40,9 @@ public abstract class ClientPlayerEntityMixin extends PlayerEntity {
 	}
 
 	@Override
-	public ItemStack eatFood(World world, ItemStack stack) {
+	public ItemStack eatFood(World world, ItemStack stack, FoodComponent foodComponent) {
 		MinecraftScriptEvents.ON_EAT.run(stack);
-		return super.eatFood(world, stack);
+		return super.eatFood(world, stack, foodComponent);
 	}
 
 	@Override

@@ -338,7 +338,7 @@ public class InventoryUtils {
 	}
 
 	public static int getCraftingSlotLength(ScreenHandler handler) {
-		if (handler instanceof AbstractRecipeScreenHandler<?> recipeScreen) {
+		if (handler instanceof AbstractRecipeScreenHandler<?, ?> recipeScreen) {
 			return recipeScreen.getCraftingHeight() * recipeScreen.getCraftingWidth();
 		}
 		return 0;

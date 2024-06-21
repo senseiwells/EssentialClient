@@ -150,8 +150,8 @@ public class Texts {
 	public static final TextGenerator CURRENT_REGION = o -> translatable("essentialclient.region.currentRegion", o);
 	public static final TextGenerator DISTANT_REGION = o -> translatable("essentialclient.region.distantRegion", o);
 
-	public static final Identifier JETBRAINS_MONO = new Identifier("essentialclient", "jetbrainsmono");
-	public static final Identifier MINECRAFT_MONO = new Identifier("essentialclient", "monocraft");
+	public static final Identifier JETBRAINS_MONO = Identifier.of("essentialclient", "jetbrainsmono");
+	public static final Identifier MINECRAFT_MONO = Identifier.of("essentialclient", "monocraft");
 
 	public static String getTranslatableKey(Text text) {
 		if (text.getContent() instanceof TranslatableTextContent translatableText) {

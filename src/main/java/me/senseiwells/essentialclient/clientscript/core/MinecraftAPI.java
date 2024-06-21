@@ -30,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -152,6 +153,5 @@ public class MinecraftAPI {
 		builder.addConversion(ItemStackArgument.class, (s, i) -> EssentialUtils.throwAsUnchecked(() -> i.create(ItemStackDef.class, new ScriptItemStack(s.createStack(1, false)))));
 		builder.addConversion(BlockStateArgument.class, (b, i) -> i.create(BlockDef.class, new ScriptBlockState(b.getBlockState(), null)));
 		builder.addConversion(Identifier.class, (id, i) -> i.create(StringDef.class, id.toString()));
-		builder.addConversion(Enchantment.class, (e, i) -> i.convertValue(Registries.ENCHANTMENT.getId(e)));
 	}
 }

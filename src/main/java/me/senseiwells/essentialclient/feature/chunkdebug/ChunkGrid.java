@@ -83,7 +83,6 @@ public class ChunkGrid {
 		this.updateRowsAndColumns();
 
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableBlend();
@@ -91,21 +90,21 @@ public class ChunkGrid {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderHelper.setPositionColourShader();
 
-		RenderHelper.startQuads(bufferBuilder, VertexFormats.POSITION_COLOR);
+		BufferBuilder bufferBuilder = RenderHelper.startQuads(tessellator, VertexFormats.POSITION_COLOR);
 
 		if (isMinimap && ClientRules.CHUNK_DEBUG_MINIMAP_BACKGROUND.getValue()) {
 			int thatX = thisX + this.scale * (this.columns + 1);
 			int thatY = thisY + this.scale * (this.rows + 1);
 
-			bufferBuilder.vertex(thisX - 5, thisY - 5, 0).color(53, 59, 72, 200).next();
-			bufferBuilder.vertex(thisX - 5, thatY + 5, 0).color(53, 59, 72, 200).next();
-			bufferBuilder.vertex(thatX + 5, thatY + 5, 0).color(53, 59, 72, 200).next();
-			bufferBuilder.vertex(thatX + 5, thisY - 5, 0).color(53, 59, 72, 200).next();
+			bufferBuilder.vertex(thisX - 5, thisY - 5, 0).color(53, 59, 72, 200);
+			bufferBuilder.vertex(thisX - 5, thatY + 5, 0).color(53, 59, 72, 200);
+			bufferBuilder.vertex(thatX + 5, thatY + 5, 0).color(53, 59, 72, 200);
+			bufferBuilder.vertex(thatX + 5, thisY - 5, 0).color(53, 59, 72, 200);
 
-			bufferBuilder.vertex(thisX, thisY, 0).color(45, 52, 54, 200).next();
-			bufferBuilder.vertex(thisX, thatY, 0).color(45, 52, 54, 200).next();
-			bufferBuilder.vertex(thatX, thatY, 0).color(45, 52, 54, 200).next();
-			bufferBuilder.vertex(thatX, thisY, 0).color(45, 52, 54, 200).next();
+			bufferBuilder.vertex(thisX, thisY, 0).color(45, 52, 54, 200);
+			bufferBuilder.vertex(thisX, thatY, 0).color(45, 52, 54, 200);
+			bufferBuilder.vertex(thatX, thatY, 0).color(45, 52, 54, 200);
+			bufferBuilder.vertex(thatX, thisY, 0).color(45, 52, 54, 200);
 		}
 
 		for (ChunkInfo info : EssentialClient.CHUNK_NET_HANDLER.getChunks(this.getDimension())) {
@@ -121,7 +120,6 @@ public class ChunkGrid {
 			int cellY = thisY + z * this.scale;
 			this.drawBox(bufferBuilder, cellX, cellY, x, z, info.getColour());
 		}
-		tessellator.draw();
 
 		ClientPlayerEntity player = this.client.player;
 		if (player != null && this.isPlayerInDimension(player)) {
@@ -132,7 +130,7 @@ public class ChunkGrid {
 				int cellX = thisX + x * this.scale;
 				int cellY = thisY + z * this.scale;
 
-				this.drawCross(tessellator, bufferBuilder, cellX, cellY, thisX, thisY);
+				this.drawCross(tessellator, cellX, cellY, thisX, thisY);
 			}
 		}
 
@@ -144,7 +142,7 @@ public class ChunkGrid {
 				int minimapSelectionZ = this.cornerPoint.getY() + selectionPoint.getY() - this.minimapCornerPoint.y;
 				drawingPoint = new Point(minimapSelectionX, minimapSelectionZ);
 			}
-			this.drawSelectionBox(tessellator, bufferBuilder, drawingPoint, thisX, thisY);
+			this.drawSelectionBox(tessellator, drawingPoint, thisX, thisY);
 			this.updateSelectionInfo();
 		} else {
 			this.selectionText = null;
@@ -196,13 +194,13 @@ public class ChunkGrid {
 		int green = (colour & 0xff00) >> 8;
 		int blue = (colour & 0xff);
 
-		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
+		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255);
 	}
 
-	private void drawSelectionBox(Tessellator tessellator, BufferBuilder bufferBuilder, Point selectionPoint, int thisX, int thisY) {
+	private void drawSelectionBox(Tessellator tessellator, Point selectionPoint, int thisX, int thisY) {
 		int red = 0xF7;
 		int green = 0xF0;
 		int blue = 0x06;
@@ -218,19 +216,18 @@ public class ChunkGrid {
 			return;
 		}
 
-		RenderHelper.startDebugLines(bufferBuilder, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
-		tessellator.draw();
+		BufferBuilder bufferBuilder = RenderHelper.startDebugLines(tessellator, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255);
 	}
 
-	private void drawCross(Tessellator tessellator, BufferBuilder bufferBuilder, int cellX, int cellY, int x, int y) {
+	private void drawCross(Tessellator tessellator, int cellX, int cellY, int x, int y) {
 		int red = 0xF7;
 		int green = 0xF0;
 		int blue = 0x06;
@@ -239,12 +236,11 @@ public class ChunkGrid {
 			return;
 		}
 
-		RenderHelper.startDebugLines(bufferBuilder, VertexFormats.POSITION_COLOR);
-		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255).next();
-		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255).next();
-		tessellator.draw();
+		BufferBuilder bufferBuilder = RenderHelper.startDebugLines(tessellator, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(cellX, cellY, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY + this.scale, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX + this.scale, cellY, 0).color(red, green, blue, 255);
+		bufferBuilder.vertex(cellX, cellY + this.scale, 0).color(red, green, blue, 255);
 	}
 
 	public boolean onScroll(double mouseX, double mouseY, double amount) {

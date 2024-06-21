@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
 
 import java.util.function.BiFunction;
@@ -146,7 +147,7 @@ public class GameRuleNetworkHandler extends NetworkHandler {
 	}
 
 	private static class GameRuleHelloPayload extends HelloPayload {
-		public static final Id<GameRuleHelloPayload> ID = CustomPayload.id("essential:game_rule_hello");
+		public static final Id<GameRuleHelloPayload> ID = new CustomPayload.Id<>(Identifier.of("essential:game_rule_hello"));
 		public static final PacketCodec<PacketByteBuf, GameRuleHelloPayload> CODEC = PacketCodec.of(
 			HelloPayload::write,
 			GameRuleHelloPayload::new
@@ -167,7 +168,7 @@ public class GameRuleNetworkHandler extends NetworkHandler {
 	}
 
 	private record SetGameRulePayload(String name, String value) implements CustomPayload {
-		public static final Id<SetGameRulePayload> ID = CustomPayload.id("essential:set_game_rule");
+		public static final Id<SetGameRulePayload> ID = new CustomPayload.Id<>(Identifier.of("essential:set_game_rule"));
 		public static final PacketCodec<PacketByteBuf, SetGameRulePayload> CODEC = PacketCodec.of(
 			(payload, buf) -> buf.writeString(payload.name).writeString(payload.value),
 			(buf) -> new SetGameRulePayload(buf.readString(), buf.readString())
@@ -180,7 +181,7 @@ public class GameRuleNetworkHandler extends NetworkHandler {
 	}
 
 	private record GameRulesChangedPayload(NbtCompound compound) implements CustomPayload {
-		public static final Id<GameRulesChangedPayload> ID = CustomPayload.id("essential:game_rules_changed");
+		public static final Id<GameRulesChangedPayload> ID = new CustomPayload.Id<>(Identifier.of("essential:game_rules_changed"));
 		public static final PacketCodec<PacketByteBuf, GameRulesChangedPayload> CODEC = PacketCodec.of(
 			(payload, buf) -> buf.writeNbt(payload.compound),
 			(buf) -> new GameRulesChangedPayload(buf.readNbt())
@@ -193,7 +194,7 @@ public class GameRuleNetworkHandler extends NetworkHandler {
 	}
 
 	private record GameRulePermissionsPayload(boolean canUpdateGamerules) implements CustomPayload {
-		public static final Id<GameRulePermissionsPayload> ID = CustomPayload.id("essential:game_rule_permissions");
+		public static final Id<GameRulePermissionsPayload> ID = new CustomPayload.Id<>(Identifier.of("essential:game_rule_permissions"));
 		public static final PacketCodec<PacketByteBuf, GameRulePermissionsPayload> CODEC = PacketCodec.of(
 			(payload, buf) -> buf.writeBoolean(payload.canUpdateGamerules),
 			(buf) -> new GameRulePermissionsPayload(buf.readBoolean())

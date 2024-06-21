@@ -60,7 +60,6 @@ public class ScreenRemapper {
 		map.put(MerchantScreen.class, "Merchant");
 		map.put(MinecartCommandBlockScreen.class, "MinecrartCommandBlock");
 		map.put(MouseOptionsScreen.class, "MouseOptions");
-		map.put(SimpleOptionsScreen.class, "SimpleOptions");
 		map.put(NoticeScreen.class, "Notice");
 		map.put(OpenToLanScreen.class, "OpenToLan");
 		map.put(OptionsScreen.class, "Options");

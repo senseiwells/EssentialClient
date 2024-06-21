@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -62,9 +63,7 @@ public class InGameHudMixin {
 		)
 	)
 	private void onRenderTab(
-		DrawContext context,
-		float tickDelta,
-		CallbackInfo ci
+		DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci
 	) {
 		if (this.client.world == null || this.client.player == null) {
 			return;
