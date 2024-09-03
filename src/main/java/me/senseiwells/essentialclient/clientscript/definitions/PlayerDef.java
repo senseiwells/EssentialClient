@@ -162,7 +162,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			MemberFunction.of("updateBreakingBlock", 1, this::updateBreakingBlockPos, "Use <Player>.breakBlock(pos)"),
 			MemberFunction.of("attackBlock", 4, this::attackBlock),
 			MemberFunction.of("attackBlock", 2, this::attackBlockPos),
-			MemberFunction.of("interactItem", 2, this::interactItem),
+			MemberFunction.of("interactItem", 1, this::interactItem),
 			MemberFunction.of("interactBlock", 2, this::interactBlockPos),
 			MemberFunction.of("interactBlock", 3, this::interactBlockPosHand),
 			MemberFunction.of("interactBlock", 8, this::interactBlockFull),
@@ -714,7 +714,7 @@ public class PlayerDef extends CreatableDefinition<ClientPlayerEntity> {
 			ClientPlayerEntity player = EssentialUtils.getPlayer();
 			ScreenHandler screenHandler = player.currentScreenHandler;
 			int size = screenHandler.slots.size();
-			if (slot != -999 && slot >= size || slot < 0) {
+			if (slot != -999 && (slot >= size || slot < 0)) {
 				throw new RuntimeError("That slot is out of bounds");
 			}
 			EssentialUtils.getInteractionManager().clickSlot(screenHandler.syncId, slot, clickData, slotActionType, player);
