@@ -19,6 +19,16 @@ class MultiplayerCarpetClient(
 ): CarpetClient() {
     private lateinit var registries: Map<String, CarpetRuleDataRegistry>
 
+    override fun isValidRule(name: String, manager: String): Boolean {
+        for (registry in this.registries.values) {
+            val rule = registry.get(name) ?: continue
+            if (rule.settingManagers.contains(manager)) {
+                return true
+            }
+        }
+        return false
+    }
+
     override fun synchronizeRuleData(minecraft: Minecraft, tag: CompoundTag) {
         if (!this::registries.isInitialized) {
             this.initializeRuleData(tag)

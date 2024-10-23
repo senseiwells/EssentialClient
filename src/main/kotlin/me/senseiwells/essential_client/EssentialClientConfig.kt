@@ -7,12 +7,10 @@ import dev.isxander.yacl3.config.v2.api.autogen.*
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder
 import me.senseiwells.essential_client.EssentialClient.id
 import me.senseiwells.essential_client.utils.yacl.ReloadChunks
-import me.senseiwells.essential_client.utils.yacl.ReloadResources
 import me.senseiwells.keybinds.api.InputKeys
 import me.senseiwells.keybinds.api.Keybind
 import me.senseiwells.keybinds.api.KeybindManager
 import me.senseiwells.keybinds.api.yacl.Keybinding
-import net.fabricmc.fabric.api.util.TriState
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.screens.Screen
 import java.nio.file.Path
@@ -29,13 +27,13 @@ class EssentialClientConfig {
     @CustomDescription
     @SerialEntry var betterAccurateBlockPlacement: Boolean = false
 
-    @Bool(colored = true)
+    @FloatSlider(min = 0.0F, max = 10.0F, step = 0.5F)
     @AutoGen(category = "gameplay")
-    @SerialEntry var increaseSpectatorScrollSpeed: Boolean = false
+    @SerialEntry var spectatorScrollMaxSpeed: Float = 1.0F
 
-    @IntSlider(min = 0, max = 10, step = 1)
+    @FloatSlider(min = 0.0F, max = 10.0F, step = 0.5F)
     @AutoGen(category = "gameplay")
-    @SerialEntry var increaseSpectatorScrollSensitivity: Int = 0
+    @SerialEntry var spectatorScrollSensitivity: Float = 1.0F
 
     @IntSlider(min = 0, max = 20, step = 1)
     @AutoGen(category = "gameplay")
@@ -57,9 +55,13 @@ class EssentialClientConfig {
     @AutoGen(category = "technical")
     @SerialEntry var carpetAlwaysSetDefault: Boolean = false
 
-    @DoubleField
+    @FloatSlider(min = 0.0F, max = 10.0F, step = 0.5F, format = "%.2f")
     @AutoGen(category = "technical")
-    @SerialEntry var creativeWalkSpeed: Double = 0.0
+    @SerialEntry var creativeWalkSpeed: Float = 1.0F
+
+    @Bool(colored = true)
+    @AutoGen(category = "technical")
+    @SerialEntry var disableHotbarScrolling: Boolean = false
 
     @Bool(colored = true)
     @AutoGen(category = "rendering")
@@ -114,7 +116,7 @@ class EssentialClientConfig {
     @SerialEntry var essentialClientButton: Boolean = false
 
     @ReloadChunks
-    @FloatSlider(min = 0.0F, max = 1.0F, step = 0.05F)
+    @FloatSlider(min = 0.0F, max = 1.0F, step = 0.05F, format = "%.2f")
     @AutoGen(category = "rendering")
     @SerialEntry var lavaOpacity: Float = 1.0F
 

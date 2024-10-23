@@ -16,6 +16,18 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 
 data object SingleplayerCarpetClient: CarpetClient() {
+    override fun isValidRule(name: String, manager: String): Boolean {
+        if (!hasLocalCarpet) {
+            return false
+        }
+        for (rule in CarpetUtils.rules()) {
+            if (rule.name() == name && rule.settingsManager().identifier() == manager) {
+                return true
+            }
+        }
+        return false
+    }
+
     override fun synchronizeRuleData(minecraft: Minecraft, tag: CompoundTag) {
         // In singleplayer we have access to the server,
         // carpet doesn't synchronize rules

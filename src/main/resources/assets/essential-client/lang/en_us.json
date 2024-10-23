@@ -5,10 +5,10 @@
   "yacl3.config.essential-client:config.betterAccurateBlockPlacement": "Better Accurate Block Placement",
   "yacl3.config.essential-client:config.betterAccurateBlockPlacement.desc.1": "This is the same as accurate block placement for tweakeroo but without the need for any server-side mods",
   "yacl3.config.essential-client:config.betterAccurateBlockPlacement.desc.2": "This uses some packet hacking, which may flag anti-cheat on some servers",
-  "yacl3.config.essential-client:config.increaseSpectatorScrollSpeed": "Increase Spectator Scroll Speed",
-  "yacl3.config.essential-client:config.increaseSpectatorScrollSpeed.desc.1": "Increases the limit at which you can scroll to go faster in spectator",
-  "yacl3.config.essential-client:config.increaseSpectatorScrollSensitivity": "Increase Spectator Scroll Sensitivity",
-  "yacl3.config.essential-client:config.increaseSpectatorScrollSensitivity.desc.1": "Increases the sensitivity at which you can scroll to go faster in spectator",
+  "yacl3.config.essential-client:config.spectatorScrollMaxSpeed": "Increase Spectator Scroll Speed",
+  "yacl3.config.essential-client:config.spectatorScrollMaxSpeed.desc.1": "Increases the limit at which you can scroll to go faster in spectator",
+  "yacl3.config.essential-client:config.spectatorScrollSensitivity": "Increase Spectator Scroll Sensitivity",
+  "yacl3.config.essential-client:config.spectatorScrollSensitivity.desc.1": "Increases the sensitivity at which you can scroll to go faster in spectator",
   "yacl3.config.essential-client:config.switchToTotem": "Switch To Totem",
   "yacl3.config.essential-client:config.switchToTotem.desc.1": "This will switch to a totem (if you have one) under a set amount of health",
   "yacl3.config.essential-client:config.announceAfk": "Announce AFK",
@@ -25,6 +25,8 @@
   "yacl3.config.essential-client:config.carpetAlwaysSetDefault.desc.1": "This makes it so whenever you set a carpet rule, it automatically sets it to default",
   "yacl3.config.essential-client:config.creativeWalkSpeed": "Creative Walk Speed",
   "yacl3.config.essential-client:config.creativeWalkSpeed.desc.1": "This allows you to override the vanilla walk speed in creative mode",
+  "yacl3.config.essential-client:config.disableHotbarScrolling": "Disable Hotbar Scrolling",
+  "yacl3.config.essential-client:config.disableHotbarScrolling.desc.1": "Prevents you from scrolling to use your hotbar, learn your keybinds!",
 
   "yacl3.config.essential-client:config.category.rendering": "Rendering",
   "yacl3.config.essential-client:config.disableArmorRendering": "Disable Armor Rendering",
@@ -53,6 +55,8 @@
   "yacl3.config.essential-client:config.displayPlayTime.desc.1": "Displays the amount of time your client has been running in the corner of the pause menu",
   "yacl3.config.essential-client:config.essentialClientButton": "EssentialClient Button",
   "yacl3.config.essential-client:config.essentialClientButton.desc.1": "This renders the EssentialClient Menu on the main menu screen and pause screen",
+  "yacl3.config.essential-client:config.lavaOpacity": "Lava Opacity",
+  "yacl3.config.essential-client:config.lavaOpacity.desc.1": "Changes the opacity of lava",
   "yacl3.config.essential-client:config.highlightLavaSources": "Highlight Lava Sources",
   "yacl3.config.essential-client:config.highlightLavaSources.desc.1": "Changes the texture for lava sources to make them more visible",
   "yacl3.config.essential-client:config.highlightWaterSources": "Highlight Water Sources",
@@ -78,5 +82,7 @@
   "essential-client.menu.carpetConfig": "Carpet Server Settings",
   "essential-client.menu.carpetConfig.tooltip": "View and modify the server's Carpet settings through a gui",
   "essential-client.menu.chunkDebugMap": "ChunkDebug Map",
-  "essential-client.menu.chunkDebugMap.tooltip": "Opens the ChunkDebug Map\nRequires ChunkDebug to be installed separately"
+  "essential-client.menu.chunkDebugMap.tooltip": "Opens the ChunkDebug Map\nRequires ChunkDebug to be installed separately",
+
+  "essential-client.autoWalk.activated": "You are now auto-walking"
 }

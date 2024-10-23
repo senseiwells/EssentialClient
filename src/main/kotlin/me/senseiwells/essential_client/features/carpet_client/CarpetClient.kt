@@ -20,6 +20,8 @@ sealed class CarpetClient {
         return config
     }
 
+    abstract fun isValidRule(name: String, manager: String): Boolean
+
     internal abstract fun synchronizeRuleData(minecraft: Minecraft, tag: CompoundTag)
 
     protected abstract fun createCategories(minecraft: Minecraft, consumer: (ConfigCategory) -> Unit)

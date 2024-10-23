@@ -1,9 +1,6 @@
 package me.senseiwells.essential_client
 
-import me.senseiwells.essential_client.features.AfkTracker
-import me.senseiwells.essential_client.features.BetterAccurateBlockPlacement
-import me.senseiwells.essential_client.features.DisplayStartTime
-import me.senseiwells.essential_client.features.HighlightLiquids
+import me.senseiwells.essential_client.features.*
 import me.senseiwells.essential_client.features.carpet_client.*
 import me.senseiwells.essential_client.features.carpet_client.database.CarpetRulesDatabase
 import me.senseiwells.essential_client.gui.EssentialClientScreen

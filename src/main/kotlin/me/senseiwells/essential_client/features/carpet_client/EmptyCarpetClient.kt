@@ -7,6 +7,11 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 
 data object EmptyCarpetClient: CarpetClient() {
+    override fun isValidRule(name: String, manager: String): Boolean {
+        // We have no carpet installed...
+        return false
+    }
+
     override fun synchronizeRuleData(minecraft: Minecraft, tag: CompoundTag) {
         // This will never be called
     }

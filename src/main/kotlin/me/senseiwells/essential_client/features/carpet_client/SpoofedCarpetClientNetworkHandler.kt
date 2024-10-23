@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation
 object SpoofedCarpetClientNetworkHandler {
     internal fun load() {
         if (!CarpetClient.hasLocalCarpet) {
-            // PayloadTypeRegistry.playC2S().register(CarpetPayload.TYPE, CarpetPayload.STREAM_CODEC)
+            PayloadTypeRegistry.playC2S().register(CarpetPayload.TYPE, CarpetPayload.STREAM_CODEC)
             PayloadTypeRegistry.playS2C().register(CarpetPayload.TYPE, CarpetPayload.STREAM_CODEC)
             ClientPlayNetworking.registerGlobalReceiver(CarpetPayload.TYPE, ::handleCarpetPacket)
         }

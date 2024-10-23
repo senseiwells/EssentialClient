@@ -50,25 +50,6 @@ java {
     withSourcesJar()
 }
 
-loom {
-    runs {
-        afterEvaluate {
-            val mixinJarFile = configurations.runtimeClasspath.get().incoming.artifactView {
-                componentFilter {
-                    it is ModuleComponentIdentifier && it.group == "net.fabricmc" && it.module == "sponge-mixin"
-                }
-            }.files.first()
-
-            configureEach {
-                vmArg("-javaagent:$mixinJarFile")
-
-                property("mixin.hotSwap", "true")
-                property("mixin.debug.export", "true")
-            }
-        }
-    }
-}
-
 tasks {
     processResources {
         inputs.property("version", project.version)
