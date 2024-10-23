@@ -118,12 +118,12 @@ class EssentialClientConfig {
     @AutoGen(category = "rendering")
     @SerialEntry var lavaOpacity: Float = 1.0F
 
-    @ReloadResources
+    @ReloadChunks
     @Bool(colored = true)
     @AutoGen(category = "rendering")
     @SerialEntry var highlightLavaSources: Boolean = false
 
-    @ReloadResources
+    @ReloadChunks
     @Bool(colored = true)
     @AutoGen(category = "rendering")
     @SerialEntry var highlightWaterSources: Boolean = false

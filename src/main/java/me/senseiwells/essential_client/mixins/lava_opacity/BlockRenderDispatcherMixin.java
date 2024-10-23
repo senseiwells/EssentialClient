@@ -16,4 +16,9 @@ public class BlockRenderDispatcherMixin implements TranslucentLiquids {
 	public void essentialclient$setTranslucentConsumer(VertexConsumer consumer) {
 		((TranslucentLiquids) this.liquidBlockRenderer).essentialclient$setTranslucentConsumer(consumer);
 	}
+
+	@Override
+	public VertexConsumer essentialclient$getTranslucentConsumer() {
+		return null;
+	}
 }

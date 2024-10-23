@@ -13,6 +13,7 @@
     "disable_nametag_rendering.EntityRendererMixin",
     "disable_toasts.ToastComponentMixin",
     "display_time_played.PauseScreenMixin",
+    "highlight_liquids.LiquidBlockRendererMixin",
     "lava_opacity.BlockRenderDispatcherMixin",
     "lava_opacity.LiquidBlockRendererMixin",
     "lava_opacity.SectionCompilerMixin",

@@ -22,7 +22,6 @@ public abstract class LiquidBlockRendererMixin implements TranslucentLiquids {
 			target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;vertex(Lcom/mojang/blaze3d/vertex/VertexConsumer;FFFFFFFFI)V"
 		)
 	)
-	@SuppressWarnings("SameReturnValue")
 	private boolean onVertex(
 		LiquidBlockRenderer instance,
 		VertexConsumer buffer,
@@ -41,9 +40,6 @@ public abstract class LiquidBlockRendererMixin implements TranslucentLiquids {
 			return true;
 		}
 		VertexConsumer consumer = this.translucentConsumer.get();
-		if (consumer == null) {
-			return true;
-		}
 		consumer.addVertex(x, y, z)
 			.setColor(red, green, blue, EssentialClientConfig.getInstance().getLavaOpacity())
 			.setUv(u, v)
@@ -55,5 +51,10 @@ public abstract class LiquidBlockRendererMixin implements TranslucentLiquids {
 	@Override
 	public void essentialclient$setTranslucentConsumer(VertexConsumer consumer) {
 		this.translucentConsumer.set(consumer);
+	}
+
+	@Override
+	public VertexConsumer essentialclient$getTranslucentConsumer() {
+		return this.translucentConsumer.get();
 	}
 }

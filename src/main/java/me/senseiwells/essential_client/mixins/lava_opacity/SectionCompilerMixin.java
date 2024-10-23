@@ -1,8 +1,7 @@
 package me.senseiwells.essential_client.mixins.lava_opacity;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexSorting;
+import com.mojang.blaze3d.vertex.*;
 import me.senseiwells.essential_client.ducks.TranslucentLiquids;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SectionBufferBuilderPack;
@@ -40,8 +39,8 @@ public abstract class SectionCompilerMixin {
 		CallbackInfoReturnable<SectionCompiler.Results> cir,
 		@Local Map<RenderType, BufferBuilder> cache
 	) {
-		BufferBuilder buffer = this.getOrBeginLayer(cache, sectionBufferBuilderPack, RenderType.translucent());
-		((TranslucentLiquids) this.blockRenderer).essentialclient$setTranslucentConsumer(buffer);
+		BufferBuilder translucent = this.getOrBeginLayer(cache, sectionBufferBuilderPack, RenderType.translucent());
+		((TranslucentLiquids) this.blockRenderer).essentialclient$setTranslucentConsumer(translucent);
 	}
 
 	@Inject(
