@@ -11,7 +11,7 @@
     "AngelBottomless",
     "BvngeeCord",
     "Crec0",
-    "EarthComputer",
+    "Earthcomputer",
     "HardCoded",
     "lhmddws",
     "Pixeils",
@@ -19,28 +19,30 @@
     "SuperSanta"
   ],
   "contact": {
-    "homepage": "https://github.com/senseiwells/EssentialClient"
+    "source": "https://github.com/senseiwells/EssentialClient"
   },
   "license": "MIT",
-  "icon": "assets/essentialclient/icon.png",
+  "icon": "assets/essential-client/icon.png",
   "environment": "client",
   "entrypoints": {
-    "preLaunch": [
-      "me.senseiwells.essentialclient.feature.MixinExtraSupport::load"
-    ],
     "main": [
-      "me.senseiwells.essentialclient.EssentialClient",
-      "me.senseiwells.essentialclient.utils.clientscript.DocGenerator"
+      {
+        "adapter": "kotlin",
+        "value": "me.senseiwells.essential_client.EssentialClient"
+      }
     ],
     "modmenu": [
-      "me.senseiwells.essentialclient.gui.modmenu.ModMenuImpl"
+      {
+        "adapter": "kotlin",
+        "value": "me.senseiwells.essential_client.compat.ModMenuEssentialClientImpl"
+      }
     ]
   },
   "mixins": [
-    "essentialclient.mixins.json"
+    "essential-client.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.1",
+    "fabricloader": "*",
     "fabric": "*",
     "minecraft": "${minecraft_dependency}"
   }

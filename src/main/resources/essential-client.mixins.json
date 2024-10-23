@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "package": "me.senseiwells.essential_client.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "me.senseiwells.essential_client.compat.EssentialClientMixinConfigPlugin",
+  "client": [
+    "better_accurate_block_placement.BlockPlaceContextMixin",
+    "better_accurate_block_placement.LocalPlayerMixin",
+    "carpet_client.ClientNetworkHandlerMixin",
+    "disable_bossbar_rendering.GuiMixin",
+    "disable_damage_tilt.GameRendererMixin",
+    "disable_map_rendering.ItemFrameRendererMixin",
+    "disable_nametag_rendering.EntityRendererMixin",
+    "disable_toasts.ToastComponentMixin",
+    "display_time_played.PauseScreenMixin",
+    "lava_opacity.BlockRenderDispatcherMixin",
+    "lava_opacity.LiquidBlockRendererMixin",
+    "lava_opacity.SectionCompilerMixin",
+    "toggle_tab.GuiMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "yacl.SimpleOptionFactoryMixin"
+  ]
+}

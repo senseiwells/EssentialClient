@@ -1,0 +1,30 @@
+[versions]
+fabric-loom          = "1.7-SNAPSHOT"
+kotlin-serialization = "1.9.21"
+mod-publish          = "0.7.0"
+minecraft            = "1.21.1"
+fabric-loader        = "0.16.7"
+parchment            = "1.21:2024.07.28"
+fabric-api           = "0.103.0+1.21.1"
+fabric-kotlin        = "1.11.0+kotlin.2.0.0"
+mod-menu             = "11.0.2"
+keybinds             = "0.1.11+1.21.1"
+yacl                 = "3.5.0+1.21-fabric"
+carpet               = "1.4.147"
+chunk-debug          = "2.1.1+1.21.1"
+
+[libraries]
+minecraft     = { module = "com.mojang:minecraft"                    , version.ref = "minecraft" }
+fabric-loader = { module = "net.fabricmc:fabric-loader"              , version.ref = "fabric-loader" }
+fabric-api    = { module = "net.fabricmc.fabric-api:fabric-api"      , version.ref = "fabric-api" }
+fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin"     , version.ref = "fabric-kotlin" }
+mod-menu      = { module = "com.terraformersmc:modmenu"              , version.ref = "mod-menu" }
+keybinds      = { module = "me.senseiwells:simple-keybinding-library", version.ref = "keybinds" }
+yacl          = { module = "dev.isxander:yet-another-config-lib"     , version.ref = "yacl" }
+carpet        = { module = "com.github.gnembon:fabric-carpet"        , version.ref = "carpet" }
+chunk-debug   = { module = "me.senseiwells:chunk-debug"              , version.ref = "chunk-debug" }
+
+[plugins]
+fabric-loom          = { id = "fabric-loom"                              , version.ref = "fabric-loom" }
+mod-publish          = { id = "me.modmuss50.mod-publish-plugin"          , version.ref = "mod-publish" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
