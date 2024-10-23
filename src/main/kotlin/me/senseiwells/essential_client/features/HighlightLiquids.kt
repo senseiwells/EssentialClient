@@ -13,7 +13,7 @@ import net.minecraft.world.inventory.InventoryMenu
 import org.jetbrains.annotations.ApiStatus.Internal
 
 object HighlightLiquids: SimpleSynchronousResourceReloadListener {
-    private val highlight = Material(InventoryMenu.BLOCK_ATLAS, EssentialClient.id("block/still_liquid_highlight"))
+    private val highlight = Material(InventoryMenu.BLOCK_ATLAS, EssentialClient.id("block/liquid_highlight"))
 
     private lateinit var sprite: TextureAtlasSprite
 

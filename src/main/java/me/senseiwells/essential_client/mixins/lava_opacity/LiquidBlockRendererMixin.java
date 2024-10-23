@@ -10,7 +10,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(LiquidBlockRenderer.class)
+// This must be loaded *AFTER* highlight liquids, we want the lava
+// rendering to happen after our vertex checks in highlight liquids
+@Mixin(value = LiquidBlockRenderer.class, priority = 1200)
 public abstract class LiquidBlockRendererMixin implements TranslucentLiquids {
 	@Unique
 	private final ThreadLocal<VertexConsumer> translucentConsumer = new ThreadLocal<>();
