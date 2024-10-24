@@ -92,7 +92,7 @@ tasks {
         - CarpetClient has been vastly improved
         - Better implementation of many features (better compatability)
         """.trimIndent()
-        type = STABLE
+        type = BETA
         modLoaders.add("fabric")
 
         displayName = "EssentialClient $modVersion for ${libs.versions.minecraft.get()}"
