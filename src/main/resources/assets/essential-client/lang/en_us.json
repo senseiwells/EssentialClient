@@ -83,6 +83,8 @@
   "essential-client.menu.carpetConfig.tooltip": "View and modify the server's Carpet settings through a gui",
   "essential-client.menu.chunkDebugMap": "ChunkDebug Map",
   "essential-client.menu.chunkDebugMap.tooltip": "Opens the ChunkDebug Map\nRequires ChunkDebug to be installed separately",
+  "essential-client.menu.clientScript": "ClientScript Options",
+  "essential-client.menu.clientScript.tooltip": "ClientScripts are no longer being supported\nA new scripting system is being worked on, but is not quite ready yet",
 
   "essential-client.autoWalk.activated": "You are now auto-walking"
 }

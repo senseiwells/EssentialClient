@@ -35,10 +35,6 @@ class EssentialClientConfig {
     @AutoGen(category = "gameplay")
     @SerialEntry var spectatorScrollSensitivity: Float = 1.0F
 
-    @IntSlider(min = 0, max = 20, step = 1)
-    @AutoGen(category = "gameplay")
-    @SerialEntry var switchToTotem: Int = 0
-
     @IntField
     @AutoGen(category = "technical")
     @SerialEntry var announceAfk: Int = 0
@@ -199,7 +195,7 @@ class EssentialClientConfig {
                 .id(id("config"))
                 .serializer { config ->
                     GsonConfigSerializerBuilder.create(config)
-                        .setPath(this.directory.resolve("config.json5"))
+                        .setPath(this.directory.resolve("config.json"))
                         .appendGsonBuilder { obj ->
                             obj.setPrettyPrinting()
                             obj.registerTypeAdapter(InputKeys::class.java, InputKeys.Serializer.INSTANCE)

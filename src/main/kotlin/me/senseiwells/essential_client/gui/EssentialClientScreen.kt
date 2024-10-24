@@ -36,6 +36,11 @@ class EssentialClientScreen(
         }.width(width).tooltip(Tooltip.create(Component.translatable("essential-client.menu.chunkDebugMap.tooltip"))).build())
         chunks.active = hasChunkDebug && canUseChunkDebug()
 
+        val scripting = rows.addChild(Button.builder(Component.translatable("essential-client.menu.clientScript")) {
+
+        }.width(width).tooltip(Tooltip.create(Component.translatable("essential-client.menu.clientScript.tooltip"))).build())
+        scripting.active = false
+
         this.layout.addToHeader(StringWidget(this.title, this.font)) { settings -> settings.alignVerticallyBottom() }
         this.layout.addToContents(grid) { settings -> settings.alignVerticallyTop() }
         this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE) {

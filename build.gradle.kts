@@ -21,8 +21,8 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val modVersion = "1.1.5"
-val releaseVersion = "${modVersion}+mc${libs.versions.minecraft.get()}"
+val modVersion = "2.0.0-beta.1"
+val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
 

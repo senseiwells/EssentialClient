@@ -4,6 +4,8 @@ import carpet.api.settings.CarpetRule
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
+import kotlinx.datetime.Clock
+import kotlinx.datetime.toKotlinInstant
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -17,9 +19,11 @@ import me.senseiwells.essential_client.utils.CarpetUtils.matches
 import me.senseiwells.essential_client.utils.VersionUtils.getMajorVersion
 import net.minecraft.SharedConstants
 import net.minecraft.Util
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URI
 import java.util.concurrent.CompletableFuture
+import kotlin.io.path.getLastModifiedTime
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
 
@@ -79,15 +83,28 @@ object CarpetRulesDatabase {
     }
 
     private fun getCarpetRules(): List<CarpetRuleData> {
-        var result = downloadCarpetRules()
+        try {
+            val lastModified = this.cache.getLastModifiedTime().toInstant().toKotlinInstant()
+            val duration = lastModified.minus(Clock.System.now())
+            if (duration.inWholeHours < 10) {
+                val result = this.readCarpetRules()
+                if (result.isSuccess) {
+                    return result.getOrThrow()
+                }
+            }
+        } catch (_: IOException) {
+
+        }
+
+        var result = this.downloadCarpetRules()
         if (result.isFailure) {
             val error = result.exceptionOrNull()
-            result = readCarpetRules()
+            result = this.readCarpetRules()
             if (result.isFailure) {
                 EssentialClient.logger.error("Failed to retrieve carpet rules from database", error)
             }
         } else {
-            writeCarpetRules(result.getOrThrow())
+            this.writeCarpetRules(result.getOrThrow())
         }
         return result.getOrNull() ?: listOf()
     }
