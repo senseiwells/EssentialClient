@@ -18,7 +18,7 @@
     "disable_nametag_rendering.EntityRendererMixin",
     "disable_night_vision_flashing.GameRendererMixin",
     "disable_screenshot_message.ScreenshotMixin",
-    "disable_toasts.ToastComponentMixin",
+    "disable_toasts.ToastManagerMixin",
     "display_time_played.PauseScreenMixin",
     "essential_client_button.PauseScreenMixin",
     "highlight_liquids.LiquidBlockRendererMixin",

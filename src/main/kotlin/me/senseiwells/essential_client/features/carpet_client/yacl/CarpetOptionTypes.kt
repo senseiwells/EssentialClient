@@ -161,7 +161,6 @@ data object FloatCarpetOptionType: CarpetOptionType<Float> {
             FloatSliderController.DEFAULT_FORMATTER::apply
         ) { option ->
             FloatFieldControllerBuilder.create(option)
-                .min(-Float.MAX_VALUE) // TODO: Remove once YACL fixes this
         }
     }
 
@@ -192,7 +191,6 @@ data object DoubleCarpetOptionType: CarpetOptionType<Double> {
             DoubleSliderController.DEFAULT_FORMATTER::apply
         ) { option ->
             DoubleFieldControllerBuilder.create(option)
-                .min(-Double.MAX_VALUE) // TODO: Remove once YACL fixes this
         }
     }
 

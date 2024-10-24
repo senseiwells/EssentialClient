@@ -2,10 +2,11 @@ package me.senseiwells.essential_client.features.carpet_client
 
 import dev.isxander.yacl3.api.ConfigCategory
 import dev.isxander.yacl3.api.OptionDescription
+import dev.isxander.yacl3.api.StateManager
 import dev.isxander.yacl3.api.YetAnotherConfigLib
+import dev.isxander.yacl3.impl.SelfContainedBinding
 import me.senseiwells.essential_client.features.carpet_client.database.CarpetRuleData
 import me.senseiwells.essential_client.features.carpet_client.yacl.*
-import me.senseiwells.essential_client.utils.yacl.SimpleBinding
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import net.minecraft.nbt.CompoundTag
@@ -64,10 +65,10 @@ sealed class CarpetClient {
         val defaultValue = data.defaultValue as? T
         val value = data.value as? T
         if (value != null && defaultValue != null) {
-            builder.binding(SimpleBinding(value, defaultValue))
+            builder.stateManager(StateManager.createSimple(SelfContainedBinding(value, defaultValue)))
         } else {
             val nonNullValue = value ?: defaultValue ?: return null
-            builder.binding(SimpleBinding(nonNullValue))
+            builder.stateManager(StateManager.createSimple(SelfContainedBinding(nonNullValue)))
         }
         type.controller(builder, data.options, data.strict)
         return builder
@@ -84,7 +85,7 @@ sealed class CarpetClient {
     ): CarpetOption.Builder<T> {
         val type = CarpetOptionType.resolve(clazz, categories)
         builder.type(type)
-        builder.binding(SimpleBinding(value, defaultValue))
+        builder.stateManager(StateManager.createSimple(SelfContainedBinding(value, defaultValue)))
         type.controller(builder, suggestions, strict)
         return builder
     }

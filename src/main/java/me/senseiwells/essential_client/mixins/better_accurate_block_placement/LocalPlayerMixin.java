@@ -14,7 +14,7 @@ public class LocalPlayerMixin {
 		method = "sendPosition",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$PosRot;<init>(DDDFFZ)V"
+			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$PosRot;<init>(DDDFFZZ)V"
 		)
 	)
 	private void onConstructPosRot(Args args) {
@@ -29,7 +29,7 @@ public class LocalPlayerMixin {
 		method = "sendPosition",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$Rot;<init>(FFZ)V"
+			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$Rot;<init>(FFZZ)V"
 		)
 	)
 	private void onConstructRot(Args args) {

@@ -13,10 +13,10 @@ public class MouseHandlerMixin {
 		method = "onScroll",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/world/entity/player/Inventory;swapPaint(D)V"
+			target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedHotbarSlot(I)V"
 		)
 	)
-	private boolean shouldScrollHotbar(Inventory instance, double direction) {
+	private boolean shouldScrollHotbar(Inventory instance, int i) {
 		return !EssentialClientConfig.getInstance().getDisableHotbarScrolling();
 	}
 }

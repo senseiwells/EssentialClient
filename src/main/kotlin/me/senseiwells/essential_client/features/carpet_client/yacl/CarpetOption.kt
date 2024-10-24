@@ -2,8 +2,9 @@ package me.senseiwells.essential_client.features.carpet_client.yacl
 
 import com.google.common.collect.ImmutableSet
 import dev.isxander.yacl3.api.*
+import dev.isxander.yacl3.api.OptionEventListener.Event
 import dev.isxander.yacl3.api.controller.ControllerBuilder
-import dev.isxander.yacl3.impl.SafeBinding
+import dev.isxander.yacl3.impl.ProvidesBindingForDeprecation
 import net.minecraft.network.chat.Component
 import java.util.function.BiConsumer
 import java.util.function.Consumer
@@ -13,43 +14,41 @@ import java.util.function.Supplier
 class CarpetOption<T: Any>(
     private val name: Component,
     private val descriptionProvider: (T) -> OptionDescription,
-    private val binding: Binding<T>,
+    private val state: StateManager<T>,
     private val type: CarpetOptionType<T>,
     private val applier: (CarpetOption<T>) -> Unit,
-    private val listeners: MutableList<BiConsumer<Option<T>, T>>,
+    private val listeners: MutableList<OptionEventListener<T>>,
     private var available: Boolean,
     controllerProvider: (Option<T>) -> Controller<T>
 ): Option<T> {
     private val controller: Controller<T> = controllerProvider.invoke(this)
-    private var description: OptionDescription
-
-    private var pending = this.binding.value
+    private lateinit var description: OptionDescription
 
     private var setting: Boolean = false
 
     init {
-        this.description = this.descriptionProvider.invoke(this.pending)
-        this.triggerListeners()
-
-        this.addListener { _, pending ->
-            this.description = this.descriptionProvider.invoke(pending)
+        this.state.addListener { _, _ -> triggerListeners(Event.STATE_CHANGE) }
+        this.addEventListener { option, _ ->
+            this.description = this.descriptionProvider.invoke(option.pendingValue())
         }
+        this.triggerListeners(Event.INITIAL)
     }
 
     fun getPendingValueAsString(): String {
-        return this.type.mapToString(this.pending)
+        return this.type.mapToString(this.state.get())
     }
 
     fun setValueFromString(value: String) {
         val mapped = this.type.mapFromString(value)
-        if (mapped != null && this.binding.value != mapped) {
+        if (mapped != null && this.state.get() != mapped) {
             this.setValue(mapped)
         }
     }
 
     fun setValue(value: T) {
         this.setting = false
-        this.binding.value = value
+        this.state.set(value)
+        this.state.apply()
     }
 
     override fun name(): Component {
@@ -69,8 +68,18 @@ class CarpetOption<T: Any>(
         return this.controller
     }
 
+    override fun stateManager(): StateManager<T> {
+        return this.state
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Deprecated("You should use the stateManager instead")
     override fun binding(): Binding<T> {
-        return this.binding
+        if (this.state is ProvidesBindingForDeprecation<*>) {
+            return this.state.binding as Binding<T>
+        } else {
+            throw UnsupportedOperationException("Binding is not available for this option - using a new state manager which does not directly expose the binding as it may not have one.")
+        }
     }
 
     override fun available(): Boolean {
@@ -82,9 +91,9 @@ class CarpetOption<T: Any>(
         this.available = available
         if (changed) {
             if (!available) {
-                this.pending = this.binding.value
+                this.state.sync()
             }
-            this.triggerListeners()
+            this.triggerListeners(Event.AVAILABILITY_CHANGE)
         }
     }
 
@@ -96,16 +105,15 @@ class CarpetOption<T: Any>(
         if (this.setting) {
             return false
         }
-        return this.binding.value != this.pending
+        return !this.state.isSynced
     }
 
     override fun pendingValue(): T {
-        return this.pending
+        return this.state.get()
     }
 
     override fun requestSet(value: T) {
-        this.pending = value
-        this.triggerListeners()
+        this.state.set(value)
     }
 
     override fun applyValue(): Boolean {
@@ -118,34 +126,39 @@ class CarpetOption<T: Any>(
     }
 
     override fun forgetPendingValue() {
-        this.requestSet(this.binding.value)
+        this.state.sync()
     }
 
     override fun requestSetDefault() {
-        this.requestSet(this.binding.defaultValue())
+        this.state.resetToDefault(StateManager.ResetAction.BY_OPTION)
     }
 
     override fun isPendingValueDefault(): Boolean {
-        return this.binding.defaultValue() == this.pending
+        return this.state.isDefault
     }
 
-    override fun addListener(listener: BiConsumer<Option<T>, T>) {
+    override fun addEventListener(listener: OptionEventListener<T>) {
         this.listeners.add(listener)
     }
 
-    private fun triggerListeners() {
+    @Deprecated("Use addEventListener istead")
+    override fun addListener(listener: BiConsumer<Option<T>, T>) {
+        this.listeners.add { option, _ -> listener.accept(option, option.pendingValue()) }
+    }
+
+    private fun triggerListeners(event: Event) {
         for (listener in this.listeners) {
-            listener.accept(this, this.pending)
+            listener.onEvent(this, event)
         }
     }
 
     class Builder<T: Any>: Option.Builder<T> {
         private var name: Component? = null
         private var description: ((T) -> OptionDescription) = { OptionDescription.EMPTY }
-        private var binding: Binding<T>? = null
+        private var state: StateManager<T>? = null
         private var type: CarpetOptionType<T>? = null
         private var applier: (CarpetOption<T>) -> Unit = { }
-        private val listeners = ArrayList<BiConsumer<Option<T>, T>>()
+        private val listeners = ArrayList<OptionEventListener<T>>()
         private var controller: ((Option<T>) -> Controller<T>)? = null
         private var available: Boolean = true
 
@@ -159,40 +172,51 @@ class CarpetOption<T: Any>(
             return this
         }
 
+        override fun stateManager(stateManager: StateManager<T>): Option.Builder<T> {
+            this.state = stateManager
+            return this
+        }
+
         override fun available(available: Boolean): Builder<T> {
             this.available = available
             return this
         }
 
         override fun flag(vararg flag: OptionFlag): Builder<T> {
-            return this
+            throw UnsupportedOperationException()
         }
 
         override fun flags(flags: MutableCollection<out OptionFlag>): Builder<T> {
-            return this
+            throw UnsupportedOperationException()
         }
 
-        override fun instant(instant: Boolean): Builder<T> {
-            return this
-        }
-
-        override fun listeners(listeners: MutableCollection<BiConsumer<Option<T>, T>>): Builder<T> {
+        override fun addListeners(listeners: MutableCollection<OptionEventListener<T>>): Option.Builder<T> {
             this.listeners.addAll(listeners)
             return this
         }
 
-        override fun listener(listener: BiConsumer<Option<T>, T>): Builder<T> {
+        override fun addListener(listener: OptionEventListener<T>): Option.Builder<T> {
             this.listeners.add(listener)
             return this
         }
 
+        override fun instant(instant: Boolean): Builder<T> {
+            throw UnsupportedOperationException()
+        }
+
+        override fun listeners(listeners: MutableCollection<BiConsumer<Option<T>, T>>): Builder<T> {
+            throw UnsupportedOperationException()
+        }
+
+        override fun listener(listener: BiConsumer<Option<T>, T>): Builder<T> {
+            throw UnsupportedOperationException()
+        }
+
         override fun binding(def: T, getter: Supplier<T>, setter: Consumer<T>): Builder<T> {
-            this.binding = Binding.generic(def, getter, setter)
             return this
         }
 
         override fun binding(binding: Binding<T>): Builder<T> {
-            this.binding = binding
             return this
         }
 
@@ -226,8 +250,8 @@ class CarpetOption<T: Any>(
             return CarpetOption(
                 requireNotNull(this.name) { "CarpetOption name must be specified" },
                 this.description,
-                SafeBinding(requireNotNull(this.binding) { "CarpetOption binding must be specified" }),
-                requireNotNull(this.type) { "CarpetOption mapper must be specified" } ,
+                requireNotNull(this.state) { "CarpetOption binding must be specified" },
+                requireNotNull(this.type) { "CarpetOption mapper must be specified" },
                 this.applier,
                 ArrayList(this.listeners),
                 this.available,
