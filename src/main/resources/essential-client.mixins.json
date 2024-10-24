@@ -1,0 +1,39 @@
+{
+  "required": true,
+  "package": "me.senseiwells.essential_client.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "me.senseiwells.essential_client.compat.EssentialClientMixinConfigPlugin",
+  "client": [
+    "auto_walk.KeyboardInputMixin",
+    "better_accurate_block_placement.BlockPlaceContextMixin",
+    "better_accurate_block_placement.LocalPlayerMixin",
+    "carpet_always_set_default.ClientPacketListenerMixin",
+    "carpet_client.ClientNetworkHandlerMixin",
+    "disable_armor_rendering.HumanoidArmorLayerMixin",
+    "disable_bossbar_rendering.GuiMixin",
+    "disable_damage_tilt.GameRendererMixin",
+    "disable_hotbar_scrolling.MouseHandlerMixin",
+    "disable_join_leave_messages.ChatListenerMixin",
+    "disable_map_rendering.ItemFrameRendererMixin",
+    "disable_nametag_rendering.EntityRendererMixin",
+    "disable_night_vision_flashing.GameRendererMixin",
+    "disable_screenshot_message.ScreenshotMixin",
+    "disable_toasts.ToastComponentMixin",
+    "display_time_played.PauseScreenMixin",
+    "essential_client_button.PauseScreenMixin",
+    "highlight_liquids.LiquidBlockRendererMixin",
+    "lava_opacity.BlockRenderDispatcherMixin",
+    "lava_opacity.LiquidBlockRendererMixin",
+    "lava_opacity.SectionCompilerMixin",
+    "persistent_chat_history.GuiMixin",
+    "spectator_scrolling.MouseHandlerMixin",
+    "toggle_tab.GuiMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "creative_walk_speed.PlayerMixin",
+    "yacl.SimpleOptionFactoryMixin"
+  ]
+}

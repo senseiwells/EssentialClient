@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "essential-client",
   "version": "${version}",
-  "name": "Essential Client",
-  "description": "A client mod that provides utilities and client support for carpet rules",
+  "name": "EssentialClient",
+  "description": "EssentialClient is a client-side mod that adds many client utilities as well as providing a gui to modify carpet rules!",
   "authors": [
     "Sensei"
   ],
@@ -11,7 +11,7 @@
     "AngelBottomless",
     "BvngeeCord",
     "Crec0",
-    "EarthComputer",
+    "Earthcomputer",
     "HardCoded",
     "lhmddws",
     "Pixeils",
@@ -19,29 +19,37 @@
     "SuperSanta"
   ],
   "contact": {
-    "homepage": "https://github.com/senseiwells/EssentialClient"
+    "source": "https://github.com/senseiwells/EssentialClient",
+    "issues": "https://github.com/senseiwells/EssentialClient/issues"
   },
   "license": "MIT",
-  "icon": "assets/essentialclient/icon.png",
+  "icon": "assets/essential-client/icon.png",
   "environment": "client",
   "entrypoints": {
-    "preLaunch": [
-      "me.senseiwells.essentialclient.feature.MixinExtraSupport::load"
-    ],
     "main": [
-      "me.senseiwells.essentialclient.EssentialClient",
-      "me.senseiwells.essentialclient.utils.clientscript.DocGenerator"
+      {
+        "adapter": "kotlin",
+        "value": "me.senseiwells.essential_client.EssentialClient"
+      }
     ],
     "modmenu": [
-      "me.senseiwells.essentialclient.gui.modmenu.ModMenuImpl"
+      {
+        "adapter": "kotlin",
+        "value": "me.senseiwells.essential_client.compat.ModMenuEssentialClientImpl"
+      }
     ]
   },
   "mixins": [
-    "essentialclient.mixins.json"
+    "essential-client.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.1",
     "fabric": "*",
+    "fabricloader": ">=${fabric_loader_dependency}",
+    "yet_another_config_lib_v3": ">=${yacl_dependency}",
     "minecraft": "${minecraft_dependency}"
+  },
+  "suggests": {
+    "carpet": "*",
+    "chunk-debug": "*"
   }
 }
