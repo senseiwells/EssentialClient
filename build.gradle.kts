@@ -57,6 +57,7 @@ tasks {
             expand(mutableMapOf(
                 "version" to project.version,
                 "minecraft_dependency" to libs.versions.minecraft.get().replaceAfterLast('.', "x"),
+                "yacl_dependency" to libs.versions.yacl.get(),
                 "fabric_loader_dependency" to libs.versions.fabric.loader.get(),
             ))
         }

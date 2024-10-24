@@ -76,6 +76,8 @@
 
   "key.categories.essential-client": "EssentialClient",
   "key.essential-client.open_menu": "EssentialClient Menu",
+  "key.essential-client.accurate_into": "Accurate Into",
+  "key.essential-client.accurate_reverse": "Accurate Reverse",
 
   "essential-client.menu": "EssentialClient Menu",
   "essential-client.menu.config": "EssentialClient Settings",

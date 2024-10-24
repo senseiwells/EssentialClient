@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "essential-client",
   "version": "${version}",
-  "name": "Essential Client",
-  "description": "A client mod that provides utilities and client support for carpet rules",
+  "name": "EssentialClient",
+  "description": "EssentialClient is a client-side mod that adds many client utilities as well as providing a gui to modify carpet rules!",
   "authors": [
     "Sensei"
   ],
@@ -19,7 +19,8 @@
     "SuperSanta"
   ],
   "contact": {
-    "source": "https://github.com/senseiwells/EssentialClient"
+    "source": "https://github.com/senseiwells/EssentialClient",
+    "issues": "https://github.com/senseiwells/EssentialClient/issues"
   },
   "license": "MIT",
   "icon": "assets/essential-client/icon.png",
@@ -42,8 +43,13 @@
     "essential-client.mixins.json"
   ],
   "depends": {
-    "fabricloader": "*",
     "fabric": "*",
+    "fabricloader": ">=${fabric_loader_dependency}",
+    "yet_another_config_lib_v3": ">=${yacl_dependency}",
     "minecraft": "${minecraft_dependency}"
+  },
+  "suggests": {
+    "carpet": "*",
+    "chunk-debug": "*"
   }
 }
