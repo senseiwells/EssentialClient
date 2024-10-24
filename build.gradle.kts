@@ -70,7 +70,27 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-            
+        ## EssentialClient $modVersion
+        
+        Started re-writing EssentialClient.
+        
+        EssentialClient had many major design flaws making it challenging to maintain,
+        thus this rewrite aims to keep the mod more maintainable throughout the future
+        updates of the game.
+        
+        Some features from previous versions have been removed, either because I do not
+        believe them to fit into this mod or because they are challenging to maintain.
+        
+        I have completely removed the scripting ability from EssentialClient as it had
+        major flaws in its design that made it awkward to maintain and also work with.
+        The long-term goal is to implement a better solution; however, this will take some
+        time.
+        
+        ### Improvements:
+        - Shifted to using YACL for managing configs
+        - `highlightWaterSources` and `highlightLavaSources` has been improved
+        - CarpetClient has been vastly improved
+        - Better implementation of many features (better compatability)
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
@@ -87,6 +107,15 @@ tasks {
                 id = "P7dR8mSH"
             }
             requires {
+                id = "Ha28R6CL"
+            }
+            requires {
+                id = "1eAoo2KR"
+            }
+            optional {
+                id = "zQxjhDPq"
+            }
+            optional {
                 id = "TQTTVgYE"
             }
             optional {
