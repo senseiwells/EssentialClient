@@ -9,7 +9,7 @@ import me.senseiwells.essential_client.features.carpet_client.database.CarpetRul
 object CarpetUtils {
     fun rules(): List<CarpetRule<*>> {
         val managers = arrayListOf<SettingsManager>(CarpetServer.settingsManager)
-        CarpetServer.extensions.mapTo(managers, CarpetExtension::extensionSettingsManager)
+        CarpetServer.extensions.mapNotNullTo(managers, CarpetExtension::extensionSettingsManager)
         return managers.flatMap { it.carpetRules }
     }
 
