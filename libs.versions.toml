@@ -1,7 +1,6 @@
 [versions]
 fabric-loom          = "1.8-SNAPSHOT"
-kotlin-serialization = "1.9.21"
-mod-publish          = "0.7.0"
+mod-publish          = "0.7.4"
 minecraft            = "1.21.3"
 fabric-loader        = "0.16.7"
 parchment            = "1.21:2024.07.28"
@@ -25,6 +24,5 @@ carpet        = { module = "com.github.gnembon:fabric-carpet"        , version.r
 chunk-debug   = { module = "me.senseiwells:chunk-debug"              , version.ref = "chunk-debug" }
 
 [plugins]
-fabric-loom          = { id = "fabric-loom"                              , version.ref = "fabric-loom" }
-mod-publish          = { id = "me.modmuss50.mod-publish-plugin"          , version.ref = "mod-publish" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
+fabric-loom = { id = "fabric-loom"                              , version.ref = "fabric-loom" }
+mod-publish = { id = "me.modmuss50.mod-publish-plugin"          , version.ref = "mod-publish" }

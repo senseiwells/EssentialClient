@@ -4,9 +4,9 @@ plugins {
         .split("+")[0]
 
     kotlin("jvm").version(jvmVersion)
+    kotlin("plugin.serialization").version(jvmVersion)
     alias(libs.plugins.fabric.loom)
     alias(libs.plugins.mod.publish)
-    alias(libs.plugins.kotlin.serialization)
     `maven-publish`
     java
 }
