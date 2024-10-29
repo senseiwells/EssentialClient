@@ -73,6 +73,10 @@ class EssentialClientConfig {
 
     @Bool(colored = true)
     @AutoGen(category = "rendering")
+    @SerialEntry var disableDisplayTextRendering: Boolean = false
+
+    @Bool(colored = true)
+    @AutoGen(category = "rendering")
     @SerialEntry var disableMapRendering: Boolean = false
 
     @Bool(colored = true)

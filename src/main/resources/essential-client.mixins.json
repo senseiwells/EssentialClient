@@ -12,6 +12,7 @@
     "disable_armor_rendering.HumanoidArmorLayerMixin",
     "disable_bossbar_rendering.GuiMixin",
     "disable_damage_tilt.GameRendererMixin",
+    "disable_display_text_rendering.DisplayRendererMixin",
     "disable_hotbar_scrolling.MouseHandlerMixin",
     "disable_join_leave_messages.ChatListenerMixin",
     "disable_map_rendering.ItemFrameRendererMixin",

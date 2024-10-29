@@ -35,6 +35,8 @@
   "yacl3.config.essential-client:config.disableDamageTilt.desc.1": "Disables the camera tilt effect when taking damage",
   "yacl3.config.essential-client:config.disableBossbarRendering": "Disable Bossbar Rendering",
   "yacl3.config.essential-client:config.disableBossbarRendering.desc.1": "This will disable any bossbars from rendering",
+  "yacl3.config.essential-client:config.disableDisplayTextRendering": "Disable Display Text Rendering",
+  "yacl3.config.essential-client:config.disableDisplayTextRendering.desc.1": "This will disable any display texts from rendering",
   "yacl3.config.essential-client:config.disableMapRendering": "Disable Map Rendering",
   "yacl3.config.essential-client:config.disableMapRendering.desc.1": "Disables maps in item frames from rendering",
   "yacl3.config.essential-client:config.disableNametagRendering": "Disable Nametag Rendering",
