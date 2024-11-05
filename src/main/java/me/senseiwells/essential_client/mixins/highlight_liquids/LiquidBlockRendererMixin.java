@@ -213,6 +213,9 @@ public abstract class LiquidBlockRendererMixin {
 			return;
 		}
 		VertexConsumer consumer = ((TranslucentLiquids) this).essentialclient$getTranslucentConsumer();
+		if (consumer == null) {
+			return;
+		}
 		int light = Brightness.FULL_BRIGHT.pack();
 		FloatListIterator iterator = vertices.iterator();
 		while (iterator.hasNext()) {

@@ -42,6 +42,9 @@ public abstract class LiquidBlockRendererMixin implements TranslucentLiquids {
 			return true;
 		}
 		VertexConsumer consumer = this.translucentConsumer.get();
+		if (consumer == null) {
+			return true;
+		}
 		consumer.addVertex(x, y, z)
 			.setColor(red, green, blue, EssentialClientConfig.getInstance().getLavaOpacity())
 			.setUv(u, v)
