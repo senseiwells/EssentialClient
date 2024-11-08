@@ -35,6 +35,7 @@
   },
   "mixins": [
     "creative_walk_speed.PlayerMixin",
+    "custom_time_out.ConnectionMixin",
     "yacl.SimpleOptionFactoryMixin"
   ]
 }

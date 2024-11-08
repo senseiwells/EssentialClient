@@ -55,6 +55,10 @@ class EssentialClientConfig {
     @AutoGen(category = "technical")
     @SerialEntry var creativeWalkSpeed: Float = 1.0F
 
+    @IntField
+    @AutoGen(category = "technical")
+    @SerialEntry var customTimeOut: Int = 30
+
     @Bool(colored = true)
     @AutoGen(category = "technical")
     @SerialEntry var disableHotbarScrolling: Boolean = false

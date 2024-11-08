@@ -25,6 +25,8 @@
   "yacl3.config.essential-client:config.carpetAlwaysSetDefault.desc.1": "This makes it so whenever you set a carpet rule, it automatically sets it to default",
   "yacl3.config.essential-client:config.creativeWalkSpeed": "Creative Walk Speed",
   "yacl3.config.essential-client:config.creativeWalkSpeed.desc.1": "This allows you to override the vanilla walk speed in creative mode",
+  "yacl3.config.essential-client:config.customTimeOut": "Custom Time Out",
+  "yacl3.config.essential-client:config.customTimeOut.desc.1": "This lets you change the amount of seconds until you timeout when connected to a server",
   "yacl3.config.essential-client:config.disableHotbarScrolling": "Disable Hotbar Scrolling",
   "yacl3.config.essential-client:config.disableHotbarScrolling.desc.1": "Prevents you from scrolling to use your hotbar, learn your keybinds!",
 
