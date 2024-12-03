@@ -4,16 +4,17 @@ import me.senseiwells.essential_client.EssentialClient
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.minecraft.client.model.geom.builders.UVPair
+import net.minecraft.client.renderer.texture.TextureAtlas
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.resources.model.Material
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.ResourceManager
-import net.minecraft.world.inventory.InventoryMenu
 import org.jetbrains.annotations.ApiStatus.Internal
 
 object HighlightLiquids: SimpleSynchronousResourceReloadListener {
-    private val highlight = Material(InventoryMenu.BLOCK_ATLAS, EssentialClient.id("block/liquid_highlight"))
+    @Suppress("DEPRECATION")
+    private val highlight = Material(TextureAtlas.LOCATION_BLOCKS, EssentialClient.id("block/liquid_highlight"))
 
     private lateinit var sprite: TextureAtlasSprite
 

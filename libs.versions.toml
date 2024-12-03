@@ -1,16 +1,17 @@
 [versions]
-fabric-loom          = "1.8-SNAPSHOT"
-mod-publish          = "0.7.4"
-minecraft            = "1.21.3"
-fabric-loader        = "0.16.7"
-parchment            = "1.21:2024.07.28"
-fabric-api           = "0.106.1+1.21.3"
-fabric-kotlin        = "1.11.0+kotlin.2.0.0"
-mod-menu             = "12.0.0-beta.1"
-keybinds             = "0.1.11+1.21.3"
-yacl                 = "3.6.1+1.21.2-fabric"
-carpet               = "1.4.158"
-chunk-debug          = "2.1.1+1.21.3"
+minecraft     = "1.21.4"
+fabric-loader = "0.16.9"
+fabric-api    = "0.110.5+1.21.4"
+parchment     = "1.21:2024.07.28"
+fabric-kotlin = "1.11.0+kotlin.2.0.0"
+mod-menu      = "12.0.0-beta.1"
+keybinds      = "0.1.11+1.21.4"
+yacl          = "3.6.1+1.21.2-fabric"
+carpet        = "1.4.160"
+chunk-debug   = "2.1.3+1.21.4"
+
+fabric-loom   = "1.9-SNAPSHOT"
+mod-publish   = "0.7.0"
 
 [libraries]
 minecraft     = { module = "com.mojang:minecraft"                    , version.ref = "minecraft" }
