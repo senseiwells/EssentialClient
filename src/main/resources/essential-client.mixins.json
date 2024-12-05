@@ -28,6 +28,7 @@
     "lava_opacity.SectionCompilerMixin",
     "persistent_chat_history.GuiMixin",
     "spectator_scrolling.MouseHandlerMixin",
+    "tick_rate_affect_chat_key.MinecraftMixin",
     "toggle_tab.GuiMixin"
   ],
   "injectors": {
@@ -36,6 +37,7 @@
   "mixins": [
     "creative_walk_speed.PlayerMixin",
     "custom_time_out.ConnectionMixin",
+    "sneak_to_not_waterlog.BucketItemMixin",
     "yacl.SimpleOptionFactoryMixin"
   ]
 }

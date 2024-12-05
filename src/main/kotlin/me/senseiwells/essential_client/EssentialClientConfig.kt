@@ -27,6 +27,10 @@ class EssentialClientConfig {
     @CustomDescription
     @SerialEntry var betterAccurateBlockPlacement: Boolean = false
 
+    @Bool(colored = true)
+    @AutoGen(category = "gameplay")
+    @SerialEntry var sneakToNotWaterlog: Boolean = false
+
     @FloatSlider(min = 0.0F, max = 10.0F, step = 0.5F)
     @AutoGen(category = "gameplay")
     @SerialEntry var spectatorScrollMaxSpeed: Float = 1.0F
@@ -34,6 +38,10 @@ class EssentialClientConfig {
     @FloatSlider(min = 0.0F, max = 10.0F, step = 0.5F)
     @AutoGen(category = "gameplay")
     @SerialEntry var spectatorScrollSensitivity: Float = 1.0F
+
+    @Bool(colored = true)
+    @AutoGen(category = "gameplay")
+    @SerialEntry var tickRateAffectsChatKey: Boolean = true
 
     @IntField
     @AutoGen(category = "technical")
