@@ -43,7 +43,7 @@
     "essential-client.mixins.json"
   ],
   "depends": {
-    "fabric": "*",
+    "fabric-api": "*",
     "fabricloader": ">=${fabric_loader_dependency}",
     "yet_another_config_lib_v3": ">=${yacl_dependency}",
     "minecraft": "${minecraft_dependency}"

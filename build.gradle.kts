@@ -17,6 +17,7 @@ repositories {
     maven("https://maven.terraformersmc.com/")
     maven("https://maven.isxander.dev/releases")
     maven("https://maven.supersanta.me/snapshots")
+    maven("https://api.modrinth.com/maven")
     maven("https://jitpack.io")
 }
 
@@ -43,6 +44,7 @@ dependencies {
 
     modCompileOnly(libs.carpet)
     modCompileOnly(libs.chunk.debug)
+    modCompileOnly(libs.sodium)
 }
 
 java {

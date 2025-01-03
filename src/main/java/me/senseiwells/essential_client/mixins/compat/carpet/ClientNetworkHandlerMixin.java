@@ -1,4 +1,4 @@
-package me.senseiwells.essential_client.mixins.carpet_client;
+package me.senseiwells.essential_client.mixins.compat.carpet;
 
 import carpet.network.CarpetClient;
 import carpet.network.ClientNetworkHandler;

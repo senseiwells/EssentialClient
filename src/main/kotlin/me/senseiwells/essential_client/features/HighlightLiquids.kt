@@ -16,7 +16,9 @@ object HighlightLiquids: SimpleSynchronousResourceReloadListener {
     @Suppress("DEPRECATION")
     private val highlight = Material(TextureAtlas.LOCATION_BLOCKS, EssentialClient.id("block/liquid_highlight"))
 
-    private lateinit var sprite: TextureAtlasSprite
+    @Internal
+    @JvmStatic
+    lateinit var sprite: TextureAtlasSprite
 
     @Internal
     @JvmStatic

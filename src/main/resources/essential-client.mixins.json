@@ -8,7 +8,7 @@
     "better_accurate_block_placement.BlockPlaceContextMixin",
     "better_accurate_block_placement.LocalPlayerMixin",
     "carpet_always_set_default.ClientPacketListenerMixin",
-    "carpet_client.ClientNetworkHandlerMixin",
+    "compat.carpet.ClientNetworkHandlerMixin",
     "disable_armor_rendering.HumanoidArmorLayerMixin",
     "disable_bossbar_rendering.GuiMixin",
     "disable_damage_tilt.GameRendererMixin",
@@ -35,6 +35,8 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "compat.sodium.DefaultFluidRenderMixin",
+    "compat.sodium.DefaultMaterialsMixin",
     "creative_walk_speed.PlayerMixin",
     "custom_time_out.ConnectionMixin",
     "sneak_to_not_waterlog.BucketItemMixin",
