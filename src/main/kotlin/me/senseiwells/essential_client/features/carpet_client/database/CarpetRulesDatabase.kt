@@ -19,10 +19,12 @@ import me.senseiwells.essential_client.utils.CarpetUtils.matches
 import me.senseiwells.essential_client.utils.VersionUtils.getMajorVersion
 import net.minecraft.SharedConstants
 import net.minecraft.Util
+import net.minecraft.client.Minecraft
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URI
 import java.util.concurrent.CompletableFuture
+import java.util.function.Supplier
 import kotlin.io.path.getLastModifiedTime
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
@@ -166,7 +168,10 @@ object CarpetRulesDatabase {
     }
 
     private fun resolveDataWithLocalCarpet(data: CarpetRuleData): CarpetRuleData {
-        val rule = CarpetUtils.rules().find { it.matches(data) }
+        // We push to the main thread because carpet may not be initialized yet...
+        val rule = Minecraft.getInstance().submit(Supplier {
+            CarpetUtils.rules().find { it.matches(data) }
+        }).join()
         if (rule != null) {
             return data.copy(
                 type = CarpetOptionType.resolve(rule.type(), rule.categories()),
