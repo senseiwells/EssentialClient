@@ -21,7 +21,7 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val modVersion = "2.1.0-beta.1"
+val modVersion = "2.1.0"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -71,13 +71,10 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        Update to 1.21.4
-        
-        Added:
-        - `sneakToNotWaterlog` which allows you to bypass waterlogging by holding your sneak key
-        - `tickRateAffectsChatKey` which allows you to bypass the delay when opening chat with lower tick rates
+        - Fixed highlight liquids not working with sodium
+        - Fixed error with carpet client
         """.trimIndent()
-        type = BETA
+        type = STABLE
         modLoaders.add("fabric")
 
         displayName = "EssentialClient $modVersion for ${libs.versions.minecraft.get()}"
