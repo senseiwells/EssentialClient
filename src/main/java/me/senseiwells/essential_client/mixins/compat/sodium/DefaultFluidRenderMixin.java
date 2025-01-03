@@ -37,18 +37,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Arrays;
 import java.util.List;
 
-@Debug(export = true)
 @Mixin(value = DefaultFluidRenderer.class, remap = false)
 public abstract class DefaultFluidRenderMixin {
 	@Unique private final ModelQuadViewMutable highlightQuad = new ModelQuad();
 
-	@Shadow protected abstract boolean isSideExposed(BlockAndTintGetter world, int x, int y, int z, Direction dir, float height);
-
-	@Shadow protected abstract void writeQuad(ChunkModelBuilder builder, TranslucentGeometryCollector collector, Material material, BlockPos offset, ModelQuadView quad, ModelQuadFacing facing, boolean flip);
-
 	@Shadow @Final private float[] brightness;
 
 	@Shadow @Final private int[] quadColors;
+
+	@Shadow protected abstract boolean isSideExposed(BlockAndTintGetter world, int x, int y, int z, Direction dir, float height);
+
+	@Shadow protected abstract void writeQuad(ChunkModelBuilder builder, TranslucentGeometryCollector collector, Material material, BlockPos offset, ModelQuadView quad, ModelQuadFacing facing, boolean flip);
 
 	@Inject(
 		method = "render",
