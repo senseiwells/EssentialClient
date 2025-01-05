@@ -21,7 +21,7 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val modVersion = "2.1.0"
+val modVersion = "2.1.1"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -71,8 +71,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Fixed highlight liquids not working with sodium
-        - Fixed error with carpet client
+        - Fixed remapping issue causing a crash when opening a world
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")

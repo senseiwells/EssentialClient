@@ -37,13 +37,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Arrays;
 import java.util.List;
 
-@Mixin(value = DefaultFluidRenderer.class, remap = false)
+@Mixin(DefaultFluidRenderer.class)
 public abstract class DefaultFluidRenderMixin {
 	@Unique private final ModelQuadViewMutable highlightQuad = new ModelQuad();
 
-	@Shadow @Final private float[] brightness;
+	@Shadow(remap = false) @Final private float[] brightness;
 
-	@Shadow @Final private int[] quadColors;
+	@Shadow(remap = false) @Final private int[] quadColors;
 
 	@Shadow protected abstract boolean isSideExposed(BlockAndTintGetter world, int x, int y, int z, Direction dir, float height);
 
@@ -129,7 +129,8 @@ public abstract class DefaultFluidRenderMixin {
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;setVertex(Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadViewMutable;IFFFFF)V"
-		)
+		),
+		remap = false
 	)
 	private boolean onVertex(
 		ModelQuadViewMutable quad,
@@ -189,7 +190,7 @@ public abstract class DefaultFluidRenderMixin {
 		method = "render",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/core/Direction;getAxis()Lnet/minecraft/core/Direction$Axis;"
+			target = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;fromDirection(Lnet/minecraft/core/Direction;)Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;"
 		)
 	)
 	private void onAxis(
