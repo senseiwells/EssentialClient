@@ -164,14 +164,14 @@ object CarpetRulesDatabase {
         if (!CarpetClient.hasLocalCarpet) {
             return rules
         }
-        return rules.map(::resolveDataWithLocalCarpet)
+        // We push to the main thread because carpet may not be initialized yet...
+        return Minecraft.getInstance().submit(Supplier {
+            rules.map(::resolveDataWithLocalCarpet)
+        }).join()
     }
 
     private fun resolveDataWithLocalCarpet(data: CarpetRuleData): CarpetRuleData {
-        // We push to the main thread because carpet may not be initialized yet...
-        val rule = Minecraft.getInstance().submit(Supplier {
-            CarpetUtils.rules().find { it.matches(data) }
-        }).join()
+        val rule = CarpetUtils.rules().find { it.matches(data) }
         if (rule != null) {
             return data.copy(
                 type = CarpetOptionType.resolve(rule.type(), rule.categories()),

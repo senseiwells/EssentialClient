@@ -19,9 +19,10 @@ repositories {
     maven("https://maven.supersanta.me/snapshots")
     maven("https://api.modrinth.com/maven")
     maven("https://jitpack.io")
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val modVersion = "2.1.1"
+val modVersion = "2.1.2"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -45,6 +46,8 @@ dependencies {
     modCompileOnly(libs.carpet)
     modCompileOnly(libs.chunk.debug)
     modCompileOnly(libs.sodium)
+
+    modRuntimeOnly(libs.dev.auth)
 }
 
 java {
@@ -71,7 +74,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Fixed remapping issue causing a crash when opening a world
+        - Fixed deadlocking issue with Carpet
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
