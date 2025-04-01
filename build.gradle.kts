@@ -12,7 +12,6 @@ plugins {
 }
 
 repositories {
-    mavenLocal() // FIXME:
     mavenCentral()
     maven("https://maven.parchmentmc.org/")
     maven("https://maven.terraformersmc.com/")
@@ -23,7 +22,7 @@ repositories {
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val modVersion = "2.1.2"
+val modVersion = "2.2.0"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -75,7 +74,9 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Fixed deadlocking issue with Carpet
+        - Updated to 1.21.5
+        - Added "Fix MacOs Cursor Jumping" which fixes an issue where jumping around with the cursor 
+        in text boxes behaves differently than expected on Macos
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
