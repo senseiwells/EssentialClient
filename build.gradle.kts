@@ -12,6 +12,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal() // FIXME:
     mavenCentral()
     maven("https://maven.parchmentmc.org/")
     maven("https://maven.terraformersmc.com/")

@@ -13,7 +13,7 @@ public class MouseHandlerMixin {
 		method = "onScroll",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedHotbarSlot(I)V"
+			target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedSlot(I)V"
 		)
 	)
 	private boolean shouldScrollHotbar(Inventory instance, int i) {

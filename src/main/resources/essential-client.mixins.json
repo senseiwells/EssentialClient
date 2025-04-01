@@ -22,6 +22,7 @@
     "disable_toasts.ToastManagerMixin",
     "display_time_played.PauseScreenMixin",
     "essential_client_button.PauseScreenMixin",
+    "fix_macos_cursor_jumping.EditBoxMixin",
     "highlight_liquids.LiquidBlockRendererMixin",
     "lava_opacity.BlockRenderDispatcherMixin",
     "lava_opacity.LiquidBlockRendererMixin",

@@ -14,14 +14,14 @@ public class LocalPlayerMixin {
 		method = "sendPosition",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$PosRot;<init>(DDDFFZZ)V"
+			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$PosRot;<init>(Lnet/minecraft/world/phys/Vec3;FFZZ)V"
 		)
 	)
 	private void onConstructPosRot(Args args) {
 		Vec2 rotation = BetterAccurateBlockPlacement.getFakeRotation();
 		if (rotation != null) {
-			args.set(3, rotation.y);
-			args.set(4, rotation.x);
+			args.set(1, rotation.y);
+			args.set(2, rotation.x);
 		}
 	}
 

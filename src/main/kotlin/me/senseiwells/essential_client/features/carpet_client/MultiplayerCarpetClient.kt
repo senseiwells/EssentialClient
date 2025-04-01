@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import kotlin.jvm.optionals.getOrNull
 
 class MultiplayerCarpetClient(
     private val connection: ClientPacketListener
@@ -100,11 +101,11 @@ class MultiplayerCarpetClient(
     }
 
     private inline fun forEachRule(tag: CompoundTag, consumer: (String, String, String) -> Unit) {
-        for (key in tag.allKeys) {
-            val outline = tag.getCompound(key)
-            val ruleName = outline.getString("Rule")
-            val ruleValue = outline.getString("Value")
-            val manager = outline.getString("Manager").ifBlank { "carpet" }
+        for (key in tag.keySet()) {
+            val outline = tag.getCompound(key).getOrNull() ?: continue
+            val ruleName = outline.getString("Rule").getOrNull() ?: continue
+            val ruleValue = outline.getString("Value").getOrNull() ?: continue
+            val manager = outline.getString("Manager").orElse("").ifBlank { "carpet" }
             consumer.invoke(ruleName, ruleValue, manager)
         }
     }
