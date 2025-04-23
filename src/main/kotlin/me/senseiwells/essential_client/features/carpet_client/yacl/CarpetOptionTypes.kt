@@ -45,6 +45,7 @@ sealed interface CarpetOptionType<T> {
             return when (type) {
                 Boolean::class.javaObjectType -> BooleanCarpetOptionType
                 Int::class.javaObjectType -> IntCarpetOptionType
+                Long::class.javaObjectType -> LongCarpetOptionType
                 Float::class.javaObjectType -> FloatCarpetOptionType
                 Double::class.javaObjectType -> DoubleCarpetOptionType
                 Enum::class.java -> EnumCarpetOptionType(type)

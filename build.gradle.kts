@@ -22,7 +22,7 @@ repositories {
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val modVersion = "2.2.0"
+val modVersion = "2.2.1"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -74,9 +74,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Updated to 1.21.5
-        - Added "Fix MacOs Cursor Jumping" which fixes an issue where jumping around with the cursor 
-        in text boxes behaves differently than expected on Macos
+        - Fix a bug where Long typed rules would crash when opening CarpetClient gui
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
