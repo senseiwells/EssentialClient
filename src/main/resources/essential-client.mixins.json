@@ -24,6 +24,7 @@
     "essential_client_button.PauseScreenMixin",
     "fix_macos_cursor_jumping.EditBoxMixin",
     "highlight_liquids.LiquidBlockRendererMixin",
+    "ignore_invalid_chat_messages.ClientPacketListenerMixin",
     "lava_opacity.BlockRenderDispatcherMixin",
     "lava_opacity.LiquidBlockRendererMixin",
     "lava_opacity.SectionCompilerMixin",

@@ -47,6 +47,10 @@ class EssentialClientConfig {
     @AutoGen(category = "gameplay")
     @SerialEntry var fixMacOSCursorJumping: Boolean = false
 
+    @Bool(colored = true)
+    @AutoGen(category = "gameplay")
+    @SerialEntry var ignoreInvalidChatMessages: Boolean = false
+
     @IntField
     @AutoGen(category = "technical")
     @SerialEntry var announceAfk: Int = 0

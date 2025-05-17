@@ -15,6 +15,8 @@
   "yacl3.config.essential-client:config.tickRateAffectsChatKey.desc.1": "Whether the tick rate affects your chat key, when true, with a lower tick rate it will take longer to open chat (vanilla behaviour)",
   "yacl3.config.essential-client:config.fixMacOSCursorJumping": "Fix MacOS Cursor Jumping",
   "yacl3.config.essential-client:config.fixMacOSCursorJumping.desc.1": "Fixes the position of where the cursor jumps in text boxes when holding command or option to be consistent with MacOS",
+  "yacl3.config.essential-client:config.ignoreInvalidChatMessages": "Ignore Invalid Chat Messages",
+  "yacl3.config.essential-client:config.ignoreInvalidChatMessages.desc.1": "Ignores invalid chat messages and outputs them as system messages instead",
 
   "yacl3.config.essential-client:config.category.technical": "Technical",
   "yacl3.config.essential-client:config.announceAfk": "Announce AFK",
