@@ -22,7 +22,7 @@ repositories {
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val modVersion = "2.2.1"
+val modVersion = "2.2.2"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -56,10 +56,10 @@ java {
 
 tasks {
     processResources {
-        inputs.property("version", project.version)
+        inputs.property("version", releaseVersion)
         filesMatching("fabric.mod.json") {
             expand(mutableMapOf(
-                "version" to project.version,
+                "version" to releaseVersion,
                 "minecraft_dependency" to libs.versions.minecraft.get().replaceAfterLast('.', "x"),
                 "yacl_dependency" to libs.versions.yacl.get(),
                 "fabric_loader_dependency" to libs.versions.fabric.loader.get(),
@@ -74,7 +74,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Fix a bug where Long typed rules would crash when opening CarpetClient gui
+        - Added `IgnoreInvalidChat` option which stops the client from dcing after receiving invalid chat messages
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")

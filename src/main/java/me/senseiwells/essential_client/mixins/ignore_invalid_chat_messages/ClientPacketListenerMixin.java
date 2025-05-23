@@ -24,7 +24,8 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
         method = "handlePlayerChat",
         at = @At(
             value = "INVOKE",
-            target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"
+            target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
+            remap = false
         ),
         cancellable = true
     )
@@ -40,6 +41,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
         at = @At(
             value = "INVOKE",
             target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V",
+            remap = false,
             ordinal = 0
         ),
         cancellable = true
