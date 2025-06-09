@@ -74,7 +74,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Added `IgnoreInvalidChat` option which stops the client from dcing after receiving invalid chat messages
+        - Re-implement crafting hax
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
