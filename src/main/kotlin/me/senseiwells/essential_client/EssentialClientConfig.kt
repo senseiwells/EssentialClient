@@ -29,6 +29,10 @@ class EssentialClientConfig {
 
     @Bool(colored = true)
     @AutoGen(category = "gameplay")
+    @SerialEntry var craftingHax: Boolean = false
+
+    @Bool(colored = true)
+    @AutoGen(category = "gameplay")
     @SerialEntry var sneakToNotWaterlog: Boolean = false
 
     @FloatSlider(min = 0.0F, max = 10.0F, step = 0.5F)

@@ -9,6 +9,7 @@
     "better_accurate_block_placement.LocalPlayerMixin",
     "carpet_always_set_default.ClientPacketListenerMixin",
     "compat.carpet.ClientNetworkHandlerMixin",
+    "crafting_hax.RecipeBookComponentMixin",
     "disable_armor_rendering.HumanoidArmorLayerMixin",
     "disable_bossbar_rendering.GuiMixin",
     "disable_damage_tilt.GameRendererMixin",

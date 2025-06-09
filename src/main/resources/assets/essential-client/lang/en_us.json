@@ -5,6 +5,8 @@
   "yacl3.config.essential-client:config.betterAccurateBlockPlacement": "Better Accurate Block Placement",
   "yacl3.config.essential-client:config.betterAccurateBlockPlacement.desc.1": "This is the same as accurate block placement for tweakeroo but without the need for any server-side mods",
   "yacl3.config.essential-client:config.betterAccurateBlockPlacement.desc.2": "This uses some packet hacking, which may flag anti-cheat on some servers",
+  "yacl3.config.essential-client:config.craftingHax": "Crafting Hax",
+  "yacl3.config.essential-client:config.craftingHax.desc.1": "Allows you to drop crafted recipes by holding control when crafting a recipe",
   "yacl3.config.essential-client:config.sneakToNotWaterlog": "Sneak To Not Waterlog",
   "yacl3.config.essential-client:config.sneakToNotWaterlog.desc.1": "Allows you to sneak when using a bucket on a waterloggable block to avoid waterlogging",
   "yacl3.config.essential-client:config.spectatorScrollMaxSpeed": "Increase Spectator Scroll Speed",
