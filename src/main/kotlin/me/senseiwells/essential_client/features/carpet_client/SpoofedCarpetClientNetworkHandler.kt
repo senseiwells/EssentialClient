@@ -20,10 +20,10 @@ object SpoofedCarpetClientNetworkHandler {
     }
 
     private fun handleCarpetPacket(payload: CarpetPayload, context: ClientPlayNetworking.Context) {
-        for (key in payload.data.keySet()) {
+        for (key in payload.data.allKeys) {
             when (key) {
                 "69" -> this.handleCarpetHello(context)
-                "Rules" -> this.handleCarpetRules(payload.data.getCompoundOrEmpty(key))
+                "Rules" -> this.handleCarpetRules(payload.data.getCompound(key))
             }
         }
     }

@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 @Mixin(Screenshot.class)
 public class ScreenshotMixin {
 	@WrapWithCondition(
-		method = "method_22691",
+		method = "method_1661",
 		at = @At(
 			value = "INVOKE",
 			target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V",

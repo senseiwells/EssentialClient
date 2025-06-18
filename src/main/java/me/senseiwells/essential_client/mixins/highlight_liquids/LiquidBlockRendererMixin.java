@@ -39,7 +39,7 @@ public abstract class LiquidBlockRendererMixin {
 	}
 
 	@Shadow
-	private static boolean isFaceOccludedBySelf(BlockState blockState, Direction direction) {
+	private static boolean isFaceOccludedBySelf(BlockGetter level, BlockPos pos, BlockState state, Direction face) {
 		return false;
 	}
 
@@ -71,27 +71,29 @@ public abstract class LiquidBlockRendererMixin {
 		method = "tesselate",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;shouldRenderFace(Lnet/minecraft/world/level/material/FluidState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/material/FluidState;)Z"
+			target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;shouldRenderFace(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/material/FluidState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/material/FluidState;)Z"
 		),
 		slice = @Slice(
 			from = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;isFaceOccludedByNeighbor(Lnet/minecraft/core/Direction;FLnet/minecraft/world/level/block/state/BlockState;)Z"
+				target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;isFaceOccludedByNeighbor(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;FLnet/minecraft/world/level/block/state/BlockState;)Z"
 			)
 		)
 	)
 	private boolean shouldRenderFace(
-		FluidState fluid,
-		BlockState block,
-		Direction direction,
-		FluidState neighbor,
+		BlockAndTintGetter level,
+		BlockPos pos,
+		FluidState fluidState,
+		BlockState blockState,
+		Direction side,
+		FluidState neighborFluid,
 		Operation<Boolean> original,
 		@Share("vertices") LocalRef<FloatList> ref
 	) {
 		if (ref.get() == null) {
-			return original.call(fluid, block, direction, neighbor);
+			return original.call(level, pos, fluidState, blockState, side, neighborFluid);
 		}
-		return !isFaceOccludedBySelf(block, direction);
+		return !isFaceOccludedBySelf(level, pos, blockState, side);
 	}
 
 	@WrapWithCondition(
@@ -184,10 +186,7 @@ public abstract class LiquidBlockRendererMixin {
 		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight
 	) {
 		FloatList vertices = ref.get();
-		if (vertices == null) {
-			return true;
-		}
-		if (shouldRenderHighlight.get()) {
+		if (shouldRenderHighlight.get() && vertices != null) {
 			vertices.add(x);
 			vertices.add(y);
 			vertices.add(z);
@@ -213,9 +212,6 @@ public abstract class LiquidBlockRendererMixin {
 			return;
 		}
 		VertexConsumer consumer = ((TranslucentLiquids) this).essentialclient$getTranslucentConsumer();
-		if (consumer == null) {
-			return;
-		}
 		int light = Brightness.FULL_BRIGHT.pack();
 		FloatListIterator iterator = vertices.iterator();
 		while (iterator.hasNext()) {

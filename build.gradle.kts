@@ -74,7 +74,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Re-implement crafting hax
+        - Backport newest features/fixes to 1.21.1
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")

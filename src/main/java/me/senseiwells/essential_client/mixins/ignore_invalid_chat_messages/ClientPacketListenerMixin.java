@@ -24,22 +24,6 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
         method = "handlePlayerChat",
         at = @At(
             value = "INVOKE",
-            target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V",
-            remap = false
-        ),
-        cancellable = true
-    )
-    private void onHandleInvalidOrderedChat(ClientboundPlayerChatPacket packet, CallbackInfo ci) {
-        if (EssentialClientConfig.getInstance().getIgnoreInvalidChatMessages()) {
-            this.handleInvalidChat(packet);
-            ci.cancel();
-        }
-    }
-
-    @Inject(
-        method = "handlePlayerChat",
-        at = @At(
-            value = "INVOKE",
             target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V",
             remap = false,
             ordinal = 0

@@ -59,7 +59,7 @@ object BetterAccurateBlockPlacement {
         if (this.rotation != rotation) {
             this.rotation = rotation
             player.connection.send(ServerboundMovePlayerPacket.Rot(
-                rotation.y, rotation.x, player.onGround(), player.horizontalCollision
+                rotation.y, rotation.x, player.onGround()
             ))
         }
         this.direction = facing

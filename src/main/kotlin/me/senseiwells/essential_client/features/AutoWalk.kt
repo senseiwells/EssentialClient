@@ -4,7 +4,6 @@ import me.senseiwells.essential_client.EssentialClientConfig
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.Options
-import net.minecraft.client.player.ClientInput
 import net.minecraft.network.chat.Component
 import org.jetbrains.annotations.ApiStatus.Internal
 
