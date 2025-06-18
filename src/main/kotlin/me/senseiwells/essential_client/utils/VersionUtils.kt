@@ -4,6 +4,6 @@ import net.minecraft.WorldVersion
 
 object VersionUtils {
     fun WorldVersion.getMajorVersion(): String {
-        return this.name.replaceAfterLast('.', "")
+        return this.name().replaceAfterLast('.', "")
     }
 }

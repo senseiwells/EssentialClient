@@ -18,10 +18,11 @@ public abstract class ClientPacketListenerMixin {
 	@Shadow public abstract void sendCommand(String command);
 
 	@ModifyExpressionValue(
-		method = {"sendCommand", "sendUnsignedCommand"},
+		method = {"sendCommand"},
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;parseCommand(Ljava/lang/String;)Lcom/mojang/brigadier/ParseResults;"
+			target = "Lcom/mojang/brigadier/CommandDispatcher;parse(Ljava/lang/String;Ljava/lang/Object;)Lcom/mojang/brigadier/ParseResults;",
+			remap = false
 		)
 	)
 	private ParseResults<SharedSuggestionProvider> onSendCommand(

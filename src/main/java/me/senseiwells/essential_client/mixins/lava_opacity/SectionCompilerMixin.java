@@ -6,7 +6,9 @@ import me.senseiwells.essential_client.ducks.TranslucentLiquids;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SectionBufferBuilderPack;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.chunk.RenderChunkRegion;
+// import net.minecraft.client.renderer.chunk.RenderChunkRegion;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.chunk.RenderSectionRegion;
 import net.minecraft.client.renderer.chunk.SectionCompiler;
 import net.minecraft.core.SectionPos;
 import org.spongepowered.asm.mixin.Final;
@@ -20,9 +22,9 @@ import java.util.Map;
 
 @Mixin(SectionCompiler.class)
 public abstract class SectionCompilerMixin {
-	@Shadow protected abstract BufferBuilder getOrBeginLayer(Map<RenderType, BufferBuilder> bufferLayers, SectionBufferBuilderPack sectionBufferBuilderPack, RenderType renderType);
-
 	@Shadow @Final private BlockRenderDispatcher blockRenderer;
+
+	@Shadow protected abstract BufferBuilder getOrBeginLayer(Map<ChunkSectionLayer, BufferBuilder> map, SectionBufferBuilderPack sectionBufferBuilderPack, ChunkSectionLayer chunkSectionLayer);
 
 	@Inject(
 		method = "compile",
@@ -33,13 +35,13 @@ public abstract class SectionCompilerMixin {
 	)
 	private void onRenderFluid(
 		SectionPos sectionPos,
-		RenderChunkRegion region,
+		RenderSectionRegion region,
 		VertexSorting vertexSorting,
 		SectionBufferBuilderPack sectionBufferBuilderPack,
 		CallbackInfoReturnable<SectionCompiler.Results> cir,
-		@Local Map<RenderType, BufferBuilder> cache
+		@Local Map<ChunkSectionLayer, BufferBuilder> cache
 	) {
-		BufferBuilder translucent = this.getOrBeginLayer(cache, sectionBufferBuilderPack, RenderType.translucent());
+		BufferBuilder translucent = this.getOrBeginLayer(cache, sectionBufferBuilderPack, ChunkSectionLayer.TRANSLUCENT);
 		((TranslucentLiquids) this.blockRenderer).essentialclient$setTranslucentConsumer(translucent);
 	}
 

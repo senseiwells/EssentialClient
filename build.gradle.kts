@@ -22,7 +22,7 @@ repositories {
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val modVersion = "2.2.3"
+val modVersion = "2.2.4"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -45,7 +45,7 @@ dependencies {
 
     modCompileOnly(libs.carpet)
     modCompileOnly(libs.chunk.debug)
-    modCompileOnly(libs.sodium)
+    modImplementation(libs.sodium)
 
     modRuntimeOnly(libs.dev.auth)
 }
@@ -74,7 +74,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Re-implement crafting hax
+        - Update to 1.21.6
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
