@@ -30,6 +30,7 @@
     "lava_opacity.LiquidBlockRendererMixin",
     "lava_opacity.SectionCompilerMixin",
     "persistent_chat_history.GuiMixin",
+    "remove_warn_invalid_chunk.ClientChunkCacheMixin",
     "spectator_scrolling.MouseHandlerMixin",
     "tick_rate_affect_chat_key.MinecraftMixin",
     "toggle_tab.GuiMixin"

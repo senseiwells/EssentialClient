@@ -162,6 +162,10 @@ class EssentialClientConfig {
     @AutoGen(category = "rendering")
     @SerialEntry var toggleTab: Boolean = false
 
+    @Bool(colored = true)
+    @AutoGen(category = "misc")
+    @SerialEntry var removeWarnInvalidChunk: Boolean = false
+
     @Keybinding(id = ESSENTIAL_MENU_KEYBIND)
     @AutoGen(category = "keybinds")
     @SerialEntry var essentialClientMenuKeys: InputKeys = InputKeys.of(InputConstants.KEY_F7)

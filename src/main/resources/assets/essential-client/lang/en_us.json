@@ -78,6 +78,10 @@
   "yacl3.config.essential-client:config.toggleTab": "Toggle Tab",
   "yacl3.config.essential-client:config.toggleTab.desc.1": "This allows you to toggle tab instead of holding it to see the tab menu",
 
+  "yacl3.config.essential-client:config.category.misc": "Miscellaneous",
+  "yacl3.config.essential-client:config.removeWarnInvalidChunk": "Remove Warn Invalid Chunk",
+  "yacl3.config.essential-client:config.removeWarnInvalidChunk.desc.1": "Removes invalid chunk warnings from your logs",
+
   "yacl3.config.essential-client:config.category.keybinds": "Keybinds",
   "yacl3.config.essential-client:config.essentialClientMenuKeys": "EssentialClient Menu Keybind",
   "yacl3.config.essential-client:config.essentialClientMenuKeys.desc.1": "This is the keybind to open the EssentialClient Menu",
