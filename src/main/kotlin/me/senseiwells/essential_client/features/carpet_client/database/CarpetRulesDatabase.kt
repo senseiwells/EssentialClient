@@ -4,8 +4,6 @@ import carpet.api.settings.CarpetRule
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
-import kotlinx.datetime.Clock
-import kotlinx.datetime.toKotlinInstant
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -28,6 +26,9 @@ import java.util.function.Supplier
 import kotlin.io.path.getLastModifiedTime
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.toKotlinInstant
 
 object CarpetRulesDatabase {
     private val cache = EssentialClientConfig.resolve("carpet_rules.json")
@@ -84,6 +85,7 @@ object CarpetRulesDatabase {
         return rulesByMod
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun getCarpetRules(): List<CarpetRuleData> {
         try {
             val lastModified = this.cache.getLastModifiedTime().toInstant().toKotlinInstant()

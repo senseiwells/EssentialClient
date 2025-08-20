@@ -1,11 +1,13 @@
 package me.senseiwells.essential_client.features
 
-import kotlinx.datetime.Clock
 import me.senseiwells.essential_client.EssentialClientConfig
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import org.apache.commons.lang3.time.DurationFormatUtils
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 object DisplayStartTime {
     private val start = Clock.System.now()
 
