@@ -5,7 +5,8 @@ import me.senseiwells.essential_client.EssentialClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.InputQuirks;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,11 +42,12 @@ public abstract class EditBoxMixin extends AbstractWidget {
         at = @At("HEAD"),
         cancellable = true
     )
-    private void onDeleteText(int count, CallbackInfo ci) {
-        if (Minecraft.ON_OSX && EssentialClientConfig.getInstance().getFixMacOSCursorJumping()) {
-            if (Screen.hasControlDown()) {
+    private void onDeleteText(int count, boolean bl, CallbackInfo ci) {
+        if (InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY && EssentialClientConfig.getInstance().getFixMacOSCursorJumping()) {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.hasControlDown()) {
                 this.insertText("");
-            } else if (Screen.hasAltDown()) {
+            } else if (minecraft.hasAltDown()) {
                 this.deleteWords(count);
             } else {
                 this.deleteChars(count);
@@ -60,27 +62,27 @@ public abstract class EditBoxMixin extends AbstractWidget {
         at = @At("HEAD"),
         cancellable = true
     )
-    private void onKeyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
         if (this.isActive() && this.isFocused()) {
-            if (Minecraft.ON_OSX && EssentialClientConfig.getInstance().getFixMacOSCursorJumping()) {
-                switch (keyCode) {
+            if (InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY && EssentialClientConfig.getInstance().getFixMacOSCursorJumping()) {
+                switch (event.key()) {
                     case InputConstants.KEY_RIGHT -> {
-                        if (Screen.hasControlDown()) {
-                            this.moveCursorToEnd(Screen.hasShiftDown());
-                        } else if (Screen.hasAltDown()) {
-                            this.moveCursorTo(this.getWordPosition(1), Screen.hasShiftDown());
+                        if (event.hasControlDown()) {
+                            this.moveCursorToEnd(event.hasShiftDown());
+                        } else if (event.hasAltDown()) {
+                            this.moveCursorTo(this.getWordPosition(1), event.hasShiftDown());
                         } else {
-                            this.moveCursor(1, Screen.hasShiftDown());
+                            this.moveCursor(1, event.hasShiftDown());
                         }
                         cir.setReturnValue(true);
                     }
                     case InputConstants.KEY_LEFT ->  {
-                        if (Screen.hasControlDown()) {
-                            this.moveCursorToStart(Screen.hasShiftDown());
-                        } else if (Screen.hasAltDown()) {
-                            this.moveCursorTo(this.getWordPosition(-1), Screen.hasShiftDown());
+                        if (event.hasControlDown()) {
+                            this.moveCursorToStart(event.hasShiftDown());
+                        } else if (event.hasAltDown()) {
+                            this.moveCursorTo(this.getWordPosition(-1), event.hasShiftDown());
                         } else {
-                            this.moveCursor(-1, Screen.hasShiftDown());
+                            this.moveCursor(-1, event.hasShiftDown());
                         }
                         cir.setReturnValue(true);
                     }

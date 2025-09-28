@@ -39,13 +39,13 @@ dependencies {
     modImplementation(libs.fabric.api)
     modImplementation(libs.fabric.kotlin)
 
-    modImplementation(libs.mod.menu)
     modImplementation(libs.yacl)
     include(modImplementation(libs.keybinds.get())!!)
 
+    modCompileOnly(libs.mod.menu)
     modCompileOnly(libs.carpet)
     modCompileOnly(libs.chunk.debug)
-    modImplementation(libs.sodium)
+    modCompileOnly(libs.sodium)
 
     modRuntimeOnly(libs.dev.auth)
 }

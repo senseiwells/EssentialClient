@@ -30,15 +30,15 @@ public class RecipeBookComponentMixin<T extends RecipeBookMenu> {
     private void onHandlePlaceRecipe(
         RecipeCollection recipes,
         RecipeDisplayId recipe,
+        boolean useMaxItems,
         CallbackInfoReturnable<Boolean> cir
     ) {
-        if (EssentialClientConfig.getInstance().getCraftingHax() && Screen.hasControlDown()) {
+        if (EssentialClientConfig.getInstance().getCraftingHax() && this.minecraft.hasControlDown()) {
             int containerId = this.menu.containerId;
-            boolean craftMax = Screen.hasShiftDown();
             MultiPlayerGameMode mode = this.minecraft.gameMode;
             if (mode != null) {
                 mode.handleInventoryMouseClick(
-                    containerId, 0, craftMax ? 1 : 0, ClickType.THROW, this.minecraft.player
+                    containerId, 0, useMaxItems ? 1 : 0, ClickType.THROW, this.minecraft.player
                 );
             }
         }

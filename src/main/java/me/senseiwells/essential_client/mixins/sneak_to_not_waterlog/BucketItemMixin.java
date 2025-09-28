@@ -1,5 +1,6 @@
 package me.senseiwells.essential_client.mixins.sneak_to_not_waterlog;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -12,18 +13,17 @@ import org.spongepowered.asm.mixin.injection.*;
 
 @Mixin(BucketItem.class)
 public class BucketItemMixin {
-	@WrapOperation(
-		method = "use",
-		constant = @Constant(classValue = LiquidBlockContainer.class)
+	@ModifyExpressionValue(
+		method = "emptyContents",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/entity/LivingEntity;isShiftKeyDown()Z"
+        )
 	)
-	private boolean playerCheckBypass(
-		Object object,
-		Operation<Boolean> original,
-		@Local(argsOnly = true) Player player
-	) {
+	private boolean playerCheckBypass(boolean original) {
 		if (EssentialClientConfig.getInstance().getSneakToNotWaterlog()) {
-			return original.call(object) && !player.isSecondaryUseActive();
+            return original;
 		}
-		return original.call(object);
+		return false;
 	}
 }

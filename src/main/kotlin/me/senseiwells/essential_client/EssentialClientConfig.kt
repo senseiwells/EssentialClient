@@ -12,6 +12,7 @@ import me.senseiwells.keybinds.api.Keybind
 import me.senseiwells.keybinds.api.KeybindManager
 import me.senseiwells.keybinds.api.yacl.Keybinding
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.KeyMapping
 import net.minecraft.client.gui.screens.Screen
 import java.nio.file.Path
 import kotlin.Boolean
@@ -33,7 +34,7 @@ class EssentialClientConfig {
 
     @Bool(colored = true)
     @AutoGen(category = "gameplay")
-    @SerialEntry var sneakToNotWaterlog: Boolean = false
+    @SerialEntry var sneakToNotWaterlog: Boolean = true
 
     @FloatSlider(min = 0.0F, max = 10.0F, step = 0.5F)
     @AutoGen(category = "gameplay")
@@ -179,10 +180,10 @@ class EssentialClientConfig {
     @SerialEntry var accurateIntoKeys: InputKeys = InputKeys.EMPTY
 
     companion object {
-        private const val ESSENTIAL_CATEGORY = "key.categories.essential-client"
         private const val ESSENTIAL_MENU_KEYBIND = "${EssentialClient.MOD_ID}:open_menu"
         private const val ACCURATE_REVERSE_KEYBIND = "${EssentialClient.MOD_ID}:accurate_reverse"
         private const val ACCURATE_INTO_KEYBIND = "${EssentialClient.MOD_ID}:accurate_into"
+        private val ESSENTIAL_CATEGORY = KeyMapping.Category.register(id("general"))
 
         private val directory: Path = FabricLoader.getInstance().configDir.resolve("EssentialClient")
         private val handler: ConfigClassHandler<EssentialClientConfig> = createHandler()

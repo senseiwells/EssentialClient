@@ -90,7 +90,7 @@
   "yacl3.config.essential-client:config.accurateIntoKeys": "Accurate Into keybind",
   "yacl3.config.essential-client:config.accurateIntoKeys.desc.1": "This is the keybind to activate into accurate block placement",
 
-  "key.categories.essential-client": "EssentialClient",
+  "key.category.essential-client.general": "EssentialClient",
   "key.essential-client.open_menu": "EssentialClient Menu",
   "key.essential-client.accurate_into": "Accurate Into",
   "key.essential-client.accurate_reverse": "Accurate Reverse",

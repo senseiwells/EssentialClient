@@ -3,6 +3,7 @@ package me.senseiwells.essential_client.mixins.tick_rate_affect_chat_key;
 import me.senseiwells.essential_client.EssentialClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +21,10 @@ public abstract class MinecraftMixin {
 	@Shadow @Final public Options options;
 	@Shadow private @Nullable Overlay overlay;
 
-	@Shadow protected abstract void openChatScreen(String defaultText);
+    @Shadow
+    public abstract void openChatScreen(ChatComponent.ChatMethod chatMethod);
 
-	@Inject(
+    @Inject(
 		method = "runTick",
 		at = @At(
 			value = "INVOKE",
@@ -39,11 +41,11 @@ public abstract class MinecraftMixin {
 	private void onTick(boolean renderLevel, CallbackInfo ci) {
 		if (!EssentialClientConfig.getInstance().getTickRateAffectsChatKey()) {
 			while (this.options.keyChat.consumeClick()) {
-				this.openChatScreen("");
+                this.openChatScreen(ChatComponent.ChatMethod.MESSAGE);
 			}
 
 			if (this.screen == null && this.overlay == null && this.options.keyCommand.consumeClick()) {
-				this.openChatScreen("/");
+                this.openChatScreen(ChatComponent.ChatMethod.COMMAND);
 			}
 		}
 	}

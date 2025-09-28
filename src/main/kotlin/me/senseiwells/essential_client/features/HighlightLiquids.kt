@@ -1,20 +1,21 @@
 package me.senseiwells.essential_client.features
 
 import me.senseiwells.essential_client.EssentialClient
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader
+import net.minecraft.client.Minecraft
 import net.minecraft.client.model.geom.builders.UVPair
-import net.minecraft.client.renderer.texture.TextureAtlas
+import net.minecraft.client.renderer.Sheets
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.client.resources.model.Material
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
+import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener
 import org.jetbrains.annotations.ApiStatus.Internal
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
-object HighlightLiquids: SimpleSynchronousResourceReloadListener {
-    @Suppress("DEPRECATION")
-    private val highlight = Material(TextureAtlas.LOCATION_BLOCKS, EssentialClient.id("block/liquid_highlight"))
+object HighlightLiquids: ResourceManagerReloadListener {
+    private val highlight = Sheets.BLOCKS_MAPPER.apply(EssentialClient.id("liquid_highlight"))
 
     @Internal
     @JvmStatic
@@ -24,12 +25,19 @@ object HighlightLiquids: SimpleSynchronousResourceReloadListener {
     @JvmStatic
     lateinit var spriteUVs: List<UVPair>
 
-    override fun getFabricId(): ResourceLocation {
-        return EssentialClient.id("highlight_liquids")
+    override fun reload(
+        sharedState: PreparableReloadListener.SharedState,
+        executor: Executor,
+        preparationBarrier: PreparableReloadListener.PreparationBarrier,
+        executor2: Executor
+    ): CompletableFuture<Void> {
+
+        return super.reload(sharedState, executor, preparationBarrier, executor2)
     }
 
     override fun onResourceManagerReload(manager: ResourceManager) {
-        this.sprite = this.highlight.sprite()
+        val minecraft = Minecraft.getInstance()
+        this.sprite = minecraft.atlasManager.get(this.highlight)
         this.spriteUVs = listOf(
             UVPair(this.sprite.u0, this.sprite.v0),
             UVPair(this.sprite.u0, this.sprite.v1),
@@ -39,6 +47,8 @@ object HighlightLiquids: SimpleSynchronousResourceReloadListener {
     }
 
     internal fun load() {
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(this)
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(
+            EssentialClient.id("highlight_liquids"), this
+        )
     }
 }
