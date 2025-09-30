@@ -1,17 +1,17 @@
 [versions]
-minecraft     = "1.21.9-rc1"
+minecraft     = "1.21.9"
 fabric-loader = "0.17.2"
 fabric-api    = "0.133.13+1.21.9"
 parchment     = "1.21.8:2025.09.14"
 fabric-kotlin = "1.13.5+kotlin.2.2.10"
-keybinds      = "0.2.0+1.21.9-rc1"
+keybinds      = "0.2.1+1.21.9"
 yacl          = "3.8.0+1.21.9-fabric"
 
 # Compatability
 mod-menu      = "15.0.0"
 carpet        = "1.4.177"
-chunk-debug   = "2.4.2+1.21.9-rc1"
-sodium        = "mc1.21.6-0.6.13-fabric"
+chunk-debug   = "2.5.0+1.21.9"
+sodium        = "mc1.21.9-0.7.0-fabric"
 
 # Runtime
 dev-auth      = "1.2.1"
