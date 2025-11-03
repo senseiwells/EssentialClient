@@ -43,6 +43,7 @@
     "compat.sodium.DefaultMaterialsMixin",
     "creative_walk_speed.PlayerMixin",
     "custom_time_out.ConnectionMixin",
+    "disable_hand_swinging.LivingEntityMixin",
     "sneak_to_not_waterlog.BucketItemMixin",
     "yacl.SimpleOptionFactoryMixin"
   ]

@@ -47,6 +47,8 @@
   "yacl3.config.essential-client:config.disableBossbarRendering.desc.1": "This will disable any bossbars from rendering",
   "yacl3.config.essential-client:config.disableDisplayTextRendering": "Disable Display Text Rendering",
   "yacl3.config.essential-client:config.disableDisplayTextRendering.desc.1": "This will disable any display texts from rendering",
+  "yacl3.config.essential-client:config.disableHandSwinging": "Disable Hand Swinging",
+  "yacl3.config.essential-client:config.disableHandSwinging.desc.1": "Disables player hand swinging",
   "yacl3.config.essential-client:config.disableMapRendering": "Disable Map Rendering",
   "yacl3.config.essential-client:config.disableMapRendering.desc.1": "Disables maps in item frames from rendering",
   "yacl3.config.essential-client:config.disableNametagRendering": "Disable Nametag Rendering",

@@ -102,6 +102,10 @@ class EssentialClientConfig {
 
     @Bool(colored = true)
     @AutoGen(category = "rendering")
+    @SerialEntry var disableHandSwinging: Boolean = false
+
+    @Bool(colored = true)
+    @AutoGen(category = "rendering")
     @SerialEntry var disableMapRendering: Boolean = false
 
     @Bool(colored = true)
