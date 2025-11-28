@@ -3,6 +3,9 @@
   "package": "me.senseiwells.essential_client.mixins",
   "compatibilityLevel": "JAVA_17",
   "plugin": "me.senseiwells.essential_client.compat.EssentialClientMixinConfigPlugin",
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "client": [
     "auto_walk.KeyboardInputMixin",
     "better_accurate_block_placement.BlockPlaceContextMixin",
