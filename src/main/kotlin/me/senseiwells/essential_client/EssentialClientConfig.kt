@@ -144,6 +144,10 @@ class EssentialClientConfig {
     @AutoGen(category = "rendering")
     @SerialEntry var essentialClientButton: Boolean = false
 
+    @Bool(colored = true)
+    @AutoGen(category = "rendering")
+    @SerialEntry var ignoreServerRenderDistance: Boolean = false
+
     @ReloadChunks
     @FloatSlider(min = 0.0F, max = 1.0F, step = 0.05F, format = "%.2f")
     @AutoGen(category = "rendering")

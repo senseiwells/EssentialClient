@@ -69,6 +69,8 @@
   "yacl3.config.essential-client:config.displayPlayTime.desc.1": "Displays the amount of time your client has been running in the corner of the pause menu",
   "yacl3.config.essential-client:config.essentialClientButton": "EssentialClient Button",
   "yacl3.config.essential-client:config.essentialClientButton.desc.1": "This renders the EssentialClient Menu on the main menu screen and pause screen",
+  "yacl3.config.essential-client:config.ignoreServerRenderDistance": "Ignore Server Render Distance",
+  "yacl3.config.essential-client:config.ignoreServerRenderDistance.desc.1": "Ignores the server's render distance when rendering",
   "yacl3.config.essential-client:config.lavaOpacity": "Lava Opacity",
   "yacl3.config.essential-client:config.lavaOpacity.desc.1": "Changes the opacity of lava",
   "yacl3.config.essential-client:config.highlightLavaSources": "Highlight Lava Sources",
