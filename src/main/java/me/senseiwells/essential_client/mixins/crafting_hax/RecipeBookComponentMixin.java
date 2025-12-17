@@ -1,12 +1,11 @@
 package me.senseiwells.essential_client.mixins.crafting_hax;
 
-import me.senseiwells.essential_client.EssentialClient;
 import me.senseiwells.essential_client.EssentialClientConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
@@ -36,10 +35,9 @@ public class RecipeBookComponentMixin<T extends RecipeBookMenu> {
         if (EssentialClientConfig.getInstance().getCraftingHax() && this.minecraft.hasControlDown()) {
             int containerId = this.menu.containerId;
             MultiPlayerGameMode mode = this.minecraft.gameMode;
-            if (mode != null) {
-                mode.handleInventoryMouseClick(
-                    containerId, 0, useMaxItems ? 1 : 0, ClickType.THROW, this.minecraft.player
-                );
+            LocalPlayer player = this.minecraft.player;
+            if (mode != null && player != null) {
+                mode.handleInventoryMouseClick(containerId, 0, useMaxItems ? 1 : 0, ClickType.THROW, player);
             }
         }
     }

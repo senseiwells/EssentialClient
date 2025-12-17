@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 object SpoofedCarpetClientNetworkHandler {
     internal fun load() {
@@ -45,7 +45,7 @@ object SpoofedCarpetClientNetworkHandler {
         }
 
         companion object {
-            val TYPE = CustomPacketPayload.Type<CarpetPayload>(ResourceLocation.parse("carpet:hello"))
+            val TYPE = CustomPacketPayload.Type<CarpetPayload>(Identifier.parse("carpet:hello"))
 
             val STREAM_CODEC: StreamCodec<ByteBuf, CarpetPayload> = ByteBufCodecs.COMPOUND_TAG.map(::CarpetPayload, CarpetPayload::data)
         }

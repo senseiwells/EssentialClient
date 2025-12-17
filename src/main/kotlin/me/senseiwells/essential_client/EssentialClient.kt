@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ClientPacketListener
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.jetbrains.annotations.ApiStatus.Internal
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,8 +36,8 @@ object EssentialClient: ModInitializer {
         this.loadEvents()
     }
 
-    fun id(path: String): ResourceLocation {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path.removePrefix("${MOD_ID}:"))
+    fun id(path: String): Identifier {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path.removePrefix("${MOD_ID}:"))
     }
 
     fun getCarpetClient(): CarpetClient {

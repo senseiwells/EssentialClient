@@ -16,8 +16,8 @@ import me.senseiwells.essential_client.utils.CarpetUtils
 import me.senseiwells.essential_client.utils.CarpetUtils.matches
 import me.senseiwells.essential_client.utils.VersionUtils.getMajorVersion
 import net.minecraft.SharedConstants
-import net.minecraft.Util
 import net.minecraft.client.Minecraft
+import net.minecraft.util.Util
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URI

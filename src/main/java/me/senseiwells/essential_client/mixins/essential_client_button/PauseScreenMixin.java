@@ -33,10 +33,8 @@ public class PauseScreenMixin extends Screen {
 	private void onCreatePauseMenu(CallbackInfo ci, @Local GridLayout.RowHelper rows) {
 		if (EssentialClientConfig.getInstance().getEssentialClientButton()) {
 			rows.addChild(Button.builder(Component.translatable("essential-client.menu"), button -> {
-				if (this.minecraft != null) {
-					this.minecraft.setScreen(new EssentialClientScreen(this));
-				}
-			}).width(BUTTON_WIDTH_FULL).build(), 2);
+                this.minecraft.setScreen(new EssentialClientScreen(this));
+            }).width(BUTTON_WIDTH_FULL).build(), 2);
 		}
 	}
 }

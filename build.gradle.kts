@@ -47,7 +47,7 @@ dependencies {
     modCompileOnly(libs.chunk.debug)
     modCompileOnly(libs.sodium)
 
-    modRuntimeOnly(libs.dev.auth)
+    // modRuntimeOnly(libs.dev.auth)
 }
 
 java {
@@ -60,7 +60,7 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand(mutableMapOf(
                 "version" to releaseVersion,
-                "minecraft_dependency" to libs.versions.minecraft.get().replaceAfterLast('.', "x"),
+                "minecraft_dependency" to libs.versions.minecraft.get(),
                 "yacl_dependency" to libs.versions.yacl.get(),
                 "fabric_loader_dependency" to libs.versions.fabric.loader.get(),
             ))
