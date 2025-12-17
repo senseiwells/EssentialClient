@@ -22,7 +22,7 @@ repositories {
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val modVersion = "2.3.3"
+val modVersion = "2.4.0"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -74,7 +74,7 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Added Ignore Server Render Distance option
+        - Update to 1.21.11
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
