@@ -8,10 +8,10 @@ keybinds      = "0.2.2+1.21.11"
 yacl          = "3.8.1+1.21.11-fabric"
 
 # Compatability
-mod-menu      = "15.0.0"
-carpet        = "1.4.177"
+mod-menu      = "17.0.0-alpha.1"
+carpet        = "1.4.193"
 chunk-debug   = "2.5.0+1.21.9"
-sodium        = "mc1.21.9-0.7.0-fabric"
+sodium        = "mc1.21.11-0.8.0-fabric"
 
 # Runtime
 dev-auth      = "1.2.1"

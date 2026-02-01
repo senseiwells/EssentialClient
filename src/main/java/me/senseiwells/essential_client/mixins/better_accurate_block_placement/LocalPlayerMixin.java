@@ -1,5 +1,6 @@
 package me.senseiwells.essential_client.mixins.better_accurate_block_placement;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.senseiwells.essential_client.features.BetterAccurateBlockPlacement;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.phys.Vec2;
@@ -10,33 +11,33 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(LocalPlayer.class)
 public class LocalPlayerMixin {
-	@ModifyArgs(
+	@ModifyExpressionValue(
 		method = "sendPosition",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$PosRot;<init>(Lnet/minecraft/world/phys/Vec3;FFZZ)V"
+			target = "Lnet/minecraft/client/player/LocalPlayer;getXRot()F"
 		)
 	)
-	private void onConstructPosRot(Args args) {
+	private float overrideWithAccuratePlacementXRot(float original) {
 		Vec2 rotation = BetterAccurateBlockPlacement.getFakeRotation();
 		if (rotation != null) {
-			args.set(1, rotation.y);
-			args.set(2, rotation.x);
+			return rotation.x;
 		}
+		return original;
 	}
 
-	@ModifyArgs(
+	@ModifyExpressionValue(
 		method = "sendPosition",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/network/protocol/game/ServerboundMovePlayerPacket$Rot;<init>(FFZZ)V"
+			target = "Lnet/minecraft/client/player/LocalPlayer;getYRot()F"
 		)
 	)
-	private void onConstructRot(Args args) {
+	private float overrideWithAccuratePlacementYRot(float original) {
 		Vec2 rotation = BetterAccurateBlockPlacement.getFakeRotation();
 		if (rotation != null) {
-			args.set(0, rotation.y);
-			args.set(1, rotation.x);
+			return rotation.y;
 		}
+		return original;
 	}
 }
