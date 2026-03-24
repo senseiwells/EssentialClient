@@ -47,7 +47,7 @@ object HighlightLiquids: ResourceManagerReloadListener {
     }
 
     internal fun load() {
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(
             EssentialClient.id("highlight_liquids"), this
         )
     }

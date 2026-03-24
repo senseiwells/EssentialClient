@@ -41,9 +41,8 @@ object AutoWalk {
     private fun onActivated() {
         val minecraft = Minecraft.getInstance()
         val player = minecraft.player ?: return
-        player.displayClientMessage(
-            Component.translatable("essential-client.autoWalk.activated").withStyle(ChatFormatting.GREEN),
-            true
+        player.sendSystemMessage(
+            Component.translatable("essential-client.autoWalk.activated").withStyle(ChatFormatting.GREEN)
         )
     }
 }

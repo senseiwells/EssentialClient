@@ -19,7 +19,7 @@ public class GuiMixin {
 	@Unique private boolean isTabToggled = false;
 
 	@ModifyExpressionValue(
-		method = "renderTabList",
+		method = "extractTabList",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/client/KeyMapping;isDown()Z"

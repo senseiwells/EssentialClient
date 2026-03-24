@@ -8,26 +8,21 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.client.renderer.state.MapRenderState;
+import net.minecraft.world.level.saveddata.maps.MapId;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemFrameRenderer.class)
 public class ItemFrameRendererMixin {
 	@WrapWithCondition(
-		method = "submit(Lnet/minecraft/client/renderer/entity/state/ItemFrameRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+		method = "extractRenderState(Lnet/minecraft/world/entity/decoration/ItemFrame;Lnet/minecraft/client/renderer/entity/state/ItemFrameRenderState;F)V",
 		at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/renderer/MapRenderer;render(Lnet/minecraft/client/renderer/state/MapRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ZI)V"
+			target = "Lnet/minecraft/client/renderer/MapRenderer;extractRenderState(Lnet/minecraft/world/level/saveddata/maps/MapId;Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData;Lnet/minecraft/client/renderer/state/MapRenderState;)V"
 		)
 	)
-	private boolean onRenderMap(
-		MapRenderer instance,
-		MapRenderState mapRenderState,
-		PoseStack poseStack,
-        SubmitNodeCollector submitNodeCollector,
-		boolean bl,
-		int light
-	) {
+	private boolean onRenderMap(MapRenderer instance, MapId mapId, MapItemSavedData data, MapRenderState state) {
 		return !EssentialClientConfig.getInstance().getDisableMapRendering();
 	}
 }

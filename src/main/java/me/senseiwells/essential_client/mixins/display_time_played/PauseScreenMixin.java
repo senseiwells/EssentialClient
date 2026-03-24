@@ -1,7 +1,7 @@
 package me.senseiwells.essential_client.mixins.display_time_played;
 
 import me.senseiwells.essential_client.features.DisplayStartTime;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -17,10 +17,10 @@ public class PauseScreenMixin extends Screen {
 	}
 
 	@Inject(
-		method = "render",
+		method = "extractRenderState",
 		at = @At("TAIL")
 	)
-	private void onRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-		DisplayStartTime.render(guiGraphics, this.font);
+	private void extractPlayTimeState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+		DisplayStartTime.onExtractRenderState(guiGraphics, this.font);
 	}
 }

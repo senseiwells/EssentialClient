@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import org.spongepowered.asm.mixin.Final;
@@ -37,7 +37,7 @@ public class RecipeBookComponentMixin<T extends RecipeBookMenu> {
             MultiPlayerGameMode mode = this.minecraft.gameMode;
             LocalPlayer player = this.minecraft.player;
             if (mode != null && player != null) {
-                mode.handleInventoryMouseClick(containerId, 0, useMaxItems ? 1 : 0, ClickType.THROW, player);
+                mode.handleContainerInput(containerId, 0, useMaxItems ? 1 : 0, ContainerInput.THROW, player);
             }
         }
     }

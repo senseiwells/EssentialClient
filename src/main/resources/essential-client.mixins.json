@@ -30,9 +30,6 @@
     "highlight_liquids.LiquidBlockRendererMixin",
     "ignore_invalid_chat_messages.ClientPacketListenerMixin",
     "ignore_server_render_distance.OptionsMixin",
-    "lava_opacity.BlockRenderDispatcherMixin",
-    "lava_opacity.LiquidBlockRendererMixin",
-    "lava_opacity.SectionCompilerMixin",
     "persistent_chat_history.GuiMixin",
     "remove_warn_invalid_chunk.ClientChunkCacheMixin",
     "spectator_scrolling.MouseHandlerMixin",
@@ -48,6 +45,7 @@
     "creative_walk_speed.PlayerMixin",
     "custom_time_out.ConnectionMixin",
     "disable_hand_swinging.LivingEntityMixin",
+    "lava_opacity.FluidStateModelSetMixin",
     "sneak_to_not_waterlog.BucketItemMixin",
     "yacl.SimpleOptionFactoryMixin"
   ]

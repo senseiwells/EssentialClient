@@ -20,6 +20,7 @@ repositories {
     maven("https://api.modrinth.com/maven")
     maven("https://jitpack.io")
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    mavenLocal()
 }
 
 val modVersion = "2.4.0"
@@ -29,29 +30,32 @@ group = "me.senseiwells"
 
 dependencies {
     minecraft(libs.minecraft)
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.get()}@zip")
-    })
 
-    modImplementation(libs.fabric.loader)
-    modImplementation(libs.fabric.api)
-    modImplementation(libs.fabric.kotlin)
+    implementation(libs.fabric.loader)
+    implementation(libs.fabric.api)
+    implementation(libs.fabric.kotlin)
 
-    modImplementation(libs.yacl)
-    include(modImplementation(libs.keybinds.get())!!)
+    implementation(libs.yacl)
+    include(implementation(libs.keybinds.get())!!)
 
-    modCompileOnly(libs.mod.menu)
-    modCompileOnly(libs.carpet)
-    modCompileOnly(libs.chunk.debug)
-    modCompileOnly(libs.sodium)
+    compileOnly(libs.mod.menu)
+    compileOnly(libs.carpet)
+    compileOnly(libs.chunk.debug)
+    compileOnly(libs.sodium)
 
-    // modRuntimeOnly(libs.dev.auth)
+    localRuntime(libs.dev.auth)
 }
 
 java {
     withSourcesJar()
+}
+
+loom {
+    runs {
+        named("client") {
+            // vmArgs("-Ddevauth.account=alt")
+        }
+    }
 }
 
 tasks {
@@ -72,9 +76,9 @@ tasks {
     }
 
     publishMods {
-        file = remapJar.get().archiveFile
+        file = jar.get().archiveFile
         changelog = """
-        - Update to 1.21.11
+        - Update to 26.1
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")

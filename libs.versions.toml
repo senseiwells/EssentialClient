@@ -1,20 +1,20 @@
 [versions]
-minecraft     = "1.21.11"
-fabric-loader = "0.18.3"
-fabric-api    = "0.140.0+1.21.11"
+minecraft     = "26.1"
+fabric-loader = "0.18.4"
+fabric-api    = "0.144.0+26.1"
 parchment     = "1.21.10:2025.10.12"
-fabric-kotlin = "1.13.5+kotlin.2.2.10"
-keybinds      = "0.2.2+1.21.11"
-yacl          = "3.8.1+1.21.11-fabric"
+fabric-kotlin = "1.13.9+kotlin.2.3.10"
+keybinds      = "0.3.0+26.1"
+yacl          = "3.9.0+26.1-fabric"
 
 # Compatability
-mod-menu      = "17.0.0-alpha.1"
-carpet        = "1.4.193"
-chunk-debug   = "2.5.0+1.21.9"
-sodium        = "mc1.21.11-0.8.0-fabric"
+mod-menu      = "18.0.0-alpha.6"
+carpet        = "26.1-beta-9"
+chunk-debug   = "2.7.0+26.1"
+sodium        = "mc26.1-0.8.7-fabric"
 
 # Runtime
-dev-auth      = "1.2.1"
+dev-auth      = "1.2.2"
 
 # Plugins
 fabric-loom   = "1.14-SNAPSHOT"
@@ -38,5 +38,5 @@ sodium        = { module = "maven.modrinth:sodium"                   , version.r
 dev-auth      = { module = "me.djtheredstoner:DevAuth-fabric"        , version.ref = "dev-auth" }
 
 [plugins]
-fabric-loom   = { id = "fabric-loom"                    , version.ref = "fabric-loom" }
+fabric-loom   = { id = "net.fabricmc.fabric-loom"                    , version.ref = "fabric-loom" }
 mod-publish   = { id = "me.modmuss50.mod-publish-plugin", version.ref = "mod-publish" }
