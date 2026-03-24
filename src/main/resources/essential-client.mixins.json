@@ -27,7 +27,7 @@
     "display_time_played.PauseScreenMixin",
     "essential_client_button.PauseScreenMixin",
     "fix_macos_cursor_jumping.EditBoxMixin",
-    "highlight_liquids.LiquidBlockRendererMixin",
+    "highlight_liquids.FluidRendererMixin",
     "ignore_invalid_chat_messages.ClientPacketListenerMixin",
     "ignore_server_render_distance.OptionsMixin",
     "persistent_chat_history.GuiMixin",
