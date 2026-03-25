@@ -23,7 +23,7 @@ repositories {
     mavenLocal()
 }
 
-val modVersion = "2.5.0"
+val modVersion = "2.5.1"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -78,7 +78,7 @@ tasks {
     publishMods {
         file = jar.get().archiveFile
         changelog = """
-        - Update to 26.1
+        - Fix fixMacOSCursorJumping not working correctly
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")

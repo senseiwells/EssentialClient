@@ -1,5 +1,6 @@
 package me.senseiwells.essential_client.mixins.fix_macos_cursor_jumping;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.platform.InputConstants;
 import me.senseiwells.essential_client.EssentialClientConfig;
 import net.minecraft.client.Minecraft;
@@ -21,8 +22,6 @@ public abstract class EditBoxMixin extends AbstractWidget {
         super(x, y, width, height, message);
     }
 
-    @Shadow public abstract void insertText(String textToWrite);
-
     @Shadow public abstract void deleteWords(int num);
 
     @Shadow public abstract void deleteChars(int num);
@@ -37,24 +36,27 @@ public abstract class EditBoxMixin extends AbstractWidget {
 
     @Shadow public abstract void moveCursorToStart(boolean select);
 
-    @Inject(
-        method = "deleteText",
-        at = @At("HEAD"),
-        cancellable = true
-    )
-    private void onDeleteText(int count, boolean bl, CallbackInfo ci) {
-        if (InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY && EssentialClientConfig.getInstance().getFixMacOSCursorJumping()) {
-            Minecraft minecraft = Minecraft.getInstance();
-            if (minecraft.hasControlDown()) {
-                this.insertText("");
-            } else if (minecraft.hasAltDown()) {
-                this.deleteWords(count);
-            } else {
-                this.deleteChars(count);
-            }
+    @Shadow public abstract void setValue(String value);
 
-            ci.cancel();
+    @WrapWithCondition(
+        method = "keyPressed",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/components/EditBox;deleteText(IZ)V"
+        )
+    )
+    private boolean fixMacOSCursorJumping(EditBox instance, int dir, boolean wholeWord, KeyEvent event) {
+        if (InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY && EssentialClientConfig.getInstance().getFixMacOSCursorJumping()) {
+            if (event.hasControlDownWithQuirk()) {
+                this.setValue("");
+            } else if (event.hasAltDown()) {
+                this.deleteWords(dir);
+            } else {
+                this.deleteChars(dir);
+            }
+            return false;
         }
+        return true;
     }
 
     @Inject(
@@ -67,7 +69,7 @@ public abstract class EditBoxMixin extends AbstractWidget {
             if (InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY && EssentialClientConfig.getInstance().getFixMacOSCursorJumping()) {
                 switch (event.key()) {
                     case InputConstants.KEY_RIGHT -> {
-                        if (event.hasControlDown()) {
+                        if (event.hasControlDownWithQuirk()) {
                             this.moveCursorToEnd(event.hasShiftDown());
                         } else if (event.hasAltDown()) {
                             this.moveCursorTo(this.getWordPosition(1), event.hasShiftDown());
@@ -77,7 +79,7 @@ public abstract class EditBoxMixin extends AbstractWidget {
                         cir.setReturnValue(true);
                     }
                     case InputConstants.KEY_LEFT ->  {
-                        if (event.hasControlDown()) {
+                        if (event.hasControlDownWithQuirk()) {
                             this.moveCursorToStart(event.hasShiftDown());
                         } else if (event.hasAltDown()) {
                             this.moveCursorTo(this.getWordPosition(-1), event.hasShiftDown());
