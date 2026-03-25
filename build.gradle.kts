@@ -41,7 +41,7 @@ dependencies {
     compileOnly(libs.mod.menu)
     compileOnly(libs.carpet)
     compileOnly(libs.chunk.debug)
-    compileOnly(libs.sodium)
+    localRuntime(compileOnly(libs.sodium.get())!!)
 
     localRuntime(libs.dev.auth)
 }

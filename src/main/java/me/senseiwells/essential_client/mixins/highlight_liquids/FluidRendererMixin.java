@@ -50,22 +50,23 @@ public abstract class FluidRendererMixin {
 		BlockState blockState,
 		FluidState fluidState,
 		CallbackInfo ci,
-		@Share("isHighlighting") LocalBooleanRef isHighlightingRef,
-		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluidRef,
-		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlightRef
+		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluid,
+		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight,
+		@Share("shouldRenderHighlightFace") LocalBooleanRef shouldRenderHighlightFace
 	) {
+		shouldRenderFluid.set(true);
+		shouldRenderHighlight.set(false);
 		if (fluidState.is(Fluids.LAVA)) {
 			if (EssentialClientConfig.getInstance().getHighlightLavaSources()) {
-				isHighlightingRef.set(true);
+				shouldRenderHighlight.set(true);
 			}
 		} else if (fluidState.is(Fluids.WATER)) {
 			if (EssentialClientConfig.getInstance().getHighlightWaterSources()) {
-				isHighlightingRef.set(true);
+				shouldRenderHighlight.set(true);
 			}
 		}
 
-		shouldRenderFluidRef.set(true);
-		shouldRenderHighlightRef.set(isHighlightingRef.get());
+		shouldRenderHighlightFace.set(shouldRenderHighlight.get());
 	}
 
 	@WrapOperation(
@@ -81,9 +82,9 @@ public abstract class FluidRendererMixin {
 		Direction direction,
 		FluidState neighbor,
 		Operation<Boolean> original,
-		@Share("isHighlighting") LocalBooleanRef isHighlightingRef
+		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight
 	) {
-		if (direction.getAxis().isVertical() || !isHighlightingRef.get()) {
+		if (direction.getAxis().isVertical() || !shouldRenderHighlight.get()) {
 			return original.call(fluid, block, direction, neighbor);
 		}
 		return !isFaceOccludedBySelf(block, direction);
@@ -111,10 +112,10 @@ public abstract class FluidRendererMixin {
 		int lightCoords,
 		boolean addBackFace,
 		Operation<Void> original,
-		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluidRef,
-		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlightRef
+		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluid,
+		@Share("shouldRenderHighlightFace") LocalBooleanRef shouldRenderHighlightFace
 	) {
-		if (shouldRenderFluidRef.get()) {
+		if (shouldRenderFluid.get()) {
 			original.call(
 				instance,
 				builder,
@@ -132,7 +133,7 @@ public abstract class FluidRendererMixin {
 			);
 		}
 
-		if (shouldRenderHighlightRef.get()) {
+		if (shouldRenderHighlightFace.get()) {
 			int light = Brightness.FULL_BRIGHT.pack();
 			UVPair[] uvs = HighlightLiquids.getSpriteUVs();
 			int highlight = 0xFFFFFFFF;
@@ -164,14 +165,15 @@ public abstract class FluidRendererMixin {
 		FluidState fluidState,
 		CallbackInfo ci,
 		@Local(name = "faceDir") Direction direction,
-		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluidRef,
-		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlightRef
+		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluid,
+		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight,
+		@Share("shouldRenderHighlightFace") LocalBooleanRef shouldRenderHighlightFace
 	) {
 		FluidState neighbor = level.getFluidState(pos.relative(direction));
 		boolean isNeighborSameFluid = isNeighborSameFluid(fluidState, neighbor);
-		shouldRenderFluidRef.set(!isNeighborSameFluid);
-		shouldRenderHighlightRef.set(
-			fluidState.isSource() && (isNeighborSameFluid || neighbor.is(Fluids.EMPTY)) && !neighbor.isSource()
+		shouldRenderFluid.set(!isNeighborSameFluid);
+		shouldRenderHighlightFace.set(
+			shouldRenderHighlight.get() && (isNeighborSameFluid || neighbor.is(Fluids.EMPTY)) && !neighbor.isSource()
 		);
 	}
 }

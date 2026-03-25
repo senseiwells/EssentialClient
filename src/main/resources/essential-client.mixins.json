@@ -12,6 +12,7 @@
     "better_accurate_block_placement.LocalPlayerMixin",
     "carpet_always_set_default.ClientPacketListenerMixin",
     "compat.carpet.ClientNetworkHandlerMixin",
+    "compat.sodium.DefaultFluidRenderMixin",
     "crafting_hax.RecipeBookComponentMixin",
     "disable_armor_rendering.HumanoidArmorLayerMixin",
     "disable_bossbar_rendering.GuiMixin",
@@ -40,8 +41,6 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "compat.sodium.DefaultFluidRenderMixin",
-    "compat.sodium.DefaultMaterialsMixin",
     "creative_walk_speed.PlayerMixin",
     "custom_time_out.ConnectionMixin",
     "disable_hand_swinging.LivingEntityMixin",
