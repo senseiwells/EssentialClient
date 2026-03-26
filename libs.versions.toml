@@ -10,7 +10,7 @@ yacl          = "3.9.0+26.1-fabric"
 # Compatability
 mod-menu      = "18.0.0-alpha.6"
 carpet        = "26.1-beta-9"
-chunk-debug   = "2.7.0+26.1"
+chunk-debug   = "2.7.1+26.1"
 sodium        = "mc26.1-0.8.7-fabric"
 
 # Runtime
