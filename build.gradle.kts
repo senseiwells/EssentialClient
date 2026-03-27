@@ -23,7 +23,7 @@ repositories {
     mavenLocal()
 }
 
-val modVersion = "2.5.1"
+val modVersion = "2.5.2"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -67,6 +67,7 @@ tasks {
                 "minecraft_dependency" to libs.versions.minecraft.get(),
                 "yacl_dependency" to libs.versions.yacl.get(),
                 "fabric_loader_dependency" to libs.versions.fabric.loader.get(),
+                "fabric_kotlin_dependency" to libs.fabric.kotlin.get(),
             ))
         }
     }
@@ -78,7 +79,7 @@ tasks {
     publishMods {
         file = jar.get().archiveFile
         changelog = """
-        - Fix fixMacOSCursorJumping not working correctly
+        - Add fabric language kotlin to dependency list
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
