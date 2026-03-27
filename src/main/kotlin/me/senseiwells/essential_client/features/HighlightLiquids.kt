@@ -23,7 +23,7 @@ object HighlightLiquids: ResourceManagerReloadListener {
 
     @Internal
     @JvmStatic
-    lateinit var spriteUVs: List<UVPair>
+    lateinit var spriteUVs: Array<UVPair>
 
     override fun reload(
         sharedState: PreparableReloadListener.SharedState,
@@ -38,7 +38,7 @@ object HighlightLiquids: ResourceManagerReloadListener {
     override fun onResourceManagerReload(manager: ResourceManager) {
         val minecraft = Minecraft.getInstance()
         this.sprite = minecraft.atlasManager.get(this.highlight)
-        this.spriteUVs = listOf(
+        this.spriteUVs = arrayOf(
             UVPair(this.sprite.u0, this.sprite.v0),
             UVPair(this.sprite.u0, this.sprite.v1),
             UVPair(this.sprite.u1, this.sprite.v1),

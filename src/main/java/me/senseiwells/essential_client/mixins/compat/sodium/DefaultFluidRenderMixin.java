@@ -1,5 +1,7 @@
 package me.senseiwells.essential_client.mixins.compat.sodium;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -24,18 +26,19 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Mixin(DefaultFluidRenderer.class)
 public abstract class DefaultFluidRenderMixin {
@@ -44,8 +47,6 @@ public abstract class DefaultFluidRenderMixin {
 	@Shadow(remap = false) @Final private float[] brightness;
 
 	@Shadow(remap = false) @Final private int[] quadColors;
-
-	@Shadow protected abstract boolean isSideExposed(BlockAndTintGetter world, int x, int y, int z, Direction dir, float height);
 
 	@Shadow protected abstract void writeQuad(ChunkModelBuilder builder, TranslucentGeometryCollector collector, Material material, BlockPos offset, ModelQuadView quad, ModelQuadFacing facing, boolean flip);
 
@@ -65,11 +66,11 @@ public abstract class DefaultFluidRenderMixin {
 		ColorProvider<FluidState> colorProvider,
 		TextureAtlasSprite[] sprites,
 		CallbackInfo ci,
-		@Share("shouldRenderLiquid") LocalBooleanRef shouldRenderLiquid,
+		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluid,
 		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight,
 		@Share("shouldRenderHighlightFace") LocalBooleanRef shouldRenderHighlightFace
 	) {
-		shouldRenderLiquid.set(true);
+		shouldRenderFluid.set(true);
 		shouldRenderHighlight.set(false);
 		if (fluidState.is(Fluids.LAVA)) {
 			if (EssentialClientConfig.getInstance().getHighlightLavaSources()) {
@@ -85,9 +86,9 @@ public abstract class DefaultFluidRenderMixin {
 		if (shouldRenderHighlight.get()) {
 			this.highlightQuad.setFlags(0);
 			this.highlightQuad.setSprite(HighlightLiquids.sprite);
-			List<UVPair> uvs = HighlightLiquids.getSpriteUVs();
+			UVPair[] uvs = HighlightLiquids.getSpriteUVs();
 			for (int i = 0; i < 4; i++) {
-				UVPair uv = uvs.get(i);
+				UVPair uv = uvs[i];
 				this.highlightQuad.setTexU(i, uv.u());
 				this.highlightQuad.setTexV(i, uv.v());
 				// this.highlightQuad.setNormal(i, ModelQuadFacing.OPPOSING_Y);
@@ -95,33 +96,25 @@ public abstract class DefaultFluidRenderMixin {
 		}
 	}
 
+	@Definition(id = "isFullBlockFluidSideVisible", method = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;isFullBlockFluidSideVisible(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/material/FluidState;)Z")
+	@Expression("this.isFullBlockFluidSideVisible(?, ?, ?, ?)")
 	@WrapOperation(
 		method = "render",
-		at = @At(
-			value = "INVOKE",
-			target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;isFullBlockFluidOccluded(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/material/FluidState;)Z"
-		),
-		slice = @Slice(
-			from = @At(
-				value = "INVOKE",
-				target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;isSideExposed(Lnet/minecraft/world/level/BlockAndTintGetter;IIILnet/minecraft/core/Direction;F)Z"
-			)
-		)
+		at = @At("MIXINEXTRAS:EXPRESSION")
 	)
-	private boolean shouldCullFace(
+	private boolean bypassFaceCheckIfHighlighting(
 		DefaultFluidRenderer instance,
-		BlockAndTintGetter world,
-		BlockPos pos,
-		Direction dir,
-		BlockState blockState,
+		BlockGetter view,
+		BlockPos selfPos,
+		Direction facing,
 		FluidState fluid,
 		Operation<Boolean> original,
 		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight
 	) {
 		if (!shouldRenderHighlight.get()) {
-			return original.call(instance, world, pos, dir, blockState, fluid);
+			return original.call(instance, view, selfPos, facing, fluid);
 		}
-		return !this.isSideExposed(world, pos.getX(), pos.getY(), pos.getZ(), dir, 1);
+		return true;
 	}
 
 	@WrapWithCondition(
@@ -129,8 +122,7 @@ public abstract class DefaultFluidRenderMixin {
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;setVertex(Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadViewMutable;IFFFFF)V"
-		),
-		remap = false
+		)
 	)
 	private boolean onVertex(
 		ModelQuadViewMutable quad,
@@ -165,10 +157,10 @@ public abstract class DefaultFluidRenderMixin {
 		boolean flip,
 		Operation<Void> original,
 		@Local(argsOnly = true) FluidState fluidState,
-		@Share("shouldRenderLiquid") LocalBooleanRef shouldRenderLiquid,
+		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluid,
 		@Share("shouldRenderHighlightFace") LocalBooleanRef shouldRenderHighlightFace
 	) {
-		if (shouldRenderLiquid.get()) {
+		if (shouldRenderFluid.get()) {
 			if (fluidState.is(FluidTags.LAVA)) {
 				float opacity = EssentialClientConfig.getInstance().getLavaOpacity();
 				for (int i = 0; i < 4; i++) {
@@ -205,14 +197,14 @@ public abstract class DefaultFluidRenderMixin {
 		ColorProvider<FluidState> colorProvider,
 		TextureAtlasSprite[] sprites,
 		CallbackInfo ci,
-		@Local Direction direction,
-		@Share("shouldRenderLiquid") LocalBooleanRef shouldRenderLiquid,
+		@Local(name = "dir") Direction direction,
+		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluid,
 		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight,
 		@Share("shouldRenderHighlightFace") LocalBooleanRef shouldRenderHighlightFace
 	) {
 		FluidState neighbor = level.getFluidState(blockPos.relative(direction));
 		boolean isNeighborSameFluid = neighbor.getType().isSame(fluidState.getType());
-		shouldRenderLiquid.set(!isNeighborSameFluid);
+		shouldRenderFluid.set(!isNeighborSameFluid);
 		shouldRenderHighlightFace.set(
 			shouldRenderHighlight.get() && (isNeighborSameFluid || neighbor.is(Fluids.EMPTY)) && !neighbor.isSource()
 		);

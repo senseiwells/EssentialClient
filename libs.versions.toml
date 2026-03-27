@@ -11,7 +11,7 @@ yacl          = "3.8.1+1.21.11-fabric"
 mod-menu      = "17.0.0-alpha.1"
 carpet        = "1.4.193"
 chunk-debug   = "2.5.0+1.21.9"
-sodium        = "mc1.21.11-0.8.0-fabric"
+sodium        = "mc1.21.11-0.8.7-fabric"
 
 # Runtime
 dev-auth      = "1.2.1"

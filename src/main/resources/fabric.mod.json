@@ -46,7 +46,11 @@
     "fabric-api": "*",
     "fabricloader": ">=${fabric_loader_dependency}",
     "yet_another_config_lib_v3": ">=${yacl_dependency}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_dependency}",
     "minecraft": "${minecraft_dependency}"
+  },
+  "breaks": {
+    "sodium": "<0.8.7+mc1.21.11"
   },
   "suggests": {
     "carpet": "*",

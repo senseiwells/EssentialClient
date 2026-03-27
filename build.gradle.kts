@@ -22,7 +22,7 @@ repositories {
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
-val modVersion = "2.4.0"
+val modVersion = "2.4.1"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -45,7 +45,7 @@ dependencies {
     modCompileOnly(libs.mod.menu)
     modCompileOnly(libs.carpet)
     modCompileOnly(libs.chunk.debug)
-    modCompileOnly(libs.sodium)
+    localRuntime(modCompileOnly(libs.sodium.get())!!)
 
     // modRuntimeOnly(libs.dev.auth)
 }
@@ -63,6 +63,7 @@ tasks {
                 "minecraft_dependency" to libs.versions.minecraft.get(),
                 "yacl_dependency" to libs.versions.yacl.get(),
                 "fabric_loader_dependency" to libs.versions.fabric.loader.get(),
+                "fabric_kotlin_dependency" to libs.versions.fabric.kotlin.get(),
             ))
         }
     }
@@ -74,7 +75,8 @@ tasks {
     publishMods {
         file = remapJar.get().archiveFile
         changelog = """
-        - Update to 1.21.11
+        - Fix compatibility with sodium 8.7
+        - Fix fabric language kotlin dependency
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
