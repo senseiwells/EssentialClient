@@ -67,7 +67,7 @@ tasks {
                 "minecraft_dependency" to libs.versions.minecraft.get(),
                 "yacl_dependency" to libs.versions.yacl.get(),
                 "fabric_loader_dependency" to libs.versions.fabric.loader.get(),
-                "fabric_kotlin_dependency" to libs.fabric.kotlin.get(),
+                "fabric_kotlin_dependency" to libs.versions.fabric.kotlin.get(),
             ))
         }
     }
