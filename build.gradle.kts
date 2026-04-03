@@ -23,7 +23,7 @@ repositories {
     mavenLocal()
 }
 
-val modVersion = "2.5.2"
+val modVersion = "2.5.3"
 val releaseVersion = "${modVersion}+${libs.versions.minecraft.get()}"
 version = releaseVersion
 group = "me.senseiwells"
@@ -64,7 +64,7 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand(mutableMapOf(
                 "version" to releaseVersion,
-                "minecraft_dependency" to libs.versions.minecraft.get(),
+                "minecraft_dependency" to "~${libs.versions.minecraft.get()}",
                 "yacl_dependency" to libs.versions.yacl.get(),
                 "fabric_loader_dependency" to libs.versions.fabric.loader.get(),
                 "fabric_kotlin_dependency" to libs.versions.fabric.kotlin.get(),
@@ -79,7 +79,7 @@ tasks {
     publishMods {
         file = jar.get().archiveFile
         changelog = """
-        - Add fabric language kotlin to dependency list
+        - Support 26.1.x
         """.trimIndent()
         type = STABLE
         modLoaders.add("fabric")
