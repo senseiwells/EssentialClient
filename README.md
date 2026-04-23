@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=senseiwells&project=EssentialClient&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 # <img src="./src/main/resources/assets/essential-client/icon.png" align="center" width="64px"/> EssentialClient
 
 [![Discord](https://badgen.net/discord/online-members/7R9SfktZxH?icon=discord&label=Discord&list=what)](https://discord.gg/7R9SfktZxH)
