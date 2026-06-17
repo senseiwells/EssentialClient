@@ -1,19 +1,18 @@
 package me.senseiwells.essential_client.mixins.toggle_tab;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import me.senseiwells.essential_client.EssentialClient;
 import me.senseiwells.essential_client.EssentialClientConfig;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Hud;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(Gui.class)
-public class GuiMixin {
+@Mixin(Hud.class)
+public class HudMixin {
 	@Shadow @Final private Minecraft minecraft;
 
 	@Unique private boolean isTabToggled = false;

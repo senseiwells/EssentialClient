@@ -17,8 +17,8 @@ public class ClientNetworkHandlerMixin {
 		method = "lambda$static$1",
 		at = @At("HEAD")
 	)
-	private static void onSynchronizeRules(LocalPlayer player, Tag tag, CallbackInfo ci) {
-		EssentialClient.INSTANCE.synchronizeCarpetRules((CompoundTag) tag);
+	private static void onSynchronizeRules(LocalPlayer p, Tag t, CallbackInfo ci) {
+		EssentialClient.INSTANCE.synchronizeCarpetRules((CompoundTag) t);
 	}
 
 	@Inject(

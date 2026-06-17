@@ -36,7 +36,7 @@ class MultiplayerCarpetClient(
             return
         }
 
-        val screen = minecraft.screen
+        val screen = minecraft.gui.screen()
         this.forEachRule(tag) { ruleName, ruleValue, manager ->
             for (registry in this.registries.values) {
                 val rule = registry.get(ruleName) ?: continue

@@ -16,7 +16,7 @@ public class ChatListenerMixin {
 		at = @At("HEAD"),
 		cancellable = true
 	)
-	private void onSystemMessage(Component message, boolean isOverlay, CallbackInfo ci) {
+	private void onSystemMessage(Component message, boolean remote, CallbackInfo ci) {
 		if (!EssentialClientConfig.getInstance().getDisableJoinLeaveMessages()) {
 			return;
 		}

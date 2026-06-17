@@ -27,7 +27,7 @@ public class RecipeBookComponentMixin<T extends RecipeBookMenu> {
         at = @At("RETURN")
     )
     private void onHandlePlaceRecipe(
-        RecipeCollection recipes,
+        RecipeCollection recipeCollection,
         RecipeDisplayId recipe,
         boolean useMaxItems,
         CallbackInfoReturnable<Boolean> cir

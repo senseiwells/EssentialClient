@@ -17,7 +17,7 @@ public class DisplayRendererMixin {
 		at = @At("HEAD"),
 		cancellable = true
 	)
-	private void onRender(CallbackInfo ci, @Local(argsOnly = true) DisplayEntityRenderState state) {
+	private void onRender(CallbackInfo ci, @Local(argsOnly = true, name = "state") DisplayEntityRenderState state) {
 		if (state instanceof TextDisplayEntityRenderState && EssentialClientConfig.getInstance().getDisableDisplayTextRendering()) {
 			ci.cancel();
 		}

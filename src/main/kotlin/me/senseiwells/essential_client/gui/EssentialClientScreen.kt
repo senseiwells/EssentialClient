@@ -8,7 +8,8 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.StringWidget
 import net.minecraft.client.gui.components.Tooltip
-import net.minecraft.client.gui.layouts.*
+import net.minecraft.client.gui.layouts.GridLayout
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
@@ -19,20 +20,20 @@ class EssentialClientScreen(
     private val layout = HeaderAndFooterLayout(this, 32, 64)
 
     override fun init() {
-        val minecraft = this.minecraft!!
+        val minecraft = this.minecraft
 
         val width = 204
         val grid = GridLayout()
         grid.defaultCellSetting().padding(4, 4, 4, 0)
         val rows = grid.createRowHelper(1)
         rows.addChild(Button.builder(Component.translatable("essential-client.menu.config")) {
-            minecraft.setScreen(EssentialClientConfig.screen(this))
+            minecraft.gui.setScreen(EssentialClientConfig.screen(this))
         }.width(width).build())
         rows.addChild(Button.builder(Component.translatable("essential-client.menu.carpetConfig")) {
-            minecraft.setScreen(EssentialClient.getCarpetClient().createConfig(minecraft).generateScreen(this))
+            minecraft.gui.setScreen(EssentialClient.getCarpetClient().createConfig(minecraft).generateScreen(this))
         }.width(width).tooltip(Tooltip.create(Component.translatable("essential-client.menu.carpetConfig.tooltip"))).build())
         val chunks = rows.addChild(Button.builder(Component.translatable("essential-client.menu.chunkDebugMap")) {
-            minecraft.setScreen(createChunkDebugScreen(this))
+            minecraft.gui.setScreen(createChunkDebugScreen(this))
         }.width(width).tooltip(Tooltip.create(Component.translatable("essential-client.menu.chunkDebugMap.tooltip"))).build())
         chunks.active = hasChunkDebug && canUseChunkDebug()
 
@@ -56,7 +57,7 @@ class EssentialClientScreen(
     }
 
     override fun onClose() {
-        this.minecraft!!.setScreen(this.parent)
+        this.minecraft.gui.setScreen(this.parent)
     }
 
     companion object {

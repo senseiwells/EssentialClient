@@ -2,11 +2,11 @@ package me.senseiwells.essential_client.mixins.disable_screenshot_message;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import me.senseiwells.essential_client.EssentialClientConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-
-import java.util.function.Consumer;
 
 @Mixin(Screenshot.class)
 public class ScreenshotMixin {
@@ -14,10 +14,10 @@ public class ScreenshotMixin {
 		method = "lambda$grab$1",
 		at = @At(
 			value = "INVOKE",
-			target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V"
+			target = "Lnet/minecraft/client/Minecraft;showDebugChat(Lnet/minecraft/network/chat/Component;)V"
 		)
 	)
-	private static boolean onConsumeFeedback(Consumer<?> instance, Object t) {
+	private static boolean onConsumeFeedback(Minecraft instance, Component message) {
 		return !EssentialClientConfig.getInstance().getDisableScreenshotMessages();
 	}
 }

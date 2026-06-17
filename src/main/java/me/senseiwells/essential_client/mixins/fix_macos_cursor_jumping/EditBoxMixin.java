@@ -3,7 +3,6 @@ package me.senseiwells.essential_client.mixins.fix_macos_cursor_jumping;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.platform.InputConstants;
 import me.senseiwells.essential_client.EssentialClientConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.InputQuirks;
@@ -13,7 +12,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EditBox.class)
@@ -22,19 +20,19 @@ public abstract class EditBoxMixin extends AbstractWidget {
         super(x, y, width, height, message);
     }
 
-    @Shadow public abstract void deleteWords(int num);
+    @Shadow public abstract void deleteWords(int dir);
 
-    @Shadow public abstract void deleteChars(int num);
+    @Shadow public abstract void deleteChars(int dir);
 
-    @Shadow public abstract void moveCursorToEnd(boolean select);
+    @Shadow public abstract void moveCursorToEnd(boolean hasShiftDown);
 
-    @Shadow public abstract void moveCursorTo(int delta, boolean select);
+    @Shadow public abstract void moveCursorTo(int dir, boolean extendSelection);
 
-    @Shadow public abstract int getWordPosition(int numWords);
+    @Shadow public abstract int getWordPosition(int dir);
 
-    @Shadow public abstract void moveCursor(int delta, boolean select);
+    @Shadow public abstract void moveCursor(int dir, boolean hasShiftDown);
 
-    @Shadow public abstract void moveCursorToStart(boolean select);
+    @Shadow public abstract void moveCursorToStart(boolean hasShiftDown);
 
     @Shadow public abstract void setValue(String value);
 

@@ -15,7 +15,7 @@
     "compat.sodium.DefaultFluidRenderMixin",
     "crafting_hax.RecipeBookComponentMixin",
     "disable_armor_rendering.HumanoidArmorLayerMixin",
-    "disable_bossbar_rendering.GuiMixin",
+    "disable_bossbar_rendering.HudMixin",
     "disable_damage_tilt.GameRendererMixin",
     "disable_display_text_rendering.DisplayRendererMixin",
     "disable_hotbar_scrolling.MouseHandlerMixin",
@@ -31,11 +31,12 @@
     "highlight_liquids.FluidRendererMixin",
     "ignore_invalid_chat_messages.ClientPacketListenerMixin",
     "ignore_server_render_distance.OptionsMixin",
-    "persistent_chat_history.GuiMixin",
+    "persistent_chat_history.HudMixin",
     "remove_warn_invalid_chunk.ClientChunkCacheMixin",
     "spectator_scrolling.MouseHandlerMixin",
     "tick_rate_affect_chat_key.MinecraftMixin",
-    "toggle_tab.GuiMixin"
+    "toggle_tab.HudMixin",
+    "yacl.TextScaledButtonWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

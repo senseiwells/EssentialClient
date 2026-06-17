@@ -16,7 +16,7 @@ public class MouseHandlerMixin {
 			target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedSlot(I)V"
 		)
 	)
-	private boolean shouldScrollHotbar(Inventory instance, int i) {
+	private boolean shouldScrollHotbar(Inventory instance, int selected) {
 		return !EssentialClientConfig.getInstance().getDisableHotbarScrolling();
 	}
 }

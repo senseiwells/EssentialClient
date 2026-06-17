@@ -1,11 +1,8 @@
 package me.senseiwells.essential_client.mixins.disable_map_rendering;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.mojang.blaze3d.vertex.PoseStack;
 import me.senseiwells.essential_client.EssentialClientConfig;
 import net.minecraft.client.renderer.MapRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.world.level.saveddata.maps.MapId;
@@ -22,7 +19,7 @@ public class ItemFrameRendererMixin {
 			target = "Lnet/minecraft/client/renderer/MapRenderer;extractRenderState(Lnet/minecraft/world/level/saveddata/maps/MapId;Lnet/minecraft/world/level/saveddata/maps/MapItemSavedData;Lnet/minecraft/client/renderer/state/MapRenderState;)V"
 		)
 	)
-	private boolean onRenderMap(MapRenderer instance, MapId mapId, MapItemSavedData data, MapRenderState state) {
+	private boolean onRenderMap(MapRenderer instance, MapId mapId, MapItemSavedData mapData, MapRenderState mapRenderState) {
 		return !EssentialClientConfig.getInstance().getDisableMapRendering();
 	}
 }

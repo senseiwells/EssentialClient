@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 	@ModifyExpressionValue(
-		method = "getNightVisionScale",
+		method = "nightVisionScale",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/world/effect/MobEffectInstance;endsWithin(I)Z"

@@ -148,15 +148,15 @@ public abstract class DefaultFluidRenderMixin {
 	)
 	private void onWriteQuad(
 		DefaultFluidRenderer instance,
-		ChunkModelBuilder meshBuilder,
+		ChunkModelBuilder builder,
 		TranslucentGeometryCollector collector,
 		Material material,
-		BlockPos blockPos,
+		BlockPos offset,
 		ModelQuadView quad,
 		ModelQuadFacing facing,
 		boolean flip,
 		Operation<Void> original,
-		@Local(argsOnly = true) FluidState fluidState,
+		@Local(argsOnly = true, name = "fluidState") FluidState fluidState,
 		@Share("shouldRenderFluid") LocalBooleanRef shouldRenderFluid,
 		@Share("shouldRenderHighlightFace") LocalBooleanRef shouldRenderHighlightFace
 	) {
@@ -167,13 +167,13 @@ public abstract class DefaultFluidRenderMixin {
 					this.quadColors[i] = ColorABGR.withAlpha(this.quadColors[i], opacity);
 				}
 			}
-			original.call(instance, meshBuilder, collector, material, blockPos, quad, facing, flip);
+			original.call(instance, builder, collector, material, offset, quad, facing, flip);
 		}
 		if (shouldRenderHighlightFace.get()) {
 			Arrays.fill(this.brightness, 1.0F);
 			Arrays.fill(this.quadColors, 0xFFFFFFFF);
 			this.writeQuad(
-				meshBuilder, collector, material, blockPos, this.highlightQuad, facing, flip
+				builder, collector, material, offset, this.highlightQuad, facing, flip
 			);
 		}
 	}

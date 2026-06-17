@@ -27,12 +27,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = FluidRenderer.class, priority = 1100)
 public abstract class FluidRendererMixin {
 	@Shadow
-	private static boolean isNeighborSameFluid(FluidState firstState, FluidState secondState) {
+	private static boolean isNeighborSameFluid(FluidState fluidState, FluidState neighborFluidState) {
 		return false;
 	}
 
 	@Shadow
-	private static boolean isFaceOccludedBySelf(BlockState blockState, Direction direction) {
+	private static boolean isFaceOccludedBySelf(BlockState state, Direction direction) {
 		return false;
 	}
 
@@ -77,17 +77,17 @@ public abstract class FluidRendererMixin {
 		)
 	)
 	private boolean bypassFaceCheckIfHighlighting(
-		FluidState fluid,
-		BlockState block,
+		FluidState fluidState,
+		BlockState blockState,
 		Direction direction,
-		FluidState neighbor,
+		FluidState neighborFluidState,
 		Operation<Boolean> original,
 		@Share("shouldRenderHighlight") LocalBooleanRef shouldRenderHighlight
 	) {
 		if (direction.getAxis().isVertical() || !shouldRenderHighlight.get()) {
-			return original.call(fluid, block, direction, neighbor);
+			return original.call(fluidState, blockState, direction, neighborFluidState);
 		}
-		return !isFaceOccludedBySelf(block, direction);
+		return !isFaceOccludedBySelf(blockState, direction);
 	}
 
 	@WrapOperation(

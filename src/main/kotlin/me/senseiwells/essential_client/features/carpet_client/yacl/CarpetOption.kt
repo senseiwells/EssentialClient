@@ -141,7 +141,7 @@ class CarpetOption<T: Any>(
         this.listeners.add(listener)
     }
 
-    @Deprecated("Use addEventListener istead")
+    @Deprecated("Use addEventListener instead")
     override fun addListener(listener: BiConsumer<Option<T>, T>) {
         this.listeners.add { option, _ -> listener.accept(option, option.pendingValue()) }
     }

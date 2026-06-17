@@ -21,10 +21,10 @@ public class EntityRendererMixin {
 	)
 	private boolean onRenderNametag(
         EntityRenderer<?, ?> instance,
-        EntityRenderState entityRenderState,
+        EntityRenderState state,
         PoseStack poseStack,
         SubmitNodeCollector submitNodeCollector,
-        CameraRenderState cameraRenderState
+        CameraRenderState camera
 	) {
 		return !EssentialClientConfig.getInstance().getDisableNametagRendering();
 	}

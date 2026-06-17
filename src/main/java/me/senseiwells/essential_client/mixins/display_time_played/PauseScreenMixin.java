@@ -20,7 +20,7 @@ public class PauseScreenMixin extends Screen {
 		method = "extractRenderState",
 		at = @At("TAIL")
 	)
-	private void extractPlayTimeState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-		DisplayStartTime.onExtractRenderState(guiGraphics, this.font);
+	private void extractPlayTimeState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+		DisplayStartTime.onExtractRenderState(graphics, this.font);
 	}
 }

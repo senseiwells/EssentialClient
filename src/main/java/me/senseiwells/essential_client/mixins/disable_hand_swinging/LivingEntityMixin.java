@@ -15,7 +15,7 @@ public class LivingEntityMixin {
         cancellable = true
     )
     private void overwriteAttackAnim(
-        float partialTick,
+        float a,
         CallbackInfoReturnable<Float> cir
     ) {
         if (EssentialClientConfig.getInstance().getDisableHandSwinging()) {
