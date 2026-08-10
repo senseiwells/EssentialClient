@@ -25,7 +25,6 @@ class EssentialClientConfig {
 
     @Bool(colored = true)
     @AutoGen(category = "gameplay")
-    @CustomDescription
     @SerialEntry var betterAccurateBlockPlacement: Boolean = false
 
     @Bool(colored = true)

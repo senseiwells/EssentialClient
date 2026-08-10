@@ -4,6 +4,7 @@ import me.senseiwells.chunkdebug.client.ChunkDebugClient
 import me.senseiwells.chunkdebug.client.gui.ChunkDebugScreen
 import me.senseiwells.essential_client.EssentialClient
 import me.senseiwells.essential_client.EssentialClientConfig
+import me.senseiwells.essential_client.compat.KursiveCompat
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.StringWidget
@@ -37,10 +38,10 @@ class EssentialClientScreen(
         }.width(width).tooltip(Tooltip.create(Component.translatable("essential-client.menu.chunkDebugMap.tooltip"))).build())
         chunks.active = hasChunkDebug && canUseChunkDebug()
 
-        val scripting = rows.addChild(Button.builder(Component.translatable("essential-client.menu.clientScript")) {
-
-        }.width(width).tooltip(Tooltip.create(Component.translatable("essential-client.menu.clientScript.tooltip"))).build())
-        scripting.active = false
+        val scripting = rows.addChild(Button.builder(Component.translatable("essential-client.menu.kursive")) {
+            minecraft.gui.setScreen(KursiveCompat.createKursiveMenu(this))
+        }.width(width).tooltip(Tooltip.create(Component.translatable("essential-client.menu.kursive.tooltip"))).build())
+        scripting.active = KursiveCompat.hasKursiveInstalled()
 
         this.layout.addToHeader(StringWidget(this.title, this.font)) { settings -> settings.alignVerticallyBottom() }
         this.layout.addToContents(grid) { settings -> settings.alignVerticallyTop() }
